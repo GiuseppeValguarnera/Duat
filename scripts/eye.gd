@@ -39,7 +39,10 @@ func _on_body_entered(body: Node) -> void:
 		if _hit.has(body) or body.dead:
 			return
 		_hit[body] = true
-		body.take_hit(damage, direction, 60.0, burns)
+		var crit := Run.roll_crit(Run.eye_crit_chance())
+		if crit > 1.0:
+			Fx.float_text(body.global_position + Vector2(0, -20), "CRITICO", Boons.god_color("bastet"))
+		body.take_hit(damage * crit, direction, 60.0, burns)
 		Fx.shake(2.0)
 		if pierce_left > 0:
 			pierce_left -= 1

@@ -8,6 +8,7 @@ signal died
 signal health_changed(hp: float, max_hp: float)
 
 const EyeScript := preload("res://scripts/eye.gd")
+const PuddleScript := preload("res://scripts/puddle.gd")
 
 @export_group("Vita")
 @export var max_hp := 60.0
@@ -70,6 +71,7 @@ var swing_index := 0
 var eye_cd := 0.0
 var divine_t := 0.0
 var drain_t := 3.0                     # Sete Insaziabile
+var shield := 0.0                      # Ali di Iside: scudo che si ricarica a ogni stanza
 var knock := Vector2.ZERO
 var walk := 0.0
 
@@ -80,6 +82,7 @@ func _ready() -> void:
 	max_hp = Run.max_hp
 	hp = Run.hp
 	Run.divine = false
+	shield = Run.val("iside_wings")
 	add_to_group("player")
 	Fx.camera = camera
 
@@ -96,6 +99,7 @@ func dash_cd_max() -> float:
 func heal(amount: float) -> void:
 	if dead or amount <= 0.0:
 		return
+	amount *= Run.heal_mult()
 	hp = minf(max_hp, hp + amount)
 	Run.hp = hp
 	Fx.float_text(global_position, "+%d" % int(amount), Color(0.5, 1, 0.55))
@@ -133,8 +137,13 @@ func _physics_process(delta: float) -> void:
 			walk += delta * 10.0
 	knock = knock.move_toward(Vector2.ZERO, 900.0 * delta)
 	move_and_slide()
-	if was_dashing and dash_t <= 0.0 and Run.has("sekhmet_leap"):
-		leap_ready = true
+	if was_dashing and dash_t <= 0.0:
+		if Run.has("sekhmet_leap"):
+			leap_ready = true
+		if Run.has("sobek_tide"):
+			var pool := PuddleScript.new()
+			get_parent().add_child(pool)
+			pool.global_position = global_position
 	_heavy_drain(delta)
 	queue_redraw()
 
@@ -204,7 +213,8 @@ func _dash_damage() -> void:
 			continue
 		if global_position.distance_to(e.global_position) < e.radius + 10.0:
 			dash_hit[e] = true
-			e.take_hit(Run.val("ra_dawn") * Run.all_damage_mult(), dash_dir, 60.0, true)
+			e.take_hit(Run.val("ra_dawn") * Run.all_damage_mult(), dash_dir, 60.0)
+			e.burn_t = maxf(e.burn_t, 1.0)
 
 
 func _swing() -> void:
@@ -221,7 +231,7 @@ func _swing() -> void:
 	swing_dir = _assisted(aim, swing_range + 24.0)
 	knock = swing_dir * c["lunge"]
 
-	var dmg: float = attack_damage * Run.khopesh_mult() * c["mult"]
+	var dmg: float = attack_damage * Run.khopesh_mult() * Run.low_hp_mult() * c["mult"]
 	if divine_t > 0.0:
 		dmg *= divine_damage_mult
 	if leap_ready:
@@ -237,7 +247,12 @@ func _swing() -> void:
 		if to.length() > reach:
 			continue
 		if absf(swing_dir.angle_to(to)) <= swing_arc * 0.5 or to.length() < e.radius + 6.0:
-			e.take_hit(dmg, to.normalized(), c["knock"], Run.khopesh_burns())
+			var crit := Run.roll_crit(Run.khopesh_crit_chance())
+			if crit > 1.0:
+				Fx.float_text(e.global_position + Vector2(0, -20), "CRITICO", Boons.god_color("bastet"))
+			e.take_hit(dmg * crit, to.normalized(), c["knock"] * Run.knock_mult(), Run.khopesh_burns())
+			if swing_index == 2 and Run.has("sobek_bite") and not e.dead:
+				e.stagger_t = maxf(e.stagger_t, Run.val("sobek_bite"))
 			hit_any = true
 	if swing_index == 2 and Run.has("sekhmet_roar"):
 		_shockwave(46.0, Run.val("sekhmet_roar") * Run.all_damage_mult(), 200.0, Boons.god_color("sekhmet"))
@@ -262,7 +277,7 @@ func _fire_eye() -> void:
 		var dir := Vector2.from_angle(base + (i - (rays - 1) / 2.0) * 0.22)
 		var eye: Area2D = EyeScript.new()
 		eye.direction = dir
-		eye.damage = eye_damage * Run.eye_damage_mult()
+		eye.damage = eye_damage * Run.eye_damage_mult() * Run.low_hp_mult()
 		eye.pierce_left = Run.eye_pierce()
 		eye.explode_damage = Run.val("ra_disc") * Run.all_damage_mult()
 		eye.burns = Run.eye_burns()
@@ -298,6 +313,14 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> boo
 	if dead or invuln_t > 0.0 or dash_t > 0.0:
 		return false
 	amount *= Run.damage_taken_mult()
+	if shield > 0.0:
+		var absorbed := minf(shield, amount)
+		shield -= absorbed
+		amount -= absorbed
+		Fx.float_text(global_position + Vector2(0, -14), "Scudo -%d" % int(absorbed), Boons.god_color("iside"))
+		if amount <= 0.0:
+			invuln_t = 0.4
+			return true
 	if divine_t > 0.0:
 		amount *= divine_armor
 	else:
@@ -312,6 +335,12 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> boo
 	Fx.shake(7.0)
 	Fx.hitstop(0.08)
 	Fx.damage_number(global_position, amount, Color(1, 0.4, 0.3))
+	if hp <= 0.0 and Run.has("bastet_lives") and not Run.revived:
+		Run.revived = true
+		hp = roundf(max_hp * Run.val("bastet_lives") / 100.0)
+		invuln_t = 1.5
+		Fx.burst(global_position + Vector2(0, -10), Boons.god_color("bastet"), 40, 160.0)
+		Fx.float_text(global_position + Vector2(0, -20), "Nove Vite!", Boons.god_color("bastet"))
 	if hp <= 0.0:
 		hp = 0.0
 		dead = true
@@ -339,6 +368,8 @@ func _draw() -> void:
 	draw_circle(Vector2.ZERO, 9.0, Color(0, 0, 0, 0.35))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
+	if shield > 0.0:
+		draw_arc(Vector2(0, -12), 15.0, 0.0, TAU, 28, Color(Boons.god_color("iside"), 0.7), 1.5)
 	if divine_t > 0.0:
 		var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 90.0)
 		draw_circle(Vector2(0, -12), 18.0 + pulse * 3.0, Color(1, 0.8, 0.3, 0.18))

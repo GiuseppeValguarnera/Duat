@@ -51,7 +51,7 @@ func _physics_process(delta: float) -> void:
 		stagger_t -= delta
 		velocity = knock
 	else:
-		velocity = _behave(delta, to) * Run.enemy_speed_mult() + knock
+		velocity = _behave(delta, to) * Run.enemy_speed_mult() * _puddle_slow() + knock
 	knock = knock.move_toward(Vector2.ZERO, 800.0 * delta)
 	move_and_slide()
 
@@ -77,6 +77,14 @@ func _contact_damage() -> float:
 ## Chiamata dopo ogni colpo subito, per reazioni speciali.
 func _on_hit(_dmg: float) -> void:
 	pass
+
+
+## Marea del Nilo: dentro una pozza il nemico rallenta.
+func _puddle_slow() -> float:
+	for p in get_tree().get_nodes_in_group("puddles"):
+		if global_position.distance_to(p.global_position) < p.radius:
+			return 1.0 - Run.val("sobek_tide") / 100.0
+	return 1.0
 
 
 ## Quanto barcolla dopo un colpo. I nemici grossi possono barcollare meno.

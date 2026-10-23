@@ -17,6 +17,7 @@ var blessings: Array[String] = []     # benedizioni di Set ottenute
 var curses: Array = []                # [{"curse", "waves", "blessing"}]
 var sekhem := 0.0
 var divine := false                   # true durante la Forma Divina
+var revived := false                  # Nove Vite già usata in questa run
 
 
 func new_run() -> void:
@@ -28,6 +29,7 @@ func new_run() -> void:
 	curses.clear()
 	sekhem = 0.0
 	divine = false
+	revived = false
 
 
 func level(id: String) -> int:
@@ -51,6 +53,9 @@ func add_boon(id: String) -> void:
 	if id == "anubi_stone":
 		max_hp += val(id)
 		hp += val(id)
+	if id == "bastet_heavy":
+		max_hp = maxf(20.0, max_hp - 15.0)
+		hp = minf(hp, max_hp)
 	if id == "anubi_light":
 		max_hp -= 10.0
 		hp = minf(hp, max_hp)
@@ -94,7 +99,9 @@ func grant_blessing(id: String) -> void:
 func add_sekhem(amount: float) -> void:
 	if divine:
 		return
-	sekhem = minf(SEKHEM_MAX, sekhem + amount * (1.5 if has("set_sekhem") else 1.0))
+	var m := 1.5 if has("set_sekhem") else 1.0
+	m *= 1.0 + val("iside_word") / 100.0
+	sekhem = minf(SEKHEM_MAX, sekhem + amount * m)
 
 
 func sekhem_ready() -> bool:
@@ -113,6 +120,10 @@ func khopesh_mult() -> float:
 		m *= 1.6
 	if has("thoth_heavy"):
 		m *= 0.65
+	if has("sobek_heavy"):
+		m *= 1.5
+	if has("iside_heavy"):
+		m *= 0.8
 	return m * all_damage_mult()
 
 
@@ -157,6 +168,8 @@ func move_mult() -> float:
 		m *= 1.15
 	if has("anubi_stone"):
 		m *= 0.92
+	if has("sobek_heavy"):
+		m *= 0.85
 	return m
 
 
@@ -164,6 +177,9 @@ func dash_cooldown_mult() -> float:
 	var m := 2.0 if cursed("slow_dash") else 1.0
 	if has("anubi_light"):
 		m *= 1.0 - val("anubi_light") / 100.0
+	m *= 1.0 - val("bastet_step") / 100.0
+	if has("ra_dawn"):
+		m *= 1.4
 	return m
 
 
@@ -171,6 +187,7 @@ func damage_taken_mult() -> float:
 	var m := 1.5 if cursed("fragile") else 1.0
 	if has("anubi_scale"):
 		m *= 1.1
+	m *= 1.0 - val("sobek_skin") / 100.0
 	return m
 
 
@@ -191,3 +208,38 @@ func enemy_speed_mult() -> float:
 
 func ka_mult() -> float:
 	return 1.5 if has("set_greed") else 1.0
+
+
+# --- Bastet, Sobek, Iside ---------------------------------------------------------
+
+## Moltiplicatore del colpo: 1 se normale, 2 (o 3) se critico.
+func roll_crit(chance: float) -> float:
+	if has("bastet_heavy"):
+		chance = maxf(chance, 0.1)
+	if chance > 0.0 and randf() < chance:
+		return 3.0 if has("bastet_heavy") else 2.0
+	return 1.0
+
+
+func khopesh_crit_chance() -> float:
+	return val("bastet_claws") / 100.0
+
+
+func eye_crit_chance() -> float:
+	return val("bastet_eyes") / 100.0
+
+
+## Nodo di Iside: più danni quando sei sotto un terzo della vita.
+func low_hp_mult() -> float:
+	if has("iside_knot") and hp < max_hp / 3.0:
+		return 1.0 + val("iside_knot") / 100.0
+	return 1.0
+
+
+func heal_mult() -> float:
+	return 1.0 + val("iside_tears") / 100.0
+
+
+func knock_mult() -> float:
+	return 2.0 if has("sobek_heavy") else 1.0
+

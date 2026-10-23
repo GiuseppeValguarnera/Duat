@@ -162,6 +162,12 @@ func _room_cleared() -> void:
 	if cleared:
 		return
 	cleared = true
+	if Run.has("sobek_river"):
+		Run.max_hp += Run.val("sobek_river")
+		player.max_hp = Run.max_hp
+		player.heal(Run.val("sobek_river"))
+	if Run.has("iside_heavy"):
+		player.heal(roundf(Run.max_hp * 0.25))
 	var p = PickupScript.new()
 	p.kind = current_reward["kind"]
 	p.god = current_reward.get("god", "")
@@ -322,6 +328,7 @@ func _show_boon_menu(god: String) -> void:
 		var body := _wrap(Boons.text(id, lvl), 32)
 		if Boons.is_heavy(id):
 			tag = "DONO PESANTE"
+		if Boons.has_cost(id):
 			body += "\n\nPrezzo: " + _wrap(Boons.ALL[id]["cost"], 32)
 		cards.append({
 			"text": "%s\n%s\n\n%s" % [tag, name_line, body],

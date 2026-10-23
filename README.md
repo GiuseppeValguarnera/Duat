@@ -45,9 +45,12 @@ Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finit
 
 | Dio | Doni |
 | --- | --- |
-| Ra (fuoco) | Colpo Solare, Disco di Ra, Corsa dell'Alba, Occhio Ardente · pesante: Ira del Sole |
+| Ra (fuoco) | Colpo Solare, Disco di Ra, Corsa dell'Alba (con prezzo: scatto più lento), Occhio Ardente · pesante: Ira del Sole |
 | Sekhmet (furia) | Furia della Leonessa, Sete di Sangue, Ruggito, Balzo della Leonessa · pesante: Sete Insaziabile |
 | Thoth (Occhio di Horus) | Sguardo di Thoth, Calcolo di Thoth, Occhio Moltiplicato, Parola dello Scriba · pesante: Conoscenza Proibita |
+| Bastet (critici e agilità) | Artigli Affilati, Occhi di Gatto, Passo Felino, Nove Vite · pesante: Gioco del Gatto |
+| Sobek (resistenza e controllo) | Pelle di Coccodrillo, Morso di Sobek, Marea del Nilo, Forza del Fiume · pesante: Fauci di Sobek |
+| Iside (protezione e cure) | Ali di Iside, Lacrime di Iside, Nodo di Iside, Parola Magica · pesante: Abbraccio di Iside |
 | Anubi (solo a inizio run, doni-bilancia con un piccolo prezzo) | Cuore Leggero, Cuore di Pietra, Fiuto dello Sciacallo, Bilancia Giusta, Guida delle Anime |
 
 Senza doni l'Occhio di Horus si ferma sul primo nemico che colpisce.
