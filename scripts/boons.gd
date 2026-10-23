@@ -29,10 +29,12 @@ const ALL := {
 	"thoth_calc": {"god": "thoth", "name": "Calcolo di Thoth", "desc": "L'Occhio di Horus si ricarica il %d%% più in fretta.", "values": [40, 50, 60]},
 	"thoth_tri": {"god": "thoth", "name": "Occhio Moltiplicato", "desc": "L'Occhio di Horus scaglia %d raggi a ventaglio.", "values": [3, 5, 7]},
 	"thoth_scribe": {"god": "thoth", "name": "Parola dello Scriba", "desc": "+%d%% ai danni dell'Occhio di Horus.", "values": [60, 90, 120]},
-	"anubi_embalm": {"god": "anubi", "name": "Bende dell'Imbalsamatore", "desc": "+%d vita massima.", "values": [15, 25, 35]},
-	"anubi_guide": {"god": "anubi", "name": "Guida delle Anime", "desc": "Ogni nemico abbattuto libera uno spirito che colpisce il nemico più vicino: %d danni.", "values": [10, 15, 20]},
-	"anubi_scale": {"god": "anubi", "name": "Bilancia Giusta", "desc": "In ogni stanza Anubi para i primi %d colpi che subisci.", "values": [1, 2, 3]},
-	"anubi_jackal": {"god": "anubi", "name": "Fiuto dello Sciacallo", "desc": "+%d%% di danni ai nemici sotto metà vita.", "values": [25, 40, 55]},
+	# Anubi pesa ogni cosa: i suoi doni sono bilance, un vantaggio un po' più grande del prezzo.
+	"anubi_light": {"god": "anubi", "balanced": true, "name": "Cuore Leggero", "desc": "Lo scatto si ricarica il %d%% più in fretta e ti muovi il 15%% più veloce.", "values": [30], "cost": "-10 vita massima."},
+	"anubi_stone": {"god": "anubi", "balanced": true, "name": "Cuore di Pietra", "desc": "+%d vita massima.", "values": [30], "cost": "Ti muovi l'8% più lento."},
+	"anubi_jackal": {"god": "anubi", "balanced": true, "name": "Fiuto dello Sciacallo", "desc": "+%d%% di danni ai nemici sotto metà vita.", "values": [50], "cost": "-10% di danni ai nemici sopra metà vita."},
+	"anubi_scale": {"god": "anubi", "balanced": true, "name": "Bilancia Giusta", "desc": "Chi ti colpisce subisce il %d%% del danno che ti ha fatto.", "values": [200], "cost": "Subisci il 10% di danni in più."},
+	"anubi_guide": {"god": "anubi", "balanced": true, "name": "Guida delle Anime", "desc": "Ogni nemico abbattuto libera uno spirito che colpisce il nemico più vicino: %d danni.", "values": [15], "cost": "I nemici hanno il 5% di vita in più."},
 	"ra_heavy": {"god": "ra", "heavy": true, "name": "Ira del Sole", "desc": "Tutti i tuoi colpi incendiano, e le fiamme fanno il 60% di danni in più.", "cost": "L'Occhio di Horus si ricarica il 50% più lentamente."},
 	"sekhmet_heavy": {"god": "sekhmet", "heavy": true, "name": "Sete Insaziabile", "desc": "+60% ai danni del khopesh.", "cost": "Finché ci sono nemici nella stanza perdi 1 punto vita ogni 3 secondi."},
 	"thoth_heavy": {"god": "thoth", "heavy": true, "name": "Conoscenza Proibita", "desc": "L'Occhio di Horus si ricarica più del doppio più in fretta.", "cost": "Il khopesh fa il 35% di danni in meno."},
@@ -66,6 +68,11 @@ static func god_color(god: String) -> Color:
 
 static func is_heavy(id: String) -> bool:
 	return ALL[id].get("heavy", false)
+
+
+## Doni con un prezzo da mostrare (pesanti e doni di Anubi).
+static func has_cost(id: String) -> bool:
+	return ALL[id].has("cost")
 
 
 ## Testo del dono a un certo livello (1, 2 o 3).

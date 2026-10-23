@@ -337,12 +337,12 @@ func _show_anubi_menu() -> void:
 	var cards := []
 	for id in Boons.offers("anubi", Run.boons):
 		cards.append({
-			"text": "%s\n\n%s" % [Boons.ALL[id]["name"], _wrap(Boons.text(id, 1), 32)],
+			"text": "%s\n\n%s\n\nPrezzo: %s" % [Boons.ALL[id]["name"], _wrap(Boons.text(id, 1), 32), _wrap(Boons.ALL[id]["cost"], 32)],
 			"color": Boons.god_color("anubi"),
 			"heavy": false,
 			"on_pick": _choose_start_boon.bind(id),
 		})
-	_open_choice("Anubi ti accompagna", Boons.god_color("anubi"), "Scegli il dono con cui inizi la discesa", cards)
+	_open_choice("Anubi pesa il tuo cuore", Boons.god_color("anubi"), "Ogni suo dono è una bilancia: scegli cosa guadagnare e cosa cedere", cards)
 
 
 func _choose_start_boon(id: String) -> void:
@@ -350,7 +350,6 @@ func _choose_start_boon(id: String) -> void:
 	_close_choice()
 	player.max_hp = Run.max_hp
 	player.hp = Run.hp
-	player.blocks_left = int(Run.val("anubi_scale"))
 	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color("anubi"), 30, 140.0)
 	_banner("Dono di Anubi", Boons.ALL[id]["name"], Boons.god_color("anubi"))
 
@@ -451,9 +450,9 @@ func _boons_text() -> String:
 	for id in Run.boons:
 		var b: Dictionary = Boons.ALL[id]
 		var col: String = Boons.god_color(b["god"]).to_html(false)
-		var lvl := "pesante" if Boons.is_heavy(id) else "liv. %d" % Run.boons[id]
+		var lvl := "pesante" if Boons.is_heavy(id) else ("bilancia" if Boons.ALL[id].get("balanced", false) else "liv. %d" % Run.boons[id])
 		t += "[color=#%s][b]%s[/b] · %s · %s[/color]\n%s" % [col, Boons.god_name(b["god"]), b["name"], lvl, Boons.text(id, Run.boons[id])]
-		if Boons.is_heavy(id):
+		if Boons.has_cost(id):
 			t += " [color=#ff9c8c]Prezzo: %s[/color]" % b["cost"]
 		t += "\n\n"
 	var set_col: String = Boons.god_color("set").to_html(false)

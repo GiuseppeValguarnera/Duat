@@ -70,7 +70,6 @@ var swing_index := 0
 var eye_cd := 0.0
 var divine_t := 0.0
 var drain_t := 3.0                     # Sete Insaziabile
-var blocks_left := 0                   # Bilancia Giusta: colpi parati in questa stanza
 var knock := Vector2.ZERO
 var walk := 0.0
 
@@ -81,7 +80,6 @@ func _ready() -> void:
 	max_hp = Run.max_hp
 	hp = Run.hp
 	Run.divine = false
-	blocks_left = int(Run.val("anubi_scale"))
 	add_to_group("player")
 	Fx.camera = camera
 
@@ -296,16 +294,9 @@ func _heavy_drain(delta: float) -> void:
 
 
 ## Restituisce true se il colpo è andato a segno (false se eri invulnerabile).
-func take_damage(amount: float, from_pos: Vector2) -> bool:
+func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> bool:
 	if dead or invuln_t > 0.0 or dash_t > 0.0:
 		return false
-	if blocks_left > 0:
-		blocks_left -= 1
-		invuln_t = hit_invuln
-		Fx.float_text(global_position, "Parato da Anubi", Boons.god_color("anubi"))
-		Fx.burst(global_position + Vector2(0, -10), Boons.god_color("anubi"), 16, 90.0)
-		Fx.shake(3.0)
-		return true
 	amount *= Run.damage_taken_mult()
 	if divine_t > 0.0:
 		amount *= divine_armor
@@ -313,6 +304,9 @@ func take_damage(amount: float, from_pos: Vector2) -> bool:
 		Run.add_sekhem(amount * 0.5)
 		knock = (global_position - from_pos).normalized() * 230.0
 	hp -= amount
+	if Run.has("anubi_scale") and attacker != null and not attacker.dead:
+		attacker.take_hit(amount * Run.val("anubi_scale") / 100.0, (attacker.global_position - global_position).normalized(), 120.0)
+		Fx.burst(attacker.global_position + Vector2(0, -8), Boons.god_color("anubi"), 12, 80.0)
 	invuln_t = hit_invuln
 	flash_t = 0.15
 	Fx.shake(7.0)

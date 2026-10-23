@@ -25,6 +25,7 @@ var stagger_t := 0.0                   ## dopo un colpo il nemico barcolla: non 
 
 
 func _ready() -> void:
+	max_hp *= Run.enemy_hp_mult()
 	hp = max_hp
 	add_to_group("enemies")
 	t = randf() * 3.0
@@ -58,7 +59,7 @@ func _physics_process(delta: float) -> void:
 		for a in contact.get_overlapping_areas():
 			var o = a.get_parent()
 			if o.is_in_group("player"):
-				o.take_damage(_contact_damage(), global_position)
+				o.take_damage(_contact_damage(), global_position, self)
 	queue_redraw()
 
 
@@ -92,8 +93,7 @@ func _draw_body(_flash: bool) -> void:
 func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> void:
 	if dead:
 		return
-	if Run.has("anubi_jackal") and hp < max_hp * 0.5:
-		dmg *= 1.0 + Run.val("anubi_jackal") / 100.0
+	dmg *= Run.jackal_mult(hp / max_hp)
 	hp -= dmg
 	flash_t = 0.1
 	stagger_t = maxf(stagger_t, _stagger_time())
@@ -154,12 +154,12 @@ func _release_spirit() -> void:
 			best = e
 	if best == null:
 		return
-	var target: Enemy = best
+	var ref: WeakRef = weakref(best)            # il bersaglio potrebbe morire prima che arrivi lo spirito
 	var dmg := Run.val("anubi_guide")
-	var tree := get_tree()
 	Fx.burst(from + Vector2(0, -8), Boons.god_color("anubi"), 10, 60.0)
-	tree.create_timer(0.2).timeout.connect(func():
-		if is_instance_valid(target) and not target.dead:
+	get_tree().create_timer(0.2).timeout.connect(func():
+		var target = ref.get_ref()
+		if target != null and not target.dead:
 			Fx.burst(target.global_position + Vector2(0, -8), Boons.god_color("anubi"), 12, 80.0)
 			target.take_hit(dmg, (target.global_position - from).normalized(), 60.0))
 

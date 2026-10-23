@@ -6,6 +6,7 @@ var direction := Vector2.RIGHT
 var speed := 150.0
 var damage := 12.0
 var life := 4.0
+var shooter: Node = null              ## chi l'ha lanciata (per la Bilancia Giusta)
 
 
 func _ready() -> void:
@@ -30,7 +31,8 @@ func _physics_process(delta: float) -> void:
 
 func _on_area_entered(area: Area2D) -> void:
 	var p = area.get_parent()
-	if p.is_in_group("player") and p.take_damage(damage, global_position):
+	var src: Node = shooter if is_instance_valid(shooter) else null
+	if p.is_in_group("player") and p.take_damage(damage, global_position, src):
 		queue_free()
 
 

@@ -25,7 +25,7 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
 ## Come funziona una run
 
-1. All'inizio Anubi ti offre uno dei suoi doni.
+1. All'inizio Anubi pesa il tuo cuore: scegli uno dei suoi doni, ognuno con un vantaggio e un prezzo più piccolo.
 2. Ogni stanza ha due ondate di nemici.
 3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla.
 4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura.
@@ -48,7 +48,7 @@ Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finit
 | Ra (fuoco) | Colpo Solare, Disco di Ra, Corsa dell'Alba, Occhio Ardente · pesante: Ira del Sole |
 | Sekhmet (furia) | Furia della Leonessa, Sete di Sangue, Ruggito, Balzo della Leonessa · pesante: Sete Insaziabile |
 | Thoth (Occhio di Horus) | Sguardo di Thoth, Calcolo di Thoth, Occhio Moltiplicato, Parola dello Scriba · pesante: Conoscenza Proibita |
-| Anubi (solo a inizio run) | Bende dell'Imbalsamatore, Guida delle Anime, Bilancia Giusta, Fiuto dello Sciacallo |
+| Anubi (solo a inizio run, doni-bilancia con un piccolo prezzo) | Cuore Leggero, Cuore di Pietra, Fiuto dello Sciacallo, Bilancia Giusta, Guida delle Anime |
 
 Senza doni l'Occhio di Horus si ferma sul primo nemico che colpisce.
 

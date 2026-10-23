@@ -58,6 +58,7 @@ func _fire() -> void:
 	bolt.direction = aim_dir
 	bolt.speed = bolt_speed
 	bolt.damage = bolt_damage
+	bolt.shooter = self
 	get_parent().add_child(bolt)
 	bolt.global_position = global_position + Vector2(0, -10) + aim_dir * 10.0
 

@@ -48,9 +48,12 @@ func val(id: String) -> float:
 
 func add_boon(id: String) -> void:
 	boons[id] = level(id) + 1
-	if id == "anubi_embalm":
+	if id == "anubi_stone":
 		max_hp += val(id)
 		hp += val(id)
+	if id == "anubi_light":
+		max_hp -= 10.0
+		hp = minf(hp, max_hp)
 
 
 # --- patti di Set -----------------------------------------------------------------
@@ -149,15 +152,37 @@ func burn_tick_damage() -> float:
 
 
 func move_mult() -> float:
-	return 1.15 if has("set_swift") else 1.0
+	var m := 1.15 if has("set_swift") else 1.0
+	if has("anubi_light"):
+		m *= 1.15
+	if has("anubi_stone"):
+		m *= 0.92
+	return m
 
 
 func dash_cooldown_mult() -> float:
-	return 2.0 if cursed("slow_dash") else 1.0
+	var m := 2.0 if cursed("slow_dash") else 1.0
+	if has("anubi_light"):
+		m *= 1.0 - val("anubi_light") / 100.0
+	return m
 
 
 func damage_taken_mult() -> float:
-	return 1.5 if cursed("fragile") else 1.0
+	var m := 1.5 if cursed("fragile") else 1.0
+	if has("anubi_scale"):
+		m *= 1.1
+	return m
+
+
+func enemy_hp_mult() -> float:
+	return 1.05 if has("anubi_guide") else 1.0
+
+
+## Fiuto dello Sciacallo: più danni ai nemici feriti, meno a quelli in salute.
+func jackal_mult(hp_ratio: float) -> float:
+	if not has("anubi_jackal"):
+		return 1.0
+	return 1.0 + val("anubi_jackal") / 100.0 if hp_ratio < 0.5 else 0.9
 
 
 func enemy_speed_mult() -> float:
