@@ -48,6 +48,9 @@ func val(id: String) -> float:
 
 func add_boon(id: String) -> void:
 	boons[id] = level(id) + 1
+	if id == "anubi_embalm":
+		max_hp += val(id)
+		hp += val(id)
 
 
 # --- patti di Set -----------------------------------------------------------------
@@ -104,7 +107,7 @@ func all_damage_mult() -> float:
 func khopesh_mult() -> float:
 	var m := 1.0 + val("sekhmet_fury") / 100.0
 	if has("sekhmet_heavy"):
-		m *= 1.8
+		m *= 1.6
 	if has("thoth_heavy"):
 		m *= 0.65
 	return m * all_damage_mult()
@@ -119,7 +122,7 @@ func eye_cooldown_mult() -> float:
 	if has("ra_heavy"):
 		m *= 1.5
 	if has("thoth_heavy"):
-		m *= 0.33
+		m *= 0.45
 	return m
 
 
@@ -142,7 +145,7 @@ func eye_burns() -> bool:
 
 func burn_tick_damage() -> float:
 	var b := val("ra_burn") if has("ra_burn") else 5.0
-	return b * (2.0 if has("ra_heavy") else 1.0)
+	return b * (1.6 if has("ra_heavy") else 1.0)
 
 
 func move_mult() -> float:

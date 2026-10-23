@@ -44,6 +44,11 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 	return Vector2.ZERO
 
 
+## Durante l'affondo non barcolla: o lo schivi, o lo subisci.
+func _stagger_time() -> float:
+	return 0.0 if state == "lunge" else 0.35
+
+
 func _contact_damage() -> float:
 	return contact_damage * (1.5 if state == "lunge" else 1.0)
 

@@ -40,9 +40,9 @@ const EyeScript := preload("res://scripts/eye.gd")
 ## Le tre mosse della combo: portata, ampiezza in gradi, moltiplicatore danno,
 ## pausa prima del colpo successivo, piccolo slancio in avanti, spinta sul nemico.
 const COMBO := [
-	{"range": 28.0, "arc": 110.0, "mult": 1.0, "cd": 0.22, "lunge": 50.0, "knock": 90.0},
-	{"range": 28.0, "arc": 110.0, "mult": 1.0, "cd": 0.22, "lunge": 50.0, "knock": 90.0},
-	{"range": 36.0, "arc": 170.0, "mult": 1.8, "cd": 0.42, "lunge": 100.0, "knock": 230.0},
+	{"range": 34.0, "arc": 110.0, "mult": 1.0, "cd": 0.22, "lunge": 20.0, "knock": 110.0},
+	{"range": 34.0, "arc": 110.0, "mult": 1.0, "cd": 0.22, "lunge": 20.0, "knock": 110.0},
+	{"range": 44.0, "arc": 170.0, "mult": 1.8, "cd": 0.42, "lunge": 45.0, "knock": 240.0},
 ]
 
 var hp := 0.0
@@ -70,6 +70,7 @@ var swing_index := 0
 var eye_cd := 0.0
 var divine_t := 0.0
 var drain_t := 3.0                     # Sete Insaziabile
+var blocks_left := 0                   # Bilancia Giusta: colpi parati in questa stanza
 var knock := Vector2.ZERO
 var walk := 0.0
 
@@ -80,6 +81,7 @@ func _ready() -> void:
 	max_hp = Run.max_hp
 	hp = Run.hp
 	Run.divine = false
+	blocks_left = int(Run.val("anubi_scale"))
 	add_to_group("player")
 	Fx.camera = camera
 
@@ -297,11 +299,18 @@ func _heavy_drain(delta: float) -> void:
 func take_damage(amount: float, from_pos: Vector2) -> bool:
 	if dead or invuln_t > 0.0 or dash_t > 0.0:
 		return false
+	if blocks_left > 0:
+		blocks_left -= 1
+		invuln_t = hit_invuln
+		Fx.float_text(global_position, "Parato da Anubi", Boons.god_color("anubi"))
+		Fx.burst(global_position + Vector2(0, -10), Boons.god_color("anubi"), 16, 90.0)
+		Fx.shake(3.0)
+		return true
 	amount *= Run.damage_taken_mult()
 	if divine_t > 0.0:
 		amount *= divine_armor
 	else:
-		Run.add_sekhem(amount * 1.2)
+		Run.add_sekhem(amount * 0.5)
 		knock = (global_position - from_pos).normalized() * 230.0
 	hp -= amount
 	invuln_t = hit_invuln

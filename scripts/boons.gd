@@ -11,6 +11,7 @@ const GODS := {
 	"sekhmet": {"name": "Sekhmet", "color": Color(0.94, 0.37, 0.24)},
 	"thoth": {"name": "Thoth", "color": Color(0.31, 0.76, 0.78)},
 	"set": {"name": "Set", "color": Color(0.78, 0.25, 0.2)},
+	"anubi": {"name": "Anubi", "color": Color(0.62, 0.56, 0.92)},
 }
 
 ## `values` = il numero del dono ai livelli 1, 2 e 3 (entra nel %d della descrizione).
@@ -28,9 +29,13 @@ const ALL := {
 	"thoth_calc": {"god": "thoth", "name": "Calcolo di Thoth", "desc": "L'Occhio di Horus si ricarica il %d%% più in fretta.", "values": [40, 50, 60]},
 	"thoth_tri": {"god": "thoth", "name": "Occhio Moltiplicato", "desc": "L'Occhio di Horus scaglia %d raggi a ventaglio.", "values": [3, 5, 7]},
 	"thoth_scribe": {"god": "thoth", "name": "Parola dello Scriba", "desc": "+%d%% ai danni dell'Occhio di Horus.", "values": [60, 90, 120]},
-	"ra_heavy": {"god": "ra", "heavy": true, "name": "Ira del Sole", "desc": "Tutti i tuoi colpi incendiano, e le fiamme fanno il doppio dei danni.", "cost": "L'Occhio di Horus si ricarica il 50% più lentamente."},
-	"sekhmet_heavy": {"god": "sekhmet", "heavy": true, "name": "Sete Insaziabile", "desc": "+80% ai danni del khopesh.", "cost": "Finché ci sono nemici nella stanza perdi 1 punto vita ogni 3 secondi."},
-	"thoth_heavy": {"god": "thoth", "heavy": true, "name": "Conoscenza Proibita", "desc": "L'Occhio di Horus si ricarica tre volte più in fretta.", "cost": "Il khopesh fa il 35% di danni in meno."},
+	"anubi_embalm": {"god": "anubi", "name": "Bende dell'Imbalsamatore", "desc": "+%d vita massima.", "values": [15, 25, 35]},
+	"anubi_guide": {"god": "anubi", "name": "Guida delle Anime", "desc": "Ogni nemico abbattuto libera uno spirito che colpisce il nemico più vicino: %d danni.", "values": [10, 15, 20]},
+	"anubi_scale": {"god": "anubi", "name": "Bilancia Giusta", "desc": "In ogni stanza Anubi para i primi %d colpi che subisci.", "values": [1, 2, 3]},
+	"anubi_jackal": {"god": "anubi", "name": "Fiuto dello Sciacallo", "desc": "+%d%% di danni ai nemici sotto metà vita.", "values": [25, 40, 55]},
+	"ra_heavy": {"god": "ra", "heavy": true, "name": "Ira del Sole", "desc": "Tutti i tuoi colpi incendiano, e le fiamme fanno il 60% di danni in più.", "cost": "L'Occhio di Horus si ricarica il 50% più lentamente."},
+	"sekhmet_heavy": {"god": "sekhmet", "heavy": true, "name": "Sete Insaziabile", "desc": "+60% ai danni del khopesh.", "cost": "Finché ci sono nemici nella stanza perdi 1 punto vita ogni 3 secondi."},
+	"thoth_heavy": {"god": "thoth", "heavy": true, "name": "Conoscenza Proibita", "desc": "L'Occhio di Horus si ricarica più del doppio più in fretta.", "cost": "Il khopesh fa il 35% di danni in meno."},
 }
 
 ## Maledizioni di Set: durano un certo numero di ondate.
@@ -103,7 +108,7 @@ static func offers(god: String, owned: Dictionary) -> Array:
 static func gods_with_boons(owned: Dictionary) -> Array:
 	var out := []
 	for g in GODS:
-		if g != "set" and not offers(g, owned).is_empty():
+		if g != "set" and g != "anubi" and not offers(g, owned).is_empty():
 			out.append(g)
 	return out
 

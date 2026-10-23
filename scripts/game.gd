@@ -58,6 +58,7 @@ func _ready() -> void:
 	add_child(listener)
 	var first := Boons.gods_with_boons(Run.boons)
 	start_room({"kind": "boon", "god": first.pick_random()})
+	_show_anubi_menu()
 
 
 # ---------------------------------------------------------------- stanze
@@ -331,6 +332,29 @@ func _show_boon_menu(god: String) -> void:
 	_open_choice("%s ti offre un dono" % Boons.god_name(from_god), Boons.god_color(from_god), "", cards)
 
 
+## All'inizio di ogni run Anubi offre uno dei suoi doni.
+func _show_anubi_menu() -> void:
+	var cards := []
+	for id in Boons.offers("anubi", Run.boons):
+		cards.append({
+			"text": "%s\n\n%s" % [Boons.ALL[id]["name"], _wrap(Boons.text(id, 1), 32)],
+			"color": Boons.god_color("anubi"),
+			"heavy": false,
+			"on_pick": _choose_start_boon.bind(id),
+		})
+	_open_choice("Anubi ti accompagna", Boons.god_color("anubi"), "Scegli il dono con cui inizi la discesa", cards)
+
+
+func _choose_start_boon(id: String) -> void:
+	Run.add_boon(id)
+	_close_choice()
+	player.max_hp = Run.max_hp
+	player.hp = Run.hp
+	player.blocks_left = int(Run.val("anubi_scale"))
+	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color("anubi"), 30, 140.0)
+	_banner("Dono di Anubi", Boons.ALL[id]["name"], Boons.god_color("anubi"))
+
+
 func _choose_boon(id: String) -> void:
 	Run.add_boon(id)
 	_close_choice()
@@ -472,7 +496,7 @@ func _process(_delta: float) -> void:
 	var eye_txt := "pronto" if player.eye_cd <= 0.0 else "%.1fs" % player.eye_cd
 	if Run.cursed("no_eye"):
 		eye_txt = "bloccato da Set"
-	var sek := "PRONTO (Q / RB)" if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
+	var sek := "PRONTO (Q / LT)" if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
 	if player.divine_t > 0.0:
 		sek = "FORMA DIVINA %.1fs" % player.divine_t
 	hud.text = "Vita %d/%d    Ka %d    Stanza %d/%d    Occhio: %s    Sekhem: %s" % [ceili(player.hp), int(player.max_hp), Run.ka, Run.room, Run.ROOMS_PER_RUN, eye_txt, sek]
@@ -496,7 +520,7 @@ func _process(_delta: float) -> void:
 	reticle.visible = mouse and not player.dead and menu == null and panel == null
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN if (mouse and menu == null and panel == null) else Input.MOUSE_MODE_VISIBLE
 	if Fx.device == "pad":
-		help.text = "Levetta sinistra muovi · destra mira · X khopesh · A scatto · Y Occhio · RB Forma Divina · Select doni"
+		help.text = "Levetta sinistra muovi · destra mira · RB khopesh · RT Occhio · LB/A scatto · LT Forma Divina · Select doni"
 	else:
 		help.text = "WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina · Tab doni · F1 hitbox"
 

@@ -15,20 +15,21 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 | --- | --- | --- |
 | Muoverti | WASD o frecce | Levetta sinistra |
 | Mirare | Mouse | Levetta destra |
-| Khopesh (tieni premuto per la combo) | Clic sinistro o J | X |
-| Scatto (invulnerabile) | Spazio, Shift o K | A |
-| Occhio di Horus | Clic destro o L | Y |
-| Forma Divina (quando il Sekhem è pieno) | Q | RB |
+| Khopesh (tieni premuto per la combo) | Clic sinistro o J | RB (o X) |
+| Scatto (invulnerabile) | Spazio, Shift o K | LB o A |
+| Occhio di Horus | Clic destro o L | RT (o Y) |
+| Forma Divina (quando il Sekhem è pieno) | Q | LT |
 | Vedi i tuoi doni (mette in pausa) | Tab | Select |
 | Mostra/nascondi hitbox | F1 | |
 | Ricomincia (dopo morte o vittoria) | R | Start |
 
 ## Come funziona una run
 
-1. Ogni stanza ha due ondate di nemici.
-2. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla.
-3. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura.
-4. Dopo la terza stanza si apre l'uscita.
+1. All'inizio Anubi ti offre uno dei suoi doni.
+2. Ogni stanza ha due ondate di nemici.
+3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla.
+4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura.
+5. Dopo la terza stanza si apre l'uscita.
 
 ## Nemici
 
@@ -47,8 +48,11 @@ Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finit
 | Ra (fuoco) | Colpo Solare, Disco di Ra, Corsa dell'Alba, Occhio Ardente · pesante: Ira del Sole |
 | Sekhmet (furia) | Furia della Leonessa, Sete di Sangue, Ruggito, Balzo della Leonessa · pesante: Sete Insaziabile |
 | Thoth (Occhio di Horus) | Sguardo di Thoth, Calcolo di Thoth, Occhio Moltiplicato, Parola dello Scriba · pesante: Conoscenza Proibita |
+| Anubi (solo a inizio run) | Bende dell'Imbalsamatore, Guida delle Anime, Bilancia Giusta, Fiuto dello Sciacallo |
 
 Senza doni l'Occhio di Horus si ferma sul primo nemico che colpisce.
+
+I nemici colpiti barcollano per un terzo di secondo: non si muovono e non fanno danno da contatto. Le mummie durante l'affondo non barcollano.
 
 ## Patti di Set
 
@@ -56,7 +60,7 @@ A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza
 
 ## Sekhem e Forma Divina
 
-Il Sekhem si carica facendo e subendo danni, più o meno una volta per stanza. Quando è pieno attivi la **Forma Divina** per 6 secondi: onda d'urto iniziale, +50% ai danni del khopesh e solo il 30% dei danni subiti.
+Il Sekhem si carica facendo e subendo danni, più o meno ogni due stanze. Quando è pieno attivi la **Forma Divina** per 6 secondi: onda d'urto iniziale, +50% ai danni del khopesh e solo il 30% dei danni subiti.
 
 ## Regolare la sensazione di gioco
 

@@ -19,17 +19,20 @@ func _ready() -> void:
 
 	_keys("attack", [KEY_J])
 	_mouse("attack", MOUSE_BUTTON_LEFT)
+	_button("attack", JOY_BUTTON_RIGHT_SHOULDER)
 	_button("attack", JOY_BUTTON_X)
 
 	_keys("dash", [KEY_SPACE, KEY_SHIFT, KEY_K])
 	_button("dash", JOY_BUTTON_A)
+	_button("dash", JOY_BUTTON_LEFT_SHOULDER)
 
 	_keys("special", [KEY_L])
 	_mouse("special", MOUSE_BUTTON_RIGHT)
+	_axis("special", JOY_AXIS_TRIGGER_RIGHT, 1.0)
 	_button("special", JOY_BUTTON_Y)
 
 	_keys("super", [KEY_Q])
-	_button("super", JOY_BUTTON_RIGHT_SHOULDER)
+	_axis("super", JOY_AXIS_TRIGGER_LEFT, 1.0)
 
 	_keys("boons_menu", [KEY_TAB])
 	_button("boons_menu", JOY_BUTTON_BACK)
