@@ -4,7 +4,7 @@ extends Area2D
 signal chosen(door: Area2D)
 
 var side := "n"                       # n | w | e
-var reward := {}                      # {"kind": "boon"/"ka"/"heal"/"end", "god": "..."}
+var reward := {}                      # {"kind": "boon"/"set"/"ka"/"heal"/"end", "god": "..."}
 var open := false
 var t := 0.0
 var _used := false
@@ -36,6 +36,8 @@ func reward_color() -> Color:
 	match reward.get("kind", ""):
 		"boon":
 			return Boons.god_color(reward["god"])
+		"set":
+			return Boons.god_color("set")
 		"ka":
 			return Color(0.94, 0.72, 0.3)
 		"heal":
@@ -48,6 +50,8 @@ func reward_label() -> String:
 	match reward.get("kind", ""):
 		"boon":
 			return Boons.god_name(reward["god"])
+		"set":
+			return "Set"
 		"ka":
 			return "Ka"
 		"heal":
@@ -61,6 +65,8 @@ func reward_description() -> String:
 	match reward.get("kind", ""):
 		"boon":
 			return "Dono di %s: scegli uno dei suoi poteri" % Boons.god_name(reward["god"])
+		"set":
+			return "Patto di Set: entrare costa 10 vita. Una maledizione per qualche ondata, poi un potere per tutta la run"
 		"ka":
 			return "Tesoro di Ka: +25 Ka"
 		"heal":

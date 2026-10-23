@@ -2,7 +2,7 @@
 
 Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
-**Stato:** fase 2, una run di prova di 3 stanze con nemici diversi, ricompense e doni degli dèi. La grafica è provvisoria (forme semplici) di proposito: prima si rende divertente il gioco, poi arrivano gli sprite.
+**Stato:** fase 2, una run di prova di 3 stanze con nemici diversi, ricompense, doni degli dèi, patti di Set e Forma Divina. La grafica è provvisoria (forme semplici) di proposito: prima si rende divertente il gioco, poi arrivano gli sprite.
 
 ## Come provarlo
 
@@ -18,6 +18,8 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 | Khopesh (tieni premuto per la combo) | Clic sinistro o J | X |
 | Scatto (invulnerabile) | Spazio, Shift o K | A |
 | Occhio di Horus | Clic destro o L | Y |
+| Forma Divina (quando il Sekhem è pieno) | Q | RB |
+| Vedi i tuoi doni (mette in pausa) | Tab | Select |
 | Mostra/nascondi hitbox | F1 | |
 | Ricomincia (dopo morte o vittoria) | R | Start |
 
@@ -38,16 +40,23 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
 ## Doni
 
-| Dio | Dono | Effetto |
-| --- | --- | --- |
-| Ra | Colpo Solare | Il khopesh incendia i nemici per 2 secondi |
-| Ra | Disco di Ra | L'Occhio di Horus esplode quando colpisce |
-| Sekhmet | Furia della Leonessa | +35% ai danni del khopesh |
-| Sekhmet | Sete di Sangue | Ogni nemico abbattuto ti cura di 3 |
-| Thoth | Sguardo di Thoth | L'Occhio di Horus trapassa fino a 2 nemici |
-| Thoth | Calcolo di Thoth | L'Occhio di Horus si ricarica il 40% più in fretta |
+Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finito i doni nuovi, ti propone di potenziare quelli che hai. In circa una scelta su tre compare il **dono pesante** del dio: più forte, ma con un prezzo (`HEAVY_CHANCE` in `scripts/boons.gd`).
+
+| Dio | Doni |
+| --- | --- |
+| Ra (fuoco) | Colpo Solare, Disco di Ra, Corsa dell'Alba, Occhio Ardente · pesante: Ira del Sole |
+| Sekhmet (furia) | Furia della Leonessa, Sete di Sangue, Ruggito, Balzo della Leonessa · pesante: Sete Insaziabile |
+| Thoth (Occhio di Horus) | Sguardo di Thoth, Calcolo di Thoth, Occhio Moltiplicato, Parola dello Scriba · pesante: Conoscenza Proibita |
 
 Senza doni l'Occhio di Horus si ferma sul primo nemico che colpisce.
+
+## Patti di Set
+
+A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza scegli un patto: una **maledizione** che dura 2 ondate (nemici più veloci, più danni subiti, niente Occhio, scatto più lento) e poi una **benedizione** permanente per tutta la run.
+
+## Sekhem e Forma Divina
+
+Il Sekhem si carica facendo e subendo danni, più o meno una volta per stanza. Quando è pieno attivi la **Forma Divina** per 6 secondi: onda d'urto iniziale, +50% ai danni del khopesh e solo il 30% dei danni subiti.
 
 ## Regolare la sensazione di gioco
 

@@ -7,7 +7,8 @@ var damage := 24.0
 var speed := 320.0
 var life := 1.2
 var pierce_left := 0                  ## nemici in più che può attraversare
-var explodes := false
+var explode_damage := 0.0             ## Disco di Ra: danni dell'esplosione (0 = niente)
+var burns := false
 var _hit := {}
 var _done := false
 
@@ -38,7 +39,7 @@ func _on_body_entered(body: Node) -> void:
 		if _hit.has(body) or body.dead:
 			return
 		_hit[body] = true
-		body.take_hit(damage, direction, 60.0)
+		body.take_hit(damage, direction, 60.0, burns)
 		Fx.shake(2.0)
 		if pierce_left > 0:
 			pierce_left -= 1
@@ -52,19 +53,19 @@ func _finish() -> void:
 	if _done:
 		return
 	_done = true
-	if explodes:
+	if explode_damage > 0.0:
 		Fx.burst(global_position, Color(1, 0.6, 0.15), 24, 150.0)
 		Fx.shake(4.0)
 		for e in get_tree().get_nodes_in_group("enemies"):
 			if not e.dead and not _hit.has(e) and e.global_position.distance_to(global_position) < 34.0:
-				e.take_hit(14.0, (e.global_position - global_position).normalized(), 90.0)
+				e.take_hit(explode_damage, (e.global_position - global_position).normalized(), 90.0)
 	else:
 		Fx.burst(global_position, Color(0.5, 0.95, 0.88), 8, 80.0)
 	queue_free()
 
 
 func _draw() -> void:
-	var core := Color(1, 0.75, 0.3) if explodes else Color(0.5, 0.95, 0.88)
+	var core := Color(1, 0.75, 0.3) if (explode_damage > 0.0 or burns) else Color(0.5, 0.95, 0.88)
 	draw_circle(Vector2.ZERO, 6.0, Color(core, 0.35))
 	draw_circle(Vector2.ZERO, 3.5, core)
 	draw_circle(Vector2.ZERO, 1.5, Color(1, 1, 1))

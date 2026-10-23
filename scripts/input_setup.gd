@@ -28,6 +28,12 @@ func _ready() -> void:
 	_mouse("special", MOUSE_BUTTON_RIGHT)
 	_button("special", JOY_BUTTON_Y)
 
+	_keys("super", [KEY_Q])
+	_button("super", JOY_BUTTON_RIGHT_SHOULDER)
+
+	_keys("boons_menu", [KEY_TAB])
+	_button("boons_menu", JOY_BUTTON_BACK)
+
 	_keys("debug_hitbox", [KEY_F1])
 	_keys("restart", [KEY_R])
 	_button("restart", JOY_BUTTON_START)

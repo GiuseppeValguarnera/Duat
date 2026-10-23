@@ -3,7 +3,7 @@ extends Area2D
 
 signal collected(pickup: Area2D)
 
-var kind := "boon"                    # boon | ka | heal
+var kind := "boon"                    # boon | set | ka | heal
 var god := ""
 var t := 0.0
 var _taken := false
@@ -36,6 +36,8 @@ func color() -> Color:
 	match kind:
 		"boon":
 			return Boons.god_color(god)
+		"set":
+			return Boons.god_color("set")
 		"ka":
 			return Color(0.94, 0.72, 0.3)
 		_:
@@ -46,6 +48,8 @@ func label() -> String:
 	match kind:
 		"boon":
 			return Boons.god_name(god)
+		"set":
+			return "Patto di Set"
 		"ka":
 			return "Ka"
 		_:

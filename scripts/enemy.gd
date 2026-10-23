@@ -45,7 +45,7 @@ func _physics_process(delta: float) -> void:
 	if player != null and not player.dead:
 		to = player.global_position - global_position
 
-	velocity = _behave(delta, to) + knock
+	velocity = _behave(delta, to) * Run.enemy_speed_mult() + knock
 	knock = knock.move_toward(Vector2.ZERO, 800.0 * delta)
 	move_and_slide()
 
@@ -88,6 +88,7 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 	if can_burn:
 		burn_t = 2.0
 	_on_hit(dmg)
+	Run.add_sekhem(dmg * 0.3)
 	Fx.damage_number(global_position, dmg)
 	Fx.burst(global_position + Vector2(0, -radius), Color(1, 0.9, 0.6), 5, 70.0)
 	if hp <= 0.0:
@@ -101,8 +102,9 @@ func _update_burn(delta: float) -> void:
 	burn_tick -= delta
 	if burn_tick <= 0.0:
 		burn_tick = 0.5
-		hp -= 5.0
-		Fx.damage_number(global_position, 5.0, Color(1, 0.6, 0.2))
+		var b := Run.burn_tick_damage()
+		hp -= b
+		Fx.damage_number(global_position, b, Color(1, 0.6, 0.2))
 		if hp <= 0.0:
 			die()
 
@@ -111,12 +113,13 @@ func die() -> void:
 	if dead:
 		return
 	dead = true
-	Run.ka += ka_value
-	Fx.float_text(global_position + Vector2(0, -12), "+%d Ka" % ka_value, Color(0.94, 0.72, 0.3))
+	var ka := roundi(ka_value * Run.ka_mult())
+	Run.ka += ka
+	Fx.float_text(global_position + Vector2(0, -12), "+%d Ka" % ka, Color(0.94, 0.72, 0.3))
 	if Run.has("sekhmet_blood"):
 		var player = get_tree().get_first_node_in_group("player")
 		if player != null and not player.dead:
-			player.heal(3.0)
+			player.heal(Run.val("sekhmet_blood"))
 	Fx.burst(global_position + Vector2(0, -radius), Color(0.94, 0.72, 0.3), 18, 130.0)
 	killed.emit(self)
 	queue_free()

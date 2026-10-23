@@ -13,6 +13,8 @@ const ENEMIES := {
 }
 const PickupScript := preload("res://scripts/pickup.gd")
 const DoorScript := preload("res://scripts/door.gd")
+const SET_DOOR_CHANCE := 0.4          ## probabilità che compaia una porta di Set
+const SET_DOOR_COST := 10.0           ## vita da pagare per entrare
 
 ## Disposizioni delle colonne, in frazioni dell'area calpestabile.
 const LAYOUTS := [
@@ -32,7 +34,8 @@ var cleared := false
 var current_reward := {}
 var doors: Array = []
 var finished := false
-var menu: CanvasLayer
+var menu: CanvasLayer                 # scelta dei doni
+var panel: CanvasLayer                # menu dei doni (Tab)
 
 @onready var world: Node2D = $World
 @onready var hud: Label = $UI/Hud
@@ -40,6 +43,7 @@ var menu: CanvasLayer
 @onready var prompt: Label = $UI/Prompt
 @onready var message: Label = $UI/Message
 @onready var reticle: Node2D = $UI/Reticle
+@onready var banner: Label = $UI/Banner
 
 
 func _ready() -> void:
@@ -48,6 +52,10 @@ func _ready() -> void:
 	Fx.world = world
 	Fx.set_hitboxes(Fx.show_hitboxes)
 	Run.new_run()
+	Run.blessing_granted.connect(_on_blessing_granted)
+	var listener := PanelListener.new()
+	listener.game = self
+	add_child(listener)
 	var first := Boons.gods_with_boons(Run.boons)
 	start_room({"kind": "boon", "god": first.pick_random()})
 
@@ -133,10 +141,20 @@ func _on_enemy_killed(_e: Enemy) -> void:
 	alive -= 1
 	if alive > 0 or spawning > 0:
 		return
+	Run.wave_cleared()
 	if not waves.is_empty():
 		_spawn_wave(waves.pop_front(), 0.8)
 	else:
 		_room_cleared.call_deferred()
+
+
+func _on_blessing_granted(id: String) -> void:
+	var b: Dictionary = Boons.SET_BLESSINGS[id]
+	_banner("Set mantiene la promessa", "%s: %s" % [b["name"], b["desc"]], Boons.god_color("set"))
+	if player != null and is_instance_valid(player):
+		player.max_hp = Run.max_hp
+		player.hp = Run.hp
+		Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color("set"), 30, 140.0)
 
 
 func _room_cleared() -> void:
@@ -166,6 +184,8 @@ func _on_pickup_collected(p: Area2D) -> void:
 			_open_doors.call_deferred()
 		"boon":
 			_show_boon_menu.call_deferred(god)
+		"set":
+			_show_set_menu.call_deferred()
 
 
 func _open_doors() -> void:
@@ -181,6 +201,9 @@ func _open_doors() -> void:
 	pool.append({"kind": "ka"})
 	pool.append({"kind": "heal"})
 	pool.shuffle()
+	# a volte Set apre una sua porta: prende il posto di una delle altre
+	if randf() < SET_DOOR_CHANCE and not Boons.set_offers(Run.blessings).is_empty():
+		pool.insert(0, {"kind": "set"})
 	for i in range(sides.size()):
 		_add_door(sides[i], pool[i % pool.size()])
 
@@ -203,29 +226,20 @@ func _add_door(side: String, reward: Dictionary) -> void:
 
 
 func _on_door_chosen(d: Area2D) -> void:
-	if d.reward["kind"] == "end":
+	var kind: String = d.reward["kind"]
+	if kind == "end":
 		_victory.call_deferred()
-	else:
-		start_room.call_deferred(d.reward)
-
-
-# ---------------------------------------------------------------- scelta del dono
-
-func _show_boon_menu(god: String) -> void:
-	var options := Boons.available(god, Run.boons)
-	options.shuffle()
-	if options.size() < 3:
-		var others := []
-		for g in Boons.gods_with_boons(Run.boons):
-			if g != god:
-				others.append_array(Boons.available(g, Run.boons))
-		others.shuffle()
-		options.append_array(others.slice(0, 3 - options.size()))
-	if options.is_empty():
-		player.heal(30.0)
-		_open_doors()
 		return
+	if kind == "set":
+		# il tributo di Set: 10 punti vita, ma non può ucciderti
+		Run.hp = maxf(1.0, Run.hp - SET_DOOR_COST)
+	start_room.call_deferred(d.reward)
 
+
+# ---------------------------------------------------------------- scelta dei doni
+
+## Finestra con titolo e 1-3 carte. `cards` = [{"text", "color", "heavy", "on_pick"}].
+func _open_choice(title_text: String, title_color: Color, subtitle: String, cards: Array) -> void:
 	get_tree().paused = true
 	menu = CanvasLayer.new()
 	menu.layer = 20
@@ -233,22 +247,30 @@ func _show_boon_menu(god: String) -> void:
 	add_child(menu)
 
 	var dim := ColorRect.new()
-	dim.color = Color(0.02, 0.03, 0.08, 0.8)
+	dim.color = Color(0.02, 0.03, 0.08, 0.82)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	menu.add_child(dim)
 
 	var box := VBoxContainer.new()
 	box.set_anchors_preset(Control.PRESET_FULL_RECT)
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 12)
+	box.add_theme_constant_override("separation", 8)
 	menu.add_child(box)
 
 	var title := Label.new()
-	title.text = "%s ti offre un dono" % Boons.god_name(god)
+	title.text = title_text
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 16)
-	title.add_theme_color_override("font_color", Boons.god_color(god))
+	title.add_theme_color_override("font_color", title_color)
 	box.add_child(title)
+
+	if subtitle != "":
+		var sub := Label.new()
+		sub.text = subtitle
+		sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		sub.add_theme_font_size_override("font_size", 9)
+		sub.add_theme_color_override("font_color", Color(0.85, 0.78, 0.62))
+		box.add_child(sub)
 
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -256,28 +278,90 @@ func _show_boon_menu(god: String) -> void:
 	box.add_child(row)
 
 	var first_button: Button = null
-	for id in options:
-		var b: Dictionary = Boons.ALL[id]
+	for c in cards:
 		var btn := Button.new()
-		btn.custom_minimum_size = Vector2(180, 96)
-		btn.text = "%s\n%s\n\n%s" % [Boons.god_name(b["god"]).to_upper(), b["name"], _wrap(b["desc"], 30)]
+		btn.custom_minimum_size = Vector2(190, 120)
+		btn.text = c["text"]
 		btn.add_theme_font_size_override("font_size", 9)
-		btn.add_theme_color_override("font_color", Color(0.95, 0.9, 0.78))
-		btn.add_theme_color_override("font_hover_color", Boons.god_color(b["god"]))
-		btn.add_theme_color_override("font_focus_color", Boons.god_color(b["god"]))
-		btn.pressed.connect(_choose_boon.bind(id))
+		var base := Color(1, 0.62, 0.55) if c.get("heavy", false) else Color(0.95, 0.9, 0.78)
+		btn.add_theme_color_override("font_color", base)
+		btn.add_theme_color_override("font_hover_color", c["color"])
+		btn.add_theme_color_override("font_focus_color", c["color"])
+		btn.pressed.connect(c["on_pick"])
 		row.add_child(btn)
 		if first_button == null:
 			first_button = btn
 	first_button.grab_focus()
 
 
+func _close_choice() -> void:
+	if menu != null:
+		menu.queue_free()
+		menu = null
+	get_tree().paused = false
+
+
+func _show_boon_menu(god: String) -> void:
+	var options := Boons.offers(god, Run.boons)
+	var from_god := god
+	if options.is_empty():
+		var others := Boons.gods_with_boons(Run.boons)
+		if others.is_empty():
+			player.heal(30.0)
+			_open_doors()
+			return
+		from_god = others.pick_random()
+		options = Boons.offers(from_god, Run.boons)
+
+	var cards := []
+	for id in options:
+		var lvl := Run.level(id) + 1
+		var name_line: String = Boons.ALL[id]["name"]
+		var tag := "NUOVO" if lvl == 1 else "LIVELLO %d" % lvl
+		var body := _wrap(Boons.text(id, lvl), 32)
+		if Boons.is_heavy(id):
+			tag = "DONO PESANTE"
+			body += "\n\nPrezzo: " + _wrap(Boons.ALL[id]["cost"], 32)
+		cards.append({
+			"text": "%s\n%s\n\n%s" % [tag, name_line, body],
+			"color": Boons.god_color(from_god),
+			"heavy": Boons.is_heavy(id),
+			"on_pick": _choose_boon.bind(id),
+		})
+	_open_choice("%s ti offre un dono" % Boons.god_name(from_god), Boons.god_color(from_god), "", cards)
+
+
 func _choose_boon(id: String) -> void:
 	Run.add_boon(id)
-	menu.queue_free()
-	menu = null
-	get_tree().paused = false
+	_close_choice()
 	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color(Boons.ALL[id]["god"]), 30, 140.0)
+	_open_doors()
+
+
+func _show_set_menu() -> void:
+	var cards := []
+	for o in Boons.set_offers(Run.blessings):
+		var curse: Dictionary = Boons.SET_CURSES[o["curse"]]
+		var bless: Dictionary = Boons.SET_BLESSINGS[o["blessing"]]
+		cards.append({
+			"text": "%s\n\nPER %d ONDATE\n%s\n\nPOI, PER TUTTA LA RUN\n%s" % [bless["name"], curse["waves"], _wrap(curse["desc"], 32), _wrap(bless["desc"], 32)],
+			"color": Boons.god_color("set"),
+			"heavy": true,
+			"on_pick": _choose_pact.bind(o["curse"], o["blessing"]),
+		})
+	if cards.is_empty():
+		Run.ka += 25
+		_open_doors()
+		return
+	_open_choice("Set ti propone un patto", Boons.god_color("set"), "Prima la maledizione, poi la ricompensa", cards)
+
+
+func _choose_pact(curse: String, blessing: String) -> void:
+	Run.add_pact(curse, blessing)
+	Run.ka += 25
+	_close_choice()
+	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color("set"), 30, 140.0)
+	_banner("Maledizione di Set", Boons.SET_CURSES[curse]["desc"], Boons.god_color("set"))
 	_open_doors()
 
 
@@ -291,6 +375,69 @@ func _wrap(text: String, width: int) -> String:
 		else:
 			line = word if line == "" else line + " " + word
 	return out + line
+
+
+func _banner(title: String, sub: String, color: Color) -> void:
+	banner.text = "%s\n%s" % [title, sub]
+	banner.add_theme_color_override("font_color", color)
+	banner.visible = true
+	banner.modulate.a = 1.0
+	var tw := banner.create_tween()
+	tw.tween_interval(2.0)
+	tw.tween_property(banner, "modulate:a", 0.0, 0.6)
+
+
+# ---------------------------------------------------------------- menu dei doni (Tab)
+
+func _toggle_boons_panel() -> void:
+	if menu != null or finished:
+		return
+	if panel != null:
+		panel.queue_free()
+		panel = null
+		get_tree().paused = false
+		return
+	get_tree().paused = true
+	panel = CanvasLayer.new()
+	panel.layer = 20
+	panel.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(panel)
+	var dim := ColorRect.new()
+	dim.color = Color(0.02, 0.03, 0.08, 0.88)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	panel.add_child(dim)
+	var label := RichTextLabel.new()
+	label.bbcode_enabled = true
+	label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	label.offset_left = 40
+	label.offset_top = 24
+	label.offset_right = -40
+	label.offset_bottom = -24
+	label.add_theme_font_size_override("normal_font_size", 9)
+	label.add_theme_font_size_override("bold_font_size", 10)
+	panel.add_child(label)
+	label.text = _boons_text()
+
+
+func _boons_text() -> String:
+	var t := "[center][b][color=#f0b94c]I tuoi doni[/color][/b]   [color=#a89878](Tab o Select per chiudere)[/color][/center]\n\n"
+	if Run.boons.is_empty() and Run.blessings.is_empty() and Run.curses.is_empty():
+		t += "[center]Nessun dono, per ora. Ripulisci una stanza e scegline uno.[/center]"
+		return t
+	for id in Run.boons:
+		var b: Dictionary = Boons.ALL[id]
+		var col: String = Boons.god_color(b["god"]).to_html(false)
+		var lvl := "pesante" if Boons.is_heavy(id) else "liv. %d" % Run.boons[id]
+		t += "[color=#%s][b]%s[/b] · %s · %s[/color]\n%s" % [col, Boons.god_name(b["god"]), b["name"], lvl, Boons.text(id, Run.boons[id])]
+		if Boons.is_heavy(id):
+			t += " [color=#ff9c8c]Prezzo: %s[/color]" % b["cost"]
+		t += "\n\n"
+	var set_col: String = Boons.god_color("set").to_html(false)
+	for c in Run.curses:
+		t += "[color=#%s][b]Maledizione di Set[/b] · ancora %d ondate[/color]\n%s. Poi: %s\n\n" % [set_col, c["waves"], Boons.SET_CURSES[c["curse"]]["desc"], Boons.SET_BLESSINGS[c["blessing"]]["desc"]]
+	for b in Run.blessings:
+		t += "[color=#%s][b]Set[/b] · %s · permanente[/color]\n%s\n\n" % [set_col, Boons.SET_BLESSINGS[b]["name"], Boons.SET_BLESSINGS[b]["desc"]]
+	return t
 
 
 # ---------------------------------------------------------------- fine run
@@ -322,13 +469,21 @@ func _process(_delta: float) -> void:
 	if player == null or not is_instance_valid(player):
 		return
 
-	var names := []
-	for id in Run.boons:
-		names.append(Boons.ALL[id]["name"])
 	var eye_txt := "pronto" if player.eye_cd <= 0.0 else "%.1fs" % player.eye_cd
-	hud.text = "Vita %d/%d    Ka %d    Stanza %d/%d    Occhio: %s" % [ceili(player.hp), int(player.max_hp), Run.ka, Run.room, Run.ROOMS_PER_RUN, eye_txt]
-	if not names.is_empty():
-		hud.text += "\nDoni: " + ", ".join(names)
+	if Run.cursed("no_eye"):
+		eye_txt = "bloccato da Set"
+	var sek := "PRONTO (Q / RB)" if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
+	if player.divine_t > 0.0:
+		sek = "FORMA DIVINA %.1fs" % player.divine_t
+	hud.text = "Vita %d/%d    Ka %d    Stanza %d/%d    Occhio: %s    Sekhem: %s" % [ceili(player.hp), int(player.max_hp), Run.ka, Run.room, Run.ROOMS_PER_RUN, eye_txt, sek]
+	var n := Run.boons.size() + Run.blessings.size()
+	var line2 := ""
+	if n > 0:
+		line2 = "Doni: %d (Tab per vederli)" % n
+	for c in Run.curses:
+		line2 += "    Maledizione: %s (%d ondate)" % [Boons.SET_CURSES[c["curse"]]["desc"], c["waves"]]
+	if line2 != "":
+		hud.text += "\n" + line2
 
 	var near := ""
 	for d in doors:
@@ -338,12 +493,12 @@ func _process(_delta: float) -> void:
 	prompt.visible = near != ""
 
 	var mouse := Fx.device == "mouse"
-	reticle.visible = mouse and not player.dead and menu == null
-	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN if (mouse and menu == null) else Input.MOUSE_MODE_VISIBLE
+	reticle.visible = mouse and not player.dead and menu == null and panel == null
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN if (mouse and menu == null and panel == null) else Input.MOUSE_MODE_VISIBLE
 	if Fx.device == "pad":
-		help.text = "Levetta sinistra muovi · destra mira · X khopesh · A scatto · Y Occhio"
+		help.text = "Levetta sinistra muovi · destra mira · X khopesh · A scatto · Y Occhio · RB Forma Divina · Select doni"
 	else:
-		help.text = "WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · F1 hitbox"
+		help.text = "WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina · Tab doni · F1 hitbox"
 
 
 # ---------------------------------------------------------------- muri e pavimento
@@ -437,3 +592,16 @@ class SpawnMarker extends Node2D:
 	func _draw() -> void:
 		var k := clampf(t / duration, 0.0, 1.0)
 		draw_arc(Vector2.ZERO, 6.0 + (1.0 - k) * 18.0, 0.0, TAU, 24, Color(1, 0.3, 0.2, 0.4 + 0.5 * k), 2.0)
+
+
+## Ascolta Tab/Select anche a gioco in pausa, per aprire e chiudere il menu dei doni.
+class PanelListener extends Node:
+	var game: Node
+
+	func _ready() -> void:
+		process_mode = Node.PROCESS_MODE_ALWAYS
+
+	func _unhandled_input(event: InputEvent) -> void:
+		if event.is_action_pressed("boons_menu") or (game.panel != null and event.is_action_pressed("ui_cancel")):
+			game._toggle_boons_panel()
+			get_viewport().set_input_as_handled()

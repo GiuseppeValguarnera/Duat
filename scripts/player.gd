@@ -1,5 +1,6 @@
 extends CharacterBody2D
-## Lo Scriba delle Porte. Movimento, scatto, combo del khopesh e Occhio di Horus.
+## Lo Scriba delle Porte. Movimento, scatto, combo del khopesh, Occhio di Horus
+## e Forma Divina (il super attacco che si carica col Sekhem).
 ## Tutti i numeri che regolano la sensazione di gioco sono esportati:
 ## selezioni il nodo Player e li cambi dall'Ispettore mentre provi.
 
@@ -29,6 +30,13 @@ const EyeScript := preload("res://scripts/eye.gd")
 @export var eye_damage := 24.0
 @export var eye_cooldown := 2.5
 
+@export_group("Forma Divina")
+@export var divine_time := 6.0
+@export var divine_damage_mult := 1.5  ## danni del khopesh durante la Forma Divina
+@export var divine_armor := 0.3        ## danni subiti durante la Forma Divina (0.3 = 30%)
+@export var divine_wave_damage := 30.0
+@export var divine_wave_radius := 70.0
+
 ## Le tre mosse della combo: portata, ampiezza in gradi, moltiplicatore danno,
 ## pausa prima del colpo successivo, piccolo slancio in avanti, spinta sul nemico.
 const COMBO := [
@@ -45,6 +53,8 @@ var aim := Vector2.RIGHT
 var dash_t := 0.0
 var dash_cd := 0.0
 var dash_dir := Vector2.ZERO
+var dash_hit := {}
+var leap_ready := false                # Balzo della Leonessa: il colpo dopo lo scatto
 var invuln_t := 0.0
 var flash_t := 0.0
 
@@ -58,6 +68,8 @@ var swing_arc := 0.0
 var swing_index := 0
 
 var eye_cd := 0.0
+var divine_t := 0.0
+var drain_t := 3.0                     # Sete Insaziabile
 var knock := Vector2.ZERO
 var walk := 0.0
 
@@ -67,6 +79,7 @@ var walk := 0.0
 func _ready() -> void:
 	max_hp = Run.max_hp
 	hp = Run.hp
+	Run.divine = false
 	add_to_group("player")
 	Fx.camera = camera
 
@@ -76,8 +89,12 @@ func eye_cd_max() -> float:
 	return eye_cooldown * Run.eye_cooldown_mult()
 
 
+func dash_cd_max() -> float:
+	return dash_cooldown * Run.dash_cooldown_mult()
+
+
 func heal(amount: float) -> void:
-	if dead:
+	if dead or amount <= 0.0:
 		return
 	hp = minf(max_hp, hp + amount)
 	Run.hp = hp
@@ -88,6 +105,7 @@ func heal(amount: float) -> void:
 func _physics_process(delta: float) -> void:
 	if dead:
 		return
+	max_hp = Run.max_hp
 	_tick(delta)
 
 	var move := Input.get_vector("move_left", "move_right", "move_up", "move_down")
@@ -99,18 +117,25 @@ func _physics_process(delta: float) -> void:
 		_start_dash(move)
 	if Input.is_action_pressed("attack") and atk_cd <= 0.0 and dash_t <= 0.0:
 		_swing()
-	if Input.is_action_just_pressed("special") and eye_cd <= 0.0:
+	if Input.is_action_just_pressed("special") and eye_cd <= 0.0 and not Run.cursed("no_eye"):
 		_fire_eye()
+	if Input.is_action_just_pressed("super") and Run.sekhem_ready() and divine_t <= 0.0:
+		_divine_form()
 
+	var was_dashing := dash_t > 0.0
 	if dash_t > 0.0:
 		velocity = dash_dir * dash_speed
+		_dash_damage()
 	else:
-		var s := speed * (attack_slowdown if atk_t > 0.0 else 1.0)
+		var s := speed * Run.move_mult() * (attack_slowdown if atk_t > 0.0 else 1.0)
 		velocity = move * s + knock
 		if move.length() > 0.1:
 			walk += delta * 10.0
 	knock = knock.move_toward(Vector2.ZERO, 900.0 * delta)
 	move_and_slide()
+	if was_dashing and dash_t <= 0.0 and Run.has("sekhmet_leap"):
+		leap_ready = true
+	_heavy_drain(delta)
 	queue_redraw()
 
 
@@ -123,6 +148,9 @@ func _tick(delta: float) -> void:
 	atk_cd = maxf(0.0, atk_cd - delta)
 	combo_window = maxf(0.0, combo_window - delta)
 	eye_cd = maxf(0.0, eye_cd - delta)
+	if divine_t > 0.0:
+		divine_t = maxf(0.0, divine_t - delta)
+		Run.divine = divine_t > 0.0
 
 
 ## Mira: levetta destra se la usi, altrimenti mouse, altrimenti direzione di movimento.
@@ -160,10 +188,23 @@ func _assisted(dir: Vector2, max_dist: float) -> Vector2:
 func _start_dash(move: Vector2) -> void:
 	dash_dir = move.normalized() if move.length() > 0.15 else facing
 	dash_t = dash_time
-	dash_cd = dash_cooldown
+	dash_cd = dash_cd_max()
 	invuln_t = maxf(invuln_t, dash_time + 0.05)
 	knock = Vector2.ZERO
+	dash_hit.clear()
 	Fx.burst(global_position, Color(0.85, 0.75, 0.55), 8, 60.0)
+
+
+## Corsa dell'Alba: lo scatto ferisce i nemici attraversati.
+func _dash_damage() -> void:
+	if not Run.has("ra_dawn"):
+		return
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if e.dead or dash_hit.has(e):
+			continue
+		if global_position.distance_to(e.global_position) < e.radius + 10.0:
+			dash_hit[e] = true
+			e.take_hit(Run.val("ra_dawn") * Run.all_damage_mult(), dash_dir, 60.0, true)
 
 
 func _swing() -> void:
@@ -180,6 +221,13 @@ func _swing() -> void:
 	swing_dir = _assisted(aim, swing_range + 24.0)
 	knock = swing_dir * c["lunge"]
 
+	var dmg: float = attack_damage * Run.khopesh_mult() * c["mult"]
+	if divine_t > 0.0:
+		dmg *= divine_damage_mult
+	if leap_ready:
+		dmg *= 1.0 + Run.val("sekhmet_leap") / 100.0
+		leap_ready = false
+
 	var hit_any := false
 	for e in get_tree().get_nodes_in_group("enemies"):
 		if e.dead:
@@ -189,38 +237,83 @@ func _swing() -> void:
 		if to.length() > reach:
 			continue
 		if absf(swing_dir.angle_to(to)) <= swing_arc * 0.5 or to.length() < e.radius + 6.0:
-			e.take_hit(attack_damage * Run.khopesh_mult() * c["mult"], to.normalized(), c["knock"], Run.has("ra_burn"))
+			e.take_hit(dmg, to.normalized(), c["knock"], Run.khopesh_burns())
 			hit_any = true
+	if swing_index == 2 and Run.has("sekhmet_roar"):
+		_shockwave(46.0, Run.val("sekhmet_roar") * Run.all_damage_mult(), 200.0, Boons.god_color("sekhmet"))
 	if hit_any:
 		Fx.shake(3.0 if swing_index < 2 else 6.0)
 		Fx.hitstop(0.04 if swing_index < 2 else 0.07)
 
 
+func _shockwave(radius: float, dmg: float, kb: float, color: Color) -> void:
+	Fx.burst(global_position + Vector2(0, -6), color, 30, radius * 3.0)
+	Fx.shake(5.0)
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if not e.dead and global_position.distance_to(e.global_position) < radius + e.radius:
+			e.take_hit(dmg, (e.global_position - global_position).normalized(), kb)
+
+
 func _fire_eye() -> void:
 	eye_cd = eye_cd_max()
-	var eye: Area2D = EyeScript.new()
-	eye.direction = aim
-	eye.damage = eye_damage
-	eye.pierce_left = Run.eye_pierce()
-	eye.explodes = Run.has("ra_disc")
-	get_parent().add_child(eye)
-	eye.global_position = global_position + Vector2(0, -8) + aim * 10.0
+	var rays := Run.eye_rays()
+	var base := aim.angle()
+	for i in range(rays):
+		var dir := Vector2.from_angle(base + (i - (rays - 1) / 2.0) * 0.22)
+		var eye: Area2D = EyeScript.new()
+		eye.direction = dir
+		eye.damage = eye_damage * Run.eye_damage_mult()
+		eye.pierce_left = Run.eye_pierce()
+		eye.explode_damage = Run.val("ra_disc") * Run.all_damage_mult()
+		eye.burns = Run.eye_burns()
+		get_parent().add_child(eye)
+		eye.global_position = global_position + Vector2(0, -8) + dir * 10.0
+
+
+func _divine_form() -> void:
+	Run.sekhem = 0.0
+	divine_t = divine_time
+	Run.divine = true
+	Fx.hitstop(0.12)
+	_shockwave(divine_wave_radius, divine_wave_damage * Run.all_damage_mult(), 320.0, Color(1, 0.85, 0.4))
+	Fx.shake(10.0)
+
+
+## Sete Insaziabile: perdi vita finché ci sono nemici, ma non può ucciderti.
+func _heavy_drain(delta: float) -> void:
+	if not Run.has("sekhmet_heavy") or get_tree().get_nodes_in_group("enemies").is_empty():
+		return
+	drain_t -= delta
+	if drain_t <= 0.0:
+		drain_t = 3.0
+		if hp > 1.0:
+			hp -= 1.0
+			Run.hp = hp
+			Fx.float_text(global_position, "-1", Color(0.9, 0.3, 0.3))
+			health_changed.emit(hp, max_hp)
 
 
 ## Restituisce true se il colpo è andato a segno (false se eri invulnerabile).
 func take_damage(amount: float, from_pos: Vector2) -> bool:
 	if dead or invuln_t > 0.0 or dash_t > 0.0:
 		return false
+	amount *= Run.damage_taken_mult()
+	if divine_t > 0.0:
+		amount *= divine_armor
+	else:
+		Run.add_sekhem(amount * 1.2)
+		knock = (global_position - from_pos).normalized() * 230.0
 	hp -= amount
 	invuln_t = hit_invuln
 	flash_t = 0.15
-	knock = (global_position - from_pos).normalized() * 230.0
 	Fx.shake(7.0)
 	Fx.hitstop(0.08)
 	Fx.damage_number(global_position, amount, Color(1, 0.4, 0.3))
 	if hp <= 0.0:
 		hp = 0.0
 		dead = true
+		divine_t = 0.0
+		Run.divine = false
 		Fx.burst(global_position, Color(0.9, 0.2, 0.15), 30, 160.0)
 		queue_redraw()
 		died.emit()
@@ -235,7 +328,7 @@ func take_damage(amount: float, from_pos: Vector2) -> bool:
 func _draw() -> void:
 	if dead:
 		return
-	var blink := invuln_t > 0.0 and dash_t <= 0.0 and int(Time.get_ticks_msec() / 60) % 2 == 0
+	var blink := invuln_t > 0.0 and dash_t <= 0.0 and divine_t <= 0.0 and int(Time.get_ticks_msec() / 60) % 2 == 0
 	var a := 0.35 if blink else 1.0
 	var bob := sin(walk) * 1.0
 
@@ -243,14 +336,22 @@ func _draw() -> void:
 	draw_circle(Vector2.ZERO, 9.0, Color(0, 0, 0, 0.35))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
+	if divine_t > 0.0:
+		var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 90.0)
+		draw_circle(Vector2(0, -12), 18.0 + pulse * 3.0, Color(1, 0.8, 0.3, 0.18))
+		draw_arc(Vector2(0, -12), 18.0 + pulse * 3.0, 0.0, TAU, 32, Color(1, 0.85, 0.4, 0.6), 1.5)
+
 	var skin := Color(0.75, 0.48, 0.25, a)
 	var linen := Color(0.94, 0.89, 0.76, a)
 	var blue := Color(0.19, 0.35, 0.77, a)
 	var gold := Color(0.94, 0.72, 0.3, a)
+	if divine_t > 0.0:
+		linen = Color(1, 0.92, 0.6)
+		blue = Color(0.95, 0.75, 0.25)
 	if flash_t > 0.0:
 		skin = Color(1, 1, 1, a); linen = skin; blue = skin; gold = skin
 	if dash_t > 0.0:
-		linen = Color(0.94, 0.89, 0.76, 0.5)
+		linen = Color(linen, 0.5)
 
 	draw_rect(Rect2(-6, -8 + bob, 12, 8), linen)
 	draw_rect(Rect2(-5, -15 + bob, 10, 8), skin)
@@ -277,6 +378,7 @@ func _draw() -> void:
 		for i in range(steps, -1, -1):
 			var ang := base - swing_arc * 0.5 + swing_arc * float(i) / steps
 			pts.append(Vector2.from_angle(ang) * swing_range * 0.4)
-		draw_colored_polygon(pts, Color(1.0, 0.88, 0.55, 0.45 + atk_t * 2.0))
+		var col := Color(1.0, 0.75, 0.3, 0.6) if divine_t > 0.0 else Color(1.0, 0.88, 0.55, 0.45 + atk_t * 2.0)
+		draw_colored_polygon(pts, col)
 		if Fx.show_hitboxes:
 			draw_polyline(pts, Color(1, 0.2, 0.2, 0.9), 1.0)
