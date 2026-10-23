@@ -1,0 +1,39 @@
+; Engine configuration file.
+; Duat - prototipo fase 1
+
+config_version=5
+
+[application]
+
+config/name="Duat"
+config/description="Roguelike action nell'oltretomba egizio. Fase 1: combattimento."
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[autoload]
+
+Inputs="*res://scripts/input_setup.gd"
+Fx="*res://scripts/fx.gd"
+
+[display]
+
+window/size/viewport_width=640
+window/size/viewport_height=360
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[layer_names]
+
+2d_physics/layer_1="mondo"
+2d_physics/layer_2="giocatore"
+2d_physics/layer_3="nemici"
+2d_physics/layer_4="hurtbox_giocatore"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/canvas_textures/default_texture_filter=0
+environment/defaults/default_clear_color=Color(0.04, 0.05, 0.1, 1)
