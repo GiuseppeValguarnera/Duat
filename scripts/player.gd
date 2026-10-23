@@ -65,9 +65,24 @@ var walk := 0.0
 
 
 func _ready() -> void:
-	hp = max_hp
+	max_hp = Run.max_hp
+	hp = Run.hp
 	add_to_group("player")
 	Fx.camera = camera
+
+
+## Ricarica effettiva dell'Occhio, doni compresi.
+func eye_cd_max() -> float:
+	return eye_cooldown * Run.eye_cooldown_mult()
+
+
+func heal(amount: float) -> void:
+	if dead:
+		return
+	hp = minf(max_hp, hp + amount)
+	Run.hp = hp
+	Fx.float_text(global_position, "+%d" % int(amount), Color(0.5, 1, 0.55))
+	health_changed.emit(hp, max_hp)
 
 
 func _physics_process(delta: float) -> void:
@@ -174,7 +189,7 @@ func _swing() -> void:
 		if to.length() > reach:
 			continue
 		if absf(swing_dir.angle_to(to)) <= swing_arc * 0.5 or to.length() < e.radius + 6.0:
-			e.take_hit(attack_damage * c["mult"], to.normalized(), c["knock"])
+			e.take_hit(attack_damage * Run.khopesh_mult() * c["mult"], to.normalized(), c["knock"], Run.has("ra_burn"))
 			hit_any = true
 	if hit_any:
 		Fx.shake(3.0 if swing_index < 2 else 6.0)
@@ -182,17 +197,20 @@ func _swing() -> void:
 
 
 func _fire_eye() -> void:
-	eye_cd = eye_cooldown
+	eye_cd = eye_cd_max()
 	var eye: Area2D = EyeScript.new()
 	eye.direction = aim
 	eye.damage = eye_damage
+	eye.pierce_left = Run.eye_pierce()
+	eye.explodes = Run.has("ra_disc")
 	get_parent().add_child(eye)
 	eye.global_position = global_position + Vector2(0, -8) + aim * 10.0
 
 
-func take_damage(amount: float, from_pos: Vector2) -> void:
+## Restituisce true se il colpo è andato a segno (false se eri invulnerabile).
+func take_damage(amount: float, from_pos: Vector2) -> bool:
 	if dead or invuln_t > 0.0 or dash_t > 0.0:
-		return
+		return false
 	hp -= amount
 	invuln_t = hit_invuln
 	flash_t = 0.15
@@ -200,13 +218,15 @@ func take_damage(amount: float, from_pos: Vector2) -> void:
 	Fx.shake(7.0)
 	Fx.hitstop(0.08)
 	Fx.damage_number(global_position, amount, Color(1, 0.4, 0.3))
-	health_changed.emit(hp, max_hp)
 	if hp <= 0.0:
 		hp = 0.0
 		dead = true
 		Fx.burst(global_position, Color(0.9, 0.2, 0.15), 30, 160.0)
 		queue_redraw()
 		died.emit()
+	Run.hp = hp
+	health_changed.emit(hp, max_hp)
+	return true
 
 
 # ---------------------------------------------------------------- disegno provvisorio

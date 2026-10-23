@@ -15,7 +15,7 @@ func _draw() -> void:
 		draw_line(d * 4.0, d * 11.0, gold, 1.5)
 	draw_rect(Rect2(-1, -1, 2, 2), Color(1, 0.95, 0.8))
 	var player = get_tree().get_first_node_in_group("player")
-	if player != null and player.eye_cooldown > 0.0:
-		var k: float = 1.0 - player.eye_cd / player.eye_cooldown
+	if player != null and is_instance_valid(player):
+		var k: float = 1.0 - player.eye_cd / player.eye_cd_max()
 		if k > 0.0:
 			draw_arc(Vector2.ZERO, 13.0, -PI / 2.0, -PI / 2.0 + TAU * k, 32, Color(0.25, 0.75, 0.68), 2.0)

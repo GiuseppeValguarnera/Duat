@@ -46,10 +46,14 @@ func hitstop(duration: float = 0.05) -> void:
 
 
 func damage_number(pos: Vector2, value: float, color: Color = Color(1, 0.95, 0.8)) -> void:
+	float_text(pos, str(int(round(value))), color)
+
+
+func float_text(pos: Vector2, text: String, color: Color = Color(1, 0.95, 0.8)) -> void:
 	if world == null or not is_instance_valid(world):
 		return
 	var l := Label.new()
-	l.text = str(int(round(value)))
+	l.text = text
 	l.add_theme_font_size_override("font_size", 11)
 	l.add_theme_color_override("font_color", color)
 	l.add_theme_color_override("font_outline_color", Color.BLACK)
