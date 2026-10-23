@@ -37,6 +37,14 @@ func _ready() -> void:
 	_keys("boons_menu", [KEY_TAB])
 	_button("boons_menu", JOY_BUTTON_BACK)
 
+	# menu: A conferma, B annulla, croce direzionale e levetta per spostarsi tra le scelte
+	_button("ui_accept", JOY_BUTTON_A)
+	_button("ui_cancel", JOY_BUTTON_B)
+	_button("ui_left", JOY_BUTTON_DPAD_LEFT)
+	_button("ui_right", JOY_BUTTON_DPAD_RIGHT)
+	_axis("ui_left", JOY_AXIS_LEFT_X, -1.0)
+	_axis("ui_right", JOY_AXIS_LEFT_X, 1.0)
+
 	_keys("debug_hitbox", [KEY_F1])
 	_keys("restart", [KEY_R])
 	_button("restart", JOY_BUTTON_START)
