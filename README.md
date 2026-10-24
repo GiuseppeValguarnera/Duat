@@ -2,7 +2,7 @@
 
 Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
-**Stato:** fase 2, una run di prova di 3 stanze con nemici diversi, ricompense, doni degli dèi, patti di Set e Forma Divina. La grafica è provvisoria (forme semplici) di proposito: prima si rende divertente il gioco, poi arrivano gli sprite.
+**Stato:** fase 2, una run di prova di 6 stanze più il boss con nemici diversi, ricompense, doni degli dèi, patti di Set e Forma Divina. La grafica è provvisoria (forme semplici) di proposito: prima si rende divertente il gioco, poi arrivano gli sprite.
 
 ## Come provarlo
 
@@ -30,7 +30,7 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 2. Ogni stanza ha due ondate di nemici. La prima stanza non ha ricompensa: i doni degli dèi arrivano dalle stanze che scegli tu.
 3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla.
 4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura.
-5. Dopo la terza stanza si apre il cancello di **Ammit**, il boss della Prima Ora.
+5. Dopo la sesta stanza si apre il cancello di **Ammit**, il boss della Prima Ora. I nemici hanno il 6% di vita in più a ogni stanza.
 
 ## Nemici
 
@@ -42,11 +42,13 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
 ## Boss: Ammit, la Divoratrice
 
-Testa di coccodrillo, corpo di leone, zampe di ippopotamo: nel mito divora i cuori che non superano il giudizio.
+Testa di coccodrillo, corpo di leone, zampe di ippopotamo: nel mito divora i cuori che non superano il giudizio. Ha 1100 punti vita.
 
 - **Carica:** si ferma e una striscia rossa mostra la traiettoria, poi scatta in linea retta. Se sbatte contro una colonna resta **stordita** per 2 secondi e subisce il 50% di danni in più, ma la colonna **crolla**: nell'arena ce ne sono solo 6. Durante la carica travolge anche gli altri nemici sulla sua strada (30 danni).
 - **Sputo:** un anello viola si stringe attorno a lei, poi lancia sfere in tutte le direzioni.
-- **Furia (sotto metà vita):** è più veloce, lancia più sfere e chiama uno sciame di 4 scarabei, una volta sola.
+- **Morso:** quando sei vicino, un ventaglio rosso si accende davanti alle fauci, poi azzanna (24 danni).
+- **Ruggito del Giudizio:** si impenna, poi un'onda d'urto si allarga per tutta l'arena. Si supera scattandoci attraverso.
+- **Furia (sotto metà vita):** è più veloce, lancia più sfere, fa due onde di fila e chiama 4 scarabei e un Sacerdote di Set, una volta sola.
 
 ## Doni
 
@@ -59,7 +61,7 @@ Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finit
 | Thoth (Occhio di Horus) | Sguardo di Thoth, Calcolo di Thoth, Occhio Moltiplicato, Parola dello Scriba · pesante: Conoscenza Proibita |
 | Bastet (critici e agilità) | Artigli Affilati, Occhi di Gatto, Passo Felino, Protezione di Bastet · pesante: Gioco del Gatto |
 | Sobek (resistenza e controllo) | Pelle di Coccodrillo, Morso di Sobek, Marea del Nilo, Forza del Fiume · pesante: Fauci di Sobek |
-| Iside (protezione e cure) | Ali di Iside, Lacrime di Iside, Nodo di Iside, Nome Segreto di Ra · pesante: Abbraccio di Iside |
+| Iside (protezione e cure) | Ali di Iside, Lacrime di Iside, Nodo di Iside, Nome Segreto di Ra (solo dopo aver sbloccato il Sekhem) · pesante: Abbraccio di Iside |
 | Anubi (solo a inizio run, doni-bilancia con un piccolo prezzo) | Cuore Leggero, Cuore di Pietra, Fiuto dello Sciacallo, Bilancia Giusta, Guida delle Anime, Vasi Canopi, Apertura della Bocca, Bende di Lino, Custode della Necropoli, Offerte ai Defunti |
 
 Senza doni l'Occhio di Horus si ferma sul primo nemico che colpisce.
@@ -68,7 +70,7 @@ I nemici colpiti barcollano per un terzo di secondo: non si muovono e non fanno 
 
 ## Patti di Set
 
-A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza scegli un patto: una **maledizione** che dura 2 ondate (nemici più veloci, più danni subiti, niente Occhio, scatto più lento) e poi una **benedizione** permanente per tutta la run.
+A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza scegli un patto: una **maledizione** che dura 2 ondate (nemici più veloci, più danni subiti, niente Occhio, scatto più lento) e poi una **benedizione** permanente per tutta la run. Tempesta Interiore (Sekhem) compare solo dopo aver sbloccato il Sekhem.
 
 ## Sekhem e Forma Divina
 

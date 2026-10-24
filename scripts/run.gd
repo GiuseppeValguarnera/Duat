@@ -5,7 +5,8 @@ extends Node
 
 signal blessing_granted(id: String)
 
-const ROOMS_PER_RUN := 3              ## stanze normali; poi c'è la stanza del boss
+const ROOMS_PER_RUN := 6              ## stanze normali; poi c'è la stanza del boss
+const MIN_DASH_CD := 0.35             ## lo scatto non si ricarica mai più in fretta di così
 const SEKHEM_MAX := 100.0
 
 var max_hp := 60.0
@@ -181,7 +182,7 @@ func burn_tick_damage() -> float:
 func move_mult() -> float:
 	var m := 1.15 if has("set_swift") else 1.0
 	if has("anubi_light"):
-		m *= 1.15
+		m *= 1.1
 	if has("anubi_stone"):
 		m *= 0.92
 	if has("sobek_heavy"):
@@ -204,7 +205,7 @@ func dash_cooldown_mult() -> float:
 func damage_taken_mult() -> float:
 	var m := 1.5 if cursed("fragile") else 1.0
 	if has("anubi_scale"):
-		m *= 1.1
+		m *= 1.15
 	m *= 1.0 - val("sobek_skin") / 100.0
 	m *= low_hp_guard()
 	if has("anubi_linen"):
@@ -212,8 +213,17 @@ func damage_taken_mult() -> float:
 	return m
 
 
+## Vita dei nemici: +6% per ogni stanza dopo la prima, più l'eventuale prezzo di Anubi.
 func enemy_hp_mult() -> float:
-	return 1.05 if has("anubi_guide") else 1.0
+	var m := 1.0 + 0.06 * maxi(0, mini(room, ROOMS_PER_RUN) - 1)
+	if has("anubi_guide"):
+		m *= 1.05
+	return m
+
+
+## Ira del Deserto: il khopesh attacca più rapidamente.
+func attack_speed_mult() -> float:
+	return 0.85 if has("set_rage") else 1.0
 
 
 ## Fiuto dello Sciacallo: più danni ai nemici feriti, meno a quelli in salute.

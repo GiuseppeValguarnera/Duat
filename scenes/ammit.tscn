@@ -13,9 +13,9 @@ collision_layer = 4
 collision_mask = 1
 motion_mode = 1
 script = ExtResource("1_ammit")
-max_hp = 650.0
+max_hp = 1100.0
 speed = 48.0
-contact_damage = 14.0
+contact_damage = 18.0
 ka_value = 40
 radius = 14.0
 

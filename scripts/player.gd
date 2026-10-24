@@ -93,7 +93,7 @@ func eye_cd_max() -> float:
 
 
 func dash_cd_max() -> float:
-	return dash_cooldown * Run.dash_cooldown_mult()
+	return maxf(Run.MIN_DASH_CD, dash_cooldown * Run.dash_cooldown_mult())
 
 
 func heal(amount: float) -> void:
@@ -225,7 +225,7 @@ func _swing() -> void:
 	combo = (combo + 1) % COMBO.size()
 	combo_window = 0.55
 	atk_t = 0.14
-	atk_cd = c["cd"]
+	atk_cd = c["cd"] * Run.attack_speed_mult()
 	swing_range = c["range"]
 	swing_arc = deg_to_rad(c["arc"])
 	swing_dir = _assisted(aim, swing_range + 24.0)

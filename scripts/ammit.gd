@@ -5,34 +5,57 @@ extends Enemy
 ## Mosse (ognuna si annuncia prima di colpire):
 ##  - Carica: si ferma, una striscia rossa mostra la traiettoria, poi scatta in linea retta.
 ##    Se sbatte contro una colonna resta stordita e subisce il 50% di danni in più,
-##    ma la colonna crolla: nell'arena ce ne sono solo 6.
+##    ma la colonna crolla: nell'arena ce ne sono solo 6. Travolge gli altri nemici.
 ##  - Sputo: un anello viola si stringe attorno a lei, poi lancia sfere in tutte le direzioni.
-## Sotto metà vita entra in furia: è più veloce, lancia più sfere e chiama uno sciame di scarabei.
+##  - Morso: quando sei vicino, un ventaglio rosso si accende davanti alle fauci, poi azzanna.
+##  - Ruggito del Giudizio: si impenna, poi un'onda d'urto si allarga per tutta l'arena.
+##    Si supera scattandoci attraverso.
+## Sotto metà vita entra in furia: è più veloce, lancia più sfere, fa due onde di fila
+## e chiama scarabei e un Sacerdote di Set.
 
-signal summon(count: int)
+signal summon(kinds: Array)
 signal pillar_broken(body: StaticBody2D)
 
 const BoltScript := preload("res://scripts/enemy_bolt.gd")
 
+@export_group("Carica")
 @export var charge_windup := 0.85
-@export var charge_speed := 330.0
+@export var charge_speed := 340.0
 @export var charge_time := 0.7
-@export var spit_windup := 0.65
-@export var spit_count := 10
 @export var stun_time := 2.0
-@export var summon_count := 4
 @export var trample_damage := 30.0     ## danni ai nemici travolti durante la carica
+
+@export_group("Sputo")
+@export var spit_windup := 0.65
+@export var spit_count := 12
+@export var bolt_damage := 16.0
+
+@export_group("Morso")
+@export var bite_range := 70.0         ## distanza sotto cui preferisce mordere
+@export var bite_windup := 0.5
+@export var bite_reach := 52.0
+@export var bite_arc := 110.0          ## gradi
+@export var bite_damage := 24.0
+
+@export_group("Ruggito del Giudizio")
+@export var roar_windup := 0.9
+@export var wave_speed := 170.0
+@export var wave_damage := 18.0
+
+@export_group("Furia")
+@export var summon_kinds := ["scarab", "scarab", "scarab", "scarab", "priest"]
 
 var state := "intro"
 var st := 1.0
 var charge_dir := Vector2.DOWN
 var enraged := false
 var trampled := {}                     # nemici già travolti in questa carica
+var waves_left := 0                    # onde ancora da lanciare in questo ruggito
 
 
 func _ready() -> void:
-	super._ready()
 	is_boss = true
+	super._ready()
 
 
 func _rage() -> float:
@@ -43,26 +66,21 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 	st -= delta * _rage()
 	if not enraged and hp < max_hp * 0.5:
 		enraged = true
-		state = "roar"
+		state = "furia"
 		st = 0.9
 		Fx.shake(8.0)
-		summon.emit(summon_count)
+		summon.emit(summon_kinds)
 	match state:
-		"intro", "roar":
+		"intro", "furia":
 			if st <= 0.0:
 				state = "chase"
-				st = 1.2
+				st = 1.0
 			return Vector2.ZERO
 		"chase":
 			if to != Vector2.ZERO:
 				charge_dir = to.normalized()
 			if st <= 0.0:
-				if randf() < 0.6:
-					state = "windup"
-					st = charge_windup
-				else:
-					state = "spit"
-					st = spit_windup
+				_choose_attack(to)
 				return Vector2.ZERO
 			return charge_dir * speed * _rage()
 		"windup":
@@ -88,12 +106,49 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				state = "recover"
 				st = 0.7
 			return Vector2.ZERO
+		"bite":
+			if st > bite_windup * 0.5 and to != Vector2.ZERO:
+				charge_dir = to.normalized()
+			if st <= 0.0:
+				_bite()
+				state = "recover"
+				st = 0.55
+			return Vector2.ZERO
+		"roar":
+			if st <= 0.0:
+				_shockwave()
+				waves_left -= 1
+				if waves_left > 0:
+					st = 0.7
+				else:
+					state = "recover"
+					st = 0.9
+			return Vector2.ZERO
 		"stunned", "recover":
 			if st <= 0.0:
 				state = "chase"
-				st = 1.4 + randf() * 1.0
+				st = 1.1 + randf() * 0.9
 			return Vector2.ZERO
 	return Vector2.ZERO
+
+
+## Sceglie la prossima mossa: da vicino preferisce mordere, da lontano carica, sputa o ruggisce.
+func _choose_attack(to: Vector2) -> void:
+	var close := to != Vector2.ZERO and to.length() < bite_range
+	var r := randf()
+	if close and r < 0.55:
+		state = "bite"
+		st = bite_windup
+	elif r < 0.6:
+		state = "windup"
+		st = charge_windup
+	elif r < 0.82:
+		state = "spit"
+		st = spit_windup
+	else:
+		state = "roar"
+		st = roar_windup
+		waves_left = 2 if enraged else 1
 
 
 ## Durante la carica controlla se ha sbattuto: contro una colonna resta stordita.
@@ -139,12 +194,35 @@ func _spit() -> void:
 		var a := off + i * TAU / n
 		var bolt: Area2D = BoltScript.new()
 		bolt.direction = Vector2.from_angle(a)
-		bolt.speed = 95.0 * _rage()
-		bolt.damage = 12.0
+		bolt.speed = 100.0 * _rage()
+		bolt.damage = bolt_damage
 		bolt.shooter = self
 		get_parent().add_child(bolt)
 		bolt.global_position = global_position + Vector2(0, -12)
 	Fx.shake(4.0)
+
+
+## Morso: colpisce tutto quello che è nel ventaglio davanti alle fauci.
+func _bite() -> void:
+	Fx.shake(6.0)
+	Fx.burst(global_position + Vector2(0, -12) + charge_dir * 30.0, Color(0.95, 0.9, 0.8), 14, 120.0)
+	var player = get_tree().get_first_node_in_group("player")
+	if player == null or player.dead:
+		return
+	var to: Vector2 = player.global_position - global_position
+	if to.length() <= bite_reach + 6.0 and absf(charge_dir.angle_to(to)) <= deg_to_rad(bite_arc) * 0.5:
+		player.take_damage(bite_damage, global_position, self)
+
+
+## Ruggito del Giudizio: un anello che si allarga per tutta l'arena.
+func _shockwave() -> void:
+	var wave := Shockwave.new()
+	wave.speed = wave_speed * _rage()
+	wave.damage = wave_damage
+	wave.source = self
+	get_parent().add_child(wave)
+	wave.global_position = global_position
+	Fx.shake(7.0)
 
 
 func _contact_damage() -> float:
@@ -178,11 +256,22 @@ func _draw_body(flash: bool) -> void:
 	if state == "spit":
 		var k2 := 1.0 - st / spit_windup
 		draw_arc(Vector2(0, -12), 40.0 - 22.0 * k2, 0.0, TAU, 40, Color(0.8, 0.4, 1.0, 0.3 + 0.5 * k2), 2.0)
+	if state == "bite":
+		var k3 := 1.0 - st / bite_windup
+		var pts := PackedVector2Array([Vector2.ZERO])
+		var half := deg_to_rad(bite_arc) * 0.5
+		for i in range(13):
+			pts.append(Vector2.from_angle(charge_dir.angle() - half + half * 2.0 * i / 12.0) * bite_reach)
+		draw_colored_polygon(pts, Color(1, 0.2, 0.15, 0.12 + 0.3 * k3))
+	if state == "roar":
+		var k4 := clampf(1.0 - st / roar_windup, 0.0, 1.0)
+		draw_arc(Vector2(0, -12), radius + 6.0 + 10.0 * k4, 0.0, TAU, 32, Color(1, 0.85, 0.4, 0.4 + 0.5 * k4), 3.0)
 	if enraged:
 		draw_circle(Vector2(0, -12), radius + 8.0, Color(1, 0.2, 0.1, 0.12))
 
-	var jitter := Vector2(randf_range(-1, 1), 0) if state == "windup" else Vector2.ZERO
-	draw_set_transform(jitter, 0.0, Vector2(dir, 1.0))
+	var jitter := Vector2(randf_range(-1, 1), 0) if state in ["windup", "roar"] else Vector2.ZERO
+	var rear := Vector2(0, -4) if state == "roar" else Vector2.ZERO
+	draw_set_transform(jitter + rear, 0.0, Vector2(dir, 1.0))
 	# zampe e corpo di ippopotamo
 	draw_rect(Rect2(-18, -6, 7, 8), skin)
 	draw_rect(Rect2(-6, -6, 7, 8), skin)
@@ -190,12 +279,13 @@ func _draw_body(flash: bool) -> void:
 	# criniera di leone
 	draw_circle(Vector2(6, -18), 11.0, mane)
 	draw_rect(Rect2(4, -6, 6, 8), mane)
-	# testa di coccodrillo
-	draw_rect(Rect2(8, -24, 22, 9), croc)
-	draw_rect(Rect2(8, -15, 20, 4), croc.darkened(0.2))
+	# testa di coccodrillo (le fauci si aprono durante il morso)
+	var open := 4.0 if state == "bite" else 0.0
+	draw_rect(Rect2(8, -24 - open, 22, 9), croc)
+	draw_rect(Rect2(8, -15 + open, 20, 4), croc.darkened(0.2))
 	for i in range(4):
-		draw_rect(Rect2(12 + i * 4, -16, 2, 2), Color(0.95, 0.92, 0.85))
-	draw_rect(Rect2(14, -23, 3, 3), Color(1, 0.25, 0.15))
+		draw_rect(Rect2(12 + i * 4, -16 + open, 2, 2), Color(0.95, 0.92, 0.85))
+	draw_rect(Rect2(14, -23 - open, 3, 3), Color(1, 0.25, 0.15))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 	if state == "stunned":
@@ -203,3 +293,34 @@ func _draw_body(flash: bool) -> void:
 		for i in range(3):
 			var a := t2 + i * TAU / 3.0
 			draw_circle(Vector2(cos(a) * 12.0, -38 + sin(a) * 3.0), 2.0, Color(1, 0.85, 0.3))
+
+
+## Onda d'urto del Ruggito: un anello che si allarga e ferisce una volta chi tocca.
+## Lo scatto rende invulnerabili, quindi la si supera scattandoci attraverso.
+class Shockwave extends Node2D:
+	var speed := 170.0
+	var damage := 18.0
+	var source: Node = null
+	var r := 12.0
+	var max_r := 520.0
+	var hit := false
+
+	func _physics_process(delta: float) -> void:
+		r += speed * delta
+		if r > max_r:
+			queue_free()
+			return
+		if not hit:
+			var player = get_tree().get_first_node_in_group("player")
+			if player != null and not player.dead:
+				var d: float = player.global_position.distance_to(global_position)
+				if absf(d - r) < 8.0:
+					var src: Node = source if is_instance_valid(source) else null
+					if player.take_damage(damage, global_position, src):
+						hit = true
+		queue_redraw()
+
+	func _draw() -> void:
+		var fade := clampf(1.0 - r / max_r, 0.2, 1.0)
+		draw_arc(Vector2.ZERO, r, 0.0, TAU, 64, Color(1, 0.8, 0.35, 0.8 * fade), 5.0)
+		draw_arc(Vector2.ZERO, r - 5.0, 0.0, TAU, 64, Color(1, 0.5, 0.2, 0.35 * fade), 3.0)

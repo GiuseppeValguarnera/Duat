@@ -50,10 +50,10 @@ const ALL := {
 	"iside_knot": {"god": "iside", "name": "Nodo di Iside", "desc": "Sotto un terzo della vita subisci il %d%% di danni in meno.", "values": [25, 35, 45]},
 	"iside_word": {"god": "iside", "name": "Nome Segreto di Ra", "desc": "Il Sekhem si carica il %d%% più in fretta.", "values": [25, 40, 55]},
 	# Anubi pesa ogni cosa: i suoi doni sono bilance, un vantaggio un po' più grande del prezzo.
-	"anubi_light": {"god": "anubi", "balanced": true, "name": "Cuore Leggero", "desc": "Lo scatto si ricarica il %d%% più in fretta e ti muovi il 15%% più veloce.", "values": [30], "cost": "-10 vita massima."},
+	"anubi_light": {"god": "anubi", "balanced": true, "name": "Cuore Leggero", "desc": "Lo scatto si ricarica il %d%% più in fretta e ti muovi il 10%% più veloce.", "values": [15], "cost": "-10 vita massima."},
 	"anubi_stone": {"god": "anubi", "balanced": true, "name": "Cuore di Pietra", "desc": "+%d vita massima.", "values": [30], "cost": "Ti muovi l'8% più lento."},
 	"anubi_jackal": {"god": "anubi", "balanced": true, "name": "Fiuto dello Sciacallo", "desc": "+%d%% di danni ai nemici sotto metà vita.", "values": [50], "cost": "-10% di danni ai nemici sopra metà vita."},
-	"anubi_scale": {"god": "anubi", "balanced": true, "name": "Bilancia Giusta", "desc": "Chi ti colpisce subisce il %d%% del danno che ti ha fatto.", "values": [150], "cost": "Subisci il 10% di danni in più."},
+	"anubi_scale": {"god": "anubi", "balanced": true, "name": "Bilancia Giusta", "desc": "Chi ti colpisce subisce il %d%% del danno che ti ha fatto.", "values": [150], "cost": "Subisci il 15% di danni in più."},
 	"anubi_canopic": {"god": "anubi", "balanced": true, "name": "Vasi Canopi", "desc": "Ogni stanza ripulita ti cura di %d punti vita.", "values": [10], "cost": "-10 vita massima."},
 	"anubi_mouth": {"god": "anubi", "balanced": true, "name": "Apertura della Bocca", "desc": "L'Occhio di Horus si ricarica il %d%% più in fretta.", "values": [35], "cost": "L'Occhio di Horus fa il 10% di danni in meno."},
 	"anubi_linen": {"god": "anubi", "balanced": true, "name": "Bende di Lino", "desc": "Subisci il %d%% di danni in meno.", "values": [15], "cost": "Ti muovi il 5% più lento."},
@@ -83,6 +83,7 @@ const SET_BLESSINGS := {
 	"set_sekhem": {"name": "Tempesta Interiore", "desc": "Il Sekhem si carica il 50% più in fretta"},
 	"set_swift": {"name": "Vento Rosso", "desc": "+15% velocità di movimento"},
 	"set_greed": {"name": "Tributo", "desc": "+50% Ka dai nemici"},
+	"set_rage": {"name": "Ira del Deserto", "desc": "Attacchi con il khopesh il 15% più rapidamente"},
 }
 
 
@@ -113,12 +114,20 @@ static func text(id: String, level: int) -> String:
 
 ## Le tre scelte offerte da un dio. `owned` = {id: livello} dei doni già presi.
 ## Prima i doni nuovi, poi i potenziamenti; a volte il dono pesante prende il terzo posto.
+## Doni che riguardano il Sekhem: compaiono solo dopo averlo sbloccato sconfiggendo Ammit.
+const NEEDS_SEKHEM := ["iside_word", "set_sekhem"]
+
+
+static func available_now(id: String) -> bool:
+	return not NEEDS_SEKHEM.has(id) or Meta.sekhem_unlocked
+
+
 static func offers(god: String, owned: Dictionary) -> Array:
 	var fresh := []
 	var ups := []
 	var heavy := ""
 	for id in ALL:
-		if ALL[id]["god"] != god:
+		if ALL[id]["god"] != god or not available_now(id):
 			continue
 		if is_heavy(id):
 			if not owned.has(id):
@@ -154,7 +163,7 @@ static func gods_with_boons(owned: Dictionary, for_room: int = 99) -> Array:
 static func set_offers(taken_blessings: Array) -> Array:
 	var blessings := []
 	for b in SET_BLESSINGS:
-		if not taken_blessings.has(b):
+		if not taken_blessings.has(b) and available_now(b):
 			blessings.append(b)
 	blessings.shuffle()
 	var curses: Array = SET_CURSES.keys()

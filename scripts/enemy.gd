@@ -26,7 +26,8 @@ var stagger_t := 0.0                   ## dopo un colpo il nemico barcolla: non 
 
 
 func _ready() -> void:
-	max_hp *= Run.enemy_hp_mult()
+	if not is_boss:
+		max_hp *= Run.enemy_hp_mult()
 	hp = max_hp
 	add_to_group("enemies")
 	t = randf() * 3.0

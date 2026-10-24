@@ -593,10 +593,10 @@ func _start_boss() -> void:
 
 
 ## Seconda fase: Ammit chiama uno sciame di scarabei.
-func _on_boss_summon(count: int) -> void:
-	for i in range(count):
+func _on_boss_summon(kinds: Array) -> void:
+	for i in range(kinds.size()):
 		spawning += 1
-		_spawn_after("scarab", _free_spot(), 0.8 + i * 0.15)
+		_spawn_after(kinds[i], _free_spot(), 0.8 + i * 0.15)
 
 
 ## Ammit ha sbattuto contro una colonna: la colonna crolla.
