@@ -330,7 +330,7 @@ func _pick_door(g):
 # ------------------------------------------------------------------ menu dei doni
 
 func _menu(g) -> void:
-	var btns: Array = g.menu.find_children("*", "Button", true, false)
+	var btns: Array = g.menu.find_children("*", "Button", true, false).filter(func(b): return b.has_meta("text"))
 	if btns.is_empty():
 		return
 	var best = btns[0]
