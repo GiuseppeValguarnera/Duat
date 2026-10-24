@@ -74,7 +74,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			if st <= 0.0:
 				state = "strike"
 				st = strike_time
-				Sfx.play_at("mummy_lunge", global_position, 0.05)
+				Sfx.play_at("serpent_strike", global_position, 0.05)
 			return -aim * 25.0
 		"strike":
 			if st <= 0.0:
@@ -82,7 +82,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 					second_strike = true
 					state = "windup"
 					st = strike_windup * 0.7
-					Sfx.play_at("mummy_windup", global_position, 0.05)
+					Sfx.play_at("serpent_hiss", global_position, 0.1)
 					return Vector2.ZERO
 				second_strike = false
 				_next(0.7)
@@ -99,6 +99,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				state = "under"
 				st = burrow_time
 				_set_buried(true)
+				Sfx.play_at("serpent_burrow", global_position, 0.1)
 			return Vector2.ZERO
 		"under":
 			if st <= 0.0 or (to != Vector2.ZERO and to.length() < 10.0):
@@ -133,11 +134,11 @@ func _choose(to: Vector2) -> void:
 	if d < 140.0 and r < 0.5:
 		state = "windup"
 		st = strike_windup
-		Sfx.play_at("mummy_windup", global_position, 0.05)
+		Sfx.play_at("serpent_hiss", global_position, 0.05)
 	elif r < 0.75:
 		state = "spit"
 		st = 0.55
-		Sfx.play_at("priest_cast", global_position, 0.05)
+		Sfx.play_at("cobra_hiss", global_position, 0.05)
 	else:
 		state = "dive"
 		st = 0.5
@@ -145,7 +146,7 @@ func _choose(to: Vector2) -> void:
 
 
 func _venom() -> void:
-	Sfx.play_at("orb", global_position, 0.1)
+	Sfx.play_at("cobra_spit", global_position, 0.1)
 	var n := venom_count + (2 if enraged else 0)
 	var spread := deg_to_rad(70.0 if enraged else 55.0)
 	for i in range(n):
@@ -164,7 +165,7 @@ func _erupt() -> void:
 	_set_buried(false)
 	Fx.shake(8.0)
 	Fx.burst(global_position, Color(0.85, 0.72, 0.45), 40, 180.0)
-	Sfx.play_at("charge", global_position, 0.05)
+	Sfx.play_at("serpent_erupt", global_position, 0.05)
 	var player = get_tree().get_first_node_in_group("player")
 	if player != null and not player.dead and player.global_position.distance_to(global_position) < erupt_radius:
 		player.take_damage(erupt_damage, global_position, self)

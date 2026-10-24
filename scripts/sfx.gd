@@ -19,7 +19,10 @@ const SOUNDS := {
 	"scarab_step": [-6.0, "nemici", 70], "mummy_step": [-5.0, "nemici", 140],
 	"mummy_windup": [-2.0, "nemici"], "mummy_lunge": [-2.0, "nemici"],
 	"priest_cast": [-3.0, "nemici"], "orb": [-2.0, "nemici"], "orb_pop": [-6.0, "nemici", 60],
-	"spikes": [-3.0, "trappole"], "dart": [-2.0, "trappole"],
+	"scorpion_step": [-6.0, "nemici", 90], "scorpion_windup": [-3.0, "nemici"], "scorpion_sting": [-2.0, "nemici"],
+	"cobra_hiss": [-3.0, "nemici"], "cobra_spit": [-3.0, "nemici"],
+	"serpent_hiss": [0.0, "nemici"], "serpent_strike": [0.0, "nemici"], "serpent_burrow": [0.0, "nemici"], "serpent_erupt": [0.0, "nemici"],
+	"spikes": [-5.0, "trappole"], "dart": [-2.0, "trappole"],
 	"pickup": [0.0, "menu"], "boon": [0.0, "menu"], "door": [0.0, "menu"], "ui": [-4.0, "menu"],
 	"book": [0.0, "menu"], "page": [0.0, "menu"],
 }

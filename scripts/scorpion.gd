@@ -32,12 +32,12 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			step_t -= delta
 			if step_t <= 0.0:
 				step_t = randf_range(0.2, 0.32)
-				Sfx.play_at("scarab_step", global_position, 0.3)
+				Sfx.play_at("scorpion_step", global_position, 0.3)
 			if d < sting_range and st <= 0.0:
 				state = "windup"
 				st = sting_windup
 				sting_dir = u
-				Sfx.play_at("mummy_windup", global_position, 0.25)
+				Sfx.play_at("scorpion_windup", global_position, 0.2)
 				return Vector2.ZERO
 			# da vicino gira intorno al giocatore, da lontano si avvicina
 			if d < 70.0:
@@ -61,7 +61,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 
 
 func _sting(to: Vector2) -> void:
-	Sfx.play_at("bite", global_position, 0.2)
+	Sfx.play_at("scorpion_sting", global_position, 0.2)
 	if to.length() > sting_range + 8.0 or absf(sting_dir.angle_to(to)) > deg_to_rad(60.0):
 		return
 	var player = get_tree().get_first_node_in_group("player")

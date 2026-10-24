@@ -147,7 +147,7 @@ I nemici colpiti barcollano per un terzo di secondo: non si muovono e non fanno 
 
 ## Le divinità parlano
 
-**La scelta dei doni.** In alto c'è il ritratto del dio (disegnato alla maniera dei rilievi: falco, leonessa, ibis, gatta, coccodrillo...) che si anima mentre parla, e le sue parole compaiono man mano. Sotto, le carte sono **papiri**: nomi in Cinzel, testi in Macondo (tratto da pennello, ma leggibile), titoli grandi in Cinzel Decorative con un riflesso d'oro che scorre (tutti font OFL): etichetta, nome, descrizione, prezzo e in fondo il **riassunto** (▲ cosa guadagni, ▼ cosa paghi), così dopo la prima lettura si sceglie a colpo d'occhio. Quando prendi il dono: lampo del colore del dio, anello di luce attorno a te, scintille e il nome del dono al centro.
+**La scelta dei doni.** In alto c'è il ritratto del dio, dipinto alla maniera egizia (profilo, occhio con il kohl, collare usekh, corone e simboli di ognuno: la doppia corona di Horus, il disco di Ra, la luna di Thoth, il trono di Iside...). I ritratti sono disegnati in SVG da `tools/portraits/make_portraits.py` e trasformati in PNG da `tools/portraits/render.js`; il busto esce dal medaglione e si anima mentre parla, e le sue parole compaiono man mano. Sotto, le carte sono **papiri**: nomi in Cinzel, testi in Macondo (tratto da pennello, ma leggibile), titoli grandi in Cinzel Decorative con un riflesso d'oro che scorre (tutti font OFL): etichetta, nome, descrizione, prezzo e in fondo il **riassunto** (▲ cosa guadagni, ▼ cosa paghi), così dopo la prima lettura si sceglie a colpo d'occhio. Quando prendi il dono: lampo del colore del dio, anello di luce attorno a te, scintille e il nome del dono al centro.
 
 Ogni volta che un dio ti offre un dono, ti parla. La prima volta si presenta; poi, a ogni incontro, racconta un pezzo del suo mito (Ra e il serpente Apophis, Iside che ricompone Osiride, Thoth che vince cinque giorni alla Luna, i gatti sacri di Bastet...), una volta sola. Quando ha raccontato tutto, risponde con frasi brevi. Le storie sono in `scripts/lore.gd`: sono fatti della mitologia e della storia egizia, semplificati ma non inventati. Ogni dio ha la sua voce (Ra solenne e cosmico, Sekhmet feroce, Thoth misurato, Bastet regale, Sobek lento, Iside materna, Set sprezzante) e parla sempre in prima persona: i fatti moderni, come le statue di Sekhmet nei musei, li racconta come profezie.
 
@@ -179,6 +179,8 @@ I pesi sono in `scripts/weights.gd`.
 Il Sekhem è il dono di **Ammit**: si sblocca per sempre la prima volta che la sconfiggi (salvato in `user://duat_save.cfg`). Dalla run successiva si carica facendo e subendo danni. Quando è pieno attivi la **Forma Divina** per 6 secondi: onda d'urto iniziale, +50% ai danni del khopesh e solo il 30% dei danni subiti.
 
 ## Suoni
+
+Spuntoni, mummie, scorpioni, cobra e Serpente hanno suoni costruiti apposta (`tools/synth_sfx.py`): lastra che scatta e lame che escono, bende che sfregano e rantolo, zampette di chitina, sibili, sabbia che si apre.
 
 I suoni vengono dai pacchetti CC0 di [Kenney](https://kenney.nl/assets/category:Audio) (*Impact Sounds*, *Interface Sounds*, *RPG Audio*): uso libero anche commerciale. Crediti in `assets/sfx/CREDITS.md`.
 

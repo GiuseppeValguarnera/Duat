@@ -675,7 +675,7 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 	if god != "":
 		var portrait := GodPortrait.new()
 		portrait.god = god
-		portrait.custom_minimum_size = Vector2(54, 54) if Fx.mobile else Vector2(64, 64) * Fx.ui
+		portrait.custom_minimum_size = Vector2(66, 66) if Fx.mobile else Vector2(84, 84) * Fx.ui
 		portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		head.add_child(portrait)
 		var stop := get_tree().create_timer(maxf(1.2, speech.length() * 0.025), true, false, true)
@@ -691,7 +691,7 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 	var title := UiStyle.heading(title_text, 15, title_color)
 	words.add_child(title)
 	if speech != "":
-		var said := UiStyle.label("«%s»" % speech, 8 if Fx.mobile else 10, title_color.lerp(Color(0.97, 0.93, 0.85), 0.65), false, vw - 64.0 * Fx.ui - 70.0)
+		var said := UiStyle.label("«%s»" % speech, 8 if Fx.mobile else 10, title_color.lerp(Color(0.97, 0.93, 0.85), 0.65), false, vw - (66.0 if Fx.mobile else 84.0 * Fx.ui) - 70.0)
 		said.add_theme_color_override("font_outline_color", Color(0, 0, 0))
 		said.add_theme_constant_override("outline_size", 3)
 		said.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING

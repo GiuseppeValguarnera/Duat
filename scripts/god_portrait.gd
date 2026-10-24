@@ -25,7 +25,41 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 
+var tex: Texture2D
+
+
 func _draw() -> void:
+	if tex == null and ResourceLoader.exists("res://assets/portraits/%s.png" % god):
+		tex = load("res://assets/portraits/%s.png" % god)
+	if tex != null:
+		_draw_painted()
+		return
+	_draw_simple()
+
+
+## Il ritratto dipinto (assets/portraits, disegnato in tools/portraits): il busto esce dal
+## medaglione, la testa e la corona sopra il bordo. Mentre parla l'alone pulsa e il busto si muove.
+func _draw_painted() -> void:
+	var s := size.x / 100.0
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2(s, s))
+	var col: Color = Boons.god_color(god)
+	var pulse := 0.5 + 0.5 * sin(t * (6.0 if talking else 1.4))
+	draw_circle(Vector2(50, 54), 50, Color(col, 0.18 + 0.14 * pulse))
+	for i in range(16):
+		var a := TAU * i / 16.0 + t * 0.25
+		draw_line(Vector2(50, 54) + Vector2.from_angle(a) * 42, Vector2(50, 54) + Vector2.from_angle(a) * (49 + 3 * pulse), Color(col.lightened(0.3), 0.45), 2.0)
+	draw_circle(Vector2(50, 54), 42, Color(0.05, 0.05, 0.12))
+	draw_circle(Vector2(50, 54), 42, Color(col, 0.22 + (0.12 * pulse if talking else 0.0)))
+	draw_arc(Vector2(50, 54), 42, 0, TAU, 56, GOLD, 2.5)
+	var bob := sin(t * (9.0 if talking else 1.6)) * (1.4 if talking else 0.7)
+	var breath := 1.0 + 0.012 * sin(t * 1.6)
+	var w := 124.0 * breath
+	var light := Color(1, 1, 1) if not talking else Color(1.0 + 0.12 * pulse, 1.0 + 0.1 * pulse, 1.0)
+	draw_texture_rect(tex, Rect2(50 - w / 2.0, 104 - w + bob, w, w), false, light)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+func _draw_simple() -> void:
 	var s := size.x / 100.0                 # disegnato su una griglia di 100x100
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(s, s))
 	var col: Color = Boons.god_color(god)

@@ -31,7 +31,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			if st <= 0.0:
 				state = "hood"
 				st = spit_windup
-				Sfx.play_at("priest_cast", global_position, 0.2)
+				Sfx.play_at("cobra_hiss", global_position, 0.2)
 				return Vector2.ZERO
 			var d := to.length()
 			if d < keep_min:
@@ -59,6 +59,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		"dive":
 			if st <= 0.0:
 				_hide(true)
+				Sfx.play_at("serpent_burrow", global_position, 0.3)
 				state = "under"
 				st = 1.1
 			return Vector2.ZERO
@@ -77,7 +78,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 
 
 func _spit() -> void:
-	Sfx.play_at("orb", global_position, 0.25)
+	Sfx.play_at("cobra_spit", global_position, 0.25)
 	var bolt: Area2D = BoltScript.new()
 	bolt.direction = aim
 	bolt.speed = 210.0

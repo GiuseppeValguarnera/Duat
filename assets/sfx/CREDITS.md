@@ -9,3 +9,9 @@ Tutti i suoni vengono dai pacchetti di **Kenney** (https://kenney.nl), con licen
 
 Sono stati scelti, rinominati, in parte modificati (velocità, eco, filtri) e normalizzati
 con `tools/convert_sfx.py`.
+
+## Suoni creati per Duat (`tools/synth_sfx.py`)
+
+Spuntoni, mummie (passi e carica), scorpioni, cobra e Serpente della Porta sono costruiti
+mescolando suoni Kenney CC0 (rallentati, filtrati, sovrapposti) con rumore sintetico generato
+da ffmpeg (sibili, rantoli, sabbia). Stessa licenza: CC0.
