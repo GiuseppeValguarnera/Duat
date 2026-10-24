@@ -38,13 +38,13 @@ Il gioco parte qui, e qui torni dopo ogni discesa.
 
 | Capitolo | Effetto | Costo |
 | --- | --- | --- |
-| 17 · Uscire al giorno | +15 vita massima | 30 Ka |
-| 89 · Il ritorno del Ba | Occhio di Horus 15% più rapido | 30 Ka |
-| 154 · Il corpo incorrotto | L'Acqua del Nilo cura il 40% invece del 30% | 35 Ka |
-| 99 · La barca di Ra | Tesori di Ka +30% | 40 Ka |
-| 125 · La confessione negativa | +15% danni sopra l'80% di vita | 50 Ka |
-| 30 · Il cuore che non testimonia | Una volta per discesa sopravvivi a un colpo mortale | 60 Ka |
-| 6 · Gli Ushabti | Una statuetta ti segue e colpisce il nemico più vicino ogni 2 s | 70 Ka |
+| 17 · Uscire al giorno | +15 vita massima | 60 Ka |
+| 89 · Il ritorno del Ba | Occhio di Horus 15% più rapido | 60 Ka |
+| 154 · Il corpo incorrotto | L'Acqua del Nilo cura il 40% invece del 30% | 70 Ka |
+| 99 · La barca di Ra | Tesori di Ka +30% | 80 Ka |
+| 125 · La confessione negativa | +15% danni sopra l'80% di vita | 100 Ka |
+| 30 · Il cuore che non testimonia | Una volta per discesa sopravvivi a un colpo mortale | 120 Ka |
+| 6 · Gli Ushabti | Una statuetta ti segue e colpisce il nemico più vicino ogni 2 s | 140 Ka |
 
 I numeri sono quelli dei veri capitoli del Libro dei Morti, e ognuno nel Libro mostra anche a cosa serviva davvero. Per aggiungerne uno: una riga in `ALL` in `scripts/chapters.gd`, poi l'effetto dove serve usando `Run.chap("id")`.
 
@@ -121,7 +121,26 @@ Ogni volta che un dio ti offre un dono, ti parla. La prima volta si presenta; po
 
 ## Patti di Set
 
-A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza scegli un patto: una **maledizione** che dura le 2 stanze successive (nemici più veloci, più danni subiti, niente Occhio, scatto più lento) e poi una **benedizione** permanente per tutta la run. Tempesta Interiore (Sekhem) compare solo dopo aver sbloccato il Sekhem.
+A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza scegli un patto: una **maledizione** che dura le 2 stanze successive e poi una **benedizione** permanente per tutta la run. Tempesta Interiore (Sekhem) compare solo dopo aver sbloccato il Sekhem.
+
+Le maledizioni colpiscono qualunque stile di gioco, così non si possono aggirare: nemici più veloci del 30%, +50% di danni subiti, nemici con il 40% di vita in più, cure dimezzate, oppure 1 vita persa ogni 2 secondi mentre combatti. Se il patto arriva dopo la stanza 4, la maledizione dura anche contro Ammit (la carta lo dice).
+
+## Il Peso del Cuore
+
+Dopo la prima vittoria su Ammit, la **bilancia di Ma'at** al centro della Sala diventa interattiva: prima di scendere puoi posarvi dei pesi. Ogni livello di peso rende la discesa più dura e ti fa custodire il **10% di Ka in più**. Il gioco ricorda il peso più alto con cui hai battuto Ammit. È la sfida per chi ha già vinto, sul modello del Patto di Punizione di Hades.
+
+| Peso | Effetto | Livelli |
+| --- | --- | --- |
+| Piume di piombo | Nemici +20% vita per livello | 2 |
+| Zanne affilate | +20% danni subiti per livello | 2 |
+| Le orde del Duat | +25% nemici per ondata per livello | 2 |
+| Il sangue dei campioni | Élite il doppio delle volte, dalla stanza 2 | 1 |
+| Sabbie traditrici | Trappole dalla prima stanza, e di più | 1 |
+| Il Nilo in secca | L'Acqua del Nilo cura la metà | 1 |
+| Il silenzio degli dèi | Due doni tra cui scegliere invece di tre | 1 |
+| La fame di Ammit | Ammit +30% vita, ogni Ruggito libera due onde | 1 |
+
+I pesi sono in `scripts/weights.gd`.
 
 ## Sekhem e Forma Divina
 
@@ -154,6 +173,17 @@ Alla morte la musica si abbassa, alla vittoria torna il tema della Sala. Crediti
 
 Alla morte o alla vittoria compare un riepilogo (tempo, nemici, danni, doni, Ka). Il Ka raccolto viene **custodito** tra una run e l'altra nel salvataggio e si spende nel Libro dei Morti. Premi R o Start per tornare alla Sala del Giudizio.
 
+## Playtest automatico
+
+`tools/playtest/` contiene un bot che gioca davvero (senza invulnerabilità) con sette stili di giocatore: novizio, casual, veterano, speedrunner, min-maxer, prudente, cecchino. Registra vittorie, stanze raggiunte, danni subiti per fonte, tempi e doni scelti.
+
+```
+python3 tools/playtest/run_playtest.py --godot /percorso/di/Godot --seeds 16
+python3 tools/playtest/run_playtest.py --godot ... --personas veterano --env "DUAT_ANUBI=Cuore di Pietra"
+```
+
+Il bot gioca peggio di una persona, quindi serve per i **confronti** (stesse partite, cambia una sola scelta), non per misurare la difficoltà assoluta. Con lui sono stati bilanciati i patti di Set, i doni di Anubi e il Peso del Cuore: per esempio Cuore di Pietra a +30 vita portava il bot da 1 a 7 vittorie su 16, ora è a +12.
+
 ## Regolare la sensazione di gioco
 
 Apri una scena in `scenes/`, seleziona il nodo principale e cambia i valori nell'**Ispettore**: velocità, vita, danno, tempi di ricarica. Le tre mosse della combo sono nella tabella `COMBO` in `scripts/player.gd`.
@@ -163,8 +193,10 @@ Apri una scena in `scenes/`, seleziona il nodo principale e cambia i valori nell
 ```
 scenes/   hub.tscn (la Sala del Giudizio), game.tscn (la run), player.tscn, mummy.tscn, scarab.tscn, priest.tscn
 tools/    convert_sfx.py  prepara i suoni dai pacchetti di Kenney
+          playtest/    bot di playtest automatico
 scripts/  hub.gd       la Sala del Giudizio      dialogue.gd   battute di Anubi
           lore.gd      storie degli dèi e Papiri di Thoth
+          weights.gd   il Peso del Cuore
           music.gd     musica di sottofondo
           chapters.gd  Libro dei Morti           ushabti.gd    la statuetta del capitolo 6
           meta.gd      salvataggio permanente     sfx.gd        suoni e volumi

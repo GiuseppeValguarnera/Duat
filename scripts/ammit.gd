@@ -55,6 +55,8 @@ var waves_left := 0                    # onde ancora da lanciare in questo ruggi
 
 func _ready() -> void:
 	is_boss = true
+	if Weights.rank("fame") > 0:
+		max_hp *= 1.3                 # Peso del Cuore: la fame di Ammit
 	super._ready()
 
 
@@ -150,7 +152,7 @@ func _choose_attack(to: Vector2) -> void:
 	else:
 		state = "roar"
 		st = roar_windup
-		waves_left = 2 if enraged else 1
+		waves_left = 2 if (enraged or Weights.rank("fame") > 0) else 1
 
 
 ## Durante la carica controlla se ha sbattuto: contro una colonna resta stordita.

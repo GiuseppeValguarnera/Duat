@@ -167,7 +167,10 @@ func _process(delta: float) -> void:
 			var n := Lore.count_seen()
 			prompt.text = "%s · Leggi i Papiri di Thoth (%d su %d)" % [key, n.x, n.y]
 		"bilancia":
-			prompt.text = "La bilancia di Ma'at · %d discese, %d Ka custodito, capitoli attivi %d/%d" % [Meta.runs, Meta.ka_bank, Meta.chapters_equipped.size(), Chapters.slots()]
+			if Weights.unlocked():
+				prompt.text = "%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)" % [key, Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0))]
+			else:
+				prompt.text = "La bilancia di Ma'at · Sconfiggi Ammit per poter posare i tuoi pesi"
 		_:
 			prompt.text = "Il cancello del Duat è a nord" if player.global_position.y < TOP + 90.0 else ""
 	prompt.visible = prompt.text != ""
@@ -191,6 +194,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			_open_book("libro")
 		elif near == "papiri":
 			_open_book("papiri")
+		elif near == "bilancia" and Weights.unlocked():
+			_open_book("pesi")
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("pause"):
 		# per uscire serve una seconda pressione entro 2 secondi, così non si chiude per sbaglio
@@ -242,6 +247,8 @@ func _open_book(kind: String = "libro") -> void:
 	add_child(book)
 	if kind == "libro":
 		_fill_book()
+	elif kind == "pesi":
+		_fill_weights()
 	else:
 		_fill_papiri()
 
@@ -375,6 +382,40 @@ func _on_chapter_pressed(id: String) -> void:
 	_fill_book(id)
 
 
+# ---------------------------------------------------------------- Il Peso del Cuore
+
+func _fill_weights(focus_id: String = "") -> void:
+	var record := "nessuno" if Meta.best_weight < 0 else str(Meta.best_weight)
+	var left := _frame("Il Peso del Cuore", "Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Ammit: %s" % [Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0)), record], 250)
+	var first: Button = null
+	for id in Weights.ALL:
+		var w: Dictionary = Weights.ALL[id]
+		var r := Weights.rank(id)
+		var pips := ""
+		for i in range(int(w["max"])):
+			pips += "●" if i < r else "○"
+		var b := _list_button(left, "%s   %s" % [pips, w["name"]], Color(0.95, 0.55, 0.45) if r > 0 else Color(0.95, 0.9, 0.78))
+		b.pressed.connect(_on_weight_pressed.bind(id))
+		b.focus_entered.connect(_show_weight.bind(id))
+		b.mouse_entered.connect(_show_weight.bind(id))
+		if first == null or id == focus_id:
+			first = b
+	first.grab_focus.call_deferred()
+
+
+func _show_weight(id: String) -> void:
+	var w: Dictionary = Weights.ALL[id]
+	page_title.text = w["name"]
+	page_body.text = "%s\n\nLivello %d di %d. Premi per cambiarlo." % [w["desc"], Weights.rank(id), w["max"]]
+	page_lore.text = "Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta."
+
+
+func _on_weight_pressed(id: String) -> void:
+	Weights.cycle(id)
+	Sfx.play("page" if Weights.rank(id) > 0 else "ui", 0.0)
+	_fill_weights(id)
+
+
 # ---------------------------------------------------------------- Papiri di Thoth
 
 func _fill_papiri() -> void:
@@ -477,7 +518,7 @@ func _draw() -> void:
 
 func _draw_scale(p: Vector2) -> void:
 	var gold := Color(0.94, 0.72, 0.3)
-	var tilt := sin(t * 0.8) * 3.0
+	var tilt := sin(t * 0.8) * 3.0 - minf(Weights.total(), 8) * 1.2   # i pesi abbassano il piatto del cuore
 	draw_rect(Rect2(p.x - 12, p.y - 2, 24, 6), Color(0.6, 0.45, 0.2))
 	draw_rect(Rect2(p.x - 1.5, p.y - 34, 3, 32), gold)
 	draw_line(Vector2(p.x - 22, p.y - 32 - tilt), Vector2(p.x + 22, p.y - 32 + tilt), gold, 2.0)

@@ -18,6 +18,8 @@ var last_room := 0
 var last_killer := ""                 ## chi ti ha ucciso l'ultima volta: "mummy", "scarab", "priest", "ammit", "trappola"
 var last_god := ""                    ## il dio da cui hai preso più doni nell'ultima discesa
 var last_pacts := 0                   ## quanti patti di Set hai stretto nell'ultima discesa
+var weights := {}                     ## Peso del Cuore: livello di ogni peso (vedi weights.gd)
+var best_weight := -1                 ## il Peso più alto con cui hai battuto Ammit
 
 
 func _ready() -> void:
@@ -36,6 +38,8 @@ func _ready() -> void:
 		last_killer = cfg.get_value("storia", "ucciso_da", "")
 		last_god = cfg.get_value("storia", "dio_preferito", "")
 		last_pacts = cfg.get_value("storia", "patti", 0)
+		weights = cfg.get_value("bilancia", "pesi", {})
+		best_weight = cfg.get_value("bilancia", "record", -1)
 
 
 func save() -> void:
@@ -53,4 +57,6 @@ func save() -> void:
 	cfg.set_value("storia", "ucciso_da", last_killer)
 	cfg.set_value("storia", "dio_preferito", last_god)
 	cfg.set_value("storia", "patti", last_pacts)
+	cfg.set_value("bilancia", "pesi", weights)
+	cfg.set_value("bilancia", "record", best_weight)
 	cfg.save(PATH)

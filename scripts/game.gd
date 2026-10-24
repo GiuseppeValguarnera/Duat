@@ -110,7 +110,7 @@ func start_room(reward: Dictionary) -> void:
 	for r in obstacles:
 		_solid(r)
 	traps_pos.clear()
-	if not boss_room and Run.room >= TRAPS_FROM_ROOM:
+	if not boss_room and Run.room >= TRAPS_FROM_ROOM - Weights.rank("sabbie"):
 		_place_traps()
 	queue_redraw()
 
@@ -134,7 +134,8 @@ func start_room(reward: Dictionary) -> void:
 		_start_boss()
 		return
 	var r := Run.room
-	waves = [_make_wave(4 + r * 2, r >= 2), _make_wave(3 + r * 2, r >= 2)]
+	var horde := 1.0 + 0.25 * Weights.rank("orde")
+	waves = [_make_wave(roundi((4 + r * 2) * horde), r >= 2), _make_wave(roundi((3 + r * 2) * horde), r >= 2)]
 	_spawn_wave(waves.pop_front(), 1.0)
 
 
@@ -179,7 +180,8 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 	var e: Enemy = ENEMIES[kind].instantiate()
 	e.position = pos
 	# dalla terza stanza alcune mummie e alcuni sacerdoti sono élite
-	if Run.room >= 3 and Run.room <= Run.ROOMS_PER_RUN and kind != "scarab" and randf() < 0.08 + 0.03 * Run.room:
+	var elite_w := Weights.rank("elite")
+	if Run.room >= 3 - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind != "scarab" and randf() < (0.08 + 0.03 * Run.room) * (1 + elite_w):
 		e.elite = true
 		Music.play("elite")           # una stanza con nemici élite cambia musica fino alla prossima
 	world.add_child(e)
@@ -415,6 +417,8 @@ func _show_boon_menu(god: String) -> void:
 			options[2] = duos.pick_random()
 		else:
 			options.append(duos.pick_random())
+	if Weights.rank("silenzio") > 0 and options.size() > 2:
+		options.resize(2)             # Peso del Cuore: il silenzio degli dèi
 	var cards := []
 	for id in options:
 		var lvl := Run.level(id) + 1
@@ -483,13 +487,15 @@ func _show_set_menu() -> void:
 		Run.ka += roundi(25 * Run.ka_mult())
 		_open_doors()
 		return
-	_open_choice("Set ti propone un patto", Boons.god_color("set"), "Prima la maledizione, poi la ricompensa", cards, Lore.speech("set"))
+	var sub := "Prima la maledizione, poi la ricompensa"
+	if Run.room + 2 > Run.ROOMS_PER_RUN:
+		sub = "ATTENZIONE: la maledizione ti seguirà anche contro Ammit"
+	_open_choice("Set ti propone un patto", Boons.god_color("set"), sub, cards, Lore.speech("set"))
 
 
 func _choose_pact(curse: String, blessing: String) -> void:
 	Sfx.play("boon", 0.0)
 	Run.add_pact(curse, blessing)
-	Run.ka += roundi(25 * Run.ka_mult())
 	_close_choice()
 	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color("set"), 30, 140.0)
 	_banner("Maledizione di Set", Boons.SET_CURSES[curse]["desc"], Boons.god_color("set"))
@@ -787,6 +793,8 @@ func _boss_defeated() -> void:
 		if c is Enemy and not c.dead:
 			c.die()
 	Meta.ammit_wins += 1
+	if Weights.unlocked() and Weights.total() > Meta.best_weight:
+		Meta.best_weight = Weights.total()
 	var first_win := not Meta.sekhem_unlocked
 	Meta.sekhem_unlocked = true
 	Meta.save()
@@ -847,7 +855,8 @@ func _build_boss_bar() -> void:
 
 ## Riepilogo della discesa. Salva anche il Ka raccolto, che resta tra una run e l'altra.
 func _end_run_summary() -> String:
-	Meta.ka_bank += Run.ka
+	var banked := roundi(Run.ka * Weights.ka_mult())
+	Meta.ka_bank += banked
 	Meta.last_killer = Run.last_hit
 	Meta.last_pacts = Run.blessings.size()
 	var count := {}
@@ -864,7 +873,7 @@ func _end_run_summary() -> String:
 	var secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
 	var lines := [
 		"Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d" % [floori(secs / 60.0), secs % 60, Run.kills, int(Run.damage_dealt)],
-		"Doni raccolti %d   ·   Ka raccolto %d   ·   Ka custodito %d" % [Run.boons.size() + Run.blessings.size(), Run.ka, Meta.ka_bank],
+		"Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d" % [Run.boons.size() + Run.blessings.size(), banked, "" if Weights.total() == 0 else " (Peso del Cuore +%d%%)" % int(round((Weights.ka_mult() - 1.0) * 100.0)), Meta.ka_bank],
 	]
 	return "\n".join(lines)
 
@@ -894,8 +903,6 @@ func _process(_delta: float) -> void:
 		return
 
 	var eye_txt := "pronto" if player.eye_cd <= 0.0 else "%.1fs" % player.eye_cd
-	if Run.cursed("no_eye"):
-		eye_txt = "bloccato da Set"
 	var sek := "PRONTO (Q / LT)" if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
 	if player.divine_t > 0.0:
 		sek = "FORMA DIVINA %.1fs" % player.divine_t
@@ -967,7 +974,7 @@ func _spot_ok(p: Vector2) -> bool:
 func _place_traps() -> void:
 	var cx := ROOM.size.x / 2.0
 	var mid_y := (TOP + ROOM.size.y - WALL) / 2.0
-	var spikes := clampi(Run.room, 2, 4)
+	var spikes := clampi(Run.room, 2, 4) + 2 * Weights.rank("sabbie")
 	var tries := 0
 	while traps_pos.size() < spikes and tries < 80:
 		tries += 1
@@ -989,7 +996,7 @@ func _place_traps() -> void:
 		s.t = randf() * 2.0
 		world.add_child(s)
 		s.position = p
-	if Run.room >= TRAPS_FROM_ROOM + 1:
+	if Run.room >= TRAPS_FROM_ROOM + 1 - Weights.rank("sabbie"):
 		for i in range(randi_range(1, 2)):
 			var left := randf() < 0.5
 			var y := randf_range(TOP + 40.0, ROOM.size.y - WALL - 40.0)

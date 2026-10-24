@@ -81,7 +81,7 @@ func add_boon(id: String) -> void:
 		max_hp -= 5.0
 		hp = minf(hp, max_hp)
 	if id == "anubi_light":
-		max_hp -= 10.0
+		max_hp -= 5.0
 		hp = minf(hp, max_hp)
 
 
@@ -113,8 +113,8 @@ func room_cleared() -> void:
 func grant_blessing(id: String) -> void:
 	blessings.append(id)
 	if id == "set_vigor":
-		max_hp += 15.0
-		hp += 15.0
+		max_hp += 12.0
+		hp += 12.0
 	blessing_granted.emit(id)
 
 
@@ -160,7 +160,7 @@ func khopesh_mult() -> float:
 	if has("sobek_heavy"):
 		m *= 1.4
 	if has("iside_heavy"):
-		m *= 0.8
+		m *= 0.75
 	return m * all_damage_mult()
 
 
@@ -211,7 +211,7 @@ func move_mult() -> float:
 	if has("anubi_light"):
 		m *= 1.1
 	if has("anubi_stone"):
-		m *= 0.92
+		m *= 0.94
 	if has("sobek_heavy"):
 		m *= 0.85
 	if has("anubi_linen"):
@@ -220,7 +220,7 @@ func move_mult() -> float:
 
 
 func dash_cooldown_mult() -> float:
-	var m := 2.0 if cursed("slow_dash") else 1.0
+	var m := 1.0
 	if has("anubi_light"):
 		m *= 1.0 - val("anubi_light") / 100.0
 	m *= 1.0 - val("bastet_step") / 100.0
@@ -231,8 +231,9 @@ func dash_cooldown_mult() -> float:
 
 func damage_taken_mult() -> float:
 	var m := 1.5 if cursed("fragile") else 1.0
+	m *= 1.0 + 0.2 * Weights.rank("zanne")
 	if has("anubi_scale"):
-		m *= 1.15
+		m *= 1.1
 	m *= 1.0 - val("sobek_skin") / 100.0
 	m *= low_hp_guard()
 	if has("anubi_linen"):
@@ -245,6 +246,9 @@ func enemy_hp_mult() -> float:
 	var m := 1.0 + 0.06 * maxi(0, mini(room, ROOMS_PER_RUN) - 1)
 	if has("anubi_guide"):
 		m *= 1.05
+	if cursed("tough"):
+		m *= 1.4
+	m *= 1.0 + 0.2 * Weights.rank("piombo")
 	return m
 
 
@@ -271,7 +275,10 @@ func treasure_mult() -> float:
 
 ## Quanto cura l'Acqua del Nilo, in frazione della vita massima.
 func nile_heal() -> float:
-	return 0.4 if chap("c154") else 0.3
+	var h := 0.4 if chap("c154") else 0.3
+	if Weights.rank("avarizia") > 0:
+		h *= 0.5
+	return h
 
 
 func ka_mult() -> float:
@@ -314,7 +321,10 @@ func low_hp_guard() -> float:
 
 
 func heal_mult() -> float:
-	return 1.0 + val("iside_tears") / 100.0
+	var m := 1.0 + val("iside_tears") / 100.0
+	if cursed("thirst"):
+		m *= 0.5
+	return m
 
 
 func knock_mult() -> float:

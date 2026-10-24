@@ -104,6 +104,10 @@ static func story() -> Array:
 			"Dopo la tua vittoria ho guardato dentro il cuore che non so pesare. Vi ho trovato un segno, inciso male, quasi cancellato.",
 			"Un solo geroglifico: una canna fiorita. Non basta a leggere un nome. Ma prima, lì, non c'era nulla.",
 			"Il Libro dei Morti ora ti concede un capitolo in più. E Ammit ti ha lasciato il suo Sekhem."]},
+		{"id": "pesi1", "if": Meta.ammit_wins >= 1 and Meta.dialogue_seen.has("name1"), "lines": [
+			"Ora che hai abbattuto la Divoratrice, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.",
+			"Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.",
+			"Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente."]},
 		{"id": "deaths8", "if": Meta.runs >= 8, "lines": [
 			"Ogni volta che torni, Scriba, la bilancia trema. Come se avesse timore di te.",
 			"Non so il perché. E io conosco quasi ogni cosa."]},

@@ -121,7 +121,7 @@ func _physics_process(delta: float) -> void:
 		_start_dash(move)
 	if Input.is_action_pressed("attack") and atk_cd <= 0.0 and dash_t <= 0.0 and not Run.in_hub:
 		_swing()
-	if Input.is_action_just_pressed("special") and eye_cd <= 0.0 and not Run.cursed("no_eye") and not Run.in_hub:
+	if Input.is_action_just_pressed("special") and eye_cd <= 0.0 and not Run.in_hub:
 		_fire_eye()
 	if Input.is_action_just_pressed("super") and Run.sekhem_ready() and divine_t <= 0.0:
 		_divine_form()
@@ -310,13 +310,15 @@ func _divine_form() -> void:
 	Fx.shake(10.0)
 
 
-## Sete Insaziabile: perdi vita finché ci sono nemici, ma non può ucciderti.
+## Sete Insaziabile (e la maledizione di Set "bleed"): perdi vita finché ci sono nemici,
+## ma non può ucciderti.
 func _heavy_drain(delta: float) -> void:
-	if not Run.has("sekhmet_heavy") or get_tree().get_nodes_in_group("enemies").is_empty():
+	var drains := int(Run.has("sekhmet_heavy")) + int(Run.cursed("bleed"))
+	if drains == 0 or get_tree().get_nodes_in_group("enemies").is_empty():
 		return
-	drain_t -= delta
+	drain_t -= delta * drains
 	if drain_t <= 0.0:
-		drain_t = 3.0
+		drain_t = 2.0
 		if hp > 1.0:
 			hp -= 1.0
 			Run.hp = hp
