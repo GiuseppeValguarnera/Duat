@@ -201,11 +201,48 @@ func _draw_controls() -> void:
 			col = Color(0.5, 0.5, 0.55, 0.2)
 		draw_node.draw_circle(btn["pos"], btn["r"], col)
 		if btn["action"] == "special":
+			# l'Occhio di Horus sta sul suo pulsante: si riempie di blu mentre si ricarica,
+			# un pallino d'oro per ogni carica pronta
 			var pl = get_tree().get_first_node_in_group("player")
-			if pl != null and pl.eye_charges < Run.eye_charges() and pl.eye_cd > 0.0:
-				var k := 1.0 - clampf(pl.eye_cd / maxf(0.1, pl.eye_cd_max()), 0.0, 1.0)
-				draw_node.draw_arc(btn["pos"], btn["r"] - 3.0, -PI / 2.0, -PI / 2.0 + TAU * k, 32, Color(0.35, 0.8, 0.95, 0.85), 4.0)
+			if pl != null:
+				var c: Vector2 = btn["pos"]
+				var r: float = btn["r"]
+				var max_ch := Run.eye_charges()
+				if pl.eye_charges < max_ch and pl.eye_cd > 0.0:
+					var k := 1.0 - clampf(pl.eye_cd / maxf(0.1, pl.eye_cd_max()), 0.0, 1.0)
+					var pts := PackedVector2Array([c])
+					for i in range(25):
+						pts.append(c + Vector2.from_angle(-PI / 2.0 + TAU * k * i / 24.0) * (r - 2.0))
+					if k > 0.01:
+						draw_node.draw_colored_polygon(pts, Color(0.2, 0.36, 0.78, 0.55))
+				if pl.eye_ready():
+					draw_node.draw_circle(c, r - 2.0, Color(0.25, 0.55, 0.95, 0.35))
+				_wedjat(c + Vector2(0, -3), r / 14.0, Color(1, 0.95, 0.8, 0.95) if pl.eye_ready() else Color(0.6, 0.6, 0.65, 0.7))
+				if max_ch > 1:
+					for i in range(max_ch):
+						var pp := c + Vector2((i - (max_ch - 1) / 2.0) * 7.0, r + 5.0)
+						draw_node.draw_circle(pp, 2.6, Color(0, 0, 0, 0.8))
+						draw_node.draw_circle(pp, 2.0, Color(0.94, 0.72, 0.3) if i < pl.eye_charges else Color(0.3, 0.25, 0.2))
+				draw_node.draw_arc(c, r, 0.0, TAU, 32, Color(0.94, 0.72, 0.3, 0.9) if pl.eye_ready() else Color(1, 0.9, 0.7, 0.4), 2.0)
+				continue
 		draw_node.draw_arc(btn["pos"], btn["r"], 0.0, TAU, 32, Color(1, 0.9, 0.7, 0.6), 1.5)
 		var fs := Fx.fs(7 if btn["r"] < 20.0 else 8)
 		var w := font.get_string_size(btn["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		draw_node.draw_string(font, btn["pos"] + Vector2(-w / 2.0, fs / 2.0 - 1.0), btn["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 0.95, 0.85, 0.9))
+
+
+
+## L'Occhio di Horus disegnato sul pulsante (lo stesso dell'HUD).
+func _wedjat(c: Vector2, u: float, col: Color) -> void:
+	draw_node.draw_line(c + Vector2(-8, -6) * u, c + Vector2(8, -6.5) * u, col, 1.6 * u)
+	var eye := PackedVector2Array()
+	for i in range(13):
+		var k := i / 12.0
+		eye.append(c + Vector2(lerpf(-8, 8, k), -sin(k * PI) * 4.0) * u)
+	for i in range(13):
+		var k := 1.0 - i / 12.0
+		eye.append(c + Vector2(lerpf(-8, 8, k), sin(k * PI) * 2.5) * u)
+	draw_node.draw_polyline(eye, col, 1.4 * u)
+	draw_node.draw_circle(c + Vector2(0, -0.5) * u, 2.2 * u, col)
+	draw_node.draw_line(c + Vector2(-2, 2.5) * u, c + Vector2(-3, 8) * u, col, 1.4 * u)
+	draw_node.draw_arc(c + Vector2(3, 6) * u, 2.5 * u, -PI * 0.9, PI * 0.6, 10, col, 1.3 * u)

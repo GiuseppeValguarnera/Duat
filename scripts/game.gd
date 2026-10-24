@@ -20,11 +20,10 @@ const ENEMIES := {
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
 const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "trappola": "una trappola"}
-const SHOP_CHANCE := 0.25             ## probabilità di una porta del Traghettatore (oltre a quella dopo il guardiano)
 const SHOP_ITEMS := [
-	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 30},
-	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 55},
-	{"kind": "upgrade", "title": "Inchiostro di Thoth", "desc": "Un tuo dono a caso sale di livello", "price": 45},
+	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 20},
+	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
+	{"kind": "upgrade", "title": "Inchiostro di Thoth", "desc": "Un tuo dono a caso sale di livello", "price": 30},
 ]
 const PickupScript := preload("res://scripts/pickup.gd")
 const DecorScript := preload("res://scripts/room_decor.gd")
@@ -113,7 +112,7 @@ func _ready() -> void:
 		Run.apply_descent(d)
 		shops_visited = d.get("shops", 0)
 		bonus_boon = d.get("bonus", false)
-		Run.room = int(d["room"]) - 1
+		Run.room = int(d["room"]) - (0 if d.get("reward", {}).get("kind", "") == "shop" else 1)
 		start_room(d.get("reward", {"kind": "none"}))
 		_banner("Discesa ripresa", "Stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN] if Run.room <= Run.ROOMS_PER_RUN else "Ammit", Color(0.94, 0.72, 0.3))
 		return
@@ -344,7 +343,8 @@ func start_room(reward: Dictionary) -> void:
 	if reward.get("kind", "") == "tutorial_end":
 		_finish_tutorial()
 		return
-	Run.room += 1
+	if reward.get("kind", "") != "shop":
+		Run.room += 1                    # la barca del Traghettatore è una sosta, non una stanza
 	room_gen += 1
 	boss = null
 	current_reward = reward
@@ -582,11 +582,17 @@ func _on_pickup_collected(p: Area2D) -> void:
 
 
 func _open_doors() -> void:
+	# il Traghettatore compare solo prima del Serpente e prima di Ammit, con una porta sua accanto
+	var from_shop: bool = current_reward.get("kind", "") == "shop"
 	if Run.room >= Run.ROOMS_PER_RUN:
 		_add_door("n", {"kind": "boss"})
+		if not from_shop:
+			_add_door("w", {"kind": "shop"})
 		return
 	if Run.room + 1 == Run.GUARDIAN_ROOM:
 		_add_door("n", {"kind": "guardian"})
+		if not from_shop:
+			_add_door("w", {"kind": "shop"})
 		return
 	var sides: Array = [["w", "n", "e"], ["w", "e"], ["w", "n"], ["n", "e"]].pick_random()
 	var pool := []
@@ -600,10 +606,6 @@ func _open_doors() -> void:
 	# a volte Set apre una sua porta: prende il posto di una delle altre
 	if randf() < SET_DOOR_CHANCE and not Boons.set_offers(Run.blessings).is_empty():
 		pool.insert(0, {"kind": "set"})
-	# il Traghettatore: sempre dopo il guardiano, a volte nelle altre stanze (mai prima di Ammit)
-	var shop_ok: bool = shops_visited < 2 and Run.room + 1 < Run.ROOMS_PER_RUN and Run.room >= 2 and current_reward.get("kind", "") != "shop"
-	if shop_ok and (Run.room == Run.GUARDIAN_ROOM or randf() < SHOP_CHANCE):
-		pool.insert(0, {"kind": "shop"})
 	# prima del boss c'è sempre una porta che cura, insieme alle altre scelte
 	if Run.room + 1 == Run.ROOMS_PER_RUN:
 		sides = ["w", "n", "e"]
@@ -691,7 +693,7 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 	var title := UiStyle.heading(title_text, 15, title_color)
 	words.add_child(title)
 	if speech != "":
-		var said := UiStyle.label("«%s»" % speech, 8 if Fx.mobile else 10, title_color.lerp(Color(0.97, 0.93, 0.85), 0.65), false, vw - (66.0 if Fx.mobile else 84.0 * Fx.ui) - 70.0)
+		var said := UiStyle.label("«%s»" % speech, 8 if Fx.mobile else 10, title_color.lerp(Color(0.97, 0.93, 0.85), 0.65), false, vw - (66.0 if Fx.mobile else 84.0 * Fx.ui) - 70.0 - (100.0 if not Run.boons.is_empty() or not Run.blessings.is_empty() else 0.0))
 		said.add_theme_color_override("font_outline_color", Color(0, 0, 0))
 		said.add_theme_constant_override("outline_size", 3)
 		said.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
@@ -709,6 +711,17 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 	row.add_theme_constant_override("separation", int(8 * Fx.ui))
 	box.add_child(row)
 
+	# i doni che hai già, per vedere le combinazioni (Tab / Select, o questo pulsante)
+	if not Run.boons.is_empty() or not Run.blessings.is_empty():
+		var mine := Button.new()
+		mine.text = "I tuoi doni (%d)%s" % [Run.boons.size() + Run.blessings.size(), "" if Fx.device == "touch" else ("  ·  Select" if Fx.device == "pad" else "  ·  Tab")]
+		UiStyle.papyrus_button(mine, UiStyle.GOLD)
+		mine.add_theme_font_size_override("font_size", Fx.fs(8))
+		mine.focus_mode = Control.FOCUS_NONE
+		mine.pressed.connect(_toggle_boons_panel)
+		menu.add_child(mine)
+		mine.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+		mine.position = Vector2(vw - mine.get_combined_minimum_size().x - 6.0, 6.0)
 	var card_w := minf(250.0, (vw - 40.0) / 3.0)
 	var first_button: Button = null
 	var i := 0
@@ -1155,22 +1168,36 @@ func _quit_game() -> void:
 # ---------------------------------------------------------------- menu dei doni (Tab)
 
 func _toggle_boons_panel() -> void:
-	if menu != null or finished or pause_menu != null:
+	if finished or pause_menu != null:
 		return
 	if panel != null:
 		panel.queue_free()
 		panel = null
-		get_tree().paused = false
+		if menu == null:
+			get_tree().paused = false
+		else:
+			_refocus_choice()
 		return
 	get_tree().paused = true
+	if menu != null:
+		get_viewport().gui_release_focus()   # mentre guardi i doni non scegli per sbaglio una carta
 	panel = CanvasLayer.new()
-	panel.layer = 20
+	panel.layer = 25                         # sopra la scelta dei doni
 	panel.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(panel)
 	var dim := ColorRect.new()
-	dim.color = Color(0.02, 0.03, 0.08, 0.88)
+	dim.color = Color(0.02, 0.03, 0.08, 0.96)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	panel.add_child(dim)
+	var close := Button.new()
+	close.text = "Chiudi"
+	UiStyle.papyrus_button(close, UiStyle.GOLD)
+	close.add_theme_font_size_override("font_size", Fx.fs(9))
+	close.focus_mode = Control.FOCUS_NONE
+	close.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	close.position += Vector2(-8, 6)
+	close.pressed.connect(_toggle_boons_panel)
+	panel.add_child.call_deferred(close)
 	var label := RichTextLabel.new()
 	label.bbcode_enabled = true
 	label.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1178,14 +1205,25 @@ func _toggle_boons_panel() -> void:
 	label.offset_top = 24
 	label.offset_right = -40
 	label.offset_bottom = -24
-	label.add_theme_font_size_override("normal_font_size", 9)
-	label.add_theme_font_size_override("bold_font_size", 10)
+	label.add_theme_font_size_override("normal_font_size", Fx.fs(9))
+	label.add_theme_font_size_override("bold_font_size", Fx.fs(10))
+	label.add_theme_font_override("normal_font", UiStyle.body_font())
+	label.add_theme_font_override("bold_font", UiStyle.title_font())
 	panel.add_child(label)
 	label.text = _boons_text()
 
 
+func _refocus_choice() -> void:
+	if menu == null:
+		return
+	for b in menu.find_children("*", "Button", true, false):
+		if b.has_meta("text"):
+			b.grab_focus()
+			return
+
+
 func _boons_text() -> String:
-	var t := "[center][b][color=#f0b94c]I tuoi doni[/color][/b]   [color=#a89878](Tab o Select per chiudere)[/color][/center]\n\n"
+	var t := "[center][b][color=#f0b94c]I tuoi doni[/color][/b]   [color=#a89878](%s)[/color][/center]\n\n" % ("tocca per chiudere" if Fx.device == "touch" else "Tab o Select per chiudere")
 	if Run.boons.is_empty() and Run.blessings.is_empty() and Run.curses.is_empty():
 		t += "[center]Nessun dono, per ora. Ripulisci una stanza e scegline uno.[/center]"
 		return t
@@ -1762,7 +1800,7 @@ class PanelListener extends Node:
 			return
 		# sul telefono: un tocco chiude il pannello dei doni, e a fine discesa riporta alla Sala
 		if event is InputEventScreenTouch and event.pressed:
-			if game.panel != null:
+			if game.panel != null and game.menu == null:
 				game._toggle_boons_panel()
 				get_viewport().set_input_as_handled()
 				return
@@ -1776,6 +1814,13 @@ class PanelListener extends Node:
 		if event.is_action_pressed("boons_menu") or (game.panel != null and event.is_action_pressed("ui_cancel")):
 			game._toggle_boons_panel()
 			get_viewport().set_input_as_handled()
+
+	# durante la scelta dei doni Tab arriverebbe prima ai pulsanti (cambia la selezione): lo prendiamo qui
+	func _input(event: InputEvent) -> void:
+		if game.menu != null and game.pause_menu == null and not game.finished:
+			if event.is_action_pressed("boons_menu") or (game.panel != null and event.is_action_pressed("ui_cancel")):
+				game._toggle_boons_panel()
+				get_viewport().set_input_as_handled()
 
 
 
@@ -1826,7 +1871,8 @@ class HudBars extends Control:
 		var title := UiStyle.title_font()
 		var sek: bool = Run.sekhem_unlocked()
 		var o := Vector2(6, 6) * u
-		var pw := 206.0 * u
+		var touch := Fx.device == "touch"     # sul telefono l'Occhio sta sul suo pulsante
+		var pw := (170.0 if touch else 206.0) * u
 		var ph := (44.0 if sek else 38.0) * u
 		# riquadro
 		draw_rect(Rect2(o, Vector2(pw, ph)), Color(0.05, 0.04, 0.09, 0.78))
@@ -1881,6 +1927,8 @@ class HudBars extends Control:
 		var rx := bx + 18 * u + title.get_string_size(ka_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, _fs(10)).x + 10 * u
 		_text(title, Vector2(rx, ky), game.hud_room, _fs(8), Color(0.95, 0.88, 0.72))
 		# Occhio di Horus
+		if touch:
+			return
 		var c := o + Vector2(pw - 24.0 * u, ph / 2.0 - 1.0 * u)
 		var r := 14.0 * u * (1.0 + 0.15 * eye_pop)
 		var charges: int = p.eye_charges
