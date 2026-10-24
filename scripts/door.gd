@@ -44,6 +44,10 @@ func reward_color() -> Color:
 			return Color(0.95, 0.35, 0.3)
 		"boss":
 			return Color(0.9, 0.3, 0.25)
+		"guardian":
+			return Color(0.45, 0.9, 0.4)
+		"shop":
+			return Color(0.6, 0.85, 0.95)
 		_:
 			return Color(0.9, 0.9, 1.0)
 
@@ -60,6 +64,10 @@ func reward_label() -> String:
 			return "Cura"
 		"boss":
 			return "Ammit"
+		"guardian":
+			return "Guardiano"
+		"shop":
+			return "Traghettatore"
 		_:
 			return "Uscita"
 
@@ -79,6 +87,10 @@ func reward_description() -> String:
 			return "Acqua del Nilo: recuperi il %d%% della vita" % roundi(Run.nile_heal() * 100.0)
 		"boss":
 			return "Cancello della Prima Ora: Ammit, la Divoratrice, ti aspetta"
+		"guardian":
+			return "La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore"
+		"shop":
+			return "Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa)"
 		_:
 			return "Uscita: fine della discesa di prova"
 

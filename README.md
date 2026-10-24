@@ -2,7 +2,7 @@
 
 Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
-**Stato:** fase 2. C'è la Sala del Giudizio (base tra una discesa e l'altra, con Anubi e il Libro dei Morti) e una run di 6 stanze più il boss, con nemici diversi, ricompense, doni degli dèi, patti di Set e Forma Divina. La grafica è provvisoria (forme semplici) di proposito: prima si rende divertente il gioco, poi arrivano gli sprite.
+**Stato:** fase 2. C'è la Sala del Giudizio (base tra una discesa e l'altra, con Anubi e il Libro dei Morti) e la Prima Ora completa: 10 stanze, un guardiano a metà, il Traghettatore, Ammit alla fine, con nemici diversi, ricompense, doni degli dèi, patti di Set e Forma Divina. La grafica è provvisoria (forme semplici) di proposito: prima si rende divertente il gioco, poi arrivano gli sprite.
 
 ## Come provarlo
 
@@ -56,7 +56,10 @@ Dal menu di pausa, *Torna alla Sala (abbandona)* chiude la discesa: il Ka raccol
 2. Ogni stanza ha due ondate di nemici. La prima stanza non ha ricompensa: i doni degli dèi arrivano dalle stanze che scegli tu.
 3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla. Il Ka arriva soprattutto dai tesori: scarabei 0, mummie 1, sacerdoti 2.
 4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura.
-5. Prima dell'ultima stanza una delle porte è sempre l'**Acqua del Nilo**, per curarti prima del boss. Dopo la sesta stanza si apre il cancello di **Ammit**, il boss della Prima Ora. I nemici hanno il 6% di vita in più a ogni stanza.
+5. **Stanza 5: il Serpente della Porta.** Nel Libro delle Porte ogni porta del Duat è custodita da un serpente. È il guardiano a metà discesa: morde in affondo, sputa ventagli di veleno e si inabissa nella sabbia per riemergere sotto di te (un cerchio rosso avvisa dove). Sotto metà vita si infuria e chiama gli scarabei. Batterlo dà un dono che sale **di due livelli** invece di uno.
+6. **Il Traghettatore** (Mahaf, dal capitolo 99 del Libro dei Morti): a volte una porta porta da lui, e dopo il guardiano c'è sempre. Vende Acqua del Nilo (30 Ka), un'offerta agli dèi (55 Ka) e l'Inchiostro di Thoth, che alza di livello un tuo dono (45 Ka). Il Ka speso qui non torna a casa: è una scelta tra diventare più forte ora o comprare capitoli dopo.
+7. Dalla stanza 6 arrivano due nemici nuovi: lo **scorpione di Serket** e il **cobra**.
+8. Prima dell'ultima stanza una delle porte è sempre l'**Acqua del Nilo**. Dopo la decima stanza si apre il cancello di **Ammit**, il boss della Prima Ora. I nemici hanno il 6% di vita in più a ogni stanza.
 
 ## Nemici
 
@@ -67,6 +70,11 @@ Dal menu di pausa, *Torna alla Sala (abbandona)* chiude la discesa: il Ka raccol
 | Sacerdote di Set | Resta lontano e lancia sfere. Prima di lanciare si ferma e la sfera cresce | Spostati negli ultimi istanti, o colpiscilo per interromperlo |
 
 Dalla terza stanza alcune mummie e alcuni sacerdoti sono **élite**: alone dorato, più grossi, +80% di vita, lasciano più Ka.
+
+### Nemici della seconda metà
+
+- **Scorpione di Serket**: veloce, ti gira intorno e punge con la coda. Avviso: la coda si alza e si illumina di verde. La puntura **avvelena**: perdi 2 vita ogni 0,6 secondi per 3 secondi (il veleno non può ucciderti).
+- **Cobra**: resta a distanza, alza il cappuccio (avviso con la linea verde) e sputa tre gocce in fila. Poi si nasconde sotto la sabbia e riemerge altrove: va colpito quando è fuori.
 
 ## Trappole (dalla seconda stanza)
 
@@ -162,7 +170,8 @@ Quattro brani, con dissolvenza incrociata da uno all'altro (`scripts/music.gd`):
 | --- | --- |
 | Sala del Giudizio | Desert Mystic, PolygonDan (CC0) |
 | Stanze | Desert Loop, iamoneabe (CC0) |
-| Stanza con nemici élite (dalla comparsa del primo élite) | Frozen Desert, Dizzy Crow (CC0) |
+| Serpente della Porta, e stanze con nemici élite (dalla comparsa del primo) | Frozen Desert, Dizzy Crow (CC0) |
+| Traghettatore | Desert Mystic (come la Sala) |
 | Ammit | Arabesque, brainiac256 (**CC-BY 3.0**, va citato nei crediti) |
 
 Alla morte la musica si abbassa, alla vittoria torna il tema della Sala. Crediti completi in `assets/music/CREDITS.md`.
@@ -182,7 +191,7 @@ python3 tools/playtest/run_playtest.py --godot /percorso/di/Godot --seeds 16
 python3 tools/playtest/run_playtest.py --godot ... --personas veterano --env "DUAT_ANUBI=Cuore di Pietra"
 ```
 
-Il bot gioca peggio di una persona, quindi serve per i **confronti** (stesse partite, cambia una sola scelta), non per misurare la difficoltà assoluta. Con lui sono stati bilanciati i patti di Set, i doni di Anubi e il Peso del Cuore: per esempio Cuore di Pietra a +30 vita portava il bot da 1 a 7 vittorie su 16, ora è a +12.
+Il bot gioca peggio di una persona, quindi serve per i **confronti** (stesse partite, cambia una sola scelta), non per misurare la difficoltà assoluta. Con lui sono stati bilanciati i patti di Set, i doni di Anubi e il Peso del Cuore: per esempio Cuore di Pietra a +30 vita portava il bot da 1 a 7 vittorie su 16, ora è a +12. Con la Prima Ora a 10 stanze, il bot "veterano" arriva da Ammit circa 9 volte su 16, con circa 8 doni, e il Serpente della Porta ne ferma circa un quarto.
 
 ## Regolare la sensazione di gioco
 
@@ -191,7 +200,7 @@ Apri una scena in `scenes/`, seleziona il nodo principale e cambia i valori nell
 ## Struttura
 
 ```
-scenes/   hub.tscn (la Sala del Giudizio), game.tscn (la run), player.tscn, mummy.tscn, scarab.tscn, priest.tscn
+scenes/   hub.tscn (la Sala del Giudizio), game.tscn (la run), serpent.tscn, scorpion.tscn, cobra.tscn, player.tscn, mummy.tscn, scarab.tscn, priest.tscn
 tools/    convert_sfx.py  prepara i suoni dai pacchetti di Kenney
           playtest/    bot di playtest automatico
 scripts/  hub.gd       la Sala del Giudizio      dialogue.gd   battute di Anubi
@@ -205,7 +214,8 @@ scripts/  hub.gd       la Sala del Giudizio      dialogue.gd   battute di Anubi
           run.gd       stato della run (vita, Ka, doni) ed effetti dei doni
           boons.gd     elenco di dèi e doni
           enemy.gd     base comune a tutti i nemici
-          mummy.gd, scarab.gd, priest.gd   comportamento dei singoli nemici
+          mummy.gd, scarab.gd, priest.gd, scorpion.gd, cobra.gd   comportamento dei singoli nemici
+          serpent.gd   il Serpente della Porta    ferryman.gd   il Traghettatore e il negozio
           player.gd, eye.gd, enemy_bolt.gd, pickup.gd, door.gd, reticle.gd
           fx.gd        effetti globali     input_setup.gd   comandi
 ```

@@ -71,6 +71,8 @@ var swing_index := 0
 var eye_cd := 0.0
 var divine_t := 0.0
 var drain_t := 3.0                     # Sete Insaziabile
+var poison_t := 0.0                   # veleno dello scorpione: secondi rimasti
+var poison_tick := 0.0
 var shield := 0.0                      # Ali di Iside: scudo che si ricarica a ogni stanza
 var knock := Vector2.ZERO
 var walk := 0.0
@@ -145,6 +147,7 @@ func _physics_process(delta: float) -> void:
 			get_parent().add_child(pool)
 			pool.global_position = global_position
 	_heavy_drain(delta)
+	_poison_update(delta)
 	queue_redraw()
 
 
@@ -326,6 +329,26 @@ func _heavy_drain(delta: float) -> void:
 			health_changed.emit(hp, max_hp)
 
 
+## Veleno (scorpione di Serket): 2 vita ogni 0,6 secondi. Non può ucciderti.
+func poison(seconds: float) -> void:
+	poison_t = maxf(poison_t, seconds)
+
+
+func _poison_update(delta: float) -> void:
+	if poison_t <= 0.0:
+		return
+	poison_t -= delta
+	poison_tick -= delta
+	if poison_tick <= 0.0:
+		poison_tick = 0.6
+		if hp > 1.0:
+			hp = maxf(1.0, hp - 2.0)
+			Run.hp = hp
+			Run.last_hit = "scorpion"
+			Fx.float_text(global_position + Vector2(0, -16), "-2", Color(0.5, 1, 0.4))
+			health_changed.emit(hp, max_hp)
+
+
 ## Restituisce true se il colpo è andato a segno (false se eri invulnerabile).
 func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> bool:
 	if dead or invuln_t > 0.0 or dash_t > 0.0:
@@ -415,6 +438,8 @@ func _draw() -> void:
 		skin = Color(1, 1, 1, a); linen = skin; blue = skin; gold = skin
 	if dash_t > 0.0:
 		linen = Color(linen, 0.5)
+	if poison_t > 0.0:
+		skin = skin.lerp(Color(0.45, 0.9, 0.35, a), 0.45)
 
 	draw_rect(Rect2(-6, -8 + bob, 12, 8), linen)
 	draw_rect(Rect2(-5, -15 + bob, 10, 8), skin)

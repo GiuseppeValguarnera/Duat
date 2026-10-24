@@ -40,7 +40,7 @@ func _on_area_entered(area: Area2D) -> void:
 func _on_body_entered(body: Node) -> void:
 	if body is StaticBody2D:
 		Fx.burst(global_position, Color(0.85, 0.4, 1.0), 6, 60.0)
-		if style == "orb":
+		if style != "dart":
 			Sfx.play_at("orb_pop", global_position, 0.2)
 		queue_free()
 
@@ -52,6 +52,11 @@ func _draw() -> void:
 		draw_colored_polygon(PackedVector2Array([direction * 4.0, direction.orthogonal() * 2.5, -direction.orthogonal() * 2.5]), Color(0.85, 0.85, 0.9))
 		draw_line(back, back + direction * 3.0 + direction.orthogonal() * 3.0, Color(0.9, 0.3, 0.2), 1.5)
 		draw_line(back, back + direction * 3.0 - direction.orthogonal() * 3.0, Color(0.9, 0.3, 0.2), 1.5)
+		return
+	if style == "venom":
+		draw_circle(Vector2.ZERO, 6.0, Color(0.4, 1.0, 0.35, 0.3))
+		draw_circle(Vector2.ZERO, 3.5, Color(0.35, 0.85, 0.25))
+		draw_circle(Vector2.ZERO, 1.5, Color(0.9, 1, 0.8))
 		return
 	draw_circle(Vector2.ZERO, 6.0, Color(0.85, 0.4, 1.0, 0.3))
 	draw_circle(Vector2.ZERO, 3.5, Color(0.75, 0.3, 1.0))

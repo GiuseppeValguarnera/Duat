@@ -38,6 +38,8 @@ var dodges := 0
 var heals := 0.0
 var boss_time := 0.0
 var done := false
+var interact_release := false
+var shop_buys := []
 var force_anubi := ""
 var anubi_done := false
 var force_god := ""
@@ -81,6 +83,9 @@ func _process(delta: float) -> void:
 	if g.finished or gt > 900.0:
 		_finish(g)
 		return
+	if interact_release:
+		Input.action_release("interact")
+		interact_release = false
 	if dash_release:
 		Input.action_release("dash")
 		dash_release = false
@@ -135,9 +140,9 @@ func _decide(g, p) -> void:
 		for e in enemies:
 			if pos.distance_to(e.global_position) < 44.0:
 				crowd += 1
-		if target.is_boss:
-			# con Ammit: addosso solo quando è stordita o si sta riprendendo, altrimenti a distanza
-			var open_window: bool = target.state in ["stunned", "recover", "intro", "furia"]
+		if target.is_boss or target.miniboss:
+			# con Ammit e con il Serpente: addosso solo quando è stordita o si sta riprendendo, altrimenti a distanza
+			var open_window: bool = target.state in ["stunned", "recover", "intro", "furia", "dive"]
 			want_range = 34.0 if (open_window or randf() > skill) else 125.0
 		if dist > want_range + 6.0:
 			move_dir = to.normalized()
@@ -162,14 +167,31 @@ func _decide(g, p) -> void:
 			var near_trap: bool = pos.distance_to(trap.global_position) < 26.0
 			if near_trap and (randf() < skill or (trap.phase() != "idle" and randf() < cfg["dodge"])):
 				move_dir = (move_dir + (pos - trap.global_position).normalized() * 1.5).normalized()
-		if dist < 46.0 and (not target.is_boss or want_range < 100.0):
+		if dist < 46.0 and (not (target.is_boss or target.miniboss) or want_range < 100.0):
 			want_attack = true
 		if dist < 300.0 and randf() < cfg["eye"]:
 			tap_special = true
 		if Run.sekhem_ready() and (enemies.size() >= 3 or target.is_boss):
 			tap_super = true
 		return
-	# 3. fuori dal combattimento: ricompense, poi porte
+	# 3. fuori dal combattimento: negozio, ricompense, poi porte
+	if not g.shop_items.is_empty():
+		var want = null
+		for it in g.shop_items:
+			if not is_instance_valid(it) or it.sold or Run.ka < it.price:
+				continue
+			if it.kind == "heal" and Run.hp / Run.max_hp < 0.6:
+				want = it
+				break
+			if it.kind != "heal" and want == null:
+				want = it
+		if want != null:
+			if pos.distance_to(want.global_position) < 16.0:
+				Input.action_press("interact")
+				interact_release = true
+				shop_buys.append(want.kind)
+			move_dir = (want.global_position - pos).normalized()
+			return
 	for c in g.world.get_children():
 		if c.has_signal("collected"):
 			move_dir = (c.global_position - pos).normalized()
@@ -198,6 +220,13 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 		var d := rel.length()
 		if "lunge_dir" in e and e.state == "windup" and d < 90.0 and e.st < 0.25:
 			return e.lunge_dir.orthogonal()
+		if "sting_dir" in e and e.state == "windup" and d < 48.0 and e.st < 0.25:
+			return rel.normalized()
+		if "strike_speed" in e:
+			if e.state == "windup" and e.st < 0.3 and absf(rel.normalized().dot(e.aim.orthogonal())) < 0.4:
+				return e.aim.orthogonal()
+			if e.state == "warn" and d < e.erupt_radius + 12.0:
+				return rel.normalized() if rel != Vector2.ZERO else Vector2.RIGHT
 		if e.is_boss:
 			if e.state == "windup" and e.st < 0.3 and absf(rel.normalized().dot(e.charge_dir.orthogonal())) < 0.35:
 				return e.charge_dir.orthogonal()
@@ -232,8 +261,10 @@ func _pick_door(g):
 					score += 6.0
 			"ka":
 				score += 0.3
-			"boss":
+			"boss", "guardian":
 				score += 10.0
+			"shop":
+				score += 1.2 if Run.ka >= 45 else -1.5
 		if score > best_score:
 			best_score = score
 			best = d
@@ -401,7 +432,7 @@ func _finish(g) -> void:
 		"max_hp": Run.max_hp, "hp": Run.hp, "dmg_taken": dmg, "healed": snappedf(heals, 1),
 		"kills": Run.kills, "dmg_dealt": int(Run.damage_dealt), "ka": Run.ka,
 		"boons": Run.boons, "blessings": Run.blessings, "curses_left": Run.curses, "choices": choices,
-		"rooms": rooms, "dodges": dodges, "killer": Run.last_hit,
+		"rooms": rooms, "dodges": dodges, "shop": shop_buys, "killer": Run.last_hit,
 	}
 	var f := FileAccess.open(out_path, FileAccess.READ_WRITE if FileAccess.file_exists(out_path) else FileAccess.WRITE)
 	f.seek_end()

@@ -55,7 +55,7 @@ def report(out):
         by[r["persona"]].append(r)
     for persona, runs in by.items():
         wins = sum(r["result"] == "win" for r in runs)
-        boss = sum(r["room"] == 7 for r in runs)
+        boss = sum(r["room"] == 11 for r in runs)
         dmg = collections.Counter()
         for r in runs:
             for k, v in r["dmg_taken"].items():

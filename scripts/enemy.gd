@@ -22,6 +22,7 @@ var t := 0.0
 var seed_offset := 0.0
 var contact: Area2D
 var is_boss := false
+var miniboss := false                 ## guardiano a metà discesa: barra in alto invece che sopra la testa
 var elite := false                     ## versione dorata: più grossa, più resistente, lascia più Ka
 var stagger_t := 0.0
 var sobek_stun_t := 0.0                ## stordito dal Morso di Sobek (per la Forza del Fiume)                   ## dopo un colpo il nemico barcolla: non si muove e non ferisce
@@ -65,7 +66,7 @@ func _physics_process(delta: float) -> void:
 	knock = knock.move_toward(Vector2.ZERO, 800.0 * delta)
 	move_and_slide()
 
-	if contact != null and stagger_t <= 0.0:
+	if contact != null and contact.monitoring and stagger_t <= 0.0:
 		for a in contact.get_overlapping_areas():
 			var o = a.get_parent()
 			if o.is_in_group("player"):
@@ -209,7 +210,7 @@ func _draw() -> void:
 	_draw_body(flash_t > 0.0)
 	if burn_t > 0.0:
 		draw_circle(Vector2(0, -radius), radius + 3.0, Color(1, 0.5, 0.1, 0.25))
-	if hp < max_hp and not is_boss:
+	if hp < max_hp and not is_boss and not miniboss:
 		var w := radius * 2.5
 		draw_rect(Rect2(-w / 2.0, -radius * 3.0 - 6.0, w, 3), Color(0, 0, 0, 0.7))
 		draw_rect(Rect2(-w / 2.0, -radius * 3.0 - 6.0, w * hp / max_hp, 3), Color(0.85, 0.2, 0.15))

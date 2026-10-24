@@ -1,6 +1,8 @@
 extends Node2D
-## Una discesa di prova: 3 stanze. In ogni stanza due ondate di nemici,
+## La Prima Ora del Duat: 10 stanze, poi Ammit. In ogni stanza due ondate di nemici,
 ## poi la ricompensa, poi 2-3 porte tra cui scegliere la prossima ricompensa.
+## Stanza 5: il Serpente della Porta (guardiano). A volte una porta porta dal Traghettatore,
+## dove si spende il Ka della discesa.
 
 const ROOM := Rect2(0, 0, 800, 480)
 const WALL := 32.0
@@ -11,7 +13,17 @@ const ENEMIES := {
 	"scarab": preload("res://scenes/scarab.tscn"),
 	"priest": preload("res://scenes/priest.tscn"),
 	"ammit": preload("res://scenes/ammit.tscn"),
+	"serpent": preload("res://scenes/serpent.tscn"),
+	"scorpion": preload("res://scenes/scorpion.tscn"),
+	"cobra": preload("res://scenes/cobra.tscn"),
 }
+const FerrymanScript := preload("res://scripts/ferryman.gd")
+const SHOP_CHANCE := 0.25             ## probabilità di una porta del Traghettatore (oltre a quella dopo il guardiano)
+const SHOP_ITEMS := [
+	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 30},
+	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 55},
+	{"kind": "upgrade", "title": "Inchiostro di Thoth", "desc": "Un tuo dono a caso sale di livello", "price": 45},
+]
 const PickupScript := preload("res://scripts/pickup.gd")
 const DecorScript := preload("res://scripts/room_decor.gd")
 const UshabtiScript := preload("res://scripts/ushabti.gd")
@@ -49,7 +61,11 @@ var boss_fill: ColorRect
 var boss_name: Label
 var menu: CanvasLayer                 # scelta dei doni
 var panel: CanvasLayer
-var pause_menu: CanvasLayer           # menu di pausa (Esc / Start)                # menu dei doni (Tab)
+var pause_menu: CanvasLayer           # menu di pausa (Esc / Start)
+var bonus_boon := false               # il prossimo dono sale di un livello in più (premio del guardiano)
+var shops_visited := 0
+var shop_items: Array = []
+var doors_after_boon := true
 
 @onready var world: Node2D = $World
 @onready var hud: Label = $UI/Hud
@@ -90,17 +106,25 @@ func start_room(reward: Dictionary) -> void:
 	spawning = 0
 	doors.clear()
 	message.visible = false
+	boss_bar.visible = false
 	for c in world.get_children():
 		world.remove_child(c)
 		c.queue_free()
 
 	pillars.clear()
 	var boss_room := Run.room > Run.ROOMS_PER_RUN
-	if not boss_room:
-		Music.play("room")
+	var kind: String = reward.get("kind", "none")
+	var calm := kind == "guardian" or kind == "shop"
+	shop_items.clear()
+	if not boss_room and kind != "guardian":
+		Music.play("hub" if kind == "shop" else "room")
 	var layout: Array = LAYOUTS.pick_random() if Run.room > 1 else LAYOUTS[0]
 	if boss_room:
 		layout = BOSS_LAYOUT
+	elif kind == "shop":
+		layout = []
+	elif kind == "guardian":
+		layout = LAYOUTS[0]
 	for f in layout:
 		pillars.append(Vector2(lerpf(WALL, ROOM.size.x - WALL, f.x), lerpf(TOP, ROOM.size.y - WALL, f.y)))
 	_build_walls()
@@ -110,7 +134,7 @@ func start_room(reward: Dictionary) -> void:
 	for r in obstacles:
 		_solid(r)
 	traps_pos.clear()
-	if not boss_room and Run.room >= TRAPS_FROM_ROOM - Weights.rank("sabbie"):
+	if not boss_room and not calm and Run.room >= TRAPS_FROM_ROOM - Weights.rank("sabbie"):
 		_place_traps()
 	queue_redraw()
 
@@ -133,7 +157,15 @@ func start_room(reward: Dictionary) -> void:
 		waves = []
 		_start_boss()
 		return
-	var r := Run.room
+	if kind == "guardian":
+		waves = []
+		_start_guardian()
+		return
+	if kind == "shop":
+		waves = []
+		_start_shop()
+		return
+	var r := mini(Run.room, 8)
 	var horde := 1.0 + 0.25 * Weights.rank("orde")
 	waves = [_make_wave(roundi((4 + r * 2) * horde), r >= 2), _make_wave(roundi((3 + r * 2) * horde), r >= 2)]
 	_spawn_wave(waves.pop_front(), 1.0)
@@ -141,8 +173,19 @@ func start_room(reward: Dictionary) -> void:
 
 func _make_wave(budget: int, allow_priest: bool) -> Array:
 	var out := []
+	var late := Run.room > Run.GUARDIAN_ROOM    # dopo il guardiano arrivano scorpioni e cobra
 	while budget > 0:
 		var roll := randf()
+		if late and roll < 0.22 and budget >= 3:
+			out.append("cobra")
+			budget -= 3
+			continue
+		if late and roll < 0.45 and budget >= 2:
+			out.append_array(["scorpion", "scorpion"])
+			budget -= 3
+			continue
+		if late:
+			roll = randf()
 		if allow_priest and roll < 0.25 and budget >= 3:
 			out.append("priest")
 			budget -= 3
@@ -181,12 +224,15 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 	e.position = pos
 	# dalla terza stanza alcune mummie e alcuni sacerdoti sono élite
 	var elite_w := Weights.rank("elite")
-	if Run.room >= 3 - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind != "scarab" and randf() < (0.08 + 0.03 * Run.room) * (1 + elite_w):
+	if Run.room >= 3 - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind in ["mummy", "priest"] and randf() < minf(0.2, 0.06 + 0.02 * Run.room) * (1 + elite_w):
 		e.elite = true
 		Music.play("elite")           # una stanza con nemici élite cambia musica fino alla prossima
 	world.add_child(e)
 	alive += 1
 	e.killed.connect(_on_enemy_killed)
+	if e.miniboss:
+		boss = e
+		e.summon.connect(_on_boss_summon)
 	if e.is_boss:
 		boss = e
 		e.summon.connect(_on_boss_summon)
@@ -199,6 +245,11 @@ func _on_enemy_killed(e: Enemy) -> void:
 		if e.is_boss:
 			_boss_defeated.call_deferred()
 		return
+	if e == boss and e.miniboss:
+		boss_bar.visible = false
+		for c in world.get_children():
+			if c is Enemy and not c.dead:
+				c.die()                   # caduto il guardiano, i suoi scarabei si dissolvono
 	if alive > 0 or spawning > 0:
 		return
 	if not waves.is_empty():
@@ -230,6 +281,15 @@ func _room_cleared() -> void:
 		player.heal(roundf(Run.max_hp * 0.15))
 	if Run.has("anubi_canopic"):
 		player.heal(Run.val("anubi_canopic"))
+	if current_reward.get("kind", "") == "guardian":
+		# premio del guardiano: un dono che sale di due livelli invece di uno
+		bonus_boon = true
+		var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
+		if not gods.is_empty():
+			current_reward = {"kind": "boon", "god": gods.pick_random()}
+			_banner("Il Serpente della Porta è caduto", "Il prossimo dono sale di un livello in più", Color(0.6, 1, 0.5))
+		else:
+			current_reward = {"kind": "ka"}
 	if current_reward.get("kind", "none") == "none":
 		_banner("Stanza ripulita", "Scegli una porta: la ricompensa è scritta sopra", Color(0.94, 0.72, 0.3))
 		_open_doors()
@@ -266,6 +326,9 @@ func _open_doors() -> void:
 	if Run.room >= Run.ROOMS_PER_RUN:
 		_add_door("n", {"kind": "boss"})
 		return
+	if Run.room + 1 == Run.GUARDIAN_ROOM:
+		_add_door("n", {"kind": "guardian"})
+		return
 	var sides: Array = [["w", "n", "e"], ["w", "e"], ["w", "n"], ["n", "e"]].pick_random()
 	var pool := []
 	var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
@@ -278,6 +341,10 @@ func _open_doors() -> void:
 	# a volte Set apre una sua porta: prende il posto di una delle altre
 	if randf() < SET_DOOR_CHANCE and not Boons.set_offers(Run.blessings).is_empty():
 		pool.insert(0, {"kind": "set"})
+	# il Traghettatore: sempre dopo il guardiano, a volte nelle altre stanze (mai prima di Ammit)
+	var shop_ok: bool = shops_visited < 2 and Run.room + 1 < Run.ROOMS_PER_RUN and Run.room >= 2 and current_reward.get("kind", "") != "shop"
+	if shop_ok and (Run.room == Run.GUARDIAN_ROOM or randf() < SHOP_CHANCE):
+		pool.insert(0, {"kind": "shop"})
 	# prima del boss c'è sempre una porta che cura, insieme alle altre scelte
 	if Run.room + 1 == Run.ROOMS_PER_RUN:
 		sides = ["w", "n", "e"]
@@ -395,7 +462,8 @@ func _close_choice() -> void:
 	get_tree().paused = false
 
 
-func _show_boon_menu(god: String) -> void:
+func _show_boon_menu(god: String, then_doors: bool = true) -> void:
+	doors_after_boon = then_doors
 	var options := Boons.offers(god, Run.boons)
 	var from_god := god
 	if options.is_empty():
@@ -407,8 +475,10 @@ func _show_boon_menu(god: String) -> void:
 		# tutti i doni sono già al massimo: al posto del dono arriva un tesoro di Ka
 		var bonus := roundi(25 * Run.ka_mult())
 		Run.ka += bonus
+		bonus_boon = false
 		Fx.float_text(player.global_position, "+%d Ka" % bonus, Color(0.94, 0.72, 0.3))
-		_open_doors()
+		if then_doors:
+			_open_doors()
 		return
 
 	var duos := Boons.duos_for(from_god, Run.boons)
@@ -421,9 +491,11 @@ func _show_boon_menu(god: String) -> void:
 		options.resize(2)             # Peso del Cuore: il silenzio degli dèi
 	var cards := []
 	for id in options:
-		var lvl := Run.level(id) + 1
+		var lvl := mini(Run.level(id) + (2 if bonus_boon else 1), _max_level(id))
 		var name_line: String = Boons.ALL[id]["name"]
-		var tag := "NUOVO" if lvl == 1 else "LIVELLO %d" % lvl
+		var tag := "NUOVO" if Run.level(id) == 0 else "LIVELLO %d" % lvl
+		if Run.level(id) == 0 and lvl > 1:
+			tag = "NUOVO · SUBITO LIVELLO %d" % lvl
 		var body := _wrap(Boons.text(id, lvl), 32)
 		if Boons.is_heavy(id):
 			tag = "DONO PESANTE"
@@ -464,9 +536,20 @@ func _choose_start_boon(id: String) -> void:
 	_banner("Dono di Anubi", Boons.ALL[id]["name"], Boons.god_color("anubi"))
 
 
+func _max_level(id: String) -> int:
+	return Boons.MAX_LEVEL if Boons.ALL[id].has("values") else 1
+
+
 func _choose_boon(id: String) -> void:
 	Sfx.play("boon", 0.0)
 	Run.add_boon(id)
+	if bonus_boon and Run.level(id) < _max_level(id):
+		Run.add_boon(id)
+	bonus_boon = false
+	if not doors_after_boon:
+		_close_choice()
+		Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color(Boons.ALL[id]["god"]), 30, 140.0)
+		return
 	_close_choice()
 	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color(Boons.ALL[id]["god"]), 30, 140.0)
 	_open_doors()
@@ -743,6 +826,8 @@ func _on_player_died() -> void:
 	Music.set_duck(0.35)
 	message.visible = true
 	var where := "Ammit, la Divoratrice" if Run.room > Run.ROOMS_PER_RUN else "stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN]
+	if current_reward.get("kind", "") == "guardian":
+		where = "il Serpente della Porta"
 	Meta.last_end = "ammit" if Run.room > Run.ROOMS_PER_RUN else "room"
 	Meta.last_room = Run.room
 	message.text = "Il tuo cuore è stato pesato.\nSei caduto: %s\n\n%s\n\nPremi R (o Start) per tornare alla Sala del Giudizio" % [where, _end_run_summary()]
@@ -753,12 +838,90 @@ func _on_player_died() -> void:
 
 func _start_boss() -> void:
 	Music.play("boss")
+	boss_name.text = "AMMIT, LA DIVORATRICE"
+	boss_fill.color = Color(0.85, 0.2, 0.15)
 	Sfx.play("roar", 0.0)
 	_banner("Ammit, la Divoratrice", "Divora i cuori che non superano il giudizio", Color(0.9, 0.35, 0.25))
 	boss_bar.visible = true
 	boss_fill.size.x = boss_bar.size.x
 	spawning += 1
 	_spawn_after("ammit", Vector2(ROOM.size.x / 2.0, TOP + 120.0), 1.6)
+
+
+## Stanza 5: il Serpente della Porta.
+func _start_guardian() -> void:
+	Music.play("elite")
+	Sfx.play("roar", 0.15)
+	_banner("Il Serpente della Porta", "Ogni porta del Duat ha il suo guardiano", Color(0.5, 0.95, 0.45))
+	boss_name.text = "IL SERPENTE DELLA PORTA"
+	boss_fill.color = Color(0.35, 0.8, 0.3)
+	boss_bar.visible = true
+	boss_fill.size.x = boss_bar.size.x
+	spawning += 1
+	_spawn_after("serpent", Vector2(ROOM.size.x / 2.0, TOP + 110.0), 1.4)
+
+
+## La stanza del Traghettatore: niente nemici, tre oggetti da comprare con il Ka della discesa.
+func _start_shop() -> void:
+	shops_visited += 1
+	cleared = true
+	var cx := ROOM.size.x / 2.0
+	var mid_y := (TOP + ROOM.size.y - WALL) / 2.0
+	var boat := FerrymanScript.new()
+	boat.position = Vector2(cx, mid_y - 50.0)
+	world.add_child(boat)
+	_banner("Il Traghettatore", FerrymanScript.LINES.pick_random().split(": ", true, 1)[1], Color(0.6, 0.85, 0.95))
+	var items := SHOP_ITEMS.duplicate()
+	if _upgradable().is_empty():
+		items = items.filter(func(it: Dictionary) -> bool: return it["kind"] != "upgrade")
+	for i in range(items.size()):
+		var it: Dictionary = items[i]
+		var node := FerrymanScript.ShopItem.new()
+		node.kind = it["kind"]
+		node.title = it["title"]
+		node.desc = it["desc"]
+		node.price = it["price"]
+		node.position = Vector2(cx + (i - (items.size() - 1) / 2.0) * 90.0, mid_y + 50.0)
+		world.add_child(node)
+		shop_items.append(node)
+	_open_doors()
+
+
+## Doni che possono ancora salire di livello (per l'Inchiostro di Thoth).
+func _upgradable() -> Array:
+	var out := []
+	for id in Run.boons:
+		if Boons.ALL[id].get("god", "") in ["anubi", "duo"]:
+			continue
+		if Run.level(id) < _max_level(id):
+			out.append(id)
+	return out
+
+
+func _buy(item) -> void:
+	if item.sold:
+		return
+	if Run.ka < item.price:
+		Fx.float_text(player.global_position + Vector2(0, -20), "Non hai abbastanza Ka", Color(0.9, 0.4, 0.35))
+		Fx.shake(2.0)
+		return
+	Run.ka -= item.price
+	item.sold = true
+	Sfx.play("pickup", 0.0)
+	Fx.burst(item.global_position + Vector2(0, -20), item.color(), 24, 110.0)
+	match item.kind:
+		"heal":
+			player.heal(roundf(Run.max_hp * 0.3))
+		"boon":
+			var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
+			if not gods.is_empty():
+				_show_boon_menu.call_deferred(gods.pick_random(), false)
+		"upgrade":
+			var ups := _upgradable()
+			if not ups.is_empty():
+				var id: String = ups.pick_random()
+				Run.add_boon(id)
+				_banner("Inchiostro di Thoth", "%s sale al livello %d" % [Boons.ALL[id]["name"], Run.level(id)], Boons.god_color("thoth"))
 
 
 ## Seconda fase: Ammit chiama uno sciame di scarabei.
@@ -922,6 +1085,14 @@ func _process(_delta: float) -> void:
 		hud.text += "\n" + line2
 
 	var near := ""
+	var shop_near = null
+	for it in shop_items:
+		if is_instance_valid(it) and not it.sold and player.global_position.distance_to(it.global_position) < 26.0:
+			shop_near = it
+	if shop_near != null:
+		near = "%s · %s: %s (%d Ka, ne hai %d)" % ["Y" if Fx.device == "pad" else "E", shop_near.title, shop_near.desc, shop_near.price, Run.ka]
+		if Input.is_action_just_pressed("interact") and menu == null:
+			_buy(shop_near)
 	for d in doors:
 		if is_instance_valid(d) and d.open and player.global_position.distance_to(d.global_position) < 70.0:
 			near = d.reward_description()

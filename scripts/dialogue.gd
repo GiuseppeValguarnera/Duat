@@ -57,6 +57,12 @@ static func _reaction() -> Array:
 				options.append("Gli scarabei. Gli uomini li veneravano: lo scarabeo che spinge la sua sfera era il sole che rinasce. Questi non rinascono. Divorano.")
 			"priest":
 				options.append("Un sacerdote. In vita servì gli dèi, nel Duat serve il caos. Colpiscilo prima che la sua preghiera sia compiuta.")
+			"serpent":
+				options.append("Il Serpente della Porta. Ogni porta del Duat ha il suo guardiano, e nessuno lascia passare chi esita. Quando sprofonda nella sabbia, guarda il cerchio: è lì che tornerà.")
+			"scorpion":
+				options.append("Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati.")
+			"cobra":
+				options.append("Un cobra. L'ureo sulla fronte del faraone sputava fuoco sui suoi nemici. Questi sputano veleno, e si nascondono. Colpiscili quando alzano il cappuccio.")
 	var gods := {
 		"ra": "Porti addosso l'odore della fiamma. Ra ti ha guardato con favore. Il suo favore brucia, Scriba. Ricordalo.",
 		"sekhmet": "Sekhmet ti ha prestato la sua ira. L'ultima volta che la scatenò davvero, servì un fiume di birra rossa per placarla.",
