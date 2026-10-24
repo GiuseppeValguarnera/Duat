@@ -112,7 +112,7 @@ func _ready() -> void:
 		Run.apply_descent(d)
 		shops_visited = d.get("shops", 0)
 		bonus_boon = d.get("bonus", false)
-		Run.room = int(d["room"]) - (0 if d.get("reward", {}).get("kind", "") == "shop" else 1)
+		Run.room = int(d["room"]) - 1
 		start_room(d.get("reward", {"kind": "none"}))
 		_banner("Discesa ripresa", "Stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN] if Run.room <= Run.ROOMS_PER_RUN else "Ammit", Color(0.94, 0.72, 0.3))
 		return
@@ -343,8 +343,7 @@ func start_room(reward: Dictionary) -> void:
 	if reward.get("kind", "") == "tutorial_end":
 		_finish_tutorial()
 		return
-	if reward.get("kind", "") != "shop":
-		Run.room += 1                    # la barca del Traghettatore è una sosta, non una stanza
+	Run.room += 1
 	room_gen += 1
 	boss = null
 	current_reward = reward
@@ -582,17 +581,11 @@ func _on_pickup_collected(p: Area2D) -> void:
 
 
 func _open_doors() -> void:
-	# il Traghettatore compare solo prima del Serpente e prima di Ammit, con una porta sua accanto
-	var from_shop: bool = current_reward.get("kind", "") == "shop"
 	if Run.room >= Run.ROOMS_PER_RUN:
 		_add_door("n", {"kind": "boss"})
-		if not from_shop:
-			_add_door("w", {"kind": "shop"})
 		return
 	if Run.room + 1 == Run.GUARDIAN_ROOM:
 		_add_door("n", {"kind": "guardian"})
-		if not from_shop:
-			_add_door("w", {"kind": "shop"})
 		return
 	var sides: Array = [["w", "n", "e"], ["w", "e"], ["w", "n"], ["n", "e"]].pick_random()
 	var pool := []
@@ -606,11 +599,15 @@ func _open_doors() -> void:
 	# a volte Set apre una sua porta: prende il posto di una delle altre
 	if randf() < SET_DOOR_CHANCE and not Boons.set_offers(Run.blessings).is_empty():
 		pool.insert(0, {"kind": "set"})
+	# il Traghettatore è una delle porte solo nella stanza subito prima del Serpente e di Ammit
+	var before_boss: bool = Run.room + 2 == Run.GUARDIAN_ROOM or Run.room + 1 == Run.ROOMS_PER_RUN
+	if before_boss:
+		sides = ["w", "n", "e"]
+		pool.insert(0, {"kind": "shop"})
 	# prima del boss c'è sempre una porta che cura, insieme alle altre scelte
 	if Run.room + 1 == Run.ROOMS_PER_RUN:
-		sides = ["w", "n", "e"]
 		pool.erase({"kind": "heal"})
-		pool.insert(0, {"kind": "heal"})
+		pool.insert(1, {"kind": "heal"})
 	for i in range(sides.size()):
 		_add_door(sides[i], pool[i % pool.size()])
 
