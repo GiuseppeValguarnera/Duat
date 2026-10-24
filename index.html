@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="it">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-title" content="Duat">
+		<meta name="theme-color" content="#06060c">
+		<title>Duat</title>
+		<style>
+html, body, #canvas { margin: 0; padding: 0; border: 0; }
+html, body { width: 100%; height: 100%; background: #06060c; overflow: hidden; }
+body {
+	color: white;
+	touch-action: none;
+	overscroll-behavior: none;
+	-webkit-user-select: none;
+	user-select: none;
+	-webkit-touch-callout: none;
+	-webkit-tap-highlight-color: transparent;
+	font-family: -apple-system, 'Segoe UI', sans-serif;
+}
+#canvas { display: block; }
+#canvas:focus { outline: none; }
+#status, #status-splash, #status-progress { position: absolute; left: 0; right: 0; }
+#status, #status-splash { top: 0; bottom: 0; }
+#status {
+	background-color: #242424;
+	display: flex; flex-direction: column; justify-content: center; align-items: center;
+	visibility: hidden;
+}
+#status-splash { max-height: 100%; max-width: 100%; margin: auto; }
+#status-splash.show-image--false { display: none; }
+#status-splash.fullsize--true { height: 100%; width: 100%; object-fit: contain; }
+#status-splash.use-filter--false { image-rendering: pixelated; }
+#status-progress, #status-notice { display: none; }
+#status-progress { bottom: 10%; width: 50%; margin: 0 auto; accent-color: #f0b84d; }
+#status-notice {
+	background-color: #5b3943; border-radius: 0.5rem; border: 1px solid #9b3943; color: #e0e0e0;
+	line-height: 1.3; margin: 0 2rem; overflow: hidden; padding: 1rem; text-align: center; z-index: 1;
+}
+/* Schermata che spiega come installare il gioco su iPhone per averlo a schermo intero */
+#install {
+	position: fixed; inset: 0; z-index: 10; display: none;
+	background: radial-gradient(circle at 50% 40%, #1c1a33 0%, #06060c 70%);
+	color: #f2e6c9; text-align: center; padding: 6vh 8vw; box-sizing: border-box;
+	flex-direction: column; justify-content: center; align-items: center; gap: 2.2vh;
+}
+#install h1 { margin: 0; color: #f0b84d; font-size: clamp(22px, 6vh, 40px); letter-spacing: 0.08em; }
+#install p { margin: 0; font-size: clamp(15px, 3.6vh, 22px); line-height: 1.45; max-width: 34em; }
+#install .steps { text-align: left; display: inline-block; }
+#install .key { display: inline-block; border: 1px solid #f0b84d; border-radius: 6px; padding: 0 0.4em; color: #f0b84d; }
+#install button {
+	margin-top: 1vh; background: transparent; color: #b8ad95; border: 1px solid #5a5446; border-radius: 8px;
+	font-size: clamp(13px, 3vh, 18px); padding: 0.5em 1.2em;
+}
+		</style>
+		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
+<link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
+<link rel="manifest" href="index.manifest.json">
+
+	</head>
+	<body>
+		<canvas id="canvas">Il tuo browser non supporta il canvas.</canvas>
+		<noscript>Il tuo browser non supporta JavaScript.</noscript>
+		<div id="status">
+			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="index.png" alt="">
+			<progress id="status-progress"></progress>
+			<div id="status-notice"></div>
+		</div>
+		<div id="install">
+			<h1>DUAT</h1>
+			<p>Per giocare <b>a schermo intero</b>, senza le barre di Safari, installa il gioco:</p>
+			<p class="steps">1. Tocca <span class="key">Condividi</span> (il quadrato con la freccia verso l'alto)<br>
+			2. Scegli <span class="key">Aggiungi alla schermata Home</span><br>
+			3. Apri <b>Duat</b> dall'icona e gira il telefono in orizzontale</p>
+			<button id="install-skip">Gioca qui lo stesso</button>
+		</div>
+
+		<script src="index.js"></script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":7156340,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"serviceWorker":"index.service.worker.js"};
+const GODOT_THREADS_ENABLED = false;
+
+// Su iPhone e iPad, se il gioco non è stato aperto dall'icona della schermata Home,
+// mostriamo come installarlo: è l'unico modo di avere lo schermo intero su iOS.
+(function () {
+	const ua = navigator.userAgent;
+	const ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+	const standalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches;
+	const overlay = document.getElementById('install');
+	if (ios && !standalone) {
+		overlay.style.display = 'flex';
+		document.getElementById('install-skip').addEventListener('click', () => { overlay.style.display = 'none'; });
+	}
+	// niente zoom con il doppio tocco o con due dita
+	document.addEventListener('gesturestart', (e) => e.preventDefault());
+	document.addEventListener('dblclick', (e) => e.preventDefault());
+}());
+
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusProgress = document.getElementById('status-progress');
+	const statusNotice = document.getElementById('status-notice');
+	let initializing = true;
+	let statusMode = '';
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		if (mode === 'hidden') {
+			statusOverlay.remove();
+			initializing = false;
+			return;
+		}
+		statusOverlay.style.visibility = 'visible';
+		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		text.split('\n').forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('Errore sconosciuto.');
+		}
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
+	if (missing.length !== 0) {
+		displayFailureNotice('Al tuo browser mancano funzioni necessarie per il gioco:\n' + missing.join('\n'));
+	} else {
+		setStatusMode('progress');
+		engine.startGame({
+			'onProgress': function (current, total) {
+				if (current > 0 && total > 0) {
+					statusProgress.value = current;
+					statusProgress.max = total;
+				} else {
+					statusProgress.removeAttribute('value');
+					statusProgress.removeAttribute('max');
+				}
+			},
+		}).then(() => {
+			setStatusMode('hidden');
+		}, displayFailureNotice);
+	}
+}());
+		</script>
+	</body>
+</html>
+
