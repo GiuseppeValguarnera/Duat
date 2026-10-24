@@ -25,6 +25,8 @@ const LAYOUTS := [
 	[Vector2(0.25, 0.6), Vector2(0.75, 0.6), Vector2(0.5, 0.4)],
 	[Vector2(0.2, 0.3), Vector2(0.8, 0.3), Vector2(0.2, 0.75), Vector2(0.8, 0.75), Vector2(0.5, 0.55)],
 ]
+## Arena di Ammit: 6 colonne, ognuna crolla dopo averla stordita una volta.
+const BOSS_LAYOUT := [Vector2(0.22, 0.3), Vector2(0.78, 0.3), Vector2(0.12, 0.62), Vector2(0.88, 0.62), Vector2(0.36, 0.8), Vector2(0.64, 0.8)]
 
 var player
 var pillars: Array = []
@@ -40,7 +42,8 @@ var boss_bar: ColorRect
 var boss_fill: ColorRect
 var boss_name: Label
 var menu: CanvasLayer                 # scelta dei doni
-var panel: CanvasLayer                # menu dei doni (Tab)
+var panel: CanvasLayer
+var pause_menu: CanvasLayer           # menu di pausa (Esc / Start)                # menu dei doni (Tab)
 
 @onready var world: Node2D = $World
 @onready var hud: Label = $UI/Hud
@@ -62,7 +65,7 @@ func _ready() -> void:
 	var listener := PanelListener.new()
 	listener.game = self
 	add_child(listener)
-	var first := Boons.gods_with_boons(Run.boons)
+	var first := Boons.gods_with_boons(Run.boons, 1)
 	start_room({"kind": "boon", "god": first.pick_random()})
 	_show_anubi_menu()
 
@@ -85,7 +88,7 @@ func start_room(reward: Dictionary) -> void:
 	var boss_room := Run.room > Run.ROOMS_PER_RUN
 	var layout: Array = LAYOUTS.pick_random() if Run.room > 1 else LAYOUTS[0]
 	if boss_room:
-		layout = LAYOUTS[0]
+		layout = BOSS_LAYOUT
 	for f in layout:
 		pillars.append(Vector2(lerpf(WALL, ROOM.size.x - WALL, f.x), lerpf(TOP, ROOM.size.y - WALL, f.y)))
 	_build_walls()
@@ -152,6 +155,7 @@ func _spawn_after(kind: String, pos: Vector2, delay: float) -> void:
 	if e.is_boss:
 		boss = e
 		e.summon.connect(_on_boss_summon)
+		e.pillar_broken.connect(_on_pillar_broken)
 
 
 func _on_enemy_killed(e: Enemy) -> void:
@@ -221,7 +225,7 @@ func _open_doors() -> void:
 		return
 	var sides: Array = [["w", "n", "e"], ["w", "e"], ["w", "n"], ["n", "e"]].pick_random()
 	var pool := []
-	var gods := Boons.gods_with_boons(Run.boons)
+	var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
 	gods.shuffle()
 	for g in gods.slice(0, 2):
 		pool.append({"kind": "boon", "god": g})
@@ -332,7 +336,7 @@ func _show_boon_menu(god: String) -> void:
 	var options := Boons.offers(god, Run.boons)
 	var from_god := god
 	if options.is_empty():
-		var others := Boons.gods_with_boons(Run.boons)
+		var others := Boons.gods_with_boons(Run.boons, Run.room)
 		if others.is_empty():
 			player.heal(30.0)
 			_open_doors()
@@ -437,10 +441,74 @@ func _banner(title: String, sub: String, color: Color) -> void:
 	tw.tween_property(banner, "modulate:a", 0.0, 0.6)
 
 
+# ---------------------------------------------------------------- pausa (Esc / Start)
+
+func _toggle_pause() -> void:
+	if pause_menu != null:
+		pause_menu.queue_free()
+		pause_menu = null
+		# se era aperta una scelta dei doni, il gioco resta fermo su quella
+		get_tree().paused = menu != null or panel != null
+		return
+	if player == null or player.dead:
+		return
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	reticle.visible = false
+	pause_menu = CanvasLayer.new()
+	pause_menu.layer = 30
+	pause_menu.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(pause_menu)
+	var dim := ColorRect.new()
+	dim.color = Color(0.02, 0.03, 0.08, 0.85)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	pause_menu.add_child(dim)
+	var box := VBoxContainer.new()
+	box.set_anchors_preset(Control.PRESET_CENTER)
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 8)
+	box.position = Vector2(-80, -70)
+	box.custom_minimum_size = Vector2(160, 140)
+	pause_menu.add_child(box)
+	var title := Label.new()
+	title.text = "Pausa"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 18)
+	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
+	box.add_child(title)
+	var first: Button = null
+	for entry in [["Riprendi", _toggle_pause], ["Ricomincia la run", _restart_run], ["Esci dal gioco", _quit_game]]:
+		var b := Button.new()
+		b.text = entry[0]
+		b.custom_minimum_size = Vector2(160, 26)
+		b.add_theme_font_size_override("font_size", 11)
+		b.pressed.connect(entry[1])
+		box.add_child(b)
+		if first == null:
+			first = b
+	var hint := Label.new()
+	hint.text = "Esc / Start per riprendere"
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.add_theme_font_size_override("font_size", 8)
+	hint.add_theme_color_override("font_color", Color(0.66, 0.6, 0.47))
+	box.add_child(hint)
+	first.grab_focus()
+
+
+func _restart_run() -> void:
+	get_tree().paused = false
+	Engine.time_scale = 1.0
+	get_tree().reload_current_scene()
+
+
+func _quit_game() -> void:
+	get_tree().quit()
+
+
 # ---------------------------------------------------------------- menu dei doni (Tab)
 
 func _toggle_boons_panel() -> void:
-	if menu != null or finished:
+	if menu != null or finished or pause_menu != null:
 		return
 	if panel != null:
 		panel.queue_free()
@@ -517,6 +585,24 @@ func _on_boss_summon(count: int) -> void:
 		_spawn_after("scarab", _free_spot(), 0.8 + i * 0.15)
 
 
+## Ammit ha sbattuto contro una colonna: la colonna crolla.
+func _on_pillar_broken(body: StaticBody2D) -> void:
+	var best := -1
+	var best_d := 1e9
+	for i in range(pillars.size()):
+		var d: float = pillars[i].distance_to(body.global_position)
+		if d < best_d:
+			best_d = d
+			best = i
+	if best >= 0:
+		var p: Vector2 = pillars[best]
+		pillars.remove_at(best)
+		Fx.burst(p + Vector2(0, -24), Color(0.77, 0.6, 0.39), 40, 180.0)
+		Fx.float_text(p + Vector2(0, -40), "La colonna crolla", Color(0.95, 0.85, 0.65))
+	body.queue_free()
+	queue_redraw()
+
+
 func _boss_defeated() -> void:
 	boss_bar.visible = false
 	Fx.shake(12.0)
@@ -580,7 +666,7 @@ func _process(_delta: float) -> void:
 	var sek := "PRONTO (Q / LT)" if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
 	if player.divine_t > 0.0:
 		sek = "FORMA DIVINA %.1fs" % player.divine_t
-	var room_txt := "Ammit" if Run.room > Run.ROOMS_PER_RUN else "Stanza %d/%d" % [Run.room, Run.ROOMS_PER_RUN]
+	var room_txt := "Ammit · colonne: %d" % pillars.size() if Run.room > Run.ROOMS_PER_RUN else "Stanza %d/%d" % [Run.room, Run.ROOMS_PER_RUN]
 	hud.text = "Vita %d/%d    Ka %d    %s    Occhio: %s    Sekhem: %s" % [ceili(player.hp), int(player.max_hp), Run.ka, room_txt, eye_txt, sek]
 	if boss != null and is_instance_valid(boss) and not boss.dead:
 		boss_fill.size.x = boss_bar.size.x * clampf(boss.hp / boss.max_hp, 0.0, 1.0)
@@ -601,12 +687,12 @@ func _process(_delta: float) -> void:
 	prompt.visible = near != ""
 
 	var mouse := Fx.device == "mouse"
-	reticle.visible = mouse and not player.dead and menu == null and panel == null
-	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN if (mouse and menu == null and panel == null) else Input.MOUSE_MODE_VISIBLE
+	reticle.visible = mouse and not player.dead and menu == null and panel == null and pause_menu == null
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN if (mouse and menu == null and panel == null and pause_menu == null) else Input.MOUSE_MODE_VISIBLE
 	if Fx.device == "pad":
-		help.text = "Levetta sinistra muovi · destra mira · RB khopesh · RT Occhio · LB/A scatto · LT Forma Divina · Select doni"
+		help.text = "Levetta sinistra muovi · destra mira · RB khopesh · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa"
 	else:
-		help.text = "WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina · Tab doni · F1 hitbox"
+		help.text = "WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina · Tab doni · Esc pausa · F1 hitbox"
 
 
 # ---------------------------------------------------------------- muri e pavimento
@@ -711,6 +797,15 @@ class PanelListener extends Node:
 		process_mode = Node.PROCESS_MODE_ALWAYS
 
 	func _unhandled_input(event: InputEvent) -> void:
+		if game.pause_menu != null:
+			if event.is_action_pressed("pause") or event.is_action_pressed("ui_cancel"):
+				game._toggle_pause()
+				get_viewport().set_input_as_handled()
+			return
+		if event.is_action_pressed("pause") and not game.finished:
+			game._toggle_pause()
+			get_viewport().set_input_as_handled()
+			return
 		if event.is_action_pressed("boons_menu") or (game.panel != null and event.is_action_pressed("ui_cancel")):
 			game._toggle_boons_panel()
 			get_viewport().set_input_as_handled()

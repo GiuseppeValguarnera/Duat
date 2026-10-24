@@ -4,11 +4,13 @@ extends Enemy
 ##
 ## Mosse (ognuna si annuncia prima di colpire):
 ##  - Carica: si ferma, una striscia rossa mostra la traiettoria, poi scatta in linea retta.
-##    Se sbatte contro una colonna resta stordita e subisce il 50% di danni in più.
+##    Se sbatte contro una colonna resta stordita e subisce il 50% di danni in più,
+##    ma la colonna crolla: nell'arena ce ne sono solo 6.
 ##  - Sputo: un anello viola si stringe attorno a lei, poi lancia sfere in tutte le direzioni.
 ## Sotto metà vita entra in furia: è più veloce, lancia più sfere e chiama uno sciame di scarabei.
 
 signal summon(count: int)
+signal pillar_broken(body: StaticBody2D)
 
 const BoltScript := preload("res://scripts/enemy_bolt.gd")
 
@@ -19,11 +21,13 @@ const BoltScript := preload("res://scripts/enemy_bolt.gd")
 @export var spit_count := 10
 @export var stun_time := 2.0
 @export var summon_count := 4
+@export var trample_damage := 30.0     ## danni ai nemici travolti durante la carica
 
 var state := "intro"
 var st := 1.0
 var charge_dir := Vector2.DOWN
 var enraged := false
+var trampled := {}                     # nemici già travolti in questa carica
 
 
 func _ready() -> void:
@@ -68,8 +72,10 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			if st <= 0.0:
 				state = "charge"
 				st = charge_time
+				trampled.clear()
 			return Vector2.ZERO
 		"charge":
+			_trample()
 			if _hit_wall():
 				return Vector2.ZERO
 			if st <= 0.0:
@@ -102,11 +108,28 @@ func _hit_wall() -> bool:
 				state = "stunned"
 				st = stun_time
 				Fx.float_text(global_position + Vector2(0, -30), "STORDITA", Color(1, 0.85, 0.3))
+				body.remove_from_group("pillars")
+				pillar_broken.emit(body)
 			else:
 				state = "recover"
 				st = 0.9
 			return true
 	return false
+
+
+## Durante la carica travolge gli altri nemici sulla sua strada e li scaglia di lato.
+func _trample() -> void:
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if e == self or e.dead or trampled.has(e):
+			continue
+		if global_position.distance_to(e.global_position) < radius + e.radius + 4.0:
+			trampled[e] = true
+			var side := charge_dir.orthogonal()
+			if side.dot(e.global_position - global_position) < 0.0:
+				side = -side
+			e.take_hit(trample_damage, (side + charge_dir * 0.5).normalized(), 280.0)
+			Fx.burst(e.global_position + Vector2(0, -6), Color(0.9, 0.3, 0.2), 10, 110.0)
+			Fx.shake(3.0)
 
 
 func _spit() -> void:

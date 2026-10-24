@@ -49,6 +49,9 @@ func _ready() -> void:
 	_keys("restart", [KEY_R])
 	_button("restart", JOY_BUTTON_START)
 
+	_keys("pause", [KEY_ESCAPE, KEY_P])
+	_button("pause", JOY_BUTTON_START)
+
 
 func _ensure(action: String) -> void:
 	if not InputMap.has_action(action):

@@ -277,7 +277,7 @@ func _fire_eye() -> void:
 		var dir := Vector2.from_angle(base + (i - (rays - 1) / 2.0) * 0.22)
 		var eye: Area2D = EyeScript.new()
 		eye.direction = dir
-		eye.damage = eye_damage * Run.eye_damage_mult()
+		eye.damage = eye_damage * Run.eye_damage_mult() * (0.6 if rays > 1 else 1.0)
 		eye.pierce_left = Run.eye_pierce()
 		eye.explode_damage = Run.val("ra_disc") * Run.all_damage_mult()
 		eye.burns = Run.eye_burns()

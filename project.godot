@@ -15,6 +15,8 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 Inputs="*res://scripts/input_setup.gd"
 Fx="*res://scripts/fx.gd"
 Run="*res://scripts/run.gd"
+AutoTest="*res://autotest.gd"
+AutoTest="*res://autotest.gd"
 
 [display]
 

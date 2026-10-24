@@ -21,6 +21,7 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 | Forma Divina (quando il Sekhem è pieno) | Q | LT |
 | Vedi i tuoi doni (mette in pausa) | Tab | Select |
 | Mostra/nascondi hitbox | F1 | |
+| Pausa | Esc o P | Start |
 | Ricomincia (dopo morte o vittoria) | R | Start |
 
 ## Come funziona una run
@@ -43,7 +44,7 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
 Testa di coccodrillo, corpo di leone, zampe di ippopotamo: nel mito divora i cuori che non superano il giudizio.
 
-- **Carica:** si ferma e una striscia rossa mostra la traiettoria, poi scatta in linea retta. Se sbatte contro una colonna resta **stordita** per 2 secondi e subisce il 50% di danni in più.
+- **Carica:** si ferma e una striscia rossa mostra la traiettoria, poi scatta in linea retta. Se sbatte contro una colonna resta **stordita** per 2 secondi e subisce il 50% di danni in più, ma la colonna **crolla**: nell'arena ce ne sono solo 6. Durante la carica travolge anche gli altri nemici sulla sua strada (30 danni).
 - **Sputo:** un anello viola si stringe attorno a lei, poi lancia sfere in tutte le direzioni.
 - **Furia (sotto metà vita):** è più veloce, lancia più sfere e chiama uno sciame di 4 scarabei, una volta sola.
 
@@ -54,7 +55,7 @@ Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finit
 | Dio | Doni |
 | --- | --- |
 | Ra (fuoco) | Colpo Solare, Disco di Ra, Corsa dell'Alba (con prezzo: scatto più lento), Occhio Ardente · pesante: Ira del Sole |
-| Sekhmet (furia) | Furia della Leonessa, Sete di Sangue, Ruggito, Balzo della Leonessa · pesante: Sete Insaziabile |
+| Sekhmet (furia, compare dalla terza stanza) | Furia della Leonessa, Sete di Sangue, Ruggito, Balzo della Leonessa · pesante: Sete Insaziabile |
 | Thoth (Occhio di Horus) | Sguardo di Thoth, Calcolo di Thoth, Occhio Moltiplicato, Parola dello Scriba · pesante: Conoscenza Proibita |
 | Bastet (critici e agilità) | Artigli Affilati, Occhi di Gatto, Passo Felino, Protezione di Bastet · pesante: Gioco del Gatto |
 | Sobek (resistenza e controllo) | Pelle di Coccodrillo, Morso di Sobek, Marea del Nilo, Forza del Fiume · pesante: Fauci di Sobek |

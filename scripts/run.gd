@@ -17,7 +17,7 @@ var blessings: Array[String] = []     # benedizioni di Set ottenute
 var curses: Array = []                # [{"curse", "waves", "blessing"}]
 var sekhem := 0.0
 var divine := false                   # true durante la Forma Divina
-var revived := false                  # Nove Vite già usata in questa run
+var revived := false                  # Protezione di Bastet già usata in questa run
 
 
 func new_run() -> void:
@@ -117,11 +117,11 @@ func all_damage_mult() -> float:
 func khopesh_mult() -> float:
 	var m := 1.0 + val("sekhmet_fury") / 100.0
 	if has("sekhmet_heavy"):
-		m *= 1.6
+		m *= 1.5
 	if has("thoth_heavy"):
 		m *= 0.65
 	if has("sobek_heavy"):
-		m *= 1.5
+		m *= 1.4
 	if has("iside_heavy"):
 		m *= 0.8
 	return m * all_damage_mult()
