@@ -27,6 +27,9 @@ var start_msec := 0
 var heart_used := false               # Capitolo 30 già usato in questa discesa
 var in_hub := false                   # true nella Sala del Giudizio
 var last_hit := ""                    # chi ti ha colpito per ultimo (per i commenti di Anubi)
+var resume := {}                      # discesa salvata da riprendere (la imposta la Sala all'avvio)
+
+const DESCENT_PATH := "user://duat_discesa.cfg"   ## salvataggio a metà discesa
 
 
 func new_run() -> void:
@@ -49,6 +52,57 @@ func new_run() -> void:
 	if chap("c17"):
 		max_hp += 15.0
 		hp = max_hp
+
+
+# --- salvataggio a metà discesa ---------------------------------------------------
+# All'inizio di ogni stanza la discesa viene salvata. Se il gioco si chiude (o il telefono
+# chiude la pagina), al prossimo avvio si riparte dall'inizio di quella stanza.
+# A fine discesa (morte, vittoria, abbandono) il salvataggio viene cancellato.
+
+func save_descent(reward: Dictionary, extra: Dictionary) -> void:
+	var d := {
+		"max_hp": max_hp, "hp": hp, "ka": ka, "room": room, "boons": boons.duplicate(),
+		"blessings": Array(blessings), "curses": curses.duplicate(true), "sekhem": sekhem,
+		"revived": revived, "blood_kills": blood_kills, "kills": kills, "damage_dealt": damage_dealt,
+		"elapsed": Time.get_ticks_msec() - start_msec, "heart_used": heart_used, "reward": reward,
+	}
+	d.merge(extra)
+	var cfg := ConfigFile.new()
+	cfg.set_value("discesa", "stato", d)
+	cfg.save(DESCENT_PATH)
+
+
+func has_saved_descent() -> bool:
+	return FileAccess.file_exists(DESCENT_PATH)
+
+
+func load_descent() -> Dictionary:
+	var cfg := ConfigFile.new()
+	if cfg.load(DESCENT_PATH) != OK:
+		return {}
+	return cfg.get_value("discesa", "stato", {})
+
+
+func clear_descent() -> void:
+	if has_saved_descent():
+		DirAccess.remove_absolute(DESCENT_PATH)
+
+
+func apply_descent(d: Dictionary) -> void:
+	max_hp = d.get("max_hp", max_hp)
+	hp = d.get("hp", hp)
+	ka = d.get("ka", 0)
+	room = d.get("room", 1)
+	boons = d.get("boons", {}).duplicate()
+	blessings.assign(d.get("blessings", []))
+	curses = d.get("curses", []).duplicate(true)
+	sekhem = d.get("sekhem", 0.0)
+	revived = d.get("revived", false)
+	blood_kills = d.get("blood_kills", 0)
+	kills = d.get("kills", 0)
+	damage_dealt = d.get("damage_dealt", 0.0)
+	start_msec = Time.get_ticks_msec() - int(d.get("elapsed", 0))
+	heart_used = d.get("heart_used", false)
 
 
 func level(id: String) -> int:

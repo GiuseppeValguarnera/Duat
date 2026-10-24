@@ -194,7 +194,12 @@ func _draw_controls() -> void:
 		if btn["action"] == "super" and not Run.sekhem_ready():
 			col = Color(0.5, 0.5, 0.55, 0.2)
 		draw_node.draw_circle(btn["pos"], btn["r"], col)
+		if btn["action"] == "special":
+			var pl = get_tree().get_first_node_in_group("player")
+			if pl != null and pl.eye_cd > 0.0:
+				var k := 1.0 - clampf(pl.eye_cd / maxf(0.1, pl.eye_cd_max()), 0.0, 1.0)
+				draw_node.draw_arc(btn["pos"], btn["r"] - 3.0, -PI / 2.0, -PI / 2.0 + TAU * k, 32, Color(0.35, 0.8, 0.95, 0.85), 4.0)
 		draw_node.draw_arc(btn["pos"], btn["r"], 0.0, TAU, 32, Color(1, 0.9, 0.7, 0.6), 1.5)
-		var fs := 7 if btn["r"] < 20.0 else 8
+		var fs := Fx.fs(7 if btn["r"] < 20.0 else 8)
 		var w := font.get_string_size(btn["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		draw_node.draw_string(font, btn["pos"] + Vector2(-w / 2.0, fs / 2.0 - 1.0), btn["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 0.95, 0.85, 0.9))

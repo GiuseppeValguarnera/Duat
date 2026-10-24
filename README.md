@@ -11,7 +11,11 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
 ## Giocare dal telefono
 
-La versione web è su **https://giuseppevalguarnera.github.io/Duat/**. Su iPhone: aprila con Safari, poi *Condividi → Aggiungi alla schermata Home* e aprila dall'icona, così va a schermo intero. Gioca in orizzontale.
+La versione web è su **https://giuseppevalguarnera.github.io/Duat/**. Su iPhone: aprila con Safari, poi *Condividi → Aggiungi alla schermata Home* e aprila dall'icona: così va a schermo intero, senza barre del browser (dentro Safari iOS non permette lo schermo intero; se apri il gioco da Safari una schermata lo spiega). Gioca in orizzontale.
+
+Sul telefono il gioco si avvicina un po' e testi, carte e menu sono più grandi (`Fx.ui` in `scripts/fx.gd`); il formato si allarga per riempire anche gli schermi più lunghi del 16:9. Per vedere la versione telefono sul computer: avvia Godot con `-- --mobile`.
+
+**Salvataggio a metà discesa:** all'inizio di ogni stanza la discesa viene salvata. Se chiudi il gioco (o il telefono chiude la pagina), al prossimo avvio riparti dall'inizio di quella stanza. Morte, vittoria e abbandono cancellano il salvataggio.
 
 Sul telefono: levetta virtuale a sinistra (appare dove appoggi il pollice), a destra khopesh (tieni premuto), scatto, Occhio di Horus e Forma Divina, in alto pausa e doni. La mira va da sola sul nemico più vicino. Nella Sala il pulsante grande diventa *Azione*; nei menu si tocca direttamente.
 
@@ -64,7 +68,7 @@ Nella Sala, Esc o Start aprono le opzioni:
 - **Piuma di Ma'at**: modalità aiuto facoltativa. Subisci il 10% di danni in meno, +2% a ogni morte, fino al 50%. In cambio custodisci solo il **40% del Ka** e il Peso del Cuore non conta (né i pesi né il record).
 - Scuotimento dello schermo, pausa sui colpi, consigli di Anubi (solo nelle prime due discese), volume generale e musica.
 
-Se il gioco perde il focus (una chiamata, un'altra finestra) va in pausa da solo. Uscire a metà discesa conta come abbandonarla: il Ka raccolto viene custodito.
+Se il gioco perde il focus (una chiamata, un'altra finestra) va in pausa da solo. *Esci* dal menu di pausa lascia la discesa salvata.
 
 ## Come funziona una run
 

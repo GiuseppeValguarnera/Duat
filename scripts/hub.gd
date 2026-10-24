@@ -5,7 +5,7 @@ extends Node2D
 ## - La bilancia di Ma'at: mostra i tuoi progressi.
 ## - Il cancello a nord: inizia una nuova discesa.
 
-const ROOM := Rect2(0, 0, 640, 400)
+const ROOM := Rect2(0, 0, 800, 400)       # larga come le stanze: niente bordi neri sugli schermi larghi
 const WALL := 32.0
 const TOP := 64.0
 const PlayerScene := preload("res://scenes/player.tscn")
@@ -37,6 +37,14 @@ var t := 0.0
 func _ready() -> void:
 	Engine.time_scale = 1.0
 	get_tree().paused = false
+	# una discesa rimasta a metà (gioco chiuso, telefono che chiude la pagina): si riprende da lì
+	if Run.has_saved_descent():
+		var d := Run.load_descent()
+		if not d.is_empty():
+			Run.resume = d
+			get_tree().change_scene_to_file.call_deferred("res://scenes/game.tscn")
+			return
+		Run.clear_descent()
 	Run.in_hub = true
 	Music.play("hub")
 	Run.new_run()
@@ -50,6 +58,7 @@ func _ready() -> void:
 		"papiri": Vector2(cx + 150.0, 322.0),
 	}
 	_build()
+	Fx.scale_labels($UI)
 	talk_box.visible = false
 	if Meta.runs == 0 or Meta.last_end != "":
 		_start_talk()
@@ -275,13 +284,13 @@ func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxCont
 	var title := Label.new()
 	title.text = title_text
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_font_size_override("font_size", Fx.fs(16))
 	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
 	outer.add_child(title)
 	var sub := Label.new()
 	sub.text = sub_text
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	sub.add_theme_font_size_override("font_size", 9)
+	sub.add_theme_font_size_override("font_size", Fx.fs(9))
 	sub.add_theme_color_override("font_color", Color(0.85, 0.78, 0.62))
 	outer.add_child(sub)
 	var row := HBoxContainer.new()
@@ -301,14 +310,14 @@ func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxCont
 	page_lore = _text_label(right, 9, Color(0.72, 0.68, 0.9))
 	var close := Button.new()
 	close.text = "Chiudi"
-	close.add_theme_font_size_override("font_size", 10)
+	close.add_theme_font_size_override("font_size", Fx.fs(10))
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	close.pressed.connect(_close_book)
 	outer.add_child(close)
 	var hint := Label.new()
 	hint.text = "E / Y / B per chiudere"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_font_size_override("font_size", 8)
+	hint.add_theme_font_size_override("font_size", Fx.fs(8))
 	hint.add_theme_color_override("font_color", Color(0.66, 0.6, 0.47))
 	outer.add_child(hint)
 	return left
@@ -318,7 +327,7 @@ func _text_label(parent: Control, font_size: int, color: Color) -> Label:
 	var l := Label.new()
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.custom_minimum_size = Vector2(200, 0)
-	l.add_theme_font_size_override("font_size", font_size)
+	l.add_theme_font_size_override("font_size", Fx.fs(font_size))
 	l.add_theme_color_override("font_color", color)
 	parent.add_child(l)
 	return l
@@ -328,7 +337,7 @@ func _list_button(parent: Control, text: String, color: Color) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	b.add_theme_font_size_override("font_size", 9)
+	b.add_theme_font_size_override("font_size", Fx.fs(9))
 	b.add_theme_color_override("font_color", color)
 	b.add_theme_color_override("font_focus_color", Color(0.94, 0.72, 0.3))
 	b.add_theme_color_override("font_hover_color", Color(0.94, 0.72, 0.3))
@@ -549,6 +558,8 @@ func _close_book() -> void:
 # ---------------------------------------------------------------- disegno
 
 func _draw() -> void:
+	if spots.is_empty():
+		return
 	var r := ROOM
 	var y := TOP
 	while y < r.end.y - WALL:
@@ -691,7 +702,7 @@ class HubColumn extends Node2D:
 
 ## Stendardi delle sei divinità sulla parete nord: si colorano quando il dio ti ha parlato.
 class HubBanners extends Node2D:
-	const ORDER := [["ra", 58.0], ["sekhmet", 150.0], ["thoth", 186.0], ["bastet", 454.0], ["sobek", 490.0], ["iside", 582.0]]
+	const ORDER := [["ra", 138.0], ["sekhmet", 230.0], ["thoth", 266.0], ["bastet", 534.0], ["sobek", 570.0], ["iside", 662.0]]
 	var t := 0.0
 
 	func _process(delta: float) -> void:

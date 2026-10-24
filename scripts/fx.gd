@@ -7,8 +7,34 @@ var world: Node2D
 var device := "mouse"          # "mouse", "pad" oppure "touch"
 var show_hitboxes := false
 
+## Su telefono e tablet il gioco si avvicina un po' (la risoluzione di base scende) e
+## l'interfaccia usa testi più grandi: `ui` è il moltiplicatore dei caratteri.
+var mobile := false
+var ui := 1.0
+
 var _shake := 0.0
 var _hitstops := 0
+
+
+func _ready() -> void:
+	mobile = OS.has_feature("web_ios") or OS.has_feature("web_android") or OS.has_feature("mobile") or OS.get_cmdline_user_args().has("--mobile")
+	if mobile:
+		ui = 1.3
+		get_window().content_scale_size = Vector2i(544, 306)
+
+
+## Dimensione di un carattere, ingrandita sul telefono.
+func fs(size: int) -> int:
+	return roundi(size * ui)
+
+
+## Ingrandisce i testi già impostati in una scena (le etichette dell'HUD e dei dialoghi).
+func scale_labels(root: Node) -> void:
+	if ui == 1.0:
+		return
+	for c in root.find_children("*", "Label", true, false):
+		if c.has_theme_font_size_override("font_size"):
+			c.add_theme_font_size_override("font_size", fs(c.get_theme_font_size("font_size")))
 
 
 func _input(event: InputEvent) -> void:

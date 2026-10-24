@@ -68,6 +68,9 @@ var bonus_boon := false               # il prossimo dono sale di un livello in p
 var shops_visited := 0
 var shop_items: Array = []
 var doors_after_boon := true
+var hud_room := ""
+var hud_eye := ""
+var hud_sek := ""
 
 @onready var world: Node2D = $World
 @onready var hud: Label = $UI/Hud
@@ -88,9 +91,25 @@ func _ready() -> void:
 	Run.blessing_granted.connect(_on_blessing_granted)
 	_build_vignette()
 	_build_boss_bar()
+	Fx.scale_labels($UI)
+	var hud_bars := HudBars.new()
+	hud_bars.game = self
+	$UI.add_child(hud_bars)
+	hud.position.y = 34.0 * Fx.ui
 	var listener := PanelListener.new()
 	listener.game = self
 	add_child(listener)
+	# una discesa interrotta (gioco chiuso, pagina chiusa dal telefono) riprende dalla sua stanza
+	if not Run.resume.is_empty():
+		var d: Dictionary = Run.resume
+		Run.resume = {}
+		Run.apply_descent(d)
+		shops_visited = d.get("shops", 0)
+		bonus_boon = d.get("bonus", false)
+		Run.room = int(d["room"]) - 1
+		start_room(d.get("reward", {"kind": "none"}))
+		_banner("Discesa ripresa", "Stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN] if Run.room <= Run.ROOMS_PER_RUN else "Ammit", Color(0.94, 0.72, 0.3))
+		return
 	# la prima stanza non ha ricompensa: il primo dono è quello di Anubi
 	start_room({"kind": "none"})
 	_show_anubi_menu()
@@ -134,6 +153,7 @@ func start_room(reward: Dictionary) -> void:
 	room_gen += 1
 	boss = null
 	current_reward = reward
+	Run.save_descent(reward, {"shops": shops_visited, "bonus": bonus_boon})
 	cleared = false
 	alive = 0
 	spawning = 0
@@ -441,7 +461,7 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 	var title := Label.new()
 	title.text = title_text
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_font_size_override("font_size", Fx.fs(16))
 	title.add_theme_color_override("font_color", title_color)
 	box.add_child(title)
 
@@ -449,10 +469,10 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 		var said := Label.new()
 		said.text = "«%s»" % speech
 		said.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		said.custom_minimum_size = Vector2(560, 0)
+		said.custom_minimum_size = Vector2(get_viewport().get_visible_rect().size.x - 80.0, 0)
 		said.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		said.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		said.add_theme_font_size_override("font_size", 10)
+		said.add_theme_font_size_override("font_size", Fx.fs(10))
 		said.add_theme_color_override("font_color", title_color.lerp(Color(0.97, 0.93, 0.85), 0.6))
 		said.add_theme_color_override("font_outline_color", Color(0, 0, 0))
 		said.add_theme_constant_override("outline_size", 3)
@@ -462,7 +482,7 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 		var sub := Label.new()
 		sub.text = subtitle
 		sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		sub.add_theme_font_size_override("font_size", 9)
+		sub.add_theme_font_size_override("font_size", Fx.fs(9))
 		sub.add_theme_color_override("font_color", Color(0.85, 0.78, 0.62))
 		box.add_child(sub)
 
@@ -474,9 +494,10 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 	var first_button: Button = null
 	for c in cards:
 		var btn := Button.new()
-		btn.custom_minimum_size = Vector2(190, 120)
+		var card_w := minf(250.0, (get_viewport().get_visible_rect().size.x - 50.0) / 3.0)
+		btn.custom_minimum_size = Vector2(card_w, 120.0 * Fx.ui)
 		btn.text = c["text"]
-		btn.add_theme_font_size_override("font_size", 9)
+		btn.add_theme_font_size_override("font_size", Fx.fs(9))
 		var base := Color(1, 0.62, 0.55) if c.get("heavy", false) else Color(0.95, 0.9, 0.78)
 		btn.add_theme_color_override("font_color", base)
 		btn.add_theme_color_override("font_hover_color", c["color"])
@@ -530,14 +551,14 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 		var tag := "NUOVO" if Run.level(id) == 0 else "LIVELLO %d" % lvl
 		if Run.level(id) == 0 and lvl > 1:
 			tag = "NUOVO · SUBITO LIVELLO %d" % lvl
-		var body := _wrap(Boons.text(id, lvl), 32)
+		var body := _wrap(Boons.text(id, lvl), _wrap_w())
 		if Boons.is_heavy(id):
 			tag = "DONO PESANTE"
 		if Boons.is_duo(id):
 			var gs: Array = Boons.ALL[id]["gods"]
 			tag = "DONO DOPPIO · %s + %s" % [Boons.god_name(gs[0]), Boons.god_name(gs[1])]
 		if Boons.has_cost(id):
-			body += "\n\nPrezzo: " + _wrap(Boons.ALL[id]["cost"], 32)
+			body += "\n\nPrezzo: " + _wrap(Boons.ALL[id]["cost"], _wrap_w())
 		cards.append({
 			"text": "%s\n%s\n\n%s" % [tag, name_line, body],
 			"color": Boons.god_color("duo") if Boons.is_duo(id) else Boons.god_color(from_god),
@@ -552,7 +573,7 @@ func _show_anubi_menu() -> void:
 	var cards := []
 	for id in Boons.offers("anubi", Run.boons):
 		cards.append({
-			"text": "%s\n\n%s\n\nPrezzo: %s" % [Boons.ALL[id]["name"], _wrap(Boons.text(id, 1), 32), _wrap(Boons.ALL[id]["cost"], 32)],
+			"text": "%s\n\n%s\n\nPrezzo: %s" % [Boons.ALL[id]["name"], _wrap(Boons.text(id, 1), _wrap_w()), _wrap(Boons.ALL[id]["cost"], _wrap_w())],
 			"color": Boons.god_color("anubi"),
 			"heavy": false,
 			"on_pick": _choose_start_boon.bind(id),
@@ -563,6 +584,7 @@ func _show_anubi_menu() -> void:
 func _choose_start_boon(id: String) -> void:
 	Sfx.play("boon", 0.0)
 	Run.add_boon(id)
+	Run.save_descent(current_reward, {"shops": shops_visited, "bonus": bonus_boon})
 	_close_choice()
 	player.max_hp = Run.max_hp
 	player.hp = Run.hp
@@ -595,7 +617,7 @@ func _show_set_menu() -> void:
 		var curse: Dictionary = Boons.SET_CURSES[o["curse"]]
 		var bless: Dictionary = Boons.SET_BLESSINGS[o["blessing"]]
 		cards.append({
-			"text": "%s\n\nPER LE PROSSIME %d STANZE\n%s\n\nPOI, PER TUTTA LA RUN\n%s" % [bless["name"], curse["rooms"], _wrap(curse["desc"], 32), _wrap(bless["desc"], 32)],
+			"text": "%s\n\nPER LE PROSSIME %d STANZE\n%s\n\nPOI, PER TUTTA LA RUN\n%s" % [bless["name"], curse["rooms"], _wrap(curse["desc"], _wrap_w()), _wrap(bless["desc"], _wrap_w())],
 			"color": Boons.god_color("set"),
 			"heavy": true,
 			"on_pick": _choose_pact.bind(o["curse"], o["blessing"]),
@@ -617,6 +639,12 @@ func _choose_pact(curse: String, blessing: String) -> void:
 	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color("set"), 30, 140.0)
 	_banner("Maledizione di Set", Boons.SET_CURSES[curse]["desc"], Boons.god_color("set"))
 	_open_doors()
+
+
+## Quanti caratteri per riga stanno in una carta, in base alla larghezza dello schermo e ai caratteri.
+func _wrap_w() -> int:
+	var card_w := minf(250.0, (get_viewport().get_visible_rect().size.x - 50.0) / 3.0)
+	return clampi(int(card_w / (5.6 * Fx.ui)), 20, 34)
 
 
 func _wrap(text: String, width: int) -> String:
@@ -668,21 +696,21 @@ func _toggle_pause() -> void:
 	box.set_anchors_preset(Control.PRESET_CENTER)
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_theme_constant_override("separation", 8)
-	box.position = Vector2(-80, -70)
-	box.custom_minimum_size = Vector2(160, 140)
+	box.position = Vector2(-80, -70) * Fx.ui
+	box.custom_minimum_size = Vector2(160, 140) * Fx.ui
 	pause_menu.add_child(box)
 	var title := Label.new()
 	title.text = "Pausa"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 18)
+	title.add_theme_font_size_override("font_size", Fx.fs(18))
 	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
 	box.add_child(title)
 	var first: Button = null
-	for entry in [["Riprendi", _toggle_pause], ["Volume", _show_audio_menu], ["Ricomincia la run", _restart_run], ["Torna alla Sala (abbandona)", _abandon_run], ["Esci dal gioco", _quit_game]]:
+	for entry in [["Riprendi", _toggle_pause], ["Volume", _show_audio_menu], ["Ricomincia la run", _restart_run], ["Torna alla Sala (abbandona)", _abandon_run], ["Esci (la discesa resta salvata)", _quit_game]]:
 		var b := Button.new()
 		b.text = entry[0]
-		b.custom_minimum_size = Vector2(160, 26)
-		b.add_theme_font_size_override("font_size", 11)
+		b.custom_minimum_size = Vector2(160, 26) * Fx.ui
+		b.add_theme_font_size_override("font_size", Fx.fs(11))
 		b.pressed.connect(entry[1])
 		box.add_child(b)
 		if first == null:
@@ -690,10 +718,12 @@ func _toggle_pause() -> void:
 	var hint := Label.new()
 	hint.text = "Esc / Start per riprendere"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_font_size_override("font_size", 8)
+	hint.add_theme_font_size_override("font_size", Fx.fs(8))
 	hint.add_theme_color_override("font_color", Color(0.66, 0.6, 0.47))
 	box.add_child(hint)
 	first.grab_focus()
+	box.add_theme_constant_override("separation", 6)
+	box.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)   # centrato davvero, anche con i testi grandi
 
 
 ## Pagina del volume dentro il menu di pausa: un cursore per ogni categoria di suoni.
@@ -710,14 +740,14 @@ func _show_audio_menu() -> void:
 	var box := VBoxContainer.new()
 	box.name = "Audio"
 	box.set_anchors_preset(Control.PRESET_CENTER)
-	box.position = Vector2(-130, -120)
-	box.custom_minimum_size = Vector2(260, 240)
+	box.position = Vector2(-130, -120) * Fx.ui
+	box.custom_minimum_size = Vector2(260, 240) * Fx.ui
 	box.add_theme_constant_override("separation", 4)
 	pause_menu.add_child(box)
 	var title := Label.new()
 	title.text = "Volume"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_font_size_override("font_size", Fx.fs(16))
 	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
 	box.add_child(title)
 	var first: Control = null
@@ -727,31 +757,33 @@ func _show_audio_menu() -> void:
 		box.add_child(row)
 		var name_label := Label.new()
 		name_label.text = c[1]
-		name_label.custom_minimum_size = Vector2(110, 0)
-		name_label.add_theme_font_size_override("font_size", 9)
+		name_label.custom_minimum_size = Vector2(110, 0) * Fx.ui
+		name_label.add_theme_font_size_override("font_size", Fx.fs(9))
 		row.add_child(name_label)
 		var slider := HSlider.new()
 		slider.min_value = 0.0
 		slider.max_value = 1.0
 		slider.step = 0.05
 		slider.value = Sfx.volumes.get(c[0], 1.0)
-		slider.custom_minimum_size = Vector2(100, 14)
+		slider.custom_minimum_size = Vector2(100, 14) * Fx.ui
 		slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(slider)
 		var pct := Label.new()
 		pct.text = "%d%%" % roundi(slider.value * 100.0)
-		pct.custom_minimum_size = Vector2(32, 0)
-		pct.add_theme_font_size_override("font_size", 9)
+		pct.custom_minimum_size = Vector2(32, 0) * Fx.ui
+		pct.add_theme_font_size_override("font_size", Fx.fs(9))
 		row.add_child(pct)
 		slider.value_changed.connect(_on_volume_changed.bind(c[0], pct))
 		if first == null:
 			first = slider
 	var back := Button.new()
 	back.text = "Indietro"
-	back.add_theme_font_size_override("font_size", 11)
+	back.add_theme_font_size_override("font_size", Fx.fs(11))
 	back.pressed.connect(_close_audio_menu)
 	box.add_child(back)
 	first.grab_focus()
+	box.add_theme_constant_override("separation", 3)
+	box.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
 
 
 func _on_volume_changed(value: float, category: String, pct: Label) -> void:
@@ -782,6 +814,7 @@ func _close_audio_menu() -> void:
 
 ## Abbandonare conta come una morte: il Ka raccolto viene custodito lo stesso.
 func _abandon_run() -> void:
+	Run.clear_descent()
 	Meta.last_end = "abandon"
 	Meta.last_room = Run.room
 	_end_run_summary()
@@ -791,17 +824,15 @@ func _abandon_run() -> void:
 
 
 func _restart_run() -> void:
+	Run.clear_descent()
 	get_tree().paused = false
 	Engine.time_scale = 1.0
 	get_tree().reload_current_scene()
 
 
-## Uscire a metà discesa conta come abbandonarla: il Ka raccolto viene comunque custodito.
+## Uscire a metà discesa non la perde: è salvata all'inizio della stanza e riprende al prossimo avvio.
 func _quit_game() -> void:
-	if not finished:
-		Meta.last_end = "abandon"
-		Meta.last_room = Run.room
-		_end_run_summary()
+	Meta.save()
 	get_tree().quit()
 
 
@@ -862,6 +893,7 @@ func _boons_text() -> String:
 
 func _on_player_died() -> void:
 	finished = true
+	Run.clear_descent()
 	Music.set_duck(0.35)
 	message.visible = true
 	var where := "Ammit, la Divoratrice" if Run.room > Run.ROOMS_PER_RUN else "stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN]
@@ -1040,7 +1072,7 @@ func _build_boss_bar() -> void:
 	boss_name = Label.new()
 	boss_name.text = "AMMIT, LA DIVORATRICE"
 	boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	boss_name.add_theme_font_size_override("font_size", 9)
+	boss_name.add_theme_font_size_override("font_size", Fx.fs(9))
 	boss_name.add_theme_color_override("font_color", Color(1, 0.5, 0.4))
 	boss_name.add_theme_color_override("font_outline_color", Color.BLACK)
 	boss_name.add_theme_constant_override("outline_size", 4)
@@ -1048,14 +1080,15 @@ func _build_boss_bar() -> void:
 	boss_name.size = Vector2(300, 12)
 	boss_bar = ColorRect.new()
 	boss_bar.color = Color(0.1, 0.02, 0.02, 0.85)
-	boss_bar.position = Vector2(170, 56)
-	boss_bar.size = Vector2(300, 6)
+	boss_bar.position = Vector2(170, 56 * Fx.ui)
+	boss_bar.size = Vector2(300, 6) * Fx.ui
 	boss_fill = ColorRect.new()
 	boss_fill.color = Color(0.85, 0.2, 0.15)
-	boss_fill.size = Vector2(300, 6)
+	boss_fill.size = Vector2(300, 6) * Fx.ui
 	boss_bar.add_child(boss_fill)
 	boss_bar.add_child(boss_name)
-	boss_name.position = Vector2(0, -14)
+	boss_name.position = Vector2(0, -14 * Fx.ui)
+	boss_name.size = Vector2(300 * Fx.ui, 12)
 	ui.add_child(boss_bar)
 	boss_bar.visible = false
 
@@ -1087,6 +1120,7 @@ func _end_run_summary() -> String:
 
 func _victory() -> void:
 	finished = true
+	Run.clear_descent()
 	Music.play("hub")
 	for c in world.get_children():
 		if c is Enemy:
@@ -1115,11 +1149,13 @@ func _process(_delta: float) -> void:
 	if player.divine_t > 0.0:
 		sek = "FORMA DIVINA %.1fs" % player.divine_t
 	var room_txt := "Ammit · colonne: %d" % pillars.size() if Run.room > Run.ROOMS_PER_RUN else "Stanza %d/%d" % [Run.room, Run.ROOMS_PER_RUN]
-	hud.text = "Vita %d/%d    Ka %d    %s    Occhio: %s" % [ceili(player.hp), int(player.max_hp), Run.ka, room_txt, eye_txt]
-	if Run.sekhem_unlocked():
-		hud.text += "    Sekhem: %s" % sek
+	# vita, Ka, stanza, Occhio e Sekhem sono disegnati come barre da HudBars; qui resta il testo
+	hud.text = ""
+	hud_room = room_txt
+	hud_eye = eye_txt
+	hud_sek = sek
 	if Meta.feather:
-		hud.text += "    Piuma di Ma'at: -%d%% danni" % int(round(Run.feather_guard() * 100.0))
+		hud.text = "Piuma di Ma'at: -%d%% danni" % int(round(Run.feather_guard() * 100.0))
 	if boss != null and is_instance_valid(boss) and not boss.dead:
 		boss_fill.size.x = boss_bar.size.x * clampf(boss.hp / boss.max_hp, 0.0, 1.0)
 	var n := Run.boons.size() + Run.blessings.size()
@@ -1129,7 +1165,8 @@ func _process(_delta: float) -> void:
 	for c in Run.curses:
 		line2 += "    Maledizione: %s (ancora %d stanze)" % [Boons.SET_CURSES[c["curse"]]["desc"], c["rooms"]]
 	if line2 != "":
-		hud.text += "\n" + line2
+		hud.text += ("\n" if hud.text != "" else "") + line2.strip_edges()
+	boss_bar.position.x = (get_viewport().get_visible_rect().size.x - boss_bar.size.x) / 2.0
 
 	var near := ""
 	var shop_near = null
@@ -1330,3 +1367,74 @@ class PanelListener extends Node:
 		if event.is_action_pressed("boons_menu") or (game.panel != null and event.is_action_pressed("ui_cancel")):
 			game._toggle_boons_panel()
 			get_viewport().set_input_as_handled()
+
+
+
+## HUD in alto a sinistra: barra della vita, Sekhem, Ka, stanza e ricarica dell'Occhio.
+class HudBars extends Control:
+	var game: Node
+
+	func _ready() -> void:
+		set_anchors_preset(Control.PRESET_FULL_RECT)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _process(_delta: float) -> void:
+		queue_redraw()
+
+	func _draw() -> void:
+		var p = game.player
+		if p == null or not is_instance_valid(p):
+			return
+		var u: float = Fx.ui
+		var font := ThemeDB.fallback_font
+		var x := 10.0 * u
+		var y := 8.0 * u
+		var w := 120.0 * u
+		var h := 11.0 * u
+		var frac := clampf(p.hp / maxf(1.0, p.max_hp), 0.0, 1.0)
+		var hp_col := Color(0.85, 0.22, 0.18) if frac > 0.33 else Color(1.0, 0.35, 0.2).lerp(Color(1, 1, 1), 0.3 * (0.5 + 0.5 * sin(Time.get_ticks_msec() / 120.0)))
+		draw_rect(Rect2(x - 2, y - 2, w + 4, h + 4), Color(0, 0, 0, 0.6))
+		draw_rect(Rect2(x, y, w, h), Color(0.25, 0.06, 0.06))
+		draw_rect(Rect2(x, y, w * frac, h), hp_col)
+		if p.shield > 0.0:
+			draw_rect(Rect2(x, y, w * clampf(p.shield / maxf(1.0, p.max_hp), 0.0, 1.0), h * 0.35), Boons.god_color("iside"))
+		if p.poison_t > 0.0:
+			draw_rect(Rect2(x, y + h - 3 * u, w * frac, 3 * u), Color(0.45, 0.95, 0.35))
+		var hp_txt := "%d / %d" % [ceili(p.hp), int(p.max_hp)]
+		var fs := Fx.fs(9)
+		var tw := font.get_string_size(hp_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		draw_string_outline(font, Vector2(x + (w - tw) / 2.0, y + h - 2.0 * u), hp_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, Color(0, 0, 0, 0.9))
+		draw_string(font, Vector2(x + (w - tw) / 2.0, y + h - 2.0 * u), hp_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 0.95, 0.9))
+		var by := y + h + 4.0 * u
+		if Run.sekhem_unlocked():
+			var sf := clampf(Run.sekhem / Run.SEKHEM_MAX, 0.0, 1.0)
+			draw_rect(Rect2(x - 1, by - 1, w + 2, 5 * u + 2), Color(0, 0, 0, 0.6))
+			draw_rect(Rect2(x, by, w * sf, 5 * u), Color(1, 0.85, 0.35) if sf < 1.0 else Color(1, 0.95, 0.6))
+			if Run.sekhem_ready():
+				draw_string_outline(font, Vector2(x + w + 6 * u, by + 5 * u), "SEKHEM", HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(8), 3, Color(0, 0, 0, 0.9))
+				draw_string(font, Vector2(x + w + 6 * u, by + 5 * u), "SEKHEM", HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(8), Color(1, 0.9, 0.5))
+		# Ka e stanza a destra della barra
+		var tx := x + w + 12.0 * u
+		var ty := y + h - 1.0 * u
+		draw_circle(Vector2(tx + 4 * u, y + h / 2.0), 4.0 * u, Color(0.94, 0.72, 0.3))
+		var ka_txt := "%d" % Run.ka
+		_text(font, Vector2(tx + 11 * u, ty), ka_txt, Fx.fs(10), Color(0.98, 0.85, 0.5))
+		tx += 11 * u + font.get_string_size(ka_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(10)).x + 12 * u
+		_text(font, Vector2(tx, ty), game.hud_room, Fx.fs(10), Color(0.95, 0.9, 0.78))
+		tx += font.get_string_size(game.hud_room, HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(10)).x + 14 * u
+		# Occhio di Horus: cerchio che si riempie mentre si ricarica (sul telefono è sul pulsante)
+		if Fx.device != "touch":
+			var c := Vector2(tx + 7 * u, y + h / 2.0)
+			var r := 7.0 * u
+			var eye_ready: bool = p.eye_cd <= 0.0
+			draw_circle(c, r, Color(0, 0, 0, 0.55))
+			if eye_ready:
+				draw_circle(c, r - 1.5 * u, Color(0.35, 0.8, 0.95))
+			else:
+				var k := 1.0 - clampf(p.eye_cd / maxf(0.1, p.eye_cd_max()), 0.0, 1.0)
+				draw_arc(c, r - 2.0 * u, -PI / 2.0, -PI / 2.0 + TAU * k, 24, Color(0.35, 0.8, 0.95, 0.8), 3.0 * u)
+			draw_circle(c, 2.0 * u, Color(0.05, 0.05, 0.1))
+
+	func _text(font: Font, pos: Vector2, text: String, font_size: int, col: Color) -> void:
+		draw_string_outline(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, 4, Color(0, 0, 0, 0.9))
+		draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, col)
