@@ -19,7 +19,10 @@ var curses: Array = []                # [{"curse", "waves", "blessing"}]
 var sekhem := 0.0
 var divine := false                   # true durante la Forma Divina
 var revived := false                  # Protezione di Bastet già usata in questa run
-var blood_kills := 0                  # Sete di Sangue: nemici abbattuti dall'ultima cura
+var blood_kills := 0
+var kills := 0                        # statistiche per il riepilogo di fine run
+var damage_dealt := 0.0
+var start_msec := 0                  # Sete di Sangue: nemici abbattuti dall'ultima cura
 
 
 func new_run() -> void:
@@ -33,6 +36,10 @@ func new_run() -> void:
 	divine = false
 	revived = false
 	blood_kills = 0
+	ka = 0
+	kills = 0
+	damage_dealt = 0.0
+	start_msec = Time.get_ticks_msec()
 
 
 func level(id: String) -> int:

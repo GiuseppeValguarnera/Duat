@@ -40,6 +40,8 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 | Scarabei | Arrivano a gruppi di tre, veloci e fragili, a zig-zag | Colpi ampi e Occhio di Horus |
 | Sacerdote di Set | Resta lontano e lancia sfere. Prima di lanciare si ferma e la sfera cresce | Spostati negli ultimi istanti, o colpiscilo per interromperlo |
 
+Dalla terza stanza alcune mummie e alcuni sacerdoti sono **élite**: alone dorato, più grossi, +80% di vita, lasciano più Ka.
+
 ## Trappole (dalla seconda stanza)
 
 - **Spuntoni:** lastre nel pavimento. I fori si illuminano, poi escono le punte: feriscono te (10) e anche i nemici (14).
@@ -71,6 +73,16 @@ Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finit
 | Iside (protezione e cure) | Ali di Iside, Lacrime di Iside, Nodo di Iside, Nome Segreto di Ra (solo dopo aver sbloccato il Sekhem) · pesante: Abbraccio di Iside |
 | Anubi (solo a inizio run, doni-bilancia con un piccolo prezzo) | Cuore Leggero, Cuore di Pietra, Fiuto dello Sciacallo, Bilancia Giusta, Guida delle Anime, Vasi Canopi, Apertura della Bocca, Bende di Lino, Custode della Necropoli, Offerte ai Defunti |
 
+**Doni Doppi:** quando hai già doni di due dèi, a volte uno dei due ti offre un dono che li unisce (carta dorata).
+
+| Dono Doppio | Dèi | Effetto |
+| --- | --- | --- |
+| Occhio del Sole | Ra + Thoth | L'Occhio incendia sempre ed esplode quando si ferma |
+| Sole Furente | Ra + Sekhmet | I nemici in fiamme subiscono +25% dal khopesh |
+| Caccia delle Leonesse | Sekhmet + Bastet | I critici del khopesh liberano un ruggito |
+| Sguardo del Gatto Sapiente | Thoth + Bastet | Un critico dell'Occhio ne dimezza la ricarica |
+| Piena Sacra | Sobek + Iside | Con lo scudo di Iside il khopesh fa +25% |
+
 Senza doni l'Occhio di Horus si ferma sul primo nemico che colpisce.
 
 I nemici colpiti barcollano per un terzo di secondo: non si muovono e non fanno danno da contatto. Le mummie durante l'affondo non barcollano.
@@ -82,6 +94,14 @@ A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza
 ## Sekhem e Forma Divina
 
 Il Sekhem è il dono di **Ammit**: si sblocca per sempre la prima volta che la sconfiggi (salvato in `user://duat_save.cfg`). Dalla run successiva si carica facendo e subendo danni. Quando è pieno attivi la **Forma Divina** per 6 secondi: onda d'urto iniziale, +50% ai danni del khopesh e solo il 30% dei danni subiti.
+
+## Suoni
+
+I suoni sono provvisori e generati da `tools/make_sfx.py` (nessuna licenza da rispettare). Per cambiarli basta sostituire i file in `assets/sfx/` mantenendo lo stesso nome. I volumi sono in `scripts/sfx.gd`.
+
+## Fine della run
+
+Alla morte o alla vittoria compare un riepilogo (tempo, nemici, danni, doni, Ka). Il Ka raccolto viene **custodito** tra una run e l'altra nel salvataggio: servirà nella Sala del Giudizio.
 
 ## Regolare la sensazione di gioco
 

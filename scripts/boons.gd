@@ -17,6 +17,7 @@ const GODS := {
 	"iside": {"name": "Iside", "color": Color(0.95, 0.56, 0.76)},
 	"set": {"name": "Set", "color": Color(0.78, 0.25, 0.2)},
 	"anubi": {"name": "Anubi", "color": Color(0.62, 0.56, 0.92)},
+	"duo": {"name": "Doppio", "color": Color(1.0, 0.86, 0.45)},
 }
 
 ## `values` = il numero del dono ai livelli 1, 2 e 3 (entra nel %d della descrizione).
@@ -60,6 +61,12 @@ const ALL := {
 	"anubi_guardian": {"god": "anubi", "balanced": true, "name": "Custode della Necropoli", "desc": "Il terzo colpo della combo fa il %d%% di danni in più.", "values": [50], "cost": "I primi due colpi della combo fanno il 10% di danni in meno."},
 	"anubi_tribute": {"god": "anubi", "balanced": true, "name": "Offerte ai Defunti", "desc": "Ottieni il %d%% di Ka in più.", "values": [40], "cost": "-5 vita massima."},
 	"anubi_guide": {"god": "anubi", "balanced": true, "name": "Guida delle Anime", "desc": "Ogni nemico abbattuto libera uno spirito che colpisce il nemico più vicino: %d danni.", "values": [15], "cost": "I nemici hanno il 5% di vita in più."},
+	# Doni Doppi: compaiono quando hai già doni di entrambi gli dèi
+	"duo_ra_thoth": {"god": "duo", "gods": ["ra", "thoth"], "name": "Occhio del Sole", "desc": "L'Occhio di Horus incendia sempre ed esplode quando si ferma (almeno 12 danni)."},
+	"duo_ra_sekhmet": {"god": "duo", "gods": ["ra", "sekhmet"], "name": "Sole Furente", "desc": "I nemici in fiamme subiscono il 25% di danni in più dal khopesh."},
+	"duo_sekhmet_bastet": {"god": "duo", "gods": ["sekhmet", "bastet"], "name": "Caccia delle Leonesse", "desc": "I colpi critici del khopesh liberano un ruggito che ferisce chi ti sta attorno (12 danni)."},
+	"duo_thoth_bastet": {"god": "duo", "gods": ["thoth", "bastet"], "name": "Sguardo del Gatto Sapiente", "desc": "Un colpo critico dell'Occhio di Horus ne dimezza la ricarica."},
+	"duo_sobek_iside": {"god": "duo", "gods": ["sobek", "iside"], "name": "Piena Sacra", "desc": "Finché hai lo scudo di Iside, il khopesh fa il 25% di danni in più."},
 	"ra_heavy": {"god": "ra", "heavy": true, "name": "Ira del Sole", "desc": "Tutti i tuoi colpi incendiano, e le fiamme fanno il 60% di danni in più.", "cost": "L'Occhio di Horus si ricarica il 50% più lentamente."},
 	"sekhmet_heavy": {"god": "sekhmet", "heavy": true, "name": "Sete Insaziabile", "desc": "+50% ai danni del khopesh.", "cost": "Finché ci sono nemici nella stanza perdi 1 punto vita ogni 3 secondi."},
 	"bastet_heavy": {"god": "bastet", "heavy": true, "name": "Gioco del Gatto", "desc": "I colpi critici fanno il triplo dei danni invece del doppio, e hai sempre almeno il 10% di probabilità di critico.", "cost": "-15 vita massima."},
@@ -107,7 +114,7 @@ static func has_cost(id: String) -> bool:
 ## Testo del dono a un certo livello (1, 2 o 3).
 static func text(id: String, level: int) -> String:
 	var b: Dictionary = ALL[id]
-	if is_heavy(id):
+	if is_heavy(id) or not b.has("values"):
 		return b["desc"]
 	return b["desc"] % b["values"][clampi(level, 1, MAX_LEVEL) - 1]
 
@@ -140,7 +147,8 @@ static func offers(god: String, owned: Dictionary) -> Array:
 	ups.shuffle()
 	var out := fresh + ups
 	out = out.slice(0, 3)
-	if heavy != "" and randf() < HEAVY_CHANCE:
+	# se non resta altro, il dono pesante compare sempre (altrimenti il menu sarebbe vuoto)
+	if heavy != "" and (out.is_empty() or randf() < HEAVY_CHANCE):
 		if out.size() >= 3:
 			out[2] = heavy
 		else:
@@ -154,7 +162,7 @@ static func gods_with_boons(owned: Dictionary, for_room: int = 99) -> Array:
 	for g in GODS:
 		if MIN_ROOM.get(g, 1) > for_room:
 			continue
-		if g != "set" and g != "anubi" and not offers(g, owned).is_empty():
+		if g != "set" and g != "anubi" and g != "duo" and not offers(g, owned).is_empty():
 			out.append(g)
 	return out
 
@@ -172,3 +180,34 @@ static func set_offers(taken_blessings: Array) -> Array:
 	for i in range(mini(3, blessings.size())):
 		out.append({"curse": curses[i % curses.size()], "blessing": blessings[i]})
 	return out
+
+
+## Probabilità che un Dono Doppio prenda il posto di una delle tre scelte, quando è disponibile.
+const DUO_CHANCE := 0.45
+
+
+static func is_duo(id: String) -> bool:
+	return ALL[id]["god"] == "duo"
+
+
+static func has_god(owned: Dictionary, god: String) -> bool:
+	for id in owned:
+		if ALL[id]["god"] == god:
+			return true
+	return false
+
+
+## Doni Doppi che il dio `god` può offrire: serve già un dono dell'altro dio.
+static func duos_for(god: String, owned: Dictionary) -> Array:
+	var out := []
+	for id in ALL:
+		if not is_duo(id) or owned.has(id):
+			continue
+		var gods: Array = ALL[id]["gods"]
+		if not gods.has(god):
+			continue
+		var other: String = gods[1] if gods[0] == god else gods[0]
+		if has_god(owned, other) and has_god(owned, god):
+			out.append(id)
+	return out
+

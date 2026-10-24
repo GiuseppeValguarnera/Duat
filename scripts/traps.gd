@@ -29,6 +29,7 @@ class Spikes extends Node2D:
 		if now == "up" and was != "up":
 			_hit.clear()
 			Fx.burst(global_position, Color(0.85, 0.85, 0.9), 6, 50.0)
+			Sfx.play("spikes")
 		if now == "up":
 			_strike()
 		queue_redraw()
@@ -95,6 +96,7 @@ class DartWall extends Node2D:
 
 	func _fire() -> void:
 		_fired = true
+		Sfx.play("dart")
 		var bolt: Area2D = BoltScript.new()
 		bolt.direction = dir
 		bolt.speed = 230.0

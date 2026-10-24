@@ -22,6 +22,7 @@ var t := 0.0
 var seed_offset := 0.0
 var contact: Area2D
 var is_boss := false
+var elite := false                     ## versione dorata: più grossa, più resistente, lascia più Ka
 var stagger_t := 0.0
 var sobek_stun_t := 0.0                ## stordito dal Morso di Sobek (per la Forza del Fiume)                   ## dopo un colpo il nemico barcolla: non si muove e non ferisce
 
@@ -29,6 +30,11 @@ var sobek_stun_t := 0.0                ## stordito dal Morso di Sobek (per la Fo
 func _ready() -> void:
 	if not is_boss:
 		max_hp *= Run.enemy_hp_mult()
+	if elite:
+		max_hp *= 1.8
+		contact_damage *= 1.3
+		ka_value += 2
+		scale = Vector2(1.2, 1.2)
 	hp = max_hp
 	add_to_group("enemies")
 	t = randf() * 3.0
@@ -114,6 +120,7 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 	if Run.has("sobek_river") and (sobek_stun_t > 0.0 or _puddle_slow() < 1.0):
 		dmg *= 1.0 + Run.val("sobek_river") / 100.0
 	hp -= dmg
+	Run.damage_dealt += dmg
 	flash_t = 0.1
 	stagger_t = maxf(stagger_t, _stagger_time())
 	knock = dir * kb
@@ -123,6 +130,7 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 	Run.add_sekhem(dmg * 0.15)
 	Fx.damage_number(global_position, dmg)
 	Fx.burst(global_position + Vector2(0, -radius), Color(1, 0.9, 0.6), 5, 70.0)
+	Sfx.play("hit", 0.15)
 	if hp <= 0.0:
 		die()
 
@@ -145,6 +153,8 @@ func die() -> void:
 	if dead:
 		return
 	dead = true
+	Run.kills += 1
+	Sfx.play("kill")
 	# solo i nemici più grossi lasciano un po' di Ka: il grosso arriva dai tesori
 	var ka := roundi(ka_value * Run.ka_mult())
 	if ka > 0:
@@ -192,6 +202,10 @@ func _draw() -> void:
 	draw_set_transform(Vector2(0, 2), 0.0, Vector2(1.0, 0.4))
 	draw_circle(Vector2.ZERO, radius + 3.0, Color(0, 0, 0, 0.35))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	if elite:
+		var pulse := 0.5 + 0.5 * sin(t * 4.0)
+		draw_circle(Vector2(0, -radius), radius + 6.0, Color(1, 0.8, 0.3, 0.1 + 0.08 * pulse))
+		draw_arc(Vector2(0, -radius), radius + 6.0, 0.0, TAU, 24, Color(1, 0.82, 0.35, 0.55), 1.0)
 	_draw_body(flash_t > 0.0)
 	if burn_t > 0.0:
 		draw_circle(Vector2(0, -radius), radius + 3.0, Color(1, 0.5, 0.1, 0.25))

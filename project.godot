@@ -16,6 +16,7 @@ Inputs="*res://scripts/input_setup.gd"
 Fx="*res://scripts/fx.gd"
 Run="*res://scripts/run.gd"
 Meta="*res://scripts/meta.gd"
+Sfx="*res://scripts/sfx.gd"
 
 [display]
 

@@ -42,6 +42,10 @@ func _on_body_entered(body: Node) -> void:
 		var crit := Run.roll_crit(Run.eye_crit_chance())
 		if crit > 1.0:
 			Fx.float_text(body.global_position + Vector2(0, -20), "CRITICO", Boons.god_color("bastet"))
+			if Run.has("duo_thoth_bastet"):
+				var player = get_tree().get_first_node_in_group("player")
+				if player != null:
+					player.eye_cd *= 0.5
 		body.take_hit(damage * crit, direction, 60.0, burns)
 		Fx.shake(2.0)
 		if pierce_left > 0:

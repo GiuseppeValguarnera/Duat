@@ -90,6 +90,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			if st <= 0.0:
 				state = "charge"
 				st = charge_time
+				Sfx.play("charge")
 				trampled.clear()
 			return Vector2.ZERO
 		"charge":
@@ -204,6 +205,7 @@ func _spit() -> void:
 
 ## Morso: colpisce tutto quello che è nel ventaglio davanti alle fauci.
 func _bite() -> void:
+	Sfx.play("bite")
 	Fx.shake(6.0)
 	Fx.burst(global_position + Vector2(0, -12) + charge_dir * 30.0, Color(0.95, 0.9, 0.8), 14, 120.0)
 	var player = get_tree().get_first_node_in_group("player")
@@ -216,6 +218,7 @@ func _bite() -> void:
 
 ## Ruggito del Giudizio: un anello che si allarga per tutta l'arena.
 func _shockwave() -> void:
+	Sfx.play("roar", 0.05)
 	var wave := Shockwave.new()
 	wave.speed = wave_speed * _rage()
 	wave.damage = wave_damage

@@ -201,6 +201,7 @@ func _start_dash(move: Vector2) -> void:
 	invuln_t = maxf(invuln_t, dash_time + 0.05)
 	knock = Vector2.ZERO
 	dash_hit.clear()
+	Sfx.play("dash")
 	Fx.burst(global_position, Color(0.85, 0.75, 0.55), 8, 60.0)
 
 
@@ -229,6 +230,7 @@ func _swing() -> void:
 	swing_range = c["range"]
 	swing_arc = deg_to_rad(c["arc"])
 	swing_dir = _assisted(aim, swing_range + 24.0)
+	Sfx.play("swing", 0.15)
 	knock = swing_dir * c["lunge"]
 
 	var dmg: float = attack_damage * Run.khopesh_mult() * c["mult"] * Run.combo_mult(swing_index)
@@ -248,9 +250,17 @@ func _swing() -> void:
 			continue
 		if absf(swing_dir.angle_to(to)) <= swing_arc * 0.5 or to.length() < e.radius + 6.0:
 			var crit := Run.roll_crit(Run.khopesh_crit_chance())
+			var hit_dmg := dmg * crit
+			if Run.has("duo_ra_sekhmet") and e.burn_t > 0.0:
+				hit_dmg *= 1.25
+			if Run.has("duo_sobek_iside") and shield > 0.0:
+				hit_dmg *= 1.25
 			if crit > 1.0:
 				Fx.float_text(e.global_position + Vector2(0, -20), "CRITICO", Boons.god_color("bastet"))
-			e.take_hit(dmg * crit, to.normalized(), c["knock"] * Run.knock_mult(), Run.khopesh_burns())
+				Sfx.play("crit")
+				if Run.has("duo_sekhmet_bastet"):
+					_shockwave.call_deferred(40.0, 12.0 * Run.all_damage_mult(), 150.0, Boons.god_color("duo"))
+			e.take_hit(hit_dmg, to.normalized(), c["knock"] * Run.knock_mult(), Run.khopesh_burns())
 			if swing_index == 2 and Run.has("sobek_bite") and not e.dead:
 				var stun: float = Run.val("sobek_bite") * (0.25 if e.is_boss else 1.0)
 				e.stagger_t = maxf(e.stagger_t, stun)
@@ -273,6 +283,7 @@ func _shockwave(radius: float, dmg: float, kb: float, color: Color) -> void:
 
 func _fire_eye() -> void:
 	eye_cd = eye_cd_max()
+	Sfx.play("eye")
 	var rays := Run.eye_rays()
 	var base := aim.angle()
 	for i in range(rays):
@@ -282,13 +293,16 @@ func _fire_eye() -> void:
 		eye.damage = eye_damage * Run.eye_damage_mult() * (0.6 if rays > 1 else 1.0)
 		eye.pierce_left = Run.eye_pierce()
 		eye.explode_damage = Run.val("ra_disc") * Run.all_damage_mult()
-		eye.burns = Run.eye_burns()
+		eye.burns = Run.eye_burns() or Run.has("duo_ra_thoth")
+		if Run.has("duo_ra_thoth"):
+			eye.explode_damage = maxf(eye.explode_damage, 12.0 * Run.all_damage_mult())
 		get_parent().add_child(eye)
 		eye.global_position = global_position + Vector2(0, -8) + dir * 10.0
 
 
 func _divine_form() -> void:
 	Run.sekhem = 0.0
+	Sfx.play("divine", 0.0)
 	divine_t = divine_time
 	Run.divine = true
 	Fx.hitstop(0.12)
@@ -334,6 +348,7 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> boo
 		Fx.burst(attacker.global_position + Vector2(0, -8), Boons.god_color("anubi"), 12, 80.0)
 	invuln_t = hit_invuln
 	flash_t = 0.15
+	Sfx.play("hurt")
 	Fx.shake(7.0)
 	Fx.hitstop(0.08)
 	Fx.damage_number(global_position, amount, Color(1, 0.4, 0.3))
@@ -346,6 +361,7 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> boo
 	if hp <= 0.0:
 		hp = 0.0
 		dead = true
+		Sfx.play("death", 0.0)
 		divine_t = 0.0
 		Run.divine = false
 		Fx.burst(global_position, Color(0.9, 0.2, 0.15), 30, 160.0)

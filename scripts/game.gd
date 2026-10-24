@@ -170,6 +170,9 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 	spawning -= 1
 	var e: Enemy = ENEMIES[kind].instantiate()
 	e.position = pos
+	# dalla terza stanza alcune mummie e alcuni sacerdoti sono élite
+	if Run.room >= 3 and Run.room <= Run.ROOMS_PER_RUN and kind != "scarab" and randf() < 0.08 + 0.03 * Run.room:
+		e.elite = true
 	world.add_child(e)
 	alive += 1
 	e.killed.connect(_on_enemy_killed)
@@ -229,6 +232,7 @@ func _room_cleared() -> void:
 
 
 func _on_pickup_collected(p: Area2D) -> void:
+	Sfx.play("pickup", 0.0)
 	var kind: String = p.kind
 	var god: String = p.god
 	Fx.burst(p.global_position + Vector2(0, -10), p.color(), 24, 120.0)
@@ -290,6 +294,7 @@ func _add_door(side: String, reward: Dictionary) -> void:
 
 
 func _on_door_chosen(d: Area2D) -> void:
+	Sfx.play("door")
 	var kind: String = d.reward["kind"]
 	if kind == "boss":
 		start_room.call_deferred({"kind": "none"})
@@ -352,6 +357,7 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 		btn.add_theme_color_override("font_hover_color", c["color"])
 		btn.add_theme_color_override("font_focus_color", c["color"])
 		btn.pressed.connect(c["on_pick"])
+		btn.focus_entered.connect(Sfx.play.bind("ui", 0.0))
 		row.add_child(btn)
 		if first_button == null:
 			first_button = btn
@@ -370,13 +376,23 @@ func _show_boon_menu(god: String) -> void:
 	var from_god := god
 	if options.is_empty():
 		var others := Boons.gods_with_boons(Run.boons, Run.room)
-		if others.is_empty():
-			player.heal(30.0)
-			_open_doors()
-			return
-		from_god = others.pick_random()
-		options = Boons.offers(from_god, Run.boons)
+		if not others.is_empty():
+			from_god = others.pick_random()
+			options = Boons.offers(from_god, Run.boons)
+	if options.is_empty():
+		# tutti i doni sono già al massimo: al posto del dono arriva un tesoro di Ka
+		var bonus := roundi(25 * Run.ka_mult())
+		Run.ka += bonus
+		Fx.float_text(player.global_position, "+%d Ka" % bonus, Color(0.94, 0.72, 0.3))
+		_open_doors()
+		return
 
+	var duos := Boons.duos_for(from_god, Run.boons)
+	if not duos.is_empty() and randf() < Boons.DUO_CHANCE:
+		if options.size() >= 3:
+			options[2] = duos.pick_random()
+		else:
+			options.append(duos.pick_random())
 	var cards := []
 	for id in options:
 		var lvl := Run.level(id) + 1
@@ -385,11 +401,14 @@ func _show_boon_menu(god: String) -> void:
 		var body := _wrap(Boons.text(id, lvl), 32)
 		if Boons.is_heavy(id):
 			tag = "DONO PESANTE"
+		if Boons.is_duo(id):
+			var gs: Array = Boons.ALL[id]["gods"]
+			tag = "DONO DOPPIO · %s + %s" % [Boons.god_name(gs[0]), Boons.god_name(gs[1])]
 		if Boons.has_cost(id):
 			body += "\n\nPrezzo: " + _wrap(Boons.ALL[id]["cost"], 32)
 		cards.append({
 			"text": "%s\n%s\n\n%s" % [tag, name_line, body],
-			"color": Boons.god_color(from_god),
+			"color": Boons.god_color("duo") if Boons.is_duo(id) else Boons.god_color(from_god),
 			"heavy": Boons.is_heavy(id),
 			"on_pick": _choose_boon.bind(id),
 		})
@@ -410,6 +429,7 @@ func _show_anubi_menu() -> void:
 
 
 func _choose_start_boon(id: String) -> void:
+	Sfx.play("boon", 0.0)
 	Run.add_boon(id)
 	_close_choice()
 	player.max_hp = Run.max_hp
@@ -419,6 +439,7 @@ func _choose_start_boon(id: String) -> void:
 
 
 func _choose_boon(id: String) -> void:
+	Sfx.play("boon", 0.0)
 	Run.add_boon(id)
 	_close_choice()
 	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color(Boons.ALL[id]["god"]), 30, 140.0)
@@ -444,6 +465,7 @@ func _show_set_menu() -> void:
 
 
 func _choose_pact(curse: String, blessing: String) -> void:
+	Sfx.play("boon", 0.0)
 	Run.add_pact(curse, blessing)
 	Run.ka += roundi(25 * Run.ka_mult())
 	_close_choice()
@@ -578,7 +600,7 @@ func _boons_text() -> String:
 	for id in Run.boons:
 		var b: Dictionary = Boons.ALL[id]
 		var col: String = Boons.god_color(b["god"]).to_html(false)
-		var lvl := "pesante" if Boons.is_heavy(id) else ("bilancia" if Boons.ALL[id].get("balanced", false) else "liv. %d" % Run.boons[id])
+		var lvl := "pesante" if Boons.is_heavy(id) else ("bilancia" if Boons.ALL[id].get("balanced", false) else ("doppio" if Boons.is_duo(id) else "liv. %d" % Run.boons[id]))
 		t += "[color=#%s][b]%s[/b] · %s · %s[/color]\n%s" % [col, Boons.god_name(b["god"]), b["name"], lvl, Boons.text(id, Run.boons[id])]
 		if Boons.has_cost(id):
 			t += " [color=#ff9c8c]Prezzo: %s[/color]" % b["cost"]
@@ -597,13 +619,14 @@ func _on_player_died() -> void:
 	finished = true
 	message.visible = true
 	var where := "Ammit, la Divoratrice" if Run.room > Run.ROOMS_PER_RUN else "stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN]
-	message.text = "Il tuo cuore è stato pesato.\nSei caduto: %s\n\nPremi R (o Start) per ricominciare" % where
+	message.text = "Il tuo cuore è stato pesato.\nSei caduto: %s\n\n%s\n\nPremi R (o Start) per ricominciare" % [where, _end_run_summary()]
 	boss_bar.visible = false
 
 
 # ---------------------------------------------------------------- boss
 
 func _start_boss() -> void:
+	Sfx.play("roar", 0.0)
 	_banner("Ammit, la Divoratrice", "Divora i cuori che non superano il giudizio", Color(0.9, 0.35, 0.25))
 	boss_bar.visible = true
 	boss_fill.size.x = boss_bar.size.x
@@ -701,6 +724,19 @@ func _build_boss_bar() -> void:
 	boss_bar.visible = false
 
 
+## Riepilogo della discesa. Salva anche il Ka raccolto, che resta tra una run e l'altra.
+func _end_run_summary() -> String:
+	Meta.ka_bank += Run.ka
+	Meta.runs += 1
+	Meta.save()
+	var secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
+	var lines := [
+		"Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d" % [floori(secs / 60.0), secs % 60, Run.kills, int(Run.damage_dealt)],
+		"Doni raccolti %d   ·   Ka raccolto %d   ·   Ka custodito %d" % [Run.boons.size() + Run.blessings.size(), Run.ka, Meta.ka_bank],
+	]
+	return "\n".join(lines)
+
+
 func _victory() -> void:
 	finished = true
 	for c in world.get_children():
@@ -708,7 +744,7 @@ func _victory() -> void:
 			c.queue_free()
 	message.visible = true
 	var extra := "\nNuovo potere sbloccato: il Sekhem e la Forma Divina (Q / LT)" if Meta.ammit_wins == 1 else ""
-	message.text = "Hai sconfitto Ammit!\nLa Prima Ora è superata. Ka totale: %d%s\n\nPremi R (o Start) per ricominciare" % [Run.ka, extra]
+	message.text = "Hai sconfitto Ammit!\nLa Prima Ora è superata.%s\n\n%s\n\nPremi R (o Start) per ricominciare" % [extra, _end_run_summary()]
 
 
 # ---------------------------------------------------------------- ogni frame
