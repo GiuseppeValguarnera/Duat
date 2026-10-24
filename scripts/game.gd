@@ -688,9 +688,7 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 	words.add_theme_constant_override("separation", int(2 * Fx.ui))
 	words.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	head.add_child(words)
-	var title := UiStyle.label(title_text, 15, title_color, true)
-	title.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	title.add_theme_constant_override("outline_size", 4)
+	var title := UiStyle.heading(title_text, 15, title_color)
 	words.add_child(title)
 	if speech != "":
 		var said := UiStyle.label("«%s»" % speech, 8 if Fx.mobile else 10, title_color.lerp(Color(0.97, 0.93, 0.85), 0.65), false, vw - 64.0 * Fx.ui - 70.0)
@@ -719,6 +717,13 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 		row.add_child(btn)
 		btn.pressed.connect(c["on_pick"])
 		btn.focus_entered.connect(Sfx.play.bind("ui", 0.0))
+		# la carta scelta si solleva un poco; le altre tornano giù
+		btn.focus_entered.connect(func() -> void:
+			btn.pivot_offset = btn.size / 2.0
+			btn.create_tween().tween_property(btn, "scale", Vector2(1.04, 1.04), 0.12))
+		btn.focus_exited.connect(func() -> void:
+			btn.create_tween().tween_property(btn, "scale", Vector2.ONE, 0.12))
+		btn.mouse_entered.connect(btn.grab_focus)
 		# le carte si srotolano una dopo l'altra
 		btn.modulate.a = 0.0
 		btn.scale = Vector2(1.0, 0.85)
@@ -968,7 +973,9 @@ func _wrap(text: String, width: int) -> String:
 
 
 func _banner(title: String, sub: String, color: Color) -> void:
-	banner.add_theme_font_override("font", UiStyle.title_font())
+	if banner.material == null:
+		banner.add_theme_font_override("font", UiStyle.deco_font())
+		UiStyle.shimmer(banner, 0.6)
 	banner.text = "%s\n%s" % [title, sub]
 	banner.add_theme_color_override("font_color", color)
 	banner.visible = true
@@ -1260,10 +1267,8 @@ func _death_panel(layer: CanvasLayer, where: String, killer: String, summary: St
 	scale_draw.custom_minimum_size = Vector2(120, 70) * u
 	scale_draw.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	box.add_child(scale_draw)
-	var title := UiStyle.label("Il tuo cuore è stato pesato", 18, Color(0.95, 0.4, 0.3), true)
+	var title := UiStyle.heading("Il tuo cuore è stato pesato", 18, Color(0.95, 0.4, 0.3))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	title.add_theme_constant_override("outline_size", 5)
 	box.add_child(title)
 	var pap := PanelContainer.new()
 	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(Color(0.45, 0.12, 0.08)))

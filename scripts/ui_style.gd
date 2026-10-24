@@ -11,6 +11,9 @@ const GOLD := Color(0.94, 0.72, 0.3)
 
 static var _font: Font
 static var _font_regular: Font
+static var _body: Font
+static var _deco: Font
+static var _shimmer: Shader
 static var _textures := {}
 
 
@@ -19,6 +22,41 @@ static func title_font() -> Font:
 	if _font == null:
 		_font = load("res://assets/fonts/cinzel-bold.woff2")
 	return _font
+
+
+## Macondo: il carattere dei testi, con il tratto di un pennello su papiro ma leggibile.
+static func body_font() -> Font:
+	if _body == null:
+		_body = load("res://assets/fonts/macondo.woff2")
+	return _body
+
+
+## Cinzel Decorative: per i titoli grandi (il dio che parla, la morte, gli annunci).
+static func deco_font() -> Font:
+	if _deco == null:
+		_deco = load("res://assets/fonts/cinzel-decorative-bold.woff2")
+	return _deco
+
+
+## Riflesso d'oro che scorre sul testo: i titoli non restano mai fermi.
+static func shimmer(c: CanvasItem, strength: float = 0.75) -> void:
+	if _shimmer == null:
+		_shimmer = Shader.new()
+		_shimmer.code = """
+shader_type canvas_item;
+uniform float strength = 0.75;
+void fragment() {
+	vec4 c = texture(TEXTURE, UV) * COLOR;
+	float p = fract((FRAGCOORD.x - FRAGCOORD.y * 0.7) / 520.0 - TIME * 0.28);
+	float band = smoothstep(0.0, 0.06, p) * (1.0 - smoothstep(0.06, 0.13, p));
+	c.rgb = mix(c.rgb, vec3(1.0, 0.97, 0.86), band * strength * step(0.35, c.a));
+	COLOR = c;
+}
+"""
+	var m := ShaderMaterial.new()
+	m.shader = _shimmer
+	m.set_shader_parameter("strength", strength)
+	c.material = m
 
 
 static func title_font_regular() -> Font:
@@ -108,10 +146,19 @@ static func label(text: String, size: int, color: Color, title: bool = false, wr
 	l.text = text
 	l.add_theme_font_size_override("font_size", Fx.fs(size))
 	l.add_theme_color_override("font_color", color)
-	if title:
-		l.add_theme_font_override("font", title_font())
+	l.add_theme_font_override("font", title_font() if title else body_font())
 	if wrap_width > 0.0:
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		l.custom_minimum_size = Vector2(wrap_width, 0)
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return l
+
+
+## Titolo grande: Cinzel Decorative con il riflesso d'oro che scorre.
+static func heading(text: String, size: int, color: Color) -> Label:
+	var l := label(text, size, color)
+	l.add_theme_font_override("font", deco_font())
+	l.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	l.add_theme_constant_override("outline_size", 5)
+	shimmer(l)
 	return l
