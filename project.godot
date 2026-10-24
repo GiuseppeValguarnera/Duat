@@ -6,8 +6,8 @@ config_version=5
 [application]
 
 config/name="Duat"
-config/description="Roguelike action nell'oltretomba egizio. Fase 2: una run di 3 stanze."
-run/main_scene="res://scenes/game.tscn"
+config/description="Roguelike action nell'oltretomba egizio. Sala del Giudizio, 6 stanze e Ammit."
+run/main_scene="res://scenes/hub.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [autoload]

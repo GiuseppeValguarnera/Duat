@@ -22,7 +22,9 @@ var revived := false                  # Protezione di Bastet già usata in quest
 var blood_kills := 0
 var kills := 0                        # statistiche per il riepilogo di fine run
 var damage_dealt := 0.0
-var start_msec := 0                  # Sete di Sangue: nemici abbattuti dall'ultima cura
+var start_msec := 0
+var heart_used := false               # Capitolo 30 già usato in questa discesa
+var in_hub := false                   # true nella Sala del Giudizio                  # Sete di Sangue: nemici abbattuti dall'ultima cura
 
 
 func new_run() -> void:
@@ -40,6 +42,10 @@ func new_run() -> void:
 	kills = 0
 	damage_dealt = 0.0
 	start_msec = Time.get_ticks_msec()
+	heart_used = false
+	if chap("c17"):
+		max_hp += 15.0
+		hp = max_hp
 
 
 func level(id: String) -> int:
@@ -105,8 +111,8 @@ func wave_cleared() -> void:
 func grant_blessing(id: String) -> void:
 	blessings.append(id)
 	if id == "set_vigor":
-		max_hp += 20.0
-		hp += 20.0
+		max_hp += 15.0
+		hp += 15.0
 	blessing_granted.emit(id)
 
 
@@ -131,8 +137,16 @@ func sekhem_ready() -> bool:
 
 # --- effetti ----------------------------------------------------------------------
 
+## Un capitolo del Libro dei Morti è attivo in questa discesa?
+func chap(id: String) -> bool:
+	return Meta.chapters_equipped.has(id)
+
+
 func all_damage_mult() -> float:
-	return 1.25 if has("set_might") else 1.0
+	var m := 1.2 if has("set_might") else 1.0
+	if chap("c125") and hp > max_hp * 0.8:
+		m *= 1.15
+	return m
 
 
 func khopesh_mult() -> float:
@@ -163,6 +177,8 @@ func eye_cooldown_mult() -> float:
 		m *= 0.45
 	if has("anubi_mouth"):
 		m *= 1.0 - val("anubi_mouth") / 100.0
+	if chap("c89"):
+		m *= 0.85
 	return m
 
 
@@ -244,6 +260,16 @@ func jackal_mult(hp_ratio: float) -> float:
 
 func enemy_speed_mult() -> float:
 	return 1.3 if cursed("fast_enemies") else 1.0
+
+
+## Moltiplicatore dei tesori di Ka (porte "Tesoro di Ka").
+func treasure_mult() -> float:
+	return ka_mult() * (1.3 if chap("c99") else 1.0)
+
+
+## Quanto cura l'Acqua del Nilo, in frazione della vita massima.
+func nile_heal() -> float:
+	return 0.4 if chap("c154") else 0.3
 
 
 func ka_mult() -> float:

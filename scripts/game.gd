@@ -14,6 +14,7 @@ const ENEMIES := {
 }
 const PickupScript := preload("res://scripts/pickup.gd")
 const DecorScript := preload("res://scripts/room_decor.gd")
+const UshabtiScript := preload("res://scripts/ushabti.gd")
 const TRAPS_FROM_ROOM := 2            ## le trappole compaiono da questa stanza in poi
 const DoorScript := preload("res://scripts/door.gd")
 const SET_DOOR_CHANCE := 0.4          ## probabilità che compaia una porta di Set
@@ -64,6 +65,7 @@ func _ready() -> void:
 	get_tree().paused = false
 	Fx.world = world
 	Fx.set_hitboxes(Fx.show_hitboxes)
+	Run.in_hub = false
 	Run.new_run()
 	Run.blessing_granted.connect(_on_blessing_granted)
 	_build_vignette()
@@ -120,6 +122,10 @@ func start_room(reward: Dictionary) -> void:
 	cam.limit_bottom = int(ROOM.end.y)
 	cam.reset_smoothing()
 	player.died.connect(_on_player_died)
+	if Run.chap("c6"):
+		var helper := UshabtiScript.new()
+		world.add_child(helper)
+		helper.global_position = player.global_position + Vector2(-18, -6)
 
 	if boss_room:
 		waves = []
@@ -239,11 +245,11 @@ func _on_pickup_collected(p: Area2D) -> void:
 	p.queue_free()
 	match kind:
 		"ka":
-			Run.ka += roundi(25 * Run.ka_mult())
-			Fx.float_text(player.global_position, "+%d Ka" % roundi(25 * Run.ka_mult()), Color(0.94, 0.72, 0.3))
+			Run.ka += roundi(25 * Run.treasure_mult())
+			Fx.float_text(player.global_position, "+%d Ka" % roundi(25 * Run.treasure_mult()), Color(0.94, 0.72, 0.3))
 			_open_doors.call_deferred()
 		"heal":
-			player.heal(roundf(Run.max_hp * 0.3))
+			player.heal(roundf(Run.max_hp * Run.nile_heal()))
 			_open_doors.call_deferred()
 		"boon":
 			_show_boon_menu.call_deferred(god)
@@ -533,7 +539,7 @@ func _toggle_pause() -> void:
 	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
 	box.add_child(title)
 	var first: Button = null
-	for entry in [["Riprendi", _toggle_pause], ["Volume", _show_audio_menu], ["Ricomincia la run", _restart_run], ["Esci dal gioco", _quit_game]]:
+	for entry in [["Riprendi", _toggle_pause], ["Volume", _show_audio_menu], ["Ricomincia la run", _restart_run], ["Torna alla Sala (abbandona)", _abandon_run], ["Esci dal gioco", _quit_game]]:
 		var b := Button.new()
 		b.text = entry[0]
 		b.custom_minimum_size = Vector2(160, 26)
@@ -635,6 +641,16 @@ func _close_audio_menu() -> void:
 					break
 
 
+## Abbandonare conta come una morte: il Ka raccolto viene custodito lo stesso.
+func _abandon_run() -> void:
+	Meta.last_end = "abandon"
+	Meta.last_room = Run.room
+	_end_run_summary()
+	get_tree().paused = false
+	Engine.time_scale = 1.0
+	get_tree().change_scene_to_file("res://scenes/hub.tscn")
+
+
 func _restart_run() -> void:
 	get_tree().paused = false
 	Engine.time_scale = 1.0
@@ -704,7 +720,9 @@ func _on_player_died() -> void:
 	finished = true
 	message.visible = true
 	var where := "Ammit, la Divoratrice" if Run.room > Run.ROOMS_PER_RUN else "stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN]
-	message.text = "Il tuo cuore è stato pesato.\nSei caduto: %s\n\n%s\n\nPremi R (o Start) per ricominciare" % [where, _end_run_summary()]
+	Meta.last_end = "ammit" if Run.room > Run.ROOMS_PER_RUN else "room"
+	Meta.last_room = Run.room
+	message.text = "Il tuo cuore è stato pesato.\nSei caduto: %s\n\n%s\n\nPremi R (o Start) per tornare alla Sala del Giudizio" % [where, _end_run_summary()]
 	boss_bar.visible = false
 
 
@@ -828,8 +846,9 @@ func _victory() -> void:
 		if c is Enemy:
 			c.queue_free()
 	message.visible = true
-	var extra := "\nNuovo potere sbloccato: il Sekhem e la Forma Divina (Q / LT)" if Meta.ammit_wins == 1 else ""
-	message.text = "Hai sconfitto Ammit!\nLa Prima Ora è superata.%s\n\n%s\n\nPremi R (o Start) per ricominciare" % [extra, _end_run_summary()]
+	var extra := "\nNuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti" if Meta.ammit_wins == 1 else ""
+	Meta.last_end = "win"
+	message.text = "Hai sconfitto Ammit!\nLa Prima Ora è superata.%s\n\n%s\n\nPremi R (o Start) per tornare alla Sala del Giudizio" % [extra, _end_run_summary()]
 
 
 # ---------------------------------------------------------------- ogni frame
@@ -839,7 +858,7 @@ func _process(_delta: float) -> void:
 		Fx.set_hitboxes(not Fx.show_hitboxes)
 	if Input.is_action_just_pressed("restart") and (finished or player.dead):
 		Engine.time_scale = 1.0
-		get_tree().reload_current_scene()
+		get_tree().change_scene_to_file("res://scenes/hub.tscn")
 		return
 	if player == null or not is_instance_valid(player):
 		return

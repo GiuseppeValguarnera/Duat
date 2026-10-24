@@ -45,6 +45,9 @@ func _ready() -> void:
 	_axis("ui_left", JOY_AXIS_LEFT_X, -1.0)
 	_axis("ui_right", JOY_AXIS_LEFT_X, 1.0)
 
+	_keys("interact", [KEY_E])
+	_button("interact", JOY_BUTTON_Y)
+
 	_keys("debug_hitbox", [KEY_F1])
 	_keys("restart", [KEY_R])
 	_button("restart", JOY_BUTTON_START)

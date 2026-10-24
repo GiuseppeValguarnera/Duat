@@ -119,9 +119,9 @@ func _physics_process(delta: float) -> void:
 
 	if Input.is_action_just_pressed("dash") and dash_cd <= 0.0 and dash_t <= 0.0:
 		_start_dash(move)
-	if Input.is_action_pressed("attack") and atk_cd <= 0.0 and dash_t <= 0.0:
+	if Input.is_action_pressed("attack") and atk_cd <= 0.0 and dash_t <= 0.0 and not Run.in_hub:
 		_swing()
-	if Input.is_action_just_pressed("special") and eye_cd <= 0.0 and not Run.cursed("no_eye"):
+	if Input.is_action_just_pressed("special") and eye_cd <= 0.0 and not Run.cursed("no_eye") and not Run.in_hub:
 		_fire_eye()
 	if Input.is_action_just_pressed("super") and Run.sekhem_ready() and divine_t <= 0.0:
 		_divine_form()
@@ -352,6 +352,12 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> boo
 	Fx.shake(7.0)
 	Fx.hitstop(0.08)
 	Fx.damage_number(global_position, amount, Color(1, 0.4, 0.3))
+	if hp <= 0.0 and Run.chap("c30") and not Run.heart_used:
+		Run.heart_used = true
+		hp = 1.0
+		invuln_t = 1.5
+		Fx.float_text(global_position + Vector2(0, -20), "Il cuore non testimonia", Color(0.62, 0.56, 0.92))
+		Fx.burst(global_position + Vector2(0, -10), Color(0.62, 0.56, 0.92), 30, 140.0)
 	if hp <= 0.0 and Run.has("bastet_lives") and not Run.revived:
 		Run.revived = true
 		hp = roundf(max_hp * Run.val("bastet_lives") / 100.0)

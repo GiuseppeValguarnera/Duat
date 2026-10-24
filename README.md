@@ -2,7 +2,7 @@
 
 Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
-**Stato:** fase 2, una run di prova di 6 stanze più il boss con nemici diversi, ricompense, doni degli dèi, patti di Set e Forma Divina. La grafica è provvisoria (forme semplici) di proposito: prima si rende divertente il gioco, poi arrivano gli sprite.
+**Stato:** fase 2. C'è la Sala del Giudizio (base tra una discesa e l'altra, con Anubi e il Libro dei Morti) e una run di 6 stanze più il boss, con nemici diversi, ricompense, doni degli dèi, patti di Set e Forma Divina. La grafica è provvisoria (forme semplici) di proposito: prima si rende divertente il gioco, poi arrivano gli sprite.
 
 ## Come provarlo
 
@@ -21,8 +21,32 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 | Forma Divina (quando il Sekhem è pieno) | Q | LT |
 | Vedi i tuoi doni (mette in pausa) | Tab | Select |
 | Mostra/nascondi hitbox | F1 | |
+| Parla / apri il Libro (nella Sala) | E | Y |
 | Pausa | Esc o P | Start |
-| Ricomincia (dopo morte o vittoria) | R | Start |
+| Torna alla Sala (dopo morte o vittoria) | R | Start |
+
+## La Sala del Giudizio
+
+Il gioco parte qui, e qui torni dopo ogni discesa.
+
+- **Anubi** parla con te: commenta com'è andata l'ultima discesa e, man mano che muori o vinci, racconta la storia del tuo nome scalpellato. Le battute sono in `scripts/dialogue.gd`.
+- **Il Libro dei Morti** (il leggio a destra): spendi il Ka custodito per comprare capitoli, incantesimi passivi che valgono per sempre. Puoi tenerne attivi solo 2 alla volta (3 dopo aver sconfitto Ammit), quindi prima di ogni discesa scegli quali portare.
+- **La bilancia di Ma'at** al centro mostra i tuoi progressi.
+- **Il cancello** a nord: camminaci dentro per iniziare una discesa.
+
+| Capitolo | Effetto | Costo |
+| --- | --- | --- |
+| 17 · Uscire al giorno | +15 vita massima | 30 Ka |
+| 89 · Il ritorno del Ba | Occhio di Horus 15% più rapido | 30 Ka |
+| 154 · Il corpo incorrotto | L'Acqua del Nilo cura il 40% invece del 30% | 35 Ka |
+| 99 · La barca di Ra | Tesori di Ka +30% | 40 Ka |
+| 125 · La confessione negativa | +15% danni sopra l'80% di vita | 50 Ka |
+| 30 · Il cuore che non testimonia | Una volta per discesa sopravvivi a un colpo mortale | 60 Ka |
+| 6 · Gli Ushabti | Una statuetta ti segue e colpisce il nemico più vicino ogni 2 s | 70 Ka |
+
+I numeri sono quelli dei veri capitoli del Libro dei Morti. Per aggiungerne uno: una riga in `ALL` in `scripts/chapters.gd`, poi l'effetto dove serve usando `Run.chap("id")`.
+
+Dal menu di pausa, *Torna alla Sala (abbandona)* chiude la discesa: il Ka raccolto viene comunque custodito.
 
 ## Come funziona una run
 
@@ -60,6 +84,8 @@ Testa di coccodrillo, corpo di leone, zampe di ippopotamo: nel mito divora i cuo
 - **Furia (sotto metà vita):** è più veloce, lancia più sfere, fa due onde di fila e chiama 4 scarabei e un Sacerdote di Set, una volta sola.
 
 ## Doni
+
+**Regola di bilanciamento:** un dono di livello 1 vale circa **+20% su un aspetto del gioco** (danno del khopesh, ricarica dell'Occhio, danni subiti, velocità...). I livelli 2 e 3 aggiungono circa metà ciascuno. Un dono pesante vale circa +50%, ma con un prezzo vero. I doni di Anubi danno un vantaggio un po' più grande del prezzo che chiedono. I numeri sono tutti in `ALL` in `scripts/boons.gd`.
 
 Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finito i doni nuovi, ti propone di potenziare quelli che hai. In circa una scelta su tre compare il **dono pesante** del dio: più forte, ma con un prezzo (`HEAVY_CHANCE` in `scripts/boons.gd`).
 
@@ -105,7 +131,7 @@ I suoni sono provvisori e generati da `tools/make_sfx.py` (nessuna licenza da ri
 
 ## Fine della run
 
-Alla morte o alla vittoria compare un riepilogo (tempo, nemici, danni, doni, Ka). Il Ka raccolto viene **custodito** tra una run e l'altra nel salvataggio: servirà nella Sala del Giudizio.
+Alla morte o alla vittoria compare un riepilogo (tempo, nemici, danni, doni, Ka). Il Ka raccolto viene **custodito** tra una run e l'altra nel salvataggio e si spende nel Libro dei Morti. Premi R o Start per tornare alla Sala del Giudizio.
 
 ## Regolare la sensazione di gioco
 
@@ -114,8 +140,11 @@ Apri una scena in `scenes/`, seleziona il nodo principale e cambia i valori nell
 ## Struttura
 
 ```
-scenes/   game.tscn (la run), player.tscn, mummy.tscn, scarab.tscn, priest.tscn
-scripts/  game.gd      stanze, ondate, ricompense, porte, menu dei doni
+scenes/   hub.tscn (la Sala del Giudizio), game.tscn (la run), player.tscn, mummy.tscn, scarab.tscn, priest.tscn
+scripts/  hub.gd       la Sala del Giudizio      dialogue.gd   battute di Anubi
+          chapters.gd  Libro dei Morti           ushabti.gd    la statuetta del capitolo 6
+          meta.gd      salvataggio permanente     sfx.gd        suoni e volumi
+          game.gd      stanze, ondate, ricompense, porte, menu dei doni
           room_decor.gd  arredamento delle stanze     traps.gd   trappole
           run.gd       stato della run (vita, Ka, doni) ed effetti dei doni
           boons.gd     elenco di dèi e doni
