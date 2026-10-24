@@ -10,6 +10,7 @@ const ENEMIES := {
 	"mummy": preload("res://scenes/mummy.tscn"),
 	"scarab": preload("res://scenes/scarab.tscn"),
 	"priest": preload("res://scenes/priest.tscn"),
+	"ammit": preload("res://scenes/ammit.tscn"),
 }
 const PickupScript := preload("res://scripts/pickup.gd")
 const DoorScript := preload("res://scripts/door.gd")
@@ -34,6 +35,10 @@ var cleared := false
 var current_reward := {}
 var doors: Array = []
 var finished := false
+var boss: Enemy = null
+var boss_bar: ColorRect
+var boss_fill: ColorRect
+var boss_name: Label
 var menu: CanvasLayer                 # scelta dei doni
 var panel: CanvasLayer                # menu dei doni (Tab)
 
@@ -53,6 +58,7 @@ func _ready() -> void:
 	Fx.set_hitboxes(Fx.show_hitboxes)
 	Run.new_run()
 	Run.blessing_granted.connect(_on_blessing_granted)
+	_build_boss_bar()
 	var listener := PanelListener.new()
 	listener.game = self
 	add_child(listener)
@@ -76,7 +82,10 @@ func start_room(reward: Dictionary) -> void:
 		c.queue_free()
 
 	pillars.clear()
+	var boss_room := Run.room > Run.ROOMS_PER_RUN
 	var layout: Array = LAYOUTS.pick_random() if Run.room > 1 else LAYOUTS[0]
+	if boss_room:
+		layout = LAYOUTS[0]
 	for f in layout:
 		pillars.append(Vector2(lerpf(WALL, ROOM.size.x - WALL, f.x), lerpf(TOP, ROOM.size.y - WALL, f.y)))
 	_build_walls()
@@ -93,6 +102,10 @@ func start_room(reward: Dictionary) -> void:
 	cam.reset_smoothing()
 	player.died.connect(_on_player_died)
 
+	if boss_room:
+		waves = []
+		_start_boss()
+		return
 	var r := Run.room
 	waves = [_make_wave(4 + r * 2, r >= 2), _make_wave(3 + r * 2, r >= 2)]
 	_spawn_wave(waves.pop_front(), 1.0)
@@ -136,10 +149,17 @@ func _spawn_after(kind: String, pos: Vector2, delay: float) -> void:
 	world.add_child(e)
 	alive += 1
 	e.killed.connect(_on_enemy_killed)
+	if e.is_boss:
+		boss = e
+		e.summon.connect(_on_boss_summon)
 
 
-func _on_enemy_killed(_e: Enemy) -> void:
+func _on_enemy_killed(e: Enemy) -> void:
 	alive -= 1
+	if Run.room > Run.ROOMS_PER_RUN:
+		if e.is_boss:
+			_boss_defeated.call_deferred()
+		return
 	if alive > 0 or spawning > 0:
 		return
 	Run.wave_cleared()
@@ -197,7 +217,7 @@ func _on_pickup_collected(p: Area2D) -> void:
 
 func _open_doors() -> void:
 	if Run.room >= Run.ROOMS_PER_RUN:
-		_add_door("n", {"kind": "end"})
+		_add_door("n", {"kind": "boss"})
 		return
 	var sides: Array = [["w", "n", "e"], ["w", "e"], ["w", "n"], ["n", "e"]].pick_random()
 	var pool := []
@@ -234,8 +254,8 @@ func _add_door(side: String, reward: Dictionary) -> void:
 
 func _on_door_chosen(d: Area2D) -> void:
 	var kind: String = d.reward["kind"]
-	if kind == "end":
-		_victory.call_deferred()
+	if kind == "boss":
+		start_room.call_deferred({"kind": "none"})
 		return
 	if kind == "set":
 		# il tributo di Set: 10 punti vita, ma non può ucciderti
@@ -475,7 +495,62 @@ func _boons_text() -> String:
 func _on_player_died() -> void:
 	finished = true
 	message.visible = true
-	message.text = "Il tuo cuore è stato pesato.\nStanza raggiunta: %d di %d\n\nPremi R (o Start) per ricominciare" % [Run.room, Run.ROOMS_PER_RUN]
+	var where := "Ammit, la Divoratrice" if Run.room > Run.ROOMS_PER_RUN else "stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN]
+	message.text = "Il tuo cuore è stato pesato.\nSei caduto: %s\n\nPremi R (o Start) per ricominciare" % where
+	boss_bar.visible = false
+
+
+# ---------------------------------------------------------------- boss
+
+func _start_boss() -> void:
+	_banner("Ammit, la Divoratrice", "Divora i cuori che non superano il giudizio", Color(0.9, 0.35, 0.25))
+	boss_bar.visible = true
+	boss_fill.size.x = boss_bar.size.x
+	spawning += 1
+	_spawn_after("ammit", Vector2(ROOM.size.x / 2.0, TOP + 120.0), 1.6)
+
+
+## Seconda fase: Ammit chiama uno sciame di scarabei.
+func _on_boss_summon(count: int) -> void:
+	for i in range(count):
+		spawning += 1
+		_spawn_after("scarab", _free_spot(), 0.8 + i * 0.15)
+
+
+func _boss_defeated() -> void:
+	boss_bar.visible = false
+	Fx.shake(12.0)
+	for c in world.get_children():
+		if c is Enemy and not c.dead:
+			c.die()
+	_banner("Ammit è caduta", "Il primo cancello del Duat si apre", Color(0.94, 0.72, 0.3))
+	await get_tree().create_timer(2.0).timeout
+	_victory()
+
+
+func _build_boss_bar() -> void:
+	var ui: CanvasLayer = $UI
+	boss_name = Label.new()
+	boss_name.text = "AMMIT, LA DIVORATRICE"
+	boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	boss_name.add_theme_font_size_override("font_size", 9)
+	boss_name.add_theme_color_override("font_color", Color(1, 0.5, 0.4))
+	boss_name.add_theme_color_override("font_outline_color", Color.BLACK)
+	boss_name.add_theme_constant_override("outline_size", 4)
+	boss_name.position = Vector2(170, 318)
+	boss_name.size = Vector2(300, 12)
+	boss_bar = ColorRect.new()
+	boss_bar.color = Color(0.1, 0.02, 0.02, 0.85)
+	boss_bar.position = Vector2(170, 56)
+	boss_bar.size = Vector2(300, 6)
+	boss_fill = ColorRect.new()
+	boss_fill.color = Color(0.85, 0.2, 0.15)
+	boss_fill.size = Vector2(300, 6)
+	boss_bar.add_child(boss_fill)
+	boss_bar.add_child(boss_name)
+	boss_name.position = Vector2(0, -14)
+	ui.add_child(boss_bar)
+	boss_bar.visible = false
 
 
 func _victory() -> void:
@@ -484,7 +559,7 @@ func _victory() -> void:
 		if c is Enemy:
 			c.queue_free()
 	message.visible = true
-	message.text = "Discesa di prova completata!\nKa totale: %d\n\nPremi R (o Start) per ricominciare" % Run.ka
+	message.text = "Hai sconfitto Ammit!\nLa Prima Ora è superata. Ka totale: %d\n\nPremi R (o Start) per ricominciare" % Run.ka
 
 
 # ---------------------------------------------------------------- ogni frame
@@ -505,7 +580,10 @@ func _process(_delta: float) -> void:
 	var sek := "PRONTO (Q / LT)" if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
 	if player.divine_t > 0.0:
 		sek = "FORMA DIVINA %.1fs" % player.divine_t
-	hud.text = "Vita %d/%d    Ka %d    Stanza %d/%d    Occhio: %s    Sekhem: %s" % [ceili(player.hp), int(player.max_hp), Run.ka, Run.room, Run.ROOMS_PER_RUN, eye_txt, sek]
+	var room_txt := "Ammit" if Run.room > Run.ROOMS_PER_RUN else "Stanza %d/%d" % [Run.room, Run.ROOMS_PER_RUN]
+	hud.text = "Vita %d/%d    Ka %d    %s    Occhio: %s    Sekhem: %s" % [ceili(player.hp), int(player.max_hp), Run.ka, room_txt, eye_txt, sek]
+	if boss != null and is_instance_valid(boss) and not boss.dead:
+		boss_fill.size.x = boss_bar.size.x * clampf(boss.hp / boss.max_hp, 0.0, 1.0)
 	var n := Run.boons.size() + Run.blessings.size()
 	var line2 := ""
 	if n > 0:
@@ -565,10 +643,10 @@ func _build_walls() -> void:
 	_solid(Rect2(r.position.x, r.position.y, WALL, r.size.y))
 	_solid(Rect2(r.end.x - WALL, r.position.y, WALL, r.size.y))
 	for p in pillars:
-		_solid(Rect2(p.x - 13.0, p.y - 7.0, 26.0, 14.0))
+		_solid(Rect2(p.x - 13.0, p.y - 7.0, 26.0, 14.0)).add_to_group("pillars")
 
 
-func _solid(rect: Rect2) -> void:
+func _solid(rect: Rect2) -> StaticBody2D:
 	var body := StaticBody2D.new()
 	body.collision_layer = 1
 	body.collision_mask = 0
@@ -579,6 +657,7 @@ func _solid(rect: Rect2) -> void:
 	body.add_child(shape)
 	body.position = rect.get_center()
 	world.add_child(body)
+	return body
 
 
 func _draw() -> void:

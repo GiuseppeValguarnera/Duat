@@ -5,7 +5,7 @@ extends Node
 
 signal blessing_granted(id: String)
 
-const ROOMS_PER_RUN := 3
+const ROOMS_PER_RUN := 3              ## stanze normali; poi c'è la stanza del boss
 const SEKHEM_MAX := 100.0
 
 var max_hp := 60.0
@@ -188,6 +188,7 @@ func damage_taken_mult() -> float:
 	if has("anubi_scale"):
 		m *= 1.1
 	m *= 1.0 - val("sobek_skin") / 100.0
+	m *= low_hp_guard()
 	return m
 
 
@@ -229,10 +230,10 @@ func eye_crit_chance() -> float:
 	return val("bastet_eyes") / 100.0
 
 
-## Nodo di Iside: più danni quando sei sotto un terzo della vita.
-func low_hp_mult() -> float:
+## Nodo di Iside (l'amuleto tyet): protegge quando sei sotto un terzo della vita.
+func low_hp_guard() -> float:
 	if has("iside_knot") and hp < max_hp / 3.0:
-		return 1.0 + val("iside_knot") / 100.0
+		return 1.0 - val("iside_knot") / 100.0
 	return 1.0
 
 

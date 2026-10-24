@@ -29,7 +29,7 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 2. Ogni stanza ha due ondate di nemici.
 3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla.
 4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura.
-5. Dopo la terza stanza si apre l'uscita.
+5. Dopo la terza stanza si apre il cancello di **Ammit**, il boss della Prima Ora.
 
 ## Nemici
 
@@ -38,6 +38,14 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 | Mummia | Lenta e resistente. Da vicino diventa rossa e prepara un affondo | Schiva al momento giusto, o interrompila col terzo colpo della combo |
 | Scarabei | Arrivano a gruppi di tre, veloci e fragili, a zig-zag | Colpi ampi e Occhio di Horus |
 | Sacerdote di Set | Resta lontano e lancia sfere. Prima di lanciare si ferma e la sfera cresce | Spostati negli ultimi istanti, o colpiscilo per interromperlo |
+
+## Boss: Ammit, la Divoratrice
+
+Testa di coccodrillo, corpo di leone, zampe di ippopotamo: nel mito divora i cuori che non superano il giudizio.
+
+- **Carica:** si ferma e una striscia rossa mostra la traiettoria, poi scatta in linea retta. Se sbatte contro una colonna resta **stordita** per 2 secondi e subisce il 50% di danni in più.
+- **Sputo:** un anello viola si stringe attorno a lei, poi lancia sfere in tutte le direzioni.
+- **Furia (sotto metà vita):** è più veloce, lancia più sfere e chiama uno sciame di 4 scarabei, una volta sola.
 
 ## Doni
 
@@ -48,9 +56,9 @@ Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finit
 | Ra (fuoco) | Colpo Solare, Disco di Ra, Corsa dell'Alba (con prezzo: scatto più lento), Occhio Ardente · pesante: Ira del Sole |
 | Sekhmet (furia) | Furia della Leonessa, Sete di Sangue, Ruggito, Balzo della Leonessa · pesante: Sete Insaziabile |
 | Thoth (Occhio di Horus) | Sguardo di Thoth, Calcolo di Thoth, Occhio Moltiplicato, Parola dello Scriba · pesante: Conoscenza Proibita |
-| Bastet (critici e agilità) | Artigli Affilati, Occhi di Gatto, Passo Felino, Nove Vite · pesante: Gioco del Gatto |
+| Bastet (critici e agilità) | Artigli Affilati, Occhi di Gatto, Passo Felino, Protezione di Bastet · pesante: Gioco del Gatto |
 | Sobek (resistenza e controllo) | Pelle di Coccodrillo, Morso di Sobek, Marea del Nilo, Forza del Fiume · pesante: Fauci di Sobek |
-| Iside (protezione e cure) | Ali di Iside, Lacrime di Iside, Nodo di Iside, Parola Magica · pesante: Abbraccio di Iside |
+| Iside (protezione e cure) | Ali di Iside, Lacrime di Iside, Nodo di Iside, Nome Segreto di Ra · pesante: Abbraccio di Iside |
 | Anubi (solo a inizio run, doni-bilancia con un piccolo prezzo) | Cuore Leggero, Cuore di Pietra, Fiuto dello Sciacallo, Bilancia Giusta, Guida delle Anime |
 
 Senza doni l'Occhio di Horus si ferma sul primo nemico che colpisce.

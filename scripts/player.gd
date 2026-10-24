@@ -231,7 +231,7 @@ func _swing() -> void:
 	swing_dir = _assisted(aim, swing_range + 24.0)
 	knock = swing_dir * c["lunge"]
 
-	var dmg: float = attack_damage * Run.khopesh_mult() * Run.low_hp_mult() * c["mult"]
+	var dmg: float = attack_damage * Run.khopesh_mult() * c["mult"]
 	if divine_t > 0.0:
 		dmg *= divine_damage_mult
 	if leap_ready:
@@ -252,7 +252,7 @@ func _swing() -> void:
 				Fx.float_text(e.global_position + Vector2(0, -20), "CRITICO", Boons.god_color("bastet"))
 			e.take_hit(dmg * crit, to.normalized(), c["knock"] * Run.knock_mult(), Run.khopesh_burns())
 			if swing_index == 2 and Run.has("sobek_bite") and not e.dead:
-				e.stagger_t = maxf(e.stagger_t, Run.val("sobek_bite"))
+				e.stagger_t = maxf(e.stagger_t, Run.val("sobek_bite") * (0.25 if e.is_boss else 1.0))
 			hit_any = true
 	if swing_index == 2 and Run.has("sekhmet_roar"):
 		_shockwave(46.0, Run.val("sekhmet_roar") * Run.all_damage_mult(), 200.0, Boons.god_color("sekhmet"))
@@ -277,7 +277,7 @@ func _fire_eye() -> void:
 		var dir := Vector2.from_angle(base + (i - (rays - 1) / 2.0) * 0.22)
 		var eye: Area2D = EyeScript.new()
 		eye.direction = dir
-		eye.damage = eye_damage * Run.eye_damage_mult() * Run.low_hp_mult()
+		eye.damage = eye_damage * Run.eye_damage_mult()
 		eye.pierce_left = Run.eye_pierce()
 		eye.explode_damage = Run.val("ra_disc") * Run.all_damage_mult()
 		eye.burns = Run.eye_burns()
@@ -340,7 +340,7 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> boo
 		hp = roundf(max_hp * Run.val("bastet_lives") / 100.0)
 		invuln_t = 1.5
 		Fx.burst(global_position + Vector2(0, -10), Boons.god_color("bastet"), 40, 160.0)
-		Fx.float_text(global_position + Vector2(0, -20), "Nove Vite!", Boons.god_color("bastet"))
+		Fx.float_text(global_position + Vector2(0, -20), "Bastet ti protegge!", Boons.god_color("bastet"))
 	if hp <= 0.0:
 		hp = 0.0
 		dead = true

@@ -42,6 +42,8 @@ func reward_color() -> Color:
 			return Color(0.94, 0.72, 0.3)
 		"heal":
 			return Color(0.95, 0.35, 0.3)
+		"boss":
+			return Color(0.9, 0.3, 0.25)
 		_:
 			return Color(0.9, 0.9, 1.0)
 
@@ -56,6 +58,8 @@ func reward_label() -> String:
 			return "Ka"
 		"heal":
 			return "Cura"
+		"boss":
+			return "Ammit"
 		_:
 			return "Uscita"
 
@@ -71,6 +75,8 @@ func reward_description() -> String:
 			return "Tesoro di Ka: +25 Ka"
 		"heal":
 			return "Acqua del Nilo: recuperi il 40% della vita"
+		"boss":
+			return "Cancello della Prima Ora: Ammit, la Divoratrice, ti aspetta"
 		_:
 			return "Uscita: fine della discesa di prova"
 

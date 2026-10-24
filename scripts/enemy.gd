@@ -21,6 +21,7 @@ var burn_tick := 0.0
 var t := 0.0
 var seed_offset := 0.0
 var contact: Area2D
+var is_boss := false
 var stagger_t := 0.0                   ## dopo un colpo il nemico barcolla: non si muove e non ferisce
 
 
@@ -87,6 +88,11 @@ func _puddle_slow() -> float:
 	return 1.0
 
 
+## Moltiplicatore dei danni ricevuti (per esempio un boss stordito).
+func _damage_mult() -> float:
+	return 1.0
+
+
 ## Quanto barcolla dopo un colpo. I nemici grossi possono barcollare meno.
 func _stagger_time() -> float:
 	return 0.35
@@ -101,7 +107,7 @@ func _draw_body(_flash: bool) -> void:
 func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> void:
 	if dead:
 		return
-	dmg *= Run.jackal_mult(hp / max_hp)
+	dmg *= Run.jackal_mult(hp / max_hp) * _damage_mult()
 	hp -= dmg
 	flash_t = 0.1
 	stagger_t = maxf(stagger_t, _stagger_time())
@@ -179,7 +185,7 @@ func _draw() -> void:
 	_draw_body(flash_t > 0.0)
 	if burn_t > 0.0:
 		draw_circle(Vector2(0, -radius), radius + 3.0, Color(1, 0.5, 0.1, 0.25))
-	if hp < max_hp:
+	if hp < max_hp and not is_boss:
 		var w := radius * 2.5
 		draw_rect(Rect2(-w / 2.0, -radius * 3.0 - 6.0, w, 3), Color(0, 0, 0, 0.7))
 		draw_rect(Rect2(-w / 2.0, -radius * 3.0 - 6.0, w * hp / max_hp, 3), Color(0.85, 0.2, 0.15))
