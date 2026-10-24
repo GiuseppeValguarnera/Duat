@@ -239,7 +239,15 @@ func damage_taken_mult() -> float:
 	m *= low_hp_guard()
 	if has("anubi_linen"):
 		m *= 1.0 - val("anubi_linen") / 100.0
+	m *= 1.0 - feather_guard()
 	return m
+
+
+## Piuma di Ma'at: 10% di danni in meno, +2% a ogni morte, fino al 50%.
+func feather_guard() -> float:
+	if not Meta.feather:
+		return 0.0
+	return minf(0.5, 0.1 + 0.02 * Meta.feather_deaths)
 
 
 ## Vita dei nemici: +6% per ogni stanza dopo la prima, più l'eventuale prezzo di Anubi.

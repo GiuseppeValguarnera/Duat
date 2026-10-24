@@ -18,6 +18,8 @@ const ENEMIES := {
 	"cobra": preload("res://scenes/cobra.tscn"),
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
+const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "trappola": "una trappola"}
 const SHOP_CHANCE := 0.25             ## probabilità di una porta del Traghettatore (oltre a quella dopo il guardiano)
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 30},
@@ -27,7 +29,7 @@ const SHOP_ITEMS := [
 const PickupScript := preload("res://scripts/pickup.gd")
 const DecorScript := preload("res://scripts/room_decor.gd")
 const UshabtiScript := preload("res://scripts/ushabti.gd")
-const TRAPS_FROM_ROOM := 2            ## le trappole compaiono da questa stanza in poi
+const TRAPS_FROM_ROOM := 3            ## le trappole compaiono da questa stanza in poi
 const DoorScript := preload("res://scripts/door.gd")
 const SET_DOOR_CHANCE := 0.4          ## probabilità che compaia una porta di Set
 const SET_DOOR_COST := 10.0           ## vita da pagare per entrare
@@ -92,6 +94,37 @@ func _ready() -> void:
 	# la prima stanza non ha ricompensa: il primo dono è quello di Anubi
 	start_room({"kind": "none"})
 	_show_anubi_menu()
+
+
+## Se il telefono riceve una chiamata o cambi finestra, il gioco va in pausa da solo.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_PAUSED:
+		if pause_menu == null and menu == null and panel == null and not finished:
+			_toggle_pause()
+
+
+# ---------------------------------------------------------------- consigli di Anubi (solo le prime discese)
+
+var hints_shown := {}
+
+func _hint(id: String, text: String) -> void:
+	if not Meta.options.get("hints", true) or Meta.runs >= 2 or hints_shown.has(id):
+		return
+	hints_shown[id] = true
+	_banner("Anubi", text, Boons.god_color("anubi"))
+
+
+func _check_hints() -> void:
+	if Meta.runs >= 2 or not Meta.options.get("hints", true) or player == null or not is_instance_valid(player):
+		return
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if "lunge_dir" in e and e.state == "windup":
+			var how := "LB o A" if Fx.device == "pad" else ("SCATTO" if Fx.device == "touch" else "Spazio")
+			_hint("mummy", "Rossa vuol dire che sta per colpire. Scatta (%s): durante lo scatto nulla ti tocca." % how)
+		elif "casting" in e and e.casting > 0.0:
+			_hint("priest", "I sacerdoti lanciano sfere lente. Spostati di lato, poi vai a prenderli.")
+	if Run.room == 3 and not get_tree().get_nodes_in_group("traps").is_empty():
+		_hint("traps", "Le lastre si illuminano prima di aprirsi. Attirati sopra i nemici: le punte feriscono anche loro.")
 
 
 # ---------------------------------------------------------------- stanze
@@ -167,7 +200,8 @@ func start_room(reward: Dictionary) -> void:
 		return
 	var r := mini(Run.room, 8)
 	var horde := 1.0 + 0.25 * Weights.rank("orde")
-	waves = [_make_wave(roundi((4 + r * 2) * horde), r >= 2), _make_wave(roundi((3 + r * 2) * horde), r >= 2)]
+	var soft := 1 if r <= 2 else 0                # le prime due stanze sono un po' più leggere
+	waves = [_make_wave(roundi((4 + r * 2 - soft) * horde), r >= 3), _make_wave(roundi((3 + r * 2 - soft) * horde), r >= 3)]
 	_spawn_wave(waves.pop_front(), 1.0)
 
 
@@ -762,7 +796,12 @@ func _restart_run() -> void:
 	get_tree().reload_current_scene()
 
 
+## Uscire a metà discesa conta come abbandonarla: il Ka raccolto viene comunque custodito.
 func _quit_game() -> void:
+	if not finished:
+		Meta.last_end = "abandon"
+		Meta.last_room = Run.room
+		_end_run_summary()
 	get_tree().quit()
 
 
@@ -829,8 +868,13 @@ func _on_player_died() -> void:
 	if current_reward.get("kind", "") == "guardian":
 		where = "il Serpente della Porta"
 	Meta.last_end = "ammit" if Run.room > Run.ROOMS_PER_RUN else "room"
+	if Meta.feather:
+		Meta.feather_deaths += 1
 	Meta.last_room = Run.room
-	message.text = "Il tuo cuore è stato pesato.\nSei caduto: %s\n\n%s\n\nPremi R (o Start) per tornare alla Sala del Giudizio" % [where, _end_run_summary()]
+	var killer: String = KILLER_NAMES.get(Run.last_hit, "")
+	if killer != "":
+		where += "  ·  ti ha ucciso %s" % killer
+	message.text = "Il tuo cuore è stato pesato.\nSei caduto: %s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio" % [where, _end_run_summary()]
 	boss_bar.visible = false
 
 
@@ -956,7 +1000,7 @@ func _boss_defeated() -> void:
 		if c is Enemy and not c.dead:
 			c.die()
 	Meta.ammit_wins += 1
-	if Weights.unlocked() and Weights.total() > Meta.best_weight:
+	if Weights.unlocked() and not Meta.feather and Weights.total() > Meta.best_weight:
 		Meta.best_weight = Weights.total()
 	var first_win := not Meta.sekhem_unlocked
 	Meta.sekhem_unlocked = true
@@ -1018,7 +1062,7 @@ func _build_boss_bar() -> void:
 
 ## Riepilogo della discesa. Salva anche il Ka raccolto, che resta tra una run e l'altra.
 func _end_run_summary() -> String:
-	var banked := roundi(Run.ka * Weights.ka_mult())
+	var banked := roundi(Run.ka * Weights.ka_mult() * (FEATHER_KA if Meta.feather else 1.0))
 	Meta.ka_bank += banked
 	Meta.last_killer = Run.last_hit
 	Meta.last_pacts = Run.blessings.size()
@@ -1050,7 +1094,7 @@ func _victory() -> void:
 	message.visible = true
 	var extra := "\nNuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti" if Meta.ammit_wins == 1 else ""
 	Meta.last_end = "win"
-	message.text = "Hai sconfitto Ammit!\nLa Prima Ora è superata.%s\n\n%s\n\nPremi R (o Start) per tornare alla Sala del Giudizio" % [extra, _end_run_summary()]
+	message.text = "Hai sconfitto Ammit!\nLa Prima Ora è superata.%s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio" % [extra, _end_run_summary()]
 
 
 # ---------------------------------------------------------------- ogni frame
@@ -1065,6 +1109,7 @@ func _process(_delta: float) -> void:
 	if player == null or not is_instance_valid(player):
 		return
 
+	_check_hints()
 	var eye_txt := "pronto" if player.eye_cd <= 0.0 else "%.1fs" % player.eye_cd
 	var sek := "PRONTO (Q / LT)" if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
 	if player.divine_t > 0.0:
@@ -1073,6 +1118,8 @@ func _process(_delta: float) -> void:
 	hud.text = "Vita %d/%d    Ka %d    %s    Occhio: %s" % [ceili(player.hp), int(player.max_hp), Run.ka, room_txt, eye_txt]
 	if Run.sekhem_unlocked():
 		hud.text += "    Sekhem: %s" % sek
+	if Meta.feather:
+		hud.text += "    Piuma di Ma'at: -%d%% danni" % int(round(Run.feather_guard() * 100.0))
 	if boss != null and is_instance_valid(boss) and not boss.dead:
 		boss_fill.size.x = boss_bar.size.x * clampf(boss.hp / boss.max_hp, 0.0, 1.0)
 	var n := Run.boons.size() + Run.blessings.size()
@@ -1102,7 +1149,9 @@ func _process(_delta: float) -> void:
 	var mouse := Fx.device == "mouse"
 	reticle.visible = mouse and not player.dead and menu == null and panel == null and pause_menu == null
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN if (mouse and menu == null and panel == null and pause_menu == null) else Input.MOUSE_MODE_VISIBLE
-	if Fx.device == "pad":
+	if Fx.device == "touch":
+		help.text = ""
+	elif Fx.device == "pad":
 		help.text = "Levetta sinistra muovi · destra mira · RB khopesh · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa"
 	else:
 		help.text = "WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox"
@@ -1264,6 +1313,16 @@ class PanelListener extends Node:
 				game._toggle_pause()
 				get_viewport().set_input_as_handled()
 			return
+		# sul telefono: un tocco chiude il pannello dei doni, e a fine discesa riporta alla Sala
+		if event is InputEventScreenTouch and event.pressed:
+			if game.panel != null:
+				game._toggle_boons_panel()
+				get_viewport().set_input_as_handled()
+				return
+			if game.finished:
+				Engine.time_scale = 1.0
+				get_tree().change_scene_to_file("res://scenes/hub.tscn")
+				return
 		if event.is_action_pressed("pause") and not game.finished:
 			game._toggle_pause()
 			get_viewport().set_input_as_handled()

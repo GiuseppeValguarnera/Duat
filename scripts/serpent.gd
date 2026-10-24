@@ -7,9 +7,10 @@ extends Enemy
 ## - Veleno: sputa un ventaglio di gocce verdi.
 ## - Sotto la sabbia: si inabissa (non si può colpire), ti insegue sotto terra e riemerge
 ##   dove eri. Un cerchio a terra avvisa dove uscirà: scatta via.
-## Sotto metà vita si infuria: più rapido, ventaglio più largo, e chiama gli scarabei una volta.
+## Sotto metà vita si infuria: più rapido e con un ventaglio più largo. Combatte da solo.
 
-signal summon(kinds: Array)
+@warning_ignore("unused_signal")
+signal summon(kinds: Array)        # il gioco lo collega a ogni guardiano; questo non lo usa più
 
 const BoltScript := preload("res://scripts/enemy_bolt.gd")
 
@@ -17,11 +18,11 @@ const BoltScript := preload("res://scripts/enemy_bolt.gd")
 @export var strike_speed := 400.0
 @export var strike_time := 0.32
 @export var venom_count := 5
-@export var venom_damage := 10.0
+@export var venom_damage := 9.0
 @export var burrow_time := 1.5
 @export var erupt_warn := 0.65
 @export var erupt_radius := 48.0
-@export var erupt_damage := 16.0
+@export var erupt_damage := 14.0
 
 var state := "intro"
 var st := 1.4
@@ -49,9 +50,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		enraged = true
 		Fx.shake(6.0)
 		Fx.float_text(global_position + Vector2(0, -30), "IL SERPENTE SI INFURIA", Color(0.6, 1, 0.5))
-		if not summoned:
-			summoned = true
-			summon.emit(["scarab", "scarab", "scarab", "scarab"])
+		summoned = true                 # niente rinforzi: il guardiano combatte da solo
 	_update_trail()
 	match state:
 		"intro":

@@ -170,6 +170,18 @@ func _update_aim() -> void:
 	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
 	if stick.length() > 0.3:
 		aim = stick.normalized()
+	elif Fx.device == "touch":
+		# sul telefono la mira va da sola sul nemico più vicino
+		var best = null
+		var best_d := 260.0
+		for e in get_tree().get_nodes_in_group("enemies"):
+			if e.dead:
+				continue
+			var d: float = global_position.distance_to(e.global_position)
+			if d < best_d:
+				best_d = d
+				best = e
+		aim = (best.global_position - global_position).normalized() if best != null else facing
 	elif Fx.device == "mouse":
 		var to := get_global_mouse_position() - (global_position + Vector2(0, -8))
 		if to.length() > 4.0:

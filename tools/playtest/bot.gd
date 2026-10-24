@@ -38,6 +38,11 @@ var dodges := 0
 var heals := 0.0
 var boss_time := 0.0
 var done := false
+var skip := ""                        # "guardian" o "ammit": salta direttamente a quello scontro
+var skipped := false
+var start_room_n := 0
+var serpent_mod := {}
+var modded := false
 var interact_release := false
 var shop_buys := []
 var force_anubi := ""
@@ -53,6 +58,13 @@ func _ready() -> void:
 	cfg = P[persona]
 	out_path = OS.get_environment("DUAT_OUT")
 	cfg = cfg.duplicate()
+	# profilo su misura (beta tester): sovrascrive i parametri dello stile
+	var custom := OS.get_environment("DUAT_CFG")
+	if custom != "":
+		var extra = JSON.parse_string(custom)
+		if extra is Dictionary:
+			for k in extra:
+				cfg[k] = extra[k]
 	var force_set := OS.get_environment("DUAT_SET")
 	if force_set == "always":
 		cfg["set"] = 1.0
@@ -64,6 +76,10 @@ func _ready() -> void:
 	elif force_heavy == "never":
 		cfg["heavy"] = -3.0
 	force_anubi = OS.get_environment("DUAT_ANUBI")
+	skip = OS.get_environment("DUAT_SKIP")
+	var sm := OS.get_environment("DUAT_SERPENT")
+	if sm != "":
+		serpent_mod = JSON.parse_string(sm)
 	force_god = OS.get_environment("DUAT_GOD")
 	var s := OS.get_environment("DUAT_SEED")
 	seed(int(s) if s != "" else 1)
@@ -86,6 +102,46 @@ func _process(delta: float) -> void:
 	if interact_release:
 		Input.action_release("interact")
 		interact_release = false
+	if skip != "" and not skipped and g.menu == null and not Run.boons.is_empty():
+		skipped = true
+		var n := 3 if skip == "guardian" else 7
+		var pool := []
+		for id in Boons.ALL:
+			var gd: String = Boons.ALL[id].get("god", "")
+			if gd in ["ra", "sekhmet", "thoth", "bastet", "sobek", "iside"] and not Boons.is_heavy(id):
+				pool.append(id)
+		pool.shuffle()
+		for i in range(n):
+			Run.add_boon(pool[i])
+		if skip == "ammit":
+			Run.add_boon(pool[0])
+		var extra := OS.get_environment("DUAT_EXTRA")
+		if extra != "":
+			for i in range(n):
+				if Run.has(extra):
+					break
+			if not Run.has(extra):
+				Run.add_boon(extra)
+		Run.room = 4 if skip == "guardian" else 10
+		g.start_room({"kind": "guardian"} if skip == "guardian" else {"kind": "none"})
+		start_room_n = Run.room
+		var frac := OS.get_environment("DUAT_START_HP")
+		if frac != "":
+			Run.hp = Run.max_hp * float(frac)
+			g.player.hp = Run.hp
+		return
+	if skip == "guardian" and skipped and Run.room == start_room_n and g.cleared and not done:
+		_finish(g, "cleared")
+		return
+	if not serpent_mod.is_empty() and not modded and g.boss != null and is_instance_valid(g.boss) and g.boss.miniboss:
+		modded = true
+		var b = g.boss
+		for k in serpent_mod:
+			if k == "max_hp":
+				b.max_hp = float(serpent_mod[k]) * Run.enemy_hp_mult()
+				b.hp = b.max_hp
+			else:
+				b.set(k, serpent_mod[k])
 	if dash_release:
 		Input.action_release("dash")
 		dash_release = false
@@ -183,7 +239,7 @@ func _decide(g, p) -> void:
 			if it.kind == "heal" and Run.hp / Run.max_hp < 0.6:
 				want = it
 				break
-			if it.kind != "heal" and want == null:
+			if it.kind != "heal" and want == null and randf() < float(cfg.get("spend", 0.8)):
 				want = it
 		if want != null:
 			if pos.distance_to(want.global_position) < 16.0:
@@ -418,16 +474,18 @@ func _metrics(g, _p) -> void:
 		boss_time += get_process_delta_time() / maxf(Engine.time_scale, 0.0001)
 
 
-func _finish(g) -> void:
+func _finish(g, forced: String = "") -> void:
 	done = true
 	var result := "timeout"
 	if g.finished:
 		result = "win" if not g.player.dead else "death"
+	if forced != "":
+		result = forced
 	var boss_hp := -1.0
 	if g.boss != null and is_instance_valid(g.boss):
 		boss_hp = snappedf(g.boss.hp / g.boss.max_hp, 0.01)
 	var data := {
-		"persona": persona, "exp": OS.get_environment("DUAT_EXP"), "seed": OS.get_environment("DUAT_SEED"), "result": result, "room": Run.room,
+		"persona": persona, "exp": OS.get_environment("DUAT_EXP"), "tester": OS.get_environment("DUAT_TESTER"), "run_n": OS.get_environment("DUAT_RUN"), "seed": OS.get_environment("DUAT_SEED"), "result": result, "room": Run.room,
 		"time": snappedf(gt, 0.1), "boss_time": snappedf(boss_time, 0.1), "boss_hp_left": boss_hp,
 		"max_hp": Run.max_hp, "hp": Run.hp, "dmg_taken": dmg, "healed": snappedf(heals, 1),
 		"kills": Run.kills, "dmg_dealt": int(Run.damage_dealt), "ka": Run.ka,

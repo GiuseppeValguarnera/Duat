@@ -9,6 +9,14 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 1. Apri Godot 4.7, clicca **Import** e scegli il file `project.godot` di questa cartella.
 2. Premi **F5** per avviare.
 
+## Giocare dal telefono
+
+La versione web è su **https://giuseppevalguarnera.github.io/Duat/**. Su iPhone: aprila con Safari, poi *Condividi → Aggiungi alla schermata Home* e aprila dall'icona, così va a schermo intero. Gioca in orizzontale.
+
+Sul telefono: levetta virtuale a sinistra (appare dove appoggi il pollice), a destra khopesh (tieni premuto), scatto, Occhio di Horus e Forma Divina, in alto pausa e doni. La mira va da sola sul nemico più vicino. Nella Sala il pulsante grande diventa *Azione*; nei menu si tocca direttamente.
+
+Per aggiornare la versione web dopo una modifica: `tools/deploy_web.sh /percorso/di/Godot` (serve il modello di esportazione *Web* di Godot 4.7.2).
+
 ## Comandi
 
 | Azione | Tastiera e mouse | Controller |
@@ -22,7 +30,7 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 | Vedi i tuoi doni (mette in pausa) | Tab | Select |
 | Mostra/nascondi hitbox | F1 | |
 | Parla / apri il Libro (nella Sala) | E | Y |
-| Pausa | Esc o P | Start |
+| Pausa (nella Sala: opzioni) | Esc o P | Start |
 | Torna alla Sala (dopo morte o vittoria) | R | Start |
 
 ## La Sala del Giudizio
@@ -50,13 +58,21 @@ I numeri sono quelli dei veri capitoli del Libro dei Morti, e ognuno nel Libro m
 
 Dal menu di pausa, *Torna alla Sala (abbandona)* chiude la discesa: il Ka raccolto viene comunque custodito.
 
+## Opzioni
+
+Nella Sala, Esc o Start aprono le opzioni:
+- **Piuma di Ma'at**: modalità aiuto facoltativa. Subisci il 10% di danni in meno, +2% a ogni morte, fino al 50%. In cambio custodisci solo il **40% del Ka** e il Peso del Cuore non conta (né i pesi né il record).
+- Scuotimento dello schermo, pausa sui colpi, consigli di Anubi (solo nelle prime due discese), volume generale e musica.
+
+Se il gioco perde il focus (una chiamata, un'altra finestra) va in pausa da solo. Uscire a metà discesa conta come abbandonarla: il Ka raccolto viene custodito.
+
 ## Come funziona una run
 
 1. All'inizio Anubi pesa il tuo cuore: scegli uno dei suoi doni, ognuno con un vantaggio e un prezzo più piccolo.
-2. Ogni stanza ha due ondate di nemici. La prima stanza non ha ricompensa: i doni degli dèi arrivano dalle stanze che scegli tu.
+2. Ogni stanza ha due ondate di nemici (nelle prime due un po' più piccole; sacerdoti e trappole dalla terza). La prima stanza non ha ricompensa: i doni degli dèi arrivano dalle stanze che scegli tu.
 3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla. Il Ka arriva soprattutto dai tesori: scarabei 0, mummie 1, sacerdoti 2.
 4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura.
-5. **Stanza 5: il Serpente della Porta.** Nel Libro delle Porte ogni porta del Duat è custodita da un serpente. È il guardiano a metà discesa: morde in affondo, sputa ventagli di veleno e si inabissa nella sabbia per riemergere sotto di te (un cerchio rosso avvisa dove). Sotto metà vita si infuria e chiama gli scarabei. Batterlo dà un dono che sale **di due livelli** invece di uno.
+5. **Stanza 5: il Serpente della Porta.** Nel Libro delle Porte ogni porta del Duat è custodita da un serpente. È il guardiano a metà discesa: morde in affondo, sputa ventagli di veleno e si inabissa nella sabbia per riemergere sotto di te (un cerchio rosso avvisa dove). Sotto metà vita si infuria. Combatte da solo. Batterlo dà un dono che sale **di due livelli** invece di uno.
 6. **Il Traghettatore** (Mahaf, dal capitolo 99 del Libro dei Morti): a volte una porta porta da lui, e dopo il guardiano c'è sempre. Vende Acqua del Nilo (30 Ka), un'offerta agli dèi (55 Ka) e l'Inchiostro di Thoth, che alza di livello un tuo dono (45 Ka). Il Ka speso qui non torna a casa: è una scelta tra diventare più forte ora o comprare capitoli dopo.
 7. Dalla stanza 6 arrivano due nemici nuovi: lo **scorpione di Serket** e il **cobra**.
 8. Prima dell'ultima stanza una delle porte è sempre l'**Acqua del Nilo**. Dopo la decima stanza si apre il cancello di **Ammit**, il boss della Prima Ora. I nemici hanno il 6% di vita in più a ogni stanza.
@@ -76,7 +92,7 @@ Dalla terza stanza alcune mummie e alcuni sacerdoti sono **élite**: alone dorat
 - **Scorpione di Serket**: veloce, ti gira intorno e punge con la coda. Avviso: la coda si alza e si illumina di verde. La puntura **avvelena**: perdi 2 vita ogni 0,6 secondi per 3 secondi (il veleno non può ucciderti).
 - **Cobra**: resta a distanza, alza il cappuccio (avviso con la linea verde) e sputa tre gocce in fila. Poi si nasconde sotto la sabbia e riemerge altrove: va colpito quando è fuori.
 
-## Trappole (dalla seconda stanza)
+## Trappole (dalla terza stanza)
 
 - **Spuntoni:** lastre nel pavimento. I fori si illuminano, poi escono le punte: feriscono te (10) e anche i nemici (14).
 - **Feritoie (dalla terza stanza):** teste di cobra nelle pareti laterali. Gli occhi si accendono, poi sparano un dardo che attraversa la stanza.

@@ -24,7 +24,6 @@ var page_lore: Label
 var papiri_entries: VBoxContainer
 var codex: Array = []
 var t := 0.0
-var quit_asked := -10.0
 
 @onready var world: Node2D = $World
 @onready var hud: Label = $UI/Hud
@@ -141,10 +140,12 @@ func _process(delta: float) -> void:
 	if player == null:
 		return
 	hud.text = "Sala del Giudizio    Ka custodito %d    Discese %d    Vittorie su Ammit %d" % [Meta.ka_bank, Meta.runs, Meta.ammit_wins]
-	if Fx.device == "pad":
-		help.text = "Levetta muovi · LB/A scatto · Y interagisci · Start ×2 esci"
+	if Fx.device == "touch":
+		help.text = ""
+	elif Fx.device == "pad":
+		help.text = "Levetta muovi · LB/A scatto · Y interagisci · Start opzioni"
 	else:
-		help.text = "WASD muovi · Spazio scatto · E interagisci · Esc ×2 esci dal gioco"
+		help.text = "WASD muovi · Spazio scatto · E interagisci · Esc opzioni"
 
 	if talk_box.visible or book != null:
 		prompt.visible = false
@@ -178,12 +179,13 @@ func _process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if book != null:
-		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("interact"):
+		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("interact") or (book_kind == "opzioni" and event.is_action_pressed("pause")):
 			_close_book()
 			get_viewport().set_input_as_handled()
 		return
 	if talk_box.visible:
-		if event.is_action_pressed("interact") or event.is_action_pressed("ui_accept") or event.is_action_pressed("attack"):
+		var tap: bool = event is InputEventScreenTouch and event.pressed
+		if tap or event.is_action_pressed("interact") or event.is_action_pressed("ui_accept") or event.is_action_pressed("attack"):
 			_advance_talk()
 			get_viewport().set_input_as_handled()
 		return
@@ -198,11 +200,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			_open_book("pesi")
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("pause"):
-		# per uscire serve una seconda pressione entro 2 secondi, così non si chiude per sbaglio
-		if t - quit_asked < 2.0:
-			get_tree().quit()
-		quit_asked = t
-		Fx.float_text(player.global_position + Vector2(0, -30), "Premi di nuovo per uscire", Color(0.95, 0.9, 0.78))
+		_open_book("opzioni")
+		get_viewport().set_input_as_handled()
 
 
 func _start_run() -> void:
@@ -249,6 +248,8 @@ func _open_book(kind: String = "libro") -> void:
 		_fill_book()
 	elif kind == "pesi":
 		_fill_weights()
+	elif kind == "opzioni":
+		_fill_options()
 	else:
 		_fill_papiri()
 
@@ -298,6 +299,12 @@ func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxCont
 	page_title = _text_label(right, 12, Color(0.94, 0.72, 0.3))
 	page_body = _text_label(right, 10, Color(0.95, 0.9, 0.78))
 	page_lore = _text_label(right, 9, Color(0.72, 0.68, 0.9))
+	var close := Button.new()
+	close.text = "Chiudi"
+	close.add_theme_font_size_override("font_size", 10)
+	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	close.pressed.connect(_close_book)
+	outer.add_child(close)
 	var hint := Label.new()
 	hint.text = "E / Y / B per chiudere"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -380,6 +387,72 @@ func _on_chapter_pressed(id: String) -> void:
 	elif Chapters.buy(id):
 		Sfx.play("boon", 0.0)
 	_fill_book(id)
+
+
+# ---------------------------------------------------------------- Opzioni (Esc / Start nella Sala)
+
+const OPTION_TEXT := {
+	"feather": ["Piuma di Ma'at", "Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva."],
+	"shake": ["Scuotimento dello schermo", "La telecamera trema quando colpisci o vieni colpito. Spegnilo se ti dà fastidio agli occhi."],
+	"hitstop": ["Pausa sui colpi", "Il gioco si ferma per un istante quando un colpo va a segno: dà peso ai colpi. Spegnila se preferisci un'azione sempre fluida."],
+	"hints": ["Consigli di Anubi", "Nelle prime due discese Anubi ti dà qualche consiglio quando incontri un nemico nuovo."],
+	"vol": ["Volume generale", "Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa."],
+	"music": ["Musica", "Premi per cambiare."],
+	"quit": ["Esci dal gioco", "Chiude il gioco. I progressi della Sala sono già salvati."],
+}
+
+
+func _fill_options(focus_id: String = "") -> void:
+	var left := _frame("Opzioni", "Esc / Start / B per tornare alla Sala", 270)
+	var first: Button = null
+	for id in ["feather", "shake", "hitstop", "hints", "vol", "music", "quit"]:
+		var label: String = OPTION_TEXT[id][0]
+		match id:
+			"feather":
+				label += ":  " + ("ATTIVA" if Meta.feather else "spenta")
+			"shake", "hitstop", "hints":
+				label += ":  " + ("sì" if Meta.options.get(id, true) else "no")
+			"vol":
+				label += ":  %d%%" % roundi(Sfx.volumes.get("generale", 1.0) * 100.0)
+			"music":
+				label += ":  %d%%" % roundi(Sfx.volumes.get("musica", 0.7) * 100.0)
+		var col := Color(0.62, 0.95, 0.7) if id == "feather" and Meta.feather else Color(0.95, 0.9, 0.78)
+		var b := _list_button(left, label, col)
+		b.pressed.connect(_on_option_pressed.bind(id))
+		b.focus_entered.connect(_show_option.bind(id))
+		b.mouse_entered.connect(_show_option.bind(id))
+		if first == null or id == focus_id:
+			first = b
+	first.grab_focus.call_deferred()
+
+
+func _show_option(id: String) -> void:
+	page_title.text = OPTION_TEXT[id][0]
+	page_body.text = OPTION_TEXT[id][1]
+	page_lore.text = ""
+	if id == "feather" and Meta.feather:
+		page_lore.text = "Ora subisci il %d%% di danni in meno." % roundi(Run.feather_guard() * 100.0)
+
+
+func _on_option_pressed(id: String) -> void:
+	match id:
+		"feather":
+			Meta.feather = not Meta.feather
+		"shake", "hitstop", "hints":
+			Meta.options[id] = not Meta.options.get(id, true)
+		"vol":
+			var v: float = Sfx.volumes.get("generale", 1.0)
+			Sfx.set_volume("generale", 0.0 if v >= 0.99 else minf(1.0, v + 0.2))
+		"music":
+			var m: float = Sfx.volumes.get("musica", 0.7)
+			Sfx.set_volume("musica", 0.0 if m >= 0.99 else minf(1.0, m + 0.1))
+		"quit":
+			Meta.save()
+			get_tree().quit()
+			return
+	Meta.save()
+	Sfx.play("ui", 0.0)
+	_fill_options(id)
 
 
 # ---------------------------------------------------------------- Il Peso del Cuore

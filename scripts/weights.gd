@@ -25,7 +25,7 @@ static func unlocked() -> bool:
 
 
 static func rank(id: String) -> int:
-	if not unlocked():
+	if not unlocked() or Meta.feather:
 		return 0
 	return int(Meta.weights.get(id, 0))
 

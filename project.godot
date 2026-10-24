@@ -18,6 +18,7 @@ Run="*res://scripts/run.gd"
 Meta="*res://scripts/meta.gd"
 Sfx="*res://scripts/sfx.gd"
 Music="*res://scripts/music.gd"
+Touch="*res://scripts/touch_controls.gd"
 
 [display]
 

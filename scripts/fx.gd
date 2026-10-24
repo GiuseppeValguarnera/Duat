@@ -4,7 +4,7 @@ extends Node
 
 var camera: Camera2D
 var world: Node2D
-var device := "mouse"          # "mouse" oppure "pad"
+var device := "mouse"          # "mouse", "pad" oppure "touch"
 var show_hitboxes := false
 
 var _shake := 0.0
@@ -12,7 +12,7 @@ var _hitstops := 0
 
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion or event is InputEventMouseButton:
+	if (event is InputEventMouseMotion or event is InputEventMouseButton) and event.device != InputEvent.DEVICE_ID_EMULATION:
 		device = "mouse"
 	elif event is InputEventJoypadButton:
 		device = "pad"
@@ -31,11 +31,15 @@ func _process(delta: float) -> void:
 
 
 func shake(amount: float) -> void:
+	if not Meta.options.get("shake", true):
+		return
 	_shake = maxf(_shake, amount)
 
 
 ## Ferma il tempo per una frazione di secondo: dà peso ai colpi.
 func hitstop(duration: float = 0.05) -> void:
+	if not Meta.options.get("hitstop", true):
+		return
 	_hitstops += 1
 	Engine.time_scale = 0.05
 	get_tree().create_timer(duration, true, false, true).timeout.connect(_end_hitstop)

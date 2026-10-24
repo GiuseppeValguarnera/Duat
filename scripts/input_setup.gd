@@ -73,6 +73,7 @@ func _mouse(action: String, button: MouseButton) -> void:
 	_ensure(action)
 	var e := InputEventMouseButton.new()
 	e.button_index = button
+	e.device = 0                      # solo il mouse vero: i tocchi sullo schermo non contano come clic
 	InputMap.action_add_event(action, e)
 
 
