@@ -216,6 +216,8 @@ func khopesh_mult() -> float:
 		m *= 1.4
 	if has("iside_heavy"):
 		m *= 0.75
+	if has("horus_heavy"):
+		m *= 0.6
 	return m * all_damage_mult()
 
 
@@ -223,7 +225,15 @@ func eye_damage_mult() -> float:
 	var m := (1.0 + val("thoth_scribe") / 100.0) * (1.0 + val("ra_eye") / 100.0) * all_damage_mult()
 	if has("anubi_mouth"):
 		m *= 0.9
+	m *= 1.0 + val("horus_seek") / 100.0
+	if has("horus_heavy"):
+		m *= 2.0
 	return m
+
+
+## Il Sole e la Luna (Horus): quante volte di fila si può lanciare l'Occhio.
+func eye_charges() -> int:
+	return maxi(1, int(val("horus_twin")))
 
 
 func eye_cooldown_mult() -> float:
@@ -241,6 +251,8 @@ func eye_cooldown_mult() -> float:
 
 ## Quanti nemici in più l'Occhio di Horus può attraversare. Senza doni: nessuno.
 func eye_pierce() -> int:
+	if has("horus_heavy"):
+		return 99
 	return int(val("thoth_pierce"))
 
 

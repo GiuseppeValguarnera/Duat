@@ -347,13 +347,17 @@ func _menu(g) -> void:
 				g._choose_start_boon(id)
 				return
 	for b in btns:
-		var s := _score_card(b.text)
+		var s := _score_card(_card_text(b))
 		if s > best_score:
 			best_score = s
 			best = b
-	var first_line: String = best.text.split("\n")[0]
-	choices.append(first_line + " / " + (best.text.split("\n")[1] if best.text.split("\n").size() > 1 else ""))
+	var lines := _card_text(best).split("\n")
+	choices.append(lines[0] + " / " + (lines[1] if lines.size() > 1 else ""))
 	best.pressed.emit()
+
+
+func _card_text(b: Button) -> String:
+	return str(b.get_meta("text", b.text))
 
 
 func _score_card(text: String) -> float:

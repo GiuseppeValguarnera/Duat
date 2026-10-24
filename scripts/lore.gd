@@ -97,6 +97,17 @@ const GODS := {
 		],
 		"idle": ["Ti proteggo io. Tu pensa a vivere.", "Ogni ferita si richiude, prima o poi.", "Ho ricomposto un dio. Posso ricomporre te."],
 	},
+	"horus": {
+		"name": "Horus, il Falco",
+		"intro": {"title": "Chi è Horus", "text": "Io sono Horus, il Falco, figlio di Iside e di Osiride. Il mio occhio destro è il sole, il sinistro è la luna. Tu porti in battaglia il mio Occhio, Scriba: lascia che ti insegni a farlo volare."},
+		"stories": [
+			{"title": "Il trono del padre", "text": "Set uccise mio padre e prese il suo trono. Io crebbi nascosto tra i papiri, e quando fui forte lo sfidai. Ottant'anni di lotta, davanti al tribunale degli dèi. Alla fine il trono della Terra Nera fu mio. Chi ha ragione deve anche saper aspettare."},
+			{"title": "L'occhio strappato", "text": "Nella lotta Set mi strappò l'occhio e lo fece a pezzi. Thoth li raccolse e me lo restituì intero. Da allora quell'occhio si chiama wedjat, 'il sano', e gli uomini lo portano al collo contro ogni male. Anche ferito, il falco vede."},
+			{"title": "Il re vivente", "text": "Ogni faraone era Horus sulla terra. Il primo dei suoi cinque nomi era il nome di Horus, scritto dentro un recinto sormontato da un falco. Quando il re moriva diventava Osiride, e il nuovo re diventava me. Così il trono non resta mai vuoto."},
+			{"title": "Edfu", "text": "Il mio tempio di Edfu è tra i più intatti della Terra Nera. Ogni anno la statua di Hathor risaliva il Fiume da Dendera per raggiungermi: la chiamavano la Festa del Bell'Incontro. Gli dèi, Scriba, sanno anche festeggiare."},
+		],
+		"idle": ["Mira come il falco: dall'alto, una volta sola.", "Il mio Occhio non manca il bersaglio. Tu?", "Vola, Scriba."],
+	},
 	"set": {
 		"name": "Set, il Signore del Deserto",
 		"intro": {"title": "Chi è Set", "text": "Io sono Set. Signore del deserto rosso, delle tempeste, delle terre straniere. Sì, sono colui che uccise il fratello. Eppure, ogni notte, quando il serpente assale la barca del sole, è la mia lancia a respingerlo. Vuoi un patto? Prima il prezzo. Sempre."},
@@ -169,7 +180,7 @@ static func codex() -> Array:
 	for i in range(JUDGEMENT.size()):
 		judgement.append(_entry(JUDGEMENT[i], Meta.dialogue_seen.has("giudizio_%d" % i)))
 	out.append({"title": "Il giudizio", "entries": judgement})
-	for god in ["anubi", "ra", "sekhmet", "thoth", "bastet", "sobek", "iside", "set"]:
+	for god in ["anubi", "ra", "sekhmet", "thoth", "bastet", "sobek", "iside", "horus", "set"]:
 		var list := []
 		var entries := _entries(god)
 		for i in range(entries.size()):

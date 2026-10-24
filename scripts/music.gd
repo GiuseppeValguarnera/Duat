@@ -4,7 +4,7 @@ extends Node
 ## Il volume segue la categoria "musica" del menu di pausa (Sfx.volume_of("musica")).
 
 const FADE := 1.6
-const TRACKS := ["hub", "room", "elite", "boss"]
+const TRACKS := ["hub", "room", "elite", "boss", "death"]
 
 var streams := {}
 var players: Array[AudioStreamPlayer] = []
@@ -21,7 +21,7 @@ func _ready() -> void:
 		var path := "res://assets/music/%s.ogg" % track
 		if ResourceLoader.exists(path):
 			var s: AudioStreamOggVorbis = load(path)
-			s.loop = true
+			s.loop = track != "death"       # la musica della morte suona una volta sola
 			streams[track] = s
 	for i in range(2):
 		var p := AudioStreamPlayer.new()

@@ -25,6 +25,7 @@ var is_boss := false
 var miniboss := false                 ## guardiano a metà discesa: barra in alto invece che sopra la testa
 var elite := false                     ## versione dorata: più grossa, più resistente, lascia più Ka
 var stagger_t := 0.0
+var mark_t := 0.0                     ## Sguardo del Falco: secondi in cui il khopesh fa più danni
 var sobek_stun_t := 0.0                ## stordito dal Morso di Sobek (per la Forza del Fiume)                   ## dopo un colpo il nemico barcolla: non si muove e non ferisce
 
 
@@ -58,6 +59,7 @@ func _physics_process(delta: float) -> void:
 		to = player.global_position - global_position
 
 	sobek_stun_t = maxf(0.0, sobek_stun_t - delta)
+	mark_t = maxf(0.0, mark_t - delta)
 	if stagger_t > 0.0:
 		stagger_t -= delta
 		velocity = knock
@@ -210,6 +212,11 @@ func _draw() -> void:
 	_draw_body(flash_t > 0.0)
 	if burn_t > 0.0:
 		draw_circle(Vector2(0, -radius), radius + 3.0, Color(1, 0.5, 0.1, 0.25))
+	if mark_t > 0.0:
+		# il segno del falco sopra il nemico
+		var mp := Vector2(0, -radius * 2.6 - 6.0)
+		draw_arc(mp, 4.0, PI * 1.1, PI * 1.9, 8, Boons.god_color("horus"), 1.5)
+		draw_circle(mp + Vector2(0, -1), 1.5, Boons.god_color("horus"))
 	if hp < max_hp and not is_boss and not miniboss:
 		var w := radius * 2.5
 		draw_rect(Rect2(-w / 2.0, -radius * 3.0 - 6.0, w, 3), Color(0, 0, 0, 0.7))

@@ -21,6 +21,7 @@ const GODS := {
 	"bastet": {"name": "Bastet", "color": Color(0.4, 0.85, 0.5)},
 	"sobek": {"name": "Sobek", "color": Color(0.62, 0.66, 0.28)},
 	"iside": {"name": "Iside", "color": Color(0.95, 0.56, 0.76)},
+	"horus": {"name": "Horus", "color": Color(0.36, 0.55, 1.0)},
 	"set": {"name": "Set", "color": Color(0.78, 0.25, 0.2)},
 	"anubi": {"name": "Anubi", "color": Color(0.62, 0.56, 0.92)},
 	"duo": {"name": "Doppio", "color": Color(1.0, 0.86, 0.45)},
@@ -57,6 +58,10 @@ const ALL := {
 	"iside_knot": {"god": "iside", "name": "Nodo di Iside", "desc": "Sotto un terzo della vita subisci il %d%% di danni in meno.", "values": [25, 35, 45]},
 	"iside_word": {"god": "iside", "name": "Nome Segreto di Ra", "desc": "Il Sekhem si carica il %d%% più in fretta.", "values": [25, 40, 55]},
 	# Anubi pesa ogni cosa: i suoi doni sono bilance, un vantaggio un po' più grande del prezzo.
+	"horus_return": {"god": "horus", "name": "Ritorno del Falco", "desc": "L'Occhio di Horus, finito il volo, torna da te e colpisce di nuovo chi incontra: %d%% dei danni.", "values": [60, 80, 100]},
+	"horus_seek": {"god": "horus", "name": "Volo del Falco", "desc": "L'Occhio di Horus curva da solo verso il nemico più vicino e fa il %d%% di danni in più.", "values": [10, 20, 30]},
+	"horus_twin": {"god": "horus", "name": "Il Sole e la Luna", "desc": "L'Occhio di Horus ha %d cariche: puoi lanciarlo più volte di fila.", "values": [2, 3, 4]},
+	"horus_mark": {"god": "horus", "name": "Sguardo del Falco", "desc": "I nemici colpiti dall'Occhio subiscono il %d%% di danni in più dal khopesh per 3 secondi.", "values": [20, 30, 40]},
 	"anubi_light": {"god": "anubi", "balanced": true, "name": "Cuore Leggero", "desc": "Lo scatto si ricarica il %d%% più in fretta e ti muovi il 10%% più veloce.", "values": [15], "cost": "-5 vita massima."},
 	"anubi_stone": {"god": "anubi", "balanced": true, "name": "Cuore di Pietra", "desc": "+%d vita massima.", "values": [12], "cost": "Ti muovi il 6% più lento."},
 	"anubi_jackal": {"god": "anubi", "balanced": true, "name": "Fiuto dello Sciacallo", "desc": "+%d%% di danni ai nemici sotto metà vita.", "values": [30], "cost": "-10% di danni ai nemici sopra metà vita."},
@@ -78,6 +83,7 @@ const ALL := {
 	"bastet_heavy": {"god": "bastet", "heavy": true, "name": "Gioco del Gatto", "desc": "I colpi critici fanno il triplo dei danni invece del doppio, e hai sempre almeno il 10% di probabilità di critico.", "cost": "-15 vita massima."},
 	"sobek_heavy": {"god": "sobek", "heavy": true, "name": "Fauci di Sobek", "desc": "+40% ai danni del khopesh e i nemici vengono scagliati il doppio più lontano.", "cost": "Ti muovi il 15% più lento."},
 	"iside_heavy": {"god": "iside", "heavy": true, "name": "Abbraccio di Iside", "desc": "Ogni stanza ripulita ti cura del 15% della vita massima.", "cost": "Il khopesh fa il 25% di danni in meno."},
+	"horus_heavy": {"god": "horus", "heavy": true, "name": "Occhio del Re", "desc": "L'Occhio di Horus fa il doppio dei danni e trapassa tutti i nemici.", "cost": "Il khopesh fa il 40% di danni in meno."},
 	"thoth_heavy": {"god": "thoth", "heavy": true, "name": "Conoscenza Proibita", "desc": "L'Occhio di Horus si ricarica più del doppio più in fretta.", "cost": "Il khopesh fa il 35% di danni in meno."},
 }
 
@@ -218,3 +224,70 @@ static func duos_for(god: String, owned: Dictionary) -> Array:
 			out.append(id)
 	return out
 
+
+
+
+## Riassunto breve di ogni dono, mostrato in fondo alla carta: [vantaggio, prezzo].
+## Il %d prende il valore del livello, come nella descrizione.
+const SHORT := {
+	"ra_burn": ["Khopesh incendia: %d danni ogni 0,5 s", ""],
+	"ra_disc": ["Occhio esplode: %d danni", ""],
+	"ra_dawn": ["Scatto ferisce: %d danni", "Scatto -40% più lento"],
+	"ra_eye": ["Occhio +%d%% danni e incendia", ""],
+	"sekhmet_fury": ["Khopesh +%d%% danni", ""],
+	"sekhmet_blood": ["+%d vita ogni 5 uccisioni", ""],
+	"sekhmet_roar": ["3° colpo: onda di %d danni", ""],
+	"sekhmet_leap": ["Dopo lo scatto +%d%% danni", ""],
+	"thoth_pierce": ["Occhio trapassa %d nemici", ""],
+	"thoth_calc": ["Occhio ricarica -%d%%", ""],
+	"thoth_tri": ["Occhio: %d raggi a ventaglio", ""],
+	"thoth_scribe": ["Occhio +%d%% danni", ""],
+	"bastet_claws": ["Khopesh %d%% critico", ""],
+	"bastet_eyes": ["Occhio %d%% critico", ""],
+	"bastet_step": ["Scatto ricarica -%d%%", ""],
+	"bastet_lives": ["Ti rialzi una volta con il %d%%", ""],
+	"sobek_skin": ["-%d%% danni subiti", ""],
+	"sobek_bite": ["3° colpo stordisce", ""],
+	"sobek_tide": ["Scatto lascia pozza: -%d%% velocità nemici", ""],
+	"sobek_river": ["+%d%% danni a storditi e rallentati", ""],
+	"iside_wings": ["Scudo di %d a ogni stanza", ""],
+	"iside_tears": ["Cure +%d%%", ""],
+	"iside_knot": ["Sotto 1/3 di vita: -%d%% danni subiti", ""],
+	"iside_word": ["Sekhem +%d%% più rapido", ""],
+	"horus_return": ["Occhio torna indietro: %d%% danni", ""],
+	"horus_seek": ["Occhio insegue · +%d%% danni", ""],
+	"horus_twin": ["Occhio: %d cariche", ""],
+	"horus_mark": ["Colpiti dall'Occhio: +%d%% dal khopesh", ""],
+	"anubi_light": ["Scatto -%d%% · +10%% velocità", "-5 vita massima"],
+	"anubi_stone": ["+%d vita massima", "-6% velocità"],
+	"anubi_jackal": ["+%d%% danni sotto metà vita", "-10% danni sopra metà"],
+	"anubi_scale": ["Rifletti il %d%% dei danni", "+10% danni subiti"],
+	"anubi_canopic": ["+%d vita a ogni stanza", "-10 vita massima"],
+	"anubi_mouth": ["Occhio ricarica -%d%%", "Occhio -10% danni"],
+	"anubi_linen": ["-%d%% danni subiti", "-5% velocità"],
+	"anubi_guardian": ["3° colpo +%d%%", "1° e 2° colpo -10%"],
+	"anubi_tribute": ["+%d%% Ka", "-5 vita massima"],
+	"anubi_guide": ["Spiriti: %d danni a ogni uccisione", "Nemici +5% vita"],
+	"duo_ra_thoth": ["Occhio incendia ed esplode sempre", ""],
+	"duo_ra_sekhmet": ["+25% khopesh sui nemici in fiamme", ""],
+	"duo_sekhmet_bastet": ["Critici: ruggito di 12 danni", ""],
+	"duo_thoth_bastet": ["Critico dell'Occhio: ricarica dimezzata", ""],
+	"duo_sobek_iside": ["Con lo scudo: khopesh +25%", ""],
+	"ra_heavy": ["Tutto incendia · fiamme +60%", "Occhio ricarica +50%"],
+	"sekhmet_heavy": ["Khopesh +50%", "-1 vita ogni 2 s in combattimento"],
+	"bastet_heavy": ["Critici ×3 · almeno 10%", "-15 vita massima"],
+	"sobek_heavy": ["Khopesh +40% · spinta doppia", "-15% velocità"],
+	"iside_heavy": ["+15% vita a ogni stanza", "Khopesh -25%"],
+	"thoth_heavy": ["Occhio ricarica più del doppio", "Khopesh -35%"],
+	"horus_heavy": ["Occhio danni ×2 · trapassa tutti", "Khopesh -40%"],
+}
+
+
+static func short(id: String, level: int) -> Array:
+	if not SHORT.has(id):
+		return ["", ""]
+	var gain: String = SHORT[id][0]
+	var b: Dictionary = ALL[id]
+	if gain.find("%d") >= 0 and b.has("values"):
+		gain = gain % int(round(b["values"][clampi(level, 1, b["values"].size()) - 1]))
+	return [gain, SHORT[id][1]]

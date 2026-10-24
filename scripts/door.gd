@@ -68,6 +68,8 @@ func reward_label() -> String:
 			return "Guardiano"
 		"shop":
 			return "Traghettatore"
+		"tutorial_end":
+			return "La discesa"
 		_:
 			return "Uscita"
 
@@ -91,6 +93,8 @@ func reward_description() -> String:
 			return "La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore"
 		"shop":
 			return "Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa)"
+		"tutorial_end":
+			return "Comincia la discesa: Anubi ti aspetta con il primo dono"
 		_:
 			return "Uscita: fine della discesa di prova"
 

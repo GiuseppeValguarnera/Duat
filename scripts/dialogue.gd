@@ -69,6 +69,7 @@ static func _reaction() -> Array:
 		"thoth": "Thoth ha scritto di te nei suoi registri. Non il tuo nome vero. Quello che ti stai guadagnando.",
 		"bastet": "Hai camminato con Bastet. È una dea che sceglie chi proteggere. Non sceglie mai a caso.",
 		"sobek": "Sobek ti ha dato la sua pelle. Lui sa attendere per ore, immobile sotto l'acqua. Tu non sai attendere un istante. Imparerai.",
+		"horus": "Horus ti ha prestato il suo Occhio. Il falco sceglie con cura a chi affidarlo: non deluderlo.",
 		"iside": "Iside ti ha posato le mani sul capo. Lei conosce il dolore di raccogliere ciò che è stato spezzato. Anche te.",
 	}
 	if gods.has(Meta.last_god):

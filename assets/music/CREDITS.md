@@ -19,3 +19,8 @@ normalizzato nel volume. Questa citazione va riportata anche nei crediti del gio
 
 Tutti i brani sono stati convertiti in .ogg a 44,1 kHz e normalizzati allo stesso volume
 percepito; Desert Mystic e Frozen Desert sono stati accorciati del silenzio finale per ripetersi meglio.
+
+
+## death.ogg
+
+Tema della morte, creato per il gioco (CC0): il suono `divine.ogg` rallentato di un'ottava con eco lunga, il colpo di `book.ogg` rallentato, e un bordone di tre note sinusoidali (La, Mi, La) con tremolo, tutto mixato con ffmpeg. I suoni di partenza sono CC0 (vedi `assets/sfx/CREDITS.md`).

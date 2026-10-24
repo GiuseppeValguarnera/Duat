@@ -13,9 +13,9 @@ collision_layer = 4
 collision_mask = 5
 motion_mode = 1
 script = ExtResource("1_serpent")
-max_hp = 260.0
-speed = 60.0
-contact_damage = 9.0
+max_hp = 340.0
+speed = 66.0
+contact_damage = 11.0
 ka_value = 15
 radius = 14.0
 

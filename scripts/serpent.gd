@@ -7,22 +7,24 @@ extends Enemy
 ## - Veleno: sputa un ventaglio di gocce verdi.
 ## - Sotto la sabbia: si inabissa (non si può colpire), ti insegue sotto terra e riemerge
 ##   dove eri. Un cerchio a terra avvisa dove uscirà: scatta via.
-## Sotto metà vita si infuria: più rapido e con un ventaglio più largo. Combatte da solo.
+## Sotto metà vita si infuria: più rapido, ventaglio più largo, e gli affondi diventano doppi.
+## Combatte da solo.
 
 @warning_ignore("unused_signal")
 signal summon(kinds: Array)        # il gioco lo collega a ogni guardiano; questo non lo usa più
 
 const BoltScript := preload("res://scripts/enemy_bolt.gd")
 
-@export var strike_windup := 0.6
+@export var strike_windup := 0.5
 @export var strike_speed := 400.0
 @export var strike_time := 0.32
 @export var venom_count := 5
-@export var venom_damage := 9.0
+@export var venom_damage := 11.0
 @export var burrow_time := 1.5
 @export var erupt_warn := 0.65
 @export var erupt_radius := 48.0
-@export var erupt_damage := 14.0
+@export var erupt_damage := 18.0
+@export var double_strike := true      ## infuriato: due affondi di fila
 
 var state := "intro"
 var st := 1.4
@@ -31,6 +33,7 @@ var enraged := false
 var summoned := false
 var trail: Array[Vector2] = []        # posizioni passate della testa: il corpo le segue
 var erupt_at := Vector2.ZERO
+var second_strike := false         # infuriato, dopo un affondo ne tenta subito un altro
 
 
 func _ready() -> void:
@@ -75,6 +78,13 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			return -aim * 25.0
 		"strike":
 			if st <= 0.0:
+				if enraged and double_strike and not second_strike:
+					second_strike = true
+					state = "windup"
+					st = strike_windup * 0.7
+					Sfx.play_at("mummy_windup", global_position, 0.05)
+					return Vector2.ZERO
+				second_strike = false
 				_next(0.7)
 				state = "recover"
 			return aim * strike_speed

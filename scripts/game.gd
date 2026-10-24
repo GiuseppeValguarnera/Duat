@@ -68,9 +68,12 @@ var bonus_boon := false               # il prossimo dono sale di un livello in p
 var shops_visited := 0
 var shop_items: Array = []
 var doors_after_boon := true
+var can_leave := true                 # alla morte: si torna alla Sala solo dopo l'animazione
 var hud_room := ""
 var hud_eye := ""
 var hud_sek := ""
+
+const DummyScript := preload("res://scripts/dummy.gd")
 
 @onready var world: Node2D = $World
 @onready var hud: Label = $UI/Hud
@@ -95,7 +98,10 @@ func _ready() -> void:
 	var hud_bars := HudBars.new()
 	hud_bars.game = self
 	$UI.add_child(hud_bars)
-	hud.position.y = 34.0 * Fx.ui
+	var arrows := DoorArrows.new()
+	arrows.game = self
+	$UI.add_child(arrows)
+	hud.position.y = 54.0 * Fx.ui
 	var listener := PanelListener.new()
 	listener.game = self
 	add_child(listener)
@@ -110,6 +116,10 @@ func _ready() -> void:
 		start_room(d.get("reward", {"kind": "none"}))
 		_banner("Discesa ripresa", "Stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN] if Run.room <= Run.ROOMS_PER_RUN else "Ammit", Color(0.94, 0.72, 0.3))
 		return
+	# la primissima volta: la stanza dell'addestramento, poi la discesa vera
+	if not Meta.tutorial_done and OS.get_environment("DUAT_PERSONA") == "" and OS.get_environment("DUAT_NOTUT") == "":
+		start_room({"kind": "tutorial"})
+		return
 	# la prima stanza non ha ricompensa: il primo dono è quello di Anubi
 	start_room({"kind": "none"})
 	_show_anubi_menu()
@@ -122,38 +132,206 @@ func _notification(what: int) -> void:
 			_toggle_pause()
 
 
-# ---------------------------------------------------------------- consigli di Anubi (solo le prime discese)
+# ---------------------------------------------------------------- addestramento (solo la prima volta)
+## Una stanza vera, con fantocci al posto dei nemici: un passo alla volta, con il testo
+## in un riquadro fisso in alto (mai sopra i nemici). Qui non si può morire.
+## Passi: muoversi, khopesh, scatto, Occhio di Horus, Ka, porta.
 
-var hints_shown := {}
+var tut_step := -1
+var tut_panel: PanelContainer
+var tut_title: Label
+var tut_body: Label
+var tut_start := Vector2.ZERO
+var tut_walked := 0.0
+var tut_targets: Array = []
+var tut_dodges := 0
+var tut_dashes := 0
+var tut_prev_dash := false
+var tut_wait := 0.0
 
-func _hint(id: String, text: String) -> void:
-	if not Meta.options.get("hints", true) or Meta.runs >= 2 or hints_shown.has(id):
+const TUT_STEPS := 6
+
+
+func _ctl(what: String) -> String:
+	var dev := Fx.device
+	match what:
+		"move":
+			return {"pad": "la levetta sinistra", "touch": "la levetta a sinistra"}.get(dev, "W A S D (o le frecce)")
+		"attack":
+			return {"pad": "X o RB", "touch": "il pulsante KHOPESH"}.get(dev, "il clic sinistro (o J)")
+		"dash":
+			return {"pad": "A o LB", "touch": "il pulsante SCATTO"}.get(dev, "Spazio")
+		"eye":
+			return {"pad": "Y o RT", "touch": "il pulsante OCCHIO"}.get(dev, "il clic destro (o L)")
+	return ""
+
+
+func _tut_begin() -> void:
+	Music.play("hub")
+	tut_step = -1
+	tut_panel = PanelContainer.new()
+	tut_panel.add_theme_stylebox_override("panel", UiStyle.papyrus_box(UiStyle.GOLD.darkened(0.3)))
+	tut_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	$UI.add_child(tut_panel)
+	var col := VBoxContainer.new()
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_theme_constant_override("separation", int(3 * Fx.ui))
+	tut_panel.add_child(col)
+	var vw := get_viewport().get_visible_rect().size.x
+	var w := minf(400.0 * Fx.ui, vw - 120.0 * Fx.ui)
+	var top := HBoxContainer.new()
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_child(top)
+	tut_title = UiStyle.label("", 11, UiStyle.INK, true)
+	tut_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(tut_title)
+	var skip := Button.new()
+	skip.text = "Salta ›"
+	skip.flat = true
+	skip.focus_mode = Control.FOCUS_NONE
+	skip.add_theme_font_size_override("font_size", Fx.fs(8))
+	skip.add_theme_color_override("font_color", UiStyle.INK_RED)
+	skip.add_theme_color_override("font_hover_color", UiStyle.INK)
+	skip.pressed.connect(_finish_tutorial)
+	top.add_child(skip)
+	tut_body = UiStyle.label("", 9, UiStyle.INK_SOFT, false, w - 20.0)
+	tut_body.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
+	col.add_child(tut_body)
+	tut_panel.custom_minimum_size = Vector2(w, 0)
+	_tut_next()
+
+
+func _tut_place() -> void:
+	if tut_panel == null:
 		return
-	hints_shown[id] = true
-	_banner("Anubi", text, Boons.god_color("anubi"))
+	tut_panel.reset_size()
+	var vw := get_viewport().get_visible_rect().size.x
+	tut_panel.position = Vector2((vw - tut_panel.size.x) / 2.0, 50.0 * Fx.ui)
 
 
-func _check_hints() -> void:
-	if Meta.runs >= 2 or not Meta.options.get("hints", true) or player == null or not is_instance_valid(player):
+func _tut_say(title: String, body: String) -> void:
+	tut_title.text = "Addestramento  %d/%d  ·  %s" % [tut_step + 1, TUT_STEPS, title]
+	tut_body.text = body
+	tut_body.visible_ratio = 0.0
+	tut_body.create_tween().tween_property(tut_body, "visible_ratio", 1.0, clampf(body.length() * 0.008, 0.3, 1.0))
+	_tut_place.call_deferred()
+	Sfx.play("ui", 0.0)
+	tut_panel.modulate = Color(1.6, 1.4, 1.0)
+	tut_panel.create_tween().tween_property(tut_panel, "modulate", Color.WHITE, 0.4)
+
+
+func _tut_dummy(pos: Vector2, eye_only: bool = false, lunger: bool = false) -> Enemy:
+	var d: Enemy = DummyScript.new()
+	d.eye_only = eye_only
+	d.lunger = lunger
+	d.position = pos
+	world.add_child(d)
+	Fx.burst(pos + Vector2(0, -10), Color(0.9, 0.8, 0.6), 12, 70.0)
+	tut_targets.append(d)
+	return d
+
+
+func _tut_clear_targets() -> void:
+	for d in tut_targets:
+		if is_instance_valid(d) and not d.dead:
+			d.die()
+	tut_targets.clear()
+
+
+func _tut_next() -> void:
+	tut_step += 1
+	tut_wait = 0.0
+	var mid := Vector2(ROOM.size.x / 2.0, ROOM.size.y / 2.0 + 20.0)
+	match tut_step:
+		0:
+			tut_start = player.global_position
+			tut_walked = 0.0
+			_tut_say("Il cammino", "Sei appena sceso nel Duat, l'oltretomba. Prima della discesa vera, Anubi ti fa provare le tue armi.\nMuoviti con %s." % _ctl("move"))
+		1:
+			_tut_dummy(Vector2(mid.x - 50.0, 340.0))
+			_tut_dummy(Vector2(mid.x + 50.0, 340.0))
+			_tut_say("Il khopesh", "Questa è la tua spada ricurva. Colpisci i due fantocci con %s: tre colpi di fila fanno una combinazione, l'ultimo è il più forte." % _ctl("attack"))
+		2:
+			var m := _tut_dummy(Vector2(mid.x, 290.0), false, true)
+			m.dodged.connect(func() -> void: tut_dodges += 1)
+			tut_dodges = 0
+			tut_dashes = 0
+			_tut_say("Lo scatto", "Quando un nemico diventa ROSSO sta per colpirti. Premi %s mentre ti arriva addosso: durante lo scatto nulla ti tocca. Schiva la mummia due volte." % _ctl("dash"))
+		3:
+			_tut_clear_targets()
+			for at in [Vector2(110, 320), Vector2(ROOM.size.x - 110.0, 320), Vector2(mid.x, 300)]:
+				_tut_dummy(at, true)
+			_tut_say("L'Occhio di Horus", "I fantocci azzurri in alto si rompono solo con l'Occhio. Lancialo con %s: attraversa i nemici e torna pronto dopo qualche secondo (il cerchio dell'Occhio in alto lo mostra)." % _ctl("eye"))
+		4:
+			var p = PickupScript.new()
+			p.kind = "ka"
+			world.add_child(p)
+			p.position = mid
+			p.collected.connect(_on_pickup_collected)
+			_tut_say("Il Ka", "Quella luce d'oro è Ka: la forza vitale degli Egizi, la parte di te che sopravvive alla morte. Raccoglila.\nIl Ka resta tuo anche se cadi: nella Sala del Giudizio lo spendi nel Libro dei Morti per poteri permanenti, e durante la discesa il Traghettatore lo accetta in cambio di aiuti. Lo lasciano i nemici più grossi e i tesori.")
+		5:
+			_add_door("n", {"kind": "tutorial_end"})
+			_tut_say("Le porte", "Dopo ogni stanza si aprono le porte, spesso su più lati: sopra ognuna c'è la ricompensa della stanza dopo. Quando una porta è fuori dallo schermo, una freccia sul bordo ti dice dov'è.\nEntra nella porta in alto: comincia la discesa.")
+		_:
+			pass
+
+
+func _tut_tick() -> void:
+	if player == null or not is_instance_valid(player):
 		return
-	for e in get_tree().get_nodes_in_group("enemies"):
-		if "lunge_dir" in e and e.state == "windup":
-			var how := "LB o A" if Fx.device == "pad" else ("SCATTO" if Fx.device == "touch" else "Spazio")
-			_hint("mummy", "Rossa vuol dire che sta per colpire. Scatta (%s): durante lo scatto nulla ti tocca." % how)
-		elif "casting" in e and e.casting > 0.0:
-			_hint("priest", "I sacerdoti lanciano sfere lente. Spostati di lato, poi vai a prenderli.")
-	if Run.room == 3 and not get_tree().get_nodes_in_group("traps").is_empty():
-		_hint("traps", "Le lastre si illuminano prima di aprirsi. Attirati sopra i nemici: le punte feriscono anche loro.")
+	player.hp = player.max_hp            # nell'addestramento non si muore
+	match tut_step:
+		0:
+			tut_walked += player.velocity.length() * get_process_delta_time()
+			if tut_walked > 160.0:
+				_tut_next()
+		1, 3:
+			var all_down := true
+			for d in tut_targets:
+				if is_instance_valid(d) and not d.dead:
+					all_down = false
+			if all_down:
+				tut_wait += get_process_delta_time()
+				if tut_wait > 0.5:
+					tut_targets.clear()
+					_tut_next()
+		2:
+			var dashing: bool = player.dash_t > 0.0
+			if dashing and not tut_prev_dash:
+				tut_dashes += 1
+			tut_prev_dash = dashing
+			# chi proprio non ci riesce passa lo stesso dopo un po' di tentativi
+			if tut_dodges >= 2 or tut_dashes >= 10:
+				_tut_next()
+
+
+func _finish_tutorial() -> void:
+	if tut_step < 0 and Meta.tutorial_done:
+		return
+	Meta.tutorial_done = true
+	Meta.save()
+	tut_step = -1
+	if tut_panel != null:
+		tut_panel.queue_free()
+		tut_panel = null
+	tut_targets.clear()
+	Run.room = 0
+	start_room.call_deferred({"kind": "none"})
+	_show_anubi_menu.call_deferred()
 
 
 # ---------------------------------------------------------------- stanze
 
 func start_room(reward: Dictionary) -> void:
+	if reward.get("kind", "") == "tutorial_end":
+		_finish_tutorial()
+		return
 	Run.room += 1
 	room_gen += 1
 	boss = null
 	current_reward = reward
-	Run.save_descent(reward, {"shops": shops_visited, "bonus": bonus_boon})
+	if reward.get("kind", "") != "tutorial":
+		Run.save_descent(reward, {"shops": shops_visited, "bonus": bonus_boon})
 	cleared = false
 	alive = 0
 	spawning = 0
@@ -167,14 +345,14 @@ func start_room(reward: Dictionary) -> void:
 	pillars.clear()
 	var boss_room := Run.room > Run.ROOMS_PER_RUN
 	var kind: String = reward.get("kind", "none")
-	var calm := kind == "guardian" or kind == "shop"
+	var calm := kind == "guardian" or kind == "shop" or kind == "tutorial"
 	shop_items.clear()
 	if not boss_room and kind != "guardian":
 		Music.play("hub" if kind == "shop" else "room")
 	var layout: Array = LAYOUTS.pick_random() if Run.room > 1 else LAYOUTS[0]
 	if boss_room:
 		layout = BOSS_LAYOUT
-	elif kind == "shop":
+	elif kind == "shop" or kind == "tutorial":
 		layout = []
 	elif kind == "guardian":
 		layout = LAYOUTS[0]
@@ -217,6 +395,10 @@ func start_room(reward: Dictionary) -> void:
 	if kind == "shop":
 		waves = []
 		_start_shop()
+		return
+	if kind == "tutorial":
+		waves = []
+		_tut_begin()
 		return
 	var r := mini(Run.room, 8)
 	var horde := 1.0 + 0.25 * Weights.rank("orde")
@@ -364,6 +546,11 @@ func _on_pickup_collected(p: Area2D) -> void:
 	p.queue_free()
 	match kind:
 		"ka":
+			if tut_step >= 0:
+				Run.ka += 10
+				Fx.float_text(player.global_position, "+10 Ka", Color(0.94, 0.72, 0.3))
+				_tut_next.call_deferred()
+				return
 			Run.ka += roundi(25 * Run.treasure_mult())
 			Fx.float_text(player.global_position, "+%d Ka" % roundi(25 * Run.treasure_mult()), Color(0.94, 0.72, 0.3))
 			_open_doors.call_deferred()
@@ -439,75 +626,157 @@ func _on_door_chosen(d: Area2D) -> void:
 
 # ---------------------------------------------------------------- scelta dei doni
 
-## Finestra con titolo e 1-3 carte. `cards` = [{"text", "color", "heavy", "on_pick"}].
-func _open_choice(title_text: String, title_color: Color, subtitle: String, cards: Array, speech: String = "") -> void:
+## Finestra di scelta: in alto il dio che parla (ritratto animato e testo che appare),
+## sotto 1-3 carte di papiro. Ogni carta: etichetta, nome, descrizione, prezzo e, in fondo,
+## il riassunto breve (▲ vantaggio, ▼ prezzo) per scegliere senza rileggere tutto.
+## `cards` = [{"tag", "name", "body", "cost", "gain", "loss", "color", "heavy", "on_pick"}].
+func _open_choice(title_text: String, title_color: Color, subtitle: String, cards: Array, speech: String = "", god: String = "") -> void:
 	get_tree().paused = true
 	menu = CanvasLayer.new()
 	menu.layer = 20
 	menu.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(menu)
+	var vw := get_viewport().get_visible_rect().size.x
 
 	var dim := ColorRect.new()
-	dim.color = Color(0.02, 0.03, 0.08, 0.82)
+	dim.color = Color(0.02, 0.03, 0.08, 0.86)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	menu.add_child(dim)
 
 	var box := VBoxContainer.new()
 	box.set_anchors_preset(Control.PRESET_FULL_RECT)
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 8)
+	box.add_theme_constant_override("separation", int(6 * Fx.ui))
 	menu.add_child(box)
 
-	var title := Label.new()
-	title.text = title_text
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", Fx.fs(16))
-	title.add_theme_color_override("font_color", title_color)
-	box.add_child(title)
-
+	# il dio che parla
+	var head := HBoxContainer.new()
+	head.alignment = BoxContainer.ALIGNMENT_CENTER
+	head.add_theme_constant_override("separation", int(10 * Fx.ui))
+	box.add_child(head)
+	if god != "":
+		var portrait := GodPortrait.new()
+		portrait.god = god
+		portrait.custom_minimum_size = Vector2(54, 54) if Fx.mobile else Vector2(64, 64) * Fx.ui
+		portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		head.add_child(portrait)
+		var stop := get_tree().create_timer(maxf(1.2, speech.length() * 0.025), true, false, true)
+		var ref: WeakRef = weakref(portrait)
+		stop.timeout.connect(func() -> void:
+			var pp = ref.get_ref()
+			if pp != null:
+				pp.talking = false)
+	var words := VBoxContainer.new()
+	words.add_theme_constant_override("separation", int(2 * Fx.ui))
+	words.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	head.add_child(words)
+	var title := UiStyle.label(title_text, 15, title_color, true)
+	title.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	title.add_theme_constant_override("outline_size", 4)
+	words.add_child(title)
 	if speech != "":
-		var said := Label.new()
-		said.text = "«%s»" % speech
-		said.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		said.custom_minimum_size = Vector2(get_viewport().get_visible_rect().size.x - 80.0, 0)
-		said.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		said.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		said.add_theme_font_size_override("font_size", Fx.fs(10))
-		said.add_theme_color_override("font_color", title_color.lerp(Color(0.97, 0.93, 0.85), 0.6))
+		var said := UiStyle.label("«%s»" % speech, 8 if Fx.mobile else 10, title_color.lerp(Color(0.97, 0.93, 0.85), 0.65), false, vw - 64.0 * Fx.ui - 70.0)
 		said.add_theme_color_override("font_outline_color", Color(0, 0, 0))
 		said.add_theme_constant_override("outline_size", 3)
-		box.add_child(said)
-
+		said.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
+		said.visible_ratio = 0.0
+		words.add_child(said)
+		var tw := said.create_tween()
+		tw.tween_property(said, "visible_ratio", 1.0, clampf(speech.length() * 0.012, 0.4, 1.6))
 	if subtitle != "":
-		var sub := Label.new()
-		sub.text = subtitle
+		var sub := UiStyle.label(subtitle, 9, Color(0.9, 0.8, 0.6))
 		sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		sub.add_theme_font_size_override("font_size", Fx.fs(9))
-		sub.add_theme_color_override("font_color", Color(0.85, 0.78, 0.62))
 		box.add_child(sub)
 
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 10)
+	row.add_theme_constant_override("separation", int(8 * Fx.ui))
 	box.add_child(row)
 
+	var card_w := minf(250.0, (vw - 40.0) / 3.0)
 	var first_button: Button = null
+	var i := 0
 	for c in cards:
-		var btn := Button.new()
-		var card_w := minf(250.0, (get_viewport().get_visible_rect().size.x - 50.0) / 3.0)
-		btn.custom_minimum_size = Vector2(card_w, 120.0 * Fx.ui)
-		btn.text = c["text"]
-		btn.add_theme_font_size_override("font_size", Fx.fs(9))
-		var base := Color(1, 0.62, 0.55) if c.get("heavy", false) else Color(0.95, 0.9, 0.78)
-		btn.add_theme_color_override("font_color", base)
-		btn.add_theme_color_override("font_hover_color", c["color"])
-		btn.add_theme_color_override("font_focus_color", c["color"])
+		var btn := _make_card(c, card_w)
+		row.add_child(btn)
 		btn.pressed.connect(c["on_pick"])
 		btn.focus_entered.connect(Sfx.play.bind("ui", 0.0))
-		row.add_child(btn)
+		# le carte si srotolano una dopo l'altra
+		btn.modulate.a = 0.0
+		btn.scale = Vector2(1.0, 0.85)
+		var tw2 := btn.create_tween()
+		tw2.tween_interval(0.08 * i)
+		tw2.tween_property(btn, "modulate:a", 1.0, 0.18)
+		tw2.parallel().tween_property(btn, "scale", Vector2.ONE, 0.18)
+		i += 1
 		if first_button == null:
 			first_button = btn
 	first_button.grab_focus()
+
+
+## Una carta di papiro. Il testo completo resta anche nei metadati (lo usa il bot di playtest).
+func _make_card(c: Dictionary, card_w: float) -> Button:
+	var accent: Color = c["color"]
+	var btn := Button.new()
+	UiStyle.papyrus_button(btn, accent)
+	btn.custom_minimum_size = Vector2(card_w, 0)
+	btn.pivot_offset = Vector2(card_w / 2.0, 0)
+	btn.set_meta("text", "%s\n%s\n%s\n%s\n%s\n%s" % [c.get("tag", ""), c["name"], c.get("body", ""), c.get("cost", ""), c.get("gain", ""), c.get("loss", "")])
+	var pad := MarginContainer.new()
+	pad.set_anchors_preset(Control.PRESET_FULL_RECT)
+	pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for side in ["left", "right"]:
+		pad.add_theme_constant_override("margin_" + side, int(9 * Fx.ui))
+	pad.add_theme_constant_override("margin_top", int(7 * Fx.ui))
+	pad.add_theme_constant_override("margin_bottom", int(7 * Fx.ui))
+	btn.add_child(pad)
+	var col := VBoxContainer.new()
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_theme_constant_override("separation", int(3 * Fx.ui))
+	pad.add_child(col)
+	var inner := card_w - 18.0 * Fx.ui
+	if c.get("tag", "") != "":
+		var tag := UiStyle.label(c["tag"], 7, (UiStyle.INK_RED if c.get("heavy", false) else accent.darkened(0.45)), true, inner)
+		tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(tag)
+	var nm := UiStyle.label(c["name"], 12, UiStyle.INK, true, inner)
+	nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(nm)
+	var rule := ColorRect.new()
+	rule.color = accent.darkened(0.25)
+	rule.custom_minimum_size = Vector2(inner * 0.6, 1.5 * Fx.ui)
+	rule.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_child(rule)
+	if c.get("body", "") != "":
+		var body := UiStyle.label(c["body"], 8 if Fx.mobile else 9, UiStyle.INK_SOFT, false, inner)
+		body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(body)
+	# sul telefono lo spazio in altezza è poco: il prezzo resta nel riassunto ▼ in fondo
+	if c.get("cost", "") != "" and not (Fx.mobile and c.get("loss", "") != ""):
+		var cost := UiStyle.label("Prezzo: " + c["cost"], 8, UiStyle.INK_RED, false, inner)
+		cost.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(cost)
+	# riassunto in fondo
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_child(spacer)
+	if c.get("gain", "") != "":
+		var g := UiStyle.label("▲ " + c["gain"], 9, UiStyle.INK_GREEN, true, inner)
+		g.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(g)
+	if c.get("loss", "") != "":
+		var l := UiStyle.label("▼ " + c["loss"], 9, UiStyle.INK_RED, true, inner)
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(l)
+	# l'altezza giusta si conosce solo dopo che il testo è andato a capo
+	var fit := func() -> void:
+		if is_instance_valid(btn) and is_instance_valid(col):
+			btn.custom_minimum_size.y = col.get_combined_minimum_size().y + 16.0 * Fx.ui
+	col.minimum_size_changed.connect(fit)
+	fit.call_deferred()
+	return btn
 
 
 func _close_choice() -> void:
@@ -547,49 +816,47 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 	var cards := []
 	for id in options:
 		var lvl := mini(Run.level(id) + (2 if bonus_boon else 1), _max_level(id))
-		var name_line: String = Boons.ALL[id]["name"]
-		var tag := "NUOVO" if Run.level(id) == 0 else "LIVELLO %d" % lvl
+		var tag := "Nuovo" if Run.level(id) == 0 else "Livello %d" % lvl
 		if Run.level(id) == 0 and lvl > 1:
-			tag = "NUOVO · SUBITO LIVELLO %d" % lvl
-		var body := _wrap(Boons.text(id, lvl), _wrap_w())
+			tag = "Nuovo · subito livello %d" % lvl
 		if Boons.is_heavy(id):
-			tag = "DONO PESANTE"
+			tag = "Dono pesante"
 		if Boons.is_duo(id):
 			var gs: Array = Boons.ALL[id]["gods"]
-			tag = "DONO DOPPIO · %s + %s" % [Boons.god_name(gs[0]), Boons.god_name(gs[1])]
-		if Boons.has_cost(id):
-			body += "\n\nPrezzo: " + _wrap(Boons.ALL[id]["cost"], _wrap_w())
+			tag = "Dono doppio · %s + %s" % [Boons.god_name(gs[0]), Boons.god_name(gs[1])]
+		var sh := Boons.short(id, lvl)
 		cards.append({
-			"text": "%s\n%s\n\n%s" % [tag, name_line, body],
+			"tag": tag, "name": Boons.ALL[id]["name"], "body": Boons.text(id, lvl),
+			"cost": Boons.ALL[id]["cost"] if Boons.has_cost(id) else "",
+			"gain": sh[0], "loss": sh[1],
 			"color": Boons.god_color("duo") if Boons.is_duo(id) else Boons.god_color(from_god),
 			"heavy": Boons.is_heavy(id),
 			"on_pick": _choose_boon.bind(id),
 		})
-	_open_choice("%s ti offre un dono" % Boons.god_name(from_god), Boons.god_color(from_god), "", cards, Lore.speech(from_god))
+	_open_choice("%s ti offre un dono" % Boons.god_name(from_god), Boons.god_color(from_god), "", cards, Lore.speech(from_god), from_god)
 
 
 ## All'inizio di ogni run Anubi offre uno dei suoi doni.
 func _show_anubi_menu() -> void:
 	var cards := []
 	for id in Boons.offers("anubi", Run.boons):
+		var sh := Boons.short(id, 1)
 		cards.append({
-			"text": "%s\n\n%s\n\nPrezzo: %s" % [Boons.ALL[id]["name"], _wrap(Boons.text(id, 1), _wrap_w()), _wrap(Boons.ALL[id]["cost"], _wrap_w())],
-			"color": Boons.god_color("anubi"),
-			"heavy": false,
+			"tag": "Dono di Anubi", "name": Boons.ALL[id]["name"], "body": Boons.text(id, 1),
+			"cost": Boons.ALL[id]["cost"], "gain": sh[0], "loss": sh[1],
+			"color": Boons.god_color("anubi"), "heavy": false,
 			"on_pick": _choose_start_boon.bind(id),
 		})
-	_open_choice("Anubi pesa il tuo cuore", Boons.god_color("anubi"), "", cards, Lore.speech("anubi"))
+	_open_choice("Anubi pesa il tuo cuore", Boons.god_color("anubi"), "", cards, Lore.speech("anubi"), "anubi")
 
 
 func _choose_start_boon(id: String) -> void:
-	Sfx.play("boon", 0.0)
 	Run.add_boon(id)
 	Run.save_descent(current_reward, {"shops": shops_visited, "bonus": bonus_boon})
 	_close_choice()
 	player.max_hp = Run.max_hp
 	player.hp = Run.hp
-	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color("anubi"), 30, 140.0)
-	_banner("Dono di Anubi", Boons.ALL[id]["name"], Boons.god_color("anubi"))
+	_boon_fx(Boons.god_color("anubi"), "Dono di Anubi", Boons.ALL[id]["name"])
 
 
 func _max_level(id: String) -> int:
@@ -597,18 +864,41 @@ func _max_level(id: String) -> int:
 
 
 func _choose_boon(id: String) -> void:
-	Sfx.play("boon", 0.0)
 	Run.add_boon(id)
 	if bonus_boon and Run.level(id) < _max_level(id):
 		Run.add_boon(id)
 	bonus_boon = false
-	if not doors_after_boon:
-		_close_choice()
-		Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color(Boons.ALL[id]["god"]), 30, 140.0)
-		return
 	_close_choice()
-	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color(Boons.ALL[id]["god"]), 30, 140.0)
-	_open_doors()
+	var g: String = Boons.ALL[id]["god"]
+	var lvl := Run.level(id)
+	_boon_fx(Boons.god_color(g), "Dono di %s" % Boons.god_name(g) if g != "duo" else "Dono doppio", Boons.ALL[id]["name"] + ("" if lvl <= 1 else "  ·  livello %d" % lvl))
+	if doors_after_boon:
+		_open_doors()
+
+
+## L'effetto quando prendi un dono: lampo del colore del dio, anello di luce attorno a te,
+## un attimo di rallentamento e il nome del dono al centro.
+func _boon_fx(color: Color, title: String, sub: String) -> void:
+	Sfx.play("boon", 0.0)
+	Sfx.play("divine", 0.05)
+	var flash := ColorRect.new()
+	flash.color = Color(color, 0.45)
+	flash.set_anchors_preset(Control.PRESET_FULL_RECT)
+	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	$UI.add_child(flash)
+	var tw := flash.create_tween()
+	tw.tween_property(flash, "color:a", 0.0, 0.6)
+	tw.tween_callback(flash.queue_free)
+	if player != null and is_instance_valid(player):
+		var ring := BoonRing.new()
+		ring.color = color
+		world.add_child(ring)
+		ring.global_position = player.global_position + Vector2(0, -8)
+		Fx.burst(player.global_position + Vector2(0, -10), color, 60, 220.0)
+		Fx.burst(player.global_position + Vector2(0, -10), Color(1, 0.95, 0.8), 20, 120.0)
+	Fx.shake(5.0)
+	Fx.hitstop(0.12)
+	_banner(title, sub, color)
 
 
 func _show_set_menu() -> void:
@@ -617,27 +907,27 @@ func _show_set_menu() -> void:
 		var curse: Dictionary = Boons.SET_CURSES[o["curse"]]
 		var bless: Dictionary = Boons.SET_BLESSINGS[o["blessing"]]
 		cards.append({
-			"text": "%s\n\nPER LE PROSSIME %d STANZE\n%s\n\nPOI, PER TUTTA LA RUN\n%s" % [bless["name"], curse["rooms"], _wrap(curse["desc"], _wrap_w()), _wrap(bless["desc"], _wrap_w())],
-			"color": Boons.god_color("set"),
-			"heavy": true,
+			"tag": "Patto di Set", "name": bless["name"],
+			"body": "",
+			"cost": "",
+			"gain": bless["desc"], "loss": "%s (%d stanze)" % [curse["desc"], curse["rooms"]],
+			"color": Boons.god_color("set"), "heavy": true,
 			"on_pick": _choose_pact.bind(o["curse"], o["blessing"]),
 		})
 	if cards.is_empty():
 		Run.ka += roundi(25 * Run.ka_mult())
 		_open_doors()
 		return
-	var sub := "Prima la maledizione, poi la ricompensa"
+	var sub := "Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa"
 	if Run.room + 2 > Run.ROOMS_PER_RUN:
-		sub = "ATTENZIONE: la maledizione ti seguirà anche contro Ammit"
-	_open_choice("Set ti propone un patto", Boons.god_color("set"), sub, cards, Lore.speech("set"))
+		sub = "Attenzione: la maledizione ti seguirà anche contro Ammit"
+	_open_choice("Set ti propone un patto", Boons.god_color("set"), sub, cards, Lore.speech("set"), "set")
 
 
 func _choose_pact(curse: String, blessing: String) -> void:
-	Sfx.play("boon", 0.0)
 	Run.add_pact(curse, blessing)
 	_close_choice()
-	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color("set"), 30, 140.0)
-	_banner("Maledizione di Set", Boons.SET_CURSES[curse]["desc"], Boons.god_color("set"))
+	_boon_fx(Boons.god_color("set"), "Patto di Set", Boons.SET_CURSES[curse]["desc"])
 	_open_doors()
 
 
@@ -660,6 +950,7 @@ func _wrap(text: String, width: int) -> String:
 
 
 func _banner(title: String, sub: String, color: Color) -> void:
+	banner.add_theme_font_override("font", UiStyle.title_font())
 	banner.text = "%s\n%s" % [title, sub]
 	banner.add_theme_color_override("font_color", color)
 	banner.visible = true
@@ -893,9 +1184,8 @@ func _boons_text() -> String:
 
 func _on_player_died() -> void:
 	finished = true
+	can_leave = false
 	Run.clear_descent()
-	Music.set_duck(0.35)
-	message.visible = true
 	var where := "Ammit, la Divoratrice" if Run.room > Run.ROOMS_PER_RUN else "stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN]
 	if current_reward.get("kind", "") == "guardian":
 		where = "il Serpente della Porta"
@@ -904,10 +1194,92 @@ func _on_player_died() -> void:
 		Meta.feather_deaths += 1
 	Meta.last_room = Run.room
 	var killer: String = KILLER_NAMES.get(Run.last_hit, "")
-	if killer != "":
-		where += "  ·  ti ha ucciso %s" % killer
-	message.text = "Il tuo cuore è stato pesato.\nSei caduto: %s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio" % [where, _end_run_summary()]
+	var summary := _end_run_summary()
 	boss_bar.visible = false
+	Music.play("death")
+	_death_screen(where, killer, summary)
+
+
+## La morte: tutto rallenta, un lampo rosso, lo schermo si scurisce e compare la bilancia
+## di Ma'at: il cuore scende, più pesante della piuma. Poi il papiro con il riepilogo.
+func _death_screen(where: String, killer: String, summary: String) -> void:
+	Sfx.play("death", 0.0)
+	Fx.shake(8.0)
+	Engine.time_scale = 0.2
+	var layer := CanvasLayer.new()
+	layer.layer = 18
+	layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(layer)
+	var red := ColorRect.new()
+	red.color = Color(0.8, 0.05, 0.03, 0.55)
+	red.set_anchors_preset(Control.PRESET_FULL_RECT)
+	red.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(red)
+	var dark := ColorRect.new()
+	dark.color = Color(0.02, 0.01, 0.03, 0.0)
+	dark.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(dark)
+	var tw := create_tween().set_ignore_time_scale(true)
+	tw.tween_property(red, "color:a", 0.0, 0.9)
+	tw.parallel().tween_property(dark, "color:a", 0.88, 1.6)
+	tw.parallel().tween_property(Engine, "time_scale", 1.0, 1.6).set_delay(0.6)
+	tw.tween_callback(func() -> void:
+		get_tree().paused = true
+		_death_panel(layer, where, killer, summary))
+
+
+func _death_panel(layer: CanvasLayer, where: String, killer: String, summary: String) -> void:
+	var u := Fx.ui
+	var vs := get_viewport().get_visible_rect().size
+	var box := VBoxContainer.new()
+	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", int(4 * u))
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(box)
+	var scale_draw := DeathScale.new()
+	scale_draw.custom_minimum_size = Vector2(120, 70) * u
+	scale_draw.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	box.add_child(scale_draw)
+	var title := UiStyle.label("Il tuo cuore è stato pesato", 18, Color(0.95, 0.4, 0.3), true)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	title.add_theme_constant_override("outline_size", 5)
+	box.add_child(title)
+	var pap := PanelContainer.new()
+	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(Color(0.45, 0.12, 0.08)))
+	pap.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	pap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(pap)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", int(3 * u))
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pap.add_child(col)
+	var w := minf(440.0 * u, vs.x - 40.0)
+	var l1 := UiStyle.label("Sei caduto: " + where, 10, UiStyle.INK, true, w)
+	l1.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(l1)
+	if killer != "":
+		var l2 := UiStyle.label("Ti ha ucciso " + killer, 9, UiStyle.INK_RED, false, w)
+		l2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(l2)
+	var l3 := UiStyle.label(summary, 8, UiStyle.INK_SOFT, false, w)
+	l3.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(l3)
+	var how := "Tocca lo schermo" if Fx.device == "touch" else ("Premi Start" if Fx.device == "pad" else "Premi R")
+	var hint := UiStyle.label("%s per tornare alla Sala del Giudizio" % how, 9, Color(0.95, 0.85, 0.6))
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	hint.add_theme_constant_override("outline_size", 3)
+	box.add_child(hint)
+	box.modulate.a = 0.0
+	var tw := box.create_tween()
+	tw.tween_property(box, "modulate:a", 1.0, 0.8)
+	tw.tween_callback(func() -> void: can_leave = true)
+	var blink := hint.create_tween().set_loops()
+	blink.tween_property(hint, "modulate:a", 0.4, 0.9).set_delay(1.0)
+	blink.tween_property(hint, "modulate:a", 1.0, 0.9)
 
 
 # ---------------------------------------------------------------- boss
@@ -1136,19 +1508,21 @@ func _victory() -> void:
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("debug_hitbox"):
 		Fx.set_hitboxes(not Fx.show_hitboxes)
-	if Input.is_action_just_pressed("restart") and (finished or player.dead):
+	if Input.is_action_just_pressed("restart") and (finished or player.dead) and can_leave:
 		Engine.time_scale = 1.0
 		get_tree().change_scene_to_file("res://scenes/hub.tscn")
 		return
 	if player == null or not is_instance_valid(player):
 		return
 
-	_check_hints()
-	var eye_txt := "pronto" if player.eye_cd <= 0.0 else "%.1fs" % player.eye_cd
+	var eye_txt := "pronto" if player.eye_ready() else "%.1fs" % player.eye_cd
 	var sek := "PRONTO (Q / LT)" if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
 	if player.divine_t > 0.0:
 		sek = "FORMA DIVINA %.1fs" % player.divine_t
 	var room_txt := "Ammit · colonne: %d" % pillars.size() if Run.room > Run.ROOMS_PER_RUN else "Stanza %d/%d" % [Run.room, Run.ROOMS_PER_RUN]
+	if tut_step >= 0:
+		room_txt = "Addestramento"
+		_tut_tick()
 	# vita, Ka, stanza, Occhio e Sekhem sono disegnati come barre da HudBars; qui resta il testo
 	hud.text = ""
 	hud_room = room_txt
@@ -1337,6 +1711,16 @@ class SpawnMarker extends Node2D:
 class PanelListener extends Node:
 	var game: Node
 
+	func _process(_delta: float) -> void:
+		# a gioco in pausa (schermata della morte) il tasto R / Start arriva solo da qui
+		if game.finished and game.can_leave and get_tree().paused and Input.is_action_just_pressed("restart"):
+			_leave()
+
+	func _leave() -> void:
+		Engine.time_scale = 1.0
+		get_tree().paused = false
+		get_tree().change_scene_to_file("res://scenes/hub.tscn")
+
 	func _ready() -> void:
 		process_mode = Node.PROCESS_MODE_ALWAYS
 
@@ -1356,9 +1740,8 @@ class PanelListener extends Node:
 				game._toggle_boons_panel()
 				get_viewport().set_input_as_handled()
 				return
-			if game.finished:
-				Engine.time_scale = 1.0
-				get_tree().change_scene_to_file("res://scenes/hub.tscn")
+			if game.finished and game.can_leave:
+				_leave()
 				return
 		if event.is_action_pressed("pause") and not game.finished:
 			game._toggle_pause()
@@ -1370,8 +1753,193 @@ class PanelListener extends Node:
 
 
 
-## HUD in alto a sinistra: barra della vita, Sekhem, Ka, stanza e ricarica dell'Occhio.
+## HUD in alto a sinistra, in stile egizio: riquadro scuro con il bordo d'oro, l'ankh accanto
+## alla vita (con la scia rossa del danno appena subito), il segno del Ka con il suo numero,
+## la stanza, e l'Occhio di Horus che si riempie mentre si ricarica (con un pallino per carica).
 class HudBars extends Control:
+	var game: Node
+	var shown_hp := -1.0            # la scia del danno scende piano dietro la barra vera
+	var last_ka := -1
+	var ka_pop := 0.0
+	var eye_was_ready := true
+	var eye_pop := 0.0
+
+	const GOLD := Color(0.94, 0.72, 0.3)
+	const GOLD_DARK := Color(0.55, 0.38, 0.14)
+	const LAPIS := Color(0.2, 0.36, 0.78)
+
+	func _ready() -> void:
+		set_anchors_preset(Control.PRESET_FULL_RECT)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _process(delta: float) -> void:
+		var p = game.player
+		if p != null and is_instance_valid(p):
+			if shown_hp < 0.0 or p.hp > shown_hp:
+				shown_hp = p.hp
+			else:
+				shown_hp = move_toward(shown_hp, p.hp, maxf(8.0, (shown_hp - p.hp) * 2.5) * delta)
+			if last_ka >= 0 and Run.ka != last_ka:
+				ka_pop = 1.0
+			last_ka = Run.ka
+			var ready_now: bool = p.eye_ready()
+			if ready_now and not eye_was_ready:
+				eye_pop = 1.0
+			eye_was_ready = ready_now
+		ka_pop = maxf(0.0, ka_pop - delta * 3.0)
+		eye_pop = maxf(0.0, eye_pop - delta * 2.5)
+		queue_redraw()
+
+	func _draw() -> void:
+		var p = game.player
+		if p == null or not is_instance_valid(p):
+			return
+		var u: float = Fx.ui
+		var font := ThemeDB.fallback_font
+		var title := UiStyle.title_font()
+		var sek: bool = Run.sekhem_unlocked()
+		var o := Vector2(6, 6) * u
+		var pw := 206.0 * u
+		var ph := (44.0 if sek else 38.0) * u
+		# riquadro
+		draw_rect(Rect2(o, Vector2(pw, ph)), Color(0.05, 0.04, 0.09, 0.78))
+		draw_rect(Rect2(o, Vector2(pw, ph)), GOLD_DARK, false, 1.5 * u)
+		draw_rect(Rect2(o + Vector2(2, 2) * u, Vector2(pw, ph) - Vector2(4, 4) * u), Color(GOLD, 0.35), false, 1.0)
+		# fregio a denti in basso
+		for i in range(int(pw / (8.0 * u))):
+			var fx := o.x + 4.0 * u + i * 8.0 * u
+			draw_rect(Rect2(fx, o.y + ph - 3.0 * u, 4.0 * u, 2.0 * u), Color(LAPIS if i % 2 == 0 else GOLD, 0.6))
+		# ankh
+		_ankh(o + Vector2(14, 17) * u, u, Color(1, 0.4, 0.3) if p.hp / maxf(1.0, p.max_hp) < 0.33 and int(Time.get_ticks_msec() / 250.0) % 2 == 0 else GOLD)
+		# vita: cartiglio con la barra
+		var bx := o.x + 26.0 * u
+		var by := o.y + 6.0 * u
+		var bw := 128.0 * u
+		var bh := 12.0 * u
+		var frac := clampf(p.hp / maxf(1.0, p.max_hp), 0.0, 1.0)
+		var trail := clampf(shown_hp / maxf(1.0, p.max_hp), 0.0, 1.0)
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = Color(0.18, 0.04, 0.05)
+		sb.set_corner_radius_all(int(6 * u))
+		sb.border_color = GOLD
+		sb.set_border_width_all(maxi(1, int(1.5 * u)))
+		draw_style_box(sb, Rect2(bx - 2 * u, by - 2 * u, bw + 4 * u, bh + 4 * u))
+		if trail > frac:
+			draw_rect(Rect2(bx + bw * frac, by, bw * (trail - frac), bh), Color(1, 0.85, 0.6))
+		var hp_col := Color(0.82, 0.16, 0.14) if frac > 0.33 else Color(1.0, 0.3, 0.2)
+		draw_rect(Rect2(bx, by, bw * frac, bh), hp_col)
+		draw_rect(Rect2(bx, by, bw * frac, bh * 0.35), hp_col.lightened(0.35))
+		if p.shield > 0.0:
+			draw_rect(Rect2(bx, by + bh - 3 * u, bw * clampf(p.shield / maxf(1.0, p.max_hp), 0.0, 1.0), 3 * u), Boons.god_color("iside"))
+		if p.poison_t > 0.0:
+			draw_rect(Rect2(bx, by, bw * frac, bh), Color(0.45, 0.95, 0.35, 0.35 + 0.15 * sin(Time.get_ticks_msec() / 90.0)))
+		var hp_txt := "%d / %d" % [ceili(p.hp), int(p.max_hp)]
+		var fs := Fx.fs(9)
+		var tw := font.get_string_size(hp_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		_text(font, Vector2(bx + (bw - tw) / 2.0, by + bh - 2.0 * u), hp_txt, fs, Color(1, 0.96, 0.9))
+		var row := by + bh + 5.0 * u
+		# Sekhem
+		if sek:
+			var sf := clampf(Run.sekhem / Run.SEKHEM_MAX, 0.0, 1.0)
+			draw_rect(Rect2(bx, row - 1 * u, bw, 4 * u), Color(0, 0, 0, 0.7))
+			var sc := Color(1, 0.85, 0.35) if sf < 1.0 else Color(1, 0.95, 0.6).lerp(Color.WHITE, 0.4 * (0.5 + 0.5 * sin(Time.get_ticks_msec() / 100.0)))
+			draw_rect(Rect2(bx, row - 1 * u, bw * sf, 4 * u), sc)
+			row += 6.0 * u
+		# Ka: il geroglifico delle due braccia alzate, con il numero
+		var ky := row + 9.0 * u
+		var kp := 1.0 + 0.35 * ka_pop
+		_ka_glyph(Vector2(bx + 5 * u, ky - 4 * u), u * kp)
+		var ka_txt := "%d" % Run.ka
+		_text(title, Vector2(bx + 14 * u, ky), ka_txt, Fx.fs(10 + int(3 * ka_pop)), GOLD.lerp(Color.WHITE, ka_pop * 0.6))
+		var rx := bx + 18 * u + title.get_string_size(ka_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(10)).x + 10 * u
+		_text(title, Vector2(rx, ky), game.hud_room, Fx.fs(8), Color(0.95, 0.88, 0.72))
+		# Occhio di Horus
+		var c := o + Vector2(pw - 24.0 * u, ph / 2.0 - 1.0 * u)
+		var r := 14.0 * u * (1.0 + 0.15 * eye_pop)
+		var charges: int = p.eye_charges
+		var max_ch: int = Run.eye_charges()
+		var full: bool = charges >= max_ch
+		draw_circle(c, r, Color(0.02, 0.03, 0.08, 0.9))
+		if not full:
+			var k := 1.0 - clampf(p.eye_cd / maxf(0.1, p.eye_cd_max()), 0.0, 1.0)
+			var pts := PackedVector2Array([c])
+			for i in range(25):
+				pts.append(c + Vector2.from_angle(-PI / 2.0 + TAU * k * i / 24.0) * (r - 1.5 * u))
+			if k > 0.01:
+				draw_colored_polygon(pts, Color(LAPIS, 0.55))
+		if p.eye_ready():
+			draw_circle(c, r - 1.5 * u, Color(0.25, 0.55, 0.95, 0.35 + 0.25 * eye_pop))
+		draw_arc(c, r, 0, TAU, 32, GOLD if p.eye_ready() else GOLD_DARK, 1.5 * u)
+		_wedjat(c, u * 0.9, Color(1, 0.95, 0.8) if p.eye_ready() else Color(0.55, 0.5, 0.45))
+		if max_ch > 1:
+			for i in range(max_ch):
+				var pp := c + Vector2((i - (max_ch - 1) / 2.0) * 6.0 * u, r + 3.0 * u)
+				draw_circle(pp, 2.2 * u, Color(0, 0, 0, 0.8))
+				draw_circle(pp, 1.6 * u, GOLD if i < charges else Color(0.3, 0.25, 0.2))
+
+	func _ankh(c: Vector2, u: float, col: Color) -> void:
+		draw_arc(c + Vector2(0, -6) * u, 3.8 * u, 0, TAU, 16, col, 2.2 * u)
+		draw_line(c + Vector2(-6, -1) * u, c + Vector2(6, -1) * u, col, 2.4 * u)
+		draw_line(c + Vector2(0, -2) * u, c + Vector2(0, 11) * u, col, 2.6 * u)
+
+	func _ka_glyph(c: Vector2, u: float) -> void:
+		# due braccia alzate unite in basso
+		var col := GOLD
+		draw_line(c + Vector2(-4, 4) * u, c + Vector2(4, 4) * u, col, 1.8 * u)
+		draw_line(c + Vector2(-4, 4) * u, c + Vector2(-4, -3) * u, col, 1.8 * u)
+		draw_line(c + Vector2(4, 4) * u, c + Vector2(4, -3) * u, col, 1.8 * u)
+		draw_line(c + Vector2(-4, -3) * u, c + Vector2(-5.5, -4.5) * u, col, 1.5 * u)
+		draw_line(c + Vector2(4, -3) * u, c + Vector2(5.5, -4.5) * u, col, 1.5 * u)
+
+	func _wedjat(c: Vector2, u: float, col: Color) -> void:
+		# l'Occhio di Horus: sopracciglio, occhio, pupilla, la goccia e la spirale sotto
+		draw_line(c + Vector2(-8, -6) * u, c + Vector2(8, -6.5) * u, col, 1.6 * u)
+		var eye := PackedVector2Array()
+		for i in range(13):
+			var k := i / 12.0
+			eye.append(c + Vector2(lerpf(-8, 8, k), -sin(k * PI) * 4.0) * u)
+		for i in range(13):
+			var k := 1.0 - i / 12.0
+			eye.append(c + Vector2(lerpf(-8, 8, k), sin(k * PI) * 2.5) * u)
+		draw_polyline(eye, col, 1.3 * u)
+		draw_circle(c + Vector2(0, -0.5) * u, 2.2 * u, col)
+		draw_line(c + Vector2(-2, 2.5) * u, c + Vector2(-3, 8) * u, col, 1.4 * u)
+		draw_arc(c + Vector2(3, 6) * u, 2.5 * u, -PI * 0.9, PI * 0.6, 10, col, 1.3 * u)
+
+	func _text(font: Font, pos: Vector2, text: String, font_size: int, col: Color) -> void:
+		draw_string_outline(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, 4, Color(0, 0, 0, 0.9))
+		draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, col)
+
+
+
+## Anello di luce che si allarga attorno al giocatore quando prende un dono.
+class BoonRing extends Node2D:
+	var color := Color.WHITE
+	var t := 0.0
+
+	func _ready() -> void:
+		z_index = 3
+		process_mode = Node.PROCESS_MODE_ALWAYS
+
+	func _process(delta: float) -> void:
+		t += delta
+		if t > 0.7:
+			queue_free()
+		queue_redraw()
+
+	func _draw() -> void:
+		var k := t / 0.7
+		draw_arc(Vector2.ZERO, 8.0 + 70.0 * k, 0.0, TAU, 48, Color(color, 1.0 - k), 4.0 * (1.0 - k) + 1.0)
+		draw_arc(Vector2.ZERO, 4.0 + 40.0 * k, 0.0, TAU, 32, Color(1, 0.95, 0.8, 0.8 * (1.0 - k)), 2.0)
+		for i in range(8):
+			var a := TAU * i / 8.0 + k
+			draw_line(Vector2.from_angle(a) * (10.0 + 30.0 * k), Vector2.from_angle(a) * (20.0 + 60.0 * k), Color(color, 0.7 * (1.0 - k)), 2.0)
+
+
+
+## Frecce sul bordo dello schermo verso le porte aperte che non si vedono: con il colore
+## e il nome della ricompensa, così si capisce subito che le uscite sono più di una.
+class DoorArrows extends Control:
 	var game: Node
 
 	func _ready() -> void:
@@ -1382,59 +1950,81 @@ class HudBars extends Control:
 		queue_redraw()
 
 	func _draw() -> void:
-		var p = game.player
-		if p == null or not is_instance_valid(p):
-			return
+		var vs := get_viewport().get_visible_rect().size
 		var u: float = Fx.ui
-		var font := ThemeDB.fallback_font
-		var x := 10.0 * u
-		var y := 8.0 * u
-		var w := 120.0 * u
-		var h := 11.0 * u
-		var frac := clampf(p.hp / maxf(1.0, p.max_hp), 0.0, 1.0)
-		var hp_col := Color(0.85, 0.22, 0.18) if frac > 0.33 else Color(1.0, 0.35, 0.2).lerp(Color(1, 1, 1), 0.3 * (0.5 + 0.5 * sin(Time.get_ticks_msec() / 120.0)))
-		draw_rect(Rect2(x - 2, y - 2, w + 4, h + 4), Color(0, 0, 0, 0.6))
-		draw_rect(Rect2(x, y, w, h), Color(0.25, 0.06, 0.06))
-		draw_rect(Rect2(x, y, w * frac, h), hp_col)
-		if p.shield > 0.0:
-			draw_rect(Rect2(x, y, w * clampf(p.shield / maxf(1.0, p.max_hp), 0.0, 1.0), h * 0.35), Boons.god_color("iside"))
-		if p.poison_t > 0.0:
-			draw_rect(Rect2(x, y + h - 3 * u, w * frac, 3 * u), Color(0.45, 0.95, 0.35))
-		var hp_txt := "%d / %d" % [ceili(p.hp), int(p.max_hp)]
-		var fs := Fx.fs(9)
-		var tw := font.get_string_size(hp_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-		draw_string_outline(font, Vector2(x + (w - tw) / 2.0, y + h - 2.0 * u), hp_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, Color(0, 0, 0, 0.9))
-		draw_string(font, Vector2(x + (w - tw) / 2.0, y + h - 2.0 * u), hp_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 0.95, 0.9))
-		var by := y + h + 4.0 * u
-		if Run.sekhem_unlocked():
-			var sf := clampf(Run.sekhem / Run.SEKHEM_MAX, 0.0, 1.0)
-			draw_rect(Rect2(x - 1, by - 1, w + 2, 5 * u + 2), Color(0, 0, 0, 0.6))
-			draw_rect(Rect2(x, by, w * sf, 5 * u), Color(1, 0.85, 0.35) if sf < 1.0 else Color(1, 0.95, 0.6))
-			if Run.sekhem_ready():
-				draw_string_outline(font, Vector2(x + w + 6 * u, by + 5 * u), "SEKHEM", HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(8), 3, Color(0, 0, 0, 0.9))
-				draw_string(font, Vector2(x + w + 6 * u, by + 5 * u), "SEKHEM", HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(8), Color(1, 0.9, 0.5))
-		# Ka e stanza a destra della barra
-		var tx := x + w + 12.0 * u
-		var ty := y + h - 1.0 * u
-		draw_circle(Vector2(tx + 4 * u, y + h / 2.0), 4.0 * u, Color(0.94, 0.72, 0.3))
-		var ka_txt := "%d" % Run.ka
-		_text(font, Vector2(tx + 11 * u, ty), ka_txt, Fx.fs(10), Color(0.98, 0.85, 0.5))
-		tx += 11 * u + font.get_string_size(ka_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(10)).x + 12 * u
-		_text(font, Vector2(tx, ty), game.hud_room, Fx.fs(10), Color(0.95, 0.9, 0.78))
-		tx += font.get_string_size(game.hud_room, HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(10)).x + 14 * u
-		# Occhio di Horus: cerchio che si riempie mentre si ricarica (sul telefono è sul pulsante)
-		if Fx.device != "touch":
-			var c := Vector2(tx + 7 * u, y + h / 2.0)
-			var r := 7.0 * u
-			var eye_ready: bool = p.eye_cd <= 0.0
-			draw_circle(c, r, Color(0, 0, 0, 0.55))
-			if eye_ready:
-				draw_circle(c, r - 1.5 * u, Color(0.35, 0.8, 0.95))
-			else:
-				var k := 1.0 - clampf(p.eye_cd / maxf(0.1, p.eye_cd_max()), 0.0, 1.0)
-				draw_arc(c, r - 2.0 * u, -PI / 2.0, -PI / 2.0 + TAU * k, 24, Color(0.35, 0.8, 0.95, 0.8), 3.0 * u)
-			draw_circle(c, 2.0 * u, Color(0.05, 0.05, 0.1))
+		var margin := 22.0 * u
+		var inner := Rect2(Vector2(margin, margin + 24.0 * u), vs - Vector2(margin * 2.0, margin * 2.0 + 24.0 * u))
+		var font := UiStyle.title_font()
+		var fs := Fx.fs(8)
+		var bob := sin(Time.get_ticks_msec() / 180.0) * 3.0 * u
+		for d in game.doors:
+			if not is_instance_valid(d) or not d.open:
+				continue
+			var sp: Vector2 = d.get_global_transform_with_canvas().origin
+			if Rect2(Vector2.ZERO, vs).grow(-8.0).has_point(sp):
+				continue
+			var center := vs / 2.0
+			var dir := (sp - center).normalized()
+			# punto sul bordo del rettangolo interno lungo la direzione della porta
+			var tx := INF if dir.x == 0.0 else ((inner.end.x if dir.x > 0.0 else inner.position.x) - center.x) / dir.x
+			var ty := INF if dir.y == 0.0 else ((inner.end.y if dir.y > 0.0 else inner.position.y) - center.y) / dir.y
+			var pos := center + dir * minf(tx, ty) + dir * bob
+			var col: Color = d.reward_color()
+			var a := dir.angle()
+			var r := 9.0 * u
+			var tip := pos + Vector2.from_angle(a) * r
+			var l := pos + Vector2.from_angle(a + 2.5) * r
+			var rr := pos + Vector2.from_angle(a - 2.5) * r
+			draw_circle(pos, r + 3.0 * u, Color(0, 0, 0, 0.55))
+			draw_colored_polygon(PackedVector2Array([tip, l, pos - Vector2.from_angle(a) * r * 0.3, rr]), col)
+			draw_polyline(PackedVector2Array([tip, l, pos - Vector2.from_angle(a) * r * 0.3, rr, tip]), Color(1, 0.95, 0.8), 1.2)
+			var txt: String = d.reward_label()
+			var tw := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+			var lp := pos - Vector2.from_angle(a) * (r + 8.0 * u) - Vector2(tw / 2.0, -fs / 3.0)
+			lp.x = clampf(lp.x, 4.0, vs.x - tw - 4.0)
+			draw_string_outline(font, lp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 4, Color(0, 0, 0, 0.9))
+			draw_string(font, lp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col.lightened(0.3))
 
-	func _text(font: Font, pos: Vector2, text: String, font_size: int, col: Color) -> void:
-		draw_string_outline(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, 4, Color(0, 0, 0, 0.9))
-		draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, col)
+
+
+## La bilancia di Ma'at alla morte: il piatto del cuore scende, quello della piuma sale.
+class DeathScale extends Control:
+	var t := 0.0
+
+	func _ready() -> void:
+		process_mode = Node.PROCESS_MODE_ALWAYS
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _process(delta: float) -> void:
+		t += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		var s := size.x / 120.0
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(s, s))
+		var gold := Color(0.94, 0.72, 0.3)
+		var tilt := clampf(t / 1.6, 0.0, 1.0)
+		tilt = 1.0 - pow(1.0 - tilt, 3.0)
+		var ang := 0.32 * tilt + sin(t * 2.0) * 0.015 * tilt
+		var piv := Vector2(60, 16)
+		draw_line(Vector2(60, 16), Vector2(60, 66), gold, 3.0)
+		draw_line(Vector2(44, 66), Vector2(76, 66), gold, 3.0)
+		draw_circle(piv, 3.0, gold)
+		var lft := piv + Vector2(-40, 0).rotated(ang)
+		var rgt := piv + Vector2(40, 0).rotated(ang)
+		draw_line(lft, rgt, gold, 2.5)
+		for end in [lft, rgt]:
+			draw_line(end, end + Vector2(-8, 16), Color(gold, 0.7), 1.0)
+			draw_line(end, end + Vector2(8, 16), Color(gold, 0.7), 1.0)
+			draw_line(end + Vector2(-11, 16), end + Vector2(11, 16), gold, 2.5)
+		# piatto sinistro: la piuma di Ma'at (sale)
+		var fp := lft + Vector2(0, 10)
+		draw_line(fp + Vector2(0, 5), fp + Vector2(2, -7), Color(0.95, 0.93, 0.85), 1.5)
+		draw_colored_polygon(PackedVector2Array([fp + Vector2(1, 4), fp + Vector2(5, -2), fp + Vector2(3, -8), fp + Vector2(0, -2)]), Color(0.95, 0.93, 0.85))
+		# piatto destro: il cuore (scende), che pulsa piano
+		var hp := rgt + Vector2(0, 9)
+		var beat := 1.0 + 0.08 * maxf(0.0, sin(t * 3.0))
+		draw_circle(hp + Vector2(-2.5, -1) * beat, 3.5 * beat, Color(0.75, 0.12, 0.1))
+		draw_circle(hp + Vector2(2.5, -1) * beat, 3.5 * beat, Color(0.75, 0.12, 0.1))
+		draw_colored_polygon(PackedVector2Array([hp + Vector2(-5.8, 0) * beat, hp + Vector2(5.8, 0) * beat, hp + Vector2(0, 7) * beat]), Color(0.75, 0.12, 0.1))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

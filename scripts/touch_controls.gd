@@ -189,14 +189,14 @@ func _draw_controls() -> void:
 		var col := Color(0.94, 0.72, 0.3, 0.55 if pressed else 0.25)
 		if btn["action"] == "special" and Fx.world != null:
 			var p = get_tree().get_first_node_in_group("player")
-			if p != null and p.eye_cd > 0.0:
+			if p != null and not p.eye_ready():
 				col = Color(0.5, 0.5, 0.55, 0.2)
 		if btn["action"] == "super" and not Run.sekhem_ready():
 			col = Color(0.5, 0.5, 0.55, 0.2)
 		draw_node.draw_circle(btn["pos"], btn["r"], col)
 		if btn["action"] == "special":
 			var pl = get_tree().get_first_node_in_group("player")
-			if pl != null and pl.eye_cd > 0.0:
+			if pl != null and pl.eye_charges < Run.eye_charges() and pl.eye_cd > 0.0:
 				var k := 1.0 - clampf(pl.eye_cd / maxf(0.1, pl.eye_cd_max()), 0.0, 1.0)
 				draw_node.draw_arc(btn["pos"], btn["r"] - 3.0, -PI / 2.0, -PI / 2.0 + TAU * k, 32, Color(0.35, 0.8, 0.95, 0.85), 4.0)
 		draw_node.draw_arc(btn["pos"], btn["r"], 0.0, TAU, 32, Color(1, 0.9, 0.7, 0.6), 1.5)

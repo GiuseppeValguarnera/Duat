@@ -69,6 +69,7 @@ var swing_arc := 0.0
 var swing_index := 0
 
 var eye_cd := 0.0
+var eye_charges := 1                   # Il Sole e la Luna: cariche dell'Occhio pronte
 var divine_t := 0.0
 var drain_t := 3.0                     # Sete Insaziabile
 var poison_t := 0.0                   # veleno dello scorpione: secondi rimasti
@@ -123,7 +124,7 @@ func _physics_process(delta: float) -> void:
 		_start_dash(move)
 	if Input.is_action_pressed("attack") and atk_cd <= 0.0 and dash_t <= 0.0 and not Run.in_hub:
 		_swing()
-	if Input.is_action_just_pressed("special") and eye_cd <= 0.0 and not Run.in_hub:
+	if Input.is_action_just_pressed("special") and eye_ready() and not Run.in_hub:
 		_fire_eye()
 	if Input.is_action_just_pressed("super") and Run.sekhem_ready() and divine_t <= 0.0:
 		_divine_form()
@@ -159,7 +160,16 @@ func _tick(delta: float) -> void:
 	atk_t = maxf(0.0, atk_t - delta)
 	atk_cd = maxf(0.0, atk_cd - delta)
 	combo_window = maxf(0.0, combo_window - delta)
-	eye_cd = maxf(0.0, eye_cd - delta)
+	# l'Occhio si ricarica una carica alla volta (di base ne ha una sola)
+	var max_charges := Run.eye_charges()
+	eye_charges = mini(eye_charges, max_charges)
+	if eye_charges < max_charges:
+		eye_cd -= delta
+		if eye_cd <= 0.0:
+			eye_charges += 1
+			eye_cd = eye_cd_max() if eye_charges < max_charges else 0.0
+	else:
+		eye_cd = 0.0
 	if divine_t > 0.0:
 		divine_t = maxf(0.0, divine_t - delta)
 		Run.divine = divine_t > 0.0
@@ -270,6 +280,8 @@ func _swing() -> void:
 				hit_dmg *= 1.25
 			if Run.has("duo_sobek_iside") and shield > 0.0:
 				hit_dmg *= 1.25
+			if e.mark_t > 0.0:
+				hit_dmg *= 1.0 + Run.val("horus_mark") / 100.0
 			if crit > 1.0:
 				Fx.float_text(e.global_position + Vector2(0, -20), "CRITICO", Boons.god_color("bastet"))
 				Sfx.play("crit")
@@ -296,8 +308,14 @@ func _shockwave(radius: float, dmg: float, kb: float, color: Color) -> void:
 			e.take_hit(dmg, (e.global_position - global_position).normalized(), kb)
 
 
+func eye_ready() -> bool:
+	return eye_charges > 0
+
+
 func _fire_eye() -> void:
-	eye_cd = eye_cd_max()
+	eye_charges -= 1
+	if eye_cd <= 0.0:
+		eye_cd = eye_cd_max()
 	Sfx.play("eye")
 	var rays := Run.eye_rays()
 	var base := aim.angle()
@@ -308,6 +326,9 @@ func _fire_eye() -> void:
 		eye.damage = eye_damage * Run.eye_damage_mult() * (0.6 if rays > 1 else 1.0)
 		eye.pierce_left = Run.eye_pierce()
 		eye.explode_damage = Run.val("ra_disc") * Run.all_damage_mult()
+		eye.seek = Run.has("horus_seek")
+		eye.return_mult = Run.val("horus_return") / 100.0
+		eye.mark = Run.has("horus_mark")
 		eye.burns = Run.eye_burns() or Run.has("duo_ra_thoth")
 		if Run.has("duo_ra_thoth"):
 			eye.explode_damage = maxf(eye.explode_damage, 12.0 * Run.all_damage_mult())

@@ -404,7 +404,7 @@ const OPTION_TEXT := {
 	"feather": ["Piuma di Ma'at", "Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva."],
 	"shake": ["Scuotimento dello schermo", "La telecamera trema quando colpisci o vieni colpito. Spegnilo se ti dà fastidio agli occhi."],
 	"hitstop": ["Pausa sui colpi", "Il gioco si ferma per un istante quando un colpo va a segno: dà peso ai colpi. Spegnila se preferisci un'azione sempre fluida."],
-	"hints": ["Consigli di Anubi", "Nelle prime due discese Anubi ti dà qualche consiglio quando incontri un nemico nuovo."],
+	"tutorial": ["Rifai l'addestramento", "Alla prossima discesa la prima stanza torna a essere l'addestramento di Anubi: movimento, khopesh, scatto, Occhio, Ka e porte."],
 	"vol": ["Volume generale", "Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa."],
 	"music": ["Musica", "Premi per cambiare."],
 	"quit": ["Esci dal gioco", "Chiude il gioco. I progressi della Sala sono già salvati."],
@@ -414,13 +414,15 @@ const OPTION_TEXT := {
 func _fill_options(focus_id: String = "") -> void:
 	var left := _frame("Opzioni", "Esc / Start / B per tornare alla Sala", 270)
 	var first: Button = null
-	for id in ["feather", "shake", "hitstop", "hints", "vol", "music", "quit"]:
+	for id in ["feather", "shake", "hitstop", "tutorial", "vol", "music", "quit"]:
 		var label: String = OPTION_TEXT[id][0]
 		match id:
 			"feather":
 				label += ":  " + ("ATTIVA" if Meta.feather else "spenta")
-			"shake", "hitstop", "hints":
+			"shake", "hitstop":
 				label += ":  " + ("sì" if Meta.options.get(id, true) else "no")
+			"tutorial":
+				label += ":  " + ("sì, alla prossima" if not Meta.tutorial_done else "no")
 			"vol":
 				label += ":  %d%%" % roundi(Sfx.volumes.get("generale", 1.0) * 100.0)
 			"music":
@@ -447,8 +449,10 @@ func _on_option_pressed(id: String) -> void:
 	match id:
 		"feather":
 			Meta.feather = not Meta.feather
-		"shake", "hitstop", "hints":
+		"shake", "hitstop":
 			Meta.options[id] = not Meta.options.get(id, true)
+		"tutorial":
+			Meta.tutorial_done = not Meta.tutorial_done
 		"vol":
 			var v: float = Sfx.volumes.get("generale", 1.0)
 			Sfx.set_volume("generale", 0.0 if v >= 0.99 else minf(1.0, v + 0.2))
@@ -702,7 +706,7 @@ class HubColumn extends Node2D:
 
 ## Stendardi delle sei divinità sulla parete nord: si colorano quando il dio ti ha parlato.
 class HubBanners extends Node2D:
-	const ORDER := [["ra", 138.0], ["sekhmet", 230.0], ["thoth", 266.0], ["bastet", 534.0], ["sobek", 570.0], ["iside", 662.0]]
+	const ORDER := [["ra", 130.0], ["sekhmet", 166.0], ["thoth", 202.0], ["horus", 278.0], ["bastet", 534.0], ["sobek", 570.0], ["iside", 662.0]]
 	var t := 0.0
 
 	func _process(delta: float) -> void:
@@ -739,6 +743,12 @@ class HubBanners extends Node2D:
 					for k in range(3):
 						var yy := c.y - 5 + k * 5
 						draw_polyline(PackedVector2Array([Vector2(c.x - 7, yy), Vector2(c.x - 3, yy - 2), Vector2(c.x + 1, yy), Vector2(c.x + 5, yy - 2), Vector2(c.x + 7, yy)]), sym, 1.5)
+				"horus":
+					# l'occhio wedjat
+					draw_arc(c, 6.0, PI, TAU, 12, sym, 1.5)
+					draw_circle(c + Vector2(0, 1), 2.5, sym)
+					draw_line(c + Vector2(-1, 3), c + Vector2(-3, 8), sym, 1.5)
+					draw_line(c + Vector2(3, 3), c + Vector2(6, 6), sym, 1.5)
 				"iside":
 					draw_rect(Rect2(c.x - 5, c.y - 8, 10, 4), sym)
 					draw_rect(Rect2(c.x - 2, c.y - 4, 4, 12), sym)

@@ -66,17 +66,18 @@ Dal menu di pausa, *Torna alla Sala (abbandona)* chiude la discesa: il Ka raccol
 
 Nella Sala, Esc o Start aprono le opzioni:
 - **Piuma di Ma'at**: modalità aiuto facoltativa. Subisci il 10% di danni in meno, +2% a ogni morte, fino al 50%. In cambio custodisci solo il **40% del Ka** e il Peso del Cuore non conta (né i pesi né il record).
-- Scuotimento dello schermo, pausa sui colpi, consigli di Anubi (solo nelle prime due discese), volume generale e musica.
+- Scuotimento dello schermo, pausa sui colpi, *Rifai l'addestramento* (la prossima discesa ricomincia dalla stanza di prova), volume generale e musica.
 
 Se il gioco perde il focus (una chiamata, un'altra finestra) va in pausa da solo. *Esci* dal menu di pausa lascia la discesa salvata.
 
 ## Come funziona una run
 
+0. **La prima volta: l'addestramento.** Una stanza vera con fantocci al posto dei nemici, un passo alla volta, con il testo in un riquadro di papiro fisso in alto (mai sopra i nemici): muoversi, il khopesh, lo scatto attraverso una mummia d'allenamento che diventa rossa e carica, l'Occhio di Horus su fantocci che si rompono solo con l'Occhio, il Ka (cos'è e a cosa serve) e le porte. Non si può morire e si può saltare. Poi comincia la discesa vera (`_tut_*` in `scripts/game.gd`, fantocci in `scripts/dummy.gd`).
 1. All'inizio Anubi pesa il tuo cuore: scegli uno dei suoi doni, ognuno con un vantaggio e un prezzo più piccolo.
 2. Ogni stanza ha due ondate di nemici (nelle prime due un po' più piccole; sacerdoti e trappole dalla terza). La prima stanza non ha ricompensa: i doni degli dèi arrivano dalle stanze che scegli tu.
 3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla. Il Ka arriva soprattutto dai tesori: scarabei 0, mummie 1, sacerdoti 2.
-4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura.
-5. **Stanza 5: il Serpente della Porta.** Nel Libro delle Porte ogni porta del Duat è custodita da un serpente. È il guardiano a metà discesa: morde in affondo, sputa ventagli di veleno e si inabissa nella sabbia per riemergere sotto di te (un cerchio rosso avvisa dove). Sotto metà vita si infuria. Combatte da solo. Batterlo dà un dono che sale **di due livelli** invece di uno.
+4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura. Le porte fuori dallo schermo hanno una **freccia sul bordo** con il colore e il nome della ricompensa.
+5. **Stanza 5: il Serpente della Porta.** Nel Libro delle Porte ogni porta del Duat è custodita da un serpente. È il guardiano a metà discesa: morde in affondo, sputa ventagli di veleno e si inabissa nella sabbia per riemergere sotto di te (un cerchio rosso avvisa dove). Sotto metà vita si infuria: più rapido, ventaglio più largo e **affondi doppi**. Combatte da solo (340 vita: più del vecchio 260, perché chi gioca davvero lo batteva al primo tentativo). Batterlo dà un dono che sale **di due livelli** invece di uno.
 6. **Il Traghettatore** (Mahaf, dal capitolo 99 del Libro dei Morti): a volte una porta porta da lui, e dopo il guardiano c'è sempre. Vende Acqua del Nilo (30 Ka), un'offerta agli dèi (55 Ka) e l'Inchiostro di Thoth, che alza di livello un tuo dono (45 Ka). Il Ka speso qui non torna a casa: è una scelta tra diventare più forte ora o comprare capitoli dopo.
 7. Dalla stanza 6 arrivano due nemici nuovi: lo **scorpione di Serket** e il **cobra**.
 8. Prima dell'ultima stanza una delle porte è sempre l'**Acqua del Nilo**. Dopo la decima stanza si apre il cancello di **Ammit**, il boss della Prima Ora. I nemici hanno il 6% di vita in più a ogni stanza.
@@ -123,6 +124,7 @@ Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finit
 | --- | --- |
 | Ra (fuoco) | Colpo Solare, Disco di Ra, Corsa dell'Alba (con prezzo: scatto più lento), Occhio Ardente · pesante: Ira del Sole |
 | Sekhmet (furia) | Furia della Leonessa, Sete di Sangue, Ruggito, Balzo della Leonessa · pesante: Sete Insaziabile |
+| Horus (l'Occhio) | Ritorno del Falco (l'Occhio torna e colpisce ancora), Volo del Falco (insegue il nemico più vicino), Il Sole e la Luna (2-4 cariche), Sguardo del Falco (chi è colpito dall'Occhio prende più danni dal khopesh) · pesante: Occhio del Re (Occhio ×2 e trapassa tutto, khopesh −40%) |
 | Thoth (Occhio di Horus) | Sguardo di Thoth, Calcolo di Thoth, Occhio Moltiplicato, Parola dello Scriba · pesante: Conoscenza Proibita |
 | Bastet (critici e agilità) | Artigli Affilati, Occhi di Gatto, Passo Felino, Protezione di Bastet · pesante: Gioco del Gatto |
 | Sobek (resistenza e controllo) | Pelle di Coccodrillo, Morso di Sobek, Marea del Nilo, Forza del Fiume · pesante: Fauci di Sobek |
@@ -144,6 +146,8 @@ Senza doni l'Occhio di Horus si ferma sul primo nemico che colpisce.
 I nemici colpiti barcollano per un terzo di secondo: non si muovono e non fanno danno da contatto. Le mummie durante l'affondo non barcollano.
 
 ## Le divinità parlano
+
+**La scelta dei doni.** In alto c'è il ritratto del dio (disegnato alla maniera dei rilievi: falco, leonessa, ibis, gatta, coccodrillo...) che si anima mentre parla, e le sue parole compaiono man mano. Sotto, le carte sono **papiri** con titoli in Cinzel (font OFL): etichetta, nome, descrizione, prezzo e in fondo il **riassunto** (▲ cosa guadagni, ▼ cosa paghi), così dopo la prima lettura si sceglie a colpo d'occhio. Quando prendi il dono: lampo del colore del dio, anello di luce attorno a te, scintille e il nome del dono al centro.
 
 Ogni volta che un dio ti offre un dono, ti parla. La prima volta si presenta; poi, a ogni incontro, racconta un pezzo del suo mito (Ra e il serpente Apophis, Iside che ricompone Osiride, Thoth che vince cinque giorni alla Luna, i gatti sacri di Bastet...), una volta sola. Quando ha raccontato tutto, risponde con frasi brevi. Le storie sono in `scripts/lore.gd`: sono fatti della mitologia e della storia egizia, semplificati ma non inventati. Ogni dio ha la sua voce (Ra solenne e cosmico, Sekhmet feroce, Thoth misurato, Bastet regale, Sobek lento, Iside materna, Set sprezzante) e parla sempre in prima persona: i fatti moderni, come le statue di Sekhmet nei musei, li racconta come profezie.
 
@@ -194,13 +198,13 @@ Quattro brani, con dissolvenza incrociata da uno all'altro (`scripts/music.gd`):
 | Traghettatore | Desert Mystic (come la Sala) |
 | Ammit | Arabesque, brainiac256 (**CC-BY 3.0**, va citato nei crediti) |
 
-Alla morte la musica si abbassa, alla vittoria torna il tema della Sala. Crediti completi in `assets/music/CREDITS.md`.
+Alla morte suona un breve tema funebre (`death.ogg`, ricavato dai suoni CC0 del gioco: campana rallentata con eco e un bordone basso), alla vittoria torna il tema della Sala. Crediti completi in `assets/music/CREDITS.md`.
 
 **Volume:** nel menu di pausa, voce *Volume*, c'è un cursore per il volume generale, uno per la musica e uno per ogni categoria di suoni (attacchi, scatto, danni subiti, nemici e boss, trappole, ricompense e menu). Le impostazioni vengono salvate.
 
 ## Fine della run
 
-Alla morte o alla vittoria compare un riepilogo (tempo, nemici, danni, doni, Ka). Il Ka raccolto viene **custodito** tra una run e l'altra nel salvataggio e si spende nel Libro dei Morti. Premi R o Start per tornare alla Sala del Giudizio.
+Alla morte tutto rallenta, un lampo rosso, lo schermo si scurisce e compare la bilancia di Ma'at: il cuore scende, più pesante della piuma. Poi il papiro con chi ti ha ucciso e il riepilogo. Alla vittoria compare un riepilogo (tempo, nemici, danni, doni, Ka). Il Ka raccolto viene **custodito** tra una run e l'altra nel salvataggio e si spende nel Libro dei Morti. Premi R o Start per tornare alla Sala del Giudizio.
 
 ## Playtest automatico
 
@@ -216,6 +220,10 @@ Il bot gioca peggio di una persona, quindi serve per i **confronti** (stesse par
 ## Regolare la sensazione di gioco
 
 Apri una scena in `scenes/`, seleziona il nodo principale e cambia i valori nell'**Ispettore**: velocità, vita, danno, tempi di ricarica. Le tre mosse della combo sono nella tabella `COMBO` in `scripts/player.gd`.
+
+## HUD
+
+In alto a sinistra, in un riquadro scuro con il bordo d'oro: l'ankh accanto alla vita (la barra lascia una scia chiara quando subisci danno, l'ankh lampeggia sotto un terzo), il Sekhem, il geroglifico del Ka con il suo numero (che "salta" quando sale), la stanza, e l'Occhio di Horus che si riempie di blu mentre si ricarica, con un pallino per ogni carica.
 
 ## Struttura
 
@@ -238,6 +246,8 @@ scripts/  hub.gd       la Sala del Giudizio      dialogue.gd   battute di Anubi
           serpent.gd   il Serpente della Porta    ferryman.gd   il Traghettatore e il negozio
           player.gd, eye.gd, enemy_bolt.gd, pickup.gd, door.gd, reticle.gd
           fx.gd        effetti globali     input_setup.gd   comandi
+          ui_style.gd  stile egizio: papiro, Cinzel     god_portrait.gd   ritratti degli dèi
+          dummy.gd     fantocci dell'addestramento
 ```
 
 ### Aggiungere un nemico
