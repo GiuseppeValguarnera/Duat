@@ -360,7 +360,7 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> boo
 func _draw() -> void:
 	if dead:
 		return
-	var blink := invuln_t > 0.0 and dash_t <= 0.0 and divine_t <= 0.0 and int(Time.get_ticks_msec() / 60) % 2 == 0
+	var blink := invuln_t > 0.0 and dash_t <= 0.0 and divine_t <= 0.0 and Time.get_ticks_msec() % 120 < 60
 	var a := 0.35 if blink else 1.0
 	var bob := sin(walk) * 1.0
 

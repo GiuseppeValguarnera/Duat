@@ -38,6 +38,7 @@ var current_reward := {}
 var doors: Array = []
 var finished := false
 var boss: Enemy = null
+var room_gen := 0                     # cambia a ogni stanza: annulla le comparse rimaste in sospeso
 var boss_bar: ColorRect
 var boss_fill: ColorRect
 var boss_name: Label
@@ -74,6 +75,8 @@ func _ready() -> void:
 
 func start_room(reward: Dictionary) -> void:
 	Run.room += 1
+	room_gen += 1
+	boss = null
 	current_reward = reward
 	cleared = false
 	alive = 0
@@ -141,10 +144,15 @@ func _spawn_after(kind: String, pos: Vector2, delay: float) -> void:
 	marker.duration = delay
 	world.add_child(marker)
 	marker.position = pos
-	await get_tree().create_timer(delay, false).timeout
+	get_tree().create_timer(delay, false).timeout.connect(_do_spawn.bind(kind, pos, marker, room_gen))
+
+
+## Fa comparire il nemico annunciato da _spawn_after. Se nel frattempo la stanza
+## è cambiata (o la run è finita), non fa nulla.
+func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 	if is_instance_valid(marker):
 		marker.queue_free()
-	if not is_instance_valid(world) or finished:
+	if gen != room_gen or finished:
 		return
 	spawning -= 1
 	var e: Enemy = ENEMIES[kind].instantiate()

@@ -165,15 +165,15 @@ func _on_hit(_dmg: float) -> void:
 
 func _draw_body(flash: bool) -> void:
 	var dir := -1.0 if charge_dir.x < 0.0 else 1.0
-	var hide := Color.WHITE if flash else Color(0.42, 0.35, 0.3)
+	var skin := Color.WHITE if flash else Color(0.42, 0.35, 0.3)
 	var mane := Color.WHITE if flash else Color(0.72, 0.53, 0.18)
 	var croc := Color.WHITE if flash else Color(0.25, 0.42, 0.22)
 
 	if state == "windup":
 		var k := 1.0 - st / charge_windup
-		var len := charge_speed * charge_time * _rage()
+		var lane_len := charge_speed * charge_time * _rage()
 		draw_set_transform(Vector2(0, -10), charge_dir.angle(), Vector2.ONE)
-		draw_rect(Rect2(0, -radius, len, radius * 2.0), Color(1, 0.2, 0.15, 0.12 + 0.2 * k))
+		draw_rect(Rect2(0, -radius, lane_len, radius * 2.0), Color(1, 0.2, 0.15, 0.12 + 0.2 * k))
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	if state == "spit":
 		var k2 := 1.0 - st / spit_windup
@@ -184,9 +184,9 @@ func _draw_body(flash: bool) -> void:
 	var jitter := Vector2(randf_range(-1, 1), 0) if state == "windup" else Vector2.ZERO
 	draw_set_transform(jitter, 0.0, Vector2(dir, 1.0))
 	# zampe e corpo di ippopotamo
-	draw_rect(Rect2(-18, -6, 7, 8), hide)
-	draw_rect(Rect2(-6, -6, 7, 8), hide)
-	draw_rect(Rect2(-22, -24, 26, 20), hide)
+	draw_rect(Rect2(-18, -6, 7, 8), skin)
+	draw_rect(Rect2(-6, -6, 7, 8), skin)
+	draw_rect(Rect2(-22, -24, 26, 20), skin)
 	# criniera di leone
 	draw_circle(Vector2(6, -18), 11.0, mane)
 	draw_rect(Rect2(4, -6, 6, 8), mane)

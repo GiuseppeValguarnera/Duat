@@ -38,7 +38,10 @@ func shake(amount: float) -> void:
 func hitstop(duration: float = 0.05) -> void:
 	_hitstops += 1
 	Engine.time_scale = 0.05
-	await get_tree().create_timer(duration, true, false, true).timeout
+	get_tree().create_timer(duration, true, false, true).timeout.connect(_end_hitstop)
+
+
+func _end_hitstop() -> void:
 	_hitstops -= 1
 	if _hitstops <= 0:
 		_hitstops = 0
