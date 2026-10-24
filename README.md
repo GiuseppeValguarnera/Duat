@@ -27,7 +27,7 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 ## Come funziona una run
 
 1. All'inizio Anubi pesa il tuo cuore: scegli uno dei suoi doni, ognuno con un vantaggio e un prezzo più piccolo.
-2. Ogni stanza ha due ondate di nemici.
+2. Ogni stanza ha due ondate di nemici. La prima stanza non ha ricompensa: i doni degli dèi arrivano dalle stanze che scegli tu.
 3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla.
 4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura.
 5. Dopo la terza stanza si apre il cancello di **Ammit**, il boss della Prima Ora.
@@ -55,12 +55,12 @@ Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finit
 | Dio | Doni |
 | --- | --- |
 | Ra (fuoco) | Colpo Solare, Disco di Ra, Corsa dell'Alba (con prezzo: scatto più lento), Occhio Ardente · pesante: Ira del Sole |
-| Sekhmet (furia, compare dalla terza stanza) | Furia della Leonessa, Sete di Sangue, Ruggito, Balzo della Leonessa · pesante: Sete Insaziabile |
+| Sekhmet (furia) | Furia della Leonessa, Sete di Sangue, Ruggito, Balzo della Leonessa · pesante: Sete Insaziabile |
 | Thoth (Occhio di Horus) | Sguardo di Thoth, Calcolo di Thoth, Occhio Moltiplicato, Parola dello Scriba · pesante: Conoscenza Proibita |
 | Bastet (critici e agilità) | Artigli Affilati, Occhi di Gatto, Passo Felino, Protezione di Bastet · pesante: Gioco del Gatto |
 | Sobek (resistenza e controllo) | Pelle di Coccodrillo, Morso di Sobek, Marea del Nilo, Forza del Fiume · pesante: Fauci di Sobek |
 | Iside (protezione e cure) | Ali di Iside, Lacrime di Iside, Nodo di Iside, Nome Segreto di Ra · pesante: Abbraccio di Iside |
-| Anubi (solo a inizio run, doni-bilancia con un piccolo prezzo) | Cuore Leggero, Cuore di Pietra, Fiuto dello Sciacallo, Bilancia Giusta, Guida delle Anime |
+| Anubi (solo a inizio run, doni-bilancia con un piccolo prezzo) | Cuore Leggero, Cuore di Pietra, Fiuto dello Sciacallo, Bilancia Giusta, Guida delle Anime, Vasi Canopi, Apertura della Bocca, Bende di Lino, Custode della Necropoli, Offerte ai Defunti |
 
 Senza doni l'Occhio di Horus si ferma sul primo nemico che colpisce.
 
@@ -72,7 +72,7 @@ A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza
 
 ## Sekhem e Forma Divina
 
-Il Sekhem si carica facendo e subendo danni, più o meno ogni due stanze. Quando è pieno attivi la **Forma Divina** per 6 secondi: onda d'urto iniziale, +50% ai danni del khopesh e solo il 30% dei danni subiti.
+Il Sekhem è il dono di **Ammit**: si sblocca per sempre la prima volta che la sconfiggi (salvato in `user://duat_save.cfg`). Dalla run successiva si carica facendo e subendo danni. Quando è pieno attivi la **Forma Divina** per 6 secondi: onda d'urto iniziale, +50% ai danni del khopesh e solo il 30% dei danni subiti.
 
 ## Regolare la sensazione di gioco
 

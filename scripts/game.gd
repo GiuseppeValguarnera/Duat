@@ -65,8 +65,8 @@ func _ready() -> void:
 	var listener := PanelListener.new()
 	listener.game = self
 	add_child(listener)
-	var first := Boons.gods_with_boons(Run.boons, 1)
-	start_room({"kind": "boon", "god": first.pick_random()})
+	# la prima stanza non ha ricompensa: il primo dono è quello di Anubi
+	start_room({"kind": "none"})
 	_show_anubi_menu()
 
 
@@ -192,6 +192,12 @@ func _room_cleared() -> void:
 		player.heal(Run.val("sobek_river"))
 	if Run.has("iside_heavy"):
 		player.heal(roundf(Run.max_hp * 0.25))
+	if Run.has("anubi_canopic"):
+		player.heal(Run.val("anubi_canopic"))
+	if current_reward.get("kind", "none") == "none":
+		_banner("Stanza ripulita", "Scegli una porta: la ricompensa è scritta sopra", Color(0.94, 0.72, 0.3))
+		_open_doors()
+		return
 	var p = PickupScript.new()
 	p.kind = current_reward["kind"]
 	p.god = current_reward.get("god", "")
@@ -609,7 +615,14 @@ func _boss_defeated() -> void:
 	for c in world.get_children():
 		if c is Enemy and not c.dead:
 			c.die()
-	_banner("Ammit è caduta", "Il primo cancello del Duat si apre", Color(0.94, 0.72, 0.3))
+	Meta.ammit_wins += 1
+	var first_win := not Meta.sekhem_unlocked
+	Meta.sekhem_unlocked = true
+	Meta.save()
+	if first_win:
+		_banner("Ammit ti cede il suo Sekhem", "Dalla prossima discesa potrai caricare la Forma Divina", Color(1, 0.85, 0.4))
+	else:
+		_banner("Ammit è caduta", "Il primo cancello del Duat si apre", Color(0.94, 0.72, 0.3))
 	await get_tree().create_timer(2.0).timeout
 	_victory()
 
@@ -645,7 +658,8 @@ func _victory() -> void:
 		if c is Enemy:
 			c.queue_free()
 	message.visible = true
-	message.text = "Hai sconfitto Ammit!\nLa Prima Ora è superata. Ka totale: %d\n\nPremi R (o Start) per ricominciare" % Run.ka
+	var extra := "\nNuovo potere sbloccato: il Sekhem e la Forma Divina (Q / LT)" if Meta.ammit_wins == 1 else ""
+	message.text = "Hai sconfitto Ammit!\nLa Prima Ora è superata. Ka totale: %d%s\n\nPremi R (o Start) per ricominciare" % [Run.ka, extra]
 
 
 # ---------------------------------------------------------------- ogni frame
@@ -667,7 +681,9 @@ func _process(_delta: float) -> void:
 	if player.divine_t > 0.0:
 		sek = "FORMA DIVINA %.1fs" % player.divine_t
 	var room_txt := "Ammit · colonne: %d" % pillars.size() if Run.room > Run.ROOMS_PER_RUN else "Stanza %d/%d" % [Run.room, Run.ROOMS_PER_RUN]
-	hud.text = "Vita %d/%d    Ka %d    %s    Occhio: %s    Sekhem: %s" % [ceili(player.hp), int(player.max_hp), Run.ka, room_txt, eye_txt, sek]
+	hud.text = "Vita %d/%d    Ka %d    %s    Occhio: %s" % [ceili(player.hp), int(player.max_hp), Run.ka, room_txt, eye_txt]
+	if Run.sekhem_unlocked():
+		hud.text += "    Sekhem: %s" % sek
 	if boss != null and is_instance_valid(boss) and not boss.dead:
 		boss_fill.size.x = boss_bar.size.x * clampf(boss.hp / boss.max_hp, 0.0, 1.0)
 	var n := Run.boons.size() + Run.blessings.size()
@@ -692,7 +708,7 @@ func _process(_delta: float) -> void:
 	if Fx.device == "pad":
 		help.text = "Levetta sinistra muovi · destra mira · RB khopesh · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa"
 	else:
-		help.text = "WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina · Tab doni · Esc pausa · F1 hitbox"
+		help.text = "WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox"
 
 
 # ---------------------------------------------------------------- muri e pavimento

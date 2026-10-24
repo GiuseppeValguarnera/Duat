@@ -231,7 +231,7 @@ func _swing() -> void:
 	swing_dir = _assisted(aim, swing_range + 24.0)
 	knock = swing_dir * c["lunge"]
 
-	var dmg: float = attack_damage * Run.khopesh_mult() * c["mult"]
+	var dmg: float = attack_damage * Run.khopesh_mult() * c["mult"] * Run.combo_mult(swing_index)
 	if divine_t > 0.0:
 		dmg *= divine_damage_mult
 	if leap_ready:

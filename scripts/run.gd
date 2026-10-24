@@ -56,6 +56,12 @@ func add_boon(id: String) -> void:
 	if id == "bastet_heavy":
 		max_hp = maxf(20.0, max_hp - 15.0)
 		hp = minf(hp, max_hp)
+	if id == "anubi_canopic":
+		max_hp -= 10.0
+		hp = minf(hp, max_hp)
+	if id == "anubi_tribute":
+		max_hp -= 5.0
+		hp = minf(hp, max_hp)
 	if id == "anubi_light":
 		max_hp -= 10.0
 		hp = minf(hp, max_hp)
@@ -96,8 +102,13 @@ func grant_blessing(id: String) -> void:
 
 # --- Sekhem -----------------------------------------------------------------------
 
+## Il Sekhem è il dono di Ammit: si sblocca per sempre la prima volta che la sconfiggi.
+func sekhem_unlocked() -> bool:
+	return Meta.sekhem_unlocked
+
+
 func add_sekhem(amount: float) -> void:
-	if divine:
+	if divine or not sekhem_unlocked():
 		return
 	var m := 1.5 if has("set_sekhem") else 1.0
 	m *= 1.0 + val("iside_word") / 100.0
@@ -128,7 +139,10 @@ func khopesh_mult() -> float:
 
 
 func eye_damage_mult() -> float:
-	return (1.0 + val("thoth_scribe") / 100.0) * (1.0 + val("ra_eye") / 100.0) * all_damage_mult()
+	var m := (1.0 + val("thoth_scribe") / 100.0) * (1.0 + val("ra_eye") / 100.0) * all_damage_mult()
+	if has("anubi_mouth"):
+		m *= 0.9
+	return m
 
 
 func eye_cooldown_mult() -> float:
@@ -137,6 +151,8 @@ func eye_cooldown_mult() -> float:
 		m *= 1.5
 	if has("thoth_heavy"):
 		m *= 0.45
+	if has("anubi_mouth"):
+		m *= 1.0 - val("anubi_mouth") / 100.0
 	return m
 
 
@@ -170,6 +186,8 @@ func move_mult() -> float:
 		m *= 0.92
 	if has("sobek_heavy"):
 		m *= 0.85
+	if has("anubi_linen"):
+		m *= 0.95
 	return m
 
 
@@ -189,6 +207,8 @@ func damage_taken_mult() -> float:
 		m *= 1.1
 	m *= 1.0 - val("sobek_skin") / 100.0
 	m *= low_hp_guard()
+	if has("anubi_linen"):
+		m *= 1.0 - val("anubi_linen") / 100.0
 	return m
 
 
@@ -208,7 +228,16 @@ func enemy_speed_mult() -> float:
 
 
 func ka_mult() -> float:
-	return 1.5 if has("set_greed") else 1.0
+	var m := 1.5 if has("set_greed") else 1.0
+	m *= 1.0 + val("anubi_tribute") / 100.0
+	return m
+
+
+## Custode della Necropoli: il terzo colpo della combo pesa di più, i primi due di meno.
+func combo_mult(index: int) -> float:
+	if not has("anubi_guardian"):
+		return 1.0
+	return 1.0 + val("anubi_guardian") / 100.0 if index == 2 else 0.9
 
 
 # --- Bastet, Sobek, Iside ---------------------------------------------------------
