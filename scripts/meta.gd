@@ -9,6 +9,7 @@ var sekhem_unlocked := false          ## si sblocca la prima volta che sconfiggi
 var ammit_wins := 0
 var ka_bank := 0                      ## Ka custodito tra una run e l'altra (servirà nella Sala del Giudizio)
 var runs := 0
+var audio := {}                       ## volumi delle categorie di suoni (0..1), vedi sfx.gd
 
 
 func _ready() -> void:
@@ -18,6 +19,7 @@ func _ready() -> void:
 		ammit_wins = cfg.get_value("boss", "ammit", 0)
 		ka_bank = cfg.get_value("progressi", "ka", 0)
 		runs = cfg.get_value("progressi", "run", 0)
+		audio = cfg.get_value("impostazioni", "audio", {})
 
 
 func save() -> void:
@@ -26,4 +28,5 @@ func save() -> void:
 	cfg.set_value("boss", "ammit", ammit_wins)
 	cfg.set_value("progressi", "ka", ka_bank)
 	cfg.set_value("progressi", "run", runs)
+	cfg.set_value("impostazioni", "audio", audio)
 	cfg.save(PATH)

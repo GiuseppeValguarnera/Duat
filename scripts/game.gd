@@ -500,6 +500,7 @@ func _banner(title: String, sub: String, color: Color) -> void:
 
 func _toggle_pause() -> void:
 	if pause_menu != null:
+		Meta.save()
 		pause_menu.queue_free()
 		pause_menu = null
 		# se era aperta una scelta dei doni, il gioco resta fermo su quella
@@ -532,7 +533,7 @@ func _toggle_pause() -> void:
 	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
 	box.add_child(title)
 	var first: Button = null
-	for entry in [["Riprendi", _toggle_pause], ["Ricomincia la run", _restart_run], ["Esci dal gioco", _quit_game]]:
+	for entry in [["Riprendi", _toggle_pause], ["Volume", _show_audio_menu], ["Ricomincia la run", _restart_run], ["Esci dal gioco", _quit_game]]:
 		var b := Button.new()
 		b.text = entry[0]
 		b.custom_minimum_size = Vector2(160, 26)
@@ -548,6 +549,90 @@ func _toggle_pause() -> void:
 	hint.add_theme_color_override("font_color", Color(0.66, 0.6, 0.47))
 	box.add_child(hint)
 	first.grab_focus()
+
+
+## Pagina del volume dentro il menu di pausa: un cursore per ogni categoria di suoni.
+## Col pad: su e giù per scegliere, sinistra e destra per regolare.
+func _show_audio_menu() -> void:
+	if pause_menu == null:
+		return
+	var old := pause_menu.get_node_or_null("Audio")
+	if old != null:
+		old.queue_free()
+	for c in pause_menu.get_children():
+		if c is VBoxContainer:
+			c.visible = false
+	var box := VBoxContainer.new()
+	box.name = "Audio"
+	box.set_anchors_preset(Control.PRESET_CENTER)
+	box.position = Vector2(-130, -120)
+	box.custom_minimum_size = Vector2(260, 240)
+	box.add_theme_constant_override("separation", 4)
+	pause_menu.add_child(box)
+	var title := Label.new()
+	title.text = "Volume"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
+	box.add_child(title)
+	var first: Control = null
+	for c in Sfx.CATEGORIES:
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		box.add_child(row)
+		var name_label := Label.new()
+		name_label.text = c[1]
+		name_label.custom_minimum_size = Vector2(110, 0)
+		name_label.add_theme_font_size_override("font_size", 9)
+		row.add_child(name_label)
+		var slider := HSlider.new()
+		slider.min_value = 0.0
+		slider.max_value = 1.0
+		slider.step = 0.05
+		slider.value = Sfx.volumes.get(c[0], 1.0)
+		slider.custom_minimum_size = Vector2(100, 14)
+		slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(slider)
+		var pct := Label.new()
+		pct.text = "%d%%" % roundi(slider.value * 100.0)
+		pct.custom_minimum_size = Vector2(32, 0)
+		pct.add_theme_font_size_override("font_size", 9)
+		row.add_child(pct)
+		slider.value_changed.connect(_on_volume_changed.bind(c[0], pct))
+		if first == null:
+			first = slider
+	var back := Button.new()
+	back.text = "Indietro"
+	back.add_theme_font_size_override("font_size", 11)
+	back.pressed.connect(_close_audio_menu)
+	box.add_child(back)
+	first.grab_focus()
+
+
+func _on_volume_changed(value: float, category: String, pct: Label) -> void:
+	Sfx.set_volume(category, value)
+	pct.text = "%d%%" % roundi(value * 100.0)
+	# un suono di prova della categoria, così senti subito il risultato
+	for s in Sfx.SOUNDS:
+		if category == "generale" or Sfx.SOUNDS[s][1] == category:
+			Sfx.play(s, 0.0)
+			break
+
+
+func _close_audio_menu() -> void:
+	Meta.save()
+	if pause_menu == null:
+		return
+	var audio := pause_menu.get_node_or_null("Audio")
+	if audio != null:
+		audio.queue_free()
+	for c in pause_menu.get_children():
+		if c is VBoxContainer and c.name != "Audio":
+			c.visible = true
+			for b in c.get_children():
+				if b is Button:
+					b.grab_focus()
+					break
 
 
 func _restart_run() -> void:
@@ -944,7 +1029,11 @@ class PanelListener extends Node:
 
 	func _unhandled_input(event: InputEvent) -> void:
 		if game.pause_menu != null:
-			if event.is_action_pressed("pause") or event.is_action_pressed("ui_cancel"):
+			var on_audio: bool = game.pause_menu.get_node_or_null("Audio") != null
+			if on_audio and event.is_action_pressed("ui_cancel") and not event.is_action_pressed("pause"):
+				game._close_audio_menu()
+				get_viewport().set_input_as_handled()
+			elif event.is_action_pressed("pause") or event.is_action_pressed("ui_cancel"):
 				game._toggle_pause()
 				get_viewport().set_input_as_handled()
 			return

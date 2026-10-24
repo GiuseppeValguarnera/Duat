@@ -97,7 +97,11 @@ Il Sekhem è il dono di **Ammit**: si sblocca per sempre la prima volta che la s
 
 ## Suoni
 
-I suoni sono provvisori e generati da `tools/make_sfx.py` (nessuna licenza da rispettare). Per cambiarli basta sostituire i file in `assets/sfx/` mantenendo lo stesso nome. I volumi sono in `scripts/sfx.gd`.
+I suoni sono provvisori e generati da `tools/make_sfx.py` (nessuna licenza da rispettare).
+
+**Per usare suoni veri:** metti in `assets/sfx/` un file `.ogg` con lo stesso nome di quello da sostituire (per esempio `hit.ogg`): ha la precedenza sul `.wav` generato. Fonti con licenza CC0 (uso libero anche commerciale, senza obbligo di citare): i pacchetti di [Kenney](https://kenney.nl/assets/category:Audio) (*Impact Sounds*, *RPG Audio*, *Interface Sounds*) e [OpenGameArt](https://opengameart.org) filtrando per CC0.
+
+**Volume:** nel menu di pausa, voce *Volume*, c'è un cursore per il volume generale e uno per ogni categoria (attacchi, scatto, danni subiti, nemici e boss, trappole, ricompense e menu). Le impostazioni vengono salvate.
 
 ## Fine della run
 
