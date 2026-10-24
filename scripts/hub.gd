@@ -178,6 +178,7 @@ func _advance_talk() -> void:
 func _open_book() -> void:
 	player.set_physics_process(false)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	Sfx.play("book", 0.0)
 	book = CanvasLayer.new()
 	book.layer = 20
 	add_child(book)
@@ -250,7 +251,7 @@ func _fill_book(focus_id: String = "") -> void:
 func _on_chapter_pressed(id: String) -> void:
 	if Chapters.is_unlocked(id):
 		if Chapters.toggle(id):
-			Sfx.play("pickup", 0.0)
+			Sfx.play("page", 0.0)
 		else:
 			Fx.shake(2.0)
 	elif Chapters.buy(id):
@@ -259,6 +260,7 @@ func _on_chapter_pressed(id: String) -> void:
 
 
 func _close_book() -> void:
+	Sfx.play("page", 0.0)
 	book.queue_free()
 	book = null
 	player.set_physics_process(true)
