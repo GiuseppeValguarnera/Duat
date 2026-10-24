@@ -343,6 +343,9 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> boo
 		Run.add_sekhem(amount * 0.5)
 		knock = (global_position - from_pos).normalized() * 230.0
 	hp -= amount
+	Run.last_hit = "trappola"
+	if attacker != null and attacker.scene_file_path != "":
+		Run.last_hit = attacker.scene_file_path.get_file().get_basename()
 	if Run.has("anubi_scale") and attacker != null and not attacker.dead:
 		attacker.take_hit(amount * Run.val("anubi_scale") / 100.0, (attacker.global_position - global_position).normalized(), 120.0)
 		Fx.burst(attacker.global_position + Vector2(0, -8), Boons.god_color("anubi"), 12, 80.0)

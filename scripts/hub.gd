@@ -16,7 +16,13 @@ var spots := {}                       # nome -> posizione dei punti con cui inte
 var near := ""
 var talk_lines: Array = []
 var commented := false
-var book: CanvasLayer = null
+var book: CanvasLayer = null           # finestra aperta (Libro dei Morti o Papiri di Thoth)
+var book_kind := ""
+var page_title: Label
+var page_body: Label
+var page_lore: Label
+var papiri_entries: VBoxContainer
+var codex: Array = []
 var t := 0.0
 var quit_asked := -10.0
 
@@ -41,6 +47,7 @@ func _ready() -> void:
 		"libro": Vector2(cx + 120.0, 200.0),
 		"bilancia": Vector2(cx, 190.0),
 		"cancello": Vector2(cx, TOP + 4.0),
+		"papiri": Vector2(cx + 230.0, 310.0),
 	}
 	_build()
 	talk_box.visible = false
@@ -56,6 +63,7 @@ func _build() -> void:
 	_solid(Rect2(spots["anubi"] - Vector2(10, 8), Vector2(20, 12)))
 	_solid(Rect2(spots["libro"] - Vector2(12, 6), Vector2(24, 12)))
 	_solid(Rect2(spots["bilancia"] - Vector2(14, 6), Vector2(28, 12)))
+	_solid(Rect2(spots["papiri"] - Vector2(20, 8), Vector2(40, 12)))
 	var decor := DecorScript.new()
 	world.add_child(decor)
 	for r in decor.build(424242, ROOM, TOP, WALL, [], true):
@@ -103,7 +111,7 @@ func _process(delta: float) -> void:
 		_start_run()
 		return
 	near = ""
-	for k in ["anubi", "libro", "bilancia"]:
+	for k in ["anubi", "libro", "bilancia", "papiri"]:
 		if player.global_position.distance_to(spots[k]) < 40.0:
 			near = k
 	var key := "Y" if Fx.device == "pad" else "E"
@@ -112,6 +120,9 @@ func _process(delta: float) -> void:
 			prompt.text = "%s · Parla con Anubi" % key
 		"libro":
 			prompt.text = "%s · Apri il Libro dei Morti" % key
+		"papiri":
+			var n := Lore.count_seen()
+			prompt.text = "%s · Leggi i Papiri di Thoth (%d su %d)" % [key, n.x, n.y]
 		"bilancia":
 			prompt.text = "La bilancia di Ma'at · %d discese, %d Ka custodito, capitoli attivi %d/%d" % [Meta.runs, Meta.ka_bank, Meta.chapters_equipped.size(), Chapters.slots()]
 		_:
@@ -134,7 +145,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		if near == "anubi":
 			_start_talk()
 		elif near == "libro":
-			_open_book()
+			_open_book("libro")
+		elif near == "papiri":
+			_open_book("papiri")
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("pause"):
 		# per uscire serve una seconda pressione entro 2 secondi, così non si chiude per sbaglio
@@ -154,7 +167,7 @@ func _start_run() -> void:
 # ---------------------------------------------------------------- dialoghi
 
 func _start_talk() -> void:
-	talk_lines = Dialogue.next_lines(commented)
+	talk_lines = Dialogue.next_lines(not commented)
 	commented = true
 	Meta.last_end = ""
 	Meta.save()
@@ -173,79 +186,139 @@ func _advance_talk() -> void:
 	talk_text.text = talk_lines.pop_front()
 
 
-# ---------------------------------------------------------------- Libro dei Morti
+# ---------------------------------------------------------------- finestre (Libro dei Morti e Papiri di Thoth)
 
-func _open_book() -> void:
+## Apre una finestra a tutto schermo. `kind` è "libro" o "papiri".
+func _open_book(kind: String = "libro") -> void:
 	player.set_physics_process(false)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	Sfx.play("book", 0.0)
+	book_kind = kind
 	book = CanvasLayer.new()
 	book.layer = 20
 	add_child(book)
-	_fill_book()
+	if kind == "libro":
+		_fill_book()
+	else:
+		_fill_papiri()
 
 
-func _fill_book(focus_id: String = "") -> void:
+## Struttura comune: titolo, sottotitolo, una colonna di pulsanti a sinistra e un riquadro di testo a destra.
+func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxContainer:
 	for c in book.get_children():
 		c.queue_free()
 	var dim := ColorRect.new()
-	dim.color = Color(0.03, 0.03, 0.08, 0.9)
+	dim.color = Color(0.03, 0.03, 0.08, 0.92)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	book.add_child(dim)
-	var box := VBoxContainer.new()
-	box.set_anchors_preset(Control.PRESET_CENTER)
-	box.position = Vector2(-220, -160)
-	box.custom_minimum_size = Vector2(440, 320)
-	box.add_theme_constant_override("separation", 4)
-	book.add_child(box)
+	var margin := MarginContainer.new()
+	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	for side in ["left", "right"]:
+		margin.add_theme_constant_override("margin_" + side, 24)
+	margin.add_theme_constant_override("margin_top", 14)
+	margin.add_theme_constant_override("margin_bottom", 10)
+	book.add_child(margin)
+	var outer := VBoxContainer.new()
+	outer.add_theme_constant_override("separation", 6)
+	margin.add_child(outer)
 	var title := Label.new()
-	title.text = "Il Libro dei Morti"
+	title.text = title_text
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 16)
 	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
-	box.add_child(title)
+	outer.add_child(title)
 	var sub := Label.new()
-	sub.text = "Ka custodito: %d    ·    Capitoli attivi: %d di %d" % [Meta.ka_bank, Meta.chapters_equipped.size(), Chapters.slots()]
+	sub.text = sub_text
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sub.add_theme_font_size_override("font_size", 9)
 	sub.add_theme_color_override("font_color", Color(0.85, 0.78, 0.62))
-	box.add_child(sub)
-	var first: Button = null
-	for id in Chapters.ALL:
-		var c: Dictionary = Chapters.ALL[id]
-		var state := ""
-		if Chapters.is_equipped(id):
-			state = "ATTIVO · premi per toglierlo"
-		elif Chapters.is_unlocked(id):
-			state = "comprato · premi per attivarlo"
-		elif Meta.ka_bank >= int(c["cost"]):
-			state = "compra per %d Ka" % c["cost"]
-		else:
-			state = "costa %d Ka" % c["cost"]
-		var b := Button.new()
-		b.text = "Capitolo %d · %s    [%s]\n%s" % [c["num"], c["name"], state, c["desc"]]
-		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		b.add_theme_font_size_override("font_size", 9)
-		var col := Color(0.95, 0.9, 0.78)
-		if Chapters.is_equipped(id):
-			col = Color(0.62, 0.95, 0.7)
-		elif not Chapters.is_unlocked(id) and Meta.ka_bank < int(c["cost"]):
-			col = Color(0.6, 0.55, 0.48)
-		b.add_theme_color_override("font_color", col)
-		b.add_theme_color_override("font_focus_color", Color(0.94, 0.72, 0.3))
-		b.add_theme_color_override("font_hover_color", Color(0.94, 0.72, 0.3))
-		b.pressed.connect(_on_chapter_pressed.bind(id))
-		b.focus_entered.connect(Sfx.play.bind("ui", 0.0))
-		box.add_child(b)
-		if first == null or id == focus_id:
-			first = b
+	outer.add_child(sub)
+	var row := HBoxContainer.new()
+	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	row.add_theme_constant_override("separation", 12)
+	outer.add_child(row)
+	var left := VBoxContainer.new()
+	left.custom_minimum_size = Vector2(left_width, 0)
+	left.add_theme_constant_override("separation", 3)
+	row.add_child(left)
+	var right := VBoxContainer.new()
+	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right.add_theme_constant_override("separation", 6)
+	row.add_child(right)
+	page_title = _text_label(right, 12, Color(0.94, 0.72, 0.3))
+	page_body = _text_label(right, 10, Color(0.95, 0.9, 0.78))
+	page_lore = _text_label(right, 9, Color(0.72, 0.68, 0.9))
 	var hint := Label.new()
 	hint.text = "E / Y / B per chiudere"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_font_size_override("font_size", 8)
 	hint.add_theme_color_override("font_color", Color(0.66, 0.6, 0.47))
-	box.add_child(hint)
+	outer.add_child(hint)
+	return left
+
+
+func _text_label(parent: Control, font_size: int, color: Color) -> Label:
+	var l := Label.new()
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.custom_minimum_size = Vector2(200, 0)
+	l.add_theme_font_size_override("font_size", font_size)
+	l.add_theme_color_override("font_color", color)
+	parent.add_child(l)
+	return l
+
+
+func _list_button(parent: Control, text: String, color: Color) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	b.add_theme_font_size_override("font_size", 9)
+	b.add_theme_color_override("font_color", color)
+	b.add_theme_color_override("font_focus_color", Color(0.94, 0.72, 0.3))
+	b.add_theme_color_override("font_hover_color", Color(0.94, 0.72, 0.3))
+	b.focus_entered.connect(Sfx.play.bind("ui", 0.0))
+	parent.add_child(b)
+	return b
+
+
+# ---------------------------------------------------------------- Libro dei Morti
+
+func _fill_book(focus_id: String = "") -> void:
+	var left := _frame("Il Libro dei Morti", "Ka custodito: %d    ·    Capitoli attivi: %d di %d" % [Meta.ka_bank, Meta.chapters_equipped.size(), Chapters.slots()], 250)
+	var first: Button = null
+	for id in Chapters.ALL:
+		var c: Dictionary = Chapters.ALL[id]
+		var state := "%d Ka" % c["cost"]
+		var col := Color(0.95, 0.9, 0.78)
+		if Chapters.is_equipped(id):
+			state = "ATTIVO"
+			col = Color(0.62, 0.95, 0.7)
+		elif Chapters.is_unlocked(id):
+			state = "comprato"
+		elif Meta.ka_bank < int(c["cost"]):
+			col = Color(0.6, 0.55, 0.48)
+		var b := _list_button(left, "%d · %s   [%s]" % [c["num"], c["name"], state], col)
+		b.pressed.connect(_on_chapter_pressed.bind(id))
+		b.focus_entered.connect(_show_chapter.bind(id))
+		b.mouse_entered.connect(_show_chapter.bind(id))
+		if first == null or id == focus_id:
+			first = b
 	first.grab_focus.call_deferred()
+
+
+func _show_chapter(id: String) -> void:
+	var c: Dictionary = Chapters.ALL[id]
+	page_title.text = "Capitolo %d · %s" % [c["num"], c["name"]]
+	var action := ""
+	if Chapters.is_equipped(id):
+		action = "Attivo. Premi per toglierlo."
+	elif Chapters.is_unlocked(id):
+		action = "Comprato. Premi per attivarlo (posti liberi: %d)." % (Chapters.slots() - Meta.chapters_equipped.size())
+	elif Meta.ka_bank >= int(c["cost"]):
+		action = "Premi per comprarlo: %d Ka." % c["cost"]
+	else:
+		action = "Costa %d Ka: te ne mancano %d." % [c["cost"], int(c["cost"]) - Meta.ka_bank]
+	page_body.text = "%s\n\n%s" % [c["desc"], action]
+	page_lore.text = c["lore"]
 
 
 func _on_chapter_pressed(id: String) -> void:
@@ -257,6 +330,56 @@ func _on_chapter_pressed(id: String) -> void:
 	elif Chapters.buy(id):
 		Sfx.play("boon", 0.0)
 	_fill_book(id)
+
+
+# ---------------------------------------------------------------- Papiri di Thoth
+
+func _fill_papiri() -> void:
+	var count := Lore.count_seen()
+	var left := _frame("I Papiri di Thoth", "Tutto ciò che gli dèi ti hanno raccontato    ·    %d papiri su %d" % [count.x, count.y], 300)
+	var cols := HBoxContainer.new()
+	cols.add_theme_constant_override("separation", 8)
+	left.add_child(cols)
+	var cats := VBoxContainer.new()
+	cats.custom_minimum_size = Vector2(150, 0)
+	cats.add_theme_constant_override("separation", 2)
+	cols.add_child(cats)
+	papiri_entries = VBoxContainer.new()
+	papiri_entries.custom_minimum_size = Vector2(140, 0)
+	papiri_entries.add_theme_constant_override("separation", 2)
+	cols.add_child(papiri_entries)
+	codex = Lore.codex()
+	var first: Button = null
+	for i in range(codex.size()):
+		var cat: Dictionary = codex[i]
+		var seen := 0
+		for e in cat["entries"]:
+			if e["seen"]:
+				seen += 1
+		var b := _list_button(cats, "%s  %d/%d" % [cat["title"], seen, cat["entries"].size()], Color(0.95, 0.9, 0.78) if seen > 0 else Color(0.6, 0.55, 0.48))
+		b.focus_entered.connect(_show_category.bind(i))
+		b.mouse_entered.connect(_show_category.bind(i))
+		if first == null:
+			first = b
+	first.grab_focus.call_deferred()
+
+
+func _show_category(i: int) -> void:
+	for c in papiri_entries.get_children():
+		papiri_entries.remove_child(c)
+		c.queue_free()
+	var cat: Dictionary = codex[i]
+	for e in cat["entries"]:
+		var b := _list_button(papiri_entries, e["title"], Color(0.95, 0.9, 0.78) if e["seen"] else Color(0.5, 0.46, 0.4))
+		b.focus_entered.connect(_show_entry.bind(cat["title"], e))
+		b.mouse_entered.connect(_show_entry.bind(cat["title"], e))
+	_show_entry(cat["title"], cat["entries"][0])
+
+
+func _show_entry(category: String, e: Dictionary) -> void:
+	page_title.text = category
+	page_body.text = e["title"]
+	page_lore.text = e["text"]
 
 
 func _close_book() -> void:
@@ -295,6 +418,7 @@ func _draw() -> void:
 	_draw_scale(spots["bilancia"])
 	_draw_anubi(spots["anubi"])
 	_draw_book(spots["libro"])
+	_draw_papiri(spots["papiri"])
 
 
 func _draw_scale(p: Vector2) -> void:
@@ -350,3 +474,19 @@ func _draw_book(p: Vector2) -> void:
 	draw_circle(Vector2(p.x, p.y - 24), 16.0, Color(0.95, 0.75, 0.35, glow * 0.3))
 	if near == "libro" and book == null:
 		draw_arc(Vector2(p.x, p.y - 14), 22.0, 0.0, TAU, 32, Color(0.94, 0.72, 0.3, 0.5 + 0.3 * sin(t * 4.0)), 1.5)
+
+
+func _draw_papiri(p: Vector2) -> void:
+	var wood := Color(0.42, 0.28, 0.14)
+	var dark := Color(0.3, 0.2, 0.1)
+	draw_rect(Rect2(p.x - 20, p.y - 34, 40, 36), dark)
+	for shelf in range(3):
+		var sy := p.y - 32 + shelf * 12
+		draw_rect(Rect2(p.x - 20, sy + 9, 40, 2), wood)
+		for k in range(5):
+			var roll := Color(0.92, 0.86, 0.7).darkened(0.08 * ((k + shelf) % 3))
+			draw_rect(Rect2(p.x - 17 + k * 7, sy + 2, 6, 7), roll)
+			draw_rect(Rect2(p.x - 15 + k * 7, sy + 4, 2, 3), Color(0.55, 0.3, 0.2))
+	draw_rect(Rect2(p.x - 22, p.y - 36, 44, 3), wood)
+	if near == "papiri" and book == null:
+		draw_arc(Vector2(p.x, p.y - 16), 26.0, 0.0, TAU, 32, Color(0.72, 0.68, 0.9, 0.5 + 0.3 * sin(t * 4.0)), 1.5)

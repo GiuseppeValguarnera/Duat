@@ -29,7 +29,8 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
 Il gioco parte qui, e qui torni dopo ogni discesa.
 
-- **Anubi** parla con te: commenta com'è andata l'ultima discesa e, man mano che muori o vinci, racconta la storia del tuo nome scalpellato. Le battute sono in `scripts/dialogue.gd`.
+- **Anubi** parla con te: commenta com'è andata l'ultima discesa (chi ti ha ucciso, quale dio hai seguito, se hai stretto patti con Set) e, man mano che muori o vinci, racconta la storia del tuo nome scalpellato. Se gli parli ancora, ti spiega il giudizio dei morti: la pesatura del cuore, Ma'at, i 42 giudici, le parti dell'anima. Le battute sono in `scripts/dialogue.gd`.
+- **I Papiri di Thoth** (lo scaffale in basso a destra): l'archivio di tutto quello che gli dèi ti hanno raccontato, diviso per dio, più le lezioni di Anubi e la storia dei capitoli che hai comprato. Le storie non ancora ascoltate restano sigillate.
 - **Il Libro dei Morti** (il leggio a destra): spendi il Ka custodito per comprare capitoli, incantesimi passivi che valgono per sempre. Puoi tenerne attivi solo 2 alla volta (3 dopo aver sconfitto Ammit), quindi prima di ogni discesa scegli quali portare.
 - **La bilancia di Ma'at** al centro mostra i tuoi progressi.
 - **Il cancello** a nord: camminaci dentro per iniziare una discesa.
@@ -44,7 +45,7 @@ Il gioco parte qui, e qui torni dopo ogni discesa.
 | 30 · Il cuore che non testimonia | Una volta per discesa sopravvivi a un colpo mortale | 60 Ka |
 | 6 · Gli Ushabti | Una statuetta ti segue e colpisce il nemico più vicino ogni 2 s | 70 Ka |
 
-I numeri sono quelli dei veri capitoli del Libro dei Morti. Per aggiungerne uno: una riga in `ALL` in `scripts/chapters.gd`, poi l'effetto dove serve usando `Run.chap("id")`.
+I numeri sono quelli dei veri capitoli del Libro dei Morti, e ognuno nel Libro mostra anche a cosa serviva davvero. Per aggiungerne uno: una riga in `ALL` in `scripts/chapters.gd`, poi l'effetto dove serve usando `Run.chap("id")`.
 
 Dal menu di pausa, *Torna alla Sala (abbandona)* chiude la discesa: il Ka raccolto viene comunque custodito.
 
@@ -113,6 +114,10 @@ Senza doni l'Occhio di Horus si ferma sul primo nemico che colpisce.
 
 I nemici colpiti barcollano per un terzo di secondo: non si muovono e non fanno danno da contatto. Le mummie durante l'affondo non barcollano.
 
+## Le divinità parlano
+
+Ogni volta che un dio ti offre un dono, ti parla. La prima volta si presenta; poi, a ogni incontro, racconta un pezzo del suo mito (Ra e il serpente Apophis, Iside che ricompone Osiride, Thoth che vince cinque giorni alla Luna, i gatti sacri di Bastet...), una volta sola. Quando ha raccontato tutto, risponde con frasi brevi. Le storie sono in `scripts/lore.gd`: sono fatti della mitologia e della storia egizia, semplificati ma non inventati.
+
 ## Patti di Set
 
 A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza scegli un patto: una **maledizione** che dura 2 ondate (nemici più veloci, più danni subiti, niente Occhio, scatto più lento) e poi una **benedizione** permanente per tutta la run. Tempesta Interiore (Sekhem) compare solo dopo aver sbloccato il Sekhem.
@@ -143,6 +148,7 @@ Apri una scena in `scenes/`, seleziona il nodo principale e cambia i valori nell
 scenes/   hub.tscn (la Sala del Giudizio), game.tscn (la run), player.tscn, mummy.tscn, scarab.tscn, priest.tscn
 tools/    convert_sfx.py  prepara i suoni dai pacchetti di Kenney
 scripts/  hub.gd       la Sala del Giudizio      dialogue.gd   battute di Anubi
+          lore.gd      storie degli dèi e Papiri di Thoth
           chapters.gd  Libro dei Morti           ushabti.gd    la statuetta del capitolo 6
           meta.gd      salvataggio permanente     sfx.gd        suoni e volumi
           game.gd      stanze, ondate, ricompense, porte, menu dei doni

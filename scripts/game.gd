@@ -314,7 +314,7 @@ func _on_door_chosen(d: Area2D) -> void:
 # ---------------------------------------------------------------- scelta dei doni
 
 ## Finestra con titolo e 1-3 carte. `cards` = [{"text", "color", "heavy", "on_pick"}].
-func _open_choice(title_text: String, title_color: Color, subtitle: String, cards: Array) -> void:
+func _open_choice(title_text: String, title_color: Color, subtitle: String, cards: Array, speech: String = "") -> void:
 	get_tree().paused = true
 	menu = CanvasLayer.new()
 	menu.layer = 20
@@ -338,6 +338,19 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 	title.add_theme_font_size_override("font_size", 16)
 	title.add_theme_color_override("font_color", title_color)
 	box.add_child(title)
+
+	if speech != "":
+		var said := Label.new()
+		said.text = "«%s»" % speech
+		said.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		said.custom_minimum_size = Vector2(560, 0)
+		said.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		said.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		said.add_theme_font_size_override("font_size", 10)
+		said.add_theme_color_override("font_color", title_color.lerp(Color(0.97, 0.93, 0.85), 0.6))
+		said.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+		said.add_theme_constant_override("outline_size", 3)
+		box.add_child(said)
 
 	if subtitle != "":
 		var sub := Label.new()
@@ -418,7 +431,7 @@ func _show_boon_menu(god: String) -> void:
 			"heavy": Boons.is_heavy(id),
 			"on_pick": _choose_boon.bind(id),
 		})
-	_open_choice("%s ti offre un dono" % Boons.god_name(from_god), Boons.god_color(from_god), "", cards)
+	_open_choice("%s ti offre un dono" % Boons.god_name(from_god), Boons.god_color(from_god), "", cards, Lore.speech(from_god))
 
 
 ## All'inizio di ogni run Anubi offre uno dei suoi doni.
@@ -431,7 +444,7 @@ func _show_anubi_menu() -> void:
 			"heavy": false,
 			"on_pick": _choose_start_boon.bind(id),
 		})
-	_open_choice("Anubi pesa il tuo cuore", Boons.god_color("anubi"), "Ogni suo dono è una bilancia: scegli cosa guadagnare e cosa cedere", cards)
+	_open_choice("Anubi pesa il tuo cuore", Boons.god_color("anubi"), "", cards, Lore.speech("anubi"))
 
 
 func _choose_start_boon(id: String) -> void:
@@ -467,7 +480,7 @@ func _show_set_menu() -> void:
 		Run.ka += roundi(25 * Run.ka_mult())
 		_open_doors()
 		return
-	_open_choice("Set ti propone un patto", Boons.god_color("set"), "Prima la maledizione, poi la ricompensa", cards)
+	_open_choice("Set ti propone un patto", Boons.god_color("set"), "Prima la maledizione, poi la ricompensa", cards, Lore.speech("set"))
 
 
 func _choose_pact(curse: String, blessing: String) -> void:
@@ -830,6 +843,17 @@ func _build_boss_bar() -> void:
 ## Riepilogo della discesa. Salva anche il Ka raccolto, che resta tra una run e l'altra.
 func _end_run_summary() -> String:
 	Meta.ka_bank += Run.ka
+	Meta.last_killer = Run.last_hit
+	Meta.last_pacts = Run.blessings.size()
+	var count := {}
+	for id in Run.boons:
+		var g: String = Boons.ALL[id].get("god", "")
+		if g != "" and g != "anubi" and g != "duo":
+			count[g] = int(count.get(g, 0)) + 1
+	Meta.last_god = ""
+	for g in count:
+		if Meta.last_god == "" or count[g] > count[Meta.last_god]:
+			Meta.last_god = g
 	Meta.runs += 1
 	Meta.save()
 	var secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)

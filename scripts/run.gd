@@ -24,7 +24,8 @@ var kills := 0                        # statistiche per il riepilogo di fine run
 var damage_dealt := 0.0
 var start_msec := 0
 var heart_used := false               # Capitolo 30 già usato in questa discesa
-var in_hub := false                   # true nella Sala del Giudizio                  # Sete di Sangue: nemici abbattuti dall'ultima cura
+var in_hub := false                   # true nella Sala del Giudizio
+var last_hit := ""                    # chi ti ha colpito per ultimo (per i commenti di Anubi)
 
 
 func new_run() -> void:
@@ -43,6 +44,7 @@ func new_run() -> void:
 	damage_dealt = 0.0
 	start_msec = Time.get_ticks_msec()
 	heart_used = false
+	last_hit = ""
 	if chap("c17"):
 		max_hp += 15.0
 		hp = max_hp

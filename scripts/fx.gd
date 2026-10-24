@@ -5,7 +5,7 @@ extends Node
 var camera: Camera2D
 var world: Node2D
 var device := "mouse"          # "mouse" oppure "pad"
-var show_hitboxes := true
+var show_hitboxes := false
 
 var _shake := 0.0
 var _hitstops := 0
