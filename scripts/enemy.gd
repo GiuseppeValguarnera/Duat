@@ -141,13 +141,18 @@ func die() -> void:
 	if dead:
 		return
 	dead = true
+	# solo i nemici più grossi lasciano un po' di Ka: il grosso arriva dai tesori
 	var ka := roundi(ka_value * Run.ka_mult())
-	Run.ka += ka
-	Fx.float_text(global_position + Vector2(0, -12), "+%d Ka" % ka, Color(0.94, 0.72, 0.3))
+	if ka > 0:
+		Run.ka += ka
+		Fx.float_text(global_position + Vector2(0, -12), "+%d Ka" % ka, Color(0.94, 0.72, 0.3))
 	if Run.has("sekhmet_blood"):
-		var player = get_tree().get_first_node_in_group("player")
-		if player != null and not player.dead:
-			player.heal(Run.val("sekhmet_blood"))
+		Run.blood_kills += 1
+		if Run.blood_kills >= 5:
+			Run.blood_kills = 0
+			var player = get_tree().get_first_node_in_group("player")
+			if player != null and not player.dead:
+				player.heal(Run.val("sekhmet_blood"))
 	Fx.burst(global_position + Vector2(0, -radius), Color(0.94, 0.72, 0.3), 18, 130.0)
 	if Run.has("anubi_guide"):
 		_release_spirit()

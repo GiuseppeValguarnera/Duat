@@ -7,6 +7,7 @@ var speed := 150.0
 var damage := 12.0
 var life := 4.0
 var shooter: Node = null              ## chi l'ha lanciata (per la Bilancia Giusta)
+var style := "orb"                    ## "orb" = sfera magica, "dart" = dardo di una trappola
 
 
 func _ready() -> void:
@@ -43,6 +44,13 @@ func _on_body_entered(body: Node) -> void:
 
 
 func _draw() -> void:
+	if style == "dart":
+		var back := -direction * 12.0
+		draw_line(back, Vector2.ZERO, Color(0.55, 0.4, 0.22), 2.0)
+		draw_colored_polygon(PackedVector2Array([direction * 4.0, direction.orthogonal() * 2.5, -direction.orthogonal() * 2.5]), Color(0.85, 0.85, 0.9))
+		draw_line(back, back + direction * 3.0 + direction.orthogonal() * 3.0, Color(0.9, 0.3, 0.2), 1.5)
+		draw_line(back, back + direction * 3.0 - direction.orthogonal() * 3.0, Color(0.9, 0.3, 0.2), 1.5)
+		return
 	draw_circle(Vector2.ZERO, 6.0, Color(0.85, 0.4, 1.0, 0.3))
 	draw_circle(Vector2.ZERO, 3.5, Color(0.75, 0.3, 1.0))
 	draw_circle(Vector2.ZERO, 1.5, Color(1, 0.9, 1))

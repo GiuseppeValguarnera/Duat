@@ -13,6 +13,8 @@ const ENEMIES := {
 	"ammit": preload("res://scenes/ammit.tscn"),
 }
 const PickupScript := preload("res://scripts/pickup.gd")
+const DecorScript := preload("res://scripts/room_decor.gd")
+const TRAPS_FROM_ROOM := 2            ## le trappole compaiono da questa stanza in poi
 const DoorScript := preload("res://scripts/door.gd")
 const SET_DOOR_CHANCE := 0.4          ## probabilità che compaia una porta di Set
 const SET_DOOR_COST := 10.0           ## vita da pagare per entrare
@@ -38,6 +40,8 @@ var current_reward := {}
 var doors: Array = []
 var finished := false
 var boss: Enemy = null
+var obstacles: Array = []             # rettangoli occupati da statue, bracieri, sarcofagi
+var traps_pos: Array = []             # posizioni delle lastre con spuntoni
 var room_gen := 0                     # cambia a ogni stanza: annulla le comparse rimaste in sospeso
 var boss_bar: ColorRect
 var boss_fill: ColorRect
@@ -62,6 +66,7 @@ func _ready() -> void:
 	Fx.set_hitboxes(Fx.show_hitboxes)
 	Run.new_run()
 	Run.blessing_granted.connect(_on_blessing_granted)
+	_build_vignette()
 	_build_boss_bar()
 	var listener := PanelListener.new()
 	listener.game = self
@@ -95,6 +100,14 @@ func start_room(reward: Dictionary) -> void:
 	for f in layout:
 		pillars.append(Vector2(lerpf(WALL, ROOM.size.x - WALL, f.x), lerpf(TOP, ROOM.size.y - WALL, f.y)))
 	_build_walls()
+	var decor := DecorScript.new()
+	world.add_child(decor)
+	obstacles = decor.build(Run.room * 7919 + randi() % 1000, ROOM, TOP, WALL, pillars, boss_room)
+	for r in obstacles:
+		_solid(r)
+	traps_pos.clear()
+	if not boss_room and Run.room >= TRAPS_FROM_ROOM:
+		_place_traps()
 	queue_redraw()
 
 	player = PlayerScene.instantiate()
@@ -194,12 +207,17 @@ func _room_cleared() -> void:
 	if cleared:
 		return
 	cleared = true
+	# a stanza ripulita le trappole si fermano
+	for trap in get_tree().get_nodes_in_group("traps"):
+		trap.set_physics_process(false)
+		trap.t = 0.0
+		trap.queue_redraw()
 	if Run.has("sobek_river"):
 		Run.max_hp += Run.val("sobek_river")
 		player.max_hp = Run.max_hp
 		player.heal(Run.val("sobek_river"))
 	if Run.has("iside_heavy"):
-		player.heal(roundf(Run.max_hp * 0.25))
+		player.heal(roundf(Run.max_hp * 0.15))
 	if Run.has("anubi_canopic"):
 		player.heal(Run.val("anubi_canopic"))
 	if current_reward.get("kind", "none") == "none":
@@ -221,11 +239,11 @@ func _on_pickup_collected(p: Area2D) -> void:
 	p.queue_free()
 	match kind:
 		"ka":
-			Run.ka += 25
-			Fx.float_text(player.global_position, "+25 Ka", Color(0.94, 0.72, 0.3))
+			Run.ka += roundi(25 * Run.ka_mult())
+			Fx.float_text(player.global_position, "+%d Ka" % roundi(25 * Run.ka_mult()), Color(0.94, 0.72, 0.3))
 			_open_doors.call_deferred()
 		"heal":
-			player.heal(roundf(Run.max_hp * 0.4))
+			player.heal(roundf(Run.max_hp * 0.3))
 			_open_doors.call_deferred()
 		"boon":
 			_show_boon_menu.call_deferred(god)
@@ -418,7 +436,7 @@ func _show_set_menu() -> void:
 			"on_pick": _choose_pact.bind(o["curse"], o["blessing"]),
 		})
 	if cards.is_empty():
-		Run.ka += 25
+		Run.ka += roundi(25 * Run.ka_mult())
 		_open_doors()
 		return
 	_open_choice("Set ti propone un patto", Boons.god_color("set"), "Prima la maledizione, poi la ricompensa", cards)
@@ -426,7 +444,7 @@ func _show_set_menu() -> void:
 
 func _choose_pact(curse: String, blessing: String) -> void:
 	Run.add_pact(curse, blessing)
-	Run.ka += 25
+	Run.ka += roundi(25 * Run.ka_mult())
 	_close_choice()
 	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color("set"), 30, 140.0)
 	_banner("Maledizione di Set", Boons.SET_CURSES[curse]["desc"], Boons.god_color("set"))
@@ -635,6 +653,28 @@ func _boss_defeated() -> void:
 	_victory()
 
 
+## Bordi dello schermo più scuri: dà l'idea di una tomba illuminata dalle torce.
+func _build_vignette() -> void:
+	var grad := Gradient.new()
+	grad.set_color(0, Color(0, 0, 0, 0))
+	grad.set_color(1, Color(0.02, 0.01, 0.02, 0.55))
+	grad.add_point(0.6, Color(0, 0, 0, 0.05))
+	var tex := GradientTexture2D.new()
+	tex.gradient = grad
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.fill_to = Vector2(1.0, 0.5)
+	tex.width = 256
+	tex.height = 256
+	var rect := TextureRect.new()
+	rect.texture = tex
+	rect.stretch_mode = TextureRect.STRETCH_SCALE
+	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	$UI.add_child(rect)
+	$UI.move_child(rect, 0)
+
+
 func _build_boss_bar() -> void:
 	var ui: CanvasLayer = $UI
 	boss_name = Label.new()
@@ -743,7 +783,52 @@ func _spot_ok(p: Vector2) -> bool:
 	for pl in pillars:
 		if p.distance_to(pl) < 36.0:
 			return false
+	for r in obstacles:
+		if (r as Rect2).grow(14.0).has_point(p):
+			return false
+	for tp in traps_pos:
+		if p.distance_to(tp) < 26.0:
+			return false
 	return true
+
+
+## Trappole da piramide: lastre con spuntoni e, più avanti, feritoie che sparano dardi.
+func _place_traps() -> void:
+	var cx := ROOM.size.x / 2.0
+	var mid_y := (TOP + ROOM.size.y - WALL) / 2.0
+	var spikes := clampi(Run.room, 2, 4)
+	var tries := 0
+	while traps_pos.size() < spikes and tries < 80:
+		tries += 1
+		var gx := randi_range(1, int((ROOM.size.x - WALL * 2.0) / 32.0) - 2)
+		var gy := randi_range(1, int((ROOM.size.y - WALL - TOP) / 32.0) - 2)
+		var p := Vector2(WALL + 16.0 + gx * 32.0, TOP + 16.0 + gy * 32.0)
+		if p.distance_to(Vector2(cx, mid_y + 20.0)) < 70.0:
+			continue                      # lì compare la ricompensa
+		if p.distance_to(Vector2(cx, ROOM.size.y - WALL - 24.0)) < 100.0:
+			continue                      # punto di partenza del giocatore
+		if absf(p.x - cx) < 50.0 and p.y < TOP + 70.0:
+			continue
+		if absf(p.y - mid_y) < 60.0 and (p.x < WALL + 70.0 or p.x > ROOM.size.x - WALL - 70.0):
+			continue
+		if not _spot_ok(p):
+			continue
+		traps_pos.append(p)
+		var s := Traps.Spikes.new()
+		s.t = randf() * 2.0
+		world.add_child(s)
+		s.position = p
+	if Run.room >= TRAPS_FROM_ROOM + 1:
+		for i in range(randi_range(1, 2)):
+			var left := randf() < 0.5
+			var y := randf_range(TOP + 40.0, ROOM.size.y - WALL - 40.0)
+			if absf(y - mid_y) < 60.0:
+				y += 80.0 if y >= mid_y else -80.0
+			var d := Traps.DartWall.new()
+			d.dir = Vector2.RIGHT if left else Vector2.LEFT
+			d.t = randf() * 2.0
+			world.add_child(d)
+			d.position = Vector2(WALL - 2.0 if left else ROOM.size.x - WALL + 2.0, y)
 
 
 func _build_walls() -> void:
@@ -778,7 +863,7 @@ func _draw() -> void:
 		var x := r.position.x + WALL
 		while x < r.end.x - WALL:
 			var n := fmod(absf(sin(x * 12.9898 + y * 78.233 + Run.room) * 43758.5453), 1.0)
-			draw_rect(Rect2(x + 1, y + 1, tile - 2, tile - 2), Color(0.6, 0.46, 0.29).darkened(n * 0.12))
+			draw_rect(Rect2(x + 1, y + 1, tile - 2, tile - 2), Color(0.52, 0.39, 0.24).darkened(n * 0.14))
 			x += tile
 		y += tile
 	var dark := Color(0.19, 0.13, 0.08)

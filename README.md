@@ -28,7 +28,7 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
 1. All'inizio Anubi pesa il tuo cuore: scegli uno dei suoi doni, ognuno con un vantaggio e un prezzo più piccolo.
 2. Ogni stanza ha due ondate di nemici. La prima stanza non ha ricompensa: i doni degli dèi arrivano dalle stanze che scegli tu.
-3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla.
+3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla. Il Ka arriva soprattutto dai tesori: scarabei 0, mummie 1, sacerdoti 2.
 4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura.
 5. Dopo la sesta stanza si apre il cancello di **Ammit**, il boss della Prima Ora. I nemici hanno il 6% di vita in più a ogni stanza.
 
@@ -39,6 +39,13 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 | Mummia | Lenta e resistente. Da vicino diventa rossa e prepara un affondo | Schiva al momento giusto, o interrompila col terzo colpo della combo |
 | Scarabei | Arrivano a gruppi di tre, veloci e fragili, a zig-zag | Colpi ampi e Occhio di Horus |
 | Sacerdote di Set | Resta lontano e lancia sfere. Prima di lanciare si ferma e la sfera cresce | Spostati negli ultimi istanti, o colpiscilo per interromperlo |
+
+## Trappole (dalla seconda stanza)
+
+- **Spuntoni:** lastre nel pavimento. I fori si illuminano, poi escono le punte: feriscono te (10) e anche i nemici (14).
+- **Feritoie (dalla terza stanza):** teste di cobra nelle pareti laterali. Gli occhi si accendono, poi sparano un dardo che attraversa la stanza.
+
+Lo scatto le supera entrambe. A stanza ripulita si fermano.
 
 ## Boss: Ammit, la Divoratrice
 
@@ -85,6 +92,7 @@ Apri una scena in `scenes/`, seleziona il nodo principale e cambia i valori nell
 ```
 scenes/   game.tscn (la run), player.tscn, mummy.tscn, scarab.tscn, priest.tscn
 scripts/  game.gd      stanze, ondate, ricompense, porte, menu dei doni
+          room_decor.gd  arredamento delle stanze     traps.gd   trappole
           run.gd       stato della run (vita, Ka, doni) ed effetti dei doni
           boons.gd     elenco di dèi e doni
           enemy.gd     base comune a tutti i nemici

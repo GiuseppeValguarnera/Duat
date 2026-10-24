@@ -16,7 +16,7 @@ script = ExtResource("1_mummy")
 max_hp = 40.0
 speed = 40.0
 contact_damage = 10.0
-ka_value = 2
+ka_value = 1
 radius = 8.0
 
 [node name="Body" type="CollisionShape2D" parent="."]

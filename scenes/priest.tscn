@@ -16,7 +16,7 @@ script = ExtResource("1_priest")
 max_hp = 26.0
 speed = 50.0
 contact_damage = 6.0
-ka_value = 3
+ka_value = 2
 radius = 7.0
 
 [node name="Body" type="CollisionShape2D" parent="."]
