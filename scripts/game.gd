@@ -96,6 +96,8 @@ func start_room(reward: Dictionary) -> void:
 
 	pillars.clear()
 	var boss_room := Run.room > Run.ROOMS_PER_RUN
+	if not boss_room:
+		Music.play("room")
 	var layout: Array = LAYOUTS.pick_random() if Run.room > 1 else LAYOUTS[0]
 	if boss_room:
 		layout = BOSS_LAYOUT
@@ -179,6 +181,7 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 	# dalla terza stanza alcune mummie e alcuni sacerdoti sono élite
 	if Run.room >= 3 and Run.room <= Run.ROOMS_PER_RUN and kind != "scarab" and randf() < 0.08 + 0.03 * Run.room:
 		e.elite = true
+		Music.play("elite")           # una stanza con nemici élite cambia musica fino alla prossima
 	world.add_child(e)
 	alive += 1
 	e.killed.connect(_on_enemy_killed)
@@ -731,6 +734,7 @@ func _boons_text() -> String:
 
 func _on_player_died() -> void:
 	finished = true
+	Music.set_duck(0.35)
 	message.visible = true
 	var where := "Ammit, la Divoratrice" if Run.room > Run.ROOMS_PER_RUN else "stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN]
 	Meta.last_end = "ammit" if Run.room > Run.ROOMS_PER_RUN else "room"
@@ -742,6 +746,7 @@ func _on_player_died() -> void:
 # ---------------------------------------------------------------- boss
 
 func _start_boss() -> void:
+	Music.play("boss")
 	Sfx.play("roar", 0.0)
 	_banner("Ammit, la Divoratrice", "Divora i cuori che non superano il giudizio", Color(0.9, 0.35, 0.25))
 	boss_bar.visible = true
@@ -866,6 +871,7 @@ func _end_run_summary() -> String:
 
 func _victory() -> void:
 	finished = true
+	Music.play("hub")
 	for c in world.get_children():
 		if c is Enemy:
 			c.queue_free()

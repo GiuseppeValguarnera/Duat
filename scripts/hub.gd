@@ -39,6 +39,7 @@ func _ready() -> void:
 	Engine.time_scale = 1.0
 	get_tree().paused = false
 	Run.in_hub = true
+	Music.play("hub")
 	Run.new_run()
 	Fx.world = world
 	var cx := ROOM.size.x / 2.0
@@ -47,7 +48,7 @@ func _ready() -> void:
 		"libro": Vector2(cx + 120.0, 200.0),
 		"bilancia": Vector2(cx, 190.0),
 		"cancello": Vector2(cx, TOP + 4.0),
-		"papiri": Vector2(cx + 230.0, 310.0),
+		"papiri": Vector2(cx + 150.0, 322.0),
 	}
 	_build()
 	talk_box.visible = false
@@ -68,6 +69,17 @@ func _build() -> void:
 	world.add_child(decor)
 	for r in decor.build(424242, ROOM, TOP, WALL, [], true):
 		_solid(r)
+	# nella Sala niente sabbia sul pavimento: è un luogo curato, non una tomba abbandonata
+	decor.floor_bits = decor.floor_bits.filter(func(b: Array) -> bool: return b[0] != "sand")
+	# colonne papiriformi, stendardi degli dèi, luce dal cancello, polvere sospesa
+	for cpos in [Vector2(100, 150), Vector2(ROOM.size.x - 100, 150), Vector2(100, 285), Vector2(ROOM.size.x - 100, 285)]:
+		var col := HubColumn.new()
+		col.position = cpos
+		world.add_child(col)
+		_solid(Rect2(cpos - Vector2(11, 6), Vector2(22, 10)))
+	var banners := HubBanners.new()
+	world.add_child(banners)
+	_add_dust()
 	player = PlayerScene.instantiate()
 	player.position = Vector2(ROOM.size.x / 2.0, ROOM.size.y - WALL - 30.0)
 	world.add_child(player)
@@ -77,7 +89,38 @@ func _build() -> void:
 	cam.limit_right = int(ROOM.size.x)
 	cam.limit_bottom = int(ROOM.size.y)
 	cam.reset_smoothing()
+	var light := HubLight.new()
+	light.position = spots["cancello"]
+	world.add_child(light)
+	for c in world.get_children():
+		if c is HubColumn:
+			c.player = player
 	queue_redraw()
+
+
+func _add_dust() -> void:
+	var dust := CPUParticles2D.new()
+	dust.amount = 45
+	dust.lifetime = 7.0
+	dust.preprocess = 7.0
+	dust.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	dust.emission_rect_extents = Vector2(ROOM.size.x / 2.0 - WALL, (ROOM.size.y - TOP - WALL) / 2.0)
+	dust.position = Vector2(ROOM.size.x / 2.0, (TOP + ROOM.size.y - WALL) / 2.0)
+	dust.direction = Vector2(0.3, -1)
+	dust.spread = 40.0
+	dust.gravity = Vector2.ZERO
+	dust.initial_velocity_min = 2.0
+	dust.initial_velocity_max = 7.0
+	dust.scale_amount_min = 0.8
+	dust.scale_amount_max = 1.8
+	var ramp := Gradient.new()
+	ramp.set_color(0, Color(1, 0.85, 0.55, 0.0))
+	ramp.set_color(1, Color(1, 0.85, 0.55, 0.0))
+	ramp.add_point(0.3, Color(1, 0.85, 0.55, 0.45))
+	ramp.add_point(0.7, Color(1, 0.85, 0.55, 0.35))
+	dust.color_ramp = ramp
+	dust.z_index = 2
+	world.add_child(dust)
 
 
 func _solid(rect: Rect2) -> void:
@@ -407,6 +450,17 @@ func _draw() -> void:
 	draw_rect(Rect2(0, r.end.y - WALL, r.size.x, WALL), dark)
 	draw_rect(Rect2(0, 0, WALL, r.size.y), dark)
 	draw_rect(Rect2(r.end.x - WALL, 0, WALL, r.size.y), dark)
+	# tappeto processionale dall'ingresso al cancello
+	var cx := r.size.x / 2.0
+	draw_rect(Rect2(cx - 22, TOP, 44, r.end.y - WALL - TOP), Color(0.42, 0.1, 0.1))
+	draw_rect(Rect2(cx - 22, TOP, 3, r.end.y - WALL - TOP), Color(0.85, 0.62, 0.25))
+	draw_rect(Rect2(cx + 19, TOP, 3, r.end.y - WALL - TOP), Color(0.85, 0.62, 0.25))
+	var ky := TOP + 10.0
+	while ky < r.end.y - WALL - 8.0:
+		draw_colored_polygon(PackedVector2Array([Vector2(cx, ky), Vector2(cx + 7, ky + 7), Vector2(cx, ky + 14), Vector2(cx - 7, ky + 7)]), Color(0.75, 0.5, 0.2, 0.7))
+		draw_rect(Rect2(cx - 16, ky + 6, 4, 2), Color(0.25, 0.55, 0.6, 0.8))
+		draw_rect(Rect2(cx + 12, ky + 6, 4, 2), Color(0.25, 0.55, 0.6, 0.8))
+		ky += 22.0
 	# cancello del Duat: un portale luminoso nella parete nord
 	var g: Vector2 = spots["cancello"]
 	var pulse := 0.5 + 0.5 * sin(t * 2.0)
@@ -490,3 +544,99 @@ func _draw_papiri(p: Vector2) -> void:
 	draw_rect(Rect2(p.x - 22, p.y - 36, 44, 3), wood)
 	if near == "papiri" and book == null:
 		draw_arc(Vector2(p.x, p.y - 16), 26.0, 0.0, TAU, 32, Color(0.72, 0.68, 0.9, 0.5 + 0.3 * sin(t * 4.0)), 1.5)
+
+
+
+## Colonna papiriforme: fusto a fasci con capitello a ombrello. Passa davanti al giocatore
+## quando lui ci cammina dietro.
+class HubColumn extends Node2D:
+	var player: Node2D
+
+	func _process(_delta: float) -> void:
+		if player != null and is_instance_valid(player):
+			z_index = 1 if player.global_position.y < global_position.y else 0
+
+	func _draw() -> void:
+		var stone := Color(0.78, 0.68, 0.5)
+		var shade := Color(0.6, 0.5, 0.36)
+		draw_set_transform(Vector2(0, 2), 0.0, Vector2(1.0, 0.35))
+		draw_circle(Vector2.ZERO, 16.0, Color(0, 0, 0, 0.35))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		draw_rect(Rect2(-13, -4, 26, 6), shade)
+		draw_rect(Rect2(-9, -66, 18, 62), stone)
+		for k in range(4):
+			draw_line(Vector2(-6 + k * 4, -64), Vector2(-6 + k * 4, -6), shade, 1.0)
+		for b in [-56, -48]:
+			draw_rect(Rect2(-10, b, 20, 3), Color(0.25, 0.55, 0.6))
+			draw_rect(Rect2(-10, b + 3, 20, 1), Color(0.85, 0.62, 0.25))
+		draw_colored_polygon(PackedVector2Array([Vector2(-9, -66), Vector2(9, -66), Vector2(16, -80), Vector2(-16, -80)]), stone)
+		draw_rect(Rect2(-17, -84, 34, 5), shade)
+		for k in range(5):
+			draw_line(Vector2(-12 + k * 6, -80), Vector2(-6 + k * 3, -67), Color(0.35, 0.55, 0.3), 1.0)
+
+
+## Stendardi delle sei divinità sulla parete nord: si colorano quando il dio ti ha parlato.
+class HubBanners extends Node2D:
+	const ORDER := [["ra", 58.0], ["sekhmet", 150.0], ["thoth", 186.0], ["bastet", 454.0], ["sobek", 490.0], ["iside", 582.0]]
+	var t := 0.0
+
+	func _process(delta: float) -> void:
+		t += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		for entry in ORDER:
+			var god: String = entry[0]
+			var x: float = entry[1]
+			var met := Meta.dialogue_seen.has(god + "_0")
+			var col := Boons.god_color(god) if met else Color(0.3, 0.3, 0.36)
+			var sway := sin(t * 1.3 + x) * 1.2
+			draw_rect(Rect2(x - 13, 36, 26, 3), Color(0.55, 0.4, 0.2))
+			var cloth := col.darkened(0.35)
+			draw_colored_polygon(PackedVector2Array([Vector2(x - 10, 39), Vector2(x + 10, 39), Vector2(x + 10 + sway, 90), Vector2(x + sway, 98), Vector2(x - 10 + sway, 90)]), cloth)
+			draw_rect(Rect2(x - 10, 39, 20, 2), Color(0.85, 0.62, 0.25) if met else Color(0.4, 0.4, 0.45))
+			var c := Vector2(x + sway * 0.5, 62)
+			var sym := col.lightened(0.35) if met else Color(0.45, 0.45, 0.5)
+			match god:
+				"ra":
+					draw_circle(c, 6.0, sym)
+					draw_arc(c, 8.5, 0.0, TAU, 20, Color(0.95, 0.85, 0.4) if met else sym, 1.0)
+				"sekhmet":
+					draw_circle(c + Vector2(0, -4), 4.0, sym)
+					draw_colored_polygon(PackedVector2Array([c + Vector2(-6, 0), c + Vector2(6, 0), c + Vector2(4, 9), c + Vector2(-4, 9)]), sym)
+				"thoth":
+					draw_arc(c, 7.0, PI * 0.6, PI * 1.9, 16, sym, 3.0)
+				"bastet":
+					draw_circle(c + Vector2(0, 2), 5.0, sym)
+					draw_colored_polygon(PackedVector2Array([c + Vector2(-5, -1), c + Vector2(-3, -9), c + Vector2(-1, -2)]), sym)
+					draw_colored_polygon(PackedVector2Array([c + Vector2(5, -1), c + Vector2(3, -9), c + Vector2(1, -2)]), sym)
+				"sobek":
+					for k in range(3):
+						var yy := c.y - 5 + k * 5
+						draw_polyline(PackedVector2Array([Vector2(c.x - 7, yy), Vector2(c.x - 3, yy - 2), Vector2(c.x + 1, yy), Vector2(c.x + 5, yy - 2), Vector2(c.x + 7, yy)]), sym, 1.5)
+				"iside":
+					draw_rect(Rect2(c.x - 5, c.y - 8, 10, 4), sym)
+					draw_rect(Rect2(c.x - 2, c.y - 4, 4, 12), sym)
+					draw_rect(Rect2(c.x - 6, c.y + 6, 12, 3), sym)
+
+
+## Fascio di luce che scende dal cancello del Duat.
+class HubLight extends Node2D:
+	var t := 0.0
+
+	func _ready() -> void:
+		z_index = 2
+		var mat := CanvasItemMaterial.new()
+		mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+		material = mat
+
+	func _process(delta: float) -> void:
+		t += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		var a := 0.13 + 0.04 * sin(t * 1.7)
+		var top_c := Color(0.35, 0.85, 0.8, a)
+		var bottom_c := Color(0.35, 0.85, 0.8, 0.0)
+		var pts := PackedVector2Array([Vector2(-18, 0), Vector2(18, 0), Vector2(70, 170), Vector2(-70, 170)])
+		draw_polygon(pts, PackedColorArray([top_c, top_c, bottom_c, bottom_c]))

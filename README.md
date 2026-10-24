@@ -34,6 +34,7 @@ Il gioco parte qui, e qui torni dopo ogni discesa.
 - **Il Libro dei Morti** (il leggio a destra): spendi il Ka custodito per comprare capitoli, incantesimi passivi che valgono per sempre. Puoi tenerne attivi solo 2 alla volta (3 dopo aver sconfitto Ammit), quindi prima di ogni discesa scegli quali portare.
 - **La bilancia di Ma'at** al centro mostra i tuoi progressi.
 - **Il cancello** a nord: camminaci dentro per iniziare una discesa.
+- **Gli stendardi** sulla parete nord: uno per ogni dio, si colorano quando quel dio ti ha parlato per la prima volta.
 
 | Capitolo | Effetto | Costo |
 | --- | --- | --- |
@@ -116,7 +117,7 @@ I nemici colpiti barcollano per un terzo di secondo: non si muovono e non fanno 
 
 ## Le divinità parlano
 
-Ogni volta che un dio ti offre un dono, ti parla. La prima volta si presenta; poi, a ogni incontro, racconta un pezzo del suo mito (Ra e il serpente Apophis, Iside che ricompone Osiride, Thoth che vince cinque giorni alla Luna, i gatti sacri di Bastet...), una volta sola. Quando ha raccontato tutto, risponde con frasi brevi. Le storie sono in `scripts/lore.gd`: sono fatti della mitologia e della storia egizia, semplificati ma non inventati.
+Ogni volta che un dio ti offre un dono, ti parla. La prima volta si presenta; poi, a ogni incontro, racconta un pezzo del suo mito (Ra e il serpente Apophis, Iside che ricompone Osiride, Thoth che vince cinque giorni alla Luna, i gatti sacri di Bastet...), una volta sola. Quando ha raccontato tutto, risponde con frasi brevi. Le storie sono in `scripts/lore.gd`: sono fatti della mitologia e della storia egizia, semplificati ma non inventati. Ogni dio ha la sua voce (Ra solenne e cosmico, Sekhmet feroce, Thoth misurato, Bastet regale, Sobek lento, Iside materna, Set sprezzante) e parla sempre in prima persona: i fatti moderni, come le statue di Sekhmet nei musei, li racconta come profezie.
 
 ## Patti di Set
 
@@ -132,7 +133,20 @@ I suoni vengono dai pacchetti CC0 di [Kenney](https://kenney.nl/assets/category:
 
 Ogni suono può avere più varianti (`hit.ogg`, `hit_2.ogg`, ...): il gioco ne sceglie una a caso, così i colpi ripetuti non suonano tutti uguali. Per cambiare un suono basta sostituire il file con lo stesso nome; `tools/convert_sfx.py` rifà la conversione dai pacchetti originali e porta tutti i file allo stesso volume.
 
-**Volume:** nel menu di pausa, voce *Volume*, c'è un cursore per il volume generale e uno per ogni categoria (attacchi, scatto, danni subiti, nemici e boss, trappole, ricompense e menu). Le impostazioni vengono salvate.
+## Musica
+
+Quattro brani, con dissolvenza incrociata da uno all'altro (`scripts/music.gd`):
+
+| Momento | Brano |
+| --- | --- |
+| Sala del Giudizio | Desert Mystic, PolygonDan (CC0) |
+| Stanze | Desert Loop, iamoneabe (CC0) |
+| Stanza con nemici élite (dalla comparsa del primo élite) | Frozen Desert, Dizzy Crow (CC0) |
+| Ammit | Arabesque, brainiac256 (**CC-BY 3.0**, va citato nei crediti) |
+
+Alla morte la musica si abbassa, alla vittoria torna il tema della Sala. Crediti completi in `assets/music/CREDITS.md`.
+
+**Volume:** nel menu di pausa, voce *Volume*, c'è un cursore per il volume generale, uno per la musica e uno per ogni categoria di suoni (attacchi, scatto, danni subiti, nemici e boss, trappole, ricompense e menu). Le impostazioni vengono salvate.
 
 ## Fine della run
 
@@ -149,6 +163,7 @@ scenes/   hub.tscn (la Sala del Giudizio), game.tscn (la run), player.tscn, mumm
 tools/    convert_sfx.py  prepara i suoni dai pacchetti di Kenney
 scripts/  hub.gd       la Sala del Giudizio      dialogue.gd   battute di Anubi
           lore.gd      storie degli dèi e Papiri di Thoth
+          music.gd     musica di sottofondo
           chapters.gd  Libro dei Morti           ushabti.gd    la statuetta del capitolo 6
           meta.gd      salvataggio permanente     sfx.gd        suoni e volumi
           game.gd      stanze, ondate, ricompense, porte, menu dei doni

@@ -19,28 +19,28 @@ static func _ending() -> Array:
 		"room":
 			if Meta.last_room <= 2:
 				return [_pick([
-					"Di nuovo qui, e così presto. Il Duat non perdona chi corre senza guardare.",
-					"Sei tornato prima che finissi di lucidare la bilancia. Un record, credo.",
-					"Così presto? Le mummie stanno ancora ridendo.",
+					"Così presto, Scriba. Il Duat non concede nulla a chi corre senza guardare.",
+					"Sei tornato prima che la sabbia della clessidra si posasse. Rialzati.",
+					"Il tuo cuore è caduto vicino alla soglia. Non è una vergogna. Restare a terra lo sarebbe.",
 				])]
 			return [_pick([
-				"Stanza %d. Più lontano di quanto pensassi, meno di quanto serva." % Meta.last_room,
-				"Sei arrivato alla stanza %d. Il Duat comincia a ricordarsi di te." % Meta.last_room,
+				"Stanza %d. Più lontano di quanto credessi. Meno di quanto serva." % Meta.last_room,
+				"Sei giunto alla stanza %d. Il Duat comincia a riconoscere il tuo passo." % Meta.last_room,
 			])]
 		"ammit":
 			return [_pick([
-				"Ammit ti ha assaggiato. Non le sei piaciuto abbastanza da finirti, a quanto pare.",
-				"Arrivare davanti ad Ammit è già più di quanto riesca alla maggior parte dei morti. Ma non basta.",
-			]), "Le colonne la stordiscono, ma crollano. Usale bene: sono poche."]
+				"Hai visto la Divoratrice in volto. Pochi morti possono dirlo, e nessuno lo ha mai raccontato.",
+				"Ammit ti ha assaggiato, e ti ha risputato. Non eri ancora pronto per lei.",
+			]), "Le colonne la stordiscono, ma crollano. Usale con saggezza: sono poche."]
 		"win":
 			if Meta.ammit_wins <= 1:
-				return ["Hai abbattuto la Divoratrice. Non succedeva da molto, molto tempo.", "Il suo Sekhem ora scorre in te. Quando sarà pieno, lasciati diventare ciò che eri."]
+				return ["La Divoratrice è caduta. Da secoli nessun morto alzava la mano contro di lei.", "Il suo Sekhem ora scorre in te. Quando sarà colmo, lascia che ti trasformi."]
 			return [_pick([
-				"Ammit di nuovo a terra. Comincia a prenderla sul personale.",
-				"Un'altra vittoria. Ma'at ha guardato la bilancia due volte, stanotte.",
+				"Ammit è caduta di nuovo. La bilancia ha tremato, stanotte.",
+				"Un'altra vittoria. Ma'at ha guardato due volte il tuo cuore.",
 			])]
 		"abandon":
-			return ["Te ne sei andato a metà strada. Il Duat ricorda anche questo.", "Non ti giudico. Cioè, sì, ti giudico: è il mio lavoro."]
+			return ["Hai lasciato il cammino a metà. Il Duat ricorda chi si volta indietro.", "Non ti biasimo. Ma ti peso, e la bilancia annota anche questo."]
 	return []
 
 
@@ -50,25 +50,25 @@ static func _reaction() -> Array:
 	if Meta.last_end in ["room", "ammit"]:
 		match Meta.last_killer:
 			"trappola":
-				options.append("Una trappola. Nelle piramidi c'erano pozzi profondi, corridoi chiusi con blocchi di granito e porte finte, per fermare i ladri di tombe. Non per te. Eppure eccoti qui.")
+				options.append("Una trappola ti ha fermato. Nelle tombe dei re i costruttori scavavano pozzi profondi, sbarravano i corridoi con blocchi di granito, dipingevano porte che non si aprivano. Erano per i ladri. Non per te. Eppure.")
 			"mummy":
-				options.append("Una mummia. Settanta giorni di cure per finire a vagare arrabbiata nel Duat. Non prenderla sul personale: ce l'hanno con tutti.")
+				options.append("Una mummia. Settanta giorni di cure, di preghiere, di bende di lino, e ora vaga nel buio piena d'ira. Non portarle rancore. Non ricorda più chi era. Come te.")
 			"scarab":
-				options.append("Gli scarabei. Gli Egizi li adoravano: lo scarabeo che spinge la sua pallina era il sole che rinasce. Questi però non rinascono. Mordono.")
+				options.append("Gli scarabei. Gli uomini li veneravano: lo scarabeo che spinge la sua sfera era il sole che rinasce. Questi non rinascono. Divorano.")
 			"priest":
-				options.append("Un sacerdote. In vita servivano gli dèi, qui sotto servono il caos. Colpiscili prima che finiscano di pregare.")
+				options.append("Un sacerdote. In vita servì gli dèi, nel Duat serve il caos. Colpiscilo prima che la sua preghiera sia compiuta.")
 	var gods := {
-		"ra": "Puzzi di fumo. Ra ti ha preso in simpatia. Ra prende in simpatia chiunque bruci qualcosa.",
-		"sekhmet": "Sekhmet ti ha dato la sua furia. Attento: l'ultima volta che si è arrabbiata davvero, ci è voluto un lago di birra per fermarla.",
-		"thoth": "Thoth ti osserva con attenzione. Non so se sia un complimento: osserva con attenzione anche le formiche.",
-		"bastet": "Hai camminato con Bastet. Ti ha già graffiato? Lo fa solo con chi le piace.",
-		"sobek": "Sobek. Un dio paziente: aspetta immobile sott'acqua per ore. Tu invece corri sempre. Forse avete qualcosa da insegnarvi.",
-		"iside": "Iside ti ha protetto. Lei sa cosa vuol dire raccogliere i pezzi di qualcuno. Anche i tuoi.",
+		"ra": "Porti addosso l'odore della fiamma. Ra ti ha guardato con favore. Il suo favore brucia, Scriba. Ricordalo.",
+		"sekhmet": "Sekhmet ti ha prestato la sua ira. L'ultima volta che la scatenò davvero, servì un fiume di birra rossa per placarla.",
+		"thoth": "Thoth ha scritto di te nei suoi registri. Non il tuo nome vero. Quello che ti stai guadagnando.",
+		"bastet": "Hai camminato con Bastet. È una dea che sceglie chi proteggere. Non sceglie mai a caso.",
+		"sobek": "Sobek ti ha dato la sua pelle. Lui sa attendere per ore, immobile sotto l'acqua. Tu non sai attendere un istante. Imparerai.",
+		"iside": "Iside ti ha posato le mani sul capo. Lei conosce il dolore di raccogliere ciò che è stato spezzato. Anche te.",
 	}
 	if gods.has(Meta.last_god):
 		options.append(gods[Meta.last_god])
 	if Meta.last_pacts > 0:
-		options.append("Hai stretto patti con Set. Set mantiene sempre la parola. Il problema è cosa dice, la parola.")
+		options.append("Hai stretto patti con Set. Set mantiene sempre la parola data. È la parola, Scriba, che dovresti leggere meglio.")
 	if options.is_empty():
 		return []
 	return [options.pick_random()]
@@ -78,40 +78,41 @@ static func _reaction() -> Array:
 static func story() -> Array:
 	return [
 		{"id": "intro1", "if": Meta.runs == 0, "lines": [
-			"Svegliati, Scriba. Sì, dico a te. Sei morto.",
-			"Io sono Anubi. Peso i cuori dei morti contro la piuma di Ma'at. Il tuo, però, non posso pesarlo.",
-			"Qualcuno ha scalpellato il tuo nome da ogni tempio. Senza nome il cuore non ha peso, e senza peso non c'è giudizio.",
-			"Ma'at ti concede un'occasione: segui la barca di Ra attraverso le dodici ore della notte, e ritrova il tuo nome prima dell'alba.",
-			"Il cancello è a nord. Quando cadrai, e cadrai, ti riporterò qui."]},
+			"Apri gli occhi, Scriba.",
+			"Sei morto. Lo sai già, credo. Lo si sente nelle ossa.",
+			"Io sono Anubi, Signore della Terra Sacra, custode della bilancia. Ogni notte peso il cuore dei morti contro la piuma di Ma'at. Il tuo non posso pesarlo.",
+			"Qualcuno ha scalpellato il tuo nome da ogni pietra d'Egitto. Senza nome il cuore non ha peso. Senza peso, non c'è giudizio.",
+			"Ma'at ti concede una via: segui la barca di Ra attraverso le dodici ore della notte, e ritrova il tuo nome prima dell'alba.",
+			"Il cancello è a settentrione. Quando cadrai, e cadrai, io ti riporterò qui."]},
 		{"id": "book1", "if": Meta.runs >= 1 and Meta.chapters_unlocked.is_empty(), "lines": [
-			"Vedi quel leggio? È il Libro dei Morti. Ogni capitolo è una formula che ti protegge laggiù.",
-			"Costano Ka, la forza vitale che raccogli nel Duat. Non te lo regalo: te lo guadagni."]},
+			"Quel leggio custodisce il Libro dei Morti. Ogni capitolo è una formula che ti protegge nel buio.",
+			"Si pagano in Ka, la forza vitale che strappi al Duat. Gli dèi non regalano nulla. Nemmeno io."]},
 		{"id": "chapter1", "if": not Meta.chapters_unlocked.is_empty(), "lines": [
-			"Il tuo primo capitolo. I ricchi si facevano scrivere papiri lunghi più di venti metri: quello dello scriba Ani è uno dei più belli, e oggi sta in un museo di Londra.",
-			"Tu cominci da una pagina. Va bene così. Anche Ani ha cominciato da una pagina."]},
+			"Il tuo primo capitolo. I potenti si facevano dipingere papiri lunghi quanto una barca del Fiume. Quello dello scriba Ani è tra i più belli mai tracciati: lo vedo riposare in una terra straniera, oltre il mare, sotto gli occhi di mille sconosciuti.",
+			"Tu cominci da una pagina. Anche Ani cominciò da una pagina."]},
 		{"id": "papiri1", "if": Meta.runs >= 2, "lines": [
-			"Hai visto gli scaffali in fondo alla sala? Sono i Papiri di Thoth.",
-			"Ogni volta che un dio ti racconta qualcosa, Thoth ne lascia una copia lì. Leggili, ogni tanto.",
-			"Un dio che parla di sé dice sempre un po' di più di quanto vorrebbe."]},
+			"In fondo alla sala riposano i Papiri di Thoth.",
+			"Ogni parola che gli dèi ti rivolgono, Thoth la copia e la ripone lì. Leggili.",
+			"Un dio che parla di sé rivela sempre più di quanto vorrebbe."]},
 		{"id": "deaths3", "if": Meta.runs >= 3 and Meta.ammit_wins == 0, "lines": [
-			"Tre volte giù, tre volte su. Gli dèi cominciano a parlare di te.",
-			"Set ti offrirà dei patti. Diffida, ma non troppo: è l'unico che ogni notte combatte Apophis sulla barca di Ra."]},
+			"Tre volte sei disceso, tre volte sei tornato. Gli dèi hanno cominciato a pronunciare il tuo passo.",
+			"Set ti offrirà patti. Diffida di lui, ma non disprezzarlo: è il solo che ogni notte affronta Apophis a viso aperto."]},
 		{"id": "deaths5", "if": Meta.runs >= 5 and Meta.ammit_wins == 0, "lines": [
-			"Sai quanti morti mi passano davanti ogni notte? Migliaia. Nessuno torna indietro.",
-			"Tu sì. Ho smesso di chiedermi perché, e ho cominciato a chiedermi chi."]},
+			"Ogni notte migliaia di morti mi passano davanti. Nessuno è mai tornato indietro.",
+			"Tu torni. Ho smesso di domandarmi perché. Ora mi domando chi sei."]},
 		{"id": "name1", "if": Meta.ammit_wins >= 1, "lines": [
-			"Dopo la tua vittoria ho guardato nel cuore che non so pesare. C'è un frammento di nome, inciso male.",
-			"Un geroglifico solo: una canna fiorita. Non basta per leggerlo. Ma prima non c'era nulla.",
+			"Dopo la tua vittoria ho guardato dentro il cuore che non so pesare. Vi ho trovato un segno, inciso male, quasi cancellato.",
+			"Un solo geroglifico: una canna fiorita. Non basta a leggere un nome. Ma prima, lì, non c'era nulla.",
 			"Il Libro dei Morti ora ti concede un capitolo in più. E Ammit ti ha lasciato il suo Sekhem."]},
 		{"id": "deaths8", "if": Meta.runs >= 8, "lines": [
-			"Sai qual è la cosa strana, Scriba? Ogni volta che torni, la bilancia trema. Come se avesse paura di te.",
-			"Non chiedermi perché. Non lo so. E io so quasi tutto."]},
+			"Ogni volta che torni, Scriba, la bilancia trema. Come se avesse timore di te.",
+			"Non so il perché. E io conosco quasi ogni cosa."]},
 		{"id": "name2", "if": Meta.ammit_wins >= 2, "lines": [
-			"Un altro segno del tuo nome: dopo la canna, l'acqua. Due geroglifici.",
-			"Thoth dice che potrebbe essere l'inizio di cento nomi diversi. Thoth dice sempre cose del genere."]},
+			"Un altro segno del tuo nome è riaffiorato: dopo la canna, l'acqua. Due geroglifici.",
+			"Thoth dice che potrebbero essere l'inizio di cento nomi diversi. Thoth dice sempre così, quando non sa."]},
 		{"id": "deaths12", "if": Meta.runs >= 12, "lines": [
-			"Ho fatto una domanda a Ma'at, su di te. Non ha risposto.",
-			"In quattromila anni non era mai successo."]},
+			"Ho interrogato Ma'at, su di te. Non mi ha risposto.",
+			"In quattromila anni non era mai accaduto."]},
 	]
 
 
@@ -127,12 +128,12 @@ static func _next_story() -> Array:
 ## Frasi brevi per quando Anubi non ha più niente di nuovo da dire.
 static func idle() -> Array:
 	return [
-		["La piuma di Ma'at non pesa nulla. Eppure nessuno è mai riuscito a spostarla."],
-		["Thoth dice che sei uno scriba. Io dico che scrivi male: il tuo nome non si legge più."],
-		["Gli scarabei non lasciano Ka. Non perdere tempo a inseguirli."],
-		["Quando un dio ti offre un dono pesante, guarda il prezzo. Poi guardalo di nuovo."],
+		["La piuma di Ma'at non pesa nulla. Eppure nessuno è mai riuscito a smuoverla."],
+		["Thoth dice che sei uno scriba. Il tuo nome, però, nessuno sa più leggerlo."],
+		["Gli scarabei non portano Ka. Non sprecare il tuo tempo con loro."],
+		["Quando un dio ti offre un dono pesante, guarda il prezzo. Poi guardalo ancora."],
 		["Il cancello è sempre aperto. Il Duat ha sempre fame."],
-		["Se cerchi qualcosa da leggere, i Papiri di Thoth sono in fondo alla sala."],
+		["Se cerchi parole, i Papiri di Thoth sono in fondo alla sala."],
 	]
 
 

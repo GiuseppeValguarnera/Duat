@@ -22,6 +22,7 @@ const SOUNDS := {
 ## Categorie mostrate nel menu, nell'ordine in cui compaiono.
 const CATEGORIES := [
 	["generale", "Volume generale"],
+	["musica", "Musica"],
 	["attacchi", "Attacchi e colpi"],
 	["scatto", "Scatto"],
 	["personaggio", "Danni subiti"],
@@ -43,7 +44,7 @@ var volumes := {}
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	for c in CATEGORIES:
-		volumes[c[0]] = float(Meta.audio.get(c[0], 1.0))
+		volumes[c[0]] = float(Meta.audio.get(c[0], 0.7 if c[0] == "musica" else 1.0))
 	for sound in SOUNDS:
 		var variants: Array[AudioStream] = []
 		for i in range(1, 10):
