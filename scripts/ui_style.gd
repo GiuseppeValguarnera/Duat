@@ -144,7 +144,7 @@ static func papyrus_button(b: Button, accent: Color = GOLD) -> void:
 static func label(text: String, size: int, color: Color, title: bool = false, wrap_width: float = 0.0) -> Label:
 	var l := Label.new()
 	l.text = text
-	l.add_theme_font_size_override("font_size", Fx.fs(size))
+	l.add_theme_font_size_override("font_size", Fx.fs(size if title else size + 1))    # Macondo è più piccolo a parità di corpo
 	l.add_theme_color_override("font_color", color)
 	l.add_theme_font_override("font", title_font() if title else body_font())
 	if wrap_width > 0.0:
