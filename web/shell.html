@@ -2,7 +2,7 @@
 <html lang="it">
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -11,7 +11,10 @@
 		<title>Duat</title>
 		<style>
 html, body, #canvas { margin: 0; padding: 0; border: 0; }
-html, body { width: 100%; height: 100%; background: #06060c; overflow: hidden; }
+/* position: fixed + inset: 0 segue sempre lo schermo vero, anche dall'icona della Home
+   e dopo aver girato il telefono (height=device-height su iOS prendeva l'altezza in verticale) */
+html, body { position: fixed; inset: 0; width: 100%; height: 100%; background: #06060c; overflow: hidden; }
+#canvas { position: absolute; left: 0; top: 0; }
 body {
 	color: white;
 	touch-action: none;
@@ -92,6 +95,17 @@ const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 		overlay.style.display = 'flex';
 		document.getElementById('install-skip').addEventListener('click', () => { overlay.style.display = 'none'; });
 	}
+	// iOS aggiorna in ritardo le misure della finestra quando giri il telefono o apri dall'icona:
+	// rifacciamo il calcolo un paio di volte, così il gioco riempie lo schermo senza tagli
+	const refit = () => {
+		window.scrollTo(0, 0);
+		window.dispatchEvent(new Event('resize'));
+	};
+	window.addEventListener('orientationchange', () => { setTimeout(refit, 150); setTimeout(refit, 600); });
+	if (window.visualViewport) {
+		window.visualViewport.addEventListener('resize', () => setTimeout(refit, 50));
+	}
+	window.addEventListener('load', () => { setTimeout(refit, 300); setTimeout(refit, 1200); });
 	// niente zoom con il doppio tocco o con due dita
 	document.addEventListener('gesturestart', (e) => e.preventDefault());
 	document.addEventListener('dblclick', (e) => e.preventDefault());
