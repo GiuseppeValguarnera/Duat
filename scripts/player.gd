@@ -252,7 +252,9 @@ func _swing() -> void:
 				Fx.float_text(e.global_position + Vector2(0, -20), "CRITICO", Boons.god_color("bastet"))
 			e.take_hit(dmg * crit, to.normalized(), c["knock"] * Run.knock_mult(), Run.khopesh_burns())
 			if swing_index == 2 and Run.has("sobek_bite") and not e.dead:
-				e.stagger_t = maxf(e.stagger_t, Run.val("sobek_bite") * (0.25 if e.is_boss else 1.0))
+				var stun: float = Run.val("sobek_bite") * (0.25 if e.is_boss else 1.0)
+				e.stagger_t = maxf(e.stagger_t, stun)
+				e.sobek_stun_t = maxf(e.sobek_stun_t, Run.val("sobek_bite"))
 			hit_any = true
 	if swing_index == 2 and Run.has("sekhmet_roar"):
 		_shockwave(46.0, Run.val("sekhmet_roar") * Run.all_damage_mult(), 200.0, Boons.god_color("sekhmet"))

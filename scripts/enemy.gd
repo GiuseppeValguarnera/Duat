@@ -22,7 +22,8 @@ var t := 0.0
 var seed_offset := 0.0
 var contact: Area2D
 var is_boss := false
-var stagger_t := 0.0                   ## dopo un colpo il nemico barcolla: non si muove e non ferisce
+var stagger_t := 0.0
+var sobek_stun_t := 0.0                ## stordito dal Morso di Sobek (per la Forza del Fiume)                   ## dopo un colpo il nemico barcolla: non si muove e non ferisce
 
 
 func _ready() -> void:
@@ -49,6 +50,7 @@ func _physics_process(delta: float) -> void:
 	if player != null and not player.dead:
 		to = player.global_position - global_position
 
+	sobek_stun_t = maxf(0.0, sobek_stun_t - delta)
 	if stagger_t > 0.0:
 		stagger_t -= delta
 		velocity = knock
@@ -109,6 +111,8 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 	if dead:
 		return
 	dmg *= Run.jackal_mult(hp / max_hp) * _damage_mult()
+	if Run.has("sobek_river") and (sobek_stun_t > 0.0 or _puddle_slow() < 1.0):
+		dmg *= 1.0 + Run.val("sobek_river") / 100.0
 	hp -= dmg
 	flash_t = 0.1
 	stagger_t = maxf(stagger_t, _stagger_time())

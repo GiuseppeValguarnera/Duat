@@ -212,10 +212,6 @@ func _room_cleared() -> void:
 		trap.set_physics_process(false)
 		trap.t = 0.0
 		trap.queue_redraw()
-	if Run.has("sobek_river"):
-		Run.max_hp += Run.val("sobek_river")
-		player.max_hp = Run.max_hp
-		player.heal(Run.val("sobek_river"))
 	if Run.has("iside_heavy"):
 		player.heal(roundf(Run.max_hp * 0.15))
 	if Run.has("anubi_canopic"):
@@ -267,6 +263,11 @@ func _open_doors() -> void:
 	# a volte Set apre una sua porta: prende il posto di una delle altre
 	if randf() < SET_DOOR_CHANCE and not Boons.set_offers(Run.blessings).is_empty():
 		pool.insert(0, {"kind": "set"})
+	# prima del boss c'è sempre una porta che cura, insieme alle altre scelte
+	if Run.room + 1 == Run.ROOMS_PER_RUN:
+		sides = ["w", "n", "e"]
+		pool.erase({"kind": "heal"})
+		pool.insert(0, {"kind": "heal"})
 	for i in range(sides.size()):
 		_add_door(sides[i], pool[i % pool.size()])
 

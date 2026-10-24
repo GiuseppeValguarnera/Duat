@@ -74,6 +74,8 @@ func reward_description() -> String:
 		"ka":
 			return "Tesoro di Ka: +25 Ka"
 		"heal":
+			if Run.room + 1 == Run.ROOMS_PER_RUN:
+				return "Acqua del Nilo: recuperi il 30% della vita. Ultima stanza prima di Ammit"
 			return "Acqua del Nilo: recuperi il 30% della vita"
 		"boss":
 			return "Cancello della Prima Ora: Ammit, la Divoratrice, ti aspetta"
