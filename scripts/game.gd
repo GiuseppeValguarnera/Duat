@@ -95,6 +95,7 @@ func _ready() -> void:
 	_build_vignette()
 	_build_boss_bar()
 	Fx.scale_labels($UI)
+	prompt.add_theme_font_size_override("font_size", Fx.fs(8))      # la descrizione della porta, più discreta
 	var hud_bars := HudBars.new()
 	hud_bars.game = self
 	$UI.add_child(hud_bars)
@@ -770,8 +771,8 @@ func _make_card(c: Dictionary, card_w: float) -> Button:
 		body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		col.add_child(body)
 	# sul telefono lo spazio in altezza è poco: il prezzo resta nel riassunto ▼ in fondo
-	if c.get("cost", "") != "" and not (Fx.mobile and c.get("loss", "") != ""):
-		var cost := UiStyle.label("Prezzo: " + c["cost"], 8, UiStyle.INK_RED, false, inner)
+	if c.get("cost", "") != "":
+		var cost := UiStyle.label("Prezzo: " + c["cost"], 7 if Fx.mobile else 8, UiStyle.INK_RED, false, inner)
 		cost.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		col.add_child(cost)
 	# riassunto in fondo
@@ -1469,15 +1470,17 @@ func _build_boss_bar() -> void:
 	boss_name.size = Vector2(300, 12)
 	boss_bar = ColorRect.new()
 	boss_bar.color = Color(0.1, 0.02, 0.02, 0.85)
-	boss_bar.position = Vector2(170, 56 * Fx.ui)
-	boss_bar.size = Vector2(300, 6) * Fx.ui
+	# in basso al centro: in alto copriva la stanza (sul telefono più stretta, tra levetta e pulsanti)
+	var bw := 250.0 if Fx.mobile else 300.0
+	boss_bar.size = Vector2(bw, 6)
 	boss_fill = ColorRect.new()
 	boss_fill.color = Color(0.85, 0.2, 0.15)
-	boss_fill.size = Vector2(300, 6) * Fx.ui
+	boss_fill.size = Vector2(bw, 6)
 	boss_bar.add_child(boss_fill)
 	boss_bar.add_child(boss_name)
-	boss_name.position = Vector2(0, -14 * Fx.ui)
-	boss_name.size = Vector2(300 * Fx.ui, 12)
+	boss_name.position = Vector2(0, -15)
+	boss_name.size = Vector2(bw, 12)
+	boss_name.add_theme_font_override("font", UiStyle.title_font())
 	ui.add_child(boss_bar)
 	boss_bar.visible = false
 
@@ -1557,7 +1560,8 @@ func _process(_delta: float) -> void:
 		line2 += "    Maledizione: %s (ancora %d stanze)" % [Boons.SET_CURSES[c["curse"]]["desc"], c["rooms"]]
 	if line2 != "":
 		hud.text += ("\n" if hud.text != "" else "") + line2.strip_edges()
-	boss_bar.position.x = (get_viewport().get_visible_rect().size.x - boss_bar.size.x) / 2.0
+	var vsz := get_viewport().get_visible_rect().size
+	boss_bar.position = Vector2((vsz.x - boss_bar.size.x) / 2.0, vsz.y - (12.0 if Fx.mobile else 30.0))
 
 	var near := ""
 	var shop_near = null
