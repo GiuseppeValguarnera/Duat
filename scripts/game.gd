@@ -199,7 +199,6 @@ func _on_enemy_killed(e: Enemy) -> void:
 		return
 	if alive > 0 or spawning > 0:
 		return
-	Run.wave_cleared()
 	if not waves.is_empty():
 		_spawn_wave(waves.pop_front(), 0.8)
 	else:
@@ -219,6 +218,7 @@ func _room_cleared() -> void:
 	if cleared:
 		return
 	cleared = true
+	Run.room_cleared()                  # le maledizioni di Set contano le stanze ripulite
 	# a stanza ripulita le trappole si fermano
 	for trap in get_tree().get_nodes_in_group("traps"):
 		trap.set_physics_process(false)
@@ -474,7 +474,7 @@ func _show_set_menu() -> void:
 		var curse: Dictionary = Boons.SET_CURSES[o["curse"]]
 		var bless: Dictionary = Boons.SET_BLESSINGS[o["blessing"]]
 		cards.append({
-			"text": "%s\n\nPER %d ONDATE\n%s\n\nPOI, PER TUTTA LA RUN\n%s" % [bless["name"], curse["waves"], _wrap(curse["desc"], 32), _wrap(bless["desc"], 32)],
+			"text": "%s\n\nPER LE PROSSIME %d STANZE\n%s\n\nPOI, PER TUTTA LA RUN\n%s" % [bless["name"], curse["rooms"], _wrap(curse["desc"], 32), _wrap(bless["desc"], 32)],
 			"color": Boons.god_color("set"),
 			"heavy": true,
 			"on_pick": _choose_pact.bind(o["curse"], o["blessing"]),
@@ -724,7 +724,7 @@ func _boons_text() -> String:
 		t += "\n\n"
 	var set_col: String = Boons.god_color("set").to_html(false)
 	for c in Run.curses:
-		t += "[color=#%s][b]Maledizione di Set[/b] · ancora %d ondate[/color]\n%s. Poi: %s\n\n" % [set_col, c["waves"], Boons.SET_CURSES[c["curse"]]["desc"], Boons.SET_BLESSINGS[c["blessing"]]["desc"]]
+		t += "[color=#%s][b]Maledizione di Set[/b] · ancora %d stanze[/color]\n%s. Poi: %s\n\n" % [set_col, c["rooms"], Boons.SET_CURSES[c["curse"]]["desc"], Boons.SET_BLESSINGS[c["blessing"]]["desc"]]
 	for b in Run.blessings:
 		t += "[color=#%s][b]Set[/b] · %s · permanente[/color]\n%s\n\n" % [set_col, Boons.SET_BLESSINGS[b]["name"], Boons.SET_BLESSINGS[b]["desc"]]
 	return t
@@ -910,7 +910,7 @@ func _process(_delta: float) -> void:
 	if n > 0:
 		line2 = "Doni: %d (Tab per vederli)" % n
 	for c in Run.curses:
-		line2 += "    Maledizione: %s (%d ondate)" % [Boons.SET_CURSES[c["curse"]]["desc"], c["waves"]]
+		line2 += "    Maledizione: %s (ancora %d stanze)" % [Boons.SET_CURSES[c["curse"]]["desc"], c["rooms"]]
 	if line2 != "":
 		hud.text += "\n" + line2
 

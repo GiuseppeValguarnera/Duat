@@ -146,6 +146,7 @@ func _choose_attack(to: Vector2) -> void:
 	elif r < 0.82:
 		state = "spit"
 		st = spit_windup
+		Sfx.play("priest_cast", 0.03)
 	else:
 		state = "roar"
 		st = roar_windup
@@ -189,6 +190,7 @@ func _trample() -> void:
 
 
 func _spit() -> void:
+	Sfx.play("orb", 0.05)
 	var n := spit_count + (4 if enraged else 0)
 	var off := randf() * TAU
 	for i in range(n):

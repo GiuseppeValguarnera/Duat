@@ -7,7 +7,8 @@ extends Node
 ##
 ## Ogni suono appartiene a una categoria con il suo volume, regolabile dal menu di pausa.
 
-## Volume di base di ogni suono (in decibel) e la sua categoria.
+## Volume di base di ogni suono (in decibel), la sua categoria e, facoltativo, l'intervallo
+## minimo in millisecondi tra due riproduzioni (per i suoni ripetuti, come i passi).
 ## I file sono già normalizzati tra loro (vedi tools/convert_sfx.py), qui si fanno solo ritocchi.
 const SOUNDS := {
 	"swing": [-3.0, "attacchi"], "hit": [0.0, "attacchi"], "crit": [0.0, "attacchi"],
@@ -15,6 +16,9 @@ const SOUNDS := {
 	"dash": [-3.0, "scatto"],
 	"hurt": [0.0, "personaggio"], "death": [0.0, "personaggio"],
 	"kill": [-1.0, "nemici"], "bite": [0.0, "nemici"], "roar": [0.0, "nemici"], "charge": [0.0, "nemici"],
+	"scarab_step": [-6.0, "nemici", 70], "mummy_step": [-5.0, "nemici", 140],
+	"mummy_windup": [-2.0, "nemici"], "mummy_lunge": [-2.0, "nemici"],
+	"priest_cast": [-3.0, "nemici"], "orb": [-2.0, "nemici"], "orb_pop": [-6.0, "nemici", 60],
 	"spikes": [-3.0, "trappole"], "dart": [-2.0, "trappole"],
 	"pickup": [0.0, "menu"], "boon": [0.0, "menu"], "door": [0.0, "menu"], "ui": [-4.0, "menu"],
 	"book": [0.0, "menu"], "page": [0.0, "menu"],
@@ -62,14 +66,28 @@ func _ready() -> void:
 		players.append(p)
 
 
-func play(sound: String, pitch_range: float = 0.08) -> void:
+## Come play(), ma il volume cala con la distanza dal giocatore e i suoni troppo lontani
+## (fuori dallo schermo) non si sentono. Per i nemici.
+func play_at(sound: String, pos: Vector2, pitch_range: float = 0.1) -> void:
+	var player = get_tree().get_first_node_in_group("player")
+	var extra := 0.0
+	if player != null:
+		var d: float = (player as Node2D).global_position.distance_to(pos)
+		if d > 380.0:
+			return
+		extra = -12.0 * clampf(d / 380.0, 0.0, 1.0)
+	play(sound, pitch_range, extra)
+
+
+func play(sound: String, pitch_range: float = 0.08, extra_db: float = 0.0) -> void:
 	if not streams.has(sound):
 		return
 	var linear := volume_of(SOUNDS[sound][1])
 	if linear <= 0.001:
 		return
 	var now := Time.get_ticks_msec()
-	if now - int(last.get(sound, -1000)) < 35:
+	var gap: int = SOUNDS[sound][2] if SOUNDS[sound].size() > 2 else 35
+	if now - int(last.get(sound, -1000)) < gap:
 		return                            # evita di sovrapporre lo stesso suono nello stesso istante
 	last[sound] = now
 	var p := players[next]
@@ -80,7 +98,7 @@ func play(sound: String, pitch_range: float = 0.08) -> void:
 		pick = (pick + 1) % variants.size()
 	last_variant[sound] = pick
 	p.stream = variants[pick]
-	p.volume_db = SOUNDS[sound][0] + linear_to_db(linear)
+	p.volume_db = SOUNDS[sound][0] + linear_to_db(linear) + extra_db
 	p.pitch_scale = 1.0 + randf_range(-pitch_range, pitch_range)
 	p.play()
 

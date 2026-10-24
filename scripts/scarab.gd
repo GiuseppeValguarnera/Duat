@@ -5,9 +5,17 @@ extends Enemy
 @export var zigzag := 0.8
 
 
-func _behave(_delta: float, to: Vector2) -> Vector2:
+var step_t := 0.0
+
+
+func _behave(delta: float, to: Vector2) -> Vector2:
 	if to == Vector2.ZERO:
 		return Vector2.ZERO
+	# zampettio: un passetto ogni tanto, sfasato tra uno scarabeo e l'altro
+	step_t -= delta
+	if step_t <= 0.0:
+		step_t = randf_range(0.16, 0.3)
+		Sfx.play_at("scarab_step", global_position, 0.25)
 	var u := to.normalized()
 	var v := u + u.orthogonal() * sin(t * 7.0 + seed_offset) * zigzag
 	return v.normalized() * speed

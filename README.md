@@ -121,7 +121,7 @@ Ogni volta che un dio ti offre un dono, ti parla. La prima volta si presenta; po
 
 ## Patti di Set
 
-A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza scegli un patto: una **maledizione** che dura 2 ondate (nemici più veloci, più danni subiti, niente Occhio, scatto più lento) e poi una **benedizione** permanente per tutta la run. Tempesta Interiore (Sekhem) compare solo dopo aver sbloccato il Sekhem.
+A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza scegli un patto: una **maledizione** che dura le 2 stanze successive (nemici più veloci, più danni subiti, niente Occhio, scatto più lento) e poi una **benedizione** permanente per tutta la run. Tempesta Interiore (Sekhem) compare solo dopo aver sbloccato il Sekhem.
 
 ## Sekhem e Forma Divina
 
@@ -130,6 +130,8 @@ Il Sekhem è il dono di **Ammit**: si sblocca per sempre la prima volta che la s
 ## Suoni
 
 I suoni vengono dai pacchetti CC0 di [Kenney](https://kenney.nl/assets/category:Audio) (*Impact Sounds*, *Interface Sounds*, *RPG Audio*): uso libero anche commerciale. Crediti in `assets/sfx/CREDITS.md`.
+
+Anche i nemici hanno i loro suoni: lo zampettio degli scarabei, i passi trascinati e lo scricchiolio delle mummie prima dell'affondo, l'incantesimo dei sacerdoti e le loro sfere magiche. Più un nemico è lontano, più è piano; fuori dallo schermo non si sente (`Sfx.play_at`).
 
 Ogni suono può avere più varianti (`hit.ogg`, `hit_2.ogg`, ...): il gioco ne sceglie una a caso, così i colpi ripetuti non suonano tutti uguali. Per cambiare un suono basta sostituire il file con lo stesso nome; `tools/convert_sfx.py` rifà la conversione dai pacchetti originali e porta tutti i file allo stesso volume.
 

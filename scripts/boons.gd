@@ -81,12 +81,12 @@ const ALL := {
 	"thoth_heavy": {"god": "thoth", "heavy": true, "name": "Conoscenza Proibita", "desc": "L'Occhio di Horus si ricarica più del doppio più in fretta.", "cost": "Il khopesh fa il 35% di danni in meno."},
 }
 
-## Maledizioni di Set: durano un certo numero di ondate.
+## Maledizioni di Set: durano le prossime stanze (contate quando le ripulisci), poi arriva la benedizione.
 const SET_CURSES := {
-	"fast_enemies": {"desc": "I nemici sono più veloci del 30%", "waves": 2},
-	"fragile": {"desc": "Subisci il 50% di danni in più", "waves": 2},
-	"no_eye": {"desc": "Non puoi usare l'Occhio di Horus", "waves": 2},
-	"slow_dash": {"desc": "Lo scatto si ricarica in un tempo doppio", "waves": 2},
+	"fast_enemies": {"desc": "I nemici sono più veloci del 30%", "rooms": 2},
+	"fragile": {"desc": "Subisci il 50% di danni in più", "rooms": 2},
+	"no_eye": {"desc": "Non puoi usare l'Occhio di Horus", "rooms": 2},
+	"slow_dash": {"desc": "Lo scatto si ricarica in un tempo doppio", "rooms": 2},
 }
 
 ## Benedizioni di Set: arrivano quando la maledizione finisce e durano tutta la run.

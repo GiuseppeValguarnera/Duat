@@ -25,6 +25,13 @@ MAP = {
   "boon":   (g(U+"confirmation_*.ogg"), "", -18),
   "door":   (g(R+"doorOpen_*.ogg"), "", -19),
   "ui":     (g(U+"tick_*.ogg"), "", -22),
+  "scarab_step":  (g(U+"scratch_00[1-3].ogg"), "asetrate=44100*1.3,aresample=44100", -24),
+  "mummy_step":   (g(I+"footstep_carpet_00[0-4].ogg"), "asetrate=44100*0.7,aresample=44100", -24),
+  "mummy_windup": (g(R+"creak[13].ogg"), "asetrate=44100*0.85,aresample=44100", -20),
+  "mummy_lunge":  (g(R+"clothBelt*.ogg"), "atempo=1.6", -19),
+  "priest_cast":  (g(U+"maximize_00[1-3].ogg"), "asetrate=44100*0.6,aresample=44100,aecho=0.8:0.6:80|160:0.4|0.25", -20),
+  "orb":          (g(U+"bong_001.ogg"), "asetrate=44100*0.5,aresample=44100,aecho=0.8:0.7:60|120:0.5|0.3", -19),
+  "orb_pop":      (g(U+"minimize_00[1-2].ogg"), "asetrate=44100*0.8,aresample=44100", -24),
   "book":   (g(R+"bookOpen.ogg"), "", -19),
   "page":   (g(R+"bookFlip*.ogg"), "", -19),
 }

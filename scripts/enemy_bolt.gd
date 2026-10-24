@@ -40,6 +40,8 @@ func _on_area_entered(area: Area2D) -> void:
 func _on_body_entered(body: Node) -> void:
 	if body is StaticBody2D:
 		Fx.burst(global_position, Color(0.85, 0.4, 1.0), 6, 60.0)
+		if style == "orb":
+			Sfx.play_at("orb_pop", global_position, 0.2)
 		queue_free()
 
 

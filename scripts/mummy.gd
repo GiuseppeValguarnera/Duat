@@ -8,6 +8,7 @@ extends Enemy
 @export var lunge_time := 0.28
 
 var state := "chase"
+var step_t := 0.0
 var st := 0.0
 var lunge_dir := Vector2.RIGHT
 
@@ -22,7 +23,12 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				state = "windup"
 				st = windup_time
 				lunge_dir = to.normalized()
+				Sfx.play_at("mummy_windup", global_position, 0.12)
 				return Vector2.ZERO
+			step_t -= delta
+			if step_t <= 0.0:
+				step_t = randf_range(0.45, 0.6)
+				Sfx.play_at("mummy_step", global_position, 0.15)
 			return to.normalized() * speed * (0.85 + 0.2 * sin(t * 3.0))
 		"windup":
 			# segue il giocatore solo nella prima parte dell'avviso, poi la direzione è fissa
@@ -31,6 +37,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			if st <= 0.0:
 				state = "lunge"
 				st = lunge_time
+				Sfx.play_at("mummy_lunge", global_position, 0.1)
 			return Vector2.ZERO
 		"lunge":
 			if st <= 0.0:

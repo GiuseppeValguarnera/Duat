@@ -30,6 +30,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		return Vector2.ZERO
 	if cd <= 0.0:
 		casting = windup
+		Sfx.play_at("priest_cast", global_position, 0.1)
 		cd = fire_every + randf() * 0.6
 		aim_dir = to.normalized()
 		return Vector2.ZERO
@@ -54,6 +55,7 @@ func _on_hit(_dmg: float) -> void:
 
 
 func _fire() -> void:
+	Sfx.play_at("orb", global_position, 0.15)
 	var bolt: Area2D = BoltScript.new()
 	bolt.direction = aim_dir
 	bolt.speed = bolt_speed

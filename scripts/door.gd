@@ -70,7 +70,7 @@ func reward_description() -> String:
 		"boon":
 			return "Dono di %s: scegli uno dei suoi poteri" % Boons.god_name(reward["god"])
 		"set":
-			return "Patto di Set: entrare costa 10 vita. Una maledizione per qualche ondata, poi un potere per tutta la run"
+			return "Patto di Set: entrare costa 10 vita. Una maledizione per 2 stanze, poi un potere per tutta la run"
 		"ka":
 			return "Tesoro di Ka: +25 Ka"
 		"heal":

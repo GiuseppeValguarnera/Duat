@@ -15,7 +15,7 @@ var ka := 0
 var room := 0
 var boons := {}                       # id -> livello
 var blessings: Array[String] = []     # benedizioni di Set ottenute
-var curses: Array = []                # [{"curse", "waves", "blessing"}]
+var curses: Array = []                # [{"curse", "rooms", "blessing"}]
 var sekhem := 0.0
 var divine := false                   # true durante la Forma Divina
 var revived := false                  # Protezione di Bastet già usata in questa run
@@ -88,7 +88,7 @@ func add_boon(id: String) -> void:
 # --- patti di Set -----------------------------------------------------------------
 
 func add_pact(curse: String, blessing: String) -> void:
-	curses.append({"curse": curse, "waves": Boons.SET_CURSES[curse]["waves"], "blessing": blessing})
+	curses.append({"curse": curse, "rooms": Boons.SET_CURSES[curse]["rooms"], "blessing": blessing})
 
 
 func cursed(curse: String) -> bool:
@@ -98,12 +98,12 @@ func cursed(curse: String) -> bool:
 	return false
 
 
-## Da chiamare a ogni ondata ripulita: le maledizioni scadono e arrivano le benedizioni.
-func wave_cleared() -> void:
+## Da chiamare a ogni stanza ripulita: le maledizioni scadono e arrivano le benedizioni.
+func room_cleared() -> void:
 	var still := []
 	for c in curses:
-		c["waves"] -= 1
-		if c["waves"] <= 0:
+		c["rooms"] -= 1
+		if c["rooms"] <= 0:
 			grant_blessing(c["blessing"])
 		else:
 			still.append(c)
