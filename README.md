@@ -43,20 +43,28 @@ Il gioco parte qui, e qui torni dopo ogni discesa.
 
 - **Anubi** parla con te: commenta com'è andata l'ultima discesa (chi ti ha ucciso, quale dio hai seguito, se hai stretto patti con Set) e, man mano che muori o vinci, racconta la storia del tuo nome scalpellato. Se gli parli ancora, ti spiega il giudizio dei morti: la pesatura del cuore, Ma'at, i 42 giudici, le parti dell'anima. Le battute sono in `scripts/dialogue.gd`.
 - **I Papiri di Thoth** (lo scaffale in basso a destra): l'archivio di tutto quello che gli dèi ti hanno raccontato, diviso per dio, più le lezioni di Anubi e la storia dei capitoli che hai comprato. Le storie non ancora ascoltate restano sigillate.
-- **Il Libro dei Morti** (il leggio a destra): spendi il Ka custodito per comprare capitoli, incantesimi passivi che valgono per sempre. Puoi tenerne attivi solo 2 alla volta (3 dopo aver sconfitto Ammit), quindi prima di ogni discesa scegli quali portare.
+- **Il Libro dei Morti** (il leggio a destra): spendi il Ka custodito per comprare capitoli, incantesimi passivi che valgono per sempre. Puoi tenerne attivi solo 2 alla volta (3 dopo aver sconfitto Ammit, fino a 5 con le Lacrime di Iside), quindi prima di ogni discesa scegli quali portare.
 - **La bilancia di Ma'at** al centro mostra i tuoi progressi.
 - **Il cancello** a nord: camminaci dentro per iniziare una discesa.
 - **Gli stendardi** sulla parete nord: uno per ogni dio, si colorano quando quel dio ti ha parlato per la prima volta.
 
-| Capitolo | Effetto | Costo |
+| Capitolo | Effetto (livello 1 → 2 → 3) | Costo in Ka (livello 1 / 2 / 3) |
 | --- | --- | --- |
-| 17 · Uscire al giorno | +15 vita massima | 60 Ka |
-| 89 · Il ritorno del Ba | Occhio di Horus 15% più rapido | 60 Ka |
-| 154 · Il corpo incorrotto | L'Acqua del Nilo cura il 40% invece del 30% | 70 Ka |
-| 99 · La barca di Ra | Tesori di Ka +30% | 80 Ka |
-| 125 · La confessione negativa | +15% danni sopra l'80% di vita | 100 Ka |
-| 30 · Il cuore che non testimonia | Una volta per discesa sopravvivi a un colpo mortale | 120 Ka |
-| 6 · Gli Ushabti | Una statuetta ti segue e colpisce il nemico più vicino ogni 2 s | 140 Ka |
+| 17 · Uscire al giorno | Inizi ogni discesa con +15 → 25 → 35 vita massima. | 60 / 140 / 260 |
+| 89 · Il ritorno del Ba | L'Occhio di Horus si ricarica il 15 → 22 → 30% più in fretta. | 60 / 140 / 260 |
+| 56 · Il soffio d'aria | Lo scatto si ricarica il 10 → 18 → 25% più in fretta. | 60 / 140 / 260 |
+| 154 · Il corpo incorrotto | L'Acqua del Nilo ti cura del 40 → 45 → 50% invece che del 30%. | 70 / 150 / 280 |
+| 99 · La barca di Ra | I tesori di Ka valgono il 30 → 45 → 60% in più. | 80 / 170 / 300 |
+| 110 · I Campi di Iaru | Inizi ogni discesa con 15 → 25 → 40 Ka da spendere dal Traghettatore. | 80 / 170 / 300 |
+| 94 · Calamaio e tavolozza | Al Traghettatore tutto costa il 15 → 25 → 35% in meno. | 70 / 150 / 280 |
+| 42 · Ogni membro è un dio | L'Occhio di Horus fa il 10 → 18 → 25% di danni in più. | 80 / 170 / 300 |
+| 151 · La maschera | In ogni stanza il primo colpo che ricevi fa il 40 → 60 → 80% di danni in meno. | 90 / 190 / 320 |
+| 125 · La confessione negativa | Finché hai più dell'80% della vita fai il 15 → 22 → 30% di danni in più. | 100 / 200 / 340 |
+| 30 · Il cuore che non testimonia | Una volta per discesa sopravvivi a un colpo mortale con il 5 → 20 → 35% della vita. | 120 / 220 / 360 |
+| 6 · Gli Ushabti | Una statuetta servitrice ti segue e colpisce il nemico più vicino ogni 2.0 → 1.6 → 1.3 secondi. | 140 / 240 / 380 |
+| 72 · Le porte aperte | Dopo ogni stanza si aprono sempre tre porte. | 220 |
+
+Ogni capitolo ha fino a 3 livelli: comprato il primo, sulla pagina compare *Potenzia*; il livello 3 chiede anche **1 Lacrima di Iside**. Le Lacrime sono la moneta rara: 1 dal Serpente della Porta, 2 da Ammit, custodite subito anche se poi cadi. Con le Lacrime si comprano anche **posti in più** nel Libro (3 e poi 5 Lacrime).
 
 I numeri sono quelli dei veri capitoli del Libro dei Morti, e ognuno nel Libro mostra anche a cosa serviva davvero. Per aggiungerne uno: una riga in `ALL` in `scripts/chapters.gd`, poi l'effetto dove serve usando `Run.chap("id")`.
 

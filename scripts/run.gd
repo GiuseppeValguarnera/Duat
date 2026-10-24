@@ -24,6 +24,7 @@ var blood_kills := 0
 var kills := 0                        # statistiche per il riepilogo di fine run
 var damage_dealt := 0.0
 var start_msec := 0
+var mask_used := false                ## Capitolo 151: il primo colpo della stanza è già stato attutito
 var heart_used := false               # Capitolo 30 già usato in questa discesa
 var in_hub := false                   # true nella Sala del Giudizio
 var last_hit := ""                    # chi ti ha colpito per ultimo (per i commenti di Anubi)
@@ -49,9 +50,11 @@ func new_run() -> void:
 	start_msec = Time.get_ticks_msec()
 	heart_used = false
 	last_hit = ""
+	mask_used = false
 	if chap("c17"):
-		max_hp += 15.0
+		max_hp += Chapters.value("c17")
 		hp = max_hp
+	ka = int(Chapters.value("c110"))         # Campi di Iaru: Ka per il Traghettatore
 
 
 # --- salvataggio a metà discesa ---------------------------------------------------
@@ -202,7 +205,7 @@ func chap(id: String) -> bool:
 func all_damage_mult() -> float:
 	var m := 1.2 if has("set_might") else 1.0
 	if chap("c125") and hp > max_hp * 0.8:
-		m *= 1.15
+		m *= 1.0 + Chapters.value("c125") / 100.0
 	return m
 
 
@@ -228,6 +231,7 @@ func eye_damage_mult() -> float:
 	m *= 1.0 + val("horus_seek") / 100.0
 	if has("horus_heavy"):
 		m *= 2.0
+	m *= 1.0 + Chapters.value("c42") / 100.0
 	return m
 
 
@@ -245,7 +249,7 @@ func eye_cooldown_mult() -> float:
 	if has("anubi_mouth"):
 		m *= 1.0 - val("anubi_mouth") / 100.0
 	if chap("c89"):
-		m *= 0.85
+		m *= 1.0 - Chapters.value("c89") / 100.0
 	return m
 
 
@@ -293,6 +297,7 @@ func dash_cooldown_mult() -> float:
 	m *= 1.0 - val("bastet_step") / 100.0
 	if has("ra_dawn"):
 		m *= 1.4
+	m *= 1.0 - Chapters.value("c56") / 100.0
 	return m
 
 
@@ -300,7 +305,7 @@ func damage_taken_mult() -> float:
 	var m := 1.5 if cursed("fragile") else 1.0
 	m *= 1.0 + 0.2 * Weights.rank("zanne")
 	if has("anubi_scale"):
-		m *= 1.1
+		m *= 1.15
 	m *= 1.0 - val("sobek_skin") / 100.0
 	m *= low_hp_guard()
 	if has("anubi_linen"):
@@ -345,12 +350,12 @@ func enemy_speed_mult() -> float:
 
 ## Moltiplicatore dei tesori di Ka (porte "Tesoro di Ka").
 func treasure_mult() -> float:
-	return ka_mult() * (1.3 if chap("c99") else 1.0)
+	return ka_mult() * (1.0 + Chapters.value("c99") / 100.0)
 
 
 ## Quanto cura l'Acqua del Nilo, in frazione della vita massima.
 func nile_heal() -> float:
-	var h := 0.4 if chap("c154") else 0.3
+	var h := Chapters.value("c154") / 100.0 if chap("c154") else 0.3
 	if Weights.rank("avarizia") > 0:
 		h *= 0.5
 	return h

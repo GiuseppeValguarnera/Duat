@@ -347,6 +347,7 @@ func start_room(reward: Dictionary) -> void:
 	room_gen += 1
 	boss = null
 	current_reward = reward
+	Run.mask_used = false
 	if reward.get("kind", "") != "tutorial":
 		Run.save_descent(reward, {"shops": shops_visited, "bonus": bonus_boon})
 	cleared = false
@@ -398,6 +399,7 @@ func start_room(reward: Dictionary) -> void:
 	player.died.connect(_on_player_died)
 	if Run.chap("c6"):
 		var helper := UshabtiScript.new()
+		helper.every = Chapters.value("c6")
 		world.add_child(helper)
 		helper.global_position = player.global_position + Vector2(-18, -6)
 
@@ -537,10 +539,12 @@ func _room_cleared() -> void:
 	if current_reward.get("kind", "") == "guardian":
 		# premio del guardiano: un dono che sale di due livelli invece di uno
 		bonus_boon = true
+		Meta.tears += 1                       # una Lacrima di Iside, custodita subito anche se poi cadi
+		Meta.save()
 		var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
 		if not gods.is_empty():
 			current_reward = {"kind": "boon", "god": gods.pick_random()}
-			_banner("Il Serpente della Porta è caduto", "Il prossimo dono sale di un livello in più", Color(0.6, 1, 0.5))
+			_banner("Il Serpente della Porta è caduto", "+1 Lacrima di Iside  ·  il prossimo dono sale di un livello in più", Color(0.6, 1, 0.5))
 		else:
 			current_reward = {"kind": "ka"}
 	if current_reward.get("kind", "none") == "none":
@@ -588,6 +592,8 @@ func _open_doors() -> void:
 		_add_door("n", {"kind": "guardian"})
 		return
 	var sides: Array = [["w", "n", "e"], ["w", "e"], ["w", "n"], ["n", "e"]].pick_random()
+	if Run.chap("c72"):
+		sides = ["w", "n", "e"]              # Le porte aperte
 	var pool := []
 	var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
 	gods.shuffle()
@@ -795,14 +801,19 @@ func _make_card(c: Dictionary, card_w: float) -> Button:
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(spacer)
+	var lines := []
 	if c.get("gain", "") != "":
-		var g := UiStyle.label("▲ " + c["gain"], 9, UiStyle.INK_GREEN, true, inner)
-		g.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		col.add_child(g)
+		lines.append(UiStyle.label("▲ " + c["gain"], 9, UiStyle.INK_GREEN, true, inner))
 	if c.get("loss", "") != "":
 		var l := UiStyle.label("▼ " + c["loss"], 9, UiStyle.INK_RED, true, inner)
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		col.add_child(l)
+		# nei patti di Set la maledizione viene prima: la si legge per prima
+		if c.get("loss_first", false):
+			lines.push_front(l)
+		else:
+			lines.append(l)
+	for ln in lines:
+		ln.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(ln)
 	# l'altezza giusta si conosce solo dopo che il testo è andato a capo
 	var fit := func() -> void:
 		if is_instance_valid(btn) and is_instance_valid(col):
@@ -943,7 +954,8 @@ func _show_set_menu() -> void:
 			"tag": "Patto di Set", "name": bless["name"],
 			"body": "",
 			"cost": "",
-			"gain": bless["desc"], "loss": "%s (%d stanze)" % [curse["desc"], curse["rooms"]],
+			"gain": "Poi per sempre: " + bless["desc"], "loss": "Prima, per %d stanze: %s" % [curse["rooms"], curse["desc"]],
+			"loss_first": true,
 			"color": Boons.god_color("set"), "heavy": true,
 			"on_pick": _choose_pact.bind(o["curse"], o["blessing"]),
 		})
@@ -960,7 +972,8 @@ func _show_set_menu() -> void:
 func _choose_pact(curse: String, blessing: String) -> void:
 	Run.add_pact(curse, blessing)
 	_close_choice()
-	_boon_fx(Boons.god_color("set"), "Patto di Set", Boons.SET_CURSES[curse]["desc"])
+	var cdesc: Dictionary = Boons.SET_CURSES[curse]
+	_boon_fx(Boons.god_color("set"), "Maledizione di Set: %d stanze" % cdesc["rooms"], "%s. Poi: %s" % [cdesc["desc"], Boons.SET_BLESSINGS[blessing]["desc"]])
 	_open_doors()
 
 
@@ -1386,7 +1399,7 @@ func _start_shop() -> void:
 		node.kind = it["kind"]
 		node.title = it["title"]
 		node.desc = it["desc"]
-		node.price = it["price"]
+		node.price = roundi(it["price"] * (1.0 - Chapters.value("c94") / 100.0))
 		node.position = Vector2(cx + (i - (items.size() - 1) / 2.0) * 90.0, mid_y + 50.0)
 		world.add_child(node)
 		shop_items.append(node)
@@ -1462,6 +1475,7 @@ func _boss_defeated() -> void:
 		if c is Enemy and not c.dead:
 			c.die()
 	Meta.ammit_wins += 1
+	Meta.tears += 2                       # Lacrime di Iside: la moneta rara, custodita subito
 	if Weights.unlocked() and not Meta.feather and Weights.total() > Meta.best_weight:
 		Meta.best_weight = Weights.total()
 	var first_win := not Meta.sekhem_unlocked
@@ -1559,6 +1573,7 @@ func _victory() -> void:
 			c.queue_free()
 	message.visible = true
 	var extra := "\nNuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti" if Meta.ammit_wins == 1 else ""
+	extra += "\n+2 Lacrime di Iside (ne hai %d)" % Meta.tears
 	Meta.last_end = "win"
 	message.text = "Hai sconfitto Ammit!\nLa Prima Ora è superata.%s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio" % [extra, _end_run_summary()]
 

@@ -91,10 +91,10 @@ static func story() -> Array:
 			"Qualcuno ha scalpellato il tuo nome da ogni pietra d'Egitto. Senza nome il cuore non ha peso. Senza peso, non c'è giudizio.",
 			"Ma'at ti concede una via: segui la barca di Ra attraverso le dodici ore della notte, e ritrova il tuo nome prima dell'alba.",
 			"Il cancello è a settentrione. Quando cadrai, e cadrai, io ti riporterò qui."]},
-		{"id": "book1", "if": Meta.runs >= 1 and Meta.chapters_unlocked.is_empty(), "lines": [
+		{"id": "book1", "if": Meta.runs >= 1 and Meta.chapter_levels.is_empty(), "lines": [
 			"Quel leggio custodisce il Libro dei Morti. Ogni capitolo è una formula che ti protegge nel buio.",
 			"Si pagano in Ka, la forza vitale che strappi al Duat. Gli dèi non regalano nulla. Nemmeno io."]},
-		{"id": "chapter1", "if": not Meta.chapters_unlocked.is_empty(), "lines": [
+		{"id": "chapter1", "if": not Meta.chapter_levels.is_empty(), "lines": [
 			"Il tuo primo capitolo. I potenti si facevano dipingere papiri lunghi quanto una barca del Fiume. Quello dello scriba Ani è tra i più belli mai tracciati: lo vedo riposare in una terra straniera, oltre il mare, sotto gli occhi di mille sconosciuti.",
 			"Tu cominci da una pagina. Anche Ani cominciò da una pagina."]},
 		{"id": "papiri1", "if": Meta.runs >= 2, "lines": [

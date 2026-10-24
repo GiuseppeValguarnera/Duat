@@ -10,7 +10,9 @@ var ammit_wins := 0
 var ka_bank := 0                      ## Ka custodito tra una run e l'altra (servirà nella Sala del Giudizio)
 var runs := 0
 var audio := {}                       ## volumi delle categorie di suoni (0..1), vedi sfx.gd
-var chapters_unlocked: Array = []     ## capitoli del Libro dei Morti comprati
+var chapter_levels := {}             ## livello di ogni capitolo comprato del Libro dei Morti
+var tears := 0                        ## Lacrime di Iside: la moneta rara dei boss
+var extra_slots := 0                  ## posti in più nel Libro comprati con le Lacrime
 var chapters_equipped: Array = []     ## capitoli attivi (limitati da Chapters.slots())
 var dialogue_seen: Array = []         ## battute di Anubi già ascoltate
 var last_end := ""                    ## com'è finita l'ultima discesa: "room", "ammit", "win"
@@ -34,7 +36,12 @@ func _ready() -> void:
 		ka_bank = cfg.get_value("progressi", "ka", 0)
 		runs = cfg.get_value("progressi", "run", 0)
 		audio = cfg.get_value("impostazioni", "audio", {})
-		chapters_unlocked = cfg.get_value("libro", "comprati", [])
+		chapter_levels = cfg.get_value("libro", "livelli", {})
+		for id in cfg.get_value("libro", "comprati", []):       # salvataggi vecchi: livello 1
+			if not chapter_levels.has(id):
+				chapter_levels[id] = 1
+		tears = cfg.get_value("libro", "lacrime", 0)
+		extra_slots = cfg.get_value("libro", "posti", 0)
 		chapters_equipped = cfg.get_value("libro", "attivi", [])
 		dialogue_seen = cfg.get_value("storia", "battute", [])
 		last_end = cfg.get_value("storia", "ultima_fine", "")
@@ -59,7 +66,9 @@ func save() -> void:
 	cfg.set_value("progressi", "ka", ka_bank)
 	cfg.set_value("progressi", "run", runs)
 	cfg.set_value("impostazioni", "audio", audio)
-	cfg.set_value("libro", "comprati", chapters_unlocked)
+	cfg.set_value("libro", "livelli", chapter_levels)
+	cfg.set_value("libro", "lacrime", tears)
+	cfg.set_value("libro", "posti", extra_slots)
 	cfg.set_value("libro", "attivi", chapters_equipped)
 	cfg.set_value("storia", "battute", dialogue_seen)
 	cfg.set_value("storia", "ultima_fine", last_end)

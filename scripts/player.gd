@@ -387,6 +387,9 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> boo
 	if dead or invuln_t > 0.0 or dash_t > 0.0:
 		return false
 	amount *= Run.damage_taken_mult()
+	if Run.chap("c151") and not Run.mask_used:
+		Run.mask_used = true                 # la maschera attutisce il primo colpo della stanza
+		amount *= 1.0 - Chapters.value("c151") / 100.0
 	if shield > 0.0:
 		var absorbed := minf(shield, amount)
 		shield -= absorbed
@@ -415,7 +418,7 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> boo
 	Fx.damage_number(global_position, amount, Color(1, 0.4, 0.3))
 	if hp <= 0.0 and Run.chap("c30") and not Run.heart_used:
 		Run.heart_used = true
-		hp = 1.0
+		hp = maxf(1.0, roundf(max_hp * Chapters.value("c30") / 100.0))
 		invuln_t = 1.5
 		Fx.float_text(global_position + Vector2(0, -20), "Il cuore non testimonia", Color(0.62, 0.56, 0.92))
 		Fx.burst(global_position + Vector2(0, -10), Color(0.62, 0.56, 0.92), 30, 140.0)

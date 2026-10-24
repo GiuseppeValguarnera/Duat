@@ -19,28 +19,29 @@ def env(dur, attack, release):
 
 V = {}
 
-# Spuntoni: la lastra che scatta (tonfo di pietra) + le lame che escono (stridio metallico breve)
+# Spuntoni: la lastra che scatta (tonfo di pietra) + le lame che escono (stridio metallico breve).
+# Niente bassi profondi: sugli altoparlanti del telefono non si sentirebbero.
 V["spikes"] = []
 for k, (pitch, hp) in enumerate([(1.0, 2600), (1.12, 3000), (0.9, 2300)]):
     V["spikes"].append(([I + "impactWood_light_00%d.ogg" % k, R + "drawKnife%d.ogg" % (k + 1), noise("white", 0.12)],
-        "[0:a]aformat=sample_rates=%d:channel_layouts=mono,asetrate=%d*0.7,aresample=%d,lowpass=f=900,volume=1.4[thud];"
-        "[1:a]aformat=sample_rates=%d:channel_layouts=mono,asetrate=%d*%.2f,aresample=%d,atempo=1.8,atrim=0:0.2,afade=t=out:st=0.06:d=0.14,highpass=f=1800,lowpass=f=6500,volume=0.55,adelay=25[blade];"
-        "[2:a]highpass=f=%d,lowpass=f=7000,%s,volume=0.2,adelay=20[hiss];"
-        "[thud][blade][hiss]amix=inputs=3:normalize=0,atrim=0:0.32" % (SR, SR, SR, SR, SR, pitch, SR, hp, env(0.12, 0.005, 0.1)), -24))
+        "[0:a]aformat=sample_rates=%d:channel_layouts=mono,asetrate=%d*0.9,aresample=%d,volume=1.2[thud];"
+        "[1:a]aformat=sample_rates=%d:channel_layouts=mono,asetrate=%d*%.2f,aresample=%d,atempo=1.8,atrim=0:0.22,afade=t=out:st=0.08:d=0.14,highpass=f=1500,lowpass=f=7000,volume=1.0,adelay=20[blade];"
+        "[2:a]highpass=f=%d,lowpass=f=7000,%s,volume=0.25,adelay=15[hiss];"
+        "[thud][blade][hiss]amix=inputs=3:normalize=0,atrim=0:0.34" % (SR, SR, SR, SR, SR, pitch, SR, hp, env(0.12, 0.005, 0.1)), -19))
 
-# Mummie: niente cigolii. Bende secche che sfregano e un rantolo basso prima dell'affondo.
+# Mummie: niente cigolii. Bende secche che sfregano e un rantolo raschiato prima dell'affondo.
 V["mummy_windup"] = []
-for k, f0 in enumerate([82, 74]):
-    V["mummy_windup"].append(([R + "cloth%d.ogg" % (k + 1), noise("brown", 0.7), sine(f0, 0.7), sine(f0 * 1.5, 0.7)],
-        "[0:a]aformat=sample_rates=%d:channel_layouts=mono,asetrate=%d*0.6,aresample=%d,lowpass=f=1400,volume=1.2[cloth];"
-        "[1:a]lowpass=f=420,%s,volume=0.9[breath];"
-        "[2:a][3:a]amix=inputs=2:normalize=0,tremolo=f=11:d=0.7,%s,volume=0.18[groan];"
-        "[cloth][breath][groan]amix=inputs=3:normalize=0,atrim=0:0.75" % (SR, SR, SR, env(0.7, 0.25, 0.3), env(0.7, 0.2, 0.35)), -21))
+for k, f0 in enumerate([150, 132]):
+    V["mummy_windup"].append(([R + "cloth%d.ogg" % (k + 1), noise("pink", 0.7), sine(f0, 0.7), sine(f0 * 2, 0.7), sine(f0 * 3, 0.7)],
+        "[0:a]aformat=sample_rates=%d:channel_layouts=mono,asetrate=%d*0.8,aresample=%d,lowpass=f=4000,volume=1.3[cloth];"
+        "[1:a]highpass=f=300,lowpass=f=1800,%s,volume=0.9[breath];"
+        "[2:a][3:a][4:a]amix=inputs=3:normalize=0,tremolo=f=13:d=0.8,%s,volume=0.22[groan];"
+        "[cloth][breath][groan]amix=inputs=3:normalize=0,atrim=0:0.75" % (SR, SR, SR, env(0.7, 0.25, 0.3), env(0.7, 0.2, 0.35)), -18))
 V["mummy_step"] = []
 for k in range(4):
-    V["mummy_step"].append(([I + "footstep_carpet_00%d.ogg" % k, noise("brown", 0.18)],
-        "[0:a]aformat=sample_rates=%d:channel_layouts=mono,asetrate=%d*0.55,aresample=%d,lowpass=f=700[s];"
-        "[1:a]lowpass=f=500,%s,volume=0.6[drag];[s][drag]amix=inputs=2:normalize=0" % (SR, SR, SR, env(0.18, 0.03, 0.12)), -27))
+    V["mummy_step"].append(([I + "footstep_carpet_00%d.ogg" % k, noise("pink", 0.18)],
+        "[0:a]aformat=sample_rates=%d:channel_layouts=mono,asetrate=%d*0.75,aresample=%d,lowpass=f=2500[s];"
+        "[1:a]highpass=f=300,lowpass=f=1500,%s,volume=0.5[drag];[s][drag]amix=inputs=2:normalize=0" % (SR, SR, SR, env(0.18, 0.03, 0.12)), -23))
 
 # Scorpioni di Serket: zampette di chitina, la coda che si carica (raspa), il pungiglione
 V["scorpion_step"] = []
@@ -103,9 +104,8 @@ for name, variants in V.items():
             else:
                 assert glob.glob(src), src
                 args += ["-i", src]
-        fc = flt + "[out]" if not flt.rstrip().endswith("]") else flt
-        if "[out]" not in fc:
-            fc += "[out]"
+        # via i bassi sotto i 150 Hz: il telefono non li riproduce e falserebbero il volume
+        fc = flt + ",highpass=f=150[out]"
         args += ["-filter_complex", fc, "-map", "[out]", "-ac", "1", "-ar", str(SR), tmp]
         subprocess.run(args, check=True)
         mean, peak = stats(tmp)

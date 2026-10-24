@@ -21,6 +21,8 @@ var book_kind := ""
 var page_title: Label
 var page_body: Label
 var page_lore: Label
+var page_action: Button                 ## pulsante sulla pagina di destra (per esempio: potenzia il capitolo)
+var page_action_cb := Callable()
 var papiri_entries: VBoxContainer
 var codex: Array = []
 var t := 0.0
@@ -297,10 +299,16 @@ func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxCont
 	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	row.add_theme_constant_override("separation", 12)
 	outer.add_child(row)
+	# elenco a sinistra dentro uno scorrimento: i capitoli sono tanti e il telefono è basso
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(left_width, 0)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	row.add_child(scroll)
 	var left := VBoxContainer.new()
-	left.custom_minimum_size = Vector2(left_width, 0)
+	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	left.add_theme_constant_override("separation", 3)
-	row.add_child(left)
+	scroll.add_child(left)
 	var right := VBoxContainer.new()
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	right.add_theme_constant_override("separation", 6)
@@ -308,6 +316,14 @@ func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxCont
 	page_title = _text_label(right, 12, Color(0.94, 0.72, 0.3))
 	page_body = _text_label(right, 10, Color(0.95, 0.9, 0.78))
 	page_lore = _text_label(right, 9, Color(0.72, 0.68, 0.9))
+	page_action = Button.new()
+	page_action.visible = false
+	page_action.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	page_action.add_theme_font_size_override("font_size", Fx.fs(10))
+	page_action.pressed.connect(func() -> void:
+		if page_action_cb.is_valid():
+			page_action_cb.call())
+	right.add_child(page_action)
 	var close := Button.new()
 	close.text = "Chiudi"
 	close.add_theme_font_size_override("font_size", Fx.fs(10))
@@ -349,42 +365,89 @@ func _list_button(parent: Control, text: String, color: Color) -> Button:
 # ---------------------------------------------------------------- Libro dei Morti
 
 func _fill_book(focus_id: String = "") -> void:
-	var left := _frame("Il Libro dei Morti", "Ka custodito: %d    ·    Capitoli attivi: %d di %d" % [Meta.ka_bank, Meta.chapters_equipped.size(), Chapters.slots()], 250)
+	var left := _frame("Il Libro dei Morti", "Ka custodito: %d    ·    Lacrime di Iside: %d    ·    Capitoli attivi: %d di %d" % [Meta.ka_bank, Meta.tears, Meta.chapters_equipped.size(), Chapters.slots()], 260)
 	var first: Button = null
 	for id in Chapters.ALL:
 		var c: Dictionary = Chapters.ALL[id]
-		var state := "%d Ka" % c["cost"]
+		var lvl := Chapters.level(id)
+		var cost := Chapters.next_cost(id)
+		var state := "%d Ka" % cost[0]
 		var col := Color(0.95, 0.9, 0.78)
 		if Chapters.is_equipped(id):
 			state = "ATTIVO"
 			col = Color(0.62, 0.95, 0.7)
-		elif Chapters.is_unlocked(id):
+		elif lvl > 0:
 			state = "comprato"
-		elif Meta.ka_bank < int(c["cost"]):
+		elif Meta.ka_bank < cost[0]:
 			col = Color(0.6, 0.55, 0.48)
-		var b := _list_button(left, "%d · %s   [%s]" % [c["num"], c["name"], state], col)
+		var stars := ""
+		if Chapters.max_level(id) > 1 and lvl > 0:
+			stars = "  " + "●".repeat(lvl) + "○".repeat(Chapters.max_level(id) - lvl)
+		var b := _list_button(left, "%d · %s%s   [%s]" % [c["num"], c["name"], stars, state], col)
 		b.pressed.connect(_on_chapter_pressed.bind(id))
 		b.focus_entered.connect(_show_chapter.bind(id))
 		b.mouse_entered.connect(_show_chapter.bind(id))
 		if first == null or id == focus_id:
 			first = b
+	# un posto in più nel Libro, con le Lacrime di Iside
+	var sc := Chapters.slot_cost()
+	if sc > 0:
+		var sb := _list_button(left, "Un posto in più nel Libro   [%d Lacrime]" % sc, Color(0.7, 0.8, 1.0) if Meta.tears >= sc else Color(0.5, 0.52, 0.6))
+		sb.pressed.connect(_on_slot_pressed)
+		sb.focus_entered.connect(_show_slot)
+		sb.mouse_entered.connect(_show_slot)
+		if focus_id == "slot":
+			first = sb
 	first.grab_focus.call_deferred()
 
 
 func _show_chapter(id: String) -> void:
 	var c: Dictionary = Chapters.ALL[id]
-	page_title.text = "Capitolo %d · %s" % [c["num"], c["name"]]
+	var lvl := Chapters.level(id)
+	var maxl := Chapters.max_level(id)
+	page_title.text = "Capitolo %d · %s%s" % [c["num"], c["name"], "" if maxl == 1 else "  (livello %d di %d)" % [maxi(lvl, 1), maxl]]
+	var lines := [Chapters.text(id, maxi(lvl, 1))]
+	var cost := Chapters.next_cost(id)
+	if lvl > 0 and cost[0] >= 0:
+		lines.append("Livello %d: %s" % [lvl + 1, Chapters.text(id, lvl + 1)])
 	var action := ""
 	if Chapters.is_equipped(id):
 		action = "Attivo. Premi per toglierlo."
-	elif Chapters.is_unlocked(id):
+	elif lvl > 0:
 		action = "Comprato. Premi per attivarlo (posti liberi: %d)." % (Chapters.slots() - Meta.chapters_equipped.size())
-	elif Meta.ka_bank >= int(c["cost"]):
-		action = "Premi per comprarlo: %d Ka." % c["cost"]
+	elif Meta.ka_bank >= cost[0]:
+		action = "Premi per comprarlo: %d Ka." % cost[0]
 	else:
-		action = "Costa %d Ka: te ne mancano %d." % [c["cost"], int(c["cost"]) - Meta.ka_bank]
-	page_body.text = "%s\n\n%s" % [c["desc"], action]
+		action = "Costa %d Ka: te ne mancano %d." % [cost[0], cost[0] - Meta.ka_bank]
+	lines.append(action)
+	page_body.text = "\n\n".join(lines)
 	page_lore.text = c["lore"]
+	# potenziamento: pulsante a parte, così premere il capitolo resta "attiva / togli"
+	page_action.visible = lvl > 0 and cost[0] >= 0
+	if page_action.visible:
+		var price := "%d Ka" % cost[0] + (" + 1 Lacrima di Iside" if cost[1] > 0 else "")
+		page_action.text = "Potenzia al livello %d  ·  %s" % [lvl + 1, price]
+		page_action.disabled = Meta.ka_bank < cost[0] or Meta.tears < cost[1]
+		page_action_cb = func() -> void:
+			if Chapters.buy(id):
+				Sfx.play("boon", 0.0)
+				Fx.shake(2.0)
+				_fill_book(id)
+
+
+func _show_slot() -> void:
+	page_title.text = "Un posto in più nel Libro"
+	page_body.text = "Puoi tenere attivo un capitolo in più a ogni discesa.\n\nCosta %d Lacrime di Iside: ne hai %d." % [Chapters.slot_cost(), Meta.tears]
+	page_lore.text = "Le Lacrime di Iside: la dea pianse Osiride così a lungo che le sue lacrime fecero crescere il Nilo. Ogni anno, quando il fiume esondava, gli Egizi dicevano che Iside piangeva ancora. Le lasciano il Serpente della Porta (1) e Ammit (2)."
+	page_action.visible = false
+
+
+func _on_slot_pressed() -> void:
+	if Chapters.buy_slot():
+		Sfx.play("boon", 0.0)
+	else:
+		Fx.shake(2.0)
+	_fill_book("slot")
 
 
 func _on_chapter_pressed(id: String) -> void:
