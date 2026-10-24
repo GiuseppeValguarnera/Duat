@@ -101,7 +101,7 @@ func _ready() -> void:
 	var arrows := DoorArrows.new()
 	arrows.game = self
 	$UI.add_child(arrows)
-	hud.position.y = 54.0 * Fx.ui
+	hud.position.y = (44.0 if Fx.mobile else 46.0)
 	var listener := PanelListener.new()
 	listener.game = self
 	add_child(listener)
@@ -170,19 +170,23 @@ func _tut_begin() -> void:
 	Music.play("hub")
 	tut_step = -1
 	tut_panel = PanelContainer.new()
-	tut_panel.add_theme_stylebox_override("panel", UiStyle.papyrus_box(UiStyle.GOLD.darkened(0.3)))
+	var box := UiStyle.papyrus_box(UiStyle.GOLD.darkened(0.3))
+	box.content_margin_left = 7
+	box.content_margin_right = 7
+	box.content_margin_top = 4
+	box.content_margin_bottom = 4
+	tut_panel.add_theme_stylebox_override("panel", box)
 	tut_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tut_panel.modulate.a = 0.93
 	$UI.add_child(tut_panel)
 	var col := VBoxContainer.new()
 	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	col.add_theme_constant_override("separation", int(3 * Fx.ui))
+	col.add_theme_constant_override("separation", 1)
 	tut_panel.add_child(col)
-	var vw := get_viewport().get_visible_rect().size.x
-	var w := minf(400.0 * Fx.ui, vw - 120.0 * Fx.ui)
 	var top := HBoxContainer.new()
 	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(top)
-	tut_title = UiStyle.label("", 11, UiStyle.INK, true)
+	tut_title = UiStyle.label("", 8, UiStyle.INK, true)
 	tut_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(tut_title)
 	var skip := Button.new()
@@ -193,12 +197,22 @@ func _tut_begin() -> void:
 	skip.add_theme_color_override("font_color", UiStyle.INK_RED)
 	skip.add_theme_color_override("font_hover_color", UiStyle.INK)
 	skip.pressed.connect(_finish_tutorial)
+	skip.add_to_group("touch_tap")          # sul telefono il tocco arriva da touch_controls.gd
 	top.add_child(skip)
-	tut_body = UiStyle.label("", 9, UiStyle.INK_SOFT, false, w - 20.0)
+	tut_body = UiStyle.label("", 8, UiStyle.INK_SOFT, false, _tut_width() - 14.0)
 	tut_body.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
 	col.add_child(tut_body)
-	tut_panel.custom_minimum_size = Vector2(w, 0)
+	tut_panel.custom_minimum_size = Vector2(_tut_width(), 0)
 	_tut_next()
+
+
+## Il riquadro sta in alto, tra l'HUD a sinistra e i pulsanti del telefono a destra, ed è
+## stretto: i fantocci restano sempre visibili sotto.
+func _tut_width() -> float:
+	var vw := get_viewport().get_visible_rect().size.x
+	var left := 168.0 if not Fx.mobile else 156.0
+	var right := vw - (84.0 if Fx.device == "touch" or Fx.mobile else 10.0)
+	return clampf(right - left, 180.0, 300.0)
 
 
 func _tut_place() -> void:
@@ -206,18 +220,21 @@ func _tut_place() -> void:
 		return
 	tut_panel.reset_size()
 	var vw := get_viewport().get_visible_rect().size.x
-	tut_panel.position = Vector2((vw - tut_panel.size.x) / 2.0, 50.0 * Fx.ui)
+	var left := 168.0 if not Fx.mobile else 156.0
+	var right := vw - (84.0 if Fx.device == "touch" or Fx.mobile else 10.0)
+	var x := clampf((vw - tut_panel.size.x) / 2.0, left, maxf(left, right - tut_panel.size.x))
+	tut_panel.position = Vector2(x, 6.0)
 
 
 func _tut_say(title: String, body: String) -> void:
-	tut_title.text = "Addestramento  %d/%d  ·  %s" % [tut_step + 1, TUT_STEPS, title]
+	tut_title.text = "%d/%d · %s" % [tut_step + 1, TUT_STEPS, title]
 	tut_body.text = body
 	tut_body.visible_ratio = 0.0
-	tut_body.create_tween().tween_property(tut_body, "visible_ratio", 1.0, clampf(body.length() * 0.008, 0.3, 1.0))
+	tut_body.create_tween().tween_property(tut_body, "visible_ratio", 1.0, clampf(body.length() * 0.008, 0.3, 0.8))
 	_tut_place.call_deferred()
 	Sfx.play("ui", 0.0)
-	tut_panel.modulate = Color(1.6, 1.4, 1.0)
-	tut_panel.create_tween().tween_property(tut_panel, "modulate", Color.WHITE, 0.4)
+	tut_panel.modulate = Color(1.5, 1.3, 1.0, 0.93)
+	tut_panel.create_tween().tween_property(tut_panel, "modulate", Color(1, 1, 1, 0.93), 0.4)
 
 
 func _tut_dummy(pos: Vector2, eye_only: bool = false, lunger: bool = false) -> Enemy:
@@ -246,32 +263,32 @@ func _tut_next() -> void:
 		0:
 			tut_start = player.global_position
 			tut_walked = 0.0
-			_tut_say("Il cammino", "Sei appena sceso nel Duat, l'oltretomba. Prima della discesa vera, Anubi ti fa provare le tue armi.\nMuoviti con %s." % _ctl("move"))
+			_tut_say("Il cammino", "Anubi ti fa provare le armi prima della discesa. Muoviti con %s." % _ctl("move"))
 		1:
 			_tut_dummy(Vector2(mid.x - 50.0, 340.0))
 			_tut_dummy(Vector2(mid.x + 50.0, 340.0))
-			_tut_say("Il khopesh", "Questa è la tua spada ricurva. Colpisci i due fantocci con %s: tre colpi di fila fanno una combinazione, l'ultimo è il più forte." % _ctl("attack"))
+			_tut_say("Il khopesh", "Rompi i due fantocci con %s. Il terzo colpo di fila è il più forte." % _ctl("attack"))
 		2:
 			var m := _tut_dummy(Vector2(mid.x, 290.0), false, true)
 			m.dodged.connect(func() -> void: tut_dodges += 1)
 			tut_dodges = 0
 			tut_dashes = 0
-			_tut_say("Lo scatto", "Quando un nemico diventa ROSSO sta per colpirti. Premi %s mentre ti arriva addosso: durante lo scatto nulla ti tocca. Schiva la mummia due volte." % _ctl("dash"))
+			_tut_say("Lo scatto", "Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Schivala 2 volte." % _ctl("dash"))
 		3:
 			_tut_clear_targets()
 			for at in [Vector2(110, 320), Vector2(ROOM.size.x - 110.0, 320), Vector2(mid.x, 300)]:
 				_tut_dummy(at, true)
-			_tut_say("L'Occhio di Horus", "I fantocci azzurri in alto si rompono solo con l'Occhio. Lancialo con %s: attraversa i nemici e torna pronto dopo qualche secondo (il cerchio dell'Occhio in alto lo mostra)." % _ctl("eye"))
+			_tut_say("L'Occhio di Horus", "I fantocci azzurri si rompono solo con l'Occhio: %s. Si ricarica da solo (il cerchio in alto)." % _ctl("eye"))
 		4:
 			var p = PickupScript.new()
 			p.kind = "ka"
 			world.add_child(p)
 			p.position = mid
 			p.collected.connect(_on_pickup_collected)
-			_tut_say("Il Ka", "Quella luce d'oro è Ka: la forza vitale degli Egizi, la parte di te che sopravvive alla morte. Raccoglila.\nIl Ka resta tuo anche se cadi: nella Sala del Giudizio lo spendi nel Libro dei Morti per poteri permanenti, e durante la discesa il Traghettatore lo accetta in cambio di aiuti. Lo lasciano i nemici più grossi e i tesori.")
+			_tut_say("Il Ka", "Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.")
 		5:
 			_add_door("n", {"kind": "tutorial_end"})
-			_tut_say("Le porte", "Dopo ogni stanza si aprono le porte, spesso su più lati: sopra ognuna c'è la ricompensa della stanza dopo. Quando una porta è fuori dallo schermo, una freccia sul bordo ti dice dov'è.\nEntra nella porta in alto: comincia la discesa.")
+			_tut_say("Le porte", "Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.")
 		_:
 			pass
 
@@ -1535,7 +1552,7 @@ func _process(_delta: float) -> void:
 	var n := Run.boons.size() + Run.blessings.size()
 	var line2 := ""
 	if n > 0:
-		line2 = "Doni: %d (Tab per vederli)" % n
+		line2 = ("Doni: %d" % n) if Fx.device == "touch" else "Doni: %d (Tab per vederli)" % n
 	for c in Run.curses:
 		line2 += "    Maledizione: %s (ancora %d stanze)" % [Boons.SET_CURSES[c["curse"]]["desc"], c["rooms"]]
 	if line2 != "":
@@ -1794,7 +1811,8 @@ class HudBars extends Control:
 		var p = game.player
 		if p == null or not is_instance_valid(p):
 			return
-		var u: float = Fx.ui
+		var u: float = 0.85 if Fx.mobile else 0.9    # compatto: sul telefono lo schermo è già ingrandito
+		hu = u
 		var font := ThemeDB.fallback_font
 		var title := UiStyle.title_font()
 		var sek: bool = Run.sekhem_unlocked()
@@ -1834,7 +1852,7 @@ class HudBars extends Control:
 		if p.poison_t > 0.0:
 			draw_rect(Rect2(bx, by, bw * frac, bh), Color(0.45, 0.95, 0.35, 0.35 + 0.15 * sin(Time.get_ticks_msec() / 90.0)))
 		var hp_txt := "%d / %d" % [ceili(p.hp), int(p.max_hp)]
-		var fs := Fx.fs(9)
+		var fs := _fs(9)
 		var tw := font.get_string_size(hp_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		_text(font, Vector2(bx + (bw - tw) / 2.0, by + bh - 2.0 * u), hp_txt, fs, Color(1, 0.96, 0.9))
 		var row := by + bh + 5.0 * u
@@ -1850,9 +1868,9 @@ class HudBars extends Control:
 		var kp := 1.0 + 0.35 * ka_pop
 		_ka_glyph(Vector2(bx + 5 * u, ky - 4 * u), u * kp)
 		var ka_txt := "%d" % Run.ka
-		_text(title, Vector2(bx + 14 * u, ky), ka_txt, Fx.fs(10 + int(3 * ka_pop)), GOLD.lerp(Color.WHITE, ka_pop * 0.6))
-		var rx := bx + 18 * u + title.get_string_size(ka_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(10)).x + 10 * u
-		_text(title, Vector2(rx, ky), game.hud_room, Fx.fs(8), Color(0.95, 0.88, 0.72))
+		_text(title, Vector2(bx + 14 * u, ky), ka_txt, _fs(10 + int(3 * ka_pop)), GOLD.lerp(Color.WHITE, ka_pop * 0.6))
+		var rx := bx + 18 * u + title.get_string_size(ka_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, _fs(10)).x + 10 * u
+		_text(title, Vector2(rx, ky), game.hud_room, _fs(8), Color(0.95, 0.88, 0.72))
 		# Occhio di Horus
 		var c := o + Vector2(pw - 24.0 * u, ph / 2.0 - 1.0 * u)
 		var r := 14.0 * u * (1.0 + 0.15 * eye_pop)
@@ -1876,6 +1894,11 @@ class HudBars extends Control:
 				var pp := c + Vector2((i - (max_ch - 1) / 2.0) * 6.0 * u, r + 3.0 * u)
 				draw_circle(pp, 2.2 * u, Color(0, 0, 0, 0.8))
 				draw_circle(pp, 1.6 * u, GOLD if i < charges else Color(0.3, 0.25, 0.2))
+
+	var hu := 1.0
+
+	func _fs(n: int) -> int:
+		return maxi(7, roundi(n * hu * 1.1))
 
 	func _ankh(c: Vector2, u: float, col: Color) -> void:
 		draw_arc(c + Vector2(0, -6) * u, 3.8 * u, 0, TAU, 16, col, 2.2 * u)

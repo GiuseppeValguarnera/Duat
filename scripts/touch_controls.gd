@@ -72,6 +72,12 @@ func _input(event: InputEvent) -> void:
 	buttons = _layout()
 	if event is InputEventScreenTouch:
 		if event.pressed:
+			# pulsanti dell'interfaccia sopra il gioco (per esempio "Salta" dell'addestramento)
+			for n in get_tree().get_nodes_in_group("touch_tap"):
+				if n is Button and n.is_visible_in_tree() and n.get_global_rect().grow(8.0).has_point(event.position):
+					n.pressed.emit()
+					get_viewport().set_input_as_handled()
+					return
 			for btn in buttons:
 				if event.position.distance_to(btn["pos"]) <= btn["r"] + 8.0:
 					held[event.index] = btn["action"]
