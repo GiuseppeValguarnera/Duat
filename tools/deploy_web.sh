@@ -4,7 +4,7 @@
 # Serve il pacchetto "Web" dei modelli di esportazione di Godot 4.7.2 (Editor > Gestisci modelli di esportazione).
 # Il gioco poi è su https://giuseppevalguarnera.github.io/Duat/
 set -e
-GODOT="${1:?indica il percorso dell'eseguibile di Godot}"
+GODOT="${1:?indica il percorso di Godot}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/build/web"
 rm -rf "$OUT" && mkdir -p "$OUT"
