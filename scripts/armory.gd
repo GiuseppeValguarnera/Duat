@@ -288,12 +288,12 @@ func _neith_lines() -> Array:
 			"Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.",
 			"Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.",
 			"Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.",
-			"Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.",
+			"Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.",
 			"I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.",
 		]
 	var beats := [
-		["lancia_ammit", Meta.first_kills.has("ammit|lancia|0"), ["La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla."]],
-		["khopesh_ammit", Meta.first_kills.has("ammit|khopesh|0"), ["Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime."]],
+		["lancia_amheh", Meta.first_kills.has("amheh|lancia|0"), ["La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba."]],
+		["khopesh_amheh", Meta.first_kills.has("amheh|khopesh|0"), ["Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime."]],
 		["aspetto", Meta.aspect_levels.size() > 0, ["Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire."]],
 		["senza_lacrime", Meta.tears == 0 and Meta.serpent_wins >= 3, ["Non hai Lacrime. Il pianto di Iside cade solo sui grandi signori della notte, battuti con un'arma che non li ha ancora conosciuti. Il Serpente della Porta non è degno delle sue lacrime. Cambia lama."]],
 		["teli", Meta.serpent_wins >= 2, ["Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu."]],
@@ -397,7 +397,7 @@ func _close_menu() -> void:
 func _open_aspects(focus: String = "") -> void:
 	var w := Run.weapon
 	var wd: Dictionary = Weapons.ALL[w]
-	var col := _window("Altare di Neith · %s" % wd["name"], "Lacrime di Iside: %d  ·  si ottengono battendo Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8)" % Meta.tears)
+	var col := _window("Altare di Neith · %s" % wd["name"], "Lacrime di Iside: %d  ·  si ottengono battendo Am-heh la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8)" % Meta.tears)
 	var inner: float = col.custom_minimum_size.x
 	var first: Button = null
 	for a in wd["aspects"]:

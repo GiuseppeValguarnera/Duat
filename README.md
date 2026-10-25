@@ -2,7 +2,7 @@
 
 Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
-**Stato:** fase 2. C'è la Sala del Giudizio (base tra una discesa e l'altra, con Anubi e il Libro dei Morti) e la Prima Ora completa: 10 stanze, un guardiano a metà, il Traghettatore, Ammit alla fine, con nemici diversi, ricompense, doni degli dèi, patti di Set e Forma Divina. La grafica è provvisoria (forme semplici) di proposito: prima si rende divertente il gioco, poi arrivano gli sprite.
+**Stato:** fase 2. C'è la Sala del Giudizio (base tra una discesa e l'altra, con Anubi e il Libro dei Morti) e la Prima Ora completa: 10 stanze, un guardiano a metà, il Traghettatore, Am-heh alla fine, con nemici diversi, ricompense, doni degli dèi, patti di Set e Forma Divina. La grafica è provvisoria (forme semplici) di proposito: prima si rende divertente il gioco, poi arrivano gli sprite.
 
 ## La storia
 
@@ -47,7 +47,7 @@ Il gioco parte qui, e qui torni dopo ogni discesa.
 
 - **Anubi** parla con te: commenta com'è andata l'ultima discesa (chi ti ha ucciso, quale dio hai seguito, se hai stretto patti con Set) e, man mano che muori o vinci, racconta la storia del tuo nome scalpellato. Se gli parli ancora, ti spiega il giudizio dei morti: la pesatura del cuore, Ma'at, i 42 giudici, le parti dell'anima. Le battute sono in `scripts/dialogue.gd`.
 - **I Papiri di Thoth** (lo scaffale in basso a destra): l'archivio di tutto quello che gli dèi ti hanno raccontato, diviso per dio, più le lezioni di Anubi e la storia dei capitoli che hai comprato. Le storie non ancora ascoltate restano sigillate.
-- **Il Libro dei Morti** (il leggio a destra): spendi il Ka custodito per comprare capitoli, incantesimi passivi che valgono per sempre. Puoi tenerne attivi solo 2 alla volta (3 dopo aver sconfitto Ammit, fino a 5 con i posti comprati), quindi prima di ogni discesa scegli quali portare.
+- **Il Libro dei Morti** (il leggio a destra): spendi il Ka custodito per comprare capitoli, incantesimi passivi che valgono per sempre. Puoi tenerne attivi solo 2 alla volta (3 dopo aver sconfitto Am-heh, fino a 5 con i posti comprati), quindi prima di ogni discesa scegli quali portare.
 - **La bilancia di Ma'at** al centro mostra i tuoi progressi.
 - **Il cancello** a nord: camminaci dentro per iniziare una discesa.
 - **Gli stendardi** sulla parete nord: uno per ogni dio, si colorano quando quel dio ti ha parlato per la prima volta.
@@ -96,7 +96,7 @@ Dalla Sala del Giudizio, una porta nella parete ovest (con lo scudo e le frecce 
 | Khopesh | Fendenti ampi da vicino, il terzo colpo è il più forte | del Faraone (+danni) · di Montu (terzo colpo più lungo e più forte) · di Wepwawet (dopo uno scatto, fendente circolare) |
 | Lancia di Neith | Due affondi lunghi e stretti, poi un'ampia spazzata; subito dopo uno scatto, un affondo lunghissimo | di Neith (+danni) · di Onuris (affondi più lunghi) · di Khonsu (la spazzata stordisce) |
 
-**Lacrime di Iside**: arrivano solo dai boss delle regioni (oggi Ammit, 2 Lacrime), la **prima volta** che li batti **con ogni arma** e di nuovo con il Peso del Cuore a 4 e a 8. Il Serpente della Porta, guardiano di mezzo, non ne dà. Rivincere con la stessa arma non dà altre Lacrime: per crescere bisogna cambiare arma. Il Libro dei Morti ora si paga solo in Ka; il capitolo 26, *Il cuore restituito*, dà una piccola probabilità (3/5/7%) che i nemici lascino un cuore che cura 5/6/7 punti vita (livelli e posti in più compresi). Dati in `scripts/weapons.gd`; i testi dei doni scritti per il khopesh si adattano da soli all'arma impugnata.
+**Lacrime di Iside**: arrivano solo dai boss delle regioni (oggi Am-heh, 2 Lacrime), la **prima volta** che li batti **con ogni arma** e di nuovo con il Peso del Cuore a 4 e a 8. Il Serpente della Porta, guardiano di mezzo, non ne dà. Rivincere con la stessa arma non dà altre Lacrime: per crescere bisogna cambiare arma. Il Libro dei Morti ora si paga solo in Ka; il capitolo 26, *Il cuore restituito*, dà una piccola probabilità (3/5/7%) che i nemici lascino un cuore che cura 5/6/7 punti vita (livelli e posti in più compresi). Dati in `scripts/weapons.gd`; i testi dei doni scritti per il khopesh si adattano da soli all'arma impugnata.
 
 ## Come funziona una run
 
@@ -106,9 +106,9 @@ Dalla Sala del Giudizio, una porta nella parete ovest (con lo scudo e le frecce 
 3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla. Il Ka arriva soprattutto dai tesori: scarabei 0, mummie 1, sacerdoti 2.
 4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura. Le porte fuori dallo schermo hanno una **freccia sul bordo** con il colore e il nome della ricompensa.
 5. **Stanza 5: il Serpente della Porta.** Nel Libro delle Porte ogni porta del Duat è custodita da un serpente. È il guardiano a metà discesa: morde in affondo, sputa ventagli di veleno e si inabissa nella sabbia per riemergere sotto di te (un cerchio rosso avvisa dove). Sotto metà vita si infuria: più rapido, ventaglio più largo e **affondi doppi**. Combatte da solo (340 vita: più del vecchio 260, perché chi gioca davvero lo batteva al primo tentativo). Batterlo dà un dono che sale **di due livelli** invece di uno.
-6. **Il Traghettatore** (Mahaf, dal capitolo 99 del Libro dei Morti): è una delle porte, ma solo nella stanza **subito prima del Serpente** (stanza 4) e **subito prima di Ammit** (stanza 10). Vende Acqua del Nilo (20 Ka), un'offerta agli dèi (40 Ka) e l'Inchiostro di Thoth, che alza di livello un tuo dono (30 Ka). Si spende il Ka raccolto in questa discesa, e quello speso non torna a casa: più forti ora o capitoli dopo.
+6. **Il Traghettatore** (Mahaf, dal capitolo 99 del Libro dei Morti): è una delle porte, ma solo nella stanza **subito prima del Serpente** (stanza 4) e **subito prima di Am-heh** (stanza 10). Vende Acqua del Nilo (20 Ka), un'offerta agli dèi (40 Ka) e l'Inchiostro di Thoth, che alza di livello un tuo dono (30 Ka). Si spende il Ka raccolto in questa discesa, e quello speso non torna a casa: più forti ora o capitoli dopo.
 7. Dalla stanza 6 arrivano due nemici nuovi: lo **scorpione di Serket** e il **cobra**.
-8. Prima dell'ultima stanza una delle porte è sempre l'**Acqua del Nilo**. Dopo la decima stanza si apre il cancello di **Ammit**, il boss della Prima Ora. I nemici hanno il 6% di vita in più a ogni stanza.
+8. Prima dell'ultima stanza una delle porte è sempre l'**Acqua del Nilo**. Dopo la decima stanza si apre il cancello di **Am-heh**, il boss della Prima Ora. I nemici hanno il 6% di vita in più a ogni stanza.
 
 ## Nemici
 
@@ -132,7 +132,19 @@ Dalla terza stanza alcune mummie e alcuni sacerdoti sono **élite**: alone dorat
 
 Lo scatto le supera entrambe. A stanza ripulita si fermano.
 
-## Boss: Ammit, la Divoratrice
+## Boss della Prima Ora: Am-heh, il Divoratore di Milioni
+
+Nel mito è un dio dalla testa di cane che vive in un lago di fuoco del Duat e divora le anime dei dannati (`scripts/amheh.gd`). Ha 1000 punti vita. L'arena ha **quattro pozze d'acqua**: rallentano (anche i nemici) e spengono le fiamme, e il fuoco non vi entra (`scripts/hazards.gd`).
+
+- **Morso:** da vicino, un ventaglio rosso davanti alle fauci, poi azzanna (20 danni).
+- **Balzo:** un cerchio rosso segna dove atterrerà (20 danni); all'atterraggio accende un anello di fuoco.
+- **Fiato di fuoco:** un cono arancione mostra la direzione, poi soffia per un secondo, girando lentamente verso di te; le fiamme restano a terra qualche secondo e bruciano anche gli altri nemici.
+- **Marea di fuoco:** ogni 3 attacchi (ogni 2 sotto il 60%) ulula, le piastrelle si accendono di rosso a ondata, poi divampa tutto il pavimento tranne l'acqua (22 danni). Si sopravvive in una pozza o scattando nell'istante della vampata. Dopo resta **esausto** 2 secondi e subisce il 50% di danni in più.
+- **Al 60% e al 30% della vita** fa evaporare la pozza più vicina (ne restano sempre due) e chiama scarabei (poi scarabei e un sacerdote).
+
+## Ammit, la Divoratrice (in attesa del finale)
+
+Ammit non è più il boss della Prima Ora: tornerà come boss finale nella Sala delle Due Verità, con una bilancia e una risposta diversa per ogni arma (vedi `docs/storia.md`). Il combattimento attuale resta nel codice (`BOSS_KIND` in `scripts/game.gd`) come base.
 
 Testa di coccodrillo, corpo di leone, zampe di ippopotamo: nel mito divora i cuori che non superano il giudizio. Ha 1100 punti vita.
 
@@ -202,7 +214,7 @@ Le maledizioni colpiscono qualunque stile di gioco, così non si possono aggirar
 
 ## Il Peso del Cuore
 
-Dopo la prima vittoria su Ammit, la **bilancia di Ma'at** al centro della Sala diventa interattiva: prima di scendere puoi posarvi dei pesi. Ogni livello di peso rende la discesa più dura e ti fa custodire il **10% di Ka in più**. Il gioco ricorda il peso più alto con cui hai battuto Ammit. È la sfida per chi ha già vinto, sul modello del Patto di Punizione di Hades.
+Dopo la prima vittoria su Am-heh, la **bilancia di Ma'at** al centro della Sala diventa interattiva: prima di scendere puoi posarvi dei pesi. Ogni livello di peso rende la discesa più dura e ti fa custodire il **10% di Ka in più**. Il gioco ricorda il peso più alto con cui hai battuto Ammit. È la sfida per chi ha già vinto, sul modello del Patto di Punizione di Hades.
 
 | Peso | Effetto | Livelli |
 | --- | --- | --- |
@@ -213,13 +225,13 @@ Dopo la prima vittoria su Ammit, la **bilancia di Ma'at** al centro della Sala d
 | Sabbie traditrici | Trappole dalla prima stanza, e di più | 1 |
 | Il Nilo in secca | L'Acqua del Nilo cura la metà | 1 |
 | Il silenzio degli dèi | Due doni tra cui scegliere invece di tre | 1 |
-| La fame di Ammit | Ammit +30% vita, ogni Ruggito libera due onde | 1 |
+| La fame di Am-heh | Am-heh +30% vita, la marea di fuoco arriva più spesso | 1 |
 
 I pesi sono in `scripts/weights.gd`.
 
 ## Sekhem e Forma Divina
 
-Il Sekhem è il dono di **Ammit**: si sblocca per sempre la prima volta che la sconfiggi (salvato in `user://duat_save.cfg`). Dalla run successiva si carica facendo e subendo danni. Quando è pieno attivi la **Forma Divina** per 6 secondi: onda d'urto iniziale, +50% ai danni del khopesh e solo il 30% dei danni subiti.
+Il Sekhem è il dono di **Am-heh**: si sblocca per sempre la prima volta che lo sconfiggi (salvato in `user://duat_save.cfg`). Dalla run successiva si carica facendo e subendo danni. Quando è pieno attivi la **Forma Divina** per 6 secondi: onda d'urto iniziale, +50% ai danni del khopesh e solo il 30% dei danni subiti.
 
 ## Suoni
 

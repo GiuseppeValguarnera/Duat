@@ -287,8 +287,43 @@ func _decide(g, p) -> void:
 				crowd += 1
 		if target.is_boss or target.miniboss:
 			# con Ammit e con il Serpente: addosso solo quando è stordita o si sta riprendendo, altrimenti a distanza
-			var open_window: bool = target.state in ["stunned", "recover", "intro", "furia", "dive"]
+			var open_window: bool = target.state in ["stunned", "recover", "intro", "furia", "dive", "exhausted"]
 			want_range = 34.0 if (open_window or randf() > skill) else 125.0
+		# Am-heh: quando ulula si cerca una pozza (anche se si sta combattendo altro); dal fiato ci si sposta di lato
+		var amh = g.boss if g.boss != null and is_instance_valid(g.boss) and "leap_to" in g.boss else null
+		if amh != null and amh.state == "howl" and randf() < 0.35 + 0.65 * skill:
+			if not Hazards.in_water(get_tree(), pos):
+				var best_pool = null
+				for w in get_tree().get_nodes_in_group("water"):
+					if w.drying:
+						continue
+					if best_pool == null or pos.distance_to(w.global_position) < pos.distance_to(best_pool.global_position):
+						best_pool = w
+				if best_pool != null:
+					move_dir = (best_pool.global_position - pos).normalized()
+					if pos.distance_to(best_pool.global_position) > 120.0 and p.dash_cd <= 0.0:
+						dash_now = true
+			else:
+				move_dir = Vector2.ZERO
+			return
+		if "leap_to" in target:
+			if target.state == "howl" and randf() < 0.35 + 0.65 * skill:
+				if not Hazards.in_water(get_tree(), pos):
+					var best_pool = null
+					for w in get_tree().get_nodes_in_group("water"):
+						if best_pool == null or pos.distance_to(w.global_position) < pos.distance_to(best_pool.global_position):
+							best_pool = w
+					if best_pool != null:
+						move_dir = (best_pool.global_position - pos).normalized()
+				else:
+					move_dir = Vector2.ZERO
+				return
+			if target.state in ["breath", "breath_windup"] and dist < target.breath_range + 10.0 and absf(target.aim.angle_to(pos - target.global_position)) < deg_to_rad(target.breath_arc) * 0.6 and randf() < skill:
+				var side: Vector2 = target.aim.orthogonal()
+				if side.dot(pos - target.global_position) < 0.0:
+					side = -side
+				move_dir = side
+				return
 		if dist > want_range + 6.0:
 			move_dir = to.normalized()
 		elif dist < want_range - 18.0:
@@ -305,6 +340,10 @@ func _decide(g, p) -> void:
 			move_dir = away.normalized()
 			if crowd >= 4 and p.dash_cd <= 0.0 and randf() < skill * 0.5:
 				dash_now = true
+		# fuoco a terra: chi è bravo ci gira intorno
+		for f in get_tree().get_nodes_in_group("fire"):
+			if pos.distance_to(f.global_position) < f.radius + 12.0 and randf() < skill:
+				move_dir = (move_dir + (pos - f.global_position).normalized() * 1.5).normalized()
 		# trappole: chi è bravo le evita sempre, gli altri solo quando si accendono
 		for trap in get_tree().get_nodes_in_group("traps"):
 			if not trap.has_method("phase"):
@@ -376,12 +415,24 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 				return e.aim.orthogonal()
 			if e.state == "warn" and d < e.erupt_radius + 12.0:
 				return rel.normalized() if rel != Vector2.ZERO else Vector2.RIGHT
+		if "leap_to" in e:
+			threat_kind = "amheh"
+			if e.state == "leap_windup" and e.st < 0.3 and pos.distance_to(e.leap_to) < e.leap_radius + 12.0:
+				return (pos - e.leap_to).normalized() if pos != e.leap_to else Vector2.RIGHT
+			if e.state == "bite" and e.st < 0.25 and d < 70.0:
+				return rel.normalized()
+			continue
 		if e.is_boss:
 			threat_kind = "ammit"
 			if e.state == "windup" and e.st < 0.3 and absf(rel.normalized().dot(e.charge_dir.orthogonal())) < 0.35:
 				return e.charge_dir.orthogonal()
 			if e.state == "bite" and e.st < 0.25 and d < 75.0:
 				return rel.normalized()
+	# marea di fuoco di Am-heh: fuori dall'acqua, si scatta nell'istante della vampata
+	for c in g.world.get_children():
+		if "cells" in c and "warn" in c and not c.hit and c.t < c.warn and c.warn - c.t < 0.15 and not Hazards.in_water(get_tree(), pos):
+			threat_kind = "marea"
+			return Vector2.RIGHT.rotated(randf() * TAU)
 	# onde d'urto di Ammit: attraversale scattando verso il centro
 	for c in g.world.get_children():
 		if "max_r" in c and "r" in c and not c.hit:
@@ -568,6 +619,8 @@ func _release_all() -> void:
 func _metrics(g, _p) -> void:
 	if last_hp >= 0.0 and Run.hp < last_hp - 0.01:
 		var src: String = Run.last_hit if Run.last_hit != "" else "?"
+		if src == "amheh" and g.boss != null and is_instance_valid(g.boss):
+			src = "amheh_" + str(g.boss.state)
 		if src == "ammit" and g.boss != null and is_instance_valid(g.boss):
 			var kind: String = g.boss.state
 			for c in g.world.get_children():

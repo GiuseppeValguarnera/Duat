@@ -93,12 +93,24 @@ func _on_hit(_dmg: float) -> void:
 	pass
 
 
-## Marea del Nilo: dentro una pozza il nemico rallenta.
+## Marea del Nilo: dentro una pozza il nemico rallenta. Anche l'acqua delle stanze rallenta
+## (non i boss) e spegne le fiamme.
 func _puddle_slow() -> float:
+	if not is_boss and Hazards.in_water(get_tree(), global_position):
+		burn_t = 0.0
+		return Hazards.WATER_SLOW
 	for p in get_tree().get_nodes_in_group("puddles"):
 		if global_position.distance_to(p.global_position) < p.radius:
 			return 1.0 - Run.val("sobek_tide") / 100.0
 	return 1.0
+
+
+## Dentro una pozza della Marea del Nilo (per la Forza del Fiume).
+func _in_tide() -> bool:
+	for p in get_tree().get_nodes_in_group("puddles"):
+		if global_position.distance_to(p.global_position) < p.radius:
+			return true
+	return false
 
 
 ## Moltiplicatore dei danni ricevuti (per esempio un boss stordito).
@@ -121,7 +133,7 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 	if dead:
 		return
 	dmg *= Run.jackal_mult(hp / max_hp) * _damage_mult()
-	if Run.has("sobek_river") and (sobek_stun_t > 0.0 or _puddle_slow() < 1.0):
+	if Run.has("sobek_river") and (sobek_stun_t > 0.0 or _in_tide()):
 		dmg *= 1.0 + Run.val("sobek_river") / 100.0
 	hp -= dmg
 	Run.damage_dealt += dmg

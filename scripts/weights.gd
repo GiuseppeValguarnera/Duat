@@ -1,5 +1,5 @@
 class_name Weights
-## Il Peso del Cuore: dopo la prima vittoria su Ammit, nella Sala del Giudizio puoi posare
+## Il Peso del Cuore: dopo la prima vittoria sul boss della Prima Ora, nella Sala del Giudizio puoi posare
 ## dei pesi sulla bilancia di Ma'at prima di scendere. Ogni peso rende la discesa più dura
 ## e aumenta il Ka che porti a casa. È la "sfida su misura" per chi ha già vinto.
 ##
@@ -16,7 +16,7 @@ const ALL := {
 	"sabbie": {"name": "Sabbie traditrici", "max": 1, "desc": "Le trappole compaiono dalla prima stanza, e ce ne sono di più."},
 	"avarizia": {"name": "Il Nilo in secca", "max": 1, "desc": "L'Acqua del Nilo cura la metà."},
 	"silenzio": {"name": "Il silenzio degli dèi", "max": 1, "desc": "Gli dèi ti offrono solo due doni invece di tre."},
-	"fame": {"name": "La fame di Ammit", "max": 1, "desc": "Ammit ha il 30% di vita in più e ogni Ruggito libera due onde."},
+	"fame": {"name": "La fame di Am-heh", "max": 1, "desc": "Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso."},
 }
 
 

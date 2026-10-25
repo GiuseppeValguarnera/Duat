@@ -6,7 +6,7 @@ extends Node
 const PATH := "user://duat_save.cfg"
 
 var sekhem_unlocked := false          ## si sblocca la prima volta che sconfiggi Ammit
-var ammit_wins := 0
+var ammit_wins := 0				  ## vittorie sul boss della Prima Ora (oggi Am-heh; il nome resta per i salvataggi)
 var ka_bank := 0                      ## Ka custodito tra una run e l'altra (servirà nella Sala del Giudizio)
 var runs := 0
 var audio := {}                       ## volumi delle categorie di suoni (0..1), vedi sfx.gd

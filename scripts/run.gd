@@ -195,7 +195,7 @@ func grant_blessing(id: String) -> void:
 
 # --- Sekhem -----------------------------------------------------------------------
 
-## Il Sekhem è il dono di Ammit: si sblocca per sempre la prima volta che la sconfiggi.
+## Il Sekhem è il dono di Am-heh: si sblocca per sempre la prima volta che lo sconfiggi.
 func sekhem_unlocked() -> bool:
 	return Meta.sekhem_unlocked
 

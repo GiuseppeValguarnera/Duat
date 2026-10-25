@@ -44,7 +44,7 @@ Nella Sala del Giudizio c'è il cartiglio vuoto del faraone. Ogni boss di region
 3. il **pane** (il suono *t*)
 4. l'**orizzonte**: il sole tra due montagne. È il segno che si ricompone solo nel finale, quando il sole sorge davvero.
 
-Per ora, con una sola regione, i segni arrivano con le vittorie sul boss della Prima Ora (oggi ancora Ammit, presto Am-heh).
+Per ora, con una sola regione, i segni arrivano con le vittorie sul boss della Prima Ora, Am-heh.
 
 ## I Ricordi dello scriba
 

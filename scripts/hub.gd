@@ -203,7 +203,7 @@ func _process(delta: float) -> void:
 			if Weights.unlocked():
 				prompt.text = "%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)" % [key, Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0))]
 			else:
-				prompt.text = "La bilancia di Ma'at · Sconfiggi Ammit per poter posare i tuoi pesi"
+				prompt.text = "La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi"
 		"cortile":
 			if Meta.serpent_wins > 0:
 				prompt.text = "Il Cortile di Neith · le armi · entra dalla porta"
@@ -561,7 +561,7 @@ func _on_option_pressed(id: String) -> void:
 
 func _fill_weights(focus_id: String = "") -> void:
 	var record := "nessuno" if Meta.best_weight < 0 else str(Meta.best_weight)
-	var left := _frame("Il Peso del Cuore", "Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Ammit: %s" % [Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0)), record], 250)
+	var left := _frame("Il Peso del Cuore", "Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s" % [Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0)), record], 250)
 	var first: Button = null
 	for id in Weights.ALL:
 		var w: Dictionary = Weights.ALL[id]

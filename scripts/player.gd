@@ -145,6 +145,8 @@ func _physics_process(delta: float) -> void:
 		_dash_damage()
 	else:
 		var s := speed * Run.move_mult() * (attack_slowdown if atk_t > 0.0 else 1.0)
+		if Hazards.in_water(get_tree(), global_position):
+			s *= Hazards.WATER_SLOW
 		velocity = move * s + knock
 		if move.length() > 0.1:
 			walk += delta * 10.0
@@ -452,7 +454,8 @@ func _poison_update(delta: float) -> void:
 
 
 ## Restituisce true se il colpo è andato a segno (false se eri invulnerabile).
-func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> bool:
+## `kind` dice chi ha colpito quando non c'è un nemico (per esempio il fuoco di Am-heh).
+func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: String = "") -> bool:
 	if dead or invuln_t > 0.0 or dash_t > 0.0:
 		return false
 	amount *= Run.damage_taken_mult()
@@ -478,6 +481,8 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> boo
 	Run.last_hit = "trappola"
 	if attacker != null and attacker.scene_file_path != "":
 		Run.last_hit = attacker.scene_file_path.get_file().get_basename()
+	if kind != "":
+		Run.last_hit = kind
 	if Run.has("anubi_scale") and attacker != null and not attacker.dead:
 		attacker.take_hit(amount * Run.val("anubi_scale") / 100.0, (attacker.global_position - global_position).normalized(), 120.0)
 		Fx.burst(attacker.global_position + Vector2(0, -8), Boons.god_color("anubi"), 12, 80.0)

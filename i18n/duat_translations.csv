@@ -1,4 +1,8 @@
 keys,it,en
+Fiato di fuoco,Fiato di fuoco,
+Marea di fuoco,Marea di fuoco,
+ESAUSTO,ESAUSTO,
+L'acqua evapora,L'acqua evapora,
 Ruggito del Giudizio,Ruggito del Giudizio,Roar of Judgement
 STORDITA,STORDITA,STUNNED
 Sciame di scarabei,Sciame di scarabei,
@@ -24,10 +28,10 @@ La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove,La stele mis
 Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,
 Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,
 "Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.","Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.",
-"Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.",
+"Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.",
 "I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.","I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.",
-La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,
-"Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.",
+"La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba.","La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba.",
+"Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.",
 "Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.","Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.",
 "Non hai Lacrime. Il pianto di Iside cade solo sui grandi signori della notte, battuti con un'arma che non li ha ancora conosciuti. Il Serpente della Porta non è degno delle sue lacrime. Cambia lama.","Non hai Lacrime. Il pianto di Iside cade solo sui grandi signori della notte, battuti con un'arma che non li ha ancora conosciuti. Il Serpente della Porta non è degno delle sue lacrime. Cambia lama.",
 Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu.,Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu.,
@@ -40,7 +44,7 @@ Torna quando avrai qualcosa da mostrarmi.,Torna quando avrai qualcosa da mostrar
 Lancia di Neith,Lancia di Neith,
 Neith,Neith,
 Altare di Neith · %s,Altare di Neith · %s,
-Lacrime di Iside: %d  ·  si ottengono battendo Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),
+Lacrime di Iside: %d  ·  si ottengono battendo Am-heh la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo Am-heh la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),
    · SCELTO,   · SCELTO,
    (livello %d: %s),   (livello %d: %s),
 Risveglia · %d Lacrime,Risveglia · %d Lacrime,
@@ -323,12 +327,13 @@ Sei tornato prima che la sabbia della clessidra si posasse. Rialzati.,Sei tornat
 Il tuo cuore è caduto vicino alla soglia. Non è una vergogna. Restare a terra lo sarebbe.,Il tuo cuore è caduto vicino alla soglia. Non è una vergogna. Restare a terra lo sarebbe.,Your heart fell close to the threshold. That is no shame. Staying down would be.
 Stanza %d. Più lontano di quanto credessi. Meno di quanto serva.,Stanza %d. Più lontano di quanto credessi. Meno di quanto serva.,Chamber %d. Farther than I believed. Less far than you need.
 Sei giunto alla stanza %d. Il Duat comincia a riconoscere il tuo passo.,Sei giunto alla stanza %d. Il Duat comincia a riconoscere il tuo passo.,You reached chamber %d. The Duat begins to know your step.
-"Hai visto la Divoratrice in volto. Pochi morti possono dirlo, e nessuno lo ha mai raccontato.","Hai visto la Divoratrice in volto. Pochi morti possono dirlo, e nessuno lo ha mai raccontato.","You have looked the Devourer in the face. Few of the dead can say so, and none has ever lived to tell it."
-"Ammit ti ha assaggiato, e ti ha risputato. Non eri ancora pronto per lei.","Ammit ti ha assaggiato, e ti ha risputato. Non eri ancora pronto per lei.","Ammit tasted you, and spat you out. You were not yet ready for her."
-"Le colonne la stordiscono, ma crollano. Usale con saggezza: sono poche.","Le colonne la stordiscono, ma crollano. Usale con saggezza: sono poche.","The pillars stun her, but they crumble. Use them wisely: they are few."
-La Divoratrice è caduta. Da secoli nessun morto alzava la mano contro di lei.,La Divoratrice è caduta. Da secoli nessun morto alzava la mano contro di lei.,The Devourer has fallen. For centuries no dead soul has raised a hand against her.
+"Hai visto Am-heh in volto. Il Divoratore di Milioni ha contato anche te, stanotte.","Hai visto Am-heh in volto. Il Divoratore di Milioni ha contato anche te, stanotte.",
+Il lago di fuoco ti ha restituito. Am-heh non restituisce mai nulla due volte.,Il lago di fuoco ti ha restituito. Am-heh non restituisce mai nulla due volte.,
+"Il fuoco non entra nell'acqua. Quando ulula, cerca una pozza. E quando si ferma a riprendere fiato, colpisci.","Il fuoco non entra nell'acqua. Quando ulula, cerca una pozza. E quando si ferma a riprendere fiato, colpisci.",
+"Am-heh è caduto. Il Divoratore di Milioni ha contato i dannati per mille anni, e stanotte ha perso il conto.","Am-heh è caduto. Il Divoratore di Milioni ha contato i dannati per mille anni, e stanotte ha perso il conto.",
 "Il suo Sekhem ora scorre in te. Quando sarà colmo, lascia che ti trasformi.","Il suo Sekhem ora scorre in te. Quando sarà colmo, lascia che ti trasformi.","Her Sekhem now flows in you. When it is full, let it transform you."
-"Ammit è caduta di nuovo. La bilancia ha tremato, stanotte.","Ammit è caduta di nuovo. La bilancia ha tremato, stanotte.",Ammit has fallen again. The scale trembled tonight.
+"Ma la Prima Ora è solo l'inizio. Ammit, la vera Divoratrice, ti aspetta in fondo alla notte, accanto alla mia bilancia.","Ma la Prima Ora è solo l'inizio. Ammit, la vera Divoratrice, ti aspetta in fondo alla notte, accanto alla mia bilancia.",
+"Am-heh è caduto di nuovo. La bilancia ha tremato, stanotte.","Am-heh è caduto di nuovo. La bilancia ha tremato, stanotte.",
 Un'altra vittoria. Ma'at ha guardato due volte il tuo cuore.,Un'altra vittoria. Ma'at ha guardato due volte il tuo cuore.,Another victory. Ma'at looked twice upon your heart.
 Hai lasciato il cammino a metà. Il Duat ricorda chi si volta indietro.,Hai lasciato il cammino a metà. Il Duat ricorda chi si volta indietro.,You left the path halfway. The Duat remembers those who turn back.
 "Non ti biasimo. Ma ti peso, e la bilancia annota anche questo.","Non ti biasimo. Ma ti peso, e la bilancia annota anche questo.","I do not blame you. But I weigh you, and the scale records this too."
@@ -338,6 +343,7 @@ Gli scarabei. Gli uomini li veneravano: lo scarabeo che spinge la sua sfera era 
 "Un sacerdote. In vita servì gli dèi, nel Duat serve il caos. Colpiscilo prima che la sua preghiera sia compiuta.","Un sacerdote. In vita servì gli dèi, nel Duat serve il caos. Colpiscilo prima che la sua preghiera sia compiuta.",A priest. In life he served the gods; in the Duat he serves chaos. Strike him before his prayer is complete.
 "Il Serpente della Porta. Ogni porta del Duat ha il suo guardiano, e nessuno lascia passare chi esita. Quando sprofonda nella sabbia, guarda il cerchio: è lì che tornerà.","Il Serpente della Porta. Ogni porta del Duat ha il suo guardiano, e nessuno lascia passare chi esita. Quando sprofonda nella sabbia, guarda il cerchio: è lì che tornerà.","The Serpent of the Gate. Every gate of the Duat has its guardian, and none lets the hesitant pass. When it sinks into the sand, watch the circle: that is where it will return."
 "Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati.","Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati.","The scorpions of Serket. The goddess shields from venom those who honour her. You have not honoured her. When the tail glows, step away."
+"Am-heh. Il Libro lo chiama 'colui che divora milioni', e dice che vive in un lago di fuoco nel Duat. Nessun morto ci si bagna due volte. Tu sì, a quanto pare.","Am-heh. Il Libro lo chiama 'colui che divora milioni', e dice che vive in un lago di fuoco nel Duat. Nessun morto ci si bagna due volte. Tu sì, a quanto pare.",
 "Un cobra. L'ureo sulla fronte del faraone sputava fuoco sui suoi nemici. Questi sputano veleno, e si nascondono. Colpiscili quando alzano il cappuccio.","Un cobra. L'ureo sulla fronte del faraone sputava fuoco sui suoi nemici. Questi sputano veleno, e si nascondono. Colpiscili quando alzano il cappuccio.","A cobra. The uraeus on the pharaoh's brow spat fire upon his enemies. These spit venom, and hide. Strike them when they raise their hood."
 "Hai stretto patti con Set. Set mantiene sempre la parola data. È la parola, Scriba, che dovresti leggere meglio.","Hai stretto patti con Set. Set mantiene sempre la parola data. È la parola, Scriba, che dovresti leggere meglio.","You made pacts with Set. Set always keeps his word. It is the word, Scribe, that you should read more carefully."
 "Apri gli occhi, Scriba.","Apri gli occhi, Scriba.","Open your eyes, Scribe."
@@ -360,8 +366,8 @@ Ogni notte migliaia di morti mi passano davanti. Nessuno è mai tornato indietro
 Tu torni. Ho smesso di domandarmi perché. Ora mi domando chi sei.,Tu torni. Ho smesso di domandarmi perché. Ora mi domando chi sei.,You return. I have stopped asking why. Now I ask who you are.
 "Guarda il cartiglio sopra il cancello. Era vuoto: dopo la tua vittoria un segno è riaffiorato, inciso male, quasi cancellato.","Guarda il cartiglio sopra il cancello. Era vuoto: dopo la tua vittoria un segno è riaffiorato, inciso male, quasi cancellato.",
 "Un ibis con la cresta: lo spirito luminoso, l'akh. È l'inizio del nome di Akhet. Prima, lì, non c'era nulla.","Un ibis con la cresta: lo spirito luminoso, l'akh. È l'inizio del nome di Akhet. Prima, lì, non c'era nulla.",
-Il Libro dei Morti ora ti concede un capitolo in più. E Ammit ti ha lasciato il suo Sekhem.,Il Libro dei Morti ora ti concede un capitolo in più. E Ammit ti ha lasciato il suo Sekhem.,The Book of the Dead now grants you one more chapter. And Ammit has left you her Sekhem.
-"Ora che hai abbattuto la Divoratrice, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Ora che hai abbattuto la Divoratrice, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Now that you have felled the Devourer, the scale knows you. You may lay weights upon it before you descend."
+Il Libro dei Morti ora ti concede un capitolo in più. E Am-heh ti ha lasciato il suo Sekhem.,Il Libro dei Morti ora ti concede un capitolo in più. E Am-heh ti ha lasciato il suo Sekhem.,
+"Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.",
 "Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.","Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.","Every weight makes the path harder. But the Duat rewards those who choose to suffer: the heavier your heart, the more Ka you will bring back."
 Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.,Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.,There is no shame in a light heart. There is glory in the heart that is heavy and passes all the same.
 "Porti con te una Lacrima di Iside. Quando pianse Osiride, le sue lacrime gonfiarono il Fiume, e il Fiume ricoprì la Terra Nera.","Porti con te una Lacrima di Iside. Quando pianse Osiride, le sue lacrime gonfiarono il Fiume, e il Fiume ricoprì la Terra Nera.","You carry a Tear of Isis. When she wept for Osiris, her tears swelled the River, and the River covered the Black Land."
@@ -378,7 +384,7 @@ In quattromila anni non era mai accaduto.,In quattromila anni non era mai accadu
 Thoth dice che l'ultimo segno torna solo quando la notte finisce. Poi tace. È peggio di quando dice che non sa.,Thoth dice che l'ultimo segno torna solo quando la notte finisce. Poi tace. È peggio di quando dice che non sa.,
 Venti discese. I guardiani delle porte hanno smesso di chiedermi chi sei. Ti chiamano 'quello che torna'.,Venti discese. I guardiani delle porte hanno smesso di chiedermi chi sei. Ti chiamano 'quello che torna'.,Twenty descents. The gatekeepers no longer ask me who you are. They call you 'the one who returns'.
 Non è un nome. Ma è più di quanto avevi.,Non è un nome. Ma è più di quanto avevi.,It is not a name. But it is more than you had.
-"Cinque volte la Divoratrice è caduta, e l'ultimo segno non torna.","Cinque volte la Divoratrice è caduta, e l'ultimo segno non torna.",
+"Cinque volte Am-heh è caduto, e l'ultimo segno non torna.","Cinque volte Am-heh è caduto, e l'ultimo segno non torna.",
 "Chiunque abbia cancellato Akhet, Scriba, aveva molta paura di lui. O lo amava molto. Non so dire quale delle due.","Chiunque abbia cancellato Akhet, Scriba, aveva molta paura di lui. O lo amava molto. Non so dire quale delle due.",
 La piuma di Ma'at non pesa nulla. Eppure nessuno è mai riuscito a smuoverla.,La piuma di Ma'at non pesa nulla. Eppure nessuno è mai riuscito a smuoverla.,The feather of Ma'at weighs nothing. Yet no one has ever managed to move it.
 "Thoth dice che sei uno scriba. Il tuo nome, però, nessuno sa più leggerlo.","Thoth dice che sei uno scriba. Il tuo nome, però, nessuno sa più leggerlo.","Thoth says you are a scribe. Your name, though, no one can read anymore."
@@ -391,6 +397,7 @@ Il cancello è sempre aperto. Il Duat ha sempre fame.,Il cancello è sempre aper
 "Il Ka che non spendi nella discesa torna qui con te. Quello che spendi, ti tiene in vita. Scegli.","Il Ka che non spendi nella discesa torna qui con te. Quello che spendi, ti tiene in vita. Scegli.",The Ka you do not spend on the descent comes back here with you. The Ka you spend keeps you alive. Choose.
 Ka,Ka,Ka
 Cura,Cura,Healing
+Am-heh,Am-heh,
 Guardiano,Guardiano,Guardian
 Traghettatore,Traghettatore,Ferryman
 La discesa,La discesa,The Descent
@@ -398,9 +405,9 @@ Uscita,Uscita,Exit
 Dono di %s: scegli uno dei suoi poteri,Dono di %s: scegli uno dei suoi poteri,Boon of %s: choose one of their powers
 "Patto di Set: entrare costa 10 vita. Una maledizione per 2 stanze, poi un potere per tutta la run","Patto di Set: entrare costa 10 vita. Una maledizione per 2 stanze, poi un potere per tutta la run","Pact of Set: entering costs 10 health. A curse for 2 chambers, then a power for the whole run"
 Tesoro di Ka: +25 Ka,Tesoro di Ka: +25 Ka,Ka Treasure: +25 Ka
-Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Ammit,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Ammit,Water of the Nile: you recover %d%% of your health. Last chamber before Ammit
+Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,
 Acqua del Nilo: recuperi il %d%% della vita,Acqua del Nilo: recuperi il %d%% della vita,Water of the Nile: you recover %d%% of your health
-"Cancello della Prima Ora: Ammit, la Divoratrice, ti aspetta","Cancello della Prima Ora: Ammit, la Divoratrice, ti aspetta","Gate of the First Hour: Ammit, the Devourer, awaits you"
+"Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco",
 La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,The Middle Gate: the Serpent that guards it. Defeat it for a boon of a higher level
 Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),The Ferryman: spend this descent's Ka (what you spend does not come home with you)
 Comincia la discesa: Anubi ti aspetta con il primo dono,Comincia la discesa: Anubi ti aspetta con il primo dono,The descent begins: Anubis awaits you with the first boon
@@ -446,7 +453,7 @@ Le porte,Le porte,The Doors
 Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.,Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.,Above every door is its reward. The arrows on the edge point to doors off screen. Go in: the descent begins.
 Set mantiene la promessa,Set mantiene la promessa,Set keeps his promise
 Il Cortile di Neith si è aperto,Il Cortile di Neith si è aperto,
-La via verso Ammit è aperta,La via verso Ammit è aperta,
+La via verso Am-heh è aperta,La via verso Am-heh è aperta,
 Il Serpente della Porta è caduto,Il Serpente della Porta è caduto,The Serpent of the Gate has fallen
   ·  il prossimo dono sale di un livello in più,  ·  il prossimo dono sale di un livello in più,
 Stanza ripulita,Stanza ripulita,Chamber cleared
@@ -465,7 +472,7 @@ Anubi pesa il tuo cuore,Anubi pesa il tuo cuore,Anubis weighs your heart
 Dono di Anubi,Dono di Anubi,Boon of Anubis
 Dono di %s,Dono di %s,Boon of %s
 "Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa","Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa","First the curse, for the next cleared chambers. Then the power, for the whole descent"
-Attenzione: la maledizione ti seguirà anche contro Ammit,Attenzione: la maledizione ti seguirà anche contro Ammit,Beware: the curse will follow you against Ammit too
+Attenzione: la maledizione ti seguirà anche contro Am-heh,Attenzione: la maledizione ti seguirà anche contro Am-heh,
 Set ti propone un patto,Set ti propone un patto,Set offers you a pact
 Maledizione di Set: %d stanze,Maledizione di Set: %d stanze,Curse of Set: %d chambers
 %s. Poi: %s,%s. Poi: %s,%s. Then: %s
@@ -518,7 +525,7 @@ liv. %d,liv. %d,lv. %d
 %s
 
 "
-"Ammit, la Divoratrice","Ammit, la Divoratrice","Ammit, the Devourer"
+"Am-heh, il Divoratore di Milioni","Am-heh, il Divoratore di Milioni",
 stanza %d di %d,stanza %d di %d,chamber %d of %d
 il Serpente della Porta,il Serpente della Porta,the Serpent of the Gate
 Il tuo cuore è stato pesato,Il tuo cuore è stato pesato,Your heart has been weighed
@@ -526,7 +533,10 @@ Sei caduto: ,Sei caduto: ,You fell:
 Ti ha ucciso ,Ti ha ucciso ,Killed by 
 Tocca lo schermo,Tocca lo schermo,Tap the screen
 %s per tornare alla Sala del Giudizio,%s per tornare alla Sala del Giudizio,%s to return to the Hall of Judgement
+"AM-HEH, IL DIVORATORE DI MILIONI","AM-HEH, IL DIVORATORE DI MILIONI",
+Vive in un lago di fuoco. Il fuoco non entra nell'acqua,Vive in un lago di fuoco. Il fuoco non entra nell'acqua,
 "AMMIT, LA DIVORATRICE","AMMIT, LA DIVORATRICE","AMMIT, THE DEVOURER"
+"Ammit, la Divoratrice","Ammit, la Divoratrice","Ammit, the Devourer"
 Divora i cuori che non superano il giudizio,Divora i cuori che non superano il giudizio,She devours the hearts that fail the judgement
 Il Serpente della Porta,Il Serpente della Porta,The Serpent of the Gate
 Ogni porta del Duat ha il suo guardiano,Ogni porta del Duat ha il suo guardiano,Every gate of the Duat has its guardian
@@ -535,10 +545,10 @@ Il Traghettatore,Il Traghettatore,The Ferryman
 Non hai abbastanza Ka,Non hai abbastanza Ka,You don't have enough Ka
 %s sale al livello %d,%s sale al livello %d,%s rises to level %d
 La colonna crolla,La colonna crolla,The pillar crumbles
-Ammit ti cede il suo Sekhem,Ammit ti cede il suo Sekhem,Ammit yields her Sekhem to you
+Am-heh ti cede il suo Sekhem,Am-heh ti cede il suo Sekhem,
 Dalla prossima discesa potrai caricare la Forma Divina,Dalla prossima discesa potrai caricare la Forma Divina,From your next descent you can charge the Divine Form
-Ammit è caduta,Ammit è caduta,Ammit has fallen
-Il primo cancello del Duat si apre,Il primo cancello del Duat si apre,The first gate of the Duat opens
+Am-heh è caduto,Am-heh è caduto,
+Il lago di fuoco si spegne. La notte continua,Il lago di fuoco si spegne. La notte continua,
 Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Time %d:%02d   ·   Enemies slain %d   ·   Damage dealt %d
 Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Boons gathered %d   ·   Ka gathered %d%s   ·   Stored Ka %d
  (Peso del Cuore +%d%%), (Peso del Cuore +%d%%), (Weight of the Heart +%d%%)
@@ -550,35 +560,28 @@ New powers: the Sekhem and the Divine Form (Q / LT), and one more slot in the Bo
 +%d Lacrime di Iside, prima vittoria con %s (ne hai %d)","
 +%d Lacrime di Iside, prima vittoria con %s (ne hai %d)",
 "
-Con %s hai già la Lacrima di Ammit: prova un'altra arma, o un Peso del Cuore più alto","
-Con %s hai già la Lacrima di Ammit: prova un'altra arma, o un Peso del Cuore più alto",
-"Hai sconfitto Ammit!
-La Prima Ora è superata.%s
+Con %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto","
+Con %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto",
+"Hai sconfitto Am-heh!
+La Prima Ora è superata. Le altre ore della notte ti attendono.%s
 
 %s
 
-Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio","Hai sconfitto Ammit!
-La Prima Ora è superata.%s
+Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio","Hai sconfitto Am-heh!
+La Prima Ora è superata. Le altre ore della notte ti attendono.%s
 
 %s
 
-Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio","You defeated Ammit!
-The First Hour is behind you.%s
-
-%s
-
-Press R (or Start, or tap the screen) to return to the Hall of Judgement"
+Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio",
 pronto,pronto,ready
 PRONTO (Q / LT),PRONTO (Q / LT),READY (Q / LT)
 FORMA DIVINA %.1fs,FORMA DIVINA %.1fs,DIVINE FORM %.1fs
-Ammit · colonne: %d,Ammit · colonne: %d,Ammit · pillars: %d
-Stanza %d/%d,Stanza %d/%d,Chamber %d/%d
 Addestramento,Addestramento,Training
 Piuma di Ma'at: -%d%% danni,Piuma di Ma'at: -%d%% danni,Feather of Ma'at: -%d%% damage
 Doni: %d (Tab per vederli),Doni: %d (Tab per vederli),Boons: %d (Tab to view)
     Maledizione: %s (ancora %d stanze),    Maledizione: %s (ancora %d stanze),    Curse: %s (%d chambers left)
 Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,
-WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,
+WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,
 "Sala del Giudizio
 Ka custodito %d · Discese %d · Vittorie %d","Sala del Giudizio
 Ka custodito %d · Discese %d · Vittorie %d",
@@ -588,7 +591,7 @@ WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD muovi · Spazio
 %s · Apri il Libro dei Morti,%s · Apri il Libro dei Morti,%s · Open the Book of the Dead
 %s · Leggi i Papiri di Thoth (%d su %d),%s · Leggi i Papiri di Thoth (%d su %d),%s · Read the Scrolls of Thoth (%d of %d)
 "%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)","%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)","%s · The Weight of the Heart (current weight %d, Ka +%d%%)"
-La bilancia di Ma'at · Sconfiggi Ammit per poter posare i tuoi pesi,La bilancia di Ma'at · Sconfiggi Ammit per poter posare i tuoi pesi,The scale of Ma'at · Defeat Ammit to lay your weights upon it
+La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,
 Il Cortile di Neith · le armi · entra dalla porta,Il Cortile di Neith · le armi · entra dalla porta,
 Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,
 Il cancello del Duat è a nord,Il cancello del Duat è a nord,The gate of the Duat lies to the north
@@ -634,7 +637,7 @@ ATTIVA,ATTIVA,ON
 Ora subisci il %d%% di danni in meno.,Ora subisci il %d%% di danni in meno.,You now take %d%% less damage.
 nessuno,nessuno,none
 Il Peso del Cuore,Il Peso del Cuore,The Weight of the Heart
-Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Ammit: %s,Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Ammit: %s,Total weight: %d    ·    Ka at the end of the descent: +%d%%    ·    Record against Ammit: %s
+Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s,Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s,
 "%s
 
 Livello %d di %d. Premi per cambiarlo.","%s
@@ -822,6 +825,7 @@ I quarantadue giudici,I quarantadue giudici,The forty-two judges
 Le parti dell'anima,Le parti dell'anima,The parts of the soul
 "L'uomo non è una cosa sola. C'è il Ka, la forza che lo tiene in vita. Il Ba, che vola come un uccello dal volto umano. Lo Sheut, la sua ombra. L'Ib, il cuore. E il Ren, il nome. Perdi il nome, Scriba, e perdi la parte di te che gli altri ricordano.","L'uomo non è una cosa sola. C'è il Ka, la forza che lo tiene in vita. Il Ba, che vola come un uccello dal volto umano. Lo Sheut, la sua ombra. L'Ib, il cuore. E il Ren, il nome. Perdi il nome, Scriba, e perdi la parte di te che gli altri ricordano.","A man is not one thing alone. There is the Ka, the force that keeps him alive. The Ba, which flies like a bird with a human face. The Sheut, his shadow. The Ib, the heart. And the Ren, the name. Lose the name, Scribe, and you lose the part of you that others remember."
 "Il Libro dei Morti non è un libro solo. È un insieme di formule scritte sul papiro e deposte nella tomba, per guidare il morto nel viaggio. Gli uomini lo chiamavano 'Formule per uscire al giorno'. Ciascuno ne prendeva quante poteva pagarne. Come te.","Il Libro dei Morti non è un libro solo. È un insieme di formule scritte sul papiro e deposte nella tomba, per guidare il morto nel viaggio. Gli uomini lo chiamavano 'Formule per uscire al giorno'. Ciascuno ne prendeva quante poteva pagarne. Come te.","The Book of the Dead is not a single book. It is a collection of spells written on papyrus and laid in the tomb, to guide the dead on their journey. Men called it the 'Spells for Coming Forth by Day'. Each took as many as they could afford. Like you."
+"Am-heh, il Divoratore di Milioni. Ha la testa di un cane e vive in un lago di fuoco, nelle prime ore della notte. Il Libro dei Morti insegna una formula per sfuggirgli, perché nessuno sa contare le anime che ha inghiottito. Solo l'acqua lo ferma: il fuoco di Am-heh non entra nel Fiume.","Am-heh, il Divoratore di Milioni. Ha la testa di un cane e vive in un lago di fuoco, nelle prime ore della notte. Il Libro dei Morti insegna una formula per sfuggirgli, perché nessuno sa contare le anime che ha inghiottito. Solo l'acqua lo ferma: il fuoco di Am-heh non entra nel Fiume.",
 "Ammit non ha templi. Nessuno la prega, tutti la temono. Ha la testa del coccodrillo, il petto del leone, le zampe dell'ippopotamo: le tre bestie più letali della Terra Nera, in un corpo solo. Siede accanto alla bilancia. E attende.","Ammit non ha templi. Nessuno la prega, tutti la temono. Ha la testa del coccodrillo, il petto del leone, le zampe dell'ippopotamo: le tre bestie più letali della Terra Nera, in un corpo solo. Siede accanto alla bilancia. E attende.","Ammit has no temples. No one prays to her, everyone fears her. She has the head of a crocodile, the chest of a lion, the legs of a hippopotamus: the three deadliest beasts of the Black Land, in a single body. She sits beside the scale. And waits."
 Il Duat,Il Duat,The Duat
 "Il Duat è il mondo che giace sotto il mondo. Sulle pareti delle tombe dei re, nella valle a occidente di Tebe, i sacerdoti dipinsero l'Amduat, il libro di ciò che è nel Duat, ora per ora. Dodici ore, dodici porte, e in ognuna dèi e mostri.","Il Duat è il mondo che giace sotto il mondo. Sulle pareti delle tombe dei re, nella valle a occidente di Tebe, i sacerdoti dipinsero l'Amduat, il libro di ciò che è nel Duat, ora per ora. Dodici ore, dodici porte, e in ognuna dèi e mostri.","The Duat is the world that lies beneath the world. On the walls of the kings' tombs, in the valley west of Thebes, the priests painted the Amduat, the book of what is in the Duat, hour by hour. Twelve hours, twelve gates, and in each, gods and monsters."
@@ -897,10 +901,55 @@ Il Nilo in secca,Il Nilo in secca,The Nile run dry
 L'Acqua del Nilo cura la metà.,L'Acqua del Nilo cura la metà.,The Water of the Nile heals half as much.
 Il silenzio degli dèi,Il silenzio degli dèi,The silence of the gods
 Gli dèi ti offrono solo due doni invece di tre.,Gli dèi ti offrono solo due doni invece di tre.,The gods offer you only two boons instead of three.
-La fame di Ammit,La fame di Ammit,The hunger of Ammit
-Ammit ha il 30% di vita in più e ogni Ruggito libera due onde.,Ammit ha il 30% di vita in più e ogni Ruggito libera due onde.,Ammit has 30% more health and every Roar unleashes two waves.
+La fame di Am-heh,La fame di Am-heh,
+Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,
 Vita,Vita,Health
 Comandi,Comandi,Controls
+"Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.",
+La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,
+"Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.",
+Lacrime di Iside: %d  ·  si ottengono battendo Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),
+"Hai visto la Divoratrice in volto. Pochi morti possono dirlo, e nessuno lo ha mai raccontato.","Hai visto la Divoratrice in volto. Pochi morti possono dirlo, e nessuno lo ha mai raccontato.","You have looked the Devourer in the face. Few of the dead can say so, and none has ever lived to tell it."
+"Ammit ti ha assaggiato, e ti ha risputato. Non eri ancora pronto per lei.","Ammit ti ha assaggiato, e ti ha risputato. Non eri ancora pronto per lei.","Ammit tasted you, and spat you out. You were not yet ready for her."
+"Le colonne la stordiscono, ma crollano. Usale con saggezza: sono poche.","Le colonne la stordiscono, ma crollano. Usale con saggezza: sono poche.","The pillars stun her, but they crumble. Use them wisely: they are few."
+La Divoratrice è caduta. Da secoli nessun morto alzava la mano contro di lei.,La Divoratrice è caduta. Da secoli nessun morto alzava la mano contro di lei.,The Devourer has fallen. For centuries no dead soul has raised a hand against her.
+"Ammit è caduta di nuovo. La bilancia ha tremato, stanotte.","Ammit è caduta di nuovo. La bilancia ha tremato, stanotte.",Ammit has fallen again. The scale trembled tonight.
+Il Libro dei Morti ora ti concede un capitolo in più. E Ammit ti ha lasciato il suo Sekhem.,Il Libro dei Morti ora ti concede un capitolo in più. E Ammit ti ha lasciato il suo Sekhem.,The Book of the Dead now grants you one more chapter. And Ammit has left you her Sekhem.
+"Ora che hai abbattuto la Divoratrice, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Ora che hai abbattuto la Divoratrice, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Now that you have felled the Devourer, the scale knows you. You may lay weights upon it before you descend."
+"Cinque volte la Divoratrice è caduta, e l'ultimo segno non torna.","Cinque volte la Divoratrice è caduta, e l'ultimo segno non torna.",
+Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Ammit,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Ammit,Water of the Nile: you recover %d%% of your health. Last chamber before Ammit
+"Cancello della Prima Ora: Ammit, la Divoratrice, ti aspetta","Cancello della Prima Ora: Ammit, la Divoratrice, ti aspetta","Gate of the First Hour: Ammit, the Devourer, awaits you"
+La via verso Ammit è aperta,La via verso Ammit è aperta,
+Attenzione: la maledizione ti seguirà anche contro Ammit,Attenzione: la maledizione ti seguirà anche contro Ammit,Beware: the curse will follow you against Ammit too
+Ammit ti cede il suo Sekhem,Ammit ti cede il suo Sekhem,Ammit yields her Sekhem to you
+Ammit è caduta,Ammit è caduta,Ammit has fallen
+Il primo cancello del Duat si apre,Il primo cancello del Duat si apre,The first gate of the Duat opens
+"
+Con %s hai già la Lacrima di Ammit: prova un'altra arma, o un Peso del Cuore più alto","
+Con %s hai già la Lacrima di Ammit: prova un'altra arma, o un Peso del Cuore più alto",
+"Hai sconfitto Ammit!
+La Prima Ora è superata.%s
+
+%s
+
+Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio","Hai sconfitto Ammit!
+La Prima Ora è superata.%s
+
+%s
+
+Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio","You defeated Ammit!
+The First Hour is behind you.%s
+
+%s
+
+Press R (or Start, or tap the screen) to return to the Hall of Judgement"
+Ammit · colonne: %d,Ammit · colonne: %d,Ammit · pillars: %d
+Stanza %d/%d,Stanza %d/%d,Chamber %d/%d
+WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,
+La bilancia di Ma'at · Sconfiggi Ammit per poter posare i tuoi pesi,La bilancia di Ma'at · Sconfiggi Ammit per poter posare i tuoi pesi,The scale of Ma'at · Defeat Ammit to lay your weights upon it
+Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Ammit: %s,Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Ammit: %s,Total weight: %d    ·    Ka at the end of the descent: +%d%%    ·    Record against Ammit: %s
+La fame di Ammit,La fame di Ammit,The hunger of Ammit
+Ammit ha il 30% di vita in più e ogni Ruggito libera due onde.,Ammit ha il 30% di vita in più e ogni Ruggito libera due onde.,Ammit has 30% more health and every Roar unleashes two waves.
 "Una mummia. Settanta giorni di cure, di preghiere, di bende di lino, e ora vaga nel buio piena d'ira. Non portarle rancore. Non ricorda più chi era. Come te.","Una mummia. Settanta giorni di cure, di preghiere, di bende di lino, e ora vaga nel buio piena d'ira. Non portarle rancore. Non ricorda più chi era. Come te.","A mummy. Seventy days of care, of prayers, of linen bandages, and now it wanders the dark full of wrath. Bear it no grudge. It no longer remembers who it was. Like you."
 "Qualcuno ha scalpellato il tuo nome da ogni pietra d'Egitto. Senza nome il cuore non ha peso. Senza peso, non c'è giudizio.","Qualcuno ha scalpellato il tuo nome da ogni pietra d'Egitto. Senza nome il cuore non ha peso. Senza peso, non c'è giudizio.","Someone has chiselled your name from every stone in Egypt. Without a name the heart has no weight. Without weight, there is no judgement."
 "Ma'at ti concede una via: segui la barca di Ra attraverso le dodici ore della notte, e ritrova il tuo nome prima dell'alba.","Ma'at ti concede una via: segui la barca di Ra attraverso le dodici ore della notte, e ritrova il tuo nome prima dell'alba.","Ma'at grants you one path: follow the barque of Ra through the twelve hours of the night, and find your name again before dawn."

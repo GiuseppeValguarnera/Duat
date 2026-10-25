@@ -1,6 +1,6 @@
 extends Node
 ## Musica di sottofondo. Music.play("room") passa a quel brano con una dissolvenza incrociata.
-## Brani in assets/music: hub (Sala del Giudizio), room (stanze), elite (stanze con nemici élite), boss (Ammit).
+## Brani in assets/music: hub (Sala del Giudizio), room (stanze), elite (stanze con nemici élite), boss (Am-heh).
 ## Il volume segue la categoria "musica" del menu di pausa (Sfx.volume_of("musica")).
 
 const FADE := 1.6

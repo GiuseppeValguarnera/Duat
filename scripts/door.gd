@@ -63,7 +63,7 @@ func reward_label() -> String:
 		"heal":
 			return "Cura"
 		"boss":
-			return "Ammit"
+			return "Am-heh"
 		"guardian":
 			return "Guardiano"
 		"shop":
@@ -85,10 +85,10 @@ func reward_description() -> String:
 			return "Tesoro di Ka: +25 Ka"
 		"heal":
 			if Run.room + 1 == Run.ROOMS_PER_RUN:
-				return "Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Ammit" % roundi(Run.nile_heal() * 100.0)
+				return "Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh" % roundi(Run.nile_heal() * 100.0)
 			return "Acqua del Nilo: recuperi il %d%% della vita" % roundi(Run.nile_heal() * 100.0)
 		"boss":
-			return "Cancello della Prima Ora: Ammit, la Divoratrice, ti aspetta"
+			return "Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco"
 		"guardian":
 			return "La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore"
 		"shop":

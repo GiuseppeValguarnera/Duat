@@ -29,14 +29,14 @@ static func _ending() -> Array:
 			])]
 		"ammit":
 			return [_pick([
-				"Hai visto la Divoratrice in volto. Pochi morti possono dirlo, e nessuno lo ha mai raccontato.",
-				"Ammit ti ha assaggiato, e ti ha risputato. Non eri ancora pronto per lei.",
-			]), "Le colonne la stordiscono, ma crollano. Usale con saggezza: sono poche."]
+				"Hai visto Am-heh in volto. Il Divoratore di Milioni ha contato anche te, stanotte.",
+				"Il lago di fuoco ti ha restituito. Am-heh non restituisce mai nulla due volte.",
+			]), "Il fuoco non entra nell'acqua. Quando ulula, cerca una pozza. E quando si ferma a riprendere fiato, colpisci."]
 		"win":
 			if Meta.ammit_wins <= 1:
-				return ["La Divoratrice è caduta. Da secoli nessun morto alzava la mano contro di lei.", "Il suo Sekhem ora scorre in te. Quando sarà colmo, lascia che ti trasformi."]
+				return ["Am-heh è caduto. Il Divoratore di Milioni ha contato i dannati per mille anni, e stanotte ha perso il conto.", "Il suo Sekhem ora scorre in te. Quando sarà colmo, lascia che ti trasformi.", "Ma la Prima Ora è solo l'inizio. Ammit, la vera Divoratrice, ti aspetta in fondo alla notte, accanto alla mia bilancia."]
 			return [_pick([
-				"Ammit è caduta di nuovo. La bilancia ha tremato, stanotte.",
+				"Am-heh è caduto di nuovo. La bilancia ha tremato, stanotte.",
 				"Un'altra vittoria. Ma'at ha guardato due volte il tuo cuore.",
 			])]
 		"abandon":
@@ -61,6 +61,8 @@ static func _reaction() -> Array:
 				options.append("Il Serpente della Porta. Ogni porta del Duat ha il suo guardiano, e nessuno lascia passare chi esita. Quando sprofonda nella sabbia, guarda il cerchio: è lì che tornerà.")
 			"scorpion":
 				options.append("Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati.")
+			"amheh", "amheh_fuoco", "amheh_marea":
+				options.append("Am-heh. Il Libro lo chiama 'colui che divora milioni', e dice che vive in un lago di fuoco nel Duat. Nessun morto ci si bagna due volte. Tu sì, a quanto pare.")
 			"cobra":
 				options.append("Un cobra. L'ureo sulla fronte del faraone sputava fuoco sui suoi nemici. Questi sputano veleno, e si nascondono. Colpiscili quando alzano il cappuccio.")
 	var gods := {
@@ -111,9 +113,9 @@ static func story() -> Array:
 		{"id": "name1", "if": Meta.ammit_wins >= 1, "lines": [
 			"Guarda il cartiglio sopra il cancello. Era vuoto: dopo la tua vittoria un segno è riaffiorato, inciso male, quasi cancellato.",
 			"Un ibis con la cresta: lo spirito luminoso, l'akh. È l'inizio del nome di Akhet. Prima, lì, non c'era nulla.",
-			"Il Libro dei Morti ora ti concede un capitolo in più. E Ammit ti ha lasciato il suo Sekhem."]},
+			"Il Libro dei Morti ora ti concede un capitolo in più. E Am-heh ti ha lasciato il suo Sekhem."]},
 		{"id": "pesi1", "if": Meta.ammit_wins >= 1 and Meta.dialogue_seen.has("name1"), "lines": [
-			"Ora che hai abbattuto la Divoratrice, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.",
+			"Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.",
 			"Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.",
 			"Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente."]},
 		{"id": "lacrime1", "if": Meta.tears > 0, "lines": [
@@ -138,7 +140,7 @@ static func story() -> Array:
 			"Venti discese. I guardiani delle porte hanno smesso di chiedermi chi sei. Ti chiamano 'quello che torna'.",
 			"Non è un nome. Ma è più di quanto avevi."]},
 		{"id": "name4", "if": Meta.ammit_wins >= 5, "lines": [
-			"Cinque volte la Divoratrice è caduta, e l'ultimo segno non torna.",
+			"Cinque volte Am-heh è caduto, e l'ultimo segno non torna.",
 			"Chiunque abbia cancellato Akhet, Scriba, aveva molta paura di lui. O lo amava molto. Non so dire quale delle due."]},
 	]
 

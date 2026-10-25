@@ -1,5 +1,5 @@
 extends Node2D
-## La Prima Ora del Duat: 10 stanze, poi Ammit. In ogni stanza due ondate di nemici,
+## La Prima Ora del Duat: 10 stanze, poi Am-heh. In ogni stanza due ondate di nemici,
 ## poi la ricompensa, poi 2-3 porte tra cui scegliere la prossima ricompensa.
 ## Stanza 5: il Serpente della Porta (guardiano). A volte una porta porta dal Traghettatore,
 ## dove si spende il Ka della discesa.
@@ -12,14 +12,15 @@ const ENEMIES := {
 	"mummy": preload("res://scenes/mummy.tscn"),
 	"scarab": preload("res://scenes/scarab.tscn"),
 	"priest": preload("res://scenes/priest.tscn"),
-	"ammit": preload("res://scenes/ammit.tscn"),
+	"ammit": preload("res://scenes/ammit.tscn"),   # resta per il finale (Sala delle Due Verità)
+	"amheh": preload("res://scenes/amheh.tscn"),
 	"serpent": preload("res://scenes/serpent.tscn"),
 	"scorpion": preload("res://scenes/scorpion.tscn"),
 	"cobra": preload("res://scenes/cobra.tscn"),
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "trappola": "una trappola"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "trappola": "una trappola"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -41,6 +42,10 @@ const LAYOUTS := [
 	[Vector2(0.25, 0.6), Vector2(0.75, 0.6), Vector2(0.5, 0.4)],
 	[Vector2(0.2, 0.3), Vector2(0.8, 0.3), Vector2(0.2, 0.75), Vector2(0.8, 0.75), Vector2(0.5, 0.55)],
 ]
+## Boss della Prima Ora (Ammit tornerà come boss finale).
+const BOSS_KIND := "amheh"
+## Arena di Am-heh: quattro pozze d'acqua (posizione nel pavimento, raggi dell'ellisse).
+const AMHEH_POOLS := [[Vector2(0.25, 0.36), Vector2(54, 30)], [Vector2(0.75, 0.36), Vector2(54, 30)], [Vector2(0.36, 0.8), Vector2(48, 27)], [Vector2(0.64, 0.8), Vector2(48, 27)]]
 ## Arena di Ammit: 6 colonne, ognuna crolla dopo averla stordita una volta.
 const BOSS_LAYOUT := [Vector2(0.22, 0.3), Vector2(0.78, 0.3), Vector2(0.12, 0.62), Vector2(0.88, 0.62), Vector2(0.36, 0.8), Vector2(0.64, 0.8)]
 
@@ -115,7 +120,7 @@ func _ready() -> void:
 		bonus_boon = d.get("bonus", false)
 		Run.room = int(d["room"]) - 1
 		start_room(d.get("reward", {"kind": "none"}))
-		_banner("Discesa ripresa", "Stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN] if Run.room <= Run.ROOMS_PER_RUN else "Ammit", Color(0.94, 0.72, 0.3))
+		_banner("Discesa ripresa", "Stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN] if Run.room <= Run.ROOMS_PER_RUN else "Am-heh", Color(0.94, 0.72, 0.3))
 		return
 	# la primissima volta: la stanza dell'addestramento, poi la discesa vera
 	if not Meta.tutorial_done and OS.get_environment("DUAT_PERSONA") == "" and OS.get_environment("DUAT_NOTUT") == "":
@@ -370,7 +375,7 @@ func start_room(reward: Dictionary) -> void:
 		Music.play("hub" if kind == "shop" else "room")
 	var layout: Array = LAYOUTS.pick_random() if Run.room > 1 else LAYOUTS[0]
 	if boss_room:
-		layout = BOSS_LAYOUT
+		layout = BOSS_LAYOUT if BOSS_KIND == "ammit" else []
 	elif kind == "shop" or kind == "tutorial":
 		layout = []
 	elif kind == "guardian":
@@ -380,7 +385,15 @@ func start_room(reward: Dictionary) -> void:
 	_build_walls()
 	var decor := DecorScript.new()
 	world.add_child(decor)
-	obstacles = decor.build(Run.room * 7919 + randi() % 1000, ROOM, TOP, WALL, pillars, boss_room)
+	var pool_spots: Array = []
+	if boss_room and BOSS_KIND == "amheh":
+		for pd in AMHEH_POOLS:
+			var pool := Hazards.WaterPool.new()
+			pool.radii = pd[1]
+			pool.position = Vector2(lerpf(WALL, ROOM.size.x - WALL, pd[0].x), lerpf(TOP, ROOM.size.y - WALL, pd[0].y))
+			world.add_child(pool)
+			pool_spots.append(pool.position)
+	obstacles = decor.build(Run.room * 7919 + randi() % 1000, ROOM, TOP, WALL, pillars + pool_spots, boss_room)
 	for r in obstacles:
 		_solid(r)
 	traps_pos.clear()
@@ -492,7 +505,10 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 	if e.is_boss:
 		boss = e
 		e.summon.connect(_on_boss_summon)
-		e.pillar_broken.connect(_on_pillar_broken)
+		if e.has_signal("pillar_broken"):
+			e.pillar_broken.connect(_on_pillar_broken)
+		if "arena" in e:
+			e.arena = Rect2(WALL, TOP, ROOM.size.x - WALL * 2.0, ROOM.size.y - WALL - TOP)
 
 
 func _on_enemy_killed(e: Enemy) -> void:
@@ -543,7 +559,7 @@ func _room_cleared() -> void:
 		# il guardiano di mezzo non dà Lacrime di Iside: quelle cadono solo sui boss delle regioni
 		var first_serpent := Meta.serpent_wins == 0
 		Meta.serpent_wins += 1
-		var tear_txt := "Il Cortile di Neith si è aperto" if first_serpent else "La via verso Ammit è aperta"
+		var tear_txt := "Il Cortile di Neith si è aperto" if first_serpent else "La via verso Am-heh è aperta"
 		var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
 		if not gods.is_empty():
 			current_reward = {"kind": "boon", "god": gods.pick_random()}
@@ -970,7 +986,7 @@ func _show_set_menu() -> void:
 		return
 	var sub := "Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa"
 	if Run.room + 2 > Run.ROOMS_PER_RUN:
-		sub = "Attenzione: la maledizione ti seguirà anche contro Ammit"
+		sub = "Attenzione: la maledizione ti seguirà anche contro Am-heh"
 	_open_choice("Set ti propone un patto", Boons.god_color("set"), sub, cards, Lore.speech("set"), "set")
 
 
@@ -1264,10 +1280,10 @@ func _on_player_died() -> void:
 	finished = true
 	can_leave = false
 	Run.clear_descent()
-	var where := "Ammit, la Divoratrice" if Run.room > Run.ROOMS_PER_RUN else "stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN]
+	var where := "Am-heh, il Divoratore di Milioni" if Run.room > Run.ROOMS_PER_RUN else "stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN]
 	if current_reward.get("kind", "") == "guardian":
 		where = "il Serpente della Porta"
-	Meta.last_end = "ammit" if Run.room > Run.ROOMS_PER_RUN else "room"
+	Meta.last_end = "ammit" if Run.room > Run.ROOMS_PER_RUN else "room"   # "ammit" = morto contro il boss della regione (nome storico nel salvataggio)
 	if Meta.feather:
 		Meta.feather_deaths += 1
 	Meta.last_room = Run.room
@@ -1362,14 +1378,19 @@ func _death_panel(layer: CanvasLayer, where: String, killer: String, summary: St
 
 func _start_boss() -> void:
 	Music.play("boss")
-	boss_name.text = "AMMIT, LA DIVORATRICE"
 	boss_fill.color = Color(0.85, 0.2, 0.15)
 	Sfx.play("roar", 0.0)
-	_banner("Ammit, la Divoratrice", "Divora i cuori che non superano il giudizio", Color(0.9, 0.35, 0.25))
+	if BOSS_KIND == "amheh":
+		boss_name.text = "AM-HEH, IL DIVORATORE DI MILIONI"
+		boss_fill.color = Color(0.95, 0.45, 0.1)
+		_banner("Am-heh, il Divoratore di Milioni", "Vive in un lago di fuoco. Il fuoco non entra nell'acqua", Color(1, 0.55, 0.2))
+	else:
+		boss_name.text = "AMMIT, LA DIVORATRICE"
+		_banner("Ammit, la Divoratrice", "Divora i cuori che non superano il giudizio", Color(0.9, 0.35, 0.25))
 	boss_bar.visible = true
 	boss_fill.size.x = boss_bar.size.x
 	spawning += 1
-	_spawn_after("ammit", Vector2(ROOM.size.x / 2.0, TOP + 120.0), 1.6)
+	_spawn_after(BOSS_KIND, Vector2(ROOM.size.x / 2.0, TOP + 110.0), 1.6)
 
 
 ## Stanza 5: il Serpente della Porta.
@@ -1448,7 +1469,7 @@ func _buy(item) -> void:
 				_banner("Inchiostro di Thoth", "%s sale al livello %d" % [Boons.ALL[id]["name"], Run.level(id)], Boons.god_color("thoth"))
 
 
-## Seconda fase: Ammit chiama uno sciame di scarabei.
+## Il boss chiama rinforzi (Ammit in furia, Am-heh quando fa evaporare una pozza).
 func _on_boss_summon(kinds: Array) -> void:
 	for i in range(kinds.size()):
 		spawning += 1
@@ -1480,16 +1501,16 @@ func _boss_defeated() -> void:
 		if c is Enemy and not c.dead:
 			c.die()
 	Meta.ammit_wins += 1
-	ammit_tears = Meta.claim_boss("ammit", 2)  # Lacrime di Iside: solo dai boss, la prima volta con ogni arma
+	ammit_tears = Meta.claim_boss(BOSS_KIND, 2)  # Lacrime di Iside: solo dai boss, la prima volta con ogni arma
 	if Weights.unlocked() and not Meta.feather and Weights.total() > Meta.best_weight:
 		Meta.best_weight = Weights.total()
 	var first_win := not Meta.sekhem_unlocked
 	Meta.sekhem_unlocked = true
 	Meta.save()
 	if first_win:
-		_banner("Ammit ti cede il suo Sekhem", "Dalla prossima discesa potrai caricare la Forma Divina", Color(1, 0.85, 0.4))
+		_banner("Am-heh ti cede il suo Sekhem", "Dalla prossima discesa potrai caricare la Forma Divina", Color(1, 0.85, 0.4))
 	else:
-		_banner("Ammit è caduta", "Il primo cancello del Duat si apre", Color(0.94, 0.72, 0.3))
+		_banner("Am-heh è caduto", "Il lago di fuoco si spegne. La notte continua", Color(0.94, 0.72, 0.3))
 	await get_tree().create_timer(2.0).timeout
 	_victory()
 
@@ -1581,9 +1602,9 @@ func _victory() -> void:
 	if ammit_tears > 0:
 		extra += "\n+%d Lacrime di Iside, prima vittoria con %s (ne hai %d)" % [ammit_tears, Weapons.ALL[Run.weapon]["the"], Meta.tears]
 	else:
-		extra += "\nCon %s hai già la Lacrima di Ammit: prova un'altra arma, o un Peso del Cuore più alto" % Weapons.ALL[Run.weapon]["the"]
+		extra += "\nCon %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto" % Weapons.ALL[Run.weapon]["the"]
 	Meta.last_end = "win"
-	message.text = "Hai sconfitto Ammit!\nLa Prima Ora è superata.%s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio" % [extra, _end_run_summary()]
+	message.text = "Hai sconfitto Am-heh!\nLa Prima Ora è superata. Le altre ore della notte ti attendono.%s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio" % [extra, _end_run_summary()]
 
 
 # ---------------------------------------------------------------- ogni frame
@@ -1602,7 +1623,7 @@ func _process(_delta: float) -> void:
 	var sek := "PRONTO (Q / LT)" if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
 	if player.divine_t > 0.0:
 		sek = "FORMA DIVINA %.1fs" % player.divine_t
-	var room_txt := "Ammit · colonne: %d" % pillars.size() if Run.room > Run.ROOMS_PER_RUN else "Stanza %d/%d" % [Run.room, Run.ROOMS_PER_RUN]
+	var room_txt := ("Ammit · colonne: %d" % pillars.size() if BOSS_KIND == "ammit" else "Am-heh") if Run.room > Run.ROOMS_PER_RUN else "Stanza %d/%d" % [Run.room, Run.ROOMS_PER_RUN]
 	if tut_step >= 0:
 		room_txt = "Addestramento"
 		_tut_tick()
@@ -1649,7 +1670,7 @@ func _process(_delta: float) -> void:
 	elif Fx.device == "pad":
 		help.text = "Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa"
 	else:
-		help.text = "WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox"
+		help.text = "WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox"
 
 
 # ---------------------------------------------------------------- muri e pavimento

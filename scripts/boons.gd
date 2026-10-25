@@ -141,7 +141,7 @@ static func text(id: String, level: int) -> String:
 
 ## Le tre scelte offerte da un dio. `owned` = {id: livello} dei doni già presi.
 ## Prima i doni nuovi, poi i potenziamenti; a volte il dono pesante prende il terzo posto.
-## Doni che riguardano il Sekhem: compaiono solo dopo averlo sbloccato sconfiggendo Ammit.
+## Doni che riguardano il Sekhem: compaiono solo dopo averlo sbloccato sconfiggendo Am-heh.
 const NEEDS_SEKHEM := ["iside_word", "set_sekhem"]
 
 

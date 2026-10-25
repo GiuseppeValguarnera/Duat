@@ -28,7 +28,7 @@ const MAX_LEVEL := 3
 const SLOT_KA := [400, 800]                ## Ka per il 1° e il 2° posto in più nel Libro
 
 
-## Quanti capitoli si possono tenere attivi: 2, +1 la prima volta che sconfiggi Ammit,
+## Quanti capitoli si possono tenere attivi: 2, +1 la prima volta che sconfiggi il boss della Prima Ora,
 ## +1 per ogni posto comprato con il Ka.
 static func slots() -> int:
 	return 2 + (1 if Meta.ammit_wins > 0 else 0) + Meta.extra_slots
