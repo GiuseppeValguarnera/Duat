@@ -35,6 +35,7 @@ var drag_from := Vector2.ZERO
 var drag_scroll0 := 0
 var drag_active := false
 var drag_moved := false
+var armed_key := ""                   ## sul telefono: la voce già selezionata col primo tocco
 var update_label_state := ""           # com'era il controllo della versione quando le Opzioni sono state disegnate
 var t := 0.0
 
@@ -393,7 +394,7 @@ func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxCont
 	close.pressed.connect(_close_book)
 	outer.add_child(close)
 	var hint := Label.new()
-	hint.text = "E / Y / B per chiudere"
+	hint.text = "Tocca una voce per leggerla, toccala di nuovo per sceglierla" if Fx.device == "touch" else "E / Y / B per chiudere"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_font_size_override("font_size", Fx.fs(8))
 	hint.add_theme_color_override("font_color", Color(0.66, 0.6, 0.47))
@@ -436,10 +437,21 @@ func _on_list_drag(event: InputEvent, scroll: ScrollContainer) -> void:
 
 
 ## Collega la voce di una lista: il tocco conta solo se non stavi trascinando la lista.
+## Sul telefono il primo tocco seleziona la voce e la spiega a destra; solo il secondo tocco
+## sulla stessa voce la sceglie. Così si può leggere cosa fa una voce senza cambiarla.
+## Con mouse, tastiera e pad la spiegazione compare già passandoci sopra: lì basta un clic.
 func _tap(b: Button, cb: Callable) -> void:
 	b.pressed.connect(func() -> void:
-		if not drag_moved:
-			cb.call())
+		if drag_moved:
+			return
+		if Fx.device == "touch":
+			var key := frame_title + "|" + cb.get_method() + str(cb.get_bound_arguments())
+			if armed_key != key:
+				armed_key = key
+				b.grab_focus()
+				Sfx.play("ui", 0.0)
+				return
+		cb.call())
 
 
 func _list_button(parent: Control, text: String, color: Color) -> Button:
@@ -447,6 +459,9 @@ func _list_button(parent: Control, text: String, color: Color) -> Button:
 	b.mouse_filter = Control.MOUSE_FILTER_PASS	 # il trascinamento arriva anche alla lista
 	b.text = text
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	# un testo lungo non allarga la colonna (spingerebbe la pagina di destra fuori schermo): si accorcia
+	b.clip_text = true
+	b.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	b.add_theme_font_size_override("font_size", Fx.fs(9))
 	b.add_theme_color_override("font_color", color)
 	b.add_theme_color_override("font_focus_color", Color(0.94, 0.72, 0.3))
@@ -563,7 +578,7 @@ const OPTION_TEXT := {
 	"hitstop": ["Pausa sui colpi", "Il gioco si ferma per un istante quando un colpo va a segno: dà peso ai colpi. Spegnila se preferisci un'azione sempre fluida."],
 	"autoaim": ["Mira automatica (telefono)", "Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento."],
 	"tutorial": ["Rifai l'addestramento", "Alla prossima discesa la prima stanza torna a essere l'addestramento di Anubi: movimento, khopesh, scatto, Occhio, Ka e porte."],
-	"audio": ["Volume", "Trascina le barre (ci sono anche nella pausa della discesa)."],
+	"audio": ["Volume", "Trascina le barre. Le trovi anche nella pausa della discesa."],
 	"update": ["Aggiorna il gioco", "Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home."],
 	"quit": ["Esci dal gioco", "Chiude il gioco. I progressi della Sala sono già salvati."],
 }
@@ -592,7 +607,7 @@ func _fill_options(focus_id: String = "") -> void:
 				if Updater.available():
 					label += ":  NUOVA VERSIONE"
 				elif Updater.check_state() == "ok":
-					label += ":  sei all'ultima versione"
+					label += ":  aggiornato"
 				else:
 					label += ":  controllo..."
 		var col := Color(0.62, 0.95, 0.7) if id == "feather" and Meta.feather else Color(0.95, 0.9, 0.78)
@@ -625,33 +640,41 @@ func _show_option(id: String) -> void:
 		page_lore.text = _update_status()
 
 
-## Una barra per ogni tipo di suono, sulla pagina di destra (come nel menu di pausa).
+## Una barra per ogni tipo di suono, sulla pagina di destra, su due colonne: una sotto l'altra
+## non entravano nello schermo del telefono.
 func _volume_sliders() -> void:
-	page_extra.add_theme_constant_override("separation", 1)
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 14)
+	grid.add_theme_constant_override("v_separation", 0)
+	page_extra.add_child(grid)
 	for c in Sfx.CATEGORIES:
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 8)
-		page_extra.add_child(row)
+		var cell := VBoxContainer.new()
+		cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		cell.add_theme_constant_override("separation", 0)
+		grid.add_child(cell)
 		var name_label := Label.new()
 		name_label.text = c[1]
-		name_label.custom_minimum_size = Vector2(96, 0) * Fx.ui
-		name_label.add_theme_font_size_override("font_size", Fx.fs(9))
+		name_label.add_theme_font_size_override("font_size", Fx.fs(8))
 		name_label.add_theme_color_override("font_color", Color(0.95, 0.9, 0.78))
-		row.add_child(name_label)
+		cell.add_child(name_label)
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 4)
+		cell.add_child(row)
 		var slider := HSlider.new()
 		slider.min_value = 0.0
 		slider.max_value = 1.0
 		slider.step = 0.05
 		slider.value = Sfx.volumes.get(c[0], 0.7 if c[0] == "musica" else 1.0)
 		# alta abbastanza da prenderla con il dito
-		slider.custom_minimum_size = Vector2(130, 17) * Fx.ui
+		slider.custom_minimum_size = Vector2(50, 15 * Fx.ui)
 		slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(slider)
 		var pct := Label.new()
 		pct.text = "%d%%" % roundi(slider.value * 100.0)
-		pct.custom_minimum_size = Vector2(34, 0) * Fx.ui
-		pct.add_theme_font_size_override("font_size", Fx.fs(9))
+		pct.custom_minimum_size = Vector2(30, 0) * Fx.ui
+		pct.add_theme_font_size_override("font_size", Fx.fs(8))
 		pct.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
 		row.add_child(pct)
 		slider.value_changed.connect(_on_volume_slider.bind(c[0], pct))
@@ -819,6 +842,7 @@ func _close_book() -> void:
 	Sfx.play("page", 0.0)
 	book.queue_free()
 	book = null
+	armed_key = ""
 	player.set_physics_process(true)
 
 
