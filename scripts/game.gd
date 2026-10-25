@@ -1212,7 +1212,7 @@ func _show_audio_menu() -> void:
 		slider.max_value = 1.0
 		slider.step = 0.05
 		slider.value = Sfx.volumes.get(c[0], 1.0)
-		slider.custom_minimum_size = Vector2(100, 14) * Fx.ui
+		slider.custom_minimum_size = Vector2(120, 20) * Fx.ui    # alta abbastanza da prenderla con il dito
 		slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(slider)
 		var pct := Label.new()

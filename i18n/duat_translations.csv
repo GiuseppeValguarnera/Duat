@@ -655,10 +655,7 @@ Mira automatica (telefono),Mira automatica (telefono),
 "Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento.","Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento.",
 Rifai l'addestramento,Rifai l'addestramento,Redo the training
 "Alla prossima discesa la prima stanza torna a essere l'addestramento di Anubi: movimento, khopesh, scatto, Occhio, Ka e porte.","Alla prossima discesa la prima stanza torna a essere l'addestramento di Anubi: movimento, khopesh, scatto, Occhio, Ka e porte.","On your next descent the first chamber becomes Anubis's training again: movement, khopesh, dash, Eye, Ka and doors."
-Volume generale,Volume generale,Master volume
-Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa.,Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa.,Press to change. The other sound categories are set from the pause menu during a descent.
-Musica,Musica,Music
-Premi per cambiare.,Premi per cambiare.,Press to change.
+Trascina le barre (ci sono anche nella pausa della discesa).,Trascina le barre (ci sono anche nella pausa della discesa).,
 Aggiorna il gioco,Aggiorna il gioco,
 Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,
 Esci dal gioco,Esci dal gioco,Quit the game
@@ -667,6 +664,7 @@ Opzioni,Opzioni,Options
 Esc / Start / B per tornare alla Sala,Esc / Start / B per tornare alla Sala,Esc / Start / B to return to the Hall
 ATTIVA,ATTIVA,ON
 "sì, alla prossima","sì, alla prossima","yes, next time"
+":  generale %d%%, musica %d%%",":  generale %d%%, musica %d%%",
 :  NUOVA VERSIONE,:  NUOVA VERSIONE,
 :  sei all'ultima versione,:  sei all'ultima versione,
 :  controllo...,:  controllo...,
@@ -695,6 +693,7 @@ Sto controllando se c'è una versione nuova...",
 Non riesco a controllare: forse il telefono non è connesso. Premi per riprovare.","
 
 Non riesco a controllare: forse il telefono non è connesso. Premi per riprovare.",
+HSlider,HSlider,
 Aggiornamento in corso... il gioco si riapre da solo tra un momento.,Aggiornamento in corso... il gioco si riapre da solo tra un momento.,
 Controllo in corso...,Controllo in corso...,
 nessuno,nessuno,none
@@ -914,6 +913,8 @@ Scudo -%d,Scudo -%d,Shield -%d
 Il cuore non testimonia,Il cuore non testimonia,The heart does not testify
 Bastet ti protegge!,Bastet ti protegge!,Bastet protects you!
 IL SERPENTE SI INFURIA,IL SERPENTE SI INFURIA,THE SERPENT IS ENRAGED
+Volume generale,Volume generale,Master volume
+Musica,Musica,Music
 Attacchi e colpi,Attacchi e colpi,Attacks and hits
 Scatto,Scatto,Dash
 Danni subiti,Danni subiti,Damage taken
@@ -982,6 +983,8 @@ La fame di Am-heh,La fame di Am-heh,
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,
 Vita,Vita,Health
 Comandi,Comandi,Controls
+Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa.,Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa.,Press to change. The other sound categories are set from the pause menu during a descent.
+Premi per cambiare.,Premi per cambiare.,Press to change.
 NUOVA VERSIONE,NUOVA VERSIONE,
 window.duatUpdate || '',window.duatUpdate || '',
 I nemici sono più veloci del 30%,I nemici sono più veloci del 30%,Enemies are 30% faster

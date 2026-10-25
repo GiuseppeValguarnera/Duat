@@ -27,6 +27,14 @@ var page_action_cb := Callable()
 var papiri_entries: VBoxContainer
 var codex: Array = []
 var shown_option := ""                 # l'opzione mostrata sulla pagina di destra
+var option_buttons := {}               # id -> pulsante delle Opzioni
+var page_extra: VBoxContainer          ## spazio sulla pagina di destra per i comandi (le barre del volume)
+var list_scroll: ScrollContainer = null
+var frame_title := ""
+var drag_from := Vector2.ZERO
+var drag_scroll0 := 0
+var drag_active := false
+var drag_moved := false
 var update_label_state := ""           # com'era il controllo della versione quando le Opzioni sono state disegnate
 var t := 0.0
 
@@ -305,6 +313,12 @@ func _open_book(kind: String = "libro") -> void:
 
 ## Struttura comune: titolo, sottotitolo, una colonna di pulsanti a sinistra e un riquadro di testo a destra.
 func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxContainer:
+	# se si ridisegna la stessa finestra (hai appena premuto una voce), lo scorrimento resta dov'era
+	var keep_scroll := 0
+	if list_scroll != null and is_instance_valid(list_scroll) and frame_title == title_text:
+		keep_scroll = list_scroll.scroll_vertical
+	frame_title = title_text
+	option_buttons.clear()
 	for c in book.get_children():
 		c.queue_free()
 	var dim := ColorRect.new()
@@ -341,8 +355,15 @@ func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxCont
 	var scroll := ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(left_width, 0)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.follow_focus = true
+	scroll.follow_focus = keep_scroll == 0
 	row.add_child(scroll)
+	list_scroll = scroll
+	scroll.gui_input.connect(_on_list_drag.bind(scroll))
+	if keep_scroll > 0:
+		get_tree().create_timer(0.03, true, false, true).timeout.connect(func() -> void:
+			if is_instance_valid(scroll):
+				scroll.scroll_vertical = keep_scroll
+				scroll.follow_focus = true)
 	var left := VBoxContainer.new()
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	left.add_theme_constant_override("separation", 3)
@@ -362,6 +383,9 @@ func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxCont
 		if page_action_cb.is_valid():
 			page_action_cb.call())
 	right.add_child(page_action)
+	page_extra = VBoxContainer.new()
+	page_extra.add_theme_constant_override("separation", 4)
+	right.add_child(page_extra)
 	var close := Button.new()
 	close.text = "Chiudi"
 	close.add_theme_font_size_override("font_size", Fx.fs(10))
@@ -387,8 +411,40 @@ func _text_label(parent: Control, font_size: int, color: Color) -> Label:
 	return l
 
 
+## Trascinare la lista con il dito (o con il mouse premuto) la fa scorrere. Se il dito si è
+## mosso, il tocco non preme la voce su cui è finito.
+func _on_list_drag(event: InputEvent, scroll: ScrollContainer) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			drag_from = event.global_position
+			drag_scroll0 = scroll.scroll_vertical
+			drag_active = true
+			drag_moved = false
+		else:
+			drag_active = false
+			if drag_moved:
+				scroll.accept_event()
+				# la voce sotto il dito riceve il rilascio subito dopo: per un istante si ignora
+				get_tree().create_timer(0.05, true, false, true).timeout.connect(func() -> void: drag_moved = false)
+	elif event is InputEventMouseMotion and drag_active:
+		var dy: float = event.global_position.y - drag_from.y
+		if absf(dy) > 8.0 * Fx.ui:
+			drag_moved = true
+		if drag_moved:
+			scroll.scroll_vertical = drag_scroll0 - int(dy)
+			scroll.accept_event()
+
+
+## Collega la voce di una lista: il tocco conta solo se non stavi trascinando la lista.
+func _tap(b: Button, cb: Callable) -> void:
+	b.pressed.connect(func() -> void:
+		if not drag_moved:
+			cb.call())
+
+
 func _list_button(parent: Control, text: String, color: Color) -> Button:
 	var b := Button.new()
+	b.mouse_filter = Control.MOUSE_FILTER_PASS	 # il trascinamento arriva anche alla lista
 	b.text = text
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	b.add_theme_font_size_override("font_size", Fx.fs(9))
@@ -422,7 +478,7 @@ func _fill_book(focus_id: String = "") -> void:
 		if Chapters.max_level(id) > 1 and lvl > 0:
 			stars = "  · liv. %d/%d" % [lvl, Chapters.max_level(id)]    # niente ●○: il telefono non li ha
 		var b := _list_button(left, "%d · %s%s   [%s]" % [c["num"], c["name"], stars, state], col)
-		b.pressed.connect(_on_chapter_pressed.bind(id))
+		_tap(b, _on_chapter_pressed.bind(id))
 		b.focus_entered.connect(_show_chapter.bind(id))
 		b.mouse_entered.connect(_show_chapter.bind(id))
 		if first == null or id == focus_id:
@@ -431,7 +487,7 @@ func _fill_book(focus_id: String = "") -> void:
 	var sc := Chapters.slot_cost()
 	if sc > 0:
 		var sb := _list_button(left, "Un posto in più nel Libro   [%d Ka]" % sc, Color(0.7, 0.8, 1.0) if Meta.ka_bank >= sc else Color(0.5, 0.52, 0.6))
-		sb.pressed.connect(_on_slot_pressed)
+		_tap(sb, _on_slot_pressed)
 		sb.focus_entered.connect(_show_slot)
 		sb.mouse_entered.connect(_show_slot)
 		if focus_id == "slot":
@@ -507,8 +563,7 @@ const OPTION_TEXT := {
 	"hitstop": ["Pausa sui colpi", "Il gioco si ferma per un istante quando un colpo va a segno: dà peso ai colpi. Spegnila se preferisci un'azione sempre fluida."],
 	"autoaim": ["Mira automatica (telefono)", "Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento."],
 	"tutorial": ["Rifai l'addestramento", "Alla prossima discesa la prima stanza torna a essere l'addestramento di Anubi: movimento, khopesh, scatto, Occhio, Ka e porte."],
-	"vol": ["Volume generale", "Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa."],
-	"music": ["Musica", "Premi per cambiare."],
+	"audio": ["Volume", "Trascina le barre (ci sono anche nella pausa della discesa)."],
 	"update": ["Aggiorna il gioco", "Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home."],
 	"quit": ["Esci dal gioco", "Chiude il gioco. I progressi della Sala sono già salvati."],
 }
@@ -518,7 +573,7 @@ func _fill_options(focus_id: String = "") -> void:
 	update_label_state = Updater.check_state() + str(Updater.available())
 	var left := _frame("Opzioni", "Esc / Start / B per tornare alla Sala", 270)
 	var first: Button = null
-	var ids := ["feather", "shake", "hitstop", "autoaim", "tutorial", "vol", "music"]
+	var ids := ["feather", "shake", "hitstop", "autoaim", "tutorial", "audio"]
 	if Updater.supported():
 		ids.append("update")		  # solo nella versione web: l'app installata non si aggiorna da sola
 	ids.append("quit")
@@ -531,10 +586,8 @@ func _fill_options(focus_id: String = "") -> void:
 				label += ":  " + ("sì" if Meta.options.get(id, true) else "no")
 			"tutorial":
 				label += ":  " + ("sì, alla prossima" if not Meta.tutorial_done else "no")
-			"vol":
-				label += ":  %d%%" % roundi(Sfx.volumes.get("generale", 1.0) * 100.0)
-			"music":
-				label += ":  %d%%" % roundi(Sfx.volumes.get("musica", 0.7) * 100.0)
+			"audio":
+				label += ":  generale %d%%, musica %d%%" % [roundi(Sfx.volumes.get("generale", 1.0) * 100.0), roundi(Sfx.volumes.get("musica", 0.7) * 100.0)]
 			"update":
 				if Updater.available():
 					label += ":  NUOVA VERSIONE"
@@ -544,7 +597,8 @@ func _fill_options(focus_id: String = "") -> void:
 					label += ":  controllo..."
 		var col := Color(0.62, 0.95, 0.7) if id == "feather" and Meta.feather else Color(0.95, 0.9, 0.78)
 		var b := _list_button(left, label, col)
-		b.pressed.connect(_on_option_pressed.bind(id))
+		option_buttons[id] = b
+		_tap(b, _on_option_pressed.bind(id))
 		b.focus_entered.connect(_show_option.bind(id))
 		b.mouse_entered.connect(_show_option.bind(id))
 		if first == null or id == focus_id:
@@ -553,7 +607,15 @@ func _fill_options(focus_id: String = "") -> void:
 
 
 func _show_option(id: String) -> void:
+	if shown_option == id and id == "audio" and page_extra.get_child_count() > 0:
+		return						  # le barre sono già lì: non ricrearle mentre le trascini
 	shown_option = id
+	for c in page_extra.get_children():
+		c.queue_free()
+	# nella pagina del volume la riga di testo in fondo è vuota: via, così le barre entrano tutte
+	page_lore.visible = id != "audio"
+	if id == "audio":
+		_volume_sliders()
 	page_title.text = OPTION_TEXT[id][0]
 	page_body.text = OPTION_TEXT[id][1]
 	page_lore.text = ""
@@ -561,6 +623,51 @@ func _show_option(id: String) -> void:
 		page_lore.text = "Ora subisci il %d%% di danni in meno." % roundi(Run.feather_guard() * 100.0)
 	if id == "update":
 		page_lore.text = _update_status()
+
+
+## Una barra per ogni tipo di suono, sulla pagina di destra (come nel menu di pausa).
+func _volume_sliders() -> void:
+	page_extra.add_theme_constant_override("separation", 1)
+	for c in Sfx.CATEGORIES:
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		page_extra.add_child(row)
+		var name_label := Label.new()
+		name_label.text = c[1]
+		name_label.custom_minimum_size = Vector2(96, 0) * Fx.ui
+		name_label.add_theme_font_size_override("font_size", Fx.fs(9))
+		name_label.add_theme_color_override("font_color", Color(0.95, 0.9, 0.78))
+		row.add_child(name_label)
+		var slider := HSlider.new()
+		slider.min_value = 0.0
+		slider.max_value = 1.0
+		slider.step = 0.05
+		slider.value = Sfx.volumes.get(c[0], 0.7 if c[0] == "musica" else 1.0)
+		# alta abbastanza da prenderla con il dito
+		slider.custom_minimum_size = Vector2(130, 17) * Fx.ui
+		slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(slider)
+		var pct := Label.new()
+		pct.text = "%d%%" % roundi(slider.value * 100.0)
+		pct.custom_minimum_size = Vector2(34, 0) * Fx.ui
+		pct.add_theme_font_size_override("font_size", Fx.fs(9))
+		pct.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
+		row.add_child(pct)
+		slider.value_changed.connect(_on_volume_slider.bind(c[0], pct))
+		slider.drag_ended.connect(func(_changed: bool) -> void: Meta.save())
+
+
+func _on_volume_slider(value: float, category: String, pct: Label) -> void:
+	Sfx.set_volume(category, value)
+	pct.text = "%d%%" % roundi(value * 100.0)
+	# un suono di prova della categoria, così senti subito il risultato
+	for snd in Sfx.SOUNDS:
+		if category == "generale" or Sfx.SOUNDS[snd][1] == category:
+			Sfx.play(snd, 0.0)
+			break
+	if option_buttons.has("audio") and is_instance_valid(option_buttons["audio"]):
+		option_buttons["audio"].text = OPTION_TEXT["audio"][0] + ":  generale %d%%, musica %d%%" % [roundi(Sfx.volumes.get("generale", 1.0) * 100.0), roundi(Sfx.volumes.get("musica", 0.7) * 100.0)]
 
 
 ## Le versioni, per la pagina di "Aggiorna il gioco".
@@ -585,12 +692,13 @@ func _on_option_pressed(id: String) -> void:
 			Meta.options[id] = not Meta.options.get(id, true)
 		"tutorial":
 			Meta.tutorial_done = not Meta.tutorial_done
-		"vol":
-			var v: float = Sfx.volumes.get("generale", 1.0)
-			Sfx.set_volume("generale", 0.0 if v >= 0.99 else minf(1.0, v + 0.2))
-		"music":
-			var m: float = Sfx.volumes.get("musica", 0.7)
-			Sfx.set_volume("musica", 0.0 if m >= 0.99 else minf(1.0, m + 0.1))
+		"audio":
+			# le barre sono già sulla pagina: il tocco sulla voce porta il dito lì
+			if page_extra.get_child_count() > 0:
+				var first_slider := page_extra.find_children("*", "HSlider", true, false)
+				if not first_slider.is_empty():
+					first_slider[0].grab_focus()
+			return
 		"quit":
 			Meta.save()
 			get_tree().quit()
@@ -625,7 +733,7 @@ func _fill_weights(focus_id: String = "") -> void:
 		var r := Weights.rank(id)
 		var pips := "%d/%d" % [r, int(w["max"])]
 		var b := _list_button(left, "%s   %s" % [pips, w["name"]], Color(0.95, 0.55, 0.45) if r > 0 else Color(0.95, 0.9, 0.78))
-		b.pressed.connect(_on_weight_pressed.bind(id))
+		_tap(b, _on_weight_pressed.bind(id))
 		b.focus_entered.connect(_show_weight.bind(id))
 		b.mouse_entered.connect(_show_weight.bind(id))
 		if first == null or id == focus_id:
