@@ -602,6 +602,7 @@ La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,La bilanci
 Il Cortile di Neith · le armi · entra dalla porta,Il Cortile di Neith · le armi · entra dalla porta,
 Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,
 Il cancello del Duat è a nord,Il cancello del Duat è a nord,The gate of the Duat lies to the north
+"Tocca una voce per leggerla, toccala di nuovo per sceglierla","Tocca una voce per leggerla, toccala di nuovo per sceglierla",
 E / Y / B per chiudere,E / Y / B per chiudere,E / Y / B to close
 Il Libro dei Morti,Il Libro dei Morti,The Book of the Dead
 Ka custodito: %d    ·    Capitoli attivi: %d di %d,Ka custodito: %d    ·    Capitoli attivi: %d di %d,Stored Ka: %d    ·    Active chapters: %d of %d
@@ -634,7 +635,7 @@ Mira automatica (telefono),Mira automatica (telefono),
 "Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento.","Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento.",
 Rifai l'addestramento,Rifai l'addestramento,Redo the training
 "Alla prossima discesa la prima stanza torna a essere l'addestramento di Anubi: movimento, khopesh, scatto, Occhio, Ka e porte.","Alla prossima discesa la prima stanza torna a essere l'addestramento di Anubi: movimento, khopesh, scatto, Occhio, Ka e porte.","On your next descent the first chamber becomes Anubis's training again: movement, khopesh, dash, Eye, Ka and doors."
-Trascina le barre (ci sono anche nella pausa della discesa).,Trascina le barre (ci sono anche nella pausa della discesa).,
+Trascina le barre. Le trovi anche nella pausa della discesa.,Trascina le barre. Le trovi anche nella pausa della discesa.,
 Aggiorna il gioco,Aggiorna il gioco,
 Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,
 Esci dal gioco,Esci dal gioco,Quit the game
@@ -645,7 +646,7 @@ ATTIVA,ATTIVA,ON
 "sì, alla prossima","sì, alla prossima","yes, next time"
 ":  generale %d%%, musica %d%%",":  generale %d%%, musica %d%%",
 :  NUOVA VERSIONE,:  NUOVA VERSIONE,
-:  sei all'ultima versione,:  sei all'ultima versione,
+:  aggiornato,:  aggiornato,
 :  controllo...,:  controllo...,
 Ora subisci il %d%% di danni in meno.,Ora subisci il %d%% di danni in meno.,You now take %d%% less damage.
 Versione installata: %s,Versione installata: %s,
@@ -979,6 +980,8 @@ La fame di Am-heh,La fame di Am-heh,
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,
 Vita,Vita,Health
 Comandi,Comandi,Controls
+Trascina le barre (ci sono anche nella pausa della discesa).,Trascina le barre (ci sono anche nella pausa della discesa).,
+:  sei all'ultima versione,:  sei all'ultima versione,
 "
 %s: %s","
 %s: %s",
