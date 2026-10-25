@@ -1474,7 +1474,7 @@ func _start_shop() -> void:
 	var boat := FerrymanScript.new()
 	boat.position = Vector2(cx, mid_y - 50.0)
 	world.add_child(boat)
-	_banner("Il Traghettatore", FerrymanScript.LINES.pick_random().split(": ", true, 1)[1], Color(0.6, 0.85, 0.95))
+	_banner("Il Traghettatore", "Mahaf: " + FerrymanScript.line(), Color(0.6, 0.85, 0.95))
 	var items := SHOP_ITEMS.duplicate()
 	if _upgradable().is_empty():
 		items = items.filter(func(it: Dictionary) -> bool: return it["kind"] != "upgrade")
@@ -1484,7 +1484,7 @@ func _start_shop() -> void:
 		node.kind = it["kind"]
 		node.title = it["title"]
 		node.desc = it["desc"]
-		node.price = roundi(it["price"] * (1.0 - Chapters.value("c94") / 100.0))
+		node.price = roundi(it["price"] * (1.0 - Chapters.value("c94") / 100.0) * FerrymanScript.trust_discount())
 		node.position = Vector2(cx + (i - (items.size() - 1) / 2.0) * 90.0, mid_y + 50.0)
 		world.add_child(node)
 		shop_items.append(node)
@@ -1658,6 +1658,9 @@ func _victory() -> void:
 			c.queue_free()
 	message.visible = true
 	var extra := "\nNuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti" if Meta.ammit_wins == 1 else ""
+	var ric := Lore.ricordo_for(Meta.ammit_wins)
+	if ric != "":
+		extra += "\nUn ricordo è riaffiorato: «%s». Lo trovi nei Papiri di Thoth" % ric
 	if ammit_tears > 0:
 		extra += "\n+%d Lacrime di Iside, prima vittoria con %s (ne hai %d)" % [ammit_tears, Weapons.ALL[Run.weapon]["the"], Meta.tears]
 	else:

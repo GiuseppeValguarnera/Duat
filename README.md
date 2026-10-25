@@ -6,7 +6,7 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
 ## La storia
 
-Il protagonista crede di essere lo scriba del faraone Akhet, il cui nome è stato cancellato da ogni pietra d'Egitto, e scende nel Duat per ricomporlo. Nella Sala del Giudizio, sopra il cancello, il cartiglio di Akhet riprende un segno a ogni vittoria. La trama completa, i colpi di scena e le regole per scrivere le battute sono in [`docs/storia.md`](docs/storia.md): contiene spoiler.
+Il protagonista crede di essere lo scriba del faraone Akhet, il cui nome è stato cancellato da ogni pietra d'Egitto, e scende nel Duat per ricomporlo. Nella Sala del Giudizio, sopra il cancello, il cartiglio di Akhet riprende un segno a ogni vittoria. Ogni vittoria sul boss della Prima Ora fa riaffiorare un **Ricordo dello scriba** (nei Papiri di Thoth, in cima; il leggio brilla d'oro finché non lo leggi), e il Traghettatore cambia voce e prezzi man mano che la storia avanza. La trama completa, i colpi di scena e le regole per scrivere le battute sono in [`docs/storia.md`](docs/storia.md): contiene spoiler.
 
 ## Come provarlo
 

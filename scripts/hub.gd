@@ -199,6 +199,8 @@ func _process(delta: float) -> void:
 		"papiri":
 			var n := Lore.count_seen()
 			prompt.text = "%s · Leggi i Papiri di Thoth (%d su %d)" % [key, n.x, n.y]
+			if Lore.unread_ricordi() > 0:
+				prompt.text += " · un ricordo nuovo"
 		"bilancia":
 			if Weights.unlocked():
 				prompt.text = "%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)" % [key, Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0))]
@@ -631,13 +633,24 @@ func _show_category(i: int) -> void:
 		var b := _list_button(papiri_entries, e["title"], Color(0.95, 0.9, 0.78) if e["seen"] else Color(0.5, 0.46, 0.4))
 		b.focus_entered.connect(_show_entry.bind(cat["title"], e))
 		b.mouse_entered.connect(_show_entry.bind(cat["title"], e))
-	_show_entry(cat["title"], cat["entries"][0])
+	# si apre sul primo ricordo nuovo, se c'è
+	var shown_e: Dictionary = cat["entries"][0]
+	for e in cat["entries"]:
+		if e.get("new", false):
+			shown_e = e
+			break
+	_show_entry(cat["title"], shown_e)
 
 
 func _show_entry(category: String, e: Dictionary) -> void:
 	page_title.text = category
 	page_body.text = e["title"]
 	page_lore.text = e["text"]
+	# un ricordo nuovo diventa "letto" quando lo apri
+	if e.get("new", false) and not Meta.dialogue_seen.has(e["id"]):
+		Meta.dialogue_seen.append(e["id"])
+		e["new"] = false
+		Meta.save()
 
 
 func _close_book() -> void:
@@ -919,6 +932,11 @@ func _draw_papiri(p: Vector2) -> void:
 	draw_rect(Rect2(p.x - 22, p.y - 36, 44, 3), wood)
 	if near == "papiri" and book == null:
 		draw_arc(Vector2(p.x, p.y - 16), 26.0, 0.0, TAU, 32, Color(0.72, 0.68, 0.9, 0.5 + 0.3 * sin(t * 4.0)), 1.5)
+	# un ricordo nuovo da leggere: il leggio brilla d'oro anche da lontano
+	if Lore.unread_ricordi() > 0 and book == null:
+		var glow := 0.5 + 0.5 * sin(t * 3.0)
+		draw_circle(Vector2(p.x, p.y - 18), 30.0 + glow * 4.0, Color(0.94, 0.72, 0.3, 0.08 + 0.08 * glow))
+		draw_arc(Vector2(p.x, p.y - 18), 30.0 + glow * 4.0, 0.0, TAU, 32, Color(0.94, 0.72, 0.3, 0.45 + 0.35 * glow), 1.5)
 
 
 

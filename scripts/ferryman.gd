@@ -3,15 +3,55 @@ extends Node2D
 ## spendi il Ka raccolto nella discesa. Il Ka speso qui non torna a casa con te:
 ## ogni acquisto è Ka in meno per il Libro dei Morti.
 
+## Mahaf cambia con la storia (docs/storia.md): all'inizio è avido e burbero; dopo il primo boss
+## diventa curioso e ambiguo; più avanti preoccupato. Non dice mai chi sei: lascia solo frasi che
+## si capiscono dopo. E abbassa i prezzi, senza dirlo.
 const LINES := [
-	"Mahaf, il Traghettatore: «Ogni sponda ha il suo prezzo. Anche questa.»",
-	"Mahaf, il Traghettatore: «Conosci il nome di ogni parte della mia barca? No? Allora paga.»",
-	"Mahaf, il Traghettatore: «I morti non portano nulla con sé. Tu porti Ka. Interessante.»",
-	"Mahaf, il Traghettatore: «Non svegliarmi per niente, scriba. Compra, o passa oltre.»",
-	"Mahaf, il Traghettatore: «Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»",
-	"Mahaf, il Traghettatore: «Prima di un guardiano, tutti diventano generosi. Strano, vero?»",
-	"Mahaf, il Traghettatore: «Il Ka è peso. Lascialo a me, e salirai più leggero.»",
+	"«Ogni sponda ha il suo prezzo. Anche questa.»",
+	"«Conosci il nome di ogni parte della mia barca? No? Allora paga.»",
+	"«I morti non portano nulla con sé. Tu porti Ka. Interessante.»",
+	"«Non svegliarmi per niente, scriba. Compra, o passa oltre.»",
+	"«Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»",
+	"«Prima di un guardiano, tutti diventano generosi. Strano, vero?»",
+	"«Il Ka è peso. Lascialo a me, e salirai più leggero.»",
 ]
+const LINES_CURIOUS := [
+	"«Ti ho già portato una volta, sai? No, non te lo ricordi. Nessuno se lo ricorda.»",
+	"«Hai ancora quella scheggia sotto il pollice? ...Lascia stare. Compra.»",
+	"«Guardo indietro, scriba. È il mio mestiere. E più guardo, meno capisco chi ho davanti.»",
+	"«Oggi il prezzo è più basso. Non chiedermi perché.»",
+	"«Gli scribi di solito hanno le dita macchiate d'inchiostro. Tu no. Curioso.»",
+]
+const LINES_WORRIED := [
+	"«Il tuo re aveva paura di questa barca. Anche da vivo, nelle feste del Fiume, saliva sempre per ultimo.»",
+	"«Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»",
+	"«Più scendi, meno ti costa la mia merce. Non è generosità. È fretta.»",
+	"«Ho fatto una promessa, molto tempo fa. La sto ancora pagando. Prendi, e va'.»",
+]
+
+
+## Quanto è avanzata la storia per Mahaf: 0 all'inizio, 1 dopo il primo boss, 2 dopo il terzo.
+static func trust() -> int:
+	if Meta.ammit_wins >= 3:
+		return 2
+	if Meta.ammit_wins >= 1:
+		return 1
+	return 0
+
+
+## Una frase di Mahaf adatta al punto della storia (a volte una di quelle di prima).
+static func line() -> String:
+	var pools := [LINES, LINES_CURIOUS, LINES_WORRIED]
+	var k := trust()
+	if k > 0 and randf() < 0.25:
+		k -= 1
+	return (pools[k] as Array).pick_random()
+
+
+## Lo sconto silenzioso: più Mahaf sa, meno ti fa pagare.
+static func trust_discount() -> float:
+	return [1.0, 0.9, 0.8][trust()]
+
 
 var t := 0.0
 

@@ -421,13 +421,22 @@ Colpito! Scatta mentre arriva,Colpito! Scatta mentre arriva,Hit! Dash as it come
 Solo l'Occhio,Solo l'Occhio,Eye only
 +%d Ka,+%d Ka,+%d Ka
 CRITICO,CRITICO,CRITICAL
-"Mahaf, il Traghettatore: «Ogni sponda ha il suo prezzo. Anche questa.»","Mahaf, il Traghettatore: «Ogni sponda ha il suo prezzo. Anche questa.»","Mahaf, the Ferryman: «Every shore has its price. This one too.»"
-"Mahaf, il Traghettatore: «Conosci il nome di ogni parte della mia barca? No? Allora paga.»","Mahaf, il Traghettatore: «Conosci il nome di ogni parte della mia barca? No? Allora paga.»","Mahaf, the Ferryman: «Do you know the name of every part of my boat? No? Then pay.»"
-"Mahaf, il Traghettatore: «I morti non portano nulla con sé. Tu porti Ka. Interessante.»","Mahaf, il Traghettatore: «I morti non portano nulla con sé. Tu porti Ka. Interessante.»","Mahaf, the Ferryman: «The dead carry nothing with them. You carry Ka. Interesting.»"
-"Mahaf, il Traghettatore: «Non svegliarmi per niente, scriba. Compra, o passa oltre.»","Mahaf, il Traghettatore: «Non svegliarmi per niente, scriba. Compra, o passa oltre.»","Mahaf, the Ferryman: «Do not wake me for nothing, scribe. Buy, or pass on.»"
-"Mahaf, il Traghettatore: «Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»","Mahaf, il Traghettatore: «Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»","Mahaf, the Ferryman: «They call me He Who Looks Behind. From here I see everyone who fell before you.»"
-"Mahaf, il Traghettatore: «Prima di un guardiano, tutti diventano generosi. Strano, vero?»","Mahaf, il Traghettatore: «Prima di un guardiano, tutti diventano generosi. Strano, vero?»","Mahaf, the Ferryman: «Before a guardian, everyone becomes generous. Strange, isn't it?»"
-"Mahaf, il Traghettatore: «Il Ka è peso. Lascialo a me, e salirai più leggero.»","Mahaf, il Traghettatore: «Il Ka è peso. Lascialo a me, e salirai più leggero.»","Mahaf, the Ferryman: «Ka is weight. Leave it to me, and you will climb lighter.»"
+«Ogni sponda ha il suo prezzo. Anche questa.»,«Ogni sponda ha il suo prezzo. Anche questa.»,
+«Conosci il nome di ogni parte della mia barca? No? Allora paga.»,«Conosci il nome di ogni parte della mia barca? No? Allora paga.»,
+«I morti non portano nulla con sé. Tu porti Ka. Interessante.»,«I morti non portano nulla con sé. Tu porti Ka. Interessante.»,
+"«Non svegliarmi per niente, scriba. Compra, o passa oltre.»","«Non svegliarmi per niente, scriba. Compra, o passa oltre.»",
+«Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»,«Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»,
+"«Prima di un guardiano, tutti diventano generosi. Strano, vero?»","«Prima di un guardiano, tutti diventano generosi. Strano, vero?»",
+"«Il Ka è peso. Lascialo a me, e salirai più leggero.»","«Il Ka è peso. Lascialo a me, e salirai più leggero.»",
+"«Ti ho già portato una volta, sai? No, non te lo ricordi. Nessuno se lo ricorda.»","«Ti ho già portato una volta, sai? No, non te lo ricordi. Nessuno se lo ricorda.»",
+«Hai ancora quella scheggia sotto il pollice? ...Lascia stare. Compra.»,«Hai ancora quella scheggia sotto il pollice? ...Lascia stare. Compra.»,
+"«Guardo indietro, scriba. È il mio mestiere. E più guardo, meno capisco chi ho davanti.»","«Guardo indietro, scriba. È il mio mestiere. E più guardo, meno capisco chi ho davanti.»",
+«Oggi il prezzo è più basso. Non chiedermi perché.»,«Oggi il prezzo è più basso. Non chiedermi perché.»,
+«Gli scribi di solito hanno le dita macchiate d'inchiostro. Tu no. Curioso.»,«Gli scribi di solito hanno le dita macchiate d'inchiostro. Tu no. Curioso.»,
+"«Il tuo re aveva paura di questa barca. Anche da vivo, nelle feste del Fiume, saliva sempre per ultimo.»","«Il tuo re aveva paura di questa barca. Anche da vivo, nelle feste del Fiume, saliva sempre per ultimo.»",
+«Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»,«Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»,
+"«Più scendi, meno ti costa la mia merce. Non è generosità. È fretta.»","«Più scendi, meno ti costa la mia merce. Non è generosità. È fretta.»",
+"«Ho fatto una promessa, molto tempo fa. La sto ancora pagando. Prendi, e va'.»","«Ho fatto una promessa, molto tempo fa. La sto ancora pagando. Prendi, e va'.»",
 %d Ka,%d Ka,%d Ka
 Label,Label,Label
 Acqua del Nilo,Acqua del Nilo,Water of the Nile
@@ -551,6 +560,7 @@ Il Serpente della Porta,Il Serpente della Porta,The Serpent of the Gate
 Ogni porta del Duat ha il suo guardiano,Ogni porta del Duat ha il suo guardiano,Every gate of the Duat has its guardian
 IL SERPENTE DELLA PORTA,IL SERPENTE DELLA PORTA,THE SERPENT OF THE GATE
 Il Traghettatore,Il Traghettatore,The Ferryman
+Mahaf: ,Mahaf: ,
 Non hai abbastanza Ka,Non hai abbastanza Ka,You don't have enough Ka
 %s sale al livello %d,%s sale al livello %d,%s rises to level %d
 La colonna crolla,La colonna crolla,The pillar crumbles
@@ -565,6 +575,9 @@ Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Doni raccolti %d
 Nuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti","
 Nuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti","
 New powers: the Sekhem and the Divine Form (Q / LT), and one more slot in the Book of the Dead"
+"
+Un ricordo è riaffiorato: «%s». Lo trovi nei Papiri di Thoth","
+Un ricordo è riaffiorato: «%s». Lo trovi nei Papiri di Thoth",
 "
 +%d Lacrime di Iside, prima vittoria con %s (ne hai %d)","
 +%d Lacrime di Iside, prima vittoria con %s (ne hai %d)",
@@ -599,6 +612,7 @@ WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD muovi · Spazio
 %s · Parla con Anubi,%s · Parla con Anubi,%s · Speak with Anubis
 %s · Apri il Libro dei Morti,%s · Apri il Libro dei Morti,%s · Open the Book of the Dead
 %s · Leggi i Papiri di Thoth (%d su %d),%s · Leggi i Papiri di Thoth (%d su %d),%s · Read the Scrolls of Thoth (%d of %d)
+ · un ricordo nuovo, · un ricordo nuovo,
 "%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)","%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)","%s · The Weight of the Heart (current weight %d, Ka +%d%%)"
 La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,
 Il Cortile di Neith · le armi · entra dalla porta,Il Cortile di Neith · le armi · entra dalla porta,
@@ -822,6 +836,8 @@ La bestia senza nome,La bestia senza nome,The nameless beast
 "Porto la testa di una bestia che nessun uomo sa nominare. Muso lungo e ricurvo, orecchie squadrate, coda dritta come una freccia. Vedo i sapienti delle terre future discuterne per secoli: un cane? un asino? Lasciali discutere.","Porto la testa di una bestia che nessun uomo sa nominare. Muso lungo e ricurvo, orecchie squadrate, coda dritta come una freccia. Vedo i sapienti delle terre future discuterne per secoli: un cane? un asino? Lasciali discutere.","I bear the head of a beast no man can name. A long curved snout, squared ears, a tail straight as an arrow. I see the scholars of future lands debating it for centuries: a dog? a donkey? Let them debate."
 Il nome dei faraoni,Il nome dei faraoni,The name of the pharaohs
 "Non sempre fui il nemico. Alcuni faraoni portarono il mio nome con orgoglio. Seti, il padre del grande Ramses, significa 'colui che appartiene a Set'. I re sanno riconoscere la forza, anche quando gli altri la temono.","Non sempre fui il nemico. Alcuni faraoni portarono il mio nome con orgoglio. Seti, il padre del grande Ramses, significa 'colui che appartiene a Set'. I re sanno riconoscere la forza, anche quando gli altri la temono.","I was not always the enemy. Some pharaohs bore my name with pride. Seti, father of the great Ramesses, means 'he who belongs to Set'. Kings know how to recognise strength, even when others fear it."
+Il tuo faraone,Il tuo faraone,
+"Mi parli del tuo faraone come si parla di un fratello morto. Io di fratelli morti me ne intendo. Lo conoscevo, il tuo Akhet: un re che non voleva morire. Ne ho visti tanti, di re così. Lui però ci è quasi riuscito. Chiedi agli altri dèi perché nessuno ne parla volentieri. Io rido, e basta.","Mi parli del tuo faraone come si parla di un fratello morto. Io di fratelli morti me ne intendo. Lo conoscevo, il tuo Akhet: un re che non voleva morire. Ne ho visti tanti, di re così. Lui però ci è quasi riuscito. Chiedi agli altri dèi perché nessuno ne parla volentieri. Io rido, e basta.",
 "Prima il prezzo, poi il premio.","Prima il prezzo, poi il premio.","The price first, then the reward."
 Il dolore insegna. Tu impari lentamente.,Il dolore insegna. Tu impari lentamente.,Pain teaches. You learn slowly.
 Un patto è un patto.,Un patto è un patto.,A pact is a pact.
@@ -845,6 +861,14 @@ Il nome cancellato,Il nome cancellato,The erased name
 "Cancellare un nome dalla pietra è peggio che uccidere. Dopo la loro morte, scalpellarono il nome della regina Hatshepsut e quello del faraone Akhenaton da templi e monumenti, perché il ricordo morisse con loro. Qualcuno ha fatto lo stesso con il tuo re, e con lui con te, che lo scrivevi. E io voglio sapere chi.","Cancellare un nome dalla pietra è peggio che uccidere. Dopo la loro morte, scalpellarono il nome della regina Hatshepsut e quello del faraone Akhenaton da templi e monumenti, perché il ricordo morisse con loro. Qualcuno ha fatto lo stesso con il tuo re, e con lui con te, che lo scrivevi. E io voglio sapere chi.",
 Il Campo dei Giunchi,Il Campo dei Giunchi,The Field of Reeds
 "Oltre la bilancia si stende l'Aaru, il Campo dei Giunchi: una Terra Nera senza fame né dolore, con canali limpidi e grano più alto di un uomo. Ma anche là si lavora la terra. Per questo i morti portavano con sé gli ushabti, che rispondevano al loro posto.","Oltre la bilancia si stende l'Aaru, il Campo dei Giunchi: una Terra Nera senza fame né dolore, con canali limpidi e grano più alto di un uomo. Ma anche là si lavora la terra. Per questo i morti portavano con sé gli ushabti, che rispondevano al loro posto.","Beyond the scale stretches the Aaru, the Field of Reeds: a Black Land without hunger or pain, with clear canals and grain taller than a man. But there too the earth must be worked. That is why the dead took ushabti with them, to answer in their place."
+I · La lancia di Buto,I · La lancia di Buto,
+"Scrissi la battaglia di Buto come me la dettarono i capitani. Il re scese dal carro prima che le linee si toccassero e prese la lancia dalle mani del portatore: una lancia antica, dissero, uscita dal tempio di Neith a Sais. I capitani ricordavano le grida, la polvere, il fiume rosso. Io ricordo il legno. Liscio, caldo di sole, con una scheggia sotto il pollice destro che il re non volle mai far limare. Non so perché lo ricordo. Forse me lo raccontò lui.","Scrissi la battaglia di Buto come me la dettarono i capitani. Il re scese dal carro prima che le linee si toccassero e prese la lancia dalle mani del portatore: una lancia antica, dissero, uscita dal tempio di Neith a Sais. I capitani ricordavano le grida, la polvere, il fiume rosso. Io ricordo il legno. Liscio, caldo di sole, con una scheggia sotto il pollice destro che il re non volle mai far limare. Non so perché lo ricordo. Forse me lo raccontò lui.",
+II · La doppia corona,II · La doppia corona,
+"Il giorno dell'incoronazione scrissi i cinque nomi del re su cento rotoli. Toro possente. Amato di Ma'at. Colui che sorge all'orizzonte. La corona bianca dentro la corona rossa, una sola corona per le Due Terre. Dalla folla sembrava leggera. Non lo era: faceva sudare la nuca, e il lino sotto si bagnava tutto prima del tramonto. Questo nei rotoli non c'è. Non l'ho mai scritto. Eppure lo so, come se me l'avesse confidato lui, quella sera, togliendosela davanti a me.","Il giorno dell'incoronazione scrissi i cinque nomi del re su cento rotoli. Toro possente. Amato di Ma'at. Colui che sorge all'orizzonte. La corona bianca dentro la corona rossa, una sola corona per le Due Terre. Dalla folla sembrava leggera. Non lo era: faceva sudare la nuca, e il lino sotto si bagnava tutto prima del tramonto. Questo nei rotoli non c'è. Non l'ho mai scritto. Eppure lo so, come se me l'avesse confidato lui, quella sera, togliendosela davanti a me.",
+III · La casa dell'eternità,III · La casa dell'eternità,
+"Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»","Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»",
+Questo ricordo è ancora sepolto. Riaffiora quando cade un signore della notte.,Questo ricordo è ancora sepolto. Riaffiora quando cade un signore della notte.,
+Ricordi dello scriba,Ricordi dello scriba,
 Il giudizio,Il giudizio,The judgement
 Capitolo %d · %s,Capitolo %d · %s,Chapter %d · %s
 Questo papiro è ancora sigillato.,Questo papiro è ancora sigillato.,This scroll is still sealed.
@@ -917,6 +941,13 @@ La fame di Am-heh,La fame di Am-heh,
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,
 Vita,Vita,Health
 Comandi,Comandi,Controls
+"Mahaf, il Traghettatore: «Ogni sponda ha il suo prezzo. Anche questa.»","Mahaf, il Traghettatore: «Ogni sponda ha il suo prezzo. Anche questa.»","Mahaf, the Ferryman: «Every shore has its price. This one too.»"
+"Mahaf, il Traghettatore: «Conosci il nome di ogni parte della mia barca? No? Allora paga.»","Mahaf, il Traghettatore: «Conosci il nome di ogni parte della mia barca? No? Allora paga.»","Mahaf, the Ferryman: «Do you know the name of every part of my boat? No? Then pay.»"
+"Mahaf, il Traghettatore: «I morti non portano nulla con sé. Tu porti Ka. Interessante.»","Mahaf, il Traghettatore: «I morti non portano nulla con sé. Tu porti Ka. Interessante.»","Mahaf, the Ferryman: «The dead carry nothing with them. You carry Ka. Interesting.»"
+"Mahaf, il Traghettatore: «Non svegliarmi per niente, scriba. Compra, o passa oltre.»","Mahaf, il Traghettatore: «Non svegliarmi per niente, scriba. Compra, o passa oltre.»","Mahaf, the Ferryman: «Do not wake me for nothing, scribe. Buy, or pass on.»"
+"Mahaf, il Traghettatore: «Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»","Mahaf, il Traghettatore: «Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»","Mahaf, the Ferryman: «They call me He Who Looks Behind. From here I see everyone who fell before you.»"
+"Mahaf, il Traghettatore: «Prima di un guardiano, tutti diventano generosi. Strano, vero?»","Mahaf, il Traghettatore: «Prima di un guardiano, tutti diventano generosi. Strano, vero?»","Mahaf, the Ferryman: «Before a guardian, everyone becomes generous. Strange, isn't it?»"
+"Mahaf, il Traghettatore: «Il Ka è peso. Lascialo a me, e salirai più leggero.»","Mahaf, il Traghettatore: «Il Ka è peso. Lascialo a me, e salirai più leggero.»","Mahaf, the Ferryman: «Ka is weight. Leave it to me, and you will climb lighter.»"
    · SCELTO,   · SCELTO,
 "Khopesh incendia: %d danni ogni 0,5 s","Khopesh incendia: %d danni ogni 0,5 s",Khopesh burns: %d damage every 0.5 s
 Ti rialzi una volta con il %d%%,Ti rialzi una volta con il %d%%,Rise once with %d%%

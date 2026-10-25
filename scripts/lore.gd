@@ -117,6 +117,7 @@ const GODS := {
 			{"title": "Sulla prua", "text": "Ogni notte, dalla prua della barca solare, trafiggo Apophis con la lancia. Il caos contro un caos più grande. Gli dèi luminosi non sanno fare questo lavoro. Per fermare un mostro, Scriba, serve un mostro."},
 			{"title": "La bestia senza nome", "text": "Porto la testa di una bestia che nessun uomo sa nominare. Muso lungo e ricurvo, orecchie squadrate, coda dritta come una freccia. Vedo i sapienti delle terre future discuterne per secoli: un cane? un asino? Lasciali discutere."},
 			{"title": "Il nome dei faraoni", "text": "Non sempre fui il nemico. Alcuni faraoni portarono il mio nome con orgoglio. Seti, il padre del grande Ramses, significa 'colui che appartiene a Set'. I re sanno riconoscere la forza, anche quando gli altri la temono."},
+			{"title": "Il tuo faraone", "text": "Mi parli del tuo faraone come si parla di un fratello morto. Io di fratelli morti me ne intendo. Lo conoscevo, il tuo Akhet: un re che non voleva morire. Ne ho visti tanti, di re così. Lui però ci è quasi riuscito. Chiedi agli altri dèi perché nessuno ne parla volentieri. Io rido, e basta."},
 		],
 		"idle": ["Prima il prezzo, poi il premio.", "Il dolore insegna. Tu impari lentamente.", "Un patto è un patto.", "Ti piace soffrire? A me piace guardare.", "La tempesta non chiede scusa. Nemmeno io.", "I tuoi dèi luminosi ti hanno mai fatto un'offerta onesta? Io sì: prima il dolore, poi il premio."],
 	},
@@ -135,6 +136,35 @@ const JUDGEMENT := [
 	{"title": "Il nome cancellato", "text": "Cancellare un nome dalla pietra è peggio che uccidere. Dopo la loro morte, scalpellarono il nome della regina Hatshepsut e quello del faraone Akhenaton da templi e monumenti, perché il ricordo morisse con loro. Qualcuno ha fatto lo stesso con il tuo re, e con lui con te, che lo scrivevi. E io voglio sapere chi."},
 	{"title": "Il Campo dei Giunchi", "text": "Oltre la bilancia si stende l'Aaru, il Campo dei Giunchi: una Terra Nera senza fame né dolore, con canali limpidi e grano più alto di un uomo. Ma anche là si lavora la terra. Per questo i morti portavano con sé gli ushabti, che rispondevano al loro posto."},
 ]
+
+
+## I Ricordi dello scriba: le imprese del faraone Akhet, scritte da chi crede di essere stato
+## il suo scriba. Uno per ogni boss di regione battuto (`needs` = vittorie). Sono in terza persona,
+## ma la terza persona scivola: è il colpo di scena che arriva attraverso la scrittura
+## (vedi docs/storia.md, "I Ricordi dello scriba"). Prima della tappa 2 non si nomina il nome di Ra
+## rubato, prima della tappa 3 non si nomina la regina.
+const RICORDI := [
+	{"needs": 1, "title": "I · La lancia di Buto", "text": "Scrissi la battaglia di Buto come me la dettarono i capitani. Il re scese dal carro prima che le linee si toccassero e prese la lancia dalle mani del portatore: una lancia antica, dissero, uscita dal tempio di Neith a Sais. I capitani ricordavano le grida, la polvere, il fiume rosso. Io ricordo il legno. Liscio, caldo di sole, con una scheggia sotto il pollice destro che il re non volle mai far limare. Non so perché lo ricordo. Forse me lo raccontò lui."},
+	{"needs": 2, "title": "II · La doppia corona", "text": "Il giorno dell'incoronazione scrissi i cinque nomi del re su cento rotoli. Toro possente. Amato di Ma'at. Colui che sorge all'orizzonte. La corona bianca dentro la corona rossa, una sola corona per le Due Terre. Dalla folla sembrava leggera. Non lo era: faceva sudare la nuca, e il lino sotto si bagnava tutto prima del tramonto. Questo nei rotoli non c'è. Non l'ho mai scritto. Eppure lo so, come se me l'avesse confidato lui, quella sera, togliendosela davanti a me."},
+	{"needs": 3, "title": "III · La casa dell'eternità", "text": "Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»"},
+]
+
+
+## Ricordi già sbloccati che non hai ancora letto nei Papiri.
+static func unread_ricordi() -> int:
+	var n := 0
+	for i in range(RICORDI.size()):
+		if Meta.ammit_wins >= int(RICORDI[i]["needs"]) and not Meta.dialogue_seen.has("ricordo_%d" % i):
+			n += 1
+	return n
+
+
+## Il ricordo appena sbloccato da una vittoria (titolo), o "".
+static func ricordo_for(wins: int) -> String:
+	for r in RICORDI:
+		if int(r["needs"]) == wins:
+			return r["title"]
+	return ""
 
 
 static func god_name(god: String) -> String:
@@ -177,6 +207,15 @@ static func next_lesson() -> String:
 ## L'archivio dei Papiri di Thoth: categorie con le voci già ascoltate (le altre restano sigillate).
 static func codex() -> Array:
 	var out := []
+	var ricordi := []
+	for i in range(RICORDI.size()):
+		var e := _entry(RICORDI[i], Meta.ammit_wins >= int(RICORDI[i]["needs"]))
+		e["id"] = "ricordo_%d" % i
+		e["new"] = e["seen"] and not Meta.dialogue_seen.has(e["id"])
+		if not e["seen"]:
+			e["text"] = "Questo ricordo è ancora sepolto. Riaffiora quando cade un signore della notte."
+		ricordi.append(e)
+	out.append({"title": "Ricordi dello scriba", "entries": ricordi})
 	var judgement := []
 	for i in range(JUDGEMENT.size()):
 		judgement.append(_entry(JUDGEMENT[i], Meta.dialogue_seen.has("giudizio_%d" % i)))
