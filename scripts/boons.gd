@@ -85,6 +85,12 @@ const ALL := {
 	"duo_sekhmet_bastet": {"god": "duo", "gods": ["sekhmet", "bastet"], "name": "Caccia delle Leonesse", "desc": "I colpi critici del khopesh liberano un ruggito che ferisce chi ti sta attorno (12 danni)."},
 	"duo_thoth_bastet": {"god": "duo", "gods": ["thoth", "bastet"], "name": "Sguardo del Gatto Sapiente", "desc": "Un colpo critico dell'Occhio di Horus ne dimezza la ricarica."},
 	"duo_sobek_iside": {"god": "duo", "gods": ["sobek", "iside"], "name": "Piena Sacra", "desc": "Finché hai lo scudo di Iside, il khopesh fa il 25% di danni in più."},
+	# Thoth guarì l'Occhio di Horus strappato da Set: da allora l'Occhio è "sano" (wedjat)
+	"duo_horus_thoth": {"god": "duo", "gods": ["horus", "thoth"], "name": "Occhio Risanato", "desc": "Quando l'Occhio di Horus abbatte un nemico, si ricarica all'istante."},
+	# Iside, madre di Horus, curò il figlio nelle paludi del Delta
+	"duo_iside_horus": {"god": "duo", "gods": ["iside", "horus"], "name": "Figlio di Iside", "desc": "Ogni lancio dell'Occhio di Horus che colpisce almeno un nemico ti cura di 2 punti vita."},
+	"duo_anubi_sekhmet": {"god": "duo", "gods": ["anubi", "sekhmet"], "name": "Giudizio della Leonessa", "desc": "Il khopesh abbatte all'istante i nemici sotto il 15% della vita (non i guardiani e i boss)."},
+	"duo_sobek_horus": {"god": "duo", "gods": ["sobek", "horus"], "weapon": "lancia", "name": "Arpione del Coccodrillo", "desc": "Gli affondi della lancia stordiscono per 0,6 secondi i nemici colpiti con la punta (meno i guardiani e i boss)."},
 	"ra_heavy": {"god": "ra", "heavy": true, "name": "Ira del Sole", "desc": "Tutti i tuoi colpi incendiano, e le fiamme fanno il 60% di danni in più.", "cost": "L'Occhio di Horus si ricarica il 50% più lentamente."},
 	"sekhmet_heavy": {"god": "sekhmet", "heavy": true, "name": "Sete Insaziabile", "desc": "+50% ai danni del khopesh.", "cost": "Finché ci sono nemici nella stanza perdi 1 punto vita ogni 2 secondi."},
 	"bastet_heavy": {"god": "bastet", "heavy": true, "name": "Gioco del Gatto", "desc": "I colpi critici fanno il triplo dei danni invece del doppio, e hai sempre almeno il 10% di probabilità di critico.", "cost": "-15 vita massima."},
@@ -153,9 +159,11 @@ static func available_now(id: String) -> bool:
 const REQUIRES := {
 	"sobek_river": ["sobek_bite", "sobek_tide"],
 	"duo_ra_sekhmet": ["ra_burn", "ra_dawn", "ra_eye", "ra_heavy"],
-	"duo_sekhmet_bastet": ["bastet_claws", "bastet_heavy"],
+	"duo_sekhmet_bastet": ["bastet_claws", "bastet_heavy", "bastet_point"],
 	"duo_thoth_bastet": ["bastet_eyes", "bastet_heavy"],
 	"duo_sobek_iside": ["iside_wings"],
+	# il dono di Anubi c'è quasi sempre (lo dà all'inizio): serve uno di quelli che riguardano i colpi
+	"duo_anubi_sekhmet": ["anubi_jackal", "anubi_guardian", "anubi_scale", "anubi_guide"],
 }
 
 
@@ -246,6 +254,8 @@ static func duos_for(god: String, owned: Dictionary) -> Array:
 	for id in ALL:
 		if not is_duo(id) or owned.has(id) or not requirements_met(id, owned):
 			continue
+		if ALL[id].has("weapon") and ALL[id]["weapon"] != Run.weapon:
+			continue
 		var gods: Array = ALL[id]["gods"]
 		if not gods.has(god):
 			continue
@@ -309,6 +319,10 @@ const SHORT := {
 	"duo_sekhmet_bastet": ["Critici: ruggito di 12 danni", ""],
 	"duo_thoth_bastet": ["Critico: ricarica Occhio -50%", ""],
 	"duo_sobek_iside": ["Con lo scudo: khopesh +25%", ""],
+	"duo_horus_thoth": ["Occhio uccide: ricarica subito", ""],
+	"duo_iside_horus": ["Occhio a segno: +2 vita", ""],
+	"duo_anubi_sekhmet": ["Sotto il 15%: abbattuto", ""],
+	"duo_sobek_horus": ["Punta: stordisce 0,6 s", ""],
 	"ra_heavy": ["Tutto incendia · fiamme +60%", "Occhio ricarica +50%"],
 	"sekhmet_heavy": ["Khopesh +50%", "In lotta: -1 vita ogni 2 s"],
 	"bastet_heavy": ["Critici ×3 · almeno 10%", "-15 vita massima"],

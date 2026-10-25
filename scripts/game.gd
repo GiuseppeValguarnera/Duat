@@ -30,6 +30,7 @@ const SHOP_ITEMS := [
 const PickupScript := preload("res://scripts/pickup.gd")
 const RoomBuilder := preload("res://scripts/room_builder.gd")
 const Tutorial := preload("res://scripts/tutorial.gd")
+const SerdabScript := preload("res://scripts/serdab.gd")
 ## Pezzi dell'interfaccia che prima erano classi interne di questo file
 const SpawnMarker := preload("res://scripts/ui/spawn_marker.gd")
 const PanelListener := preload("res://scripts/ui/panel_listener.gd")
@@ -50,6 +51,9 @@ const SET_DOOR_CHANCE := 0.2
 const SET_DOOR_CHANCE_STEP := 0.08
 const SET_DOOR_GAP := 3
 const SET_DOOR_MAX := 2
+## Il serdab, la stanza segreta (scripts/serdab.gd): al massimo uno a discesa, in una stanza
+## normale ripulita dalla seconda in poi. Con 7 stanze buone: circa 2 discese su 3 ne hanno uno.
+const SERDAB_CHANCE := 0.14
 const SET_DOOR_COST := 8.0           ## vita da pagare per entrare
 
 ## Disposizioni delle colonne, in frazioni dell'area calpestabile.
@@ -83,6 +87,8 @@ var grates_here := 0                  # grate di fuoco nella stanza: tolgono alt
 var set_doors := 0                  # porte di Set apparse in questa partita
 var set_door_room := -99            # stanza in cui è apparsa l'ultima
 var set_door_misses := 0            # stanze buone passate senza Set
+var serdab_found := false          # il serdab di questa discesa è già comparso
+var top_wall: StaticBody2D = null   # il muro in alto (il serdab lo sostituisce con due pezzi)
 var saved_doors: Array = []           # le porte della stanza, per riaprirle dopo l'altare di Set
 var room_gen := 0                     # cambia a ogni stanza: annulla le comparse rimaste in sospeso
 var boss_bar: ColorRect
@@ -372,11 +378,34 @@ func _on_blessing_granted(id: String) -> void:
 		Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color("set"), 30, 140.0)
 
 
+## A volte, a stanza ripulita, il muro in alto nasconde un serdab.
+func _maybe_serdab() -> void:
+	var kind: String = current_reward.get("kind", "none")
+	var always := OS.get_environment("DUAT_SERDAB") == "always"     # per le prove
+	if serdab_found or boss != null or kind in ["guardian", "shop", "set", "tutorial", "tutorial_end"]:
+		return
+	if Run.room < 2 or Run.room >= Run.ROOMS_PER_RUN:
+		return
+	if not always and randf() >= SERDAB_CHANCE:
+		return
+	serdab_found = true
+	var s := SerdabScript.new()
+	# tra due torce, lontano dalla porta nord e dalle statue di Anubi
+	s.setup(self, [177.0, 627.0].pick_random())
+	world.add_child(s)
+	# sotto il personaggio e i nemici, sopra il pavimento e le pareti dipinte
+	for i in range(world.get_child_count()):
+		if world.get_child(i).get_script() == DecorScript:
+			world.move_child(s, i + 1)
+			break
+
+
 func _room_cleared() -> void:
 	if cleared:
 		return
 	cleared = true
 	Run.room_cleared()                  # le maledizioni di Set contano le stanze ripulite
+	_maybe_serdab()
 	# a stanza ripulita le trappole si fermano
 	for trap in get_tree().get_nodes_in_group("traps"):
 		trap.set_physics_process(false)
@@ -673,14 +702,17 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 			_open_doors()
 		return
 
+	# Peso del Cuore, il silenzio degli dèi: due scelte invece di tre. Va prima del Dono Doppio,
+	# altrimenti il doppio (che prende l'ultimo posto) sparirebbe sempre.
+	if Weights.rank("silenzio") > 0 and options.size() > 2:
+		options.resize(2)
 	var duos := Boons.duos_for(from_god, Run.boons)
 	if not duos.is_empty() and randf() < Boons.DUO_CHANCE:
-		if options.size() >= 3:
-			options[2] = duos.pick_random()
+		var slots := 2 if Weights.rank("silenzio") > 0 else 3
+		if options.size() >= slots:
+			options[slots - 1] = duos.pick_random()
 		else:
 			options.append(duos.pick_random())
-	if Weights.rank("silenzio") > 0 and options.size() > 2:
-		options.resize(2)             # Peso del Cuore: il silenzio degli dèi
 	var cards := []
 	for id in options:
 		var lvl := mini(Run.level(id) + (2 if bonus_boon else 1), _max_level(id))
@@ -827,16 +859,20 @@ func _wrap(text: String, width: int) -> String:
 	return out + line
 
 
-func _banner(title: String, sub: String, color: Color) -> void:
+func _banner(title: String, sub: String, color: Color, hold: float = 2.0) -> void:
 	if banner.material == null:
 		banner.add_theme_font_override("font", UiStyle.deco_font())
 		UiStyle.shimmer(banner, 0.6)
+		# le scritte lunghe (un'iscrizione, una benedizione di Set) vanno a capo invece di uscire
+		banner.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		banner.offset_left = 24.0
+		banner.offset_right = -24.0
 	banner.text = "%s\n%s" % [title, sub]
 	banner.add_theme_color_override("font_color", color)
 	banner.visible = true
 	banner.modulate.a = 1.0
 	var tw := banner.create_tween()
-	tw.tween_interval(2.0)
+	tw.tween_interval(hold)
 	tw.tween_property(banner, "modulate:a", 0.0, 0.6)
 
 

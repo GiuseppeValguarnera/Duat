@@ -197,12 +197,12 @@ func place_traps() -> void:
 
 func build_walls() -> void:
 	var r := g.ROOM
-	solid(Rect2(r.position.x, r.position.y, r.size.x, g.TOP))
+	g.top_wall = solid(Rect2(r.position.x, r.position.y, r.size.x, g.TOP))   # il serdab lo apre
 	solid(Rect2(r.position.x, r.end.y - g.WALL, r.size.x, g.WALL))
 	solid(Rect2(r.position.x, r.position.y, g.WALL, r.size.y))
 	solid(Rect2(r.end.x - g.WALL, r.position.y, g.WALL, r.size.y))
 	for p in g.pillars:
-		solid(Rect2(p.x - 13.0, p.y - 7.0, 26.0, 14.0)).add_to_group("g.pillars")
+		solid(Rect2(p.x - 13.0, p.y - 7.0, 26.0, 14.0)).add_to_group("pillars")
 
 
 func solid(rect: Rect2) -> StaticBody2D:

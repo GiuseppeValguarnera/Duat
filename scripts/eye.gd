@@ -15,6 +15,7 @@ var mark := false                     ## Sguardo del Falco: chi viene colpito su
 var returning := false
 var _hit := {}
 var _done := false
+var _healed := false                ## Figlio di Iside: questo lancio ha già curato
 
 
 func _ready() -> void:
@@ -80,6 +81,7 @@ func _on_body_entered(body: Node) -> void:
 		body.take_hit(damage * crit, direction, 60.0, burns)
 		if mark:
 			body.mark_t = 3.0
+		_duo_effects(body)
 		Fx.shake(2.0)
 		if returning:
 			return                    # al ritorno attraversa tutto
@@ -89,6 +91,19 @@ func _on_body_entered(body: Node) -> void:
 			_finish()
 	elif body is StaticBody2D and not returning:
 		_finish()
+
+
+## Doni Doppi legati all'Occhio: Occhio Risanato (Horus e Thoth), Figlio di Iside (Iside e Horus).
+func _duo_effects(body: Node) -> void:
+	var player = get_tree().get_first_node_in_group("player")
+	if player == null:
+		return
+	if Run.has("duo_horus_thoth") and body.dead:
+		player.eye_cd = 0.0              # al prossimo istante torna una carica
+		Fx.float_text(player.global_position + Vector2(0, -26), "Occhio pronto", Boons.god_color("duo"))
+	if Run.has("duo_iside_horus") and not _healed:
+		_healed = true                   # una cura per lancio, anche se trapassa più nemici
+		player.heal(2.0)
 
 
 func _finish() -> void:

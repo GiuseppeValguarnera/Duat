@@ -26,7 +26,7 @@ Sul telefono: levetta virtuale a sinistra (appare dove appoggi il pollice), a de
 Per aggiornare la versione web dopo una modifica: `tools/deploy_web.sh /percorso/di/Godot` (serve il modello di esportazione *Web* di Godot 4.7.2).
 
 
-**Aggiornamenti senza reinstallare:** quando esce una versione nuova, nella Sala compare l'avviso *Nuova versione disponibile*. In Opzioni (il pulsante di pausa), *Aggiorna il gioco* scarica la versione nuova e riapre il gioco: i progressi restano, perché l'app non viene cancellata. (Su iPhone, cancellare l'app dalla schermata Home cancella anche il salvataggio.) Funziona così: `tools/deploy_web.sh` scrive un numero di versione nella pagina e in `version.txt`; la pagina (`web/shell.html`) li confronta all'avvio e ogni 5 minuti; `scripts/updater.gd` lo mostra nel gioco.
+**Aggiornamenti senza reinstallare:** quando esce una versione nuova, nella Sala, in basso a destra (sul telefono sopra il pulsante *Azione*), lampeggia piano la scritta *Nuova versione, aggiorna!*: toccarla apre le Opzioni sulla voce giusta. Solo nella Sala, non durante la discesa, perché aggiornare la farebbe perdere. *Aggiorna il gioco* scarica la versione nuova e riapre il gioco: i progressi restano, perché l'app non viene cancellata. (Su iPhone, cancellare l'app dalla schermata Home cancella anche il salvataggio.) Funziona così: `tools/deploy_web.sh` scrive un numero di versione nella pagina e in `version.txt`; la pagina (`web/shell.html`) li confronta all'avvio e ogni 5 minuti; `scripts/updater.gd` lo mostra nel gioco.
 ## Comandi
 
 | Azione | Tastiera e mouse | Controller |
@@ -111,6 +111,10 @@ Dalla Sala del Giudizio, una porta nella parete ovest (con lo scudo e le frecce 
 6. **Il Traghettatore** (Mahaf, dal capitolo 99 del Libro dei Morti): è una delle porte, ma solo nella stanza **subito prima del Serpente** (stanza 4) e **subito prima di Am-heh** (stanza 10). Vende Acqua del Nilo (20 Ka), un'offerta agli dèi (40 Ka) e l'Inchiostro di Thoth, che alza di livello un tuo dono (30 Ka). Si spende il Ka raccolto in questa discesa, e quello speso non torna a casa: più forti ora o capitoli dopo.
 7. Dalla stanza 6 arrivano due nemici nuovi: lo **scorpione di Serket** e il **cobra**.
 8. Prima dell'ultima stanza una delle porte è sempre l'**Acqua del Nilo**. Dopo la decima stanza si apre il cancello di **Am-heh**, il boss della Prima Ora. I nemici hanno il 6% di vita in più a ogni stanza.
+
+## Il serdab: la stanza segreta
+
+Nelle tombe egizie il *serdab* era una stanzetta murata, senza porta, che custodiva la statua del Ka del defunto: gli dèi la guardavano da una fessura. Nella discesa, ogni tanto (al massimo una volta a discesa, dalla seconda stanza, mai nelle stanze del Serpente, del Traghettatore, di Set e del boss; in circa 2 discese su 3), quando ripulisci una stanza un tratto del muro in alto ha una **crepa** con un geroglifico storto, e se ti avvicini cade un filo di polvere. Tre colpi d'arma e il muro crolla. Dentro: buio, pareti piene di geroglifici, la statua del Ka con le braccia alzate e un'iscrizione (formule d'offerta e maledizioni come quelle delle tombe vere, sul re in generale), un po' di Ka (30-45) e una volta su due un cuore che cura 10. Niente nemici e niente trappole. Si esce dallo stesso buco e si prosegue (`scripts/serdab.gd`; per le prove `DUAT_SERDAB=always`).
 
 ## Nemici
 
@@ -202,9 +206,9 @@ Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finit
 | Khopesh | Danza delle Lame | Bastet | Colpi più rapidi |
 | Khopesh | Filo del Sole | Ra | Fendenti più lunghi e più ampi |
 
-Forza del Fiume e quattro Doni Doppi compaiono solo se hai già i doni con cui si combinano (`Boons.REQUIRES`).
+Forza del Fiume e cinque Doni Doppi compaiono solo se hai già i doni con cui si combinano (`Boons.REQUIRES`).
 
-**Doni Doppi:** quando hai già doni di due dèi, a volte uno dei due ti offre un dono che li unisce (carta dorata).
+**Doni Doppi:** quando hai già doni di due dèi, a volte (45%) uno dei due ti offre un dono che li unisce (carta dorata). Sono 9, almeno uno per ogni dio; l'Arpione del Coccodrillo esiste solo con la lancia. Misurato con 2000 partite simulate: in una discesa con 9 doni ne compare almeno uno circa 2 volte su 3 (7 su 10 con la lancia), con 6 doni 1 volta su 3. Con il Peso del Cuore *silenzio* le scelte sono due e il doppio prende la seconda.
 
 | Dono Doppio | Dèi | Effetto |
 | --- | --- | --- |
@@ -213,6 +217,10 @@ Forza del Fiume e quattro Doni Doppi compaiono solo se hai già i doni con cui s
 | Caccia delle Leonesse | Sekhmet + Bastet | I critici del khopesh liberano un ruggito |
 | Sguardo del Gatto Sapiente | Thoth + Bastet | Un critico dell'Occhio ne dimezza la ricarica |
 | Piena Sacra | Sobek + Iside | Con lo scudo di Iside il khopesh fa +25% |
+| Occhio Risanato | Horus + Thoth | Se l'Occhio abbatte un nemico si ricarica subito (Thoth guarì l'Occhio di Horus) |
+| Figlio di Iside | Iside + Horus | Ogni lancio dell'Occhio che va a segno cura 2 punti vita |
+| Giudizio della Leonessa | Anubi + Sekhmet | L'arma abbatte all'istante i nemici sotto il 15% della vita (non guardiani e boss) |
+| Arpione del Coccodrillo | Sobek + Horus | Solo lancia: la punta dell'affondo stordisce per 0,6 secondi |
 
 Senza doni l'Occhio di Horus si ferma sul primo nemico che colpisce.
 

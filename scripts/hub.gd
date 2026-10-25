@@ -36,6 +36,7 @@ var drag_scroll0 := 0
 var drag_active := false
 var drag_moved := false
 var armed_key := ""                   ## sul telefono: la voce già selezionata col primo tocco
+var update_tag: Button                 ## «Nuova versione, aggiorna!» in basso a destra (solo web)
 var update_label_state := ""           # com'era il controllo della versione quando le Opzioni sono state disegnate
 var t := 0.0
 
@@ -73,6 +74,7 @@ func _ready() -> void:
 	}
 	_build()
 	Fx.scale_labels($UI)
+	_build_update_tag()
 	talk_box.visible = false
 	if Meta.runs == 0 or Meta.last_end != "":
 		_start_talk()
@@ -169,6 +171,43 @@ func _solid(rect: Rect2) -> void:
 	world.add_child(body)
 
 
+## La scritta che avvisa della versione nuova: piccola, lampeggia piano, in basso a destra
+## (sul telefono sopra il pulsante AZIONE). Toccarla apre le Opzioni su «Aggiorna il gioco».
+## Solo nella Sala: aggiornare a metà discesa la farebbe perdere.
+func _build_update_tag() -> void:
+	update_tag = Button.new()
+	update_tag.text = "Nuova versione, aggiorna!"
+	update_tag.flat = true
+	update_tag.focus_mode = Control.FOCUS_NONE
+	update_tag.visible = false
+	update_tag.add_theme_font_size_override("font_size", Fx.fs(8))
+	for st in ["font_color", "font_hover_color", "font_pressed_color"]:
+		update_tag.add_theme_color_override(st, Color(0.98, 0.8, 0.35))
+	update_tag.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	update_tag.add_theme_constant_override("outline_size", 3)
+	update_tag.add_to_group("touch_tap")      # sul telefono il tocco arriva da touch_controls.gd
+	update_tag.pressed.connect(func() -> void:
+		if book != null or talk_box.visible:
+			return
+		_open_book("opzioni")
+		_fill_options("update")
+		_show_option("update"))
+	$UI.add_child(update_tag)
+
+
+func _update_update_tag() -> void:
+	if update_tag == null:
+		return
+	update_tag.visible = (Updater.available() or OS.get_environment("DUAT_FAKE_UPDATE") != "") and book == null and not talk_box.visible
+	if not update_tag.visible:
+		return
+	update_tag.modulate.a = 0.55 + 0.45 * absf(sin(t * 2.6))
+	update_tag.reset_size()
+	var vs := get_viewport().get_visible_rect().size
+	var above := 104.0 if Fx.device == "touch" else 22.0    # sopra il pulsante AZIONE, o sopra la riga dei comandi
+	update_tag.position = Vector2(vs.x - update_tag.size.x - 6.0, vs.y - above - update_tag.size.y)
+
+
 func _process(delta: float) -> void:
 	t += delta
 	queue_redraw()
@@ -181,8 +220,7 @@ func _process(delta: float) -> void:
 			_fill_options(keep)
 			_show_option(keep)
 	hud.text = "Sala del Giudizio\nKa custodito %d · Discese %d · Vittorie %d" % [Meta.ka_bank, Meta.runs, Meta.ammit_wins]
-	if Updater.available():
-		hud.text += "\nNuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco"
+	_update_update_tag()
 	if Fx.device == "touch":
 		help.text = ""
 	elif Fx.device == "pad":
