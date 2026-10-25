@@ -42,7 +42,14 @@ const DecorScript := preload("res://scripts/room_decor.gd")
 const UshabtiScript := preload("res://scripts/ushabti.gd")
 const TRAPS_FROM_ROOM := 3            ## le trappole compaiono da questa stanza in poi
 const DoorScript := preload("res://scripts/door.gd")
-const SET_DOOR_CHANCE := 0.4          ## probabilità che compaia una porta di Set
+## Set arriva ogni tanto, come il Caos in Hades: mai nella prima stanza né davanti al Serpente
+## o al boss, almeno 3 stanze tra una porta e l'altra, al massimo 2 a partita. Le stanze buone
+## sono 5 (2, 5, 6, 7, 8): la probabilità parte dal 20% e cresce dell'8% a ogni stanza buona
+## senza Set. Risultato: 7 partite su 10 hanno una porta di Set, 2 ne hanno due, 1 nessuna.
+const SET_DOOR_CHANCE := 0.2
+const SET_DOOR_CHANCE_STEP := 0.08
+const SET_DOOR_GAP := 3
+const SET_DOOR_MAX := 2
 const SET_DOOR_COST := 8.0           ## vita da pagare per entrare
 
 ## Disposizioni delle colonne, in frazioni dell'area calpestabile.
@@ -73,6 +80,9 @@ var boss: Enemy = null
 var obstacles: Array = []             # rettangoli occupati da statue, bracieri, sarcofagi
 var traps_pos: Array = []             # posizioni delle lastre con spuntoni (e degli altri pericoli)
 var grates_here := 0                  # grate di fuoco nella stanza: tolgono altrettanti spuntoni
+var set_doors := 0                  # porte di Set apparse in questa partita
+var set_door_room := -99            # stanza in cui è apparsa l'ultima
+var set_door_misses := 0            # stanze buone passate senza Set
 var saved_doors: Array = []           # le porte della stanza, per riaprirle dopo l'altare di Set
 var room_gen := 0                     # cambia a ogni stanza: annulla le comparse rimaste in sospeso
 var boss_bar: ColorRect
@@ -459,8 +469,22 @@ func _open_doors() -> void:
 		saved_doors.append([sides[i], pool[i % pool.size()]])
 	# a volte Set apre un varco in più, nella parete sud: è una deviazione, non prende il posto
 	# di nessuna porta (come le porte del Caos in Hades)
-	if randf() < SET_DOOR_CHANCE and not Boons.set_offers(Run.blessings).is_empty() and current_reward.get("kind", "") != "set":
-		_add_door("s", {"kind": "set"})
+	if _set_door_allowed(before_boss):
+		if randf() < SET_DOOR_CHANCE + SET_DOOR_CHANCE_STEP * set_door_misses:
+			set_doors += 1
+			set_door_room = Run.room
+			set_door_misses = 0
+			_add_door("s", {"kind": "set"})
+		else:
+			set_door_misses += 1
+
+
+func _set_door_allowed(before_boss: bool) -> bool:
+	if OS.get_environment("DUAT_SET") == "door":
+		return current_reward.get("kind", "") != "set"       # per le prove: porta di Set sempre
+	return Run.room >= 2 and not before_boss and set_doors < SET_DOOR_MAX \
+		and Run.room - set_door_room >= SET_DOOR_GAP and current_reward.get("kind", "") != "set" \
+		and not Boons.set_offers(Run.blessings).is_empty()
 
 
 ## Dopo l'altare di Set si riaprono le stesse porte che avevi lasciato.
