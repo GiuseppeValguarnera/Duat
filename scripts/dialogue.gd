@@ -117,7 +117,7 @@ static func story() -> Array:
 			"Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente."]},
 		{"id": "lacrime1", "if": Meta.tears > 0, "lines": [
 			"Porti con te una Lacrima di Iside. Quando pianse Osiride, le sue lacrime gonfiarono il Fiume, e il Fiume ricoprì la Terra Nera.",
-			"Ogni lacrima vale più di mille Ka. Il Libro sa cosa farne: le formule più alte non si pagano soltanto con la forza."]},
+			"Ogni lacrima vale più di mille Ka. Neith sa cosa farne: nel suo cortile le armi si risvegliano solo con il pianto di una dea."]},
 		{"id": "livelli1", "if": Meta.chapter_levels.values().any(func(v): return int(v) >= 2), "lines": [
 			"Hai ripassato la stessa formula due volte. Bene. Gli scribi copiavano lo stesso capitolo per anni, finché la mano non lo sapeva da sola.",
 			"Una formula detta bene vale più di dieci dette in fretta."]},

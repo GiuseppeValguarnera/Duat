@@ -1,6 +1,56 @@
 keys,it,en
 Ruggito del Giudizio,Ruggito del Giudizio,Roar of Judgement
 STORDITA,STORDITA,STUNNED
+Sciame di scarabei,Sciame di scarabei,
+Due mummie,Due mummie,
+Un sacerdote,Un sacerdote,
+Scorpioni di Serket,Scorpioni di Serket,
+Un cobra,Un cobra,
+Tutti insieme,Tutti insieme,
+Eccomi!,Eccomi!,
+Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d,Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d,
+Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi,Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi,
+WASD muovi · clic attacca · Spazio scatto · clic destro Occhio · E interagisci,WASD muovi · clic attacca · Spazio scatto · clic destro Occhio · E interagisci,
+%s · Parla con Neith,%s · Parla con Neith,
+%s · L'altare degli aspetti (Lacrime di Iside: %d),%s · L'altare degli aspetti (Lacrime di Iside: %d),
+%s · La porta delle prove,%s · La porta delle prove,
+%s · La porta delle prove (nemici in campo: %d),%s · La porta delle prove (nemici in campo: %d),
+La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove,La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove,
+%s · arma non ancora forgiata,%s · arma non ancora forgiata,
+%s · parla con Neith,%s · parla con Neith,
+%s · è l'arma che impugni,%s · è l'arma che impugni,
+%s · Prendi: %s,%s · Prendi: %s,
+"Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.","Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.",
+Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,
+Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,
+"Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.","Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.",
+"Le armi qui dormono. Le Lacrime di Iside le risvegliano: battine i guardiani con un'arma che non li ha mai toccati, e portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: battine i guardiani con un'arma che non li ha mai toccati, e portamele all'altare.",
+"I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.","I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.",
+La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,
+"Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.",
+"Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.","Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.",
+Non hai Lacrime. Il pianto di Iside cade solo sui guardiani battuti con un'arma che non li ha ancora conosciuti. Cambia lama.,Non hai Lacrime. Il pianto di Iside cade solo sui guardiani battuti con un'arma che non li ha ancora conosciuti. Cambia lama.,
+Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu.,Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu.,
+A Sais mi chiamavano madre di Ra. Molto più tardi i Greci mi confusero con la loro Atena. Lasciali confondere: le dee antiche non si offendono per così poco.,A Sais mi chiamavano madre di Ra. Molto più tardi i Greci mi confusero con la loro Atena. Lasciali confondere: le dee antiche non si offendono per così poco.,
+"Si dice che io abbia tessuto il mondo come una tela, e che lo tessa ancora ogni giorno. Una lancia è come un filo: dritta, tesa, e taglia solo se sai dove tirarla.","Si dice che io abbia tessuto il mondo come una tela, e che lo tessa ancora ogni giorno. Una lancia è come un filo: dritta, tesa, e taglia solo se sai dove tirarla.",
+Misura la distanza. Poi accorciala.,Misura la distanza. Poi accorciala.,
+Un'arma che non conosci ti tradirà nel momento peggiore.,Un'arma che non conosci ti tradirà nel momento peggiore.,
+Torna quando avrai qualcosa da mostrarmi.,Torna quando avrai qualcosa da mostrarmi.,
+"Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.","Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.",
+Lancia di Neith,Lancia di Neith,
+Neith,Neith,
+Altare di Neith · %s,Altare di Neith · %s,
+Lacrime di Iside: %d  ·  si ottengono battendo un guardiano o Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo un guardiano o Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),
+   · SCELTO,   · SCELTO,
+   (livello %d: %s),   (livello %d: %s),
+Risveglia · %d Lacrime,Risveglia · %d Lacrime,
+Potenzia al livello %d · %d Lacrime,Potenzia al livello %d · %d Lacrime,
+Lacrime,Lacrime,
+Lacrima,Lacrima,
+La porta delle prove,La porta delle prove,
+Scegli chi far uscire. Nel cortile non si muore: guarda la stele per vedere quanto fa la tua arma.,Scegli chi far uscire. Nel cortile non si muore: guarda la stele per vedere quanto fa la tua arma.,
+Via tutti i nemici,Via tutti i nemici,
+al sec.,al sec.,
 Ra,Ra,Ra
 Sekhmet,Sekhmet,Sekhmet
 Thoth,Thoth,Thoth
@@ -293,7 +343,7 @@ Il Libro dei Morti ora ti concede un capitolo in più. E Ammit ti ha lasciato il
 "Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.","Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.","Every weight makes the path harder. But the Duat rewards those who choose to suffer: the heavier your heart, the more Ka you will bring back."
 Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.,Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.,There is no shame in a light heart. There is glory in the heart that is heavy and passes all the same.
 "Porti con te una Lacrima di Iside. Quando pianse Osiride, le sue lacrime gonfiarono il Fiume, e il Fiume ricoprì la Terra Nera.","Porti con te una Lacrima di Iside. Quando pianse Osiride, le sue lacrime gonfiarono il Fiume, e il Fiume ricoprì la Terra Nera.","You carry a Tear of Isis. When she wept for Osiris, her tears swelled the River, and the River covered the Black Land."
-Ogni lacrima vale più di mille Ka. Il Libro sa cosa farne: le formule più alte non si pagano soltanto con la forza.,Ogni lacrima vale più di mille Ka. Il Libro sa cosa farne: le formule più alte non si pagano soltanto con la forza.,Every tear is worth more than a thousand Ka. The Book knows what to do with it: the highest spells are not paid for with strength alone.
+Ogni lacrima vale più di mille Ka. Neith sa cosa farne: nel suo cortile le armi si risvegliano solo con il pianto di una dea.,Ogni lacrima vale più di mille Ka. Neith sa cosa farne: nel suo cortile le armi si risvegliano solo con il pianto di una dea.,
 "Hai ripassato la stessa formula due volte. Bene. Gli scribi copiavano lo stesso capitolo per anni, finché la mano non lo sapeva da sola.","Hai ripassato la stessa formula due volte. Bene. Gli scribi copiavano lo stesso capitolo per anni, finché la mano non lo sapeva da sola.","You have copied the same spell twice. Good. Scribes copied the same chapter for years, until the hand knew it by itself."
 Una formula detta bene vale più di dieci dette in fretta.,Una formula detta bene vale più di dieci dette in fretta.,A spell spoken well is worth more than ten spoken in haste.
 "Ogni volta che torni, Scriba, la bilancia trema. Come se avesse timore di te.","Ogni volta che torni, Scriba, la bilancia trema. Come se avesse timore di te.","Every time you return, Scribe, the scale trembles. As if it were afraid of you."
@@ -373,8 +423,12 @@ Il Ka,Il Ka,Ka
 Le porte,Le porte,The Doors
 Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.,Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.,Above every door is its reward. The arrows on the edge point to doors off screen. Go in: the descent begins.
 Set mantiene la promessa,Set mantiene la promessa,Set keeps his promise
++%d Lacrima di Iside,+%d Lacrima di Iside,
++%d Lacrime di Iside,+%d Lacrime di Iside,
+Lacrima già presa con quest'arma,Lacrima già presa con quest'arma,
+  ·  il Cortile di Neith si è aperto,  ·  il Cortile di Neith si è aperto,
 Il Serpente della Porta è caduto,Il Serpente della Porta è caduto,The Serpent of the Gate has fallen
-+1 Lacrima di Iside  ·  il prossimo dono sale di un livello in più,+1 Lacrima di Iside  ·  il prossimo dono sale di un livello in più,+1 Tear of Isis  ·  the next boon gains an extra level
+  ·  il prossimo dono sale di un livello in più,  ·  il prossimo dono sale di un livello in più,
 Stanza ripulita,Stanza ripulita,Chamber cleared
 Scegli una porta: la ricompensa è scritta sopra,Scegli una porta: la ricompensa è scritta sopra,Choose a door: the reward is written above it
 +10 Ka,+10 Ka,+10 Ka
@@ -472,9 +526,11 @@ Nuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro
 Nuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti","
 New powers: the Sekhem and the Divine Form (Q / LT), and one more slot in the Book of the Dead"
 "
-+2 Lacrime di Iside (ne hai %d)","
-+2 Lacrime di Iside (ne hai %d)","
-+2 Tears of Isis (you have %d)"
++%d Lacrime di Iside, prima vittoria con %s (ne hai %d)","
++%d Lacrime di Iside, prima vittoria con %s (ne hai %d)",
+"
+Con %s hai già la Lacrima di Ammit: prova un'altra arma, o un Peso del Cuore più alto","
+Con %s hai già la Lacrima di Ammit: prova un'altra arma, o un Peso del Cuore più alto",
 "Hai sconfitto Ammit!
 La Prima Ora è superata.%s
 
@@ -510,12 +566,14 @@ WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD muovi · Spazio
 %s · Leggi i Papiri di Thoth (%d su %d),%s · Leggi i Papiri di Thoth (%d su %d),%s · Read the Scrolls of Thoth (%d of %d)
 "%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)","%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)","%s · The Weight of the Heart (current weight %d, Ka +%d%%)"
 La bilancia di Ma'at · Sconfiggi Ammit per poter posare i tuoi pesi,La bilancia di Ma'at · Sconfiggi Ammit per poter posare i tuoi pesi,The scale of Ma'at · Defeat Ammit to lay your weights upon it
+Il Cortile di Neith · le armi · entra dalla porta,Il Cortile di Neith · le armi · entra dalla porta,
+Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,
 Il cancello del Duat è a nord,Il cancello del Duat è a nord,The gate of the Duat lies to the north
 E / Y / B per chiudere,E / Y / B per chiudere,E / Y / B to close
 Il Libro dei Morti,Il Libro dei Morti,The Book of the Dead
-Ka custodito: %d    ·    Lacrime di Iside: %d    ·    Capitoli attivi: %d di %d,Ka custodito: %d    ·    Lacrime di Iside: %d    ·    Capitoli attivi: %d di %d,Stored Ka: %d    ·    Tears of Isis: %d    ·    Active chapters: %d of %d
+Ka custodito: %d    ·    Capitoli attivi: %d di %d,Ka custodito: %d    ·    Capitoli attivi: %d di %d,Stored Ka: %d    ·    Active chapters: %d of %d
 comprato,comprato,bought
-Un posto in più nel Libro   [%d Lacrime],Un posto in più nel Libro   [%d Lacrime],One more place in the Book   [%d Tears]
+Un posto in più nel Libro   [%d Ka],Un posto in più nel Libro   [%d Ka],
 Capitolo %d · %s%s,Capitolo %d · %s%s,Chapter %d · %s%s
   (livello %d di %d),  (livello %d di %d),  (level %d of %d)
 Livello %d: %s,Livello %d: %s,Level %d: %s
@@ -528,12 +586,10 @@ Potenzia al livello %d  ·  %s,Potenzia al livello %d  ·  %s,Upgrade to level %
 Un posto in più nel Libro,Un posto in più nel Libro,One more place in the Book
 "Puoi tenere attivo un capitolo in più a ogni discesa.
 
-Costa %d Lacrime di Iside: ne hai %d.","Puoi tenere attivo un capitolo in più a ogni discesa.
+Costa %d Ka: ne hai %d.","Puoi tenere attivo un capitolo in più a ogni discesa.
 
-Costa %d Lacrime di Iside: ne hai %d.","You can keep one more chapter active on every descent.
-
-Costs %d Tears of Isis: you have %d."
-"Le Lacrime di Iside: la dea pianse Osiride così a lungo che le sue lacrime fecero crescere il Nilo. Ogni anno, quando il fiume esondava, gli Egizi dicevano che Iside piangeva ancora. Le lasciano il Serpente della Porta (1) e Ammit (2).","Le Lacrime di Iside: la dea pianse Osiride così a lungo che le sue lacrime fecero crescere il Nilo. Ogni anno, quando il fiume esondava, gli Egizi dicevano che Iside piangeva ancora. Le lasciano il Serpente della Porta (1) e Ammit (2).","The Tears of Isis: the goddess wept for Osiris so long that her tears made the Nile rise. Every year, when the river flooded, the Egyptians said Isis was still weeping. The Serpent of the Gate leaves one, Ammit leaves two."
+Costa %d Ka: ne hai %d.",
+Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.,Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.,
 Piuma di Ma'at,Piuma di Ma'at,Feather of Ma'at
 "Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva.","Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva.","A mode for those who want help. You take 10% less damage, and another 2% less after each death, up to 50%. In return you store only 40% of your Ka at the end of a descent, and the Weight of the Heart does not count while it is on."
 Scuotimento dello schermo,Scuotimento dello schermo,Screen shake
@@ -764,7 +820,45 @@ Danni subiti,Danni subiti,Damage taken
 Nemici e boss,Nemici e boss,Enemies and bosses
 Trappole,Trappole,Traps
 Ricompense e menu,Ricompense e menu,Rewards and menus
+KHOPESH,KHOPESH,
 Ruota il telefono in orizzontale,Ruota il telefono in orizzontale,Turn your phone sideways
+Khopesh,Khopesh,
+La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,
+"Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.","Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.",
+Aspetto del Faraone,Aspetto del Faraone,
+"La lama dei re, equilibrata in ogni colpo. +{v}% di danni.","La lama dei re, equilibrata in ogni colpo. +{v}% di danni.",
+"Ramses II la impugna nei rilievi della battaglia di Qadesh, scolpiti sulle pareti di mezzo Egitto.","Ramses II la impugna nei rilievi della battaglia di Qadesh, scolpiti sulle pareti di mezzo Egitto.",
+Aspetto di Montu,Aspetto di Montu,
+Il terzo colpo affonda più lontano e fa il {v}% di danni in più.,Il terzo colpo affonda più lontano e fa il {v}% di danni in più.,
+"Montu, il dio falco della guerra di Tebe. I faraoni guerrieri del Medio Regno portavano il suo nome: Mentuhotep, 'Montu è soddisfatto'.","Montu, il dio falco della guerra di Tebe. I faraoni guerrieri del Medio Regno portavano il suo nome: Mentuhotep, 'Montu è soddisfatto'.",
+Aspetto di Wepwawet,Aspetto di Wepwawet,
+Il primo colpo dopo uno scatto è un fendente circolare che fa il {v}% di danni in più.,Il primo colpo dopo uno scatto è un fendente circolare che fa il {v}% di danni in più.,
+"Wepwawet, lo sciacallo 'che apre le vie'. Il suo stendardo apriva le processioni del re e la strada dei morti verso l'Occidente.","Wepwawet, lo sciacallo 'che apre le vie'. Il suo stendardo apriva le processioni del re e la strada dei morti verso l'Occidente.",
+"Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Se attacchi subito dopo uno scatto, la lancia affonda il doppio più lontano.","Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Se attacchi subito dopo uno scatto, la lancia affonda il doppio più lontano.",
+"Neith di Sais è tra le dee più antiche: il suo segno, uno scudo con due frecce incrociate, compare già prima dei faraoni. I Greci la confusero con Atena.","Neith di Sais è tra le dee più antiche: il suo segno, uno scudo con due frecce incrociate, compare già prima dei faraoni. I Greci la confusero con Atena.",
+Aspetto di Neith,Aspetto di Neith,
+"La lancia della dea guerriera, come la forgiò. +{v}% di danni.","La lancia della dea guerriera, come la forgiò. +{v}% di danni.",
+"A Sais si diceva che Neith avesse tessuto il mondo come una tela, e che continuasse a tesserlo ogni giorno.","A Sais si diceva che Neith avesse tessuto il mondo come una tela, e che continuasse a tesserlo ogni giorno.",
+Aspetto di Onuris,Aspetto di Onuris,
+Gli affondi arrivano il {v}% più lontano.,Gli affondi arrivano il {v}% più lontano.,
+"Onuris, il cacciatore, andò fino ai confini del mondo a riprendere la dea lontana, l'Occhio di Ra fuggito nel deserto. Il suo nome vuol dire 'colui che riporta la lontana'.","Onuris, il cacciatore, andò fino ai confini del mondo a riprendere la dea lontana, l'Occhio di Ra fuggito nel deserto. Il suo nome vuol dire 'colui che riporta la lontana'.",
+Aspetto di Khonsu,Aspetto di Khonsu,
+La spazzata stordisce i nemici per {v} secondi.,La spazzata stordisce i nemici per {v} secondi.,
+"Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta.","Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta.",
+Arco di Satet,Arco di Satet,
+Flagello di Osiride,Flagello di Osiride,
+Scettro was,Scettro was,
+Artigli di Bastet,Artigli di Bastet,
+La lancia,La lancia,
+il khopesh,il khopesh,
+la lancia,la lancia,
+del khopesh,del khopesh,
+della lancia,della lancia,
+dal khopesh,dal khopesh,
+dalla lancia,dalla lancia,
+al khopesh,al khopesh,
+alla lancia,alla lancia,
+Lancia,Lancia,
 Piume di piombo,Piume di piombo,Leaden feathers
 I nemici hanno il 20% di vita in più per livello.,I nemici hanno il 20% di vita in più per livello.,Enemies have 20% more health per level.
 Zanne affilate,Zanne affilate,Sharpened fangs
@@ -783,6 +877,22 @@ La fame di Ammit,La fame di Ammit,The hunger of Ammit
 Ammit ha il 30% di vita in più e ogni Ruggito libera due onde.,Ammit ha il 30% di vita in più e ogni Ruggito libera due onde.,Ammit has 30% more health and every Roar unleashes two waves.
 Vita,Vita,Health
 Comandi,Comandi,Controls
+Ogni lacrima vale più di mille Ka. Il Libro sa cosa farne: le formule più alte non si pagano soltanto con la forza.,Ogni lacrima vale più di mille Ka. Il Libro sa cosa farne: le formule più alte non si pagano soltanto con la forza.,Every tear is worth more than a thousand Ka. The Book knows what to do with it: the highest spells are not paid for with strength alone.
++1 Lacrima di Iside  ·  il prossimo dono sale di un livello in più,+1 Lacrima di Iside  ·  il prossimo dono sale di un livello in più,+1 Tear of Isis  ·  the next boon gains an extra level
+"
++2 Lacrime di Iside (ne hai %d)","
++2 Lacrime di Iside (ne hai %d)","
++2 Tears of Isis (you have %d)"
+Ka custodito: %d    ·    Lacrime di Iside: %d    ·    Capitoli attivi: %d di %d,Ka custodito: %d    ·    Lacrime di Iside: %d    ·    Capitoli attivi: %d di %d,Stored Ka: %d    ·    Tears of Isis: %d    ·    Active chapters: %d of %d
+Un posto in più nel Libro   [%d Lacrime],Un posto in più nel Libro   [%d Lacrime],One more place in the Book   [%d Tears]
+"Puoi tenere attivo un capitolo in più a ogni discesa.
+
+Costa %d Lacrime di Iside: ne hai %d.","Puoi tenere attivo un capitolo in più a ogni discesa.
+
+Costa %d Lacrime di Iside: ne hai %d.","You can keep one more chapter active on every descent.
+
+Costs %d Tears of Isis: you have %d."
+"Le Lacrime di Iside: la dea pianse Osiride così a lungo che le sue lacrime fecero crescere il Nilo. Ogni anno, quando il fiume esondava, gli Egizi dicevano che Iside piangeva ancora. Le lasciano il Serpente della Porta (1) e Ammit (2).","Le Lacrime di Iside: la dea pianse Osiride così a lungo che le sue lacrime fecero crescere il Nilo. Ogni anno, quando il fiume esondava, gli Egizi dicevano che Iside piangeva ancora. Le lasciano il Serpente della Porta (1) e Ammit (2).","The Tears of Isis: the goddess wept for Osiris so long that her tears made the Nile rise. Every year, when the river flooded, the Egyptians said Isis was still weeping. The Serpent of the Gate leaves one, Ammit leaves two."
 Subisci il 10% di danni in più.,Subisci il 10% di danni in più.,You take 10% more damage.
 Inizi ogni discesa con +15 vita massima.,Inizi ogni discesa con +15 vita massima.,You begin every descent with +15 max health.
 L'Occhio di Horus si ricarica il 15% più in fretta.,L'Occhio di Horus si ricarica il 15% più in fretta.,The Eye of Horus recharges 15% faster.
@@ -868,7 +978,6 @@ Vita %d/%d    Ka %d    %s    Occhio: %s,Vita %d/%d    Ka %d    %s    Occhio: %s,
 Levetta muovi · LB/A scatto · Y interagisci · Start ×2 esci,Levetta muovi · LB/A scatto · Y interagisci · Start ×2 esci,Stick move · LB/A dash · Y interact · Start ×2 quit
 WASD muovi · Spazio scatto · E interagisci · Esc ×2 esci dal gioco,WASD muovi · Spazio scatto · E interagisci · Esc ×2 esci dal gioco,WASD move · Space dash · E interact · Esc ×2 quit the game
 Premi di nuovo per uscire,Premi di nuovo per uscire,Press again to quit
-Ka custodito: %d    ·    Capitoli attivi: %d di %d,Ka custodito: %d    ·    Capitoli attivi: %d di %d,Stored Ka: %d    ·    Active chapters: %d of %d
 "Il tuo cuore è stato pesato.
 Sei caduto: %s
 

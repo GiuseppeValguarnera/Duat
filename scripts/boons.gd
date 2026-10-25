@@ -128,8 +128,8 @@ static func has_cost(id: String) -> bool:
 static func text(id: String, level: int) -> String:
 	var b: Dictionary = ALL[id]
 	if is_heavy(id) or not b.has("values"):
-		return b["desc"]
-	return b["desc"] % b["values"][clampi(level, 1, MAX_LEVEL) - 1]
+		return Weapons.adapt(b["desc"])
+	return Weapons.adapt(b["desc"] % b["values"][clampi(level, 1, MAX_LEVEL) - 1])
 
 
 ## Le tre scelte offerte da un dio. `owned` = {id: livello} dei doni già presi.
@@ -290,4 +290,4 @@ static func short(id: String, level: int) -> Array:
 	var b: Dictionary = ALL[id]
 	if gain.find("%d") >= 0 and b.has("values"):
 		gain = gain % int(round(b["values"][clampi(level, 1, b["values"].size()) - 1]))
-	return [gain, SHORT[id][1]]
+	return [Weapons.adapt(gain), Weapons.adapt(SHORT[id][1])]

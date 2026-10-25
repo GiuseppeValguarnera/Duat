@@ -43,7 +43,7 @@ Il gioco parte qui, e qui torni dopo ogni discesa.
 
 - **Anubi** parla con te: commenta com'è andata l'ultima discesa (chi ti ha ucciso, quale dio hai seguito, se hai stretto patti con Set) e, man mano che muori o vinci, racconta la storia del tuo nome scalpellato. Se gli parli ancora, ti spiega il giudizio dei morti: la pesatura del cuore, Ma'at, i 42 giudici, le parti dell'anima. Le battute sono in `scripts/dialogue.gd`.
 - **I Papiri di Thoth** (lo scaffale in basso a destra): l'archivio di tutto quello che gli dèi ti hanno raccontato, diviso per dio, più le lezioni di Anubi e la storia dei capitoli che hai comprato. Le storie non ancora ascoltate restano sigillate.
-- **Il Libro dei Morti** (il leggio a destra): spendi il Ka custodito per comprare capitoli, incantesimi passivi che valgono per sempre. Puoi tenerne attivi solo 2 alla volta (3 dopo aver sconfitto Ammit, fino a 5 con le Lacrime di Iside), quindi prima di ogni discesa scegli quali portare.
+- **Il Libro dei Morti** (il leggio a destra): spendi il Ka custodito per comprare capitoli, incantesimi passivi che valgono per sempre. Puoi tenerne attivi solo 2 alla volta (3 dopo aver sconfitto Ammit, fino a 5 con i posti comprati), quindi prima di ogni discesa scegli quali portare.
 - **La bilancia di Ma'at** al centro mostra i tuoi progressi.
 - **Il cancello** a nord: camminaci dentro per iniziare una discesa.
 - **Gli stendardi** sulla parete nord: uno per ogni dio, si colorano quando quel dio ti ha parlato per la prima volta.
@@ -64,7 +64,7 @@ Il gioco parte qui, e qui torni dopo ogni discesa.
 | 6 · Gli Ushabti | Una statuetta servitrice ti segue e colpisce il nemico più vicino ogni 2.0 → 1.6 → 1.3 secondi. | 140 / 240 / 380 |
 | 72 · Le porte aperte | Dopo ogni stanza si aprono sempre tre porte. | 220 |
 
-Ogni capitolo ha fino a 3 livelli: comprato il primo, sulla pagina compare *Potenzia*; il livello 3 chiede anche **1 Lacrima di Iside**. Le Lacrime sono la moneta rara: 1 dal Serpente della Porta, 2 da Ammit, custodite subito anche se poi cadi. Con le Lacrime si comprano anche **posti in più** nel Libro (3 e poi 5 Lacrime).
+Ogni capitolo ha fino a 3 livelli: comprato il primo, sulla pagina compare *Potenzia*. Con il Ka si comprano anche **posti in più** nel Libro (400 e poi 800 Ka).
 
 I numeri sono quelli dei veri capitoli del Libro dei Morti, e ognuno nel Libro mostra anche a cosa serviva davvero. Per aggiungerne uno: una riga in `ALL` in `scripts/chapters.gd`, poi l'effetto dove serve usando `Run.chap("id")`.
 
@@ -77,6 +77,22 @@ Nella Sala, Esc o Start aprono le opzioni:
 - Scuotimento dello schermo, pausa sui colpi, *Rifai l'addestramento* (la prossima discesa ricomincia dalla stanza di prova), volume generale e musica.
 
 Se il gioco perde il focus (una chiamata, un'altra finestra) va in pausa da solo. *Esci* dal menu di pausa lascia la discesa salvata.
+
+## Il Cortile di Neith e le armi
+
+Dalla Sala del Giudizio, una porta nella parete ovest (con lo scudo e le frecce incrociate di Neith) porta al **Cortile di Neith**. Si apre dopo la prima vittoria sul Serpente della Porta: la prima volta Neith, la dea guerriera di Sais, ti consegna la **Lancia di Neith** (`scripts/armory.gd`, `scenes/armory.tscn`).
+
+- **Piedistalli**: le armi come offerte votive. Avvicinati e premi Azione per impugnarla: con quella scendi nel Duat. Le quattro ancora da forgiare (Arco di Satet, Flagello di Osiride, Scettro was, Artigli di Bastet) restano coperte da un telo.
+- **Altare degli aspetti**: ogni arma ha 3 aspetti (il primo è libero), ognuno con 3 livelli. Si risvegliano e si potenziano con le **Lacrime di Iside**.
+- **Ushabti**: statuine d'argilla da colpire, che si ricompongono da sole ("Eccomi!"). La **stele** accanto misura l'ultimo colpo, la combinazione e i danni al secondo.
+- **Porta delle prove**: fa uscire scarabei, mummie, un sacerdote, scorpioni, un cobra o tutti insieme. Nel cortile non si muore.
+
+| Arma | Come si gioca | Aspetti |
+| --- | --- | --- |
+| Khopesh | Fendenti ampi da vicino, il terzo colpo è il più forte | del Faraone (+danni) · di Montu (terzo colpo più lungo e più forte) · di Wepwawet (dopo uno scatto, fendente circolare) |
+| Lancia di Neith | Due affondi lunghi e stretti, poi un'ampia spazzata; subito dopo uno scatto, un affondo lunghissimo | di Neith (+danni) · di Onuris (affondi più lunghi) · di Khonsu (la spazzata stordisce) |
+
+**Lacrime di Iside**: arrivano solo la **prima volta** che batti il Serpente (1) o Ammit (2) **con ogni arma**, e di nuovo con il Peso del Cuore a 4 e a 8. Rivincere con la stessa arma non dà altre Lacrime: per crescere bisogna cambiare arma. Il Libro dei Morti ora si paga solo in Ka (livelli e posti in più compresi). Dati in `scripts/weapons.gd`; i testi dei doni scritti per il khopesh si adattano da soli all'arma impugnata.
 
 ## Come funziona una run
 

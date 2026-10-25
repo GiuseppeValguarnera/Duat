@@ -88,6 +88,15 @@ func _ready() -> void:
 	force_god = OS.get_environment("DUAT_GOD")
 	var s := OS.get_environment("DUAT_SEED")
 	seed(int(s) if s != "" else 1)
+	var wpn := OS.get_environment("DUAT_WEAPON")
+	if wpn != "":
+		if not Meta.weapons_unlocked.has(wpn):
+			Meta.weapons_unlocked.append(wpn)
+		Meta.weapon = wpn
+		var asp := OS.get_environment("DUAT_ASPECT")
+		if asp != "":
+			Meta.aspect_levels["%s:%s" % [wpn, asp]] = 1
+			Meta.weapon_aspect[wpn] = asp
 	brain_path = OS.get_environment("DUAT_BRAIN")
 	if brain_path != "" and FileAccess.file_exists(brain_path):
 		var parsed = JSON.parse_string(FileAccess.get_file_as_string(brain_path))
@@ -145,7 +154,7 @@ func _hub_shopping() -> void:
 			break
 		if Chapters.buy(best):
 			bought.append(best)
-	if Meta.tears >= Chapters.slot_cost() and Chapters.slot_cost() > 0 and randf() < 0.8:
+	if Chapters.slot_cost() > 0 and Meta.ka_bank >= Chapters.slot_cost() + 150 and randf() < 0.8:
 		Chapters.buy_slot()
 	Meta.chapters_equipped.clear()
 	for id in pref:

@@ -7,6 +7,7 @@ extends Enemy
 signal dodged
 
 var eye_only := false
+var ushabti := false                   ## bersaglio del Cortile di Neith: statuina d'argilla che si ricompone
 var lunger := false
 var hit_by_eye := false
 var state := "rest"
@@ -25,6 +26,8 @@ func _ready() -> void:
 	shape.shape = c
 	add_child(shape)
 	max_hp = 999.0 if lunger else (24.0 if eye_only else 30.0)
+	if ushabti:
+		max_hp = 180.0
 	contact_damage = 0.0
 	ka_value = 0
 	radius = 8.0
@@ -87,6 +90,25 @@ func _stagger_time() -> float:
 
 
 func _draw_body(flash: bool) -> void:
+	if ushabti:
+		# statuina mummiforme di faience azzurra, con le braccia incrociate e i geroglifici
+		var faience := Color.WHITE if flash else Color(0.3, 0.68, 0.72)
+		var dark := Color(0.08, 0.2, 0.28)
+		var cracks := 1.0 - hp / max_hp
+		draw_colored_polygon(PackedVector2Array([Vector2(-5, 0), Vector2(5, 0), Vector2(6, -14), Vector2(4, -20), Vector2(-4, -20), Vector2(-6, -14)]), faience)
+		draw_circle(Vector2(0, -23), 5.0, faience)
+		draw_colored_polygon(PackedVector2Array([Vector2(-6, -26), Vector2(6, -26), Vector2(5, -17), Vector2(-5, -17)]), dark)
+		draw_circle(Vector2(0, -22), 3.0, faience.lightened(0.15))
+		draw_line(Vector2(-4, -15), Vector2(4, -12), dark, 1.2)
+		draw_line(Vector2(4, -15), Vector2(-4, -12), dark, 1.2)
+		for i in range(3):
+			draw_line(Vector2(-1.5, -9 + i * 3), Vector2(1.5, -9 + i * 3), dark, 0.8)
+		# crepe man mano che si rompe
+		if cracks > 0.3:
+			draw_line(Vector2(-3, -18), Vector2(1, -8), dark, 0.8)
+		if cracks > 0.6:
+			draw_line(Vector2(3, -20), Vector2(-2, -4), dark, 0.8)
+		return
 	if lunger:
 		var red := state == "windup"
 		var linen := Color.WHITE if flash else (Color(0.95, 0.35, 0.3) if red else Color(0.86, 0.8, 0.66))

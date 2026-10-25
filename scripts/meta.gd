@@ -12,7 +12,14 @@ var runs := 0
 var audio := {}                       ## volumi delle categorie di suoni (0..1), vedi sfx.gd
 var chapter_levels := {}             ## livello di ogni capitolo comprato del Libro dei Morti
 var tears := 0                        ## Lacrime di Iside: la moneta rara dei boss
-var extra_slots := 0                  ## posti in più nel Libro comprati con le Lacrime
+var extra_slots := 0                  ## posti in più nel Libro dei Morti
+var weapon := "khopesh"               ## arma scelta nel Cortile di Neith
+var weapons_unlocked: Array = []      ## armi sbloccate oltre al khopesh
+var weapon_aspect := {}               ## arma -> aspetto scelto
+var aspect_levels := {}               ## "arma:aspetto" -> livello (il primo aspetto di ogni arma è libero)
+var first_kills := {}                 ## "boss|arma|peso" già premiati con le Lacrime di Iside
+var serpent_wins := 0                 ## volte che hai battuto il Serpente della Porta
+var neith_seen: Array = []            ## battute di Neith già ascoltate
 var chapters_equipped: Array = []     ## capitoli attivi (limitati da Chapters.slots())
 var dialogue_seen: Array = []         ## battute di Anubi già ascoltate
 var last_end := ""                    ## com'è finita l'ultima discesa: "room", "ammit", "win"
@@ -42,6 +49,13 @@ func _ready() -> void:
 				chapter_levels[id] = 1
 		tears = cfg.get_value("libro", "lacrime", 0)
 		extra_slots = cfg.get_value("libro", "posti", 0)
+		weapon = cfg.get_value("armi", "scelta", "khopesh")
+		weapons_unlocked = cfg.get_value("armi", "sbloccate", [])
+		weapon_aspect = cfg.get_value("armi", "aspetto", {})
+		aspect_levels = cfg.get_value("armi", "livelli", {})
+		first_kills = cfg.get_value("armi", "prime_vittorie", {})
+		serpent_wins = cfg.get_value("boss", "serpente", 0)
+		neith_seen = cfg.get_value("storia", "neith", [])
 		chapters_equipped = cfg.get_value("libro", "attivi", [])
 		dialogue_seen = cfg.get_value("storia", "battute", [])
 		last_end = cfg.get_value("storia", "ultima_fine", "")
@@ -69,6 +83,13 @@ func save() -> void:
 	cfg.set_value("libro", "livelli", chapter_levels)
 	cfg.set_value("libro", "lacrime", tears)
 	cfg.set_value("libro", "posti", extra_slots)
+	cfg.set_value("armi", "scelta", weapon)
+	cfg.set_value("armi", "sbloccate", weapons_unlocked)
+	cfg.set_value("armi", "aspetto", weapon_aspect)
+	cfg.set_value("armi", "livelli", aspect_levels)
+	cfg.set_value("armi", "prime_vittorie", first_kills)
+	cfg.set_value("boss", "serpente", serpent_wins)
+	cfg.set_value("storia", "neith", neith_seen)
 	cfg.set_value("libro", "attivi", chapters_equipped)
 	cfg.set_value("storia", "battute", dialogue_seen)
 	cfg.set_value("storia", "ultima_fine", last_end)
@@ -83,3 +104,20 @@ func save() -> void:
 	cfg.set_value("piuma", "attiva", feather)
 	cfg.set_value("piuma", "morti", feather_deaths)
 	cfg.save(PATH)
+
+
+## Lacrime di Iside per un boss battuto: una sola volta per ogni arma, e di nuovo con il
+## Peso del Cuore a 4 e a 8. Restituisce quante Lacrime sono arrivate (0 = già prese con quest'arma).
+const TEAR_TIERS := [0, 4, 8]
+
+func claim_boss(boss: String, per_tier: int) -> int:
+	var w := Weights.total()
+	var gained := 0
+	for tier in TEAR_TIERS:
+		var key := "%s|%s|%d" % [boss, Run.weapon, tier]
+		if w >= tier and not first_kills.has(key):
+			first_kills[key] = true
+			gained += per_tier
+	tears += gained
+	save()
+	return gained

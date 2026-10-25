@@ -27,13 +27,30 @@ var start_msec := 0
 var mask_used := false                ## Capitolo 151: il primo colpo della stanza è già stato attutito
 var heart_used := false               # Capitolo 30 già usato in questa discesa
 var in_hub := false                   # true nella Sala del Giudizio
+var training := false                 # nel Cortile di Neith: non si muore
+var from_armory := false              # si torna nella Sala dalla porta del Cortile
 var last_hit := ""                    # chi ti ha colpito per ultimo (per i commenti di Anubi)
 var resume := {}                      # discesa salvata da riprendere (la imposta la Sala all'avvio)
 
 const DESCENT_PATH := "user://duat_discesa.cfg"   ## salvataggio a metà discesa
 
 
+## L'arma della discesa e il suo aspetto (scelti nel Cortile di Neith).
+var weapon := "khopesh"
+var aspect := "faraone"
+var aspect_level := 1
+
+
+func aspect_val(id: String) -> float:
+	if aspect != id:
+		return 0.0
+	return float(Weapons.ALL[weapon]["aspects"][id]["values"][clampi(aspect_level, 1, Weapons.MAX_LEVEL) - 1])
+
+
 func new_run() -> void:
+	weapon = Meta.weapon if Weapons.is_unlocked(Meta.weapon) else "khopesh"
+	aspect = Weapons.chosen_aspect(weapon)
+	aspect_level = Weapons.aspect_level(weapon, aspect)
 	max_hp = 60.0
 	hp = max_hp
 	room = 0

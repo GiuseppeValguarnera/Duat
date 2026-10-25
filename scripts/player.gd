@@ -46,7 +46,18 @@ const COMBO := [
 	{"range": 44.0, "arc": 170.0, "mult": 1.8, "cd": 0.42, "lunge": 45.0, "knock": 240.0},
 ]
 
+## La lancia di Neith: due affondi lunghi e stretti, poi un'ampia spazzata.
+const SPEAR := [
+	{"range": 52.0, "arc": 34.0, "mult": 1.0, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
+	{"range": 52.0, "arc": 34.0, "mult": 1.0, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
+	{"range": 42.0, "arc": 200.0, "mult": 1.6, "cd": 0.46, "lunge": 18.0, "knock": 210.0},
+]
+## Affondo dopo lo scatto (solo la lancia): lunghissimo e stretto.
+const SPEAR_LUNGE := {"range": 78.0, "arc": 24.0, "mult": 1.5, "cd": 0.32, "lunge": 70.0, "knock": 160.0}
+
 var hp := 0.0
+var after_dash_t := 0.0                 # subito dopo uno scatto: affondo della lancia o fendente di Wepwawet
+var spin_swing := false                 # l'ultimo colpo è stato il fendente circolare
 var dead := false
 var facing := Vector2.RIGHT
 var aim := Vector2.RIGHT
@@ -141,6 +152,7 @@ func _physics_process(delta: float) -> void:
 	knock = knock.move_toward(Vector2.ZERO, 900.0 * delta)
 	move_and_slide()
 	if was_dashing and dash_t <= 0.0:
+		after_dash_t = 0.3
 		if Run.has("sekhmet_leap"):
 			leap_ready = true
 		if Run.has("sobek_tide"):
@@ -160,6 +172,7 @@ func _tick(delta: float) -> void:
 	atk_t = maxf(0.0, atk_t - delta)
 	atk_cd = maxf(0.0, atk_cd - delta)
 	combo_window = maxf(0.0, combo_window - delta)
+	after_dash_t = maxf(0.0, after_dash_t - delta)
 	# l'Occhio si ricarica una carica alla volta (di base ne ha una sola)
 	var max_charges := Run.eye_charges()
 	eye_charges = mini(eye_charges, max_charges)
@@ -246,19 +259,40 @@ func _dash_damage() -> void:
 func _swing() -> void:
 	if combo_window <= 0.0:
 		combo = 0
-	var c: Dictionary = COMBO[combo]
+	var spear := Run.weapon == "lancia"
+	var table: Array = SPEAR if spear else COMBO
+	var c: Dictionary = table[combo]
 	swing_index = combo
-	combo = (combo + 1) % COMBO.size()
+	spin_swing = false
+	# subito dopo uno scatto: la lancia affonda lontanissimo, il khopesh di Wepwawet gira su se stesso
+	if after_dash_t > 0.0 and spear:
+		c = SPEAR_LUNGE
+	combo = (combo + 1) % table.size()
 	combo_window = 0.55
 	atk_t = 0.14
 	atk_cd = c["cd"] * Run.attack_speed_mult()
 	swing_range = c["range"]
 	swing_arc = deg_to_rad(c["arc"])
+	var lunge: float = c["lunge"]
+	var aspect_mult := 1.0 + Run.aspect_val("faraone") / 100.0 + Run.aspect_val("neith") / 100.0
+	if swing_index == 2 and Run.aspect == "montu":
+		aspect_mult *= 1.0 + Run.aspect_val("montu") / 100.0
+		swing_range += 8.0
+		lunge *= 1.6
+	if spear and swing_index < 2 and Run.aspect == "onuris":
+		swing_range *= 1.0 + Run.aspect_val("onuris") / 100.0
+	if after_dash_t > 0.0 and Run.aspect == "wepwawet":
+		swing_arc = TAU
+		swing_range = 42.0
+		aspect_mult *= 1.0 + Run.aspect_val("wepwawet") / 100.0
+		spin_swing = true
+		Fx.burst(global_position + Vector2(0, -8), Color(0.62, 0.56, 0.92), 14, 90.0)
+	after_dash_t = 0.0
 	swing_dir = _assisted(aim, swing_range + 24.0)
 	Sfx.play("swing", 0.15)
-	knock = swing_dir * c["lunge"]
+	knock = swing_dir * lunge
 
-	var dmg: float = attack_damage * Run.khopesh_mult() * c["mult"] * Run.combo_mult(swing_index)
+	var dmg: float = attack_damage * Run.khopesh_mult() * c["mult"] * Run.combo_mult(swing_index) * aspect_mult
 	if divine_t > 0.0:
 		dmg *= divine_damage_mult
 	if leap_ready:
@@ -288,6 +322,8 @@ func _swing() -> void:
 				if Run.has("duo_sekhmet_bastet"):
 					_shockwave.call_deferred(40.0, 12.0 * Run.all_damage_mult(), 150.0, Boons.god_color("duo"))
 			e.take_hit(hit_dmg, to.normalized(), c["knock"] * Run.knock_mult(), Run.khopesh_burns())
+			if spear and swing_index == 2 and Run.aspect == "khonsu" and not e.dead:
+				e.stagger_t = maxf(e.stagger_t, Run.aspect_val("khonsu") * (0.3 if (e.is_boss or e.miniboss) else 1.0))
 			if swing_index == 2 and Run.has("sobek_bite") and not e.dead:
 				var stun: float = Run.val("sobek_bite") * (0.25 if e.is_boss else 1.0)
 				e.stagger_t = maxf(e.stagger_t, stun)
@@ -387,6 +423,8 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null) -> boo
 	if dead or invuln_t > 0.0 or dash_t > 0.0:
 		return false
 	amount *= Run.damage_taken_mult()
+	if Run.training:
+		amount = minf(amount, hp - 1.0)       # nel Cortile di Neith i colpi si sentono, ma non uccidono
 	if Run.chap("c151") and not Run.mask_used:
 		Run.mask_used = true                 # la maschera attutisce il primo colpo della stanza
 		amount *= 1.0 - Chapters.value("c151") / 100.0
@@ -486,6 +524,20 @@ func _draw() -> void:
 	draw_rect(Rect2(4, -22 + bob, 3, 8), blue)
 	draw_circle(Vector2(facing.x * 2.0 + 1.5, -20 + bob), 1.0, Color(0, 0, 0, a))
 
+	# l'arma in mano: la lancia lungo la mira, il khopesh ricurvo accanto alla mano
+	var hand := Vector2(0, -11 + bob) + aim * 5.0
+	if Run.weapon == "lancia":
+		var reach := 26.0 if atk_t <= 0.0 else 34.0
+		draw_line(hand - aim * 8.0, hand + aim * reach, Color(0.55, 0.38, 0.2, a), 1.6)
+		var tipp := hand + aim * reach
+		draw_colored_polygon(PackedVector2Array([tipp + aim * 6.0, tipp + aim.orthogonal() * 2.2, tipp - aim.orthogonal() * 2.2]), Color(0.85, 0.85, 0.9, a))
+	else:
+		var blade := PackedVector2Array()
+		for i in range(7):
+			var k := i / 6.0
+			blade.append(hand + aim * (4.0 + 10.0 * k) + aim.orthogonal() * (sin(k * PI) * -3.0 - k * 2.0))
+		draw_line(hand - aim * 1.0, hand + aim * 4.0, gold, 2.0)
+		draw_polyline(blade, Color(0.82, 0.82, 0.88, a), 2.0)
 	# indicatore di mira
 	var tip := Vector2(0, -8) + aim * 20.0
 	var side := aim.orthogonal() * 4.0

@@ -47,13 +47,15 @@ func _layout() -> Array:
 		out.append({"action": "dash", "pos": Vector2(r - 128, b - 40), "r": 24.0, "label": "SCATTO"})
 		return out
 	out.append({"action": "boons_menu", "pos": Vector2(r - 58, 22), "r": 14.0, "label": "DONI"})
-	out.append({"action": "attack", "pos": Vector2(r - 58, b - 62), "r": 34.0, "label": "KHOPESH"})
+	out.append({"action": "attack", "pos": Vector2(r - 58, b - 62), "r": 34.0, "label": Weapons.ALL[Run.weapon]["short"] if Weapons.ALL.has(Run.weapon) else "KHOPESH"})
 	out.append({"action": "dash", "pos": Vector2(r - 128, b - 40), "r": 24.0, "label": "SCATTO"})
 	out.append({"action": "special", "pos": Vector2(r - 108, b - 122), "r": 24.0, "label": "OCCHIO"})
 	if Run.sekhem_unlocked():
 		out.append({"action": "super", "pos": Vector2(r - 170, b - 100), "r": 20.0, "label": "SEKHEM"})
 	if shop:
 		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": "COMPRA"})
+	elif scene != null and "is_armory" in scene:
+		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": "AZIONE"})
 	return out
 
 

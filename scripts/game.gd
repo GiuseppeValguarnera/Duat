@@ -67,6 +67,7 @@ var bonus_boon := false               # il prossimo dono sale di un livello in p
 var shops_visited := 0
 var shop_items: Array = []
 var doors_after_boon := true
+var ammit_tears := 0                  # Lacrime arrivate battendo Ammit in questa discesa
 var can_leave := true                 # alla morte: si torna alla Sala solo dopo l'animazione
 var hud_room := ""
 var hud_eye := ""
@@ -539,12 +540,17 @@ func _room_cleared() -> void:
 	if current_reward.get("kind", "") == "guardian":
 		# premio del guardiano: un dono che sale di due livelli invece di uno
 		bonus_boon = true
-		Meta.tears += 1                       # una Lacrima di Iside, custodita subito anche se poi cadi
-		Meta.save()
+		# Lacrima di Iside: solo la prima volta con quest'arma (e di nuovo con il Peso a 4 e a 8)
+		var first_serpent := Meta.serpent_wins == 0
+		Meta.serpent_wins += 1
+		var got := Meta.claim_boss("serpent", 1)
+		var tear_txt := ("+%d Lacrima di Iside" % got) if got == 1 else (("+%d Lacrime di Iside" % got) if got > 1 else "Lacrima già presa con quest'arma")
+		if first_serpent:
+			tear_txt += "  ·  il Cortile di Neith si è aperto"
 		var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
 		if not gods.is_empty():
 			current_reward = {"kind": "boon", "god": gods.pick_random()}
-			_banner("Il Serpente della Porta è caduto", "+1 Lacrima di Iside  ·  il prossimo dono sale di un livello in più", Color(0.6, 1, 0.5))
+			_banner("Il Serpente della Porta è caduto", tear_txt + "  ·  il prossimo dono sale di un livello in più", Color(0.6, 1, 0.5))
 		else:
 			current_reward = {"kind": "ka"}
 	if current_reward.get("kind", "none") == "none":
@@ -871,7 +877,7 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 		var sh := Boons.short(id, lvl)
 		cards.append({
 			"tag": tag, "name": Boons.ALL[id]["name"], "body": Boons.text(id, lvl),
-			"cost": Boons.ALL[id]["cost"] if Boons.has_cost(id) else "",
+			"cost": Weapons.adapt(Boons.ALL[id]["cost"]) if Boons.has_cost(id) else "",
 			"gain": sh[0], "loss": sh[1],
 			"color": Boons.god_color("duo") if Boons.is_duo(id) else Boons.god_color(from_god),
 			"heavy": Boons.is_heavy(id),
@@ -887,7 +893,7 @@ func _show_anubi_menu() -> void:
 		var sh := Boons.short(id, 1)
 		cards.append({
 			"tag": "Dono di Anubi", "name": Boons.ALL[id]["name"], "body": Boons.text(id, 1),
-			"cost": Boons.ALL[id]["cost"], "gain": sh[0], "loss": sh[1],
+			"cost": Weapons.adapt(Boons.ALL[id]["cost"]), "gain": sh[0], "loss": sh[1],
 			"color": Boons.god_color("anubi"), "heavy": false,
 			"on_pick": _choose_start_boon.bind(id),
 		})
@@ -1243,7 +1249,7 @@ func _boons_text() -> String:
 		var lvl := "pesante" if Boons.is_heavy(id) else ("bilancia" if Boons.ALL[id].get("balanced", false) else ("doppio" if Boons.is_duo(id) else "liv. %d" % Run.boons[id]))
 		t += "[color=#%s][b]%s[/b] · %s · %s[/color]\n%s" % [col, Boons.god_name(b["god"]), b["name"], lvl, Boons.text(id, Run.boons[id])]
 		if Boons.has_cost(id):
-			t += " [color=#ff9c8c]Prezzo: %s[/color]" % b["cost"]
+			t += " [color=#ff9c8c]Prezzo: %s[/color]" % Weapons.adapt(b["cost"])
 		t += "\n\n"
 	var set_col: String = Boons.god_color("set").to_html(false)
 	for c in Run.curses:
@@ -1475,7 +1481,7 @@ func _boss_defeated() -> void:
 		if c is Enemy and not c.dead:
 			c.die()
 	Meta.ammit_wins += 1
-	Meta.tears += 2                       # Lacrime di Iside: la moneta rara, custodita subito
+	ammit_tears = Meta.claim_boss("ammit", 2)  # Lacrime di Iside: la prima volta con ogni arma
 	if Weights.unlocked() and not Meta.feather and Weights.total() > Meta.best_weight:
 		Meta.best_weight = Weights.total()
 	var first_win := not Meta.sekhem_unlocked
@@ -1573,7 +1579,10 @@ func _victory() -> void:
 			c.queue_free()
 	message.visible = true
 	var extra := "\nNuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti" if Meta.ammit_wins == 1 else ""
-	extra += "\n+2 Lacrime di Iside (ne hai %d)" % Meta.tears
+	if ammit_tears > 0:
+		extra += "\n+%d Lacrime di Iside, prima vittoria con %s (ne hai %d)" % [ammit_tears, Weapons.ALL[Run.weapon]["the"], Meta.tears]
+	else:
+		extra += "\nCon %s hai già la Lacrima di Ammit: prova un'altra arma, o un Peso del Cuore più alto" % Weapons.ALL[Run.weapon]["the"]
 	Meta.last_end = "win"
 	message.text = "Hai sconfitto Ammit!\nLa Prima Ora è superata.%s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio" % [extra, _end_run_summary()]
 

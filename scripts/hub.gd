@@ -10,6 +10,7 @@ const WALL := 32.0
 const TOP := 64.0
 const PlayerScene := preload("res://scenes/player.tscn")
 const DecorScript := preload("res://scripts/room_decor.gd")
+const ARMORY_Y := 218.0                   ## la porta del Cortile di Neith, nella parete ovest
 
 var player
 var spots := {}                       # nome -> posizione dei punti con cui interagire
@@ -92,6 +93,9 @@ func _build() -> void:
 	_add_dust()
 	player = PlayerScene.instantiate()
 	player.position = Vector2(ROOM.size.x / 2.0, ROOM.size.y - WALL - 30.0)
+	if Run.from_armory:
+		Run.from_armory = false
+		player.position = Vector2(WALL + 26.0, ARMORY_Y)
 	world.add_child(player)
 	var cam: Camera2D = player.get_node("Camera")
 	cam.limit_left = 0
@@ -165,7 +169,15 @@ func _process(delta: float) -> void:
 	if player.global_position.y < TOP + 14.0 and absf(player.global_position.x - spots["cancello"].x) < 22.0:
 		_start_run()
 		return
+	# la porta del Cortile di Neith si attraversa camminandoci dentro (aperta dopo il primo Serpente)
+	var at_door: bool = player.global_position.x < WALL + 14.0 and absf(player.global_position.y - ARMORY_Y) < 24.0
+	if at_door and Meta.serpent_wins > 0:
+		Sfx.play("door")
+		get_tree().change_scene_to_file("res://scenes/armory.tscn")
+		return
 	near = ""
+	if player.global_position.x < WALL + 40.0 and absf(player.global_position.y - ARMORY_Y) < 30.0:
+		near = "cortile"
 	for k in ["anubi", "libro", "bilancia", "papiri"]:
 		if player.global_position.distance_to(spots[k]) < 40.0:
 			near = k
@@ -183,6 +195,11 @@ func _process(delta: float) -> void:
 				prompt.text = "%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)" % [key, Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0))]
 			else:
 				prompt.text = "La bilancia di Ma'at · Sconfiggi Ammit per poter posare i tuoi pesi"
+		"cortile":
+			if Meta.serpent_wins > 0:
+				prompt.text = "Il Cortile di Neith · le armi · entra dalla porta"
+			else:
+				prompt.text = "Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta"
 		_:
 			prompt.text = "Il cancello del Duat è a nord" if player.global_position.y < TOP + 90.0 else ""
 	prompt.visible = prompt.text != ""
@@ -365,7 +382,7 @@ func _list_button(parent: Control, text: String, color: Color) -> Button:
 # ---------------------------------------------------------------- Libro dei Morti
 
 func _fill_book(focus_id: String = "") -> void:
-	var left := _frame("Il Libro dei Morti", "Ka custodito: %d    ·    Lacrime di Iside: %d    ·    Capitoli attivi: %d di %d" % [Meta.ka_bank, Meta.tears, Meta.chapters_equipped.size(), Chapters.slots()], 260)
+	var left := _frame("Il Libro dei Morti", "Ka custodito: %d    ·    Capitoli attivi: %d di %d" % [Meta.ka_bank, Meta.chapters_equipped.size(), Chapters.slots()], 260)
 	var first: Button = null
 	for id in Chapters.ALL:
 		var c: Dictionary = Chapters.ALL[id]
@@ -392,7 +409,7 @@ func _fill_book(focus_id: String = "") -> void:
 	# un posto in più nel Libro, con le Lacrime di Iside
 	var sc := Chapters.slot_cost()
 	if sc > 0:
-		var sb := _list_button(left, "Un posto in più nel Libro   [%d Lacrime]" % sc, Color(0.7, 0.8, 1.0) if Meta.tears >= sc else Color(0.5, 0.52, 0.6))
+		var sb := _list_button(left, "Un posto in più nel Libro   [%d Ka]" % sc, Color(0.7, 0.8, 1.0) if Meta.ka_bank >= sc else Color(0.5, 0.52, 0.6))
 		sb.pressed.connect(_on_slot_pressed)
 		sb.focus_entered.connect(_show_slot)
 		sb.mouse_entered.connect(_show_slot)
@@ -437,8 +454,8 @@ func _show_chapter(id: String) -> void:
 
 func _show_slot() -> void:
 	page_title.text = "Un posto in più nel Libro"
-	page_body.text = "Puoi tenere attivo un capitolo in più a ogni discesa.\n\nCosta %d Lacrime di Iside: ne hai %d." % [Chapters.slot_cost(), Meta.tears]
-	page_lore.text = "Le Lacrime di Iside: la dea pianse Osiride così a lungo che le sue lacrime fecero crescere il Nilo. Ogni anno, quando il fiume esondava, gli Egizi dicevano che Iside piangeva ancora. Le lasciano il Serpente della Porta (1) e Ammit (2)."
+	page_body.text = "Puoi tenere attivo un capitolo in più a ogni discesa.\n\nCosta %d Ka: ne hai %d." % [Chapters.slot_cost(), Meta.ka_bank]
+	page_lore.text = "Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré."
 	page_action.visible = false
 
 
@@ -661,6 +678,19 @@ func _draw() -> void:
 	draw_rect(Rect2(g.x - 26, WALL - 4, 52, 4), Color(0.94, 0.72, 0.3))
 	draw_rect(Rect2(g.x - 26, WALL - 4, 4, TOP - WALL + 8), Color(0.94, 0.72, 0.3))
 	draw_rect(Rect2(g.x + 22, WALL - 4, 4, TOP - WALL + 8), Color(0.94, 0.72, 0.3))
+	# porta del Cortile di Neith, a ovest: chiusa da un telo finché non batti il Serpente
+	var open_door := Meta.serpent_wins > 0
+	draw_rect(Rect2(0, ARMORY_Y - 26, WALL, 52), Color(0.03, 0.02, 0.05))
+	if open_door:
+		draw_rect(Rect2(2, ARMORY_Y - 24, WALL - 4, 48), Color(0.86, 0.32, 0.26, 0.18 + 0.12 * pulse))
+	else:
+		draw_rect(Rect2(4, ARMORY_Y - 24, WALL - 8, 48), Color(0.7, 0.64, 0.52))
+		draw_line(Vector2(8, ARMORY_Y - 20), Vector2(WALL - 8, ARMORY_Y + 18), Color(0.45, 0.4, 0.32), 1.0)
+	draw_rect(Rect2(WALL - 3, ARMORY_Y - 30, 3, 60), Color(0.94, 0.72, 0.3))
+	# lo scudo con le frecce incrociate di Neith sopra la porta
+	var ec := Vector2(WALL + 12, ARMORY_Y - 40)
+	draw_line(ec + Vector2(-7, -7), ec + Vector2(7, 7), Color(0.94, 0.72, 0.3, 0.8), 1.5)
+	draw_line(ec + Vector2(7, -7), ec + Vector2(-7, 7), Color(0.94, 0.72, 0.3, 0.8), 1.5)
 	_draw_scale(spots["bilancia"])
 	_draw_anubi(spots["anubi"])
 	_draw_book(spots["libro"])

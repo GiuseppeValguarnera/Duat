@@ -5,8 +5,7 @@ class_name Chapters
 ## I numeri dei capitoli sono quelli veri del Libro dei Morti egizio.
 ##
 ## Ogni capitolo ha fino a 3 livelli: "values" è il valore a ogni livello (sostituisce {v} nella
-## descrizione) e "cost" il prezzo in Ka di ogni livello. Il livello 3 chiede anche una
-## Lacrima di Iside, la moneta rara che lasciano il Serpente della Porta e Ammit.
+## descrizione) e "cost" il prezzo in Ka di ogni livello. Le Lacrime di Iside servono alle armi.
 
 const ALL := {
 	"c17": {"num": 17, "name": "Uscire al giorno", "desc": "Inizi ogni discesa con +{v} vita massima.", "values": [15, 25, 35], "cost": [60, 140, 260], "lore": "Gli Egizi chiamavano il Libro dei Morti 'Formule per uscire al giorno'. Il capitolo 17 è uno dei più antichi e lunghi: spiega chi sono gli dèi che il morto incontrerà nel viaggio."},
@@ -25,12 +24,11 @@ const ALL := {
 }
 
 const MAX_LEVEL := 3
-const TEAR_LEVEL := 3                       ## il livello 3 chiede anche una Lacrima di Iside
-const SLOT_TEARS := [3, 5]                 ## Lacrime per il 1° e il 2° posto in più nel Libro
+const SLOT_KA := [400, 800]                ## Ka per il 1° e il 2° posto in più nel Libro
 
 
 ## Quanti capitoli si possono tenere attivi: 2, +1 la prima volta che sconfiggi Ammit,
-## +1 per ogni posto comprato con le Lacrime di Iside.
+## +1 per ogni posto comprato con il Ka.
 static func slots() -> int:
 	return 2 + (1 if Meta.ammit_wins > 0 else 0) + Meta.extra_slots
 
@@ -71,7 +69,7 @@ static func next_cost(id: String) -> Array:
 	var l := level(id)
 	if l >= max_level(id):
 		return [-1, 0]
-	return [int(ALL[id]["cost"][l]), 1 if l + 1 >= TEAR_LEVEL else 0]
+	return [int(ALL[id]["cost"][l]), 0]
 
 
 ## Compra il capitolo o il suo livello successivo. Restituisce true se è andato a buon fine.
@@ -89,16 +87,16 @@ static func buy(id: String) -> bool:
 	return true
 
 
-## Prezzo in Lacrime del prossimo posto nel Libro (-1 se sono già tutti comprati).
+## Prezzo in Ka del prossimo posto nel Libro (-1 se sono già tutti comprati).
 static func slot_cost() -> int:
-	return SLOT_TEARS[Meta.extra_slots] if Meta.extra_slots < SLOT_TEARS.size() else -1
+	return SLOT_KA[Meta.extra_slots] if Meta.extra_slots < SLOT_KA.size() else -1
 
 
 static func buy_slot() -> bool:
 	var c := slot_cost()
-	if c < 0 or Meta.tears < c:
+	if c < 0 or Meta.ka_bank < c:
 		return false
-	Meta.tears -= c
+	Meta.ka_bank -= c
 	Meta.extra_slots += 1
 	Meta.save()
 	return true
