@@ -52,7 +52,7 @@ static func _reaction() -> Array:
 			"trappola":
 				options.append("Una trappola ti ha fermato. Nelle tombe dei re i costruttori scavavano pozzi profondi, sbarravano i corridoi con blocchi di granito, dipingevano porte che non si aprivano. Erano per i ladri. Non per te. Eppure.")
 			"mummy":
-				options.append("Una mummia. Settanta giorni di cure, di preghiere, di bende di lino, e ora vaga nel buio piena d'ira. Non portarle rancore. Non ricorda più chi era. Come te.")
+				options.append("Una mummia. Settanta giorni di cure, di preghiere, di bende di lino, e ora vaga nel buio piena d'ira. Non portarle rancore. Non ricorda più il suo nome. Senza il tuo re, presto lo dimenticherai anche tu.")
 			"scarab":
 				options.append("Gli scarabei. Gli uomini li veneravano: lo scarabeo che spinge la sua sfera era il sole che rinasce. Questi non rinascono. Divorano.")
 			"priest":
@@ -88,8 +88,9 @@ static func story() -> Array:
 			"Apri gli occhi, Scriba.",
 			"Sei morto. Lo sai già, credo. Lo si sente nelle ossa.",
 			"Io sono Anubi, Signore della Terra Sacra, custode della bilancia. Ogni notte peso il cuore dei morti contro la piuma di Ma'at. Il tuo non posso pesarlo.",
-			"Qualcuno ha scalpellato il tuo nome da ogni pietra d'Egitto. Senza nome il cuore non ha peso. Senza peso, non c'è giudizio.",
-			"Ma'at ti concede una via: segui la barca di Ra attraverso le dodici ore della notte, e ritrova il tuo nome prima dell'alba.",
+			"Servivi un re, il faraone Akhet. Qualcuno ha scalpellato il suo nome da ogni pietra d'Egitto. E dove c'era il suo nome c'era anche il tuo, accanto, in ogni rotolo che hai scritto per lui.",
+			"Senza nome il cuore non ha peso. Senza peso, non c'è giudizio.",
+			"Ma'at ti concede una via: segui la barca di Ra attraverso le dodici ore della notte, e ricomponi il nome del tuo re prima che sia dimenticato per sempre.",
 			"Il cancello è a settentrione. Quando cadrai, e cadrai, io ti riporterò qui."]},
 		{"id": "book1", "if": Meta.runs >= 1 and Meta.chapter_levels.is_empty(), "lines": [
 			"Quel leggio custodisce il Libro dei Morti. Ogni capitolo è una formula che ti protegge nel buio.",
@@ -108,8 +109,8 @@ static func story() -> Array:
 			"Ogni notte migliaia di morti mi passano davanti. Nessuno è mai tornato indietro.",
 			"Tu torni. Ho smesso di domandarmi perché. Ora mi domando chi sei."]},
 		{"id": "name1", "if": Meta.ammit_wins >= 1, "lines": [
-			"Dopo la tua vittoria ho guardato dentro il cuore che non so pesare. Vi ho trovato un segno, inciso male, quasi cancellato.",
-			"Un solo geroglifico: una canna fiorita. Non basta a leggere un nome. Ma prima, lì, non c'era nulla.",
+			"Guarda il cartiglio sopra il cancello. Era vuoto: dopo la tua vittoria un segno è riaffiorato, inciso male, quasi cancellato.",
+			"Un ibis con la cresta: lo spirito luminoso, l'akh. È l'inizio del nome di Akhet. Prima, lì, non c'era nulla.",
 			"Il Libro dei Morti ora ti concede un capitolo in più. E Ammit ti ha lasciato il suo Sekhem."]},
 		{"id": "pesi1", "if": Meta.ammit_wins >= 1 and Meta.dialogue_seen.has("name1"), "lines": [
 			"Ora che hai abbattuto la Divoratrice, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.",
@@ -125,20 +126,20 @@ static func story() -> Array:
 			"Ogni volta che torni, Scriba, la bilancia trema. Come se avesse timore di te.",
 			"Non so il perché. E io conosco quasi ogni cosa."]},
 		{"id": "name2", "if": Meta.ammit_wins >= 2, "lines": [
-			"Un altro segno del tuo nome è riaffiorato: dopo la canna, l'acqua. Due geroglifici.",
+			"Un altro segno è tornato nel cartiglio del tuo re: dopo l'ibis, un cerchio segnato da linee. Due geroglifici.",
 			"Thoth dice che potrebbero essere l'inizio di cento nomi diversi. Thoth dice sempre così, quando non sa."]},
 		{"id": "deaths12", "if": Meta.runs >= 12, "lines": [
 			"Ho interrogato Ma'at, su di te. Non mi ha risposto.",
 			"In quattromila anni non era mai accaduto."]},
 		{"id": "name3", "if": Meta.ammit_wins >= 3, "lines": [
-			"Il terzo segno: una bocca. Canna, acqua, bocca.",
-			"Ora Thoth tace. È peggio di quando dice che non sa."]},
+			"Il terzo segno: un pane. Ibis, cerchio, pane. Il nome si legge quasi, ma un segno manca ancora.",
+			"Thoth dice che l'ultimo segno torna solo quando la notte finisce. Poi tace. È peggio di quando dice che non sa."]},
 		{"id": "deaths20", "if": Meta.runs >= 20, "lines": [
 			"Venti discese. I guardiani delle porte hanno smesso di chiedermi chi sei. Ti chiamano 'quello che torna'.",
 			"Non è un nome. Ma è più di quanto avevi."]},
 		{"id": "name4", "if": Meta.ammit_wins >= 5, "lines": [
-			"Cinque volte la Divoratrice è caduta. Il quarto segno è riaffiorato, ed è un segno che si scrive solo accanto ai nomi dei re.",
-			"Chiunque tu fossi, Scriba, qualcuno aveva molta paura di te."]},
+			"Cinque volte la Divoratrice è caduta, e l'ultimo segno non torna.",
+			"Chiunque abbia cancellato Akhet, Scriba, aveva molta paura di lui. O lo amava molto. Non so dire quale delle due."]},
 	]
 
 

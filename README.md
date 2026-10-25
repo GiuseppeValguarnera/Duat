@@ -4,6 +4,10 @@ Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
 **Stato:** fase 2. C'è la Sala del Giudizio (base tra una discesa e l'altra, con Anubi e il Libro dei Morti) e la Prima Ora completa: 10 stanze, un guardiano a metà, il Traghettatore, Ammit alla fine, con nemici diversi, ricompense, doni degli dèi, patti di Set e Forma Divina. La grafica è provvisoria (forme semplici) di proposito: prima si rende divertente il gioco, poi arrivano gli sprite.
 
+## La storia
+
+Il protagonista crede di essere lo scriba del faraone Akhet, il cui nome è stato cancellato da ogni pietra d'Egitto, e scende nel Duat per ricomporlo. Nella Sala del Giudizio, sopra il cancello, il cartiglio di Akhet riprende un segno a ogni vittoria. La trama completa, i colpi di scena e le regole per scrivere le battute sono in [`docs/storia.md`](docs/storia.md): contiene spoiler.
+
 ## Come provarlo
 
 1. Apri Godot 4.7, clicca **Import** e scegli il file `project.godot` di questa cartella.

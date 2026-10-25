@@ -163,7 +163,7 @@ func _process(delta: float) -> void:
 	queue_redraw()
 	if player == null:
 		return
-	hud.text = "Sala del Giudizio    Ka custodito %d    Discese %d    Vittorie su Ammit %d" % [Meta.ka_bank, Meta.runs, Meta.ammit_wins]
+	hud.text = "Sala del Giudizio\nKa custodito %d · Discese %d · Vittorie %d" % [Meta.ka_bank, Meta.runs, Meta.ammit_wins]
 	if Fx.device == "touch":
 		help.text = ""
 	elif Fx.device == "pad":
@@ -700,10 +700,66 @@ func _draw() -> void:
 	var ec := Vector2(WALL + 12, ARMORY_Y - 40)
 	draw_line(ec + Vector2(-7, -7), ec + Vector2(7, 7), Color(0.94, 0.72, 0.3, 0.8), 1.5)
 	draw_line(ec + Vector2(7, -7), ec + Vector2(-7, 7), Color(0.94, 0.72, 0.3, 0.8), 1.5)
+	_draw_cartouche(Vector2(g.x, 15.0))
 	_draw_scale(spots["bilancia"])
 	_draw_anubi(spots["anubi"])
 	_draw_book(spots["libro"])
 	_draw_papiri(spots["papiri"])
+
+
+## Il cartiglio del faraone Akhet, sopra il cancello. I segni del nome (ibis, placenta, pane,
+## orizzonte) tornano uno per volta con le vittorie sui boss; l'orizzonte solo nel finale.
+## Vedi docs/storia.md.
+func _draw_cartouche(c: Vector2) -> void:
+	var gold := Color(0.94, 0.72, 0.3)
+	var shown := mini(Meta.ammit_wins, 3)
+	var w := 76.0
+	var h := 22.0
+	var r := Rect2(c.x - w / 2.0, c.y - h / 2.0, w, h)
+	# l'anello di corda: un ovale allungato con la barra di chiusura a destra
+	var pts := PackedVector2Array()
+	var rr := h / 2.0
+	var cr := c + Vector2(w / 2.0 - rr - 3.0, 0)
+	var cl := c - Vector2(w / 2.0 - rr - 3.0, 0)
+	for i in range(13):
+		pts.append(cr + Vector2.from_angle(-PI / 2.0 + PI * i / 12.0) * rr)
+	for i in range(13):
+		pts.append(cl + Vector2.from_angle(PI / 2.0 + PI * i / 12.0) * rr)
+	pts.append(pts[0])
+	draw_colored_polygon(pts, Color(0.1, 0.09, 0.16))
+	draw_polyline(pts, gold, 1.6)
+	draw_line(Vector2(r.end.x - 1.0, r.position.y + 2.0), Vector2(r.end.x - 1.0, r.end.y - 2.0), gold, 2.0)
+	var slots := [c + Vector2(-25, 0), c + Vector2(-9, 0), c + Vector2(7, 0), c + Vector2(23, 0)]
+	for i in range(4):
+		var p: Vector2 = slots[i]
+		if i >= shown:
+			# segno ancora scalpellato: graffi chiari sulla pietra
+			var sc := Color(0.5, 0.45, 0.4, 0.45)
+			draw_line(p + Vector2(-4, -5), p + Vector2(3, 4), sc, 1.0)
+			draw_line(p + Vector2(2, -6), p + Vector2(-3, 5), sc, 1.0)
+			continue
+		match i:
+			0:  # ibis crestato
+				draw_line(p + Vector2(-4, 6), p + Vector2(-1, 1), gold, 1.2)
+				draw_line(p + Vector2(1, 6), p + Vector2(0, 1), gold, 1.2)
+				draw_circle(p + Vector2(0, -1), 3.0, gold)
+				draw_line(p + Vector2(2, -3), p + Vector2(3, -6), gold, 1.4)
+				draw_line(p + Vector2(3, -6), p + Vector2(6, -2), gold, 1.0)
+				draw_line(p + Vector2(2, -6), p + Vector2(0, -8), gold, 1.0)
+			1:  # placenta: cerchio con linee
+				draw_arc(p, 5.0, 0.0, TAU, 20, gold, 1.4)
+				for k in range(3):
+					var yy := -2.5 + k * 2.5
+					draw_line(p + Vector2(-3.5, yy), p + Vector2(3.5, yy), gold, 1.0)
+			2:  # pane: una piccola cupola
+				draw_arc(p + Vector2(0, 4), 5.0, PI, TAU, 12, gold, 1.6)
+				draw_line(p + Vector2(-5, 4), p + Vector2(5, 4), gold, 1.4)
+			3:  # orizzonte: il sole tra due monti
+				draw_circle(p + Vector2(0, 0), 2.5, gold)
+				draw_arc(p + Vector2(-4, 5), 4.0, PI, TAU, 10, gold, 1.4)
+				draw_arc(p + Vector2(4, 5), 4.0, PI, TAU, 10, gold, 1.4)
+	if shown > 0:
+		draw_rect(r.grow(3.0), Color(gold, 0.06 + 0.04 * sin(t * 1.5)))
 
 
 func _draw_scale(p: Vector2) -> void:
