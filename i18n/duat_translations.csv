@@ -458,6 +458,15 @@ Offerta agli dèi,Offerta agli dèi,Offering to the Gods
 Un dio a caso ti offre un dono,Un dio a caso ti offre un dono,A random god offers you a boon
 Inchiostro di Thoth,Inchiostro di Thoth,Ink of Thoth
 Un tuo dono a caso sale di livello,Un tuo dono a caso sale di livello,"One of your boons, at random, rises a level"
+AM-HEH,AM-HEH,
+Il Divoratore di Milioni,Il Divoratore di Milioni,
+Vive in un lago di fuoco. Il fuoco non entra nell'acqua,Vive in un lago di fuoco. Il fuoco non entra nell'acqua,
+AMMIT,AMMIT,
+La Divoratrice,La Divoratrice,
+Divora i cuori che non superano il giudizio,Divora i cuori che non superano il giudizio,She devours the hearts that fail the judgement
+IL SERPENTE DELLA PORTA,IL SERPENTE DELLA PORTA,THE SERPENT OF THE GATE
+Guardiano della quinta porta,Guardiano della quinta porta,
+Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra,Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra,
 Discesa ripresa,Discesa ripresa,Descent resumed
 Stanza %d di %d,Stanza %d di %d,Chamber %d of %d
 Set mantiene la promessa,Set mantiene la promessa,Set keeps his promise
@@ -544,13 +553,7 @@ Ti ha ucciso ,Ti ha ucciso ,Killed by
 Tocca lo schermo,Tocca lo schermo,Tap the screen
 %s per tornare alla Sala del Giudizio,%s per tornare alla Sala del Giudizio,%s to return to the Hall of Judgement
 "AM-HEH, IL DIVORATORE DI MILIONI","AM-HEH, IL DIVORATORE DI MILIONI",
-Vive in un lago di fuoco. Il fuoco non entra nell'acqua,Vive in un lago di fuoco. Il fuoco non entra nell'acqua,
 "AMMIT, LA DIVORATRICE","AMMIT, LA DIVORATRICE","AMMIT, THE DEVOURER"
-"Ammit, la Divoratrice","Ammit, la Divoratrice","Ammit, the Devourer"
-Divora i cuori che non superano il giudizio,Divora i cuori che non superano il giudizio,She devours the hearts that fail the judgement
-Il Serpente della Porta,Il Serpente della Porta,The Serpent of the Gate
-Ogni porta del Duat ha il suo guardiano,Ogni porta del Duat ha il suo guardiano,Every gate of the Duat has its guardian
-IL SERPENTE DELLA PORTA,IL SERPENTE DELLA PORTA,THE SERPENT OF THE GATE
 L'altare di Set,L'altare di Set,
 Una deviazione nel deserto rosso. Le tue porte ti aspettano,Una deviazione nel deserto rosso. Le tue porte ti aspettano,
 Il Traghettatore,Il Traghettatore,The Ferryman
@@ -598,6 +601,7 @@ Doni: %d (Tab per vederli),Doni: %d (Tab per vederli),Boons: %d (Tab to view)
     Maledizione: %s (ancora %d stanze),    Maledizione: %s (ancora %d stanze),    Curse: %s (%d chambers left)
 Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,
 WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,
+Ureo!,Ureo!,
 "Nuova versione, aggiorna!","Nuova versione, aggiorna!",
 "Sala del Giudizio
 Ka custodito %d · Discese %d · Vittorie %d","Sala del Giudizio
@@ -933,7 +937,7 @@ Anubi ti fa provare le armi prima della discesa. Muoviti con %s.,Anubi ti fa pro
 Il khopesh,Il khopesh,The Khopesh
 Rompi i due fantocci con %s. Il terzo colpo di fila è il più forte.,Rompi i due fantocci con %s. Il terzo colpo di fila è il più forte.,Break the two dummies with %s. The third strike in a row is the strongest.
 Lo scatto,Lo scatto,The Dash
-Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Schivala 2 volte.,Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Schivala 2 volte.,Red = about to strike. When the mummy charges press %s: nothing touches you while dashing. Dodge it twice.
+"Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte.","Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte.",
 I fantocci azzurri si rompono solo con l'Occhio: %s. Si ricarica da solo (il cerchio in alto).,I fantocci azzurri si rompono solo con l'Occhio: %s. Si ricarica da solo (il cerchio in alto).,The blue dummies break only with the Eye: %s. It recharges on its own (the circle at the top).
 Il Ka,Il Ka,Ka
 "Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.","Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.","Pick up the golden light: it is Ka, your life force. It stays yours even if you die: in the Hall you spend it in the Book of the Dead for permanent powers."
@@ -999,6 +1003,10 @@ La fame di Am-heh,La fame di Am-heh,
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,
 Vita,Vita,Health
 Comandi,Comandi,Controls
+"Ammit, la Divoratrice","Ammit, la Divoratrice","Ammit, the Devourer"
+Il Serpente della Porta,Il Serpente della Porta,The Serpent of the Gate
+Ogni porta del Duat ha il suo guardiano,Ogni porta del Duat ha il suo guardiano,Every gate of the Duat has its guardian
+Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Schivala 2 volte.,Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Schivala 2 volte.,Red = about to strike. When the mummy charges press %s: nothing touches you while dashing. Dodge it twice.
 "
 Nuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco","
 Nuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco",
