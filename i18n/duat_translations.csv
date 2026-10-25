@@ -173,6 +173,14 @@ Sguardo del Gatto Sapiente,Sguardo del Gatto Sapiente,Gaze of the Wise Cat
 Un colpo critico dell'Occhio di Horus ne dimezza la ricarica.,Un colpo critico dell'Occhio di Horus ne dimezza la ricarica.,A critical hit with the Eye of Horus halves its recharge.
 Piena Sacra,Piena Sacra,Sacred Flood
 "Finché hai lo scudo di Iside, il khopesh fa il 25% di danni in più.","Finché hai lo scudo di Iside, il khopesh fa il 25% di danni in più.","While you hold the shield of Isis, your khopesh deals 25% more damage."
+Occhio Risanato,Occhio Risanato,
+"Quando l'Occhio di Horus abbatte un nemico, si ricarica all'istante.","Quando l'Occhio di Horus abbatte un nemico, si ricarica all'istante.",
+Figlio di Iside,Figlio di Iside,
+Ogni lancio dell'Occhio di Horus che colpisce almeno un nemico ti cura di 2 punti vita.,Ogni lancio dell'Occhio di Horus che colpisce almeno un nemico ti cura di 2 punti vita.,
+Giudizio della Leonessa,Giudizio della Leonessa,
+Il khopesh abbatte all'istante i nemici sotto il 15% della vita (non i guardiani e i boss).,Il khopesh abbatte all'istante i nemici sotto il 15% della vita (non i guardiani e i boss).,
+Arpione del Coccodrillo,Arpione del Coccodrillo,
+"Gli affondi della lancia stordiscono per 0,6 secondi i nemici colpiti con la punta (meno i guardiani e i boss).","Gli affondi della lancia stordiscono per 0,6 secondi i nemici colpiti con la punta (meno i guardiani e i boss).",
 Ira del Sole,Ira del Sole,Wrath of the Sun
 "Tutti i tuoi colpi incendiano, e le fiamme fanno il 60% di danni in più.","Tutti i tuoi colpi incendiano, e le fiamme fanno il 60% di danni in più.","All your strikes set enemies ablaze, and the flames deal 60% more damage."
 L'Occhio di Horus si ricarica il 50% più lentamente.,L'Occhio di Horus si ricarica il 50% più lentamente.,The Eye of Horus recharges 50% more slowly.
@@ -268,6 +276,10 @@ Nemici +5% vita,Nemici +5% vita,Enemies +5% health
 Critici: ruggito di 12 danni,Critici: ruggito di 12 danni,Crits: 12 damage roar
 Critico: ricarica Occhio -50%,Critico: ricarica Occhio -50%,
 Con lo scudo: khopesh +25%,Con lo scudo: khopesh +25%,With the shield: khopesh +25%
+Occhio uccide: ricarica subito,Occhio uccide: ricarica subito,
+Occhio a segno: +2 vita,Occhio a segno: +2 vita,
+Sotto il 15%: abbattuto,Sotto il 15%: abbattuto,
+"Punta: stordisce 0,6 s","Punta: stordisce 0,6 s",
 Tutto incendia · fiamme +60%,Tutto incendia · fiamme +60%,Everything burns · flames +60%
 Occhio ricarica +50%,Occhio ricarica +50%,Eye recharge +50%
 Khopesh +50%,Khopesh +50%,Khopesh +50%
@@ -421,6 +433,7 @@ Colpito! Scatta mentre arriva,Colpito! Scatta mentre arriva,Hit! Dash as it come
 Solo l'Occhio,Solo l'Occhio,Eye only
 +%d Ka,+%d Ka,+%d Ka
 CRITICO,CRITICO,CRITICAL
+Occhio pronto,Occhio pronto,
 «Ogni sponda ha il suo prezzo. Anche questa.»,«Ogni sponda ha il suo prezzo. Anche questa.»,
 «Conosci il nome di ogni parte della mia barca? No? Allora paga.»,«Conosci il nome di ogni parte della mia barca? No? Allora paga.»,
 «I morti non portano nulla con sé. Tu porti Ka. Interessante.»,«I morti non portano nulla con sé. Tu porti Ka. Interessante.»,
@@ -585,12 +598,10 @@ Doni: %d (Tab per vederli),Doni: %d (Tab per vederli),Boons: %d (Tab to view)
     Maledizione: %s (ancora %d stanze),    Maledizione: %s (ancora %d stanze),    Curse: %s (%d chambers left)
 Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,
 WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,
+"Nuova versione, aggiorna!","Nuova versione, aggiorna!",
 "Sala del Giudizio
 Ka custodito %d · Discese %d · Vittorie %d","Sala del Giudizio
 Ka custodito %d · Discese %d · Vittorie %d",
-"
-Nuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco","
-Nuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco",
 Levetta muovi · LB/A scatto · Y interagisci · Start opzioni,Levetta muovi · LB/A scatto · Y interagisci · Start opzioni,Stick move · LB/A dash · Y interact · Start options
 WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD move · Space dash · E interact · Esc options
 %s · Parla con Anubi,%s · Parla con Anubi,%s · Speak with Anubis
@@ -890,9 +901,17 @@ Capitolo %d · %s,Capitolo %d · %s,Chapter %d · %s
 Questo papiro è ancora sigillato.,Questo papiro è ancora sigillato.,This scroll is still sealed.
 Patto di Set,Patto di Set,Pact of Set
 Occhio di Horus,Occhio di Horus,Eye of Horus
+GIUDIZIO,GIUDIZIO,
 Scudo -%d,Scudo -%d,Shield -%d
 Il cuore non testimonia,Il cuore non testimonia,The heart does not testify
 Bastet ti protegge!,Bastet ti protegge!,Bastet protects you!
+Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,
+"O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.",
+"Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.",
+"Chi tocca questa immagine, il coccodrillo lo afferri nell'acqua e il serpente sulla terra.","Chi tocca questa immagine, il coccodrillo lo afferri nell'acqua e il serpente sulla terra.",
+Lo scultore Ptahmose ha fatto questa immagine del re. Sia ricordato il suo lavoro.,Lo scultore Ptahmose ha fatto questa immagine del re. Sia ricordato il suo lavoro.,
+Questa è la casa del Ka. Il re siede qui e guarda il mondo dei vivi da una fessura.,Questa è la casa del Ka. Il re siede qui e guarda il mondo dei vivi da una fessura.,
+Un serdab,Un serdab,
 IL SERPENTE SI INFURIA,IL SERPENTE SI INFURIA,THE SERPENT IS ENRAGED
 Volume generale,Volume generale,Master volume
 Musica,Musica,Music
@@ -980,6 +999,9 @@ La fame di Am-heh,La fame di Am-heh,
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,
 Vita,Vita,Health
 Comandi,Comandi,Controls
+"
+Nuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco","
+Nuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco",
 Trascina le barre (ci sono anche nella pausa della discesa).,Trascina le barre (ci sono anche nella pausa della discesa).,
 :  sei all'ultima versione,:  sei all'ultima versione,
 "
