@@ -164,6 +164,8 @@ func _process(delta: float) -> void:
 	if player == null:
 		return
 	hud.text = "Sala del Giudizio\nKa custodito %d · Discese %d · Vittorie %d" % [Meta.ka_bank, Meta.runs, Meta.ammit_wins]
+	if Updater.available():
+		hud.text += "\nNuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco"
 	if Fx.device == "touch":
 		help.text = ""
 	elif Fx.device == "pad":
@@ -499,6 +501,7 @@ const OPTION_TEXT := {
 	"tutorial": ["Rifai l'addestramento", "Alla prossima discesa la prima stanza torna a essere l'addestramento di Anubi: movimento, khopesh, scatto, Occhio, Ka e porte."],
 	"vol": ["Volume generale", "Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa."],
 	"music": ["Musica", "Premi per cambiare."],
+	"update": ["Aggiorna il gioco", "Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home."],
 	"quit": ["Esci dal gioco", "Chiude il gioco. I progressi della Sala sono già salvati."],
 }
 
@@ -506,7 +509,11 @@ const OPTION_TEXT := {
 func _fill_options(focus_id: String = "") -> void:
 	var left := _frame("Opzioni", "Esc / Start / B per tornare alla Sala", 270)
 	var first: Button = null
-	for id in ["feather", "shake", "hitstop", "autoaim", "tutorial", "vol", "music", "quit"]:
+	var ids := ["feather", "shake", "hitstop", "autoaim", "tutorial", "vol", "music"]
+	if Updater.supported():
+		ids.append("update")		  # solo nella versione web: l'app installata non si aggiorna da sola
+	ids.append("quit")
+	for id in ids:
 		var label: String = OPTION_TEXT[id][0]
 		match id:
 			"feather":
@@ -519,6 +526,8 @@ func _fill_options(focus_id: String = "") -> void:
 				label += ":  %d%%" % roundi(Sfx.volumes.get("generale", 1.0) * 100.0)
 			"music":
 				label += ":  %d%%" % roundi(Sfx.volumes.get("musica", 0.7) * 100.0)
+			"update":
+				label += ":  " + ("NUOVA VERSIONE" if Updater.available() else "ricarica")
 		var col := Color(0.62, 0.95, 0.7) if id == "feather" and Meta.feather else Color(0.95, 0.9, 0.78)
 		var b := _list_button(left, label, col)
 		b.pressed.connect(_on_option_pressed.bind(id))
@@ -554,6 +563,10 @@ func _on_option_pressed(id: String) -> void:
 		"quit":
 			Meta.save()
 			get_tree().quit()
+			return
+		"update":
+			page_body.text = "Aggiornamento in corso... il gioco si riapre da solo tra un momento."
+			await Updater.update_now(get_tree())
 			return
 	Meta.save()
 	Sfx.play("ui", 0.0)

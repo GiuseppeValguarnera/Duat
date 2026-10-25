@@ -609,6 +609,9 @@ WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destr
 "Sala del Giudizio
 Ka custodito %d · Discese %d · Vittorie %d","Sala del Giudizio
 Ka custodito %d · Discese %d · Vittorie %d",
+"
+Nuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco","
+Nuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco",
 Levetta muovi · LB/A scatto · Y interagisci · Start opzioni,Levetta muovi · LB/A scatto · Y interagisci · Start opzioni,Stick move · LB/A dash · Y interact · Start options
 WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD move · Space dash · E interact · Esc options
 %s · Parla con Anubi,%s · Parla con Anubi,%s · Speak with Anubis
@@ -656,13 +659,17 @@ Volume generale,Volume generale,Master volume
 Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa.,Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa.,Press to change. The other sound categories are set from the pause menu during a descent.
 Musica,Musica,Music
 Premi per cambiare.,Premi per cambiare.,Press to change.
+Aggiorna il gioco,Aggiorna il gioco,
+Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,
 Esci dal gioco,Esci dal gioco,Quit the game
 Chiude il gioco. I progressi della Sala sono già salvati.,Chiude il gioco. I progressi della Sala sono già salvati.,Closes the game. Your progress in the Hall is already saved.
 Opzioni,Opzioni,Options
 Esc / Start / B per tornare alla Sala,Esc / Start / B per tornare alla Sala,Esc / Start / B to return to the Hall
 ATTIVA,ATTIVA,ON
 "sì, alla prossima","sì, alla prossima","yes, next time"
+NUOVA VERSIONE,NUOVA VERSIONE,
 Ora subisci il %d%% di danni in meno.,Ora subisci il %d%% di danni in meno.,You now take %d%% less damage.
+Aggiornamento in corso... il gioco si riapre da solo tra un momento.,Aggiornamento in corso... il gioco si riapre da solo tra un momento.,
 nessuno,nessuno,none
 Il Peso del Cuore,Il Peso del Cuore,The Weight of the Heart
 Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s,Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s,
@@ -888,6 +895,7 @@ Trappole,Trappole,Traps
 Ricompense e menu,Ricompense e menu,Rewards and menus
 KHOPESH,KHOPESH,
 Ruota il telefono in orizzontale,Ruota il telefono in orizzontale,Turn your phone sideways
+window.duatUpdate || '',window.duatUpdate || '',
 Khopesh,Khopesh,
 La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,
 "Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.","Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.",

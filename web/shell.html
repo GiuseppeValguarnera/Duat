@@ -111,6 +111,40 @@ const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 	document.addEventListener('dblclick', (e) => e.preventDefault());
 }());
 
+// --- Aggiornamenti ---------------------------------------------------------------------
+// Sulla schermata Home l'app conserva una copia del gioco e non la aggiorna da sola.
+// DUAT_BUILD è il numero di questa versione (lo scrive tools/deploy_web.sh); version.txt sul
+// sito dice qual è l'ultima. Il gioco legge window.duatUpdate e, se l'utente preme
+// "Aggiorna il gioco", chiama window.duatDoUpdate(): via la copia vecchia, scarica la nuova,
+// riapri. Il salvataggio (nel browser, IndexedDB) resta dov'è: l'app non viene cancellata.
+window.DUAT_BUILD = '__DUAT_BUILD__';
+window.duatUpdate = '';
+window.duatCheckUpdate = function () {
+	fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then((r) => (r.ok ? r.text() : '')).then((v) => {
+		v = (v || '').trim();
+		window.duatUpdate = (v !== '' && v !== window.DUAT_BUILD) ? v : '';
+	}).catch(() => {});
+};
+window.duatDoUpdate = async function () {
+	try {
+		if ('serviceWorker' in navigator) {
+			const regs = await navigator.serviceWorker.getRegistrations();
+			await Promise.all(regs.map((r) => r.unregister()));
+		}
+		if (window.caches) {
+			const keys = await caches.keys();
+			await Promise.all(keys.map((k) => caches.delete(k)));
+		}
+		// scarica di nuovo i file del gioco ignorando la cache del browser
+		await Promise.all(['index.html', 'index.js', 'index.wasm', 'index.pck', 'index.service.worker.js'].map((f) => fetch(f, { cache: 'reload' }).catch(() => null)));
+	} catch (e) {
+		console.error(e); // eslint-disable-line no-console
+	}
+	window.location.replace(window.location.pathname + '?v=' + Date.now());
+};
+window.duatCheckUpdate();
+setInterval(window.duatCheckUpdate, 5 * 60 * 1000);
+
 const engine = new Engine(GODOT_CONFIG);
 
 (function () {

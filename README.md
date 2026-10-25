@@ -25,6 +25,8 @@ Sul telefono: levetta virtuale a sinistra (appare dove appoggi il pollice), a de
 
 Per aggiornare la versione web dopo una modifica: `tools/deploy_web.sh /percorso/di/Godot` (serve il modello di esportazione *Web* di Godot 4.7.2).
 
+
+**Aggiornamenti senza reinstallare:** quando esce una versione nuova, nella Sala compare l'avviso *Nuova versione disponibile*. In Opzioni (il pulsante di pausa), *Aggiorna il gioco* scarica la versione nuova e riapre il gioco: i progressi restano, perché l'app non viene cancellata. (Su iPhone, cancellare l'app dalla schermata Home cancella anche il salvataggio.) Funziona così: `tools/deploy_web.sh` scrive un numero di versione nella pagina e in `version.txt`; la pagina (`web/shell.html`) li confronta all'avvio e ogni 5 minuti; `scripts/updater.gd` lo mostra nel gioco.
 ## Comandi
 
 | Azione | Tastiera e mouse | Controller |

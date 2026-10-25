@@ -11,6 +11,10 @@ rm -rf "$OUT" && mkdir -p "$OUT"
 "$GODOT" --headless --path "$ROOT" --import > /dev/null 2>&1 || true
 "$GODOT" --headless --path "$ROOT" --export-release "Web" "$OUT/index.html"
 touch "$OUT/.nojekyll"
+# numero di versione: nella pagina del gioco e in version.txt (il pulsante "Aggiorna il gioco" li confronta)
+BUILD="$(git -C "$ROOT" rev-parse --short HEAD)-$(date +%Y%m%d%H%M%S)"
+sed -i "s/__DUAT_BUILD__/$BUILD/" "$OUT/index.html"
+echo "$BUILD" > "$OUT/version.txt"
 TMP="$(mktemp -d)"
 cp -r "$OUT/." "$TMP/"
 cd "$TMP"
@@ -19,4 +23,4 @@ git add -A
 git commit -qm "Versione web $(date +%Y-%m-%d\ %H:%M)"
 git push -qf "$(git -C "$ROOT" remote get-url origin)" gh-pages
 rm -rf "$TMP"
-echo "Pubblicato. Tra un minuto è su https://giuseppevalguarnera.github.io/Duat/"
+echo "Pubblicato la versione $BUILD. Tra un minuto è su https://giuseppevalguarnera.github.io/Duat/"
