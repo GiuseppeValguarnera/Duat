@@ -1,4 +1,5 @@
 extends Node2D
+class_name Game
 ## La Prima Ora del Duat: 10 stanze, poi Am-heh. In ogni stanza due ondate di nemici,
 ## poi la ricompensa, poi 2-3 porte tra cui scegliere la prossima ricompensa.
 ## Stanza 5: il Serpente della Porta (guardiano). A volte una porta porta dal Traghettatore,
@@ -27,6 +28,8 @@ const SHOP_ITEMS := [
 	{"kind": "upgrade", "title": "Inchiostro di Thoth", "desc": "Un tuo dono a caso sale di livello", "price": 30},
 ]
 const PickupScript := preload("res://scripts/pickup.gd")
+const RoomBuilder := preload("res://scripts/room_builder.gd")
+const Tutorial := preload("res://scripts/tutorial.gd")
 ## Pezzi dell'interfaccia che prima erano classi interne di questo file
 const SpawnMarker := preload("res://scripts/ui/spawn_marker.gd")
 const PanelListener := preload("res://scripts/ui/panel_listener.gd")
@@ -34,7 +37,7 @@ const HudBars := preload("res://scripts/ui/hud_bars.gd")
 const BoonRing := preload("res://scripts/ui/boon_ring.gd")
 const DoorArrows := preload("res://scripts/ui/door_arrows.gd")
 const DeathScale := preload("res://scripts/ui/death_scale.gd")
-const TriIcon := preload("res://scripts/ui/tri_icon.gd")
+const ChoiceCard := preload("res://scripts/ui/choice_card.gd")
 const DecorScript := preload("res://scripts/room_decor.gd")
 const UshabtiScript := preload("res://scripts/ushabti.gd")
 const TRAPS_FROM_ROOM := 3            ## le trappole compaiono da questa stanza in poi
@@ -91,6 +94,8 @@ var hud_sek := ""
 const DummyScript := preload("res://scripts/dummy.gd")
 
 @onready var world: Node2D = $World
+var tut := Tutorial.new(self)        ## l'addestramento della prima volta (scripts/tutorial.gd)
+var rooms := RoomBuilder.new(self)      ## la costruzione delle stanze (scripts/room_builder.gd)
 @onready var hud: Label = $UI/Hud
 @onready var help: Label = $UI/Help
 @onready var prompt: Label = $UI/Prompt
@@ -148,216 +153,11 @@ func _notification(what: int) -> void:
 			_toggle_pause()
 
 
-# ---------------------------------------------------------------- addestramento (solo la prima volta)
-## Una stanza vera, con fantocci al posto dei nemici: un passo alla volta, con il testo
-## in un riquadro fisso in alto (mai sopra i nemici). Qui non si può morire.
-## Passi: muoversi, khopesh, scatto, Occhio di Horus, Ka, porta.
-
-var tut_step := -1
-var tut_panel: PanelContainer
-var tut_title: Label
-var tut_body: Label
-var tut_start := Vector2.ZERO
-var tut_walked := 0.0
-var tut_targets: Array = []
-var tut_dodges := 0
-var tut_dashes := 0
-var tut_prev_dash := false
-var tut_wait := 0.0
-
-const TUT_STEPS := 6
-
-
-func _ctl(what: String) -> String:
-	var dev := Fx.device
-	match what:
-		"move":
-			return {"pad": "la levetta sinistra", "touch": "la levetta a sinistra"}.get(dev, "W A S D (o le frecce)")
-		"attack":
-			return {"pad": "X o RB", "touch": "il pulsante KHOPESH"}.get(dev, "il clic sinistro (o J)")
-		"dash":
-			return {"pad": "A o LB", "touch": "il pulsante SCATTO"}.get(dev, "Spazio")
-		"eye":
-			return {"pad": "Y o RT", "touch": "il pulsante OCCHIO"}.get(dev, "il clic destro (o L)")
-	return ""
-
-
-func _tut_begin() -> void:
-	Music.play("hub")
-	tut_step = -1
-	tut_panel = PanelContainer.new()
-	var box := UiStyle.papyrus_box(UiStyle.GOLD.darkened(0.3))
-	box.content_margin_left = 7
-	box.content_margin_right = 7
-	box.content_margin_top = 4
-	box.content_margin_bottom = 4
-	tut_panel.add_theme_stylebox_override("panel", box)
-	tut_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tut_panel.modulate.a = 0.93
-	$UI.add_child(tut_panel)
-	var col := VBoxContainer.new()
-	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	col.add_theme_constant_override("separation", 1)
-	tut_panel.add_child(col)
-	var top := HBoxContainer.new()
-	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	col.add_child(top)
-	tut_title = UiStyle.label("", 8, UiStyle.INK, true)
-	tut_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top.add_child(tut_title)
-	var skip := Button.new()
-	skip.text = "Salta ›"
-	skip.flat = true
-	skip.focus_mode = Control.FOCUS_NONE
-	skip.add_theme_font_size_override("font_size", Fx.fs(8))
-	skip.add_theme_color_override("font_color", UiStyle.INK_RED)
-	skip.add_theme_color_override("font_hover_color", UiStyle.INK)
-	skip.pressed.connect(_finish_tutorial)
-	skip.add_to_group("touch_tap")          # sul telefono il tocco arriva da touch_controls.gd
-	top.add_child(skip)
-	tut_body = UiStyle.label("", 8, UiStyle.INK_SOFT, false, _tut_width() - 14.0)
-	tut_body.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
-	col.add_child(tut_body)
-	tut_panel.custom_minimum_size = Vector2(_tut_width(), 0)
-	_tut_next()
-
-
-## Il riquadro sta in alto, tra l'HUD a sinistra e i pulsanti del telefono a destra, ed è
-## stretto: i fantocci restano sempre visibili sotto.
-func _tut_width() -> float:
-	var vw := get_viewport().get_visible_rect().size.x
-	var left := 168.0 if not Fx.mobile else 156.0
-	var right := vw - (84.0 if Fx.device == "touch" or Fx.mobile else 10.0)
-	return clampf(right - left, 180.0, 300.0)
-
-
-func _tut_place() -> void:
-	if tut_panel == null:
-		return
-	tut_panel.reset_size()
-	var vw := get_viewport().get_visible_rect().size.x
-	var left := 168.0 if not Fx.mobile else 156.0
-	var right := vw - (84.0 if Fx.device == "touch" or Fx.mobile else 10.0)
-	var x := clampf((vw - tut_panel.size.x) / 2.0, left, maxf(left, right - tut_panel.size.x))
-	tut_panel.position = Vector2(x, 6.0)
-
-
-func _tut_say(title: String, body: String) -> void:
-	tut_title.text = "%d/%d · %s" % [tut_step + 1, TUT_STEPS, title]
-	tut_body.text = body
-	tut_body.visible_ratio = 0.0
-	tut_body.create_tween().tween_property(tut_body, "visible_ratio", 1.0, clampf(body.length() * 0.008, 0.3, 0.8))
-	_tut_place.call_deferred()
-	Sfx.play("ui", 0.0)
-	tut_panel.modulate = Color(1.5, 1.3, 1.0, 0.93)
-	tut_panel.create_tween().tween_property(tut_panel, "modulate", Color(1, 1, 1, 0.93), 0.4)
-
-
-func _tut_dummy(pos: Vector2, eye_only: bool = false, lunger: bool = false) -> Enemy:
-	var d: Enemy = DummyScript.new()
-	d.eye_only = eye_only
-	d.lunger = lunger
-	d.position = pos
-	world.add_child(d)
-	Fx.burst(pos + Vector2(0, -10), Color(0.9, 0.8, 0.6), 12, 70.0)
-	tut_targets.append(d)
-	return d
-
-
-func _tut_clear_targets() -> void:
-	for d in tut_targets:
-		if is_instance_valid(d) and not d.dead:
-			d.die()
-	tut_targets.clear()
-
-
-func _tut_next() -> void:
-	tut_step += 1
-	tut_wait = 0.0
-	var mid := Vector2(ROOM.size.x / 2.0, ROOM.size.y / 2.0 + 20.0)
-	match tut_step:
-		0:
-			tut_start = player.global_position
-			tut_walked = 0.0
-			_tut_say("Il cammino", "Anubi ti fa provare le armi prima della discesa. Muoviti con %s." % _ctl("move"))
-		1:
-			_tut_dummy(Vector2(mid.x - 50.0, 340.0))
-			_tut_dummy(Vector2(mid.x + 50.0, 340.0))
-			_tut_say("Il khopesh", "Rompi i due fantocci con %s. Il terzo colpo di fila è il più forte." % _ctl("attack"))
-		2:
-			var m := _tut_dummy(Vector2(mid.x, 290.0), false, true)
-			m.dodged.connect(func() -> void: tut_dodges += 1)
-			tut_dodges = 0
-			tut_dashes = 0
-			_tut_say("Lo scatto", "Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Schivala 2 volte." % _ctl("dash"))
-		3:
-			_tut_clear_targets()
-			for at in [Vector2(110, 320), Vector2(ROOM.size.x - 110.0, 320), Vector2(mid.x, 300)]:
-				_tut_dummy(at, true)
-			_tut_say("L'Occhio di Horus", "I fantocci azzurri si rompono solo con l'Occhio: %s. Si ricarica da solo (il cerchio in alto)." % _ctl("eye"))
-		4:
-			var p = PickupScript.new()
-			p.kind = "ka"
-			world.add_child(p)
-			p.position = mid
-			p.collected.connect(_on_pickup_collected)
-			_tut_say("Il Ka", "Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.")
-		5:
-			_add_door("n", {"kind": "tutorial_end"})
-			_tut_say("Le porte", "Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.")
-		_:
-			pass
-
-
-func _tut_tick() -> void:
-	if player == null or not is_instance_valid(player):
-		return
-	player.hp = player.max_hp            # nell'addestramento non si muore
-	match tut_step:
-		0:
-			tut_walked += player.velocity.length() * get_process_delta_time()
-			if tut_walked > 160.0:
-				_tut_next()
-		1, 3:
-			var all_down := true
-			for d in tut_targets:
-				if is_instance_valid(d) and not d.dead:
-					all_down = false
-			if all_down:
-				tut_wait += get_process_delta_time()
-				if tut_wait > 0.5:
-					tut_targets.clear()
-					_tut_next()
-		2:
-			var dashing: bool = player.dash_t > 0.0
-			if dashing and not tut_prev_dash:
-				tut_dashes += 1
-			tut_prev_dash = dashing
-			# chi proprio non ci riesce passa lo stesso dopo un po' di tentativi
-			if tut_dodges >= 2 or tut_dashes >= 10:
-				_tut_next()
-
-
-func _finish_tutorial() -> void:
-	if tut_step < 0 and Meta.tutorial_done:
-		return
-	Meta.tutorial_done = true
-	Meta.save()
-	tut_step = -1
-	if tut_panel != null:
-		tut_panel.queue_free()
-		tut_panel = null
-	tut_targets.clear()
-	Run.room = 0
-	start_room.call_deferred({"kind": "none"})
-	_show_anubi_menu.call_deferred()
-
-
 # ---------------------------------------------------------------- stanze
 
 func start_room(reward: Dictionary) -> void:
 	if reward.get("kind", "") == "tutorial_end":
-		_finish_tutorial()
+		tut.finish()
 		return
 	# l'altare di Set è una deviazione: la discesa non avanza
 	if reward.get("kind", "") != "set":
@@ -395,7 +195,7 @@ func start_room(reward: Dictionary) -> void:
 		layout = LAYOUTS[0]
 	for f in layout:
 		pillars.append(Vector2(lerpf(WALL, ROOM.size.x - WALL, f.x), lerpf(TOP, ROOM.size.y - WALL, f.y)))
-	_build_walls()
+	rooms.build_walls()
 	var decor := DecorScript.new()
 	world.add_child(decor)
 	var pool_spots: Array = []
@@ -412,9 +212,9 @@ func start_room(reward: Dictionary) -> void:
 	traps_pos.clear()
 	grates_here = 0
 	if not boss_room and not calm:
-		_place_elements()
+		rooms.place_elements()
 	if not boss_room and not calm and Run.room >= TRAPS_FROM_ROOM - Weights.rank("sabbie"):
-		_place_traps()
+		rooms.place_traps()
 	queue_redraw()
 
 	player = PlayerScene.instantiate()
@@ -454,7 +254,7 @@ func start_room(reward: Dictionary) -> void:
 		return
 	if kind == "tutorial":
 		waves = []
-		_tut_begin()
+		tut.begin()
 		return
 	var r := mini(Run.room, 8)
 	var horde := 1.0 + 0.25 * Weights.rank("orde")
@@ -609,10 +409,10 @@ func _on_pickup_collected(p: Area2D) -> void:
 	p.queue_free()
 	match kind:
 		"ka":
-			if tut_step >= 0:
+			if tut.step >= 0:
 				Run.ka += 10
 				Fx.float_text(player.global_position, "+10 Ka", Color(0.94, 0.72, 0.3))
-				_tut_next.call_deferred()
+				tut.next.call_deferred()
 				return
 			Run.ka += roundi(25 * Run.treasure_mult())
 			Fx.float_text(player.global_position, "+%d Ka" % roundi(25 * Run.treasure_mult()), Color(0.94, 0.72, 0.3))
@@ -799,7 +599,7 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 	var first_button: Button = null
 	var i := 0
 	for c in cards:
-		var btn := _make_card(c, card_w)
+		var btn := ChoiceCard.make(c, card_w)
 		row.add_child(btn)
 		btn.pressed.connect(c["on_pick"])
 		btn.focus_entered.connect(Sfx.play.bind("ui", 0.0))
@@ -821,114 +621,6 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 		if first_button == null:
 			first_button = btn
 	first_button.grab_focus()
-
-
-## Una carta di papiro. Il testo completo resta anche nei metadati (lo usa il bot di playtest).
-func _make_card(c: Dictionary, card_w: float) -> Button:
-	var accent: Color = c["color"]
-	var btn := Button.new()
-	UiStyle.papyrus_button(btn, accent)
-	btn.custom_minimum_size = Vector2(card_w, 0)
-	btn.pivot_offset = Vector2(card_w / 2.0, 0)
-	btn.set_meta("text", "%s\n%s\n%s\n%s\n%s\n%s" % [c.get("tag", ""), c["name"], c.get("body", ""), c.get("cost", ""), c.get("gain", ""), c.get("loss", "")])
-	for sec in c.get("sections", []):
-		btn.set_meta("text", String(btn.get_meta("text")) + "\n%s: %s" % [sec[0], sec[1]])
-	var pad := MarginContainer.new()
-	pad.set_anchors_preset(Control.PRESET_FULL_RECT)
-	pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	for side in ["left", "right"]:
-		pad.add_theme_constant_override("margin_" + side, int(9 * Fx.ui))
-	pad.add_theme_constant_override("margin_top", int(7 * Fx.ui))
-	pad.add_theme_constant_override("margin_bottom", int(7 * Fx.ui))
-	btn.add_child(pad)
-	var col := VBoxContainer.new()
-	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	col.add_theme_constant_override("separation", int(3 * Fx.ui))
-	pad.add_child(col)
-	var inner := card_w - 18.0 * Fx.ui
-	if c.get("tag", "") != "":
-		var tag := UiStyle.label(c["tag"], 7, (UiStyle.INK_RED if c.get("heavy", false) else accent.darkened(0.45)), true, inner)
-		tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		col.add_child(tag)
-	var nm := UiStyle.label(c["name"], 12, UiStyle.INK, true, inner)
-	nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	col.add_child(nm)
-	var rule := ColorRect.new()
-	rule.color = accent.darkened(0.25)
-	rule.custom_minimum_size = Vector2(inner * 0.6, 1.5 * Fx.ui)
-	rule.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	col.add_child(rule)
-	if c.get("body", "") != "":
-		var body := UiStyle.label(c["body"], 8 if Fx.mobile else 9, UiStyle.INK_SOFT, false, inner)
-		body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		col.add_child(body)
-	# sul telefono lo spazio in altezza è poco: il prezzo resta nel riassunto ▼ in fondo
-	if c.get("cost", "") != "":
-		var cost := UiStyle.label("Prezzo: " + c["cost"], 7 if Fx.mobile else 8, UiStyle.INK_RED, false, inner)
-		cost.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		col.add_child(cost)
-	# i patti di Set hanno due sezioni scritte per esteso: la maledizione e il potere
-	for sec in c.get("sections", []):
-		var head := UiStyle.label(sec[0], 7, sec[2], true, inner)
-		head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		col.add_child(head)
-		var txt := UiStyle.label(sec[1], 8 if Fx.mobile else 9, sec[2].darkened(0.1), false, inner)
-		txt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		col.add_child(txt)
-	# riassunto in fondo
-	var spacer := Control.new()
-	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	col.add_child(spacer)
-	var lines := []
-	if c.get("gain", "") != "":
-		lines.append(_summary_row(c["gain"], true, inner))
-	if c.get("loss", "") != "":
-		lines.append(_summary_row(c["loss"], false, inner))
-	for ln in lines:
-		col.add_child(ln)
-	# l'altezza giusta si conosce solo dopo che il testo è andato a capo
-	var fit := func() -> void:
-		if is_instance_valid(btn) and is_instance_valid(col):
-			btn.custom_minimum_size.y = col.get_combined_minimum_size().y + 16.0 * Fx.ui
-	col.minimum_size_changed.connect(fit)
-	fit.call_deferred()
-	return btn
-
-
-## Riga del riassunto in fondo alla carta: un triangolo disegnato (▲ vantaggio, ▼ prezzo) e il
-## testo. Il triangolo è disegnato perché il carattere delle carte non ha quei simboli, e nel
-## browser del telefono comparirebbero dei quadratini.
-func _summary_row(text: String, gain: bool, inner: float) -> HBoxContainer:
-	var row := HBoxContainer.new()
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_theme_constant_override("separation", int(3 * Fx.ui))
-	var col := UiStyle.INK_GREEN if gain else UiStyle.INK_RED
-	var tri := TriIcon.new()
-	tri.up = gain
-	tri.color = col
-	tri.custom_minimum_size = Vector2(6, 6) * Fx.ui
-	tri.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	row.add_child(tri)
-	# su una riga sola, se serve con il carattere un po' più piccolo; solo se non basta va a capo,
-	# e allora il triangolo resta accanto alla prima riga
-	var avail := inner - 10.0 * Fx.ui
-	var font := UiStyle.title_font()
-	var sz := 9
-	while sz > 7 and font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(sz)).x > avail:
-		sz -= 1
-	var l := UiStyle.label(text, sz, col, true)
-	var tw: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(sz)).x
-	if tw > avail:
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.custom_minimum_size.x = avail
-		tri.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-		tri.custom_minimum_size.y = font.get_height(Fx.fs(sz)) * 0.8
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	row.add_child(l)
-	return row
 
 
 func _close_choice() -> void:
@@ -1734,9 +1426,9 @@ func _process(_delta: float) -> void:
 	if player.divine_t > 0.0:
 		sek = "FORMA DIVINA %.1fs" % player.divine_t
 	var room_txt := ("Ammit · colonne: %d" % pillars.size() if BOSS_KIND == "ammit" else "Am-heh") if Run.room > Run.ROOMS_PER_RUN else "Stanza %d/%d" % [Run.room, Run.ROOMS_PER_RUN]
-	if tut_step >= 0:
+	if tut.step >= 0:
 		room_txt = "Addestramento"
-		_tut_tick()
+		tut.tick()
 	# vita, Ka, stanza, Occhio e Sekhem sono disegnati come barre da HudBars; qui resta il testo
 	hud.text = ""
 	hud_room = room_txt
@@ -1784,215 +1476,22 @@ func _process(_delta: float) -> void:
 
 
 # ---------------------------------------------------------------- muri e pavimento
+# La costruzione delle stanze è in scripts/room_builder.gd. Qui restano i nomi di prima.
 
 func _free_spot() -> Vector2:
-	var p := Vector2.ZERO
-	for i in range(50):
-		p = Vector2(randf_range(WALL + 30.0, ROOM.size.x - WALL - 30.0), randf_range(TOP + 30.0, ROOM.size.y - WALL - 30.0))
-		if _spot_ok(p) and (player == null or p.distance_to(player.global_position) > 160.0):
-			break
-	return p
+	return rooms.free_spot()
 
 
 func _free_spot_near(center: Vector2) -> Vector2:
-	var p := center
-	for i in range(30):
-		if _spot_ok(p):
-			return p
-		p = center + Vector2(randf_range(-80.0, 80.0), randf_range(-50.0, 50.0))
-	return p
+	return rooms.free_spot_near(center)
 
 
 func _spot_ok(p: Vector2) -> bool:
-	for pl in pillars:
-		if p.distance_to(pl) < 36.0:
-			return false
-	for r in obstacles:
-		if (r as Rect2).grow(14.0).has_point(p):
-			return false
-	for tp in traps_pos:
-		if p.distance_to(tp) < 26.0:
-			return false
-	for off in [Vector2.ZERO, Vector2(18, 0), Vector2(-18, 0), Vector2(0, 18), Vector2(0, -18)]:
-		if Hazards.in_water(get_tree(), p + off):
-			return false
-	return true
-
-
-## Un punto del pavimento libero: lontano dalla ricompensa, dal punto di partenza e dalle porte.
-func _floor_ok(p: Vector2) -> bool:
-	var cx := ROOM.size.x / 2.0
-	var mid_y := (TOP + ROOM.size.y - WALL) / 2.0
-	if p.x < WALL + 20.0 or p.x > ROOM.size.x - WALL - 20.0 or p.y < TOP + 16.0 or p.y > ROOM.size.y - WALL - 16.0:
-		return false
-	if p.distance_to(Vector2(cx, mid_y + 20.0)) < 70.0:
-		return false
-	if p.distance_to(Vector2(cx, ROOM.size.y - WALL - 24.0)) < 100.0:
-		return false
-	if absf(p.x - cx) < 50.0 and p.y < TOP + 70.0:
-		return false
-	if absf(p.y - mid_y) < 60.0 and (p.x < WALL + 70.0 or p.x > ROOM.size.x - WALL - 70.0):
-		return false
-	return _spot_ok(p)
-
-
-## Le acque di Wernes nelle stanze della Prima Ora (vedi README, "Acqua e fuoco"):
-## stanze 1-2 al massimo una pozza; dalla 3 acqua e giare d'olio; dalla 6 le grate di fuoco,
-## che prendono il posto di altrettanti spuntoni.
-func _place_elements() -> void:
-	var r := Run.room
-	var n_water := (1 if randf() < 0.3 else 0) if r <= 2 else 1 + (1 if r >= 8 and randf() < 0.5 else 0)
-	for i in range(n_water):
-		_place_water(r >= 3 and randf() < 0.4)
-	if r >= 6:
-		var n_grates := 1 + (1 if r >= 9 else 0)
-		for i in range(n_grates):
-			if _place_grate():
-				grates_here += 1
-	if r >= 3:
-		for i in range(1 + (1 if randf() < 0.5 else 0)):
-			_place_jars()
-
-
-func _place_water(channel: bool) -> void:
-	for tries in range(40):
-		var c := Vector2(randf_range(WALL + 90.0, ROOM.size.x - WALL - 90.0), randf_range(TOP + 60.0, ROOM.size.y - WALL - 70.0))
-		var pool := Hazards.WaterPool.new()
-		var probe: Array = []
-		if channel:
-			var along := randf() < 0.65
-			pool.rect = Vector2(randf_range(150.0, 240.0), 30.0) if along else Vector2(30.0, randf_range(110.0, 170.0))
-			var h := pool.rect / 2.0
-			for k in range(7):
-				probe.append(c + Vector2(lerpf(-h.x, h.x, k / 6.0), 0) if along else c + Vector2(0, lerpf(-h.y, h.y, k / 6.0)))
-		else:
-			pool.radii = Vector2(randf_range(34.0, 46.0), randf_range(20.0, 26.0))
-			probe = [c, c + Vector2(pool.radii.x, 0), c - Vector2(pool.radii.x, 0), c + Vector2(0, pool.radii.y), c - Vector2(0, pool.radii.y)]
-		if not probe.all(func(q): return _floor_ok(q)):
-			pool.free()
-			continue
-		var near_pillar := false
-		for pl in pillars:
-			for q in probe:
-				if q.distance_to(pl) < 40.0:
-					near_pillar = true
-		if near_pillar:
-			pool.free()
-			continue
-		pool.position = c
-		world.add_child(pool)
-		return
-
-
-func _place_grate() -> bool:
-	for tries in range(40):
-		var gx := randi_range(2, int((ROOM.size.x - WALL * 2.0) / 32.0) - 3)
-		var gy := randi_range(1, int((ROOM.size.y - WALL - TOP) / 32.0) - 2)
-		var c := Vector2(WALL + 16.0 + gx * 32.0, TOP + 16.0 + gy * 32.0)
-		var dir := Vector2.RIGHT if randf() < 0.6 else Vector2.DOWN
-		var ok := true
-		var cs: Array = []
-		for i in range(3):
-			var q: Vector2 = c + dir * (i - 1) * Hazards.FireGrate.CELL
-			cs.append(q)
-			if not _floor_ok(q):
-				ok = false
-		if not ok:
-			continue
-		var g := Hazards.FireGrate.new()
-		g.dir = dir
-		g.cells = 3
-		g.t = randf() * 2.0
-		world.add_child(g)
-		g.position = c
-		traps_pos.append_array(cs)
-		return true
-	return false
-
-
-func _place_jars() -> void:
-	for tries in range(30):
-		var c := Vector2(randf_range(WALL + 40.0, ROOM.size.x - WALL - 40.0), randf_range(TOP + 30.0, ROOM.size.y - WALL - 30.0))
-		if not _floor_ok(c):
-			continue
-		var far := true
-		for g in get_tree().get_nodes_in_group("traps"):
-			if g is Hazards.FireGrate and g.near(c) < 56.0:
-				far = false
-		if not far:
-			continue
-		var n := randi_range(2, 3)
-		for k in range(n):
-			var j := Hazards.OilJar.new()
-			world.add_child(j)
-			j.position = c + Vector2((k - (n - 1) / 2.0) * 14.0, randf_range(-4.0, 4.0))
-		traps_pos.append(c)
-		return
-
-
-## Trappole da piramide: lastre con spuntoni e, più avanti, feritoie che sparano dardi.
-func _place_traps() -> void:
-	var cx := ROOM.size.x / 2.0
-	var mid_y := (TOP + ROOM.size.y - WALL) / 2.0
-	var spikes := maxi(1, clampi(Run.room, 2, 4) - grates_here) + 2 * Weights.rank("sabbie")
-	var tries := 0
-	var placed := 0
-	while placed < spikes and tries < 80:
-		tries += 1
-		var gx := randi_range(1, int((ROOM.size.x - WALL * 2.0) / 32.0) - 2)
-		var gy := randi_range(1, int((ROOM.size.y - WALL - TOP) / 32.0) - 2)
-		var p := Vector2(WALL + 16.0 + gx * 32.0, TOP + 16.0 + gy * 32.0)
-		if p.distance_to(Vector2(cx, mid_y + 20.0)) < 70.0:
-			continue                      # lì compare la ricompensa
-		if p.distance_to(Vector2(cx, ROOM.size.y - WALL - 24.0)) < 100.0:
-			continue                      # punto di partenza del giocatore
-		if absf(p.x - cx) < 50.0 and p.y < TOP + 70.0:
-			continue
-		if absf(p.y - mid_y) < 60.0 and (p.x < WALL + 70.0 or p.x > ROOM.size.x - WALL - 70.0):
-			continue
-		if not _spot_ok(p):
-			continue
-		traps_pos.append(p)
-		placed += 1
-		var s := Traps.Spikes.new()
-		s.t = randf() * 2.0
-		world.add_child(s)
-		s.position = p
-	if Run.room >= TRAPS_FROM_ROOM + 1 - Weights.rank("sabbie"):
-		for i in range(randi_range(1, 2)):
-			var left := randf() < 0.5
-			var y := randf_range(TOP + 40.0, ROOM.size.y - WALL - 40.0)
-			if absf(y - mid_y) < 60.0:
-				y += 80.0 if y >= mid_y else -80.0
-			var d := Traps.DartWall.new()
-			d.dir = Vector2.RIGHT if left else Vector2.LEFT
-			d.t = randf() * 2.0
-			world.add_child(d)
-			d.position = Vector2(WALL - 2.0 if left else ROOM.size.x - WALL + 2.0, y)
-
-
-func _build_walls() -> void:
-	var r := ROOM
-	_solid(Rect2(r.position.x, r.position.y, r.size.x, TOP))
-	_solid(Rect2(r.position.x, r.end.y - WALL, r.size.x, WALL))
-	_solid(Rect2(r.position.x, r.position.y, WALL, r.size.y))
-	_solid(Rect2(r.end.x - WALL, r.position.y, WALL, r.size.y))
-	for p in pillars:
-		_solid(Rect2(p.x - 13.0, p.y - 7.0, 26.0, 14.0)).add_to_group("pillars")
+	return rooms.spot_ok(p)
 
 
 func _solid(rect: Rect2) -> StaticBody2D:
-	var body := StaticBody2D.new()
-	body.collision_layer = 1
-	body.collision_mask = 0
-	var shape := CollisionShape2D.new()
-	var box := RectangleShape2D.new()
-	box.size = rect.size
-	shape.shape = box
-	body.add_child(shape)
-	body.position = rect.get_center()
-	world.add_child(body)
-	return body
+	return rooms.solid(rect)
 
 
 func _draw() -> void:

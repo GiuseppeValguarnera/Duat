@@ -102,7 +102,7 @@ Dalla Sala del Giudizio, una porta nella parete ovest (con lo scudo e le frecce 
 
 ## Come funziona una run
 
-0. **La prima volta: l'addestramento.** Una stanza vera con fantocci al posto dei nemici, un passo alla volta, con il testo in un riquadro di papiro fisso in alto (mai sopra i nemici): muoversi, il khopesh, lo scatto attraverso una mummia d'allenamento che diventa rossa e carica, l'Occhio di Horus su fantocci che si rompono solo con l'Occhio, il Ka (cos'è e a cosa serve) e le porte. Non si può morire e si può saltare. Poi comincia la discesa vera (`_tut_*` in `scripts/game.gd`, fantocci in `scripts/dummy.gd`).
+0. **La prima volta: l'addestramento.** Una stanza vera con fantocci al posto dei nemici, un passo alla volta, con il testo in un riquadro di papiro fisso in alto (mai sopra i nemici): muoversi, il khopesh, lo scatto attraverso una mummia d'allenamento che diventa rossa e carica, l'Occhio di Horus su fantocci che si rompono solo con l'Occhio, il Ka (cos'è e a cosa serve) e le porte. Non si può morire e si può saltare. Poi comincia la discesa vera (`scripts/tutorial.gd`, fantocci in `scripts/dummy.gd`).
 1. All'inizio Anubi pesa il tuo cuore: scegli uno dei suoi doni, ognuno con un vantaggio e un prezzo più piccolo.
 2. Ogni stanza ha due ondate di nemici (nelle prime due un po' più piccole; sacerdoti e trappole dalla terza). La prima stanza non ha ricompensa: i doni degli dèi arrivano dalle stanze che scegli tu.
 3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla. Il Ka arriva soprattutto dai tesori: scarabei 0, mummie 1, sacerdoti 2.
@@ -136,7 +136,7 @@ Lo scatto le supera entrambe. A stanza ripulita si fermano.
 
 ## Acqua e fuoco: le acque di Wernes
 
-La Prima Ora ha i suoi pericoli, gli stessi che si ritrovano contro Am-heh (`scripts/hazards.gd`, disposizione in `_place_elements` di `scripts/game.gd`):
+La Prima Ora ha i suoi pericoli, gli stessi che si ritrovano contro Am-heh (`scripts/hazards.gd`, disposizione in `place_elements` di `scripts/room_builder.gd`):
 
 - **Pozze e canali d'acqua:** rallentano te e i nemici del 30% e spengono le fiamme; il fuoco non vi entra.
 - **Grate di fuoco:** file di tre grate che si arroventano per quasi un secondo e poi sputano fiamme (9 danni). Bruciano anche i nemici.
@@ -319,6 +319,12 @@ scripts/  hub.gd       la Sala del Giudizio      dialogue.gd   battute di Anubi
           chapters.gd  Libro dei Morti           ushabti.gd    la statuetta del capitolo 6
           meta.gd      salvataggio permanente     sfx.gd        suoni e volumi
           game.gd      stanze, ondate, ricompense, porte, menu dei doni
+          room_builder.gd  costruzione delle stanze: acqua, grate, giare, spuntoni, muri
+          tutorial.gd  l'addestramento della prima volta
+          hazards.gd   acqua, fuoco, grate, giare d'olio      amheh.gd   il boss della Prima Ora
+          updater.gd   «Aggiorna all'ultima versione» (solo web)
+          ui/          pezzi di interfaccia: barre dell'HUD, carte di scelta, frecce delle porte,
+                       anello dei doni, bilancia della morte, icone
           room_decor.gd  arredamento delle stanze     traps.gd   trappole
           run.gd       stato della run (vita, Ka, doni) ed effetti dei doni
           boons.gd     elenco di dèi e doni
