@@ -102,7 +102,7 @@ static func story() -> Array:
 			"Ogni parola che gli dèi ti rivolgono, Thoth la copia e la ripone lì. Leggili.",
 			"Un dio che parla di sé rivela sempre più di quanto vorrebbe."]},
 		{"id": "deaths3", "if": Meta.runs >= 3 and Meta.ammit_wins == 0, "lines": [
-			"Tre volte sei disceso, tre volte sei tornato. Gli dèi hanno cominciato a pronunciare il tuo passo.",
+			"Tre volte sei disceso, tre volte sei tornato. Gli dèi hanno cominciato a parlare di te, a bassa voce.",
 			"Set ti offrirà patti. Diffida di lui, ma non disprezzarlo: è il solo che ogni notte affronta Apophis a viso aperto."]},
 		{"id": "deaths5", "if": Meta.runs >= 5 and Meta.ammit_wins == 0, "lines": [
 			"Ogni notte migliaia di morti mi passano davanti. Nessuno è mai tornato indietro.",
@@ -115,6 +115,12 @@ static func story() -> Array:
 			"Ora che hai abbattuto la Divoratrice, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.",
 			"Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.",
 			"Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente."]},
+		{"id": "lacrime1", "if": Meta.tears > 0, "lines": [
+			"Porti con te una Lacrima di Iside. Quando pianse Osiride, le sue lacrime gonfiarono il Fiume, e il Fiume ricoprì la Terra Nera.",
+			"Ogni lacrima vale più di mille Ka. Il Libro sa cosa farne: le formule più alte non si pagano soltanto con la forza."]},
+		{"id": "livelli1", "if": Meta.chapter_levels.values().any(func(v): return int(v) >= 2), "lines": [
+			"Hai ripassato la stessa formula due volte. Bene. Gli scribi copiavano lo stesso capitolo per anni, finché la mano non lo sapeva da sola.",
+			"Una formula detta bene vale più di dieci dette in fretta."]},
 		{"id": "deaths8", "if": Meta.runs >= 8, "lines": [
 			"Ogni volta che torni, Scriba, la bilancia trema. Come se avesse timore di te.",
 			"Non so il perché. E io conosco quasi ogni cosa."]},
@@ -124,6 +130,15 @@ static func story() -> Array:
 		{"id": "deaths12", "if": Meta.runs >= 12, "lines": [
 			"Ho interrogato Ma'at, su di te. Non mi ha risposto.",
 			"In quattromila anni non era mai accaduto."]},
+		{"id": "name3", "if": Meta.ammit_wins >= 3, "lines": [
+			"Il terzo segno: una bocca. Canna, acqua, bocca.",
+			"Ora Thoth tace. È peggio di quando dice che non sa."]},
+		{"id": "deaths20", "if": Meta.runs >= 20, "lines": [
+			"Venti discese. I guardiani delle porte hanno smesso di chiedermi chi sei. Ti chiamano 'quello che torna'.",
+			"Non è un nome. Ma è più di quanto avevi."]},
+		{"id": "name4", "if": Meta.ammit_wins >= 5, "lines": [
+			"Cinque volte la Divoratrice è caduta. Il quarto segno è riaffiorato, ed è un segno che si scrive solo accanto ai nomi dei re.",
+			"Chiunque tu fossi, Scriba, qualcuno aveva molta paura di te."]},
 	]
 
 
@@ -145,6 +160,9 @@ static func idle() -> Array:
 		["Quando un dio ti offre un dono pesante, guarda il prezzo. Poi guardalo ancora."],
 		["Il cancello è sempre aperto. Il Duat ha sempre fame."],
 		["Se cerchi parole, i Papiri di Thoth sono in fondo alla sala."],
+		["Ogni porta del Duat ha un guardiano. Ogni guardiano ha un nome. Impara i nomi, e le porte si aprono."],
+		["Il Traghettatore guarda sempre all'indietro. Non chiedergli perché. Paga, e sali."],
+		["Il Ka che non spendi nella discesa torna qui con te. Quello che spendi, ti tiene in vita. Scegli."],
 	]
 
 

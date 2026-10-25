@@ -23,7 +23,7 @@ const GODS := {
 			{"title": "Perché lo sciacallo", "text": "Gli uomini vedevano gli sciacalli aggirarsi tra le tombe, al margine del deserto, e ne avevano paura. Allora pregarono lo sciacallo perché diventasse il custode di ciò che temevano. E io lo divenni."},
 			{"title": "Prima di Osiride", "text": "Prima che Osiride sedesse sul trono dei morti, l'Occidente era mio. Glielo cedetti. Tenni per me la bilancia, perché il trono comanda, ma solo la bilancia conosce la verità."},
 		],
-		"idle": ["Scegli con cura. La bilancia non dimentica.", "Torna intero, Scriba. O torna comunque.", "Il cuore leggero va più lontano."],
+		"idle": ["Scegli con cura. La bilancia non dimentica.", "Torna intero, Scriba. O torna comunque.", "Il cuore leggero va più lontano.", "Il primo passo è sempre il più leggero. È l'ultimo che pesa.", "Ho pesato re e mendicanti. Il cuore di un re non pesa di meno."],
 	},
 	"ra": {
 		"name": "Ra, il Sole",
@@ -35,7 +35,7 @@ const GODS := {
 			{"title": "Il nome segreto", "text": "Molti sono i miei nomi, ma uno solo è il vero, e chi lo conosce ha potere su di me. Iside impastò la mia saliva con la terra e ne trasse un serpente. Il suo morso mi bruciava come nessun fuoco. Solo lei poteva guarirmi, e il prezzo fu il mio nome. Ricordalo, quando le parlerai."},
 			{"title": "Tre volti", "text": "Al mattino sono Khepri, lo scarabeo che spinge il disco oltre l'orizzonte. A mezzogiorno sono Ra, in tutta la mia forza. Alla sera sono Atum, il vecchio che si corica. Tre volti, un solo dio. Anche tu, Scriba, sei più di ciò che appari."},
 		],
-		"idle": ["Brucia, Scriba. La notte è lunga.", "La fiamma non chiede permesso.", "Ogni sera muoio. Ogni mattina ritorno. Fa' lo stesso."],
+		"idle": ["Brucia, Scriba. La notte è lunga.", "La fiamma non chiede permesso.", "Ogni sera muoio. Ogni mattina ritorno. Fa' lo stesso.", "Dove passo io, il buio arretra. Dove passi tu?", "Anche il sole teme la dodicesima ora. Non per questo si ferma.", "Brucia ciò che ti sbarra la strada. Il resto lo illuminerò io."],
 	},
 	"sekhmet": {
 		"name": "Sekhmet, la Potente",
@@ -47,7 +47,7 @@ const GODS := {
 			{"title": "Due volti", "text": "Hathor è la gioia, la danza, il canto, l'amore. Io sono ciò che la gioia diventa quando si leva in collera. Siamo una sola dea con due volti. Prega che ti mostri quello dolce."},
 			{"title": "Menfi", "text": "A Menfi siedo accanto a Ptah, colui che plasma ogni cosa. Nostro figlio è Nefertum, il loto che si schiude sull'acqua al primo raggio del sole. Anche la leonessa ha una casa, Scriba."},
 		],
-		"idle": ["Più forte.", "Fa' che ti temano.", "La pietà è per chi ha già vinto."],
+		"idle": ["Più forte.", "Fa' che ti temano.", "La pietà è per chi ha già vinto.", "Ancora. Ancora!", "Sento il loro terrore da qui. È un buon odore.", "Non chiedermi di essere gentile. Chiedimi di vincere."],
 	},
 	"thoth": {
 		"name": "Thoth, lo Scriba degli dèi",
@@ -59,7 +59,7 @@ const GODS := {
 			{"title": "Al giudizio", "text": "Nella Sala delle Due Verità il cuore giace su un piatto e la piuma di Ma'at sull'altro. Anubi osserva il filo della bilancia. Io scrivo. Senza la scrittura, nemmeno gli dèi saprebbero chi è giusto."},
 			{"title": "Milioni di ibis", "text": "Mi venerano come ibis e come babbuino, che all'alba leva le braccia e grida verso il sole. Per secoli i pellegrini mi offrirono ibis imbalsamati, a milioni, deposti nelle gallerie di Saqqara e di Tuna el-Gebel. Ogni ibis era una preghiera. Le ho lette tutte."},
 		],
-		"idle": ["Misura. Poi colpisci.", "Ogni colpo è una parola. Scrivi bene.", "La conoscenza non si spunta."],
+		"idle": ["Misura. Poi colpisci.", "Ogni colpo è una parola. Scrivi bene.", "La conoscenza non si spunta.", "Ho già scritto come finirà questa stanza. Non ti dirò come.", "Contare i nemici è il primo passo per non temerli.", "Una parola sbagliata nel Libro, e il morto si perde. Anche un colpo sbagliato."],
 	},
 	"bastet": {
 		"name": "Bastet, la Signora di Bubasti",
@@ -71,7 +71,7 @@ const GODS := {
 			{"title": "La profezia dei gatti", "text": "Imbalsamarono i miei figli a migliaia e li deposero accanto a me. Vedo ciò che accadrà: verranno uomini da una terra fredda e li porteranno via a tonnellate, centottantamila, per concimare i loro campi. Una dea vede anche questo. E non dimentica."},
 			{"title": "Il Grande Gatto", "text": "Sotto l'albero sacro di Eliopoli, il Grande Gatto afferrò il coltello e recise la testa del serpente Apophis. Alcuni dicono che fosse Ra stesso. Altri dicono che fossi io. Io non li correggo."},
 		],
-		"idle": ["Colpisci dove duole. Poi svanisci.", "Nove vite? Tu ne hai una alla volta. Custodiscila.", "Va'. Ti osservo."],
+		"idle": ["Colpisci dove duole. Poi svanisci.", "Nove vite? Tu ne hai una alla volta. Custodiscila.", "Va'. Ti osservo.", "Fusa per chi amo. Artigli per tutti gli altri.", "Muoviti piano. Poi non muoverti affatto. Poi colpisci.", "Un gatto non corre mai, a meno che non stia vincendo."],
 	},
 	"sobek": {
 		"name": "Sobek, il Signore del Fiume",
@@ -82,7 +82,7 @@ const GODS := {
 			{"title": "Kom Ombo", "text": "A Kom Ombo il mio tempio è diviso in due: una metà è mia, l'altra di Horus il Vecchio. Due porte, due santuari, sotto un solo tetto. Nelle sue tombe dormono i miei figli imbalsamati, e accanto a loro le loro uova."},
 			{"title": "Temuto e pregato", "text": "Sul Fiume i miei figli uccidevano. Chi lavava i panni, chi pescava, chi guadava. Per questo gli uomini mi pregavano. Chi può divorarti, è meglio averlo amico."},
 		],
-		"idle": ["Resisti. Il Fiume non si ferma.", "Attendi. Poi mordi.", "Pelle dura. Cuore lento."],
+		"idle": ["Resisti. Il Fiume non si ferma.", "Attendi. Poi mordi.", "Pelle dura. Cuore lento.", "Il Fiume ha tempo. Tu no. Sbrigati.", "Chi mi sottovaluta finisce sott'acqua.", "Mordi, trattieni, non lasciare."],
 	},
 	"iside": {
 		"name": "Iside, la Grande di Magia",
@@ -95,7 +95,7 @@ const GODS := {
 			{"title": "Il nodo di Iside", "text": "Il tyet, il mio nodo, si intaglia nella pietra rossa e si posa sul collo dei morti. Il Libro dice che chi lo porta è protetto dal mio sangue e dalla mia magia. Ne porti uno anche tu, Scriba, anche se non lo vedi."},
 			{"title": "Oltre il mare", "text": "Vedo il mio nome attraversare il mare. Avrò templi in Grecia, a Roma, fino alla lontana Londinium. A Pompei la cenere del vulcano custodirà la mia casa. Per più di tremila anni gli uomini mi chiameranno madre."},
 		],
-		"idle": ["Ti proteggo io. Tu pensa a vivere.", "Ogni ferita si richiude, prima o poi.", "Ho ricomposto un dio. Posso ricomporre te."],
+		"idle": ["Ti proteggo io. Tu pensa a vivere.", "Ogni ferita si richiude, prima o poi.", "Ho ricomposto un dio. Posso ricomporre te.", "Non sei solo, Scriba. Non lo sei mai stato.", "Le mie ali coprono anche chi non le vede.", "Torna da me intero. Ho già ricucito abbastanza."],
 	},
 	"horus": {
 		"name": "Horus, il Falco",
@@ -106,7 +106,7 @@ const GODS := {
 			{"title": "Il re vivente", "text": "Ogni faraone era Horus sulla terra. Il primo dei suoi cinque nomi era il nome di Horus, scritto dentro un recinto sormontato da un falco. Quando il re moriva diventava Osiride, e il nuovo re diventava me. Così il trono non resta mai vuoto."},
 			{"title": "Edfu", "text": "Il mio tempio di Edfu è tra i più intatti della Terra Nera. Ogni anno la statua di Hathor risaliva il Fiume da Dendera per raggiungermi: la chiamavano la Festa del Bell'Incontro. Gli dèi, Scriba, sanno anche festeggiare."},
 		],
-		"idle": ["Mira come il falco: dall'alto, una volta sola.", "Il mio Occhio non manca il bersaglio. Tu?", "Vola, Scriba."],
+		"idle": ["Mira come il falco: dall'alto, una volta sola.", "Il mio Occhio non manca il bersaglio. Tu?", "Vola, Scriba.", "Il falco non insegue la preda. La aspetta dall'alto.", "Mio padre regna sui morti. Io regno sui vivi. Tu, per ora, su questa stanza.", "Lancia. E quando torna, lancia ancora."],
 	},
 	"set": {
 		"name": "Set, il Signore del Deserto",
@@ -118,7 +118,7 @@ const GODS := {
 			{"title": "La bestia senza nome", "text": "Porto la testa di una bestia che nessun uomo sa nominare. Muso lungo e ricurvo, orecchie squadrate, coda dritta come una freccia. Vedo i sapienti delle terre future discuterne per secoli: un cane? un asino? Lasciali discutere."},
 			{"title": "Il nome dei faraoni", "text": "Non sempre fui il nemico. Alcuni faraoni portarono il mio nome con orgoglio. Seti, il padre del grande Ramses, significa 'colui che appartiene a Set'. I re sanno riconoscere la forza, anche quando gli altri la temono."},
 		],
-		"idle": ["Prima il prezzo, poi il premio.", "Il dolore insegna. Tu impari lentamente.", "Un patto è un patto."],
+		"idle": ["Prima il prezzo, poi il premio.", "Il dolore insegna. Tu impari lentamente.", "Un patto è un patto.", "Ti piace soffrire? A me piace guardare.", "La tempesta non chiede scusa. Nemmeno io.", "I tuoi dèi luminosi ti hanno mai fatto un'offerta onesta? Io sì: prima il dolore, poi il premio."],
 	},
 }
 

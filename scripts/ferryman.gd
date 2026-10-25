@@ -8,6 +8,9 @@ const LINES := [
 	"Mahaf, il Traghettatore: «Conosci il nome di ogni parte della mia barca? No? Allora paga.»",
 	"Mahaf, il Traghettatore: «I morti non portano nulla con sé. Tu porti Ka. Interessante.»",
 	"Mahaf, il Traghettatore: «Non svegliarmi per niente, scriba. Compra, o passa oltre.»",
+	"Mahaf, il Traghettatore: «Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»",
+	"Mahaf, il Traghettatore: «Prima di un guardiano, tutti diventano generosi. Strano, vero?»",
+	"Mahaf, il Traghettatore: «Il Ka è peso. Lascialo a me, e salirai più leggero.»",
 ]
 
 var t := 0.0
