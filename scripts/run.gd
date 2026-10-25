@@ -197,7 +197,7 @@ func room_cleared() -> void:
 func grant_blessing(id: String) -> void:
 	blessings.append(id)
 	if id == "set_vigor":
-		max_hp += 12.0
+		max_hp += 15.0
 		hp += 12.0
 	blessing_granted.emit(id)
 
@@ -229,7 +229,7 @@ func chap(id: String) -> bool:
 
 
 func all_damage_mult() -> float:
-	var m := 1.2 if has("set_might") else 1.0
+	var m := 1.25 if has("set_might") else 1.0
 	if chap("c125") and hp > max_hp * 0.8:
 		m *= 1.0 + Chapters.value("c125") / 100.0
 	return m
@@ -328,7 +328,7 @@ func dash_cooldown_mult() -> float:
 
 
 func damage_taken_mult() -> float:
-	var m := 1.5 if cursed("fragile") else 1.0
+	var m := 1.3 if cursed("fragile") else 1.0
 	m *= 1.0 + 0.2 * Weights.rank("zanne")
 	if has("anubi_scale"):
 		m *= 1.15
@@ -353,14 +353,14 @@ func enemy_hp_mult() -> float:
 	if has("anubi_guide"):
 		m *= 1.05
 	if cursed("tough"):
-		m *= 1.4
+		m *= 1.25
 	m *= 1.0 + 0.2 * Weights.rank("piombo")
 	return m
 
 
 ## Ira del Deserto: il khopesh attacca più rapidamente.
 func attack_speed_mult() -> float:
-	return 0.85 if has("set_rage") else 1.0
+	return 0.8 if has("set_rage") else 1.0
 
 
 ## Fiuto dello Sciacallo: più danni ai nemici feriti, meno a quelli in salute.
@@ -371,7 +371,7 @@ func jackal_mult(hp_ratio: float) -> float:
 
 
 func enemy_speed_mult() -> float:
-	return 1.3 if cursed("fast_enemies") else 1.0
+	return 1.2 if cursed("fast_enemies") else 1.0
 
 
 ## Moltiplicatore dei tesori di Ka (porte "Tesoro di Ka").
@@ -429,7 +429,7 @@ func low_hp_guard() -> float:
 func heal_mult() -> float:
 	var m := 1.0 + val("iside_tears") / 100.0
 	if cursed("thirst"):
-		m *= 0.5
+		m *= 0.6
 	return m
 
 

@@ -3,7 +3,7 @@ extends Area2D
 
 signal chosen(door: Area2D)
 
-var side := "n"                       # n | w | e
+var side := "n"                       # n | w | e | s (s: la porta di Set, nella parete sud)
 var reward := {}                      # {"kind": "boon"/"set"/"ka"/"heal"/"end", "god": "..."}
 var open := false
 var t := 0.0
@@ -15,7 +15,7 @@ func _ready() -> void:
 	collision_mask = 2
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
-	rect.size = Vector2(44, 12) if side == "n" else Vector2(12, 44)
+	rect.size = Vector2(44, 12) if side in ["n", "s"] else Vector2(12, 44)
 	shape.shape = rect
 	add_child(shape)
 	body_entered.connect(_on_body_entered)
@@ -80,7 +80,7 @@ func reward_description() -> String:
 		"boon":
 			return "Dono di %s: scegli uno dei suoi poteri" % Boons.god_name(reward["god"])
 		"set":
-			return "Patto di Set: entrare costa 10 vita. Una maledizione per 2 stanze, poi un potere per tutta la run"
+			return "L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa"
 		"ka":
 			return "Tesoro di Ka: +25 Ka"
 		"heal":
@@ -101,7 +101,7 @@ func reward_description() -> String:
 
 func _draw() -> void:
 	var gold := Color(0.94, 0.72, 0.3)
-	var size := Vector2(36, 14) if side == "n" else Vector2(14, 36)
+	var size := Vector2(36, 14) if side in ["n", "s"] else Vector2(14, 36)
 	var r := Rect2(-size / 2.0, size)
 	if open:
 		draw_rect(r, Color(0.02, 0.02, 0.04))
@@ -111,7 +111,7 @@ func _draw() -> void:
 		draw_rect(r, Color(0.3, 0.22, 0.13))
 	draw_rect(r, gold, false, 2.0)
 	if open and not reward.is_empty():
-		var off := Vector2(0, 26) if side == "n" else (Vector2(26, 0) if side == "w" else Vector2(-26, 0))
+		var off := Vector2(0, 26) if side == "n" else (Vector2(0, -26) if side == "s" else (Vector2(26, 0) if side == "w" else Vector2(-26, 0)))
 		var bob := sin(t * 3.0) * 2.0
 		var c := reward_color()
 		draw_circle(off + Vector2(0, bob), 7.0, Color(c, 0.3))

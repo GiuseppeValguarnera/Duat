@@ -32,7 +32,7 @@ const UshabtiScript := preload("res://scripts/ushabti.gd")
 const TRAPS_FROM_ROOM := 3            ## le trappole compaiono da questa stanza in poi
 const DoorScript := preload("res://scripts/door.gd")
 const SET_DOOR_CHANCE := 0.4          ## probabilità che compaia una porta di Set
-const SET_DOOR_COST := 10.0           ## vita da pagare per entrare
+const SET_DOOR_COST := 8.0           ## vita da pagare per entrare
 
 ## Disposizioni delle colonne, in frazioni dell'area calpestabile.
 const LAYOUTS := [
@@ -62,6 +62,7 @@ var boss: Enemy = null
 var obstacles: Array = []             # rettangoli occupati da statue, bracieri, sarcofagi
 var traps_pos: Array = []             # posizioni delle lastre con spuntoni (e degli altri pericoli)
 var grates_here := 0                  # grate di fuoco nella stanza: tolgono altrettanti spuntoni
+var saved_doors: Array = []           # le porte della stanza, per riaprirle dopo l'altare di Set
 var room_gen := 0                     # cambia a ogni stanza: annulla le comparse rimaste in sospeso
 var boss_bar: ColorRect
 var boss_fill: ColorRect
@@ -350,7 +351,9 @@ func start_room(reward: Dictionary) -> void:
 	if reward.get("kind", "") == "tutorial_end":
 		_finish_tutorial()
 		return
-	Run.room += 1
+	# l'altare di Set è una deviazione: la discesa non avanza
+	if reward.get("kind", "") != "set":
+		Run.room += 1
 	room_gen += 1
 	boss = null
 	current_reward = reward
@@ -370,8 +373,8 @@ func start_room(reward: Dictionary) -> void:
 	pillars.clear()
 	var boss_room := Run.room > Run.ROOMS_PER_RUN
 	var kind: String = reward.get("kind", "none")
-	var calm := kind == "guardian" or kind == "shop" or kind == "tutorial"
-	Run.curse_paused = boss_room or kind == "guardian" or kind == "shop"
+	var calm := kind == "guardian" or kind == "shop" or kind == "tutorial" or kind == "set"
+	Run.curse_paused = boss_room or kind == "guardian" or kind == "shop" or kind == "set"
 	shop_items.clear()
 	if not boss_room and kind != "guardian":
 		Music.play("hub" if kind == "shop" else "room")
@@ -436,6 +439,10 @@ func start_room(reward: Dictionary) -> void:
 	if kind == "shop":
 		waves = []
 		_start_shop()
+		return
+	if kind == "set":
+		waves = []
+		_start_set_altar()
 		return
 	if kind == "tutorial":
 		waves = []
@@ -629,9 +636,6 @@ func _open_doors() -> void:
 	pool.append({"kind": "ka"})
 	pool.append({"kind": "heal"})
 	pool.shuffle()
-	# a volte Set apre una sua porta: prende il posto di una delle altre
-	if randf() < SET_DOOR_CHANCE and not Boons.set_offers(Run.blessings).is_empty():
-		pool.insert(0, {"kind": "set"})
 	# il Traghettatore è una delle porte solo nella stanza subito prima del Serpente e di Ammit
 	var before_boss: bool = Run.room + 2 == Run.GUARDIAN_ROOM or Run.room + 1 == Run.ROOMS_PER_RUN
 	if before_boss:
@@ -641,8 +645,23 @@ func _open_doors() -> void:
 	if Run.room + 1 == Run.ROOMS_PER_RUN:
 		pool.erase({"kind": "heal"})
 		pool.insert(1, {"kind": "heal"})
+	saved_doors.clear()
 	for i in range(sides.size()):
 		_add_door(sides[i], pool[i % pool.size()])
+		saved_doors.append([sides[i], pool[i % pool.size()]])
+	# a volte Set apre un varco in più, nella parete sud: è una deviazione, non prende il posto
+	# di nessuna porta (come le porte del Caos in Hades)
+	if randf() < SET_DOOR_CHANCE and not Boons.set_offers(Run.blessings).is_empty() and current_reward.get("kind", "") != "set":
+		_add_door("s", {"kind": "set"})
+
+
+## Dopo l'altare di Set si riaprono le stesse porte che avevi lasciato.
+func _reopen_doors() -> void:
+	if saved_doors.is_empty():
+		_open_doors()
+		return
+	for sd in saved_doors:
+		_add_door(sd[0], sd[1])
 
 
 func _add_door(side: String, reward: Dictionary) -> void:
@@ -657,6 +676,8 @@ func _add_door(side: String, reward: Dictionary) -> void:
 			d.position = Vector2(WALL + 2.0, (TOP + ROOM.size.y - WALL) / 2.0)
 		"e":
 			d.position = Vector2(ROOM.size.x - WALL - 2.0, (TOP + ROOM.size.y - WALL) / 2.0)
+		"s":
+			d.position = Vector2(ROOM.size.x / 2.0 + (150.0 if randf() < 0.5 else -150.0), ROOM.size.y - WALL - 2.0)
 	world.add_child(d)
 	d.chosen.connect(_on_door_chosen)
 	doors.append(d)
@@ -1042,7 +1063,10 @@ func _show_set_menu() -> void:
 		})
 	if cards.is_empty():
 		Run.ka += roundi(25 * Run.ka_mult())
-		_open_doors()
+		if current_reward.get("kind", "") == "set":
+			_reopen_doors()
+		else:
+			_open_doors()
 		return
 	var sub := "Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa. Davanti ai guardiani Set tace"
 	if Run.room + 2 > Run.ROOMS_PER_RUN:
@@ -1055,7 +1079,10 @@ func _choose_pact(curse: String, blessing: String) -> void:
 	_close_choice()
 	var cdesc: Dictionary = Boons.SET_CURSES[curse]
 	_boon_fx(Boons.god_color("set"), "Maledizione di Set: %d stanze" % cdesc["rooms"], "%s. Poi: %s" % [cdesc["desc"], Weapons.adapt(Boons.SET_BLESSINGS[blessing]["desc"])])
-	_open_doors()
+	if current_reward.get("kind", "") == "set":
+		_reopen_doors()
+	else:
+		_open_doors()
 
 
 ## Quanti caratteri per riga stanno in una carta, in base alla larghezza dello schermo e ai caratteri.
@@ -1464,6 +1491,18 @@ func _start_guardian() -> void:
 	boss_fill.size.x = boss_bar.size.x
 	spawning += 1
 	_spawn_after("serpent", Vector2(ROOM.size.x / 2.0, TOP + 110.0), 1.4)
+
+
+## L'altare di Set: una sala rossa senza nemici, con il patto da scegliere.
+func _start_set_altar() -> void:
+	cleared = true
+	_banner("L'altare di Set", "Una deviazione nel deserto rosso. Le tue porte ti aspettano", Boons.god_color("set"))
+	var p = PickupScript.new()
+	p.kind = "set"
+	world.add_child(p)
+	p.position = Vector2(ROOM.size.x / 2.0, (TOP + ROOM.size.y - WALL) / 2.0)
+	p.collected.connect(_on_pickup_collected)
+	queue_redraw()
 
 
 ## La stanza del Traghettatore: niente nemici, tre oggetti da comprare con il Ka della discesa.
@@ -1951,12 +1990,13 @@ func _solid(rect: Rect2) -> StaticBody2D:
 func _draw() -> void:
 	var r := ROOM
 	var tile := 32.0
+	var set_altar: bool = current_reward.get("kind", "") == "set"
 	var y := TOP
 	while y < r.end.y - WALL:
 		var x := r.position.x + WALL
 		while x < r.end.x - WALL:
 			var n := fmod(absf(sin(x * 12.9898 + y * 78.233 + Run.room) * 43758.5453), 1.0)
-			draw_rect(Rect2(x + 1, y + 1, tile - 2, tile - 2), Color(0.52, 0.39, 0.24).darkened(n * 0.14))
+			draw_rect(Rect2(x + 1, y + 1, tile - 2, tile - 2), (Color(0.55, 0.24, 0.15) if set_altar else Color(0.52, 0.39, 0.24)).darkened(n * 0.14))
 			x += tile
 		y += tile
 	var dark := Color(0.19, 0.13, 0.08)
@@ -1972,6 +2012,19 @@ func _draw() -> void:
 	draw_rect(Rect2(r.position.x, r.position.y, WALL, r.size.y), dark)
 	draw_rect(Rect2(r.end.x - WALL, r.position.y, WALL, r.size.y), dark)
 	draw_rect(Rect2(r.size.x / 2.0 - 18.0, r.end.y - WALL, 36, 14), Color(0.3, 0.22, 0.13))
+	if set_altar:
+		# l'altare di Set: un blocco di pietra rossa con la bestia di Set incisa
+		var ac := Vector2(r.size.x / 2.0, (TOP + r.size.y - WALL) / 2.0 + 18.0)
+		draw_rect(Rect2(ac.x - 26, ac.y - 10, 52, 22), Color(0.35, 0.12, 0.08))
+		draw_rect(Rect2(ac.x - 30, ac.y + 10, 60, 6), Color(0.25, 0.08, 0.05))
+		draw_rect(Rect2(ac.x - 26, ac.y - 10, 52, 22), Color(0.75, 0.3, 0.2), false, 1.5)
+		var sc := Color(0.95, 0.45, 0.3)
+		draw_line(ac + Vector2(-8, 6), ac + Vector2(-4, -2), sc, 1.5)
+		draw_line(ac + Vector2(-4, -2), ac + Vector2(6, -2), sc, 1.5)
+		draw_line(ac + Vector2(6, -2), ac + Vector2(10, -6), sc, 1.5)
+		draw_line(ac + Vector2(10, -6), ac + Vector2(9, -9), sc, 1.5)
+		draw_line(ac + Vector2(-4, -2), ac + Vector2(-9, -8), sc, 1.5)
+		draw_line(ac + Vector2(4, -2), ac + Vector2(4, 6), sc, 1.5)
 	for p in pillars:
 		draw_rect(Rect2(p.x - 13, p.y - 48, 26, 55), Color(0.77, 0.6, 0.39))
 		draw_rect(Rect2(p.x - 15, p.y - 54, 30, 8), Color(0.18, 0.56, 0.5))

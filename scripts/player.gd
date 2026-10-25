@@ -436,8 +436,9 @@ func _divine_form() -> void:
 ## Sete Insaziabile (e la maledizione di Set "bleed"): perdi vita finché ci sono nemici,
 ## ma non può ucciderti.
 func _heavy_drain(delta: float) -> void:
-	var drains := int(Run.has("sekhmet_heavy")) + int(Run.cursed("bleed"))
-	if drains == 0 or get_tree().get_nodes_in_group("enemies").is_empty():
+	# la Sete Insaziabile toglie 1 vita ogni 2 secondi, la maledizione di Set ogni 3
+	var drains := float(Run.has("sekhmet_heavy")) + (0.67 if Run.cursed("bleed") else 0.0)
+	if drains <= 0.0 or get_tree().get_nodes_in_group("enemies").is_empty():
 		return
 	drain_t -= delta * drains
 	if drain_t <= 0.0:

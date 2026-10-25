@@ -96,21 +96,21 @@ const ALL := {
 
 ## Maledizioni di Set: durano le prossime stanze (contate quando le ripulisci), poi arriva la benedizione.
 const SET_CURSES := {
-	"fast_enemies": {"desc": "I nemici sono più veloci del 30%", "rooms": 2},
-	"fragile": {"desc": "Subisci il 50% di danni in più", "rooms": 2},
-	"tough": {"desc": "I nemici hanno il 40% di vita in più", "rooms": 2},
-	"thirst": {"desc": "Ogni cura è dimezzata", "rooms": 2},
-	"bleed": {"desc": "Finché ci sono nemici perdi 1 vita ogni 2 secondi", "rooms": 2},
+	"fast_enemies": {"desc": "I nemici sono più veloci del 20%", "rooms": 2},
+	"fragile": {"desc": "Subisci il 30% di danni in più", "rooms": 2},
+	"tough": {"desc": "I nemici hanno il 25% di vita in più", "rooms": 2},
+	"thirst": {"desc": "Le cure ti curano il 40% in meno", "rooms": 2},
+	"bleed": {"desc": "Finché ci sono nemici perdi 1 vita ogni 3 secondi", "rooms": 2},
 }
 
 ## Benedizioni di Set: arrivano quando la maledizione finisce e durano tutta la run.
 const SET_BLESSINGS := {
-	"set_might": {"name": "Forza di Set", "desc": "+20% a tutti i danni"},
-	"set_vigor": {"name": "Vigore del Deserto", "desc": "+12 vita massima"},
+	"set_might": {"name": "Forza di Set", "desc": "+25% a tutti i danni"},
+	"set_vigor": {"name": "Vigore del Deserto", "desc": "+15 vita massima"},
 	"set_sekhem": {"name": "Tempesta Interiore", "desc": "Il Sekhem si carica il 50% più in fretta"},
 	"set_swift": {"name": "Vento Rosso", "desc": "+15% velocità di movimento"},
 	"set_greed": {"name": "Tributo", "desc": "+50% di Ka"},
-	"set_rage": {"name": "Ira del Deserto", "desc": "Attacchi con il khopesh il 15% più rapidamente"},
+	"set_rage": {"name": "Ira del Deserto", "desc": "Attacchi con il khopesh il 20% più rapidamente"},
 }
 
 

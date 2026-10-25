@@ -194,15 +194,15 @@ Il khopesh fa il 40% di danni in meno.,Il khopesh fa il 40% di danni in meno.,Th
 Conoscenza Proibita,Conoscenza Proibita,Forbidden Knowledge
 L'Occhio di Horus si ricarica più del doppio più in fretta.,L'Occhio di Horus si ricarica più del doppio più in fretta.,The Eye of Horus recharges more than twice as fast.
 Il khopesh fa il 35% di danni in meno.,Il khopesh fa il 35% di danni in meno.,Your khopesh deals 35% less damage.
-I nemici sono più veloci del 30%,I nemici sono più veloci del 30%,Enemies are 30% faster
-Subisci il 50% di danni in più,Subisci il 50% di danni in più,You take 50% more damage
-I nemici hanno il 40% di vita in più,I nemici hanno il 40% di vita in più,Enemies have 40% more health
-Ogni cura è dimezzata,Ogni cura è dimezzata,All healing is halved
-Finché ci sono nemici perdi 1 vita ogni 2 secondi,Finché ci sono nemici perdi 1 vita ogni 2 secondi,While enemies remain you lose 1 health every 2 seconds
+I nemici sono più veloci del 20%,I nemici sono più veloci del 20%,
+Subisci il 30% di danni in più,Subisci il 30% di danni in più,
+I nemici hanno il 25% di vita in più,I nemici hanno il 25% di vita in più,
+Le cure ti curano il 40% in meno,Le cure ti curano il 40% in meno,
+Finché ci sono nemici perdi 1 vita ogni 3 secondi,Finché ci sono nemici perdi 1 vita ogni 3 secondi,
 Forza di Set,Forza di Set,Strength of Set
-+20% a tutti i danni,+20% a tutti i danni,+20% to all damage
++25% a tutti i danni,+25% a tutti i danni,
 Vigore del Deserto,Vigore del Deserto,Vigour of the Desert
-+12 vita massima,+12 vita massima,+12 max health
++15 vita massima,+15 vita massima,
 Tempesta Interiore,Tempesta Interiore,Inner Storm
 Il Sekhem si carica il 50% più in fretta,Il Sekhem si carica il 50% più in fretta,Your Sekhem charges 50% faster
 Vento Rosso,Vento Rosso,Red Wind
@@ -210,7 +210,7 @@ Vento Rosso,Vento Rosso,Red Wind
 Tributo,Tributo,Tribute
 +50% di Ka,+50% di Ka,+50% Ka
 Ira del Deserto,Ira del Deserto,Wrath of the Desert
-Attacchi con il khopesh il 15% più rapidamente,Attacchi con il khopesh il 15% più rapidamente,You strike with your khopesh 15% faster
+Attacchi con il khopesh il 20% più rapidamente,Attacchi con il khopesh il 20% più rapidamente,
 "Arma: fuoco %d ogni 0,5 s","Arma: fuoco %d ogni 0,5 s",
 Occhio esplode: %d danni,Occhio esplode: %d danni,Eye explodes: %d damage
 Scatto ferisce: %d danni,Scatto ferisce: %d danni,Dash wounds: %d damage
@@ -407,7 +407,7 @@ Traghettatore,Traghettatore,Ferryman
 La discesa,La discesa,The Descent
 Uscita,Uscita,Exit
 Dono di %s: scegli uno dei suoi poteri,Dono di %s: scegli uno dei suoi poteri,Boon of %s: choose one of their powers
-"Patto di Set: entrare costa 10 vita. Una maledizione per 2 stanze, poi un potere per tutta la run","Patto di Set: entrare costa 10 vita. Una maledizione per 2 stanze, poi un potere per tutta la run","Pact of Set: entering costs 10 health. A curse for 2 chambers, then a power for the whole run"
+"L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa","L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa",
 Tesoro di Ka: +25 Ka,Tesoro di Ka: +25 Ka,Ka Treasure: +25 Ka
 Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,
 Acqua del Nilo: recuperi il %d%% della vita,Acqua del Nilo: recuperi il %d%% della vita,Water of the Nile: you recover %d%% of your health
@@ -559,6 +559,8 @@ Divora i cuori che non superano il giudizio,Divora i cuori che non superano il g
 Il Serpente della Porta,Il Serpente della Porta,The Serpent of the Gate
 Ogni porta del Duat ha il suo guardiano,Ogni porta del Duat ha il suo guardiano,Every gate of the Duat has its guardian
 IL SERPENTE DELLA PORTA,IL SERPENTE DELLA PORTA,THE SERPENT OF THE GATE
+L'altare di Set,L'altare di Set,
+Una deviazione nel deserto rosso. Le tue porte ti aspettano,Una deviazione nel deserto rosso. Le tue porte ti aspettano,
 Il Traghettatore,Il Traghettatore,The Ferryman
 Mahaf: ,Mahaf: ,
 Non hai abbastanza Ka,Non hai abbastanza Ka,You don't have enough Ka
@@ -941,6 +943,15 @@ La fame di Am-heh,La fame di Am-heh,
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,
 Vita,Vita,Health
 Comandi,Comandi,Controls
+I nemici sono più veloci del 30%,I nemici sono più veloci del 30%,Enemies are 30% faster
+Subisci il 50% di danni in più,Subisci il 50% di danni in più,You take 50% more damage
+I nemici hanno il 40% di vita in più,I nemici hanno il 40% di vita in più,Enemies have 40% more health
+Ogni cura è dimezzata,Ogni cura è dimezzata,All healing is halved
+Finché ci sono nemici perdi 1 vita ogni 2 secondi,Finché ci sono nemici perdi 1 vita ogni 2 secondi,While enemies remain you lose 1 health every 2 seconds
++20% a tutti i danni,+20% a tutti i danni,+20% to all damage
++12 vita massima,+12 vita massima,+12 max health
+Attacchi con il khopesh il 15% più rapidamente,Attacchi con il khopesh il 15% più rapidamente,You strike with your khopesh 15% faster
+"Patto di Set: entrare costa 10 vita. Una maledizione per 2 stanze, poi un potere per tutta la run","Patto di Set: entrare costa 10 vita. Una maledizione per 2 stanze, poi un potere per tutta la run","Pact of Set: entering costs 10 health. A curse for 2 chambers, then a power for the whole run"
 Lo scatto si ricarica il %d%% più in fretta e ti muovi il 10%% più veloce.,Lo scatto si ricarica il %d%% più in fretta e ti muovi il 10%% più veloce.,Your dash recharges %d%% faster and you move 10%% faster.
 Scatto -%d%% · +10%% velocità,Scatto -%d%% · +10%% velocità,Dash -%d%% · +10%% speed
 "Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa","Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa","First the curse, for the next cleared chambers. Then the power, for the whole descent"

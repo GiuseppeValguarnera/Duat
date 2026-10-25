@@ -226,9 +226,11 @@ Ogni volta che un dio ti offre un dono, ti parla. La prima volta si presenta; po
 
 ## Patti di Set
 
-A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza scegli un patto: una **maledizione** che dura le 2 stanze successive e poi una **benedizione** permanente per tutta la run. Tempesta Interiore (Sekhem) compare solo dopo aver sbloccato il Sekhem.
+A volte, oltre alle porte normali, Set apre un **varco in più nella parete sud**: è una deviazione, come le porte del Caos in Hades. Entrare costa 8 punti vita; dentro c'è l'altare di Set, senza nemici, e la stanza non conta nella discesa. Scegli un patto, poi si riaprono le stesse porte che avevi lasciato: non perdi nessun dono. Il patto è una **maledizione** per le 2 stanze successive e poi una **benedizione** per tutta la discesa. Tempesta Interiore (Sekhem) compare solo dopo aver sbloccato il Sekhem.
 
-Davanti ai guardiani, ai boss e al Traghettatore Set tace: la maledizione non agisce e non conta la stanza. Le maledizioni colpiscono qualunque stile di gioco, così non si possono aggirare: nemici più veloci del 30%, +50% di danni subiti, nemici con il 40% di vita in più, cure dimezzate, oppure 1 vita persa ogni 2 secondi mentre combatti. Se il patto arriva dopo la stanza 4, la maledizione dura anche contro Ammit (la carta lo dice).
+Davanti ai guardiani, ai boss e al Traghettatore Set tace: la maledizione non agisce e non conta la stanza. Le maledizioni colpiscono qualunque stile di gioco, così non si possono aggirare: nemici più veloci del 20%, +30% di danni subiti, nemici con il 25% di vita in più, cure ridotte del 40%, oppure 1 vita persa ogni 3 secondi mentre combatti. Le benedizioni: +25% a tutti i danni, +15 vita massima, Sekhem +50%, +15% velocità, +50% Ka, attacchi più rapidi del 20%.
+
+Bilanciato con i bot (patto forzato nella stanza 2 contro nessun patto, stesse partite): quando Set prendeva il posto di una porta, il patto costava anche un dono e chi lo prendeva superava il Serpente 1 volta su 10 contro 7.
 
 ## Il Peso del Cuore
 
