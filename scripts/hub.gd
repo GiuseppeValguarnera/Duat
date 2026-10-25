@@ -71,7 +71,7 @@ func _build() -> void:
 	_solid(Rect2(0, ROOM.size.y - WALL, ROOM.size.x, WALL))
 	_solid(Rect2(0, 0, WALL, ROOM.size.y))
 	_solid(Rect2(ROOM.size.x - WALL, 0, WALL, ROOM.size.y))
-	_solid(Rect2(spots["anubi"] - Vector2(10, 8), Vector2(20, 12)))
+	_solid(Rect2(spots["anubi"] - Vector2(18, 6), Vector2(36, 10)))
 	_solid(Rect2(spots["libro"] - Vector2(12, 6), Vector2(24, 12)))
 	_solid(Rect2(spots["bilancia"] - Vector2(14, 6), Vector2(28, 12)))
 	_solid(Rect2(spots["papiri"] - Vector2(20, 8), Vector2(40, 12)))
@@ -684,26 +684,115 @@ func _draw_scale(p: Vector2) -> void:
 			draw_line(hp + Vector2(0, 3), hp + Vector2(1, 11), Color(0.95, 0.95, 0.9), 2.0)
 
 
+## Anubi nella Sala: in piedi su un basamento, alto il doppio di te, con lo scettro was e
+## l'ankh. Respira, muove le orecchie, ti segue con lo sguardo, e quando parla alza la mano,
+## gli occhi brillano e l'aura viola si accende.
 func _draw_anubi(p: Vector2) -> void:
-	var black := Color(0.08, 0.08, 0.11)
+	var black := Color(0.07, 0.06, 0.1)
+	var black_hi := Color(0.2, 0.17, 0.27)
 	var gold := Color(0.94, 0.72, 0.3)
-	var bob := sin(t * 1.5) * 0.8
-	draw_set_transform(Vector2(p.x, p.y + 4), 0.0, Vector2(1.0, 0.4))
-	draw_circle(Vector2.ZERO, 12.0, Color(0, 0, 0, 0.35))
+	var gold_dk := Color(0.62, 0.42, 0.14)
+	var lapis := Color(0.16, 0.3, 0.68)
+	var turq := Color(0.2, 0.62, 0.6)
+	var linen := Color(0.93, 0.9, 0.82)
+	var aura := Color(0.62, 0.56, 0.92)
+	var talking: bool = talk_box.visible
+	var face := 1.0
+	if player != null and is_instance_valid(player) and player.global_position.x < p.x - 6.0:
+		face = -1.0
+	var breath := sin(t * 1.6)
+	var bob := breath * 0.6
+	var pulse := 0.5 + 0.5 * sin(t * (5.0 if talking else 1.5))
+	# aura e scintille che salgono
+	draw_circle(p + Vector2(0, -30), 30.0 + 2.0 * pulse, Color(aura, 0.06 + (0.1 if talking else 0.04) * pulse))
+	draw_circle(p + Vector2(0, -34), 18.0, Color(aura, 0.05 + 0.05 * pulse))
+	for i in range(6):
+		var k := fmod(t * 0.35 + i / 6.0, 1.0)
+		var mx := sin(i * 2.1 + t) * 16.0
+		draw_circle(p + Vector2(mx, -6 - k * 60.0), 1.2 * (1.0 - k), Color(aura.lightened(0.3), 0.7 * (1.0 - k)))
+	# basamento
+	draw_set_transform(p + Vector2(0, 2), 0.0, Vector2(1.0, 0.35))
+	draw_circle(Vector2.ZERO, 22.0, Color(0, 0, 0, 0.4))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	draw_rect(Rect2(p.x - 7, p.y - 10, 14, 12), Color(0.95, 0.92, 0.85))
-	draw_rect(Rect2(p.x - 6, p.y - 26 + bob, 12, 16), black)
-	draw_rect(Rect2(p.x - 7, p.y - 22 + bob, 14, 3), gold)
-	draw_rect(Rect2(p.x - 4, p.y - 36 + bob, 9, 11), black)
-	draw_rect(Rect2(p.x + 4, p.y - 32 + bob, 7, 4), black)
-	draw_colored_polygon(PackedVector2Array([Vector2(p.x - 4, p.y - 35 + bob), Vector2(p.x - 1, p.y - 35 + bob), Vector2(p.x - 3, p.y - 46 + bob)]), black)
-	draw_colored_polygon(PackedVector2Array([Vector2(p.x + 1, p.y - 35 + bob), Vector2(p.x + 4, p.y - 35 + bob), Vector2(p.x + 3, p.y - 46 + bob)]), black)
-	draw_circle(Vector2(p.x + 2, p.y - 32 + bob), 1.0, gold)
-	# bastone was
-	draw_line(Vector2(p.x + 10, p.y - 30), Vector2(p.x + 10, p.y + 2), gold, 1.5)
-	draw_rect(Rect2(p.x + 9, p.y - 32, 5, 2), gold)
+	draw_rect(Rect2(p.x - 18, p.y - 4, 36, 6), Color(0.18, 0.16, 0.24))
+	draw_rect(Rect2(p.x - 18, p.y - 4, 36, 1.5), gold)
+	draw_rect(Rect2(p.x - 16, p.y + 2, 32, 2), Color(0.12, 0.1, 0.16))
+	# da qui in poi la figura guarda verso di te (destra o sinistra)
+	draw_set_transform(p, 0.0, Vector2(face, 1.0))
+	var o := Vector2(0, -4)
+	# scettro was, nella mano dietro: asta, forcella in basso, testa d'animale in cima
+	var sx := -11.0
+	draw_line(o + Vector2(sx, 0), o + Vector2(sx, -60 + bob), gold_dk, 2.2)
+	draw_line(o + Vector2(sx, 0), o + Vector2(sx - 2, 3), gold_dk, 1.5)
+	draw_line(o + Vector2(sx, 0), o + Vector2(sx + 2, 3), gold_dk, 1.5)
+	draw_colored_polygon(PackedVector2Array([o + Vector2(sx - 1, -60 + bob), o + Vector2(sx + 5, -63 + bob), o + Vector2(sx + 4, -60 + bob), o + Vector2(sx + 1, -58 + bob)]), gold)
+	draw_circle(o + Vector2(sx, -60 + bob), 4.0, Color(gold, 0.15 + 0.2 * pulse))
+	# gambe
+	draw_colored_polygon(PackedVector2Array([o + Vector2(-5, -16), o + Vector2(-1, -16), o + Vector2(-2, 0), o + Vector2(-5, 0)]), black)
+	draw_colored_polygon(PackedVector2Array([o + Vector2(1, -16), o + Vector2(5, -16), o + Vector2(6, 0), o + Vector2(2, 0)]), black)
+	draw_rect(Rect2(o.x - 6, o.y - 1, 5, 1.5), gold)
+	draw_rect(Rect2(o.x + 2, o.y - 1, 5, 1.5), gold)
+	# gonnellino di lino con la cintura d'oro e il grembiule
+	draw_colored_polygon(PackedVector2Array([o + Vector2(-7, -27 + bob), o + Vector2(7, -27 + bob), o + Vector2(9, -14), o + Vector2(-8, -14)]), linen)
+	for i in range(5):
+		draw_line(o + Vector2(-5 + i * 3, -25 + bob), o + Vector2(-6 + i * 3.4, -15), linen.darkened(0.18), 0.8)
+	draw_colored_polygon(PackedVector2Array([o + Vector2(0, -26 + bob), o + Vector2(5, -26 + bob), o + Vector2(4, -15), o + Vector2(1, -15)]), gold)
+	draw_rect(Rect2(o.x - 7.5, o.y - 28 + bob, 15, 2.5), gold)
+	# busto
+	var sh := -44.0 + bob
+	draw_colored_polygon(PackedVector2Array([o + Vector2(-9, sh), o + Vector2(9, sh), o + Vector2(6, -27 + bob), o + Vector2(-6, -27 + bob)]), black)
+	draw_colored_polygon(PackedVector2Array([o + Vector2(-2, sh + 2), o + Vector2(7, sh + 2), o + Vector2(4, -30 + bob)]), black_hi)
+	# parrucca a strisce di lapislazzuli dietro la testa
+	draw_colored_polygon(PackedVector2Array([o + Vector2(-6, (sh - 9.0 + bob * 0.5) - 4), o + Vector2(1, (sh - 9.0 + bob * 0.5) - 6), o + Vector2(2, sh + 5), o + Vector2(-7, sh + 6)]), lapis)
+	for i in range(4):
+		draw_line(o + Vector2(-6, (sh - 9.0 + bob * 0.5) - 1 + i * 3.4), o + Vector2(1.5, (sh - 9.0 + bob * 0.5) - 1 + i * 3.4), gold, 0.8)
+	# braccio dietro (tiene lo scettro)
+	draw_line(o + Vector2(-8, sh + 2), o + Vector2(sx, -32 + bob), black, 3.2)
+	draw_circle(o + Vector2(sx, -31 + bob), 1.8, black)
+	draw_line(o + Vector2(-9.5, sh + 6), o + Vector2(-10.5, sh + 8), gold, 2.0)
+	# collare usekh
+	for r in range(4):
+		var col: Color = [gold, lapis, turq, gold][r]
+		draw_arc(o + Vector2(0, sh - 1), 4.0 + r * 2.2, 0.08 * PI, 0.92 * PI, 14, col, 2.0)
+	# braccio davanti: tiene l'ankh lungo il fianco; quando parla si alza verso di te
+	var lift := 0.0
+	if talking:
+		lift = 0.6 + 0.25 * sin(t * 3.0)
+	var shoulder := o + Vector2(8, sh + 2)
+	var elbow := shoulder + Vector2(2 + 4 * lift, 9 - 6 * lift)
+	var hand := elbow + Vector2(1 + 7 * lift, 8 - 12 * lift)
+	draw_line(shoulder, elbow, black, 3.2)
+	draw_line(elbow, hand, black, 3.0)
+	draw_line(shoulder + Vector2(1, 5), shoulder + Vector2(1.5, 7), gold, 2.0)
+	draw_circle(hand, 1.9, black)
+	# l'ankh nella mano
+	var ak := hand + Vector2(0.5, 2.5 - 2.0 * lift)
+	draw_arc(ak + Vector2(0, -4), 2.0, 0, TAU, 10, gold, 1.3)
+	draw_line(ak + Vector2(-2.5, -1.5), ak + Vector2(2.5, -1.5), gold, 1.3)
+	draw_line(ak + Vector2(0, -2), ak + Vector2(0, 5), gold, 1.4)
+	var hy := sh - 9.0 + bob * 0.5
+	# testa di sciacallo: cranio, muso lungo, orecchie alte che a volte si muovono
+	var twitch := 0.0
+	var tw := fmod(t, 4.3)
+	if tw < 0.18:
+		twitch = sin(tw / 0.18 * PI) * 2.0
+	draw_colored_polygon(PackedVector2Array([o + Vector2(-3, hy - 3), o + Vector2(-1, hy - 21 - twitch), o + Vector2(3, hy - 4)]), black)
+	draw_colored_polygon(PackedVector2Array([o + Vector2(-1.5, hy - 4), o + Vector2(-0.8, hy - 16 - twitch), o + Vector2(1.5, hy - 5)]), gold_dk)
+	draw_colored_polygon(PackedVector2Array([o + Vector2(1, hy - 4), o + Vector2(5, hy - 22), o + Vector2(6, hy - 3)]), black)
+	draw_colored_polygon(PackedVector2Array([o + Vector2(2.5, hy - 5), o + Vector2(4.8, hy - 17), o + Vector2(5, hy - 5)]), Color(0.55, 0.16, 0.14))
+	draw_circle(o + Vector2(1, hy), 5.5, black)
+	draw_colored_polygon(PackedVector2Array([o + Vector2(3, hy - 3), o + Vector2(15, hy + 1), o + Vector2(15, hy + 3), o + Vector2(3, hy + 4)]), black)
+	draw_line(o + Vector2(4, hy - 2.5), o + Vector2(14, hy + 1), black_hi, 1.0)
+	draw_circle(o + Vector2(15, hy + 2), 1.2, Color(0.02, 0.02, 0.03))
+	draw_line(o + Vector2(7, hy + 3.5), o + Vector2(14, hy + 2.5), Color(0.25, 0.2, 0.3), 0.8)
+	# occhio d'oro con il kohl: brilla di più quando parla
+	var eye := o + Vector2(4, hy - 1)
+	draw_circle(eye, 3.0 + 1.5 * pulse, Color(1, 0.8, 0.3, (0.25 if talking else 0.1) * pulse))
+	draw_colored_polygon(PackedVector2Array([eye + Vector2(-2, 0), eye + Vector2(0, -1.2), eye + Vector2(2.2, 0), eye + Vector2(0, 1)]), Color(1, 0.85, 0.35))
+	draw_line(eye + Vector2(-2, 0), eye + Vector2(-5, 0.6), gold, 0.8)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	if near == "anubi" and not talk_box.visible:
-		draw_arc(Vector2(p.x, p.y - 20), 22.0, 0.0, TAU, 32, Color(0.62, 0.56, 0.92, 0.5 + 0.3 * sin(t * 4.0)), 1.5)
+		draw_arc(Vector2(p.x, p.y - 30), 30.0, 0.0, TAU, 40, Color(aura, 0.5 + 0.3 * sin(t * 4.0)), 1.5)
 
 
 func _draw_book(p: Vector2) -> void:
