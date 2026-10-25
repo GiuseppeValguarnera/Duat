@@ -111,7 +111,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				st = breath_time
 				breath_tick = 0.0
 				breath_spawn = 0.0
-				Sfx.play("roar", 0.2)
+				Sfx.play("fire_whoosh", 0.05)
 			return Vector2.ZERO
 		"breath":
 			# la fiamma segue il giocatore, ma lentamente: ci si sottrae girandogli intorno
@@ -126,6 +126,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			if st <= 0.0:
 				state = "exhausted"
 				st = exhausted_time
+				Sfx.play("amheh_pant", 0.05)
 				Fx.float_text(global_position + Vector2(0, -36), "ESAUSTO", Color(1, 0.85, 0.3))
 			return Vector2.ZERO
 		"exhausted", "recover":
@@ -155,10 +156,12 @@ func _choose_attack(to: Vector2) -> void:
 	if d < bite_range and r < 0.55:
 		state = "bite"
 		st = bite_windup
+		Sfx.play("amheh_growl", 0.1)
 	elif r < 0.55 or d > 170.0:
 		state = "leap_windup"
 		st = leap_windup
 		leap_to = _clamp_arena(global_position + to)
+		Sfx.play("amheh_growl", 0.15)
 	else:
 		state = "breath_windup"
 		st = breath_windup
@@ -198,7 +201,7 @@ func _clamp_arena(p: Vector2) -> Vector2:
 
 
 func _bite() -> void:
-	Sfx.play("bite")
+	Sfx.play("amheh_bite")
 	Fx.shake(5.0)
 	Fx.burst(global_position + Vector2(0, -12) + aim * 28.0, Color(0.95, 0.9, 0.8), 12, 110.0)
 	var player = get_tree().get_first_node_in_group("player")
@@ -211,7 +214,7 @@ func _bite() -> void:
 
 func _land() -> void:
 	Fx.shake(9.0)
-	Sfx.play("charge", 0.1)
+	Sfx.play("amheh_land", 0.1)
 	Fx.burst(global_position, Color(1, 0.5, 0.15), 26, 160.0)
 	var player = get_tree().get_first_node_in_group("player")
 	if player != null and not player.dead and player.global_position.distance_to(global_position) < leap_radius + 6.0:
@@ -253,7 +256,7 @@ func _howl() -> void:
 	state = "howl"
 	var warn := flood_warn - 0.15 * phase
 	st = warn + 0.25
-	Sfx.play("roar", 0.0)
+	Sfx.play("amheh_howl", 0.04)
 	Fx.shake(5.0)
 	var flood := Hazards.FireFlood.new()
 	flood.area = arena

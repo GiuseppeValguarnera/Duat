@@ -95,6 +95,7 @@ func damage_number(pos: Vector2, value: float, color: Color = Color(1, 0.95, 0.8
 func impact(pos: Vector2, dir: Vector2, big: bool = false) -> void:
 	if world == null or not is_instance_valid(world):
 		return
+	Sfx.play("spark_heavy" if big else "spark", 0.12)
 	var n := Impact.new()
 	n.dir = dir
 	n.big = big
@@ -107,6 +108,7 @@ func impact(pos: Vector2, dir: Vector2, big: bool = false) -> void:
 func soul(pos: Vector2, color: Color = Color(0.95, 0.85, 0.55)) -> void:
 	if world == null or not is_instance_valid(world):
 		return
+	Sfx.play("soul", 0.2)
 	var n := Soul.new()
 	n.color = color
 	n.z_index = 55

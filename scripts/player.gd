@@ -56,6 +56,7 @@ const SPEAR := [
 const SPEAR_LUNGE := {"range": 78.0, "arc": 24.0, "mult": 1.5, "cd": 0.32, "lunge": 70.0, "knock": 160.0}
 
 var hp := 0.0
+var was_wet := false					# per lo schizzo quando entri in acqua
 var after_dash_t := 0.0                 # subito dopo uno scatto: affondo della lancia o fendente di Wepwawet
 var spin_swing := false                 # l'ultimo colpo è stato il fendente circolare
 var dead := false
@@ -145,8 +146,13 @@ func _physics_process(delta: float) -> void:
 		_dash_damage()
 	else:
 		var s := speed * Run.move_mult() * (attack_slowdown if atk_t > 0.0 else 1.0)
-		if Hazards.in_water(get_tree(), global_position):
+		var wet := Hazards.in_water(get_tree(), global_position)
+		if wet:
 			s *= Hazards.WATER_SLOW
+		if wet and not was_wet:
+			Sfx.play("splash", 0.12)
+			Fx.burst(global_position, Color(0.6, 0.85, 1.0, 0.8), 8, 60.0)
+		was_wet = wet
 		velocity = move * s + knock
 		if move.length() > 0.1:
 			walk += delta * 10.0

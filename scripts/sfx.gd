@@ -23,6 +23,11 @@ const SOUNDS := {
 	"cobra_hiss": [-3.0, "nemici"], "cobra_spit": [-3.0, "nemici"],
 	"serpent_hiss": [0.0, "nemici"], "serpent_strike": [0.0, "nemici"], "serpent_burrow": [0.0, "nemici"], "serpent_erupt": [0.0, "nemici"],
 	"spikes": [-2.0, "trappole"], "dart": [-2.0, "trappole"],
+	"amheh_growl": [0.0, "nemici", 300], "amheh_bite": [0.0, "nemici"], "amheh_land": [0.0, "nemici"],
+	"amheh_howl": [0.0, "nemici", 800], "amheh_pant": [-2.0, "nemici", 800], "flood_burst": [0.0, "nemici", 500],
+	"fire_whoosh": [-2.0, "trappole", 200], "fire_ignite": [-4.0, "trappole", 140], "jar_break": [-1.0, "trappole", 60],
+	"splash": [-4.0, "scatto", 250],
+	"spark": [-3.0, "attacchi", 40], "spark_heavy": [-1.0, "attacchi", 60], "soul": [-6.0, "nemici", 90],
 	"pickup": [0.0, "menu"], "boon": [0.0, "menu"], "door": [0.0, "menu"], "ui": [-4.0, "menu"],
 	"book": [0.0, "menu"], "page": [0.0, "menu"],
 }

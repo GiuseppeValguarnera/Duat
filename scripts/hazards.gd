@@ -130,6 +130,7 @@ class FirePatch extends Node2D:
 	var owner_kind := "amheh_fuoco"
 	var t := 0.0
 	var tick := 0.0
+	var _lit := false
 
 	func _ready() -> void:
 		add_to_group("fire")
@@ -146,6 +147,9 @@ class FirePatch extends Node2D:
 		if not burning():
 			queue_redraw()
 			return
+		if not _lit:
+			_lit = true
+			Sfx.play_at("fire_ignite", global_position, 0.15)
 		tick -= delta
 		if tick <= 0.0:
 			tick = 0.5
@@ -192,6 +196,7 @@ class FireFlood extends Node2D:
 	var owner_kind := "amheh_marea"
 	var t := 0.0
 	var hit := false
+	var _burst := false
 	var cells: Array = []        ## [centro, distanza dall'origine]
 	var max_d := 1.0
 
@@ -214,6 +219,10 @@ class FireFlood extends Node2D:
 			queue_free()
 			return
 		# ferisce solo nell'istante della vampata: le fiamme che restano sono solo da guardare
+		if t >= warn and not _burst:
+			_burst = true
+			Sfx.play("flood_burst", 0.05)
+			Fx.shake(6.0)
 		if t >= warn and t < warn + 0.15 and not hit:
 			var player = get_tree().get_first_node_in_group("player")
 			if player != null and not player.dead and not Hazards.in_water(get_tree(), player.global_position):
@@ -293,7 +302,7 @@ class FireGrate extends Node2D:
 		var now := phase()
 		if now == "up" and was != "up":
 			_hit.clear()
-			Sfx.play("orb", 0.1)
+			Sfx.play("fire_whoosh", 0.1)
 			for c in centers():
 				Hazards.ignite_jars(get_tree(), c, CELL)
 		if now == "up":
@@ -368,7 +377,7 @@ class OilJar extends StaticBody2D:
 			await get_tree().create_timer(delay, false).timeout
 		if not is_inside_tree():
 			return
-		Sfx.play("hit", 0.2)
+		Sfx.play("jar_break", 0.12)
 		Fx.burst(global_position + Vector2(0, -6), Color(0.6, 0.4, 0.25), 12, 90.0)
 		var f := FirePatch.new()
 		f.radius = 28.0

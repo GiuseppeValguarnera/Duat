@@ -253,7 +253,7 @@ Il Sekhem è il dono di **Am-heh**: si sblocca per sempre la prima volta che lo 
 
 ## Suoni
 
-Spuntoni, mummie, scorpioni, cobra e Serpente hanno suoni costruiti apposta (`tools/synth_sfx.py`): lastra che scatta e lame che escono, bende che sfregano e rantolo, zampette di chitina, sibili, sabbia che si apre.
+Spuntoni, mummie, scorpioni, cobra e Serpente hanno suoni costruiti apposta (`tools/synth_sfx.py`): lastra che scatta e lame che escono, bende che sfregano e rantolo, zampette di chitina, sibili, sabbia che si apre. Am-heh ringhia prima del morso e del balzo, azzanna con un latrato secco, atterra con un tonfo, ulula prima della marea (la voce sale e ridiscende) e ansima quando è esausto. Il fuoco soffia (fiato di Am-heh, grate), si accende (olio, fuoco a terra) e divampa (marea). I colpi a segno hanno il tintinnio della scintilla (più pieno sui colpi forti), le giare si rompono come coccio, l'acqua fa uno schizzo quando ci entri, l'anima dei nemici sale con un sussurro. Si rigenerano con `python3 tools/synth_sfx.py <pacchetti Kenney> assets/sfx nome1,nome2`.
 
 I suoni vengono dai pacchetti CC0 di [Kenney](https://kenney.nl/assets/category:Audio) (*Impact Sounds*, *Interface Sounds*, *RPG Audio*): uso libero anche commerciale. Crediti in `assets/sfx/CREDITS.md`.
 
