@@ -166,7 +166,7 @@ func _hit_wall() -> bool:
 			if body.is_in_group("pillars"):
 				state = "stunned"
 				st = stun_time
-				Fx.float_text(global_position + Vector2(0, -30), "STORDITA", Color(1, 0.85, 0.3))
+				Fx.float_text(global_position + Vector2(0, -30), Lang.t("STORDITA"), Color(1, 0.85, 0.3))
 				body.remove_from_group("pillars")
 				pillar_broken.emit(body)
 			else:

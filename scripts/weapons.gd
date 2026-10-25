@@ -5,7 +5,7 @@ class_name Weapons
 ## "cost" = Lacrime per sbloccarlo (indice 0) e per i livelli 2 e 3.
 ## Le armi ancora da forgiare restano coperte da un telo nel cortile.
 
-const ALL := {
+const ALL_IT := {
 	"khopesh": {
 		"name": "Khopesh", "short": "KHOPESH", "the": "il khopesh",
 		"desc": "La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.",
@@ -35,7 +35,7 @@ const ALL := {
 }
 
 ## Armi ancora da forgiare: solo il nome, coperte nel cortile.
-const FUTURE := [
+const FUTURE_IT := [
 	{"name": "Arco di Satet", "glyph": "freccia"},
 	{"name": "Flagello di Osiride", "glyph": "flagello"},
 	{"name": "Scettro was", "glyph": "was"},
@@ -71,7 +71,7 @@ static func chosen_aspect(w: String) -> String:
 static func text(w: String, a: String, lvl: int) -> String:
 	var d: Dictionary = ALL[w]["aspects"][a]
 	var v = d["values"][clampi(lvl, 1, MAX_LEVEL) - 1]
-	var vs := str(v) if v is int else ("%.1f" % v).replace(".", ",")
+	var vs := str(v) if v is int else ("%.1f" % v).replace(".", "." if Lang.is_en() else ",")   # in inglese il punto
 	return String(d["desc"]).replace("{v}", vs)
 
 
@@ -102,9 +102,23 @@ static func choose(w: String, a: String = "") -> void:
 	Meta.save()
 
 
-## Il nome dell'arma per i testi dei doni scritti per il khopesh.
+## Il nome dell'arma per i testi dei doni scritti per il khopesh. Va chiamata sul testo già
+## tradotto: in italiano cambia anche l'articolo (il khopesh, la lancia), in inglese basta il nome.
 static func adapt(s: String) -> String:
 	if Run.weapon == "khopesh" or Run.weapon == "":
 		return s
+	if Lang.is_en():
+		return s.replace("Khopesh", "Spear").replace("khopesh", "spear")
 	return s.replace("Il khopesh", "La lancia").replace("il khopesh", "la lancia").replace("del khopesh", "della lancia") \
 		.replace("dal khopesh", "dalla lancia").replace("al khopesh", "alla lancia").replace("Khopesh", "Lancia").replace("khopesh", "lancia")
+
+
+## I testi qui sopra sono in italiano (le costanti *_IT); il gioco legge le copie tradotte
+## nella lingua scelta, rifatte da Lang.refresh_data() quando cambia la lingua.
+static var ALL: Dictionary = Lang.deep(ALL_IT)
+static var FUTURE: Array = Lang.deep(FUTURE_IT)
+
+
+static func refresh_lang() -> void:
+	ALL = Lang.deep(ALL_IT)
+	FUTURE = Lang.deep(FUTURE_IT)

@@ -407,19 +407,20 @@ class OilJar extends StaticBody2D:
 
 
 ## Le statue dell'ureo nell'arena del Serpente della Porta: il cobra che sputa fuoco e proteggeva
-## il faraone. Quattro teste di cobra sulle pareti laterali, ognuna su una riga diversa. A turno
-## una si accende (gli occhi rossi e una linea di braci sul pavimento: l'avviso), poi sputa una
-## lingua di fuoco attraverso la stanza, fino alla prima colonna. Brucia te, il Serpente e i suoi
-## scarabei: farcelo passare sopra è una strategia. Si fermano quando il guardiano cade.
+## il faraone. Quattro teste di cobra: due sulle pareti laterali, due sul muro in alto (così sul
+## telefono se ne vede sempre qualcuna). A turno una si accende (gli occhi rossi e una fila di
+## braci sul pavimento: l'avviso), poi sputa una lingua di fuoco attraverso la stanza, fino alla
+## prima colonna. Brucia te, il Serpente e i suoi scarabei: farcelo passare sopra è una
+## strategia, ripararsi dietro una colonna un'altra. Si spengono quando il guardiano cade.
 class UraeusStatues extends Node2D:
 	const WARN := 0.9
 	const FIRE := 0.45
-	const BAND := 10.0                    ## mezza altezza della lingua di fuoco
+	const BAND := 10.0                    ## mezza larghezza della lingua di fuoco
 	var room := Rect2()
 	var wall := 32.0
 	var top := 64.0
 	var pillars: Array = []
-	var statues: Array = []               ## [posizione della bocca, direzione (1 o -1)]
+	var statues: Array = []               ## [posizione della bocca, direzione del fuoco]
 	var current := -1
 	var last := -1
 	var phase := "idle"
@@ -427,7 +428,7 @@ class UraeusStatues extends Node2D:
 	var wait := 4.0                       ## la prima vampata arriva dopo qualche secondo
 	var hit_player := false
 	var hit_enemies := {}
-	var reach := 0.0                      ## fin dove arriva il fuoco (la prima colonna sulla riga)
+	var reach := Vector2.ZERO             ## dove finisce il fuoco (la parete o la prima colonna)
 
 	func setup(room_rect: Rect2, wall_w: float, top_y: float, pillar_list: Array) -> void:
 		room = room_rect
@@ -436,18 +437,31 @@ class UraeusStatues extends Node2D:
 		pillars = pillar_list
 		var y0 := top
 		var y1 := room.size.y - wall
-		for f in [[0.22, 1.0], [0.62, 1.0], [0.42, -1.0], [0.84, -1.0]]:
-			var y: float = lerpf(y0, y1, f[0])
-			var x: float = wall + 6.0 if f[1] > 0.0 else room.size.x - wall - 6.0
-			statues.append([Vector2(x, y), f[1]])
+		var x0 := wall
+		var x1 := room.size.x - wall
+		# nei corridoi liberi tra le colonne dell'arena (al 30% e al 70%, in alto e in basso):
+		# allineate alle colonne, le lingue di fuoco si fermavano dopo pochi passi
+		statues.append([Vector2(wall + 6.0, lerpf(y0, y1, 0.53)), Vector2.RIGHT])
+		statues.append([Vector2(room.size.x - wall - 6.0, lerpf(y0, y1, 0.88)), Vector2.LEFT])
+		statues.append([Vector2(lerpf(x0, x1, 0.42), top - 6.0), Vector2.DOWN])
+		statues.append([Vector2(lerpf(x0, x1, 0.58), top - 6.0), Vector2.DOWN])
 		add_to_group("uraeus")
 
-	## La riga in pericolo adesso (per il bot di playtest): [y, x da, x a], o vuoto.
-	func danger() -> Array:
+	## La striscia in pericolo adesso (anche per il bot di playtest), o un rettangolo vuoto.
+	func danger() -> Rect2:
 		if current < 0 or (phase != "warn" and phase != "fire"):
-			return []
+			return Rect2()
 		var m: Vector2 = statues[current][0]
-		return [m.y, minf(m.x, reach), maxf(m.x, reach)]
+		var d: Vector2 = statues[current][1]
+		var r := Rect2(m, Vector2.ZERO).expand(reach)
+		return r.grow_individual(BAND if d.y != 0.0 else 0.0, BAND if d.x != 0.0 else 0.0, BAND if d.y != 0.0 else 0.0, BAND if d.x != 0.0 else 0.0)
+
+	## Direzione per uscire dalla striscia (per il bot di playtest).
+	func escape_dir(p: Vector2) -> Vector2:
+		var d: Vector2 = statues[current][1]
+		var m: Vector2 = statues[current][0]
+		var side := d.orthogonal()
+		return side if (p - m).dot(side) >= 0.0 else -side
 
 	func _physics_process(delta: float) -> void:
 		var game = get_tree().current_scene
@@ -490,23 +504,29 @@ class UraeusStatues extends Node2D:
 					wait = randf_range(1.6, 2.2) if angry else randf_range(2.3, 3.0)
 		queue_redraw()
 
-	## La lingua di fuoco si ferma contro la prima colonna sulla sua riga.
-	func _reach(i: int) -> float:
+	## La lingua di fuoco si ferma contro la parete opposta o la prima colonna sulla sua strada.
+	## Le colonne sono alte: contano anche un po' sopra la base.
+	func _reach(i: int) -> Vector2:
 		var m: Vector2 = statues[i][0]
-		var dir: float = statues[i][1]
-		var end := room.size.x - wall if dir > 0.0 else wall
+		var d: Vector2 = statues[i][1]
+		if d.y != 0.0:
+			var end_y := room.size.y - wall
+			for p in pillars:
+				if absf(p.x - m.x) < 13.0 + BAND and p.y > m.y and p.y - 58.0 < end_y:
+					end_y = maxf(m.y + 20.0, p.y - 58.0)
+			return Vector2(m.x, end_y)
+		var end_x := room.size.x - wall if d.x > 0.0 else wall
 		for p in pillars:
-			# la colonna è alta: copre la riga anche un po' sopra la base
 			if m.y > p.y - 58.0 and m.y < p.y + 7.0 + BAND:
-				if dir > 0.0 and p.x > m.x and p.x - 13.0 < end:
-					end = p.x - 13.0
-				elif dir < 0.0 and p.x < m.x and p.x + 13.0 > end:
-					end = p.x + 13.0
-		return end
+				if d.x > 0.0 and p.x > m.x and p.x - 13.0 < end_x:
+					end_x = p.x - 13.0
+				elif d.x < 0.0 and p.x < m.x and p.x + 13.0 > end_x:
+					end_x = p.x + 13.0
+		return Vector2(end_x, m.y)
 
 	func _in_band(p: Vector2, extra: float) -> bool:
-		var d := danger()
-		return not d.is_empty() and absf(p.y - d[0]) < BAND + extra and p.x >= d[1] - extra and p.x <= d[2] + extra
+		var r := danger()
+		return r.size != Vector2.ZERO and r.grow(extra).has_point(p)
 
 	func _burn(guardian: Node) -> void:
 		var player = get_tree().get_first_node_in_group("player")
@@ -520,8 +540,8 @@ class UraeusStatues extends Node2D:
 				continue                  # sottoterra il fuoco non lo raggiunge
 			if _in_band(e.global_position, e.radius * 0.6):
 				hit_enemies[e] = true
-				e.take_hit(26.0 if e == guardian else 14.0, Vector2(statues[current][1], 0.0), 40.0, true)
-				Fx.float_text(e.global_position + Vector2(0, -22), "Ureo!", Color(1, 0.6, 0.2))
+				e.take_hit(26.0 if e == guardian else 14.0, statues[current][1], 40.0, true)
+				Fx.float_text(e.global_position + Vector2(0, -22), Lang.t("Ureo!"), Color(1, 0.6, 0.2))
 
 	func _draw() -> void:
 		for i in range(statues.size()):
@@ -529,20 +549,22 @@ class UraeusStatues extends Node2D:
 		if current < 0:
 			return
 		var m: Vector2 = statues[current][0]
-		var dir: float = statues[current][1]
-		var start := m + Vector2(dir * 8.0, 0)
-		var end := Vector2(reach, m.y)
+		var d: Vector2 = statues[current][1]
+		var start := m + d * 8.0
+		var end := reach
+		var side := d.orthogonal()
 		if phase == "warn":
-			# l'avviso: braci sul pavimento lungo la riga, sempre più fitte
+			# l'avviso: braci sul pavimento lungo la striscia, sempre più fitte
 			var k := t / WARN
-			var x := start.x
-			var step := 14.0
-			while (x - end.x) * dir < 0.0:
-				var a := 0.15 + 0.5 * k * (0.6 + 0.4 * sin(x * 0.7 + t * 18.0))
-				draw_circle(Vector2(x, m.y + 4.0), 1.6 + k * 1.4, Color(1.0, 0.45, 0.1, a))
-				x += step * dir
-			draw_line(start + Vector2(0, BAND), end + Vector2(0, BAND), Color(1, 0.4, 0.1, 0.25 * k), 1.0)
-			draw_line(start + Vector2(0, -BAND), end + Vector2(0, -BAND), Color(1, 0.4, 0.1, 0.25 * k), 1.0)
+			var length := start.distance_to(end)
+			var dist := 0.0
+			while dist < length:
+				var at := start + d * dist
+				var a := 0.15 + 0.5 * k * (0.6 + 0.4 * sin(dist * 0.7 + t * 18.0))
+				draw_circle(at + Vector2(0, 4.0 if d.y == 0.0 else 0.0), 1.6 + k * 1.4, Color(1.0, 0.45, 0.1, a))
+				dist += 14.0
+			draw_line(start + side * BAND, end + side * BAND, Color(1, 0.4, 0.1, 0.25 * k), 1.0)
+			draw_line(start - side * BAND, end - side * BAND, Color(1, 0.4, 0.1, 0.25 * k), 1.0)
 		elif phase == "fire":
 			var fade := 1.0 - maxf(0.0, (t - FIRE * 0.6) / (FIRE * 0.4))
 			var flick := 0.85 + 0.15 * sin(t * 60.0)
@@ -551,18 +573,23 @@ class UraeusStatues extends Node2D:
 			draw_line(start, end, Color(1.0, 0.95, 0.7, 0.85 * fade), BAND * 0.45)
 			draw_circle(end, BAND * 1.1 * flick, Color(1.0, 0.55, 0.15, 0.5 * fade))
 
-	## Una testa di cobra di pietra con il cappuccio dipinto, sporgente dalla parete.
-	func _draw_statue(m: Vector2, dir: float, lit: bool) -> void:
+	## Una testa di cobra di pietra con il cappuccio dipinto, sporgente dalla parete verso `d`.
+	func _draw_statue(m: Vector2, d: Vector2, lit: bool) -> void:
 		var stone := Color(0.62, 0.52, 0.36)
-		var base := m + Vector2(-dir * 4.0, 0)
-		draw_rect(Rect2(base.x - 5.0, base.y - 16.0, 10.0, 26.0), stone.darkened(0.35))
-		# il cappuccio
-		var hood := PackedVector2Array([base + Vector2(0, -14), base + Vector2(dir * 7.0, -10), base + Vector2(dir * 8.0, 2), base + Vector2(0, 6)])
+		var side := d.orthogonal()
+		var base := m - d * 4.0
+		# lo zoccolo nella parete
+		var b0 := base - side * 5.0 - d * 6.0
+		draw_colored_polygon(PackedVector2Array([b0, b0 + side * 10.0, b0 + side * 10.0 + d * 8.0, b0 + d * 8.0]), stone.darkened(0.35))
+		# il cappuccio, aperto ai lati della testa
+		var hood := PackedVector2Array([base - d * 4.0 - side * 3.0, base + d * 2.0 - side * 7.0, base + d * 8.0 - side * 4.0, base + d * 8.0 + side * 4.0, base + d * 2.0 + side * 7.0, base - d * 4.0 + side * 3.0])
 		draw_colored_polygon(hood, Color(0.18, 0.5, 0.48))
-		draw_polyline(PackedVector2Array([hood[0], hood[1], hood[2], hood[3]]), Color(0.9, 0.7, 0.3), 1.0)
-		# la testa che sporge, con la bocca
-		draw_rect(Rect2(base.x + (dir * 4.0 if dir > 0.0 else dir * 10.0), base.y - 5.0, 6.0, 6.0), stone)
+		draw_polyline(hood + PackedVector2Array([hood[0]]), Color(0.9, 0.7, 0.3), 1.0)
+		# la testa con la bocca
+		var head := base + d * 9.0
+		draw_circle(head, 3.2, stone)
 		var eye := Color(1.0, 0.25, 0.1) if lit else Color(0.2, 0.12, 0.08)
-		draw_circle(base + Vector2(dir * 7.0, -3.0), 1.2, eye)
+		draw_circle(head - d * 1.0 + side * 1.6, 1.0, eye)
+		draw_circle(head - d * 1.0 - side * 1.6, 1.0, eye)
 		if lit:
-			draw_circle(base + Vector2(dir * 9.0, 0.0), 4.0 + 2.0 * sin(t * 20.0), Color(1, 0.5, 0.15, 0.35))
+			draw_circle(head + d * 3.0, 4.0 + 2.0 * sin(t * 20.0), Color(1, 0.5, 0.15, 0.35))

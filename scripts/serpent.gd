@@ -52,7 +52,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 	if not enraged and hp < max_hp * 0.5:
 		enraged = true
 		Fx.shake(6.0)
-		Fx.float_text(global_position + Vector2(0, -30), "IL SERPENTE SI INFURIA", Color(0.6, 1, 0.5))
+		Fx.float_text(global_position + Vector2(0, -30), Lang.t("IL SERPENTE SI INFURIA"), Color(0.6, 1, 0.5))
 		summoned = true                 # niente rinforzi: il guardiano combatte da solo
 	_update_trail()
 	match state:

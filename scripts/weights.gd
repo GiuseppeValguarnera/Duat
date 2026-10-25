@@ -8,7 +8,7 @@ class_name Weights
 
 const KA_PER_WEIGHT := 0.10
 
-const ALL := {
+const ALL_IT := {
 	"piombo": {"name": "Piume di piombo", "max": 2, "desc": "I nemici hanno il 20% di vita in più per livello."},
 	"zanne": {"name": "Zanne affilate", "max": 2, "desc": "Subisci il 20% di danni in più per livello."},
 	"orde": {"name": "Le orde del Duat", "max": 2, "desc": "Ogni ondata ha il 25% di nemici in più per livello."},
@@ -46,3 +46,12 @@ static func cycle(id: String) -> void:
 	var r := (rank(id) + 1) % (int(ALL[id]["max"]) + 1)
 	Meta.weights[id] = r
 	Meta.save()
+
+
+## I testi qui sopra sono in italiano (le costanti *_IT); il gioco legge le copie tradotte
+## nella lingua scelta, rifatte da Lang.refresh_data() quando cambia la lingua.
+static var ALL: Dictionary = Lang.deep(ALL_IT)
+
+
+static func refresh_lang() -> void:
+	ALL = Lang.deep(ALL_IT)

@@ -57,46 +57,46 @@ func reward_label() -> String:
 		"boon":
 			return Boons.god_name(reward["god"])
 		"set":
-			return "Set"
+			return Lang.t("Set")
 		"ka":
-			return "Ka"
+			return Lang.t("Ka")
 		"heal":
-			return "Cura"
+			return Lang.t("Cura")
 		"boss":
-			return "Am-heh"
+			return Lang.t("Am-heh")
 		"guardian":
-			return "Guardiano"
+			return Lang.t("Guardiano")
 		"shop":
-			return "Traghettatore"
+			return Lang.t("Traghettatore")
 		"tutorial_end":
-			return "La discesa"
+			return Lang.t("La discesa")
 		_:
-			return "Uscita"
+			return Lang.t("Uscita")
 
 
 ## Testo mostrato quando il giocatore si avvicina.
 func reward_description() -> String:
 	match reward.get("kind", ""):
 		"boon":
-			return "Dono di %s: scegli uno dei suoi poteri" % Boons.god_name(reward["god"])
+			return Lang.t("Dono di %s: scegli uno dei suoi poteri") % Boons.god_name(reward["god"])
 		"set":
-			return "L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa"
+			return Lang.t("L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa")
 		"ka":
-			return "Tesoro di Ka: +25 Ka"
+			return Lang.t("Tesoro di Ka: +25 Ka")
 		"heal":
 			if Run.room + 1 == Run.ROOMS_PER_RUN:
-				return "Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh" % roundi(Run.nile_heal() * 100.0)
-			return "Acqua del Nilo: recuperi il %d%% della vita" % roundi(Run.nile_heal() * 100.0)
+				return Lang.t("Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh") % roundi(Run.nile_heal() * 100.0)
+			return Lang.t("Acqua del Nilo: recuperi il %d%% della vita") % roundi(Run.nile_heal() * 100.0)
 		"boss":
-			return "Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco"
+			return Lang.t("Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco")
 		"guardian":
-			return "La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore"
+			return Lang.t("La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore")
 		"shop":
-			return "Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa)"
+			return Lang.t("Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa)")
 		"tutorial_end":
-			return "Comincia la discesa: Anubi ti aspetta con il primo dono"
+			return Lang.t("Comincia la discesa: Anubi ti aspetta con il primo dono")
 		_:
-			return "Uscita: fine della discesa di prova"
+			return Lang.t("Uscita: fine della discesa di prova")
 
 
 func _draw() -> void:

@@ -8,6 +8,7 @@ extends Node2D
 ## - La stele: misura l'ultimo colpo, la combinazione e i danni al secondo.
 ## - La porta delle prove: fa uscire i nemici che vuoi, per provare l'arma senza rischi.
 
+const DecorScript := preload("res://scripts/room_decor.gd")
 const ROOM := Rect2(0, 0, 640, 380)
 const WALL := 32.0
 const TOP := 64.0
@@ -79,7 +80,7 @@ func _ready() -> void:
 	_build()
 	Fx.scale_labels($UI)
 	talk_box.visible = false
-	talk_name.add_theme_color_override("font_color", NEITH_COLOR.lightened(0.2))
+	UiStyle.talk_style(talk_box, talk_name, talk_text, NEITH_COLOR)
 	last_dealt = Run.damage_dealt
 	if not Meta.weapons_unlocked.has("lancia"):
 		_start_talk()
@@ -100,6 +101,24 @@ func _build() -> void:
 	_solid(Rect2(spots["stele"] - Vector2(12, 6), Vector2(24, 10)))
 	for p in pedestals:
 		_solid(Rect2(p["pos"] - Vector2(12, 4), Vector2(24, 10)))
+	# l'arredamento delle stanze della discesa (pareti dipinte, torce, bracieri, vasi), tenuto
+	# lontano da piedistalli, Neith, altare, stele e porte: prima il cortile era spoglio
+	var keep_clear: Array = [spots["neith"], spots["altare"], spots["stele"], spots["prove"], Vector2(ROOM.size.x - WALL, 210.0)]
+	for p in pedestals:
+		keep_clear.append(p["pos"])
+	var decor := DecorScript.new()
+	world.add_child(decor)
+	for r in decor.build(777, ROOM, TOP, WALL, keep_clear, false):
+		_solid(r)
+	decor.props = decor.props.filter(func(pr: Array) -> bool:
+		if pr[0] != "urn":
+			return true
+		for k in keep_clear:
+			if (pr[1] as Vector2).distance_to(k) < 40.0:
+				return false
+		return true)
+	decor.mosaic = ""                     # al centro ci sono gli ushabti e la stele: niente mosaico
+	world.move_child(decor, 0)
 	player = PlayerScene.instantiate()
 	player.position = Vector2(ROOM.size.x - 70.0, 210.0)
 	world.add_child(player)
@@ -137,7 +156,7 @@ func _spawn_target(pos: Vector2) -> void:
 		get_tree().create_timer(1.3).timeout.connect(func() -> void:
 			if is_inside_tree():
 				Fx.burst(pos + Vector2(0, -12), Color(0.3, 0.68, 0.72), 16, 70.0)
-				Fx.float_text(pos + Vector2(0, -30), "Eccomi!", Color(0.6, 0.9, 0.9))
+				Fx.float_text(pos + Vector2(0, -30), Lang.t("Eccomi!"), Color(0.6, 0.9, 0.9))
 				_spawn_target(pos)))
 
 
@@ -171,13 +190,13 @@ func _process(delta: float) -> void:
 		return
 	_measure()
 	var w: Dictionary = Weapons.ALL[Run.weapon]
-	hud.text = "Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d" % [w["name"], w["aspects"][Run.aspect]["name"], Meta.tears]
+	hud.text = Lang.t("Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d") % [w["name"], w["aspects"][Run.aspect]["name"], Meta.tears]
 	if Fx.device == "touch":
 		help.text = ""
 	elif Fx.device == "pad":
-		help.text = "Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi"
+		help.text = Lang.t("Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi")
 	else:
-		help.text = "WASD muovi · clic attacca · Spazio scatto · clic destro Occhio · E interagisci"
+		help.text = Lang.t("WASD muovi · clic attacca · Spazio scatto · clic destro Occhio · E interagisci")
 	trial_enemies = trial_enemies.filter(func(e) -> bool: return is_instance_valid(e) and not e.dead)
 	if talk_box.visible or menu != null:
 		prompt.visible = false
@@ -198,28 +217,28 @@ func _process(delta: float) -> void:
 		if dd < best:
 			best = dd
 			near = "ped%d" % i
-	var key := "Y" if Fx.device == "pad" else ("AZIONE" if Fx.device == "touch" else "E")
+	var key := "Y" if Fx.device == "pad" else (Lang.t("AZIONE") if Fx.device == "touch" else "E")
 	match near:
 		"neith":
-			prompt.text = "%s · Parla con Neith" % key
+			prompt.text = Lang.t("%s · Parla con Neith") % key
 		"altare":
-			prompt.text = "%s · L'altare degli aspetti (Lacrime di Iside: %d)" % [key, Meta.tears]
+			prompt.text = Lang.t("%s · L'altare degli aspetti (Lacrime di Iside: %d)") % [key, Meta.tears]
 		"prove":
-			prompt.text = "%s · La porta delle prove" % key if trial_enemies.is_empty() else "%s · La porta delle prove (nemici in campo: %d)" % [key, trial_enemies.size()]
+			prompt.text = Lang.t("%s · La porta delle prove") % key if trial_enemies.is_empty() else Lang.t("%s · La porta delle prove (nemici in campo: %d)") % [key, trial_enemies.size()]
 		"stele":
-			prompt.text = "La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove"
+			prompt.text = Lang.t("La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove")
 		"":
 			prompt.text = ""
 		_:
 			var p: Dictionary = pedestals[int(near.substr(3))]
 			if p["id"] == "":
-				prompt.text = "%s · arma non ancora forgiata" % p["name"]
+				prompt.text = Lang.t("%s · arma non ancora forgiata") % p["name"]
 			elif not Weapons.is_unlocked(p["id"]):
-				prompt.text = "%s · parla con Neith" % p["name"]
+				prompt.text = Lang.t("%s · parla con Neith") % p["name"]
 			elif Run.weapon == p["id"]:
-				prompt.text = "%s · è l'arma che impugni" % p["name"]
+				prompt.text = Lang.t("%s · è l'arma che impugni") % p["name"]
 			else:
-				prompt.text = "%s · Prendi: %s" % [key, p["name"]]
+				prompt.text = Lang.t("%s · Prendi: %s") % [key, p["name"]]
 	prompt.visible = prompt.text != ""
 
 
@@ -284,28 +303,28 @@ func _take_weapon(i: int) -> void:
 func _neith_lines() -> Array:
 	if not Meta.weapons_unlocked.has("lancia"):
 		return [
-			"Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.",
-			"Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.",
-			"Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.",
-			"Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.",
-			"Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.",
-			"I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.",
+			Lang.t("Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato."),
+			Lang.t("Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta."),
+			Lang.t("Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama."),
+			Lang.t("Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano."),
+			Lang.t("Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare."),
+			Lang.t("I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova."),
 		]
 	var beats := [
-		["lancia_amheh", Meta.first_kills.has("amheh|lancia|0"), ["La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba."]],
-		["khopesh_amheh", Meta.first_kills.has("amheh|khopesh|0"), ["Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime."]],
-		["aspetto", Meta.aspect_levels.size() > 0, ["Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire."]],
-		["senza_lacrime", Meta.tears == 0 and Meta.serpent_wins >= 3, ["Non hai Lacrime. Il pianto di Iside cade solo sui grandi signori della notte, battuti con un'arma che non li ha ancora conosciuti. Il Serpente della Porta non è degno delle sue lacrime. Cambia lama."]],
-		["teli", Meta.serpent_wins >= 2, ["Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu."]],
-		["sais", true, ["A Sais mi chiamavano madre di Ra. Molto più tardi i Greci mi confusero con la loro Atena. Lasciali confondere: le dee antiche non si offendono per così poco."]],
-		["tessitrice", true, ["Si dice che io abbia tessuto il mondo come una tela, e che lo tessa ancora ogni giorno. Una lancia è come un filo: dritta, tesa, e taglia solo se sai dove tirarla."]],
+		["lancia_amheh", Meta.first_kills.has("amheh|lancia|0"), [Lang.t("La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba.")]],
+		["khopesh_amheh", Meta.first_kills.has("amheh|khopesh|0"), [Lang.t("Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.")]],
+		["aspetto", Meta.aspect_levels.size() > 0, [Lang.t("Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.")]],
+		["senza_lacrime", Meta.tears == 0 and Meta.serpent_wins >= 3, [Lang.t("Non hai Lacrime. Il pianto di Iside cade solo sui grandi signori della notte, battuti con un'arma che non li ha ancora conosciuti. Il Serpente della Porta non è degno delle sue lacrime. Cambia lama.")]],
+		["teli", Meta.serpent_wins >= 2, [Lang.t("Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu.")]],
+		["sais", true, [Lang.t("A Sais mi chiamavano madre di Ra. Molto più tardi i Greci mi confusero con la loro Atena. Lasciali confondere: le dee antiche non si offendono per così poco.")]],
+		["tessitrice", true, [Lang.t("Si dice che io abbia tessuto il mondo come una tela, e che lo tessa ancora ogni giorno. Una lancia è come un filo: dritta, tesa, e taglia solo se sai dove tirarla.")]],
 	]
 	for b in beats:
 		if b[1] and not Meta.neith_seen.has(b[0]):
 			Meta.neith_seen.append(b[0])
 			Meta.save()
 			return b[2]
-	return [["Misura la distanza. Poi accorciala.", "Un'arma che non conosci ti tradirà nel momento peggiore.", "Torna quando avrai qualcosa da mostrarmi.", "Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male."].pick_random()]
+	return [[Lang.t("Misura la distanza. Poi accorciala."), Lang.t("Un'arma che non conosci ti tradirà nel momento peggiore."), Lang.t("Torna quando avrai qualcosa da mostrarmi."), Lang.t("Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.")].pick_random()]
 
 
 func _start_talk() -> void:
@@ -324,10 +343,10 @@ func _advance_talk() -> void:
 			Meta.save()
 			Sfx.play("boon", 0.0)
 			Fx.burst(pedestals[1]["pos"] + Vector2(0, -16), NEITH_COLOR, 30, 120.0)
-			Fx.float_text(pedestals[1]["pos"] + Vector2(0, -34), "Lancia di Neith", GOLD)
+			Fx.float_text(pedestals[1]["pos"] + Vector2(0, -34), Lang.t("Lancia di Neith"), GOLD)
 		return
 	Sfx.play("ui", 0.0)
-	talk_name.text = "Neith"
+	talk_name.text = Lang.t("Neith")
 	talk_text.text = talk_lines.pop_front()
 
 
@@ -397,7 +416,7 @@ func _close_menu() -> void:
 func _open_aspects(focus: String = "") -> void:
 	var w := Run.weapon
 	var wd: Dictionary = Weapons.ALL[w]
-	var col := _window("Altare di Neith · %s" % wd["name"], "Lacrime di Iside: %d  ·  si ottengono battendo Am-heh la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8)" % Meta.tears)
+	var col := _window(Lang.t("Altare di Neith · %s") % wd["name"], Lang.t("Lacrime di Iside: %d  ·  si ottengono battendo Am-heh la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8)") % Meta.tears)
 	var inner: float = col.custom_minimum_size.x
 	var first: Button = null
 	for a in wd["aspects"]:
@@ -408,20 +427,20 @@ func _open_aspects(focus: String = "") -> void:
 		box.add_theme_constant_override("separation", 1)
 		col.add_child(box)
 		# niente pallini ●○: i caratteri del gioco non li hanno e sul telefono diventano quadratini
-		var stars := ("livello %d/%d" % [lvl, Weapons.MAX_LEVEL]) if lvl > 0 else "da risvegliare"
-		var name_l := UiStyle.label("%s  ·  %s%s" % [ad["name"], stars, "  ·  SCELTO" if chosen else ""], 10, UiStyle.INK if lvl > 0 else UiStyle.INK_SOFT, true, inner)
+		var stars := (Lang.t("livello %d/%d") % [lvl, Weapons.MAX_LEVEL]) if lvl > 0 else Lang.t("da risvegliare")
+		var name_l := UiStyle.label("%s  ·  %s%s" % [ad["name"], stars, Lang.t("  ·  SCELTO") if chosen else ""], 10, UiStyle.INK if lvl > 0 else UiStyle.INK_SOFT, true, inner)
 		box.add_child(name_l)
 		var desc := Weapons.text(w, a, maxi(lvl, 1))
 		var nxt := Weapons.next_cost(w, a)
 		if lvl > 0 and nxt >= 0:
-			desc += "   (livello %d: %s)" % [lvl + 1, Weapons.text(w, a, lvl + 1)]
+			desc += Lang.t("   (livello %d: %s)") % [lvl + 1, Weapons.text(w, a, lvl + 1)]
 		box.add_child(UiStyle.label(desc, 8, UiStyle.INK_SOFT, false, inner))
 		box.add_child(UiStyle.label(ad["lore"], 7, Color(0.36, 0.3, 0.45), false, inner))
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", int(6 * Fx.ui))
 		box.add_child(row)
 		if lvl > 0 and not chosen:
-			var bsel := _button(row, "Scegli questo aspetto", true, func() -> void:
+			var bsel := _button(row, Lang.t("Scegli questo aspetto"), true, func() -> void:
 				Weapons.choose(w, a)
 				Run.new_run()
 				Sfx.play("boon", 0.0)
@@ -429,9 +448,9 @@ func _open_aspects(focus: String = "") -> void:
 			if first == null or a == focus:
 				first = bsel
 		if nxt >= 0:
-			var label := ("Risveglia · %d Lacrime" % nxt) if lvl == 0 else ("Potenzia al livello %d · %d Lacrime" % [lvl + 1, nxt])
+			var label := (Lang.t("Risveglia · %d Lacrime") % nxt) if lvl == 0 else (Lang.t("Potenzia al livello %d · %d Lacrime") % [lvl + 1, nxt])
 			if nxt == 1:
-				label = label.replace("Lacrime", "Lacrima")
+				label = label.replace(Lang.t("Lacrime"), Lang.t("Lacrima"))
 			var bup := _button(row, label, Meta.tears >= nxt, func() -> void:
 				if Weapons.upgrade(w, a):
 					Sfx.play("boon", 0.0)
@@ -442,26 +461,26 @@ func _open_aspects(focus: String = "") -> void:
 				_open_aspects(a))
 			if first == null and not bup.disabled:
 				first = bup
-	var close := _button(col, "Chiudi", true, _close_menu)
+	var close := _button(col, Lang.t("Chiudi"), true, _close_menu)
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	(first if first != null else close).grab_focus.call_deferred()
 
 
 func _open_trials() -> void:
-	var col := _window("La porta delle prove", "Scegli chi far uscire. Nel cortile non si muore: guarda la stele per vedere quanto fa la tua arma.")
+	var col := _window(Lang.t("La porta delle prove"), Lang.t("Scegli chi far uscire. Nel cortile non si muore: guarda la stele per vedere quanto fa la tua arma."))
 	var first: Button = null
 	for trial in TRIALS:
-		var b := _button(col, trial["name"], true, func() -> void:
+		var b := _button(col, Lang.t(trial["name"]), true, func() -> void:
 			_close_menu()
 			_spawn_trial(trial["list"]))
 		if first == null:
 			first = b
-	_button(col, "Via tutti i nemici", not trial_enemies.is_empty(), func() -> void:
+	_button(col, Lang.t("Via tutti i nemici"), not trial_enemies.is_empty(), func() -> void:
 		for e in trial_enemies:
 			if is_instance_valid(e) and not e.dead:
 				e.die()
 		_close_menu())
-	_button(col, "Chiudi", true, _close_menu)
+	_button(col, Lang.t("Chiudi"), true, _close_menu)
 	first.grab_focus.call_deferred()
 
 
@@ -500,11 +519,7 @@ func _draw() -> void:
 	draw_rect(Rect2(0, r.end.y - WALL, r.size.x, WALL), wall.darkened(0.35))
 	draw_rect(Rect2(0, 0, WALL, r.size.y), wall.darkened(0.35))
 	draw_rect(Rect2(r.end.x - WALL, 0, WALL, r.size.y), wall.darkened(0.35))
-	# fregio: lo scudo con le frecce incrociate di Neith, ripetuto sulla parete
-	var fx := 60.0
-	while fx < r.size.x - 40.0:
-		_neith_emblem(Vector2(fx, WALL + 16), 0.55, Color(GOLD, 0.55))
-		fx += 90.0
+	# il fregio ora sono le pareti dipinte delle stanze (room_decor.gd); lo scudo di Neith resta sull'altare
 	# uscita verso la Sala, a est
 	draw_rect(Rect2(r.end.x - WALL, 184, WALL, 52), Color(0.05, 0.05, 0.1))
 	draw_rect(Rect2(r.end.x - WALL - 3, 180, 3, 60), GOLD)
@@ -589,7 +604,7 @@ func _draw_stele(p: Vector2) -> void:
 	draw_polyline(PackedVector2Array([Vector2(p.x - 22, p.y + 4), Vector2(p.x - 22, p.y - 44), Vector2(p.x, p.y - 52), Vector2(p.x + 22, p.y - 44), Vector2(p.x + 22, p.y + 4)]), GOLD, 1.0)
 	var font := UiStyle.title_font()
 	var fs := 7
-	var lines := [["colpo", "%d" % roundi(last_hit)], ["combo", "%d" % roundi(combo_dmg)], ["al sec.", "%d" % roundi(_dps())]]
+	var lines := [[Lang.t("colpo"), "%d" % roundi(last_hit)], [Lang.t("combo"), "%d" % roundi(combo_dmg)], [Lang.t("al sec."), "%d" % roundi(_dps())]]
 	for i in range(lines.size()):
 		var yy := p.y - 36 + i * 13
 		draw_string(font, Vector2(p.x - 19, yy), lines[i][0], HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.85, 0.8, 0.7))

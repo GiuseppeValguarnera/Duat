@@ -1,62 +1,67 @@
 keys,it,en
-Fiato di fuoco,Fiato di fuoco,
-Marea di fuoco,Marea di fuoco,
-ESAUSTO,ESAUSTO,
-L'acqua evapora,L'acqua evapora,
+Fiato di fuoco,Fiato di fuoco,Fire breath
+Marea di fuoco,Marea di fuoco,Tide of fire
+ESAUSTO,ESAUSTO,EXHAUSTED
+L'acqua evapora,L'acqua evapora,The water evaporates
 Ruggito del Giudizio,Ruggito del Giudizio,Roar of Judgement
 STORDITA,STORDITA,STUNNED
-Sciame di scarabei,Sciame di scarabei,
-Due mummie,Due mummie,
-Un sacerdote,Un sacerdote,
-Scorpioni di Serket,Scorpioni di Serket,
-Un cobra,Un cobra,
-Tutti insieme,Tutti insieme,
-Eccomi!,Eccomi!,
-Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d,Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d,
-Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi,Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi,
-WASD muovi · clic attacca · Spazio scatto · clic destro Occhio · E interagisci,WASD muovi · clic attacca · Spazio scatto · clic destro Occhio · E interagisci,
-%s · Parla con Neith,%s · Parla con Neith,
-%s · L'altare degli aspetti (Lacrime di Iside: %d),%s · L'altare degli aspetti (Lacrime di Iside: %d),
-%s · La porta delle prove,%s · La porta delle prove,
-%s · La porta delle prove (nemici in campo: %d),%s · La porta delle prove (nemici in campo: %d),
-La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove,La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove,
-%s · arma non ancora forgiata,%s · arma non ancora forgiata,
-%s · parla con Neith,%s · parla con Neith,
-%s · è l'arma che impugni,%s · è l'arma che impugni,
-%s · Prendi: %s,%s · Prendi: %s,
-"Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.","Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.",
-Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,
-Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,
-"Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.","Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.",
-"Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.",
-"I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.","I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.",
-"La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba.","La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba.",
-"Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.",
-"Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.","Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.",
-"Non hai Lacrime. Il pianto di Iside cade solo sui grandi signori della notte, battuti con un'arma che non li ha ancora conosciuti. Il Serpente della Porta non è degno delle sue lacrime. Cambia lama.","Non hai Lacrime. Il pianto di Iside cade solo sui grandi signori della notte, battuti con un'arma che non li ha ancora conosciuti. Il Serpente della Porta non è degno delle sue lacrime. Cambia lama.",
-Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu.,Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu.,
-A Sais mi chiamavano madre di Ra. Molto più tardi i Greci mi confusero con la loro Atena. Lasciali confondere: le dee antiche non si offendono per così poco.,A Sais mi chiamavano madre di Ra. Molto più tardi i Greci mi confusero con la loro Atena. Lasciali confondere: le dee antiche non si offendono per così poco.,
-"Si dice che io abbia tessuto il mondo come una tela, e che lo tessa ancora ogni giorno. Una lancia è come un filo: dritta, tesa, e taglia solo se sai dove tirarla.","Si dice che io abbia tessuto il mondo come una tela, e che lo tessa ancora ogni giorno. Una lancia è come un filo: dritta, tesa, e taglia solo se sai dove tirarla.",
-Misura la distanza. Poi accorciala.,Misura la distanza. Poi accorciala.,
-Un'arma che non conosci ti tradirà nel momento peggiore.,Un'arma che non conosci ti tradirà nel momento peggiore.,
-Torna quando avrai qualcosa da mostrarmi.,Torna quando avrai qualcosa da mostrarmi.,
-"Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.","Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.",
-Lancia di Neith,Lancia di Neith,
-Neith,Neith,
-Altare di Neith · %s,Altare di Neith · %s,
-Lacrime di Iside: %d  ·  si ottengono battendo Am-heh la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo Am-heh la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),
-livello %d/%d,livello %d/%d,
-da risvegliare,da risvegliare,
-  ·  SCELTO,  ·  SCELTO,
-   (livello %d: %s),   (livello %d: %s),
-Risveglia · %d Lacrime,Risveglia · %d Lacrime,
-Potenzia al livello %d · %d Lacrime,Potenzia al livello %d · %d Lacrime,
-Lacrime,Lacrime,
-Lacrima,Lacrima,
-La porta delle prove,La porta delle prove,
-Scegli chi far uscire. Nel cortile non si muore: guarda la stele per vedere quanto fa la tua arma.,Scegli chi far uscire. Nel cortile non si muore: guarda la stele per vedere quanto fa la tua arma.,
-Via tutti i nemici,Via tutti i nemici,
-al sec.,al sec.,
+Sciame di scarabei,Sciame di scarabei,Swarm of scarabs
+Due mummie,Due mummie,Two mummies
+Un sacerdote,Un sacerdote,A priest
+Scorpioni di Serket,Scorpioni di Serket,Scorpions of Serket
+Un cobra,Un cobra,A cobra
+Tutti insieme,Tutti insieme,All together
+Eccomi!,Eccomi!,Here I am!
+Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d,Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d,Courtyard of Neith    Weapon: %s · %s    Tears of Isis: %d
+Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi,Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi,Stick move · X attack · LB/A dash · Y interact · B close
+WASD muovi · clic attacca · Spazio scatto · clic destro Occhio · E interagisci,WASD muovi · clic attacca · Spazio scatto · clic destro Occhio · E interagisci,WASD move · click attack · Space dash · right click Eye · E interact
+AZIONE,AZIONE,ACTION
+%s · Parla con Neith,%s · Parla con Neith,%s · Talk to Neith
+%s · L'altare degli aspetti (Lacrime di Iside: %d),%s · L'altare degli aspetti (Lacrime di Iside: %d),%s · The altar of aspects (Tears of Isis: %d)
+%s · La porta delle prove,%s · La porta delle prove,%s · The gate of trials
+%s · La porta delle prove (nemici in campo: %d),%s · La porta delle prove (nemici in campo: %d),%s · The gate of trials (enemies on the field: %d)
+La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove,La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove,The stele measures your blows on the ushabti and on the trial enemies
+%s · arma non ancora forgiata,%s · arma non ancora forgiata,%s · weapon not yet forged
+%s · parla con Neith,%s · parla con Neith,%s · talk to Neith
+%s · è l'arma che impugni,%s · è l'arma che impugni,%s · it is the weapon you wield
+%s · Prendi: %s,%s · Prendi: %s,%s · Take: %s
+"Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.","Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.","Halt, mortal. This is my courtyard, and whoever enters is measured."
+Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,I am Neith of Sais. I was already ancient when Ra opened his eyes for the first time.
+Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,You felled the guardian of the gate with a curved sword. It is not enough. Whoever crosses the night must know more than one blade.
+"Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.","Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.","Take this spear. I forged it myself. It strikes from afar, and it does not forgive those who hold it badly. If you attack right after a dash, it thrusts twice as far."
+"Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","The weapons here are sleeping. The Tears of Isis awaken them: Isis weeps only for the great lords of the night, like Am-heh, when they fall to a weapon that has never touched them. Bring them to my altar."
+"I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.","I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.","The clay figures are ushabti: they answer for you. Strike them as much as you like. The gate over there lets out the creatures of the Duat, if you want to put yourself to the test."
+"La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba.","La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba.","My spear has quenched the fire of Am-heh. You wield it as if you always had. Strange, for a scribe."
+"Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","The khopesh of kings has defeated the Devourer of Millions. But winning again with the same blade teaches you nothing new, and brings you no more Tears."
+"Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.","Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.","You have awakened a new face of your weapon. Behind every face there is a god: learn its name, and you will know how to strike."
+"Non hai Lacrime. Il pianto di Iside cade solo sui grandi signori della notte, battuti con un'arma che non li ha ancora conosciuti. Il Serpente della Porta non è degno delle sue lacrime. Cambia lama.","Non hai Lacrime. Il pianto di Iside cade solo sui grandi signori della notte, battuti con un'arma che non li ha ancora conosciuti. Il Serpente della Porta non è degno delle sue lacrime. Cambia lama.","You have no Tears. Isis weeps only for the great lords of the night, defeated with a weapon that has not yet known them. The Serpent of the Gate is not worthy of her tears. Change your blade."
+Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu.,Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu.,Under those cloths other weapons are sleeping. They are not ready yet. Neither are you.
+A Sais mi chiamavano madre di Ra. Molto più tardi i Greci mi confusero con la loro Atena. Lasciali confondere: le dee antiche non si offendono per così poco.,A Sais mi chiamavano madre di Ra. Molto più tardi i Greci mi confusero con la loro Atena. Lasciali confondere: le dee antiche non si offendono per così poco.,In Sais they called me mother of Ra. Much later the Greeks confused me with their Athena. Let them: ancient goddesses do not take offence so easily.
+"Si dice che io abbia tessuto il mondo come una tela, e che lo tessa ancora ogni giorno. Una lancia è come un filo: dritta, tesa, e taglia solo se sai dove tirarla.","Si dice che io abbia tessuto il mondo come una tela, e che lo tessa ancora ogni giorno. Una lancia è come un filo: dritta, tesa, e taglia solo se sai dove tirarla.","It is said that I wove the world like a cloth, and that I still weave it every day. A spear is like a thread: straight, taut, and it cuts only if you know where to pull."
+Misura la distanza. Poi accorciala.,Misura la distanza. Poi accorciala.,Measure the distance. Then shorten it.
+Un'arma che non conosci ti tradirà nel momento peggiore.,Un'arma che non conosci ti tradirà nel momento peggiore.,A weapon you do not know will betray you at the worst moment.
+Torna quando avrai qualcosa da mostrarmi.,Torna quando avrai qualcosa da mostrarmi.,Come back when you have something to show me.
+"Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.","Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.","Strike the figures. They do not complain. I do, when you strike badly."
+Lancia di Neith,Lancia di Neith,Spear of Neith
+Neith,Neith,Neith
+Altare di Neith · %s,Altare di Neith · %s,Altar of Neith · %s
+Lacrime di Iside: %d  ·  si ottengono battendo Am-heh la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo Am-heh la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Tears of Isis: %d  ·  earned by defeating Am-heh for the first time with each weapon (and again with the Weight of the Heart at 4 and at 8)
+livello %d/%d,livello %d/%d,level %d/%d
+da risvegliare,da risvegliare,to awaken
+  ·  SCELTO,  ·  SCELTO,  ·  CHOSEN
+   (livello %d: %s),   (livello %d: %s),   (level %d: %s)
+Scegli questo aspetto,Scegli questo aspetto,Choose this aspect
+Risveglia · %d Lacrime,Risveglia · %d Lacrime,Awaken · %d Tears
+Potenzia al livello %d · %d Lacrime,Potenzia al livello %d · %d Lacrime,Upgrade to level %d · %d Tears
+Lacrime,Lacrime,Tears
+Lacrima,Lacrima,Tear
+Chiudi,Chiudi,Close
+La porta delle prove,La porta delle prove,The gate of trials
+Scegli chi far uscire. Nel cortile non si muore: guarda la stele per vedere quanto fa la tua arma.,Scegli chi far uscire. Nel cortile non si muore: guarda la stele per vedere quanto fa la tua arma.,Choose who to let out. In the courtyard no one dies: watch the stele to see how much your weapon deals.
+Via tutti i nemici,Via tutti i nemici,Remove all enemies
+colpo,colpo,hit
+combo,combo,combo
+al sec.,al sec.,per sec.
 Ra,Ra,Ra
 Sekhmet,Sekhmet,Sekhmet
 Thoth,Thoth,Thoth
@@ -107,17 +112,17 @@ Il terzo colpo della combo stordisce i nemici per %.1f secondi.,Il terzo colpo d
 Marea del Nilo,Marea del Nilo,Tide of the Nile
 Alla fine dello scatto lasci una pozza che rallenta i nemici del %d%% per 3 secondi.,Alla fine dello scatto lasci una pozza che rallenta i nemici del %d%% per 3 secondi.,At the end of your dash you leave a pool that slows enemies by %d%% for 3 seconds.
 Forza del Fiume,Forza del Fiume,Might of the River
-I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.,I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.,
-Colpo di Coda,Colpo di Coda,
-La spazzata della lancia fa il %d%% di danni in più e scaglia i nemici il doppio più lontano.,La spazzata della lancia fa il %d%% di danni in più e scaglia i nemici il doppio più lontano.,
-Zanna Ricurva,Zanna Ricurva,
-I primi due fendenti del khopesh fanno il %d%% di danni in più.,I primi due fendenti del khopesh fanno il %d%% di danni in più.,
-Punta Felina,Punta Felina,
-L'affondo della lancia dopo uno scatto ha il %d%% di probabilità di essere un colpo critico.,L'affondo della lancia dopo uno scatto ha il %d%% di probabilità di essere un colpo critico.,
-Danza delle Lame,Danza delle Lame,
-Il khopesh colpisce il %d%% più rapidamente.,Il khopesh colpisce il %d%% più rapidamente.,
-Filo del Sole,Filo del Sole,
-I fendenti del khopesh arrivano il %d%% più lontano e sono più ampi.,I fendenti del khopesh arrivano il %d%% più lontano e sono più ampi.,
+I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.,I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.,Enemies stunned by the Bite of Sobek or slowed by the Tide of the Nile take %d%% more damage.
+Colpo di Coda,Colpo di Coda,Tail Strike
+La spazzata della lancia fa il %d%% di danni in più e scaglia i nemici il doppio più lontano.,La spazzata della lancia fa il %d%% di danni in più e scaglia i nemici il doppio più lontano.,The spear's sweep deals %d%% more damage and hurls enemies twice as far.
+Zanna Ricurva,Zanna Ricurva,Curved Fang
+I primi due fendenti del khopesh fanno il %d%% di danni in più.,I primi due fendenti del khopesh fanno il %d%% di danni in più.,The first two slashes of the khopesh deal %d%% more damage.
+Punta Felina,Punta Felina,Feline Point
+L'affondo della lancia dopo uno scatto ha il %d%% di probabilità di essere un colpo critico.,L'affondo della lancia dopo uno scatto ha il %d%% di probabilità di essere un colpo critico.,The spear's thrust after a dash has a %d%% chance to be a critical hit.
+Danza delle Lame,Danza delle Lame,Dance of Blades
+Il khopesh colpisce il %d%% più rapidamente.,Il khopesh colpisce il %d%% più rapidamente.,The khopesh strikes %d%% faster.
+Filo del Sole,Filo del Sole,Edge of the Sun
+I fendenti del khopesh arrivano il %d%% più lontano e sono più ampi.,I fendenti del khopesh arrivano il %d%% più lontano e sono più ampi.,The khopesh's slashes reach %d%% farther and are wider.
 Ali di Iside,Ali di Iside,Wings of Isis
 All'inizio di ogni stanza hai uno scudo che assorbe %d danni.,All'inizio di ogni stanza hai uno scudo che assorbe %d danni.,At the start of every chamber you gain a shield that absorbs %d damage.
 Lacrime di Iside,Lacrime di Iside,Tears of Isis
@@ -132,12 +137,12 @@ Volo del Falco,Volo del Falco,Flight of the Falcon
 L'Occhio di Horus curva da solo verso il nemico più vicino e fa il %d%% di danni in più.,L'Occhio di Horus curva da solo verso il nemico più vicino e fa il %d%% di danni in più.,The Eye of Horus curves on its own toward the nearest enemy and deals %d%% more damage.
 Il Sole e la Luna,Il Sole e la Luna,The Sun and the Moon
 L'Occhio di Horus ha %d cariche: puoi lanciarlo più volte di fila.,L'Occhio di Horus ha %d cariche: puoi lanciarlo più volte di fila.,The Eye of Horus has %d charges: you can throw it several times in a row.
-Arpione di Horus,Arpione di Horus,
-"Gli affondi della lancia fanno il %d%% di danni in più ai nemici lontani, sulla punta.","Gli affondi della lancia fanno il %d%% di danni in più ai nemici lontani, sulla punta.",
+Arpione di Horus,Arpione di Horus,Harpoon of Horus
+"Gli affondi della lancia fanno il %d%% di danni in più ai nemici lontani, sulla punta.","Gli affondi della lancia fanno il %d%% di danni in più ai nemici lontani, sulla punta.","The spear's thrusts deal %d%% more damage to distant enemies, with the tip."
 Sguardo del Falco,Sguardo del Falco,Gaze of the Falcon
 I nemici colpiti dall'Occhio subiscono il %d%% di danni in più dal khopesh per 3 secondi.,I nemici colpiti dall'Occhio subiscono il %d%% di danni in più dal khopesh per 3 secondi.,Enemies hit by the Eye take %d%% more damage from the khopesh for 3 seconds.
 Cuore Leggero,Cuore Leggero,Light Heart
-Lo scatto si ricarica il %d%% più in fretta e ti muovi il 12%% più veloce.,Lo scatto si ricarica il %d%% più in fretta e ti muovi il 12%% più veloce.,
+Lo scatto si ricarica il %d%% più in fretta e ti muovi il 12%% più veloce.,Lo scatto si ricarica il %d%% più in fretta e ti muovi il 12%% più veloce.,Your dash recharges %d%% faster and you move 12%% faster.
 -5 vita massima.,-5 vita massima.,-5 max health.
 Cuore di Pietra,Cuore di Pietra,Heart of Stone
 +%d vita massima.,+%d vita massima.,+%d max health.
@@ -173,14 +178,14 @@ Sguardo del Gatto Sapiente,Sguardo del Gatto Sapiente,Gaze of the Wise Cat
 Un colpo critico dell'Occhio di Horus ne dimezza la ricarica.,Un colpo critico dell'Occhio di Horus ne dimezza la ricarica.,A critical hit with the Eye of Horus halves its recharge.
 Piena Sacra,Piena Sacra,Sacred Flood
 "Finché hai lo scudo di Iside, il khopesh fa il 25% di danni in più.","Finché hai lo scudo di Iside, il khopesh fa il 25% di danni in più.","While you hold the shield of Isis, your khopesh deals 25% more damage."
-Occhio Risanato,Occhio Risanato,
-"Quando l'Occhio di Horus abbatte un nemico, si ricarica all'istante.","Quando l'Occhio di Horus abbatte un nemico, si ricarica all'istante.",
-Figlio di Iside,Figlio di Iside,
-Ogni lancio dell'Occhio di Horus che colpisce almeno un nemico ti cura di 2 punti vita.,Ogni lancio dell'Occhio di Horus che colpisce almeno un nemico ti cura di 2 punti vita.,
-Giudizio della Leonessa,Giudizio della Leonessa,
-Il khopesh abbatte all'istante i nemici sotto il 15% della vita (non i guardiani e i boss).,Il khopesh abbatte all'istante i nemici sotto il 15% della vita (non i guardiani e i boss).,
-Arpione del Coccodrillo,Arpione del Coccodrillo,
-"Gli affondi della lancia stordiscono per 0,6 secondi i nemici colpiti con la punta (meno i guardiani e i boss).","Gli affondi della lancia stordiscono per 0,6 secondi i nemici colpiti con la punta (meno i guardiani e i boss).",
+Occhio Risanato,Occhio Risanato,Healed Eye
+"Quando l'Occhio di Horus abbatte un nemico, si ricarica all'istante.","Quando l'Occhio di Horus abbatte un nemico, si ricarica all'istante.","When the Eye of Horus kills an enemy, it recharges instantly."
+Figlio di Iside,Figlio di Iside,Son of Isis
+Ogni lancio dell'Occhio di Horus che colpisce almeno un nemico ti cura di 2 punti vita.,Ogni lancio dell'Occhio di Horus che colpisce almeno un nemico ti cura di 2 punti vita.,Every throw of the Eye of Horus that hits at least one enemy heals you for 2 health.
+Giudizio della Leonessa,Giudizio della Leonessa,Judgement of the Lioness
+Il khopesh abbatte all'istante i nemici sotto il 15% della vita (non i guardiani e i boss).,Il khopesh abbatte all'istante i nemici sotto il 15% della vita (non i guardiani e i boss).,The khopesh instantly fells enemies below 15% health (not guardians and bosses).
+Arpione del Coccodrillo,Arpione del Coccodrillo,Harpoon of the Crocodile
+"Gli affondi della lancia stordiscono per 0,6 secondi i nemici colpiti con la punta (meno i guardiani e i boss).","Gli affondi della lancia stordiscono per 0,6 secondi i nemici colpiti con la punta (meno i guardiani e i boss).",The spear's thrusts stun enemies hit with the tip for 0.6 seconds (less for guardians and bosses).
 Ira del Sole,Ira del Sole,Wrath of the Sun
 "Tutti i tuoi colpi incendiano, e le fiamme fanno il 60% di danni in più.","Tutti i tuoi colpi incendiano, e le fiamme fanno il 60% di danni in più.","All your strikes set enemies ablaze, and the flames deal 60% more damage."
 L'Occhio di Horus si ricarica il 50% più lentamente.,L'Occhio di Horus si ricarica il 50% più lentamente.,The Eye of Horus recharges 50% more slowly.
@@ -202,15 +207,15 @@ Il khopesh fa il 40% di danni in meno.,Il khopesh fa il 40% di danni in meno.,Th
 Conoscenza Proibita,Conoscenza Proibita,Forbidden Knowledge
 L'Occhio di Horus si ricarica più del doppio più in fretta.,L'Occhio di Horus si ricarica più del doppio più in fretta.,The Eye of Horus recharges more than twice as fast.
 Il khopesh fa il 35% di danni in meno.,Il khopesh fa il 35% di danni in meno.,Your khopesh deals 35% less damage.
-I nemici sono più veloci del 20%,I nemici sono più veloci del 20%,
-Subisci il 30% di danni in più,Subisci il 30% di danni in più,
-I nemici hanno il 25% di vita in più,I nemici hanno il 25% di vita in più,
-Le cure ti curano il 40% in meno,Le cure ti curano il 40% in meno,
-Finché ci sono nemici perdi 1 vita ogni 3 secondi,Finché ci sono nemici perdi 1 vita ogni 3 secondi,
+I nemici sono più veloci del 20%,I nemici sono più veloci del 20%,Enemies are 20% faster
+Subisci il 30% di danni in più,Subisci il 30% di danni in più,You take 30% more damage
+I nemici hanno il 25% di vita in più,I nemici hanno il 25% di vita in più,Enemies have 25% more health
+Le cure ti curano il 40% in meno,Le cure ti curano il 40% in meno,Healing heals you 40% less
+Finché ci sono nemici perdi 1 vita ogni 3 secondi,Finché ci sono nemici perdi 1 vita ogni 3 secondi,While enemies remain you lose 1 health every 3 seconds
 Forza di Set,Forza di Set,Strength of Set
-+25% a tutti i danni,+25% a tutti i danni,
++25% a tutti i danni,+25% a tutti i danni,+25% to all damage
 Vigore del Deserto,Vigore del Deserto,Vigour of the Desert
-+15 vita massima,+15 vita massima,
++15 vita massima,+15 vita massima,+15 max health
 Tempesta Interiore,Tempesta Interiore,Inner Storm
 Il Sekhem si carica il 50% più in fretta,Il Sekhem si carica il 50% più in fretta,Your Sekhem charges 50% faster
 Vento Rosso,Vento Rosso,Red Wind
@@ -218,8 +223,8 @@ Vento Rosso,Vento Rosso,Red Wind
 Tributo,Tributo,Tribute
 +50% di Ka,+50% di Ka,+50% Ka
 Ira del Deserto,Ira del Deserto,Wrath of the Desert
-Attacchi con il khopesh il 20% più rapidamente,Attacchi con il khopesh il 20% più rapidamente,
-"Arma: fuoco %d ogni 0,5 s","Arma: fuoco %d ogni 0,5 s",
+Attacchi con il khopesh il 20% più rapidamente,Attacchi con il khopesh il 20% più rapidamente,You attack with the khopesh 20% faster
+"Arma: fuoco %d ogni 0,5 s","Arma: fuoco %d ogni 0,5 s",Weapon: fire %d every 0.5 s
 Occhio esplode: %d danni,Occhio esplode: %d danni,Eye explodes: %d damage
 Scatto ferisce: %d danni,Scatto ferisce: %d danni,Dash wounds: %d damage
 Scatto -40% più lento,Scatto -40% più lento,Dash 40% slower
@@ -235,26 +240,26 @@ Occhio +%d%% danni,Occhio +%d%% danni,Eye +%d%% damage
 Khopesh %d%% critico,Khopesh %d%% critico,Khopesh %d%% critical
 Occhio %d%% critico,Occhio %d%% critico,Eye %d%% critical
 Scatto ricarica -%d%%,Scatto ricarica -%d%%,Dash recharge -%d%%
-Ti rialzi con il %d%%,Ti rialzi con il %d%%,
+Ti rialzi con il %d%%,Ti rialzi con il %d%%,You rise again with %d%%
 -%d%% danni subiti,-%d%% danni subiti,-%d%% damage taken
 3° colpo stordisce,3° colpo stordisce,3rd strike stuns
-Pozza: nemici -%d%% veloci,Pozza: nemici -%d%% veloci,
-+%d%% su storditi e lenti,+%d%% su storditi e lenti,
-"Spazzata +%d%%, spinta ×2","Spazzata +%d%%, spinta ×2",
-1° e 2° fendente +%d%% danni,1° e 2° fendente +%d%% danni,
-Affondo: %d%% critico,Affondo: %d%% critico,
-Khopesh +%d%% più rapido,Khopesh +%d%% più rapido,
-Fendenti +%d%% più lunghi,Fendenti +%d%% più lunghi,
-Punta: affondi +%d%%,Punta: affondi +%d%%,
+Pozza: nemici -%d%% veloci,Pozza: nemici -%d%% veloci,Pool: enemies -%d%% speed
++%d%% su storditi e lenti,+%d%% su storditi e lenti,+%d%% on stunned and slowed
+"Spazzata +%d%%, spinta ×2","Spazzata +%d%%, spinta ×2","Sweep +%d%%, knockback ×2"
+1° e 2° fendente +%d%% danni,1° e 2° fendente +%d%% danni,1st and 2nd slash +%d%% damage
+Affondo: %d%% critico,Affondo: %d%% critico,Thrust: %d%% critical
+Khopesh +%d%% più rapido,Khopesh +%d%% più rapido,Khopesh +%d%% faster
+Fendenti +%d%% più lunghi,Fendenti +%d%% più lunghi,Slashes +%d%% longer
+Punta: affondi +%d%%,Punta: affondi +%d%%,Tip: thrusts +%d%%
 Scudo di %d a ogni stanza,Scudo di %d a ogni stanza,%d shield every chamber
 Cure +%d%%,Cure +%d%%,Healing +%d%%
-Sotto 1/3 vita: -%d%% danni,Sotto 1/3 vita: -%d%% danni,
+Sotto 1/3 vita: -%d%% danni,Sotto 1/3 vita: -%d%% danni,Below 1/3 health: -%d%% damage
 Sekhem +%d%% più rapido,Sekhem +%d%% più rapido,Sekhem +%d%% faster
-Occhio torna: %d%% danni,Occhio torna: %d%% danni,
+Occhio torna: %d%% danni,Occhio torna: %d%% danni,Eye returns: %d%% damage
 Occhio insegue · +%d%% danni,Occhio insegue · +%d%% danni,Eye seeks · +%d%% damage
 Occhio: %d cariche,Occhio: %d cariche,Eye: %d charges
-Colpiti dall'Occhio: +%d%%,Colpiti dall'Occhio: +%d%%,
-Scatto -%d%% · +12%% velocità,Scatto -%d%% · +12%% velocità,
+Colpiti dall'Occhio: +%d%%,Colpiti dall'Occhio: +%d%%,Hit by the Eye: +%d%%
+Scatto -%d%% · +12%% velocità,Scatto -%d%% · +12%% velocità,Dash -%d%% · +12%% speed
 -5 vita massima,-5 vita massima,-5 max health
 +%d vita massima,+%d vita massima,+%d max health
 -6% velocità,-6% velocità,-6% speed
@@ -269,30 +274,30 @@ Occhio -10% danni,Occhio -10% danni,Eye -10% damage
 3° colpo +%d%%,3° colpo +%d%%,3rd strike +%d%%
 1° e 2° colpo -10%,1° e 2° colpo -10%,1st and 2nd strike -10%
 +%d%% Ka,+%d%% Ka,+%d%% Ka
-Spiriti da %d danni,Spiriti da %d danni,
+Spiriti da %d danni,Spiriti da %d danni,Spirits deal %d damage
 Nemici +5% vita,Nemici +5% vita,Enemies +5% health
-"Occhio incendia, esplode","Occhio incendia, esplode",
-+25% sui nemici in fiamme,+25% sui nemici in fiamme,
+"Occhio incendia, esplode","Occhio incendia, esplode","Eye burns, explodes"
++25% sui nemici in fiamme,+25% sui nemici in fiamme,+25% on burning enemies
 Critici: ruggito di 12 danni,Critici: ruggito di 12 danni,Crits: 12 damage roar
-Critico: ricarica Occhio -50%,Critico: ricarica Occhio -50%,
+Critico: ricarica Occhio -50%,Critico: ricarica Occhio -50%,Critical: Eye recharge -50%
 Con lo scudo: khopesh +25%,Con lo scudo: khopesh +25%,With the shield: khopesh +25%
-Occhio uccide: ricarica subito,Occhio uccide: ricarica subito,
-Occhio a segno: +2 vita,Occhio a segno: +2 vita,
-Sotto il 15%: abbattuto,Sotto il 15%: abbattuto,
-"Punta: stordisce 0,6 s","Punta: stordisce 0,6 s",
+Occhio uccide: ricarica subito,Occhio uccide: ricarica subito,Eye kills: recharges at once
+Occhio a segno: +2 vita,Occhio a segno: +2 vita,Eye hits: +2 health
+Sotto il 15%: abbattuto,Sotto il 15%: abbattuto,Below 15%: felled
+"Punta: stordisce 0,6 s","Punta: stordisce 0,6 s",Tip: stuns 0.6 s
 Tutto incendia · fiamme +60%,Tutto incendia · fiamme +60%,Everything burns · flames +60%
 Occhio ricarica +50%,Occhio ricarica +50%,Eye recharge +50%
 Khopesh +50%,Khopesh +50%,Khopesh +50%
-In lotta: -1 vita ogni 2 s,In lotta: -1 vita ogni 2 s,
+In lotta: -1 vita ogni 2 s,In lotta: -1 vita ogni 2 s,In battle: -1 health every 2 s
 Critici ×3 · almeno 10%,Critici ×3 · almeno 10%,Crits ×3 · at least 10%
 -15 vita massima,-15 vita massima,-15 max health
 Khopesh +40% · spinta doppia,Khopesh +40% · spinta doppia,Khopesh +40% · double knockback
 -15% velocità,-15% velocità,-15% speed
 +15% vita a ogni stanza,+15% vita a ogni stanza,+15% health every chamber
 Khopesh -25%,Khopesh -25%,Khopesh -25%
-Occhio: ricarica ×2,Occhio: ricarica ×2,
+Occhio: ricarica ×2,Occhio: ricarica ×2,Eye: recharge ×2
 Khopesh -35%,Khopesh -35%,Khopesh -35%
-"Occhio ×2, trapassa tutti","Occhio ×2, trapassa tutti",
+"Occhio ×2, trapassa tutti","Occhio ×2, trapassa tutti","Eye ×2, pierces all"
 Khopesh -40%,Khopesh -40%,Khopesh -40%
 Uscire al giorno,Uscire al giorno,Coming Forth by Day
 Inizi ogni discesa con +{v} vita massima.,Inizi ogni discesa con +{v} vita massima.,Start every descent with +{v} max health.
@@ -330,9 +335,9 @@ Una volta per discesa sopravvivi a un colpo mortale con il {v}% della vita.,Una 
 Gli Ushabti,Gli Ushabti,The Ushabti
 Una statuetta servitrice ti segue e colpisce il nemico più vicino ogni {v} secondi.,Una statuetta servitrice ti segue e colpisce il nemico più vicino ogni {v} secondi.,A servant statuette follows you and strikes the nearest enemy every {v} seconds.
 "Gli ushabti, 'quelli che rispondono', erano statuine sepolte anche a centinaia. Quando gli dèi chiamavano il morto a lavorare i campi dell'aldilà, rispondevano al posto suo: 'Eccomi!'.","Gli ushabti, 'quelli che rispondono', erano statuine sepolte anche a centinaia. Quando gli dèi chiamavano il morto a lavorare i campi dell'aldilà, rispondevano al posto suo: 'Eccomi!'.","The ushabti, 'those who answer', were figurines buried by the hundreds. When the gods called the dead to till the fields of the afterlife, they answered in their place: 'Here I am!'."
-Il cuore restituito,Il cuore restituito,
-I nemici abbattuti hanno il {v}% di probabilità di lasciare un cuore che ti cura di {h} punti vita.,I nemici abbattuti hanno il {v}% di probabilità di lasciare un cuore che ti cura di {h} punti vita.,
-"Con il capitolo 26 il morto riceve di nuovo il suo cuore, l'ib: 'Il mio cuore è con me, e non mi sarà tolto'. Per gli Egizi si pensava con il cuore, non con il cervello, che i mummificatori buttavano via.","Con il capitolo 26 il morto riceve di nuovo il suo cuore, l'ib: 'Il mio cuore è con me, e non mi sarà tolto'. Per gli Egizi si pensava con il cuore, non con il cervello, che i mummificatori buttavano via.",
+Il cuore restituito,Il cuore restituito,The heart restored
+I nemici abbattuti hanno il {v}% di probabilità di lasciare un cuore che ti cura di {h} punti vita.,I nemici abbattuti hanno il {v}% di probabilità di lasciare un cuore che ti cura di {h} punti vita.,Felled enemies have a {v}% chance to drop a heart that heals you for {h} health.
+"Con il capitolo 26 il morto riceve di nuovo il suo cuore, l'ib: 'Il mio cuore è con me, e non mi sarà tolto'. Per gli Egizi si pensava con il cuore, non con il cervello, che i mummificatori buttavano via.","Con il capitolo 26 il morto riceve di nuovo il suo cuore, l'ib: 'Il mio cuore è con me, e non mi sarà tolto'. Per gli Egizi si pensava con il cuore, non con il cervello, che i mummificatori buttavano via.","With chapter 26 the dead receive their heart again, the ib: 'My heart is with me, and it shall not be taken from me'. The Egyptians believed one thought with the heart, not with the brain, which the embalmers threw away."
 Le porte aperte,Le porte aperte,The Open Gates
 Dopo ogni stanza si aprono sempre tre porte.,Dopo ogni stanza si aprono sempre tre porte.,After every chamber three doors always open.
 "'Uscire al giorno e aprire la tomba': con il capitolo 72 il morto conosce i nomi dei guardiani delle porte, e chi conosce il nome di un guardiano può passare.","'Uscire al giorno e aprire la tomba': con il capitolo 72 il morto conosce i nomi dei guardiani delle porte, e chi conosce il nome di un guardiano può passare.","'Going forth by day and opening the tomb': with chapter 72 the dead knows the names of the gatekeepers, and whoever knows a gatekeeper's name may pass."
@@ -341,33 +346,40 @@ Sei tornato prima che la sabbia della clessidra si posasse. Rialzati.,Sei tornat
 Il tuo cuore è caduto vicino alla soglia. Non è una vergogna. Restare a terra lo sarebbe.,Il tuo cuore è caduto vicino alla soglia. Non è una vergogna. Restare a terra lo sarebbe.,Your heart fell close to the threshold. That is no shame. Staying down would be.
 Stanza %d. Più lontano di quanto credessi. Meno di quanto serva.,Stanza %d. Più lontano di quanto credessi. Meno di quanto serva.,Chamber %d. Farther than I believed. Less far than you need.
 Sei giunto alla stanza %d. Il Duat comincia a riconoscere il tuo passo.,Sei giunto alla stanza %d. Il Duat comincia a riconoscere il tuo passo.,You reached chamber %d. The Duat begins to know your step.
-"Hai visto Am-heh in volto. Il Divoratore di Milioni ha contato anche te, stanotte.","Hai visto Am-heh in volto. Il Divoratore di Milioni ha contato anche te, stanotte.",
-Il lago di fuoco ti ha restituito. Am-heh non restituisce mai nulla due volte.,Il lago di fuoco ti ha restituito. Am-heh non restituisce mai nulla due volte.,
-"Il fuoco non entra nell'acqua. Quando ulula, cerca una pozza. E quando si ferma a riprendere fiato, colpisci.","Il fuoco non entra nell'acqua. Quando ulula, cerca una pozza. E quando si ferma a riprendere fiato, colpisci.",
-"Am-heh è caduto. Il Divoratore di Milioni ha contato i dannati per mille anni, e stanotte ha perso il conto.","Am-heh è caduto. Il Divoratore di Milioni ha contato i dannati per mille anni, e stanotte ha perso il conto.",
+"Hai visto Am-heh in volto. Il Divoratore di Milioni ha contato anche te, stanotte.","Hai visto Am-heh in volto. Il Divoratore di Milioni ha contato anche te, stanotte.","You have seen Am-heh's face. The Devourer of Millions has counted you too, tonight."
+Il lago di fuoco ti ha restituito. Am-heh non restituisce mai nulla due volte.,Il lago di fuoco ti ha restituito. Am-heh non restituisce mai nulla due volte.,The lake of fire gave you back. Am-heh never gives anything back twice.
+"Il fuoco non entra nell'acqua. Quando ulula, cerca una pozza. E quando si ferma a riprendere fiato, colpisci.","Il fuoco non entra nell'acqua. Quando ulula, cerca una pozza. E quando si ferma a riprendere fiato, colpisci.","Fire does not enter water. When it howls, look for a pool. And when it stops to catch its breath, strike."
+"Am-heh è caduto. Il Divoratore di Milioni ha contato i dannati per mille anni, e stanotte ha perso il conto.","Am-heh è caduto. Il Divoratore di Milioni ha contato i dannati per mille anni, e stanotte ha perso il conto.","Am-heh has fallen. The Devourer of Millions counted the damned for a thousand years, and tonight it lost count."
 "Il suo Sekhem ora scorre in te. Quando sarà colmo, lascia che ti trasformi.","Il suo Sekhem ora scorre in te. Quando sarà colmo, lascia che ti trasformi.","Her Sekhem now flows in you. When it is full, let it transform you."
-"Ma la Prima Ora è solo l'inizio. Ammit, la vera Divoratrice, ti aspetta in fondo alla notte, accanto alla mia bilancia.","Ma la Prima Ora è solo l'inizio. Ammit, la vera Divoratrice, ti aspetta in fondo alla notte, accanto alla mia bilancia.",
-"Am-heh è caduto di nuovo. La bilancia ha tremato, stanotte.","Am-heh è caduto di nuovo. La bilancia ha tremato, stanotte.",
+"Ma la Prima Ora è solo l'inizio. Ammit, la vera Divoratrice, ti aspetta in fondo alla notte, accanto alla mia bilancia.","Ma la Prima Ora è solo l'inizio. Ammit, la vera Divoratrice, ti aspetta in fondo alla notte, accanto alla mia bilancia.","But the First Hour is only the beginning. Ammit, the true Devourer, awaits you at the bottom of the night, beside my scales."
+"Am-heh è caduto di nuovo. La bilancia ha tremato, stanotte.","Am-heh è caduto di nuovo. La bilancia ha tremato, stanotte.","Am-heh has fallen again. The scales trembled, tonight."
 Un'altra vittoria. Ma'at ha guardato due volte il tuo cuore.,Un'altra vittoria. Ma'at ha guardato due volte il tuo cuore.,Another victory. Ma'at looked twice upon your heart.
 Hai lasciato il cammino a metà. Il Duat ricorda chi si volta indietro.,Hai lasciato il cammino a metà. Il Duat ricorda chi si volta indietro.,You left the path halfway. The Duat remembers those who turn back.
 "Non ti biasimo. Ma ti peso, e la bilancia annota anche questo.","Non ti biasimo. Ma ti peso, e la bilancia annota anche questo.","I do not blame you. But I weigh you, and the scale records this too."
 "Una trappola ti ha fermato. Nelle tombe dei re i costruttori scavavano pozzi profondi, sbarravano i corridoi con blocchi di granito, dipingevano porte che non si aprivano. Erano per i ladri. Non per te. Eppure.","Una trappola ti ha fermato. Nelle tombe dei re i costruttori scavavano pozzi profondi, sbarravano i corridoi con blocchi di granito, dipingevano porte che non si aprivano. Erano per i ladri. Non per te. Eppure.","A trap stopped you. In the tombs of the kings the builders dug deep shafts, sealed corridors with granite blocks, painted doors that never opened. They were meant for thieves. Not for you. And yet."
-"Una mummia. Settanta giorni di cure, di preghiere, di bende di lino, e ora vaga nel buio piena d'ira. Non portarle rancore. Non ricorda più il suo nome. Senza il tuo re, presto lo dimenticherai anche tu.","Una mummia. Settanta giorni di cure, di preghiere, di bende di lino, e ora vaga nel buio piena d'ira. Non portarle rancore. Non ricorda più il suo nome. Senza il tuo re, presto lo dimenticherai anche tu.",
+"Una mummia. Settanta giorni di cure, di preghiere, di bende di lino, e ora vaga nel buio piena d'ira. Non portarle rancore. Non ricorda più il suo nome. Senza il tuo re, presto lo dimenticherai anche tu.","Una mummia. Settanta giorni di cure, di preghiere, di bende di lino, e ora vaga nel buio piena d'ira. Non portarle rancore. Non ricorda più il suo nome. Senza il tuo re, presto lo dimenticherai anche tu.","A mummy. Seventy days of care, of prayers, of linen bandages, and now it wanders the dark full of rage. Bear it no grudge. It no longer remembers its name. Without your king, soon you will forget yours too."
 Gli scarabei. Gli uomini li veneravano: lo scarabeo che spinge la sua sfera era il sole che rinasce. Questi non rinascono. Divorano.,Gli scarabei. Gli uomini li veneravano: lo scarabeo che spinge la sua sfera era il sole che rinasce. Questi non rinascono. Divorano.,The scarabs. Men revered them: the scarab rolling its sphere was the sun reborn. These are not reborn. They devour.
 "Un sacerdote. In vita servì gli dèi, nel Duat serve il caos. Colpiscilo prima che la sua preghiera sia compiuta.","Un sacerdote. In vita servì gli dèi, nel Duat serve il caos. Colpiscilo prima che la sua preghiera sia compiuta.",A priest. In life he served the gods; in the Duat he serves chaos. Strike him before his prayer is complete.
 "Il Serpente della Porta. Ogni porta del Duat ha il suo guardiano, e nessuno lascia passare chi esita. Quando sprofonda nella sabbia, guarda il cerchio: è lì che tornerà.","Il Serpente della Porta. Ogni porta del Duat ha il suo guardiano, e nessuno lascia passare chi esita. Quando sprofonda nella sabbia, guarda il cerchio: è lì che tornerà.","The Serpent of the Gate. Every gate of the Duat has its guardian, and none lets the hesitant pass. When it sinks into the sand, watch the circle: that is where it will return."
 "Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati.","Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati.","The scorpions of Serket. The goddess shields from venom those who honour her. You have not honoured her. When the tail glows, step away."
-"Una grata di fuoco. Nelle acque di Wernes il fuoco di Am-heh corre anche sotto le pietre. Quando le sbarre si arroventano, non aspettare di capire perché.","Una grata di fuoco. Nelle acque di Wernes il fuoco di Am-heh corre anche sotto le pietre. Quando le sbarre si arroventano, non aspettare di capire perché.",
-"L'olio in fiamme. Nelle tombe le giare custodivano l'olio per le lampade del morto. Tu le usi per altro. Anche il fuoco, però, non sceglie chi bruciare.","L'olio in fiamme. Nelle tombe le giare custodivano l'olio per le lampade del morto. Tu le usi per altro. Anche il fuoco, però, non sceglie chi bruciare.",
-"Am-heh. Il Libro lo chiama 'colui che divora milioni', e dice che vive in un lago di fuoco nel Duat. Nessun morto ci si bagna due volte. Tu sì, a quanto pare.","Am-heh. Il Libro lo chiama 'colui che divora milioni', e dice che vive in un lago di fuoco nel Duat. Nessun morto ci si bagna due volte. Tu sì, a quanto pare.",
+"Una grata di fuoco. Nelle acque di Wernes il fuoco di Am-heh corre anche sotto le pietre. Quando le sbarre si arroventano, non aspettare di capire perché.","Una grata di fuoco. Nelle acque di Wernes il fuoco di Am-heh corre anche sotto le pietre. Quando le sbarre si arroventano, non aspettare di capire perché.","A fire grate. In the waters of Wernes the fire of Am-heh runs even under the stones. When the bars glow red, do not wait to understand why."
+"L'olio in fiamme. Nelle tombe le giare custodivano l'olio per le lampade del morto. Tu le usi per altro. Anche il fuoco, però, non sceglie chi bruciare.","L'olio in fiamme. Nelle tombe le giare custodivano l'olio per le lampade del morto. Tu le usi per altro. Anche il fuoco, però, non sceglie chi bruciare.","Burning oil. In the tombs the jars kept oil for the lamps of the dead. You use them for something else. But fire, too, does not choose whom to burn."
+"Am-heh. Il Libro lo chiama 'colui che divora milioni', e dice che vive in un lago di fuoco nel Duat. Nessun morto ci si bagna due volte. Tu sì, a quanto pare.","Am-heh. Il Libro lo chiama 'colui che divora milioni', e dice che vive in un lago di fuoco nel Duat. Nessun morto ci si bagna due volte. Tu sì, a quanto pare.","Am-heh. The Book calls it 'he who devours millions', and says it lives in a lake of fire in the Duat. No dead soul bathes in it twice. You do, it seems."
 "Un cobra. L'ureo sulla fronte del faraone sputava fuoco sui suoi nemici. Questi sputano veleno, e si nascondono. Colpiscili quando alzano il cappuccio.","Un cobra. L'ureo sulla fronte del faraone sputava fuoco sui suoi nemici. Questi sputano veleno, e si nascondono. Colpiscili quando alzano il cappuccio.","A cobra. The uraeus on the pharaoh's brow spat fire upon his enemies. These spit venom, and hide. Strike them when they raise their hood."
+"Porti addosso l'odore della fiamma. Ra ti ha guardato con favore. Il suo favore brucia, Scriba. Ricordalo.","Porti addosso l'odore della fiamma. Ra ti ha guardato con favore. Il suo favore brucia, Scriba. Ricordalo.","You carry the smell of flame. Ra has looked upon you with favour. His favour burns, Scribe. Remember it."
+"Sekhmet ti ha prestato la sua ira. L'ultima volta che la scatenò davvero, servì un fiume di birra rossa per placarla.","Sekhmet ti ha prestato la sua ira. L'ultima volta che la scatenò davvero, servì un fiume di birra rossa per placarla.","Sekhmet lent you her wrath. The last time she truly unleashed it, it took a river of red beer to calm her."
+Thoth ha scritto di te nei suoi registri. Non il tuo nome vero. Quello che ti stai guadagnando.,Thoth ha scritto di te nei suoi registri. Non il tuo nome vero. Quello che ti stai guadagnando.,Thoth has written about you in his records. Not your true name. The one you are earning.
+Hai camminato con Bastet. È una dea che sceglie chi proteggere. Non sceglie mai a caso.,Hai camminato con Bastet. È una dea che sceglie chi proteggere. Non sceglie mai a caso.,You walked with Bastet. She is a goddess who chooses whom to protect. She never chooses at random.
+"Sobek ti ha dato la sua pelle. Lui sa attendere per ore, immobile sotto l'acqua. Tu non sai attendere un istante. Imparerai.","Sobek ti ha dato la sua pelle. Lui sa attendere per ore, immobile sotto l'acqua. Tu non sai attendere un istante. Imparerai.","Sobek gave you his hide. He can wait for hours, motionless under the water. You cannot wait an instant. You will learn."
+Horus ti ha prestato il suo Occhio. Il falco sceglie con cura a chi affidarlo: non deluderlo.,Horus ti ha prestato il suo Occhio. Il falco sceglie con cura a chi affidarlo: non deluderlo.,Horus lent you his Eye. The falcon chooses carefully to whom he entrusts it: do not disappoint him.
+Iside ti ha posato le mani sul capo. Lei conosce il dolore di raccogliere ciò che è stato spezzato. Anche te.,Iside ti ha posato le mani sul capo. Lei conosce il dolore di raccogliere ciò che è stato spezzato. Anche te.,Isis laid her hands upon your head. She knows the pain of gathering what has been broken. You too.
 "Hai stretto patti con Set. Set mantiene sempre la parola data. È la parola, Scriba, che dovresti leggere meglio.","Hai stretto patti con Set. Set mantiene sempre la parola data. È la parola, Scriba, che dovresti leggere meglio.","You made pacts with Set. Set always keeps his word. It is the word, Scribe, that you should read more carefully."
 "Apri gli occhi, Scriba.","Apri gli occhi, Scriba.","Open your eyes, Scribe."
 "Sei morto. Lo sai già, credo. Lo si sente nelle ossa.","Sei morto. Lo sai già, credo. Lo si sente nelle ossa.","You are dead. You know it already, I think. One feels it in the bones."
 "Io sono Anubi, Signore della Terra Sacra, custode della bilancia. Ogni notte peso il cuore dei morti contro la piuma di Ma'at. Il tuo non posso pesarlo.","Io sono Anubi, Signore della Terra Sacra, custode della bilancia. Ogni notte peso il cuore dei morti contro la piuma di Ma'at. Il tuo non posso pesarlo.","I am Anubis, Lord of the Sacred Land, keeper of the scale. Every night I weigh the hearts of the dead against the feather of Ma'at. Yours I cannot weigh."
-"Servivi un re, il faraone Akhet. Qualcuno ha scalpellato il suo nome da ogni pietra d'Egitto. E dove c'era il suo nome c'era anche il tuo, accanto, in ogni rotolo che hai scritto per lui.","Servivi un re, il faraone Akhet. Qualcuno ha scalpellato il suo nome da ogni pietra d'Egitto. E dove c'era il suo nome c'era anche il tuo, accanto, in ogni rotolo che hai scritto per lui.",
-"Senza nome il cuore non ha peso. Senza peso, non c'è giudizio.","Senza nome il cuore non ha peso. Senza peso, non c'è giudizio.",
-"Ma'at ti concede una via: segui la barca di Ra attraverso le dodici ore della notte, e ricomponi il nome del tuo re prima che sia dimenticato per sempre.","Ma'at ti concede una via: segui la barca di Ra attraverso le dodici ore della notte, e ricomponi il nome del tuo re prima che sia dimenticato per sempre.",
+"Servivi un re, il faraone Akhet. Qualcuno ha scalpellato il suo nome da ogni pietra d'Egitto. E dove c'era il suo nome c'era anche il tuo, accanto, in ogni rotolo che hai scritto per lui.","Servivi un re, il faraone Akhet. Qualcuno ha scalpellato il suo nome da ogni pietra d'Egitto. E dove c'era il suo nome c'era anche il tuo, accanto, in ogni rotolo che hai scritto per lui.","You served a king, the pharaoh Akhet. Someone chiselled his name from every stone in Egypt. And where his name was, yours was too, beside it, in every scroll you wrote for him."
+"Senza nome il cuore non ha peso. Senza peso, non c'è giudizio.","Senza nome il cuore non ha peso. Senza peso, non c'è giudizio.","Without a name the heart has no weight. Without weight, there is no judgement."
+"Ma'at ti concede una via: segui la barca di Ra attraverso le dodici ore della notte, e ricomponi il nome del tuo re prima che sia dimenticato per sempre.","Ma'at ti concede una via: segui la barca di Ra attraverso le dodici ore della notte, e ricomponi il nome del tuo re prima che sia dimenticato per sempre.","Ma'at grants you a way: follow the barque of Ra through the twelve hours of the night, and piece together the name of your king before it is forgotten forever."
 "Il cancello è a settentrione. Quando cadrai, e cadrai, io ti riporterò qui.","Il cancello è a settentrione. Quando cadrai, e cadrai, io ti riporterò qui.","The gate lies to the north. When you fall, and fall you will, I shall bring you back here."
 Quel leggio custodisce il Libro dei Morti. Ogni capitolo è una formula che ti protegge nel buio.,Quel leggio custodisce il Libro dei Morti. Ogni capitolo è una formula che ti protegge nel buio.,That lectern guards the Book of the Dead. Every chapter is a spell that protects you in the dark.
 "Si pagano in Ka, la forza vitale che strappi al Duat. Gli dèi non regalano nulla. Nemmeno io.","Si pagano in Ka, la forza vitale che strappi al Duat. Gli dèi non regalano nulla. Nemmeno io.","They are paid in Ka, the life force you wrest from the Duat. The gods give nothing for free. Nor do I."
@@ -380,28 +392,28 @@ Un dio che parla di sé rivela sempre più di quanto vorrebbe.,Un dio che parla 
 "Set ti offrirà patti. Diffida di lui, ma non disprezzarlo: è il solo che ogni notte affronta Apophis a viso aperto.","Set ti offrirà patti. Diffida di lui, ma non disprezzarlo: è il solo che ogni notte affronta Apophis a viso aperto.","Set will offer you pacts. Distrust him, but do not despise him: he alone faces Apophis openly, every night."
 Ogni notte migliaia di morti mi passano davanti. Nessuno è mai tornato indietro.,Ogni notte migliaia di morti mi passano davanti. Nessuno è mai tornato indietro.,Every night thousands of the dead pass before me. None has ever turned back.
 Tu torni. Ho smesso di domandarmi perché. Ora mi domando chi sei.,Tu torni. Ho smesso di domandarmi perché. Ora mi domando chi sei.,You return. I have stopped asking why. Now I ask who you are.
-"Guarda il cartiglio sopra il cancello. Era vuoto: dopo la tua vittoria un segno è riaffiorato, inciso male, quasi cancellato.","Guarda il cartiglio sopra il cancello. Era vuoto: dopo la tua vittoria un segno è riaffiorato, inciso male, quasi cancellato.",
-"Un ibis con la cresta: lo spirito luminoso, l'akh. È l'inizio del nome di Akhet. Prima, lì, non c'era nulla.","Un ibis con la cresta: lo spirito luminoso, l'akh. È l'inizio del nome di Akhet. Prima, lì, non c'era nulla.",
-Il Libro dei Morti ora ti concede un capitolo in più. E Am-heh ti ha lasciato il suo Sekhem.,Il Libro dei Morti ora ti concede un capitolo in più. E Am-heh ti ha lasciato il suo Sekhem.,
-"Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.",
+"Guarda il cartiglio sopra il cancello. Era vuoto: dopo la tua vittoria un segno è riaffiorato, inciso male, quasi cancellato.","Guarda il cartiglio sopra il cancello. Era vuoto: dopo la tua vittoria un segno è riaffiorato, inciso male, quasi cancellato.","Look at the cartouche above the gate. It was empty: after your victory a sign has resurfaced, badly carved, almost erased."
+"Un ibis con la cresta: lo spirito luminoso, l'akh. È l'inizio del nome di Akhet. Prima, lì, non c'era nulla.","Un ibis con la cresta: lo spirito luminoso, l'akh. È l'inizio del nome di Akhet. Prima, lì, non c'era nulla.","A crested ibis: the shining spirit, the akh. It is the beginning of Akhet's name. Before, there was nothing there."
+Il Libro dei Morti ora ti concede un capitolo in più. E Am-heh ti ha lasciato il suo Sekhem.,Il Libro dei Morti ora ti concede un capitolo in più. E Am-heh ti ha lasciato il suo Sekhem.,The Book of the Dead now grants you one more chapter. And Am-heh has left you its Sekhem.
+"Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Now that you have felled the Devourer of Millions, the scales recognise you. You may lay weights upon them, before you descend."
 "Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.","Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.","Every weight makes the path harder. But the Duat rewards those who choose to suffer: the heavier your heart, the more Ka you will bring back."
 Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.,Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.,There is no shame in a light heart. There is glory in the heart that is heavy and passes all the same.
 "Porti con te una Lacrima di Iside. Quando pianse Osiride, le sue lacrime gonfiarono il Fiume, e il Fiume ricoprì la Terra Nera.","Porti con te una Lacrima di Iside. Quando pianse Osiride, le sue lacrime gonfiarono il Fiume, e il Fiume ricoprì la Terra Nera.","You carry a Tear of Isis. When she wept for Osiris, her tears swelled the River, and the River covered the Black Land."
-Ogni lacrima vale più di mille Ka. Neith sa cosa farne: nel suo cortile le armi si risvegliano solo con il pianto di una dea.,Ogni lacrima vale più di mille Ka. Neith sa cosa farne: nel suo cortile le armi si risvegliano solo con il pianto di una dea.,
+Ogni lacrima vale più di mille Ka. Neith sa cosa farne: nel suo cortile le armi si risvegliano solo con il pianto di una dea.,Ogni lacrima vale più di mille Ka. Neith sa cosa farne: nel suo cortile le armi si risvegliano solo con il pianto di una dea.,Every tear is worth more than a thousand Ka. Neith knows what to do with them: in her courtyard weapons awaken only with the weeping of a goddess.
 "Hai ripassato la stessa formula due volte. Bene. Gli scribi copiavano lo stesso capitolo per anni, finché la mano non lo sapeva da sola.","Hai ripassato la stessa formula due volte. Bene. Gli scribi copiavano lo stesso capitolo per anni, finché la mano non lo sapeva da sola.","You have copied the same spell twice. Good. Scribes copied the same chapter for years, until the hand knew it by itself."
 Una formula detta bene vale più di dieci dette in fretta.,Una formula detta bene vale più di dieci dette in fretta.,A spell spoken well is worth more than ten spoken in haste.
 "Ogni volta che torni, Scriba, la bilancia trema. Come se avesse timore di te.","Ogni volta che torni, Scriba, la bilancia trema. Come se avesse timore di te.","Every time you return, Scribe, the scale trembles. As if it were afraid of you."
 Non so il perché. E io conosco quasi ogni cosa.,Non so il perché. E io conosco quasi ogni cosa.,I do not know why. And I know almost everything.
-"Un altro segno è tornato nel cartiglio del tuo re: dopo l'ibis, un cerchio segnato da linee. Due geroglifici.","Un altro segno è tornato nel cartiglio del tuo re: dopo l'ibis, un cerchio segnato da linee. Due geroglifici.",
+"Un altro segno è tornato nel cartiglio del tuo re: dopo l'ibis, un cerchio segnato da linee. Due geroglifici.","Un altro segno è tornato nel cartiglio del tuo re: dopo l'ibis, un cerchio segnato da linee. Due geroglifici.","Another sign has returned to your king's cartouche: after the ibis, a circle marked with lines. Two hieroglyphs."
 "Thoth dice che potrebbero essere l'inizio di cento nomi diversi. Thoth dice sempre così, quando non sa.","Thoth dice che potrebbero essere l'inizio di cento nomi diversi. Thoth dice sempre così, quando non sa.",Thoth says they could be the beginning of a hundred different names. Thoth always says so when he does not know.
 "Ho interrogato Ma'at, su di te. Non mi ha risposto.","Ho interrogato Ma'at, su di te. Non mi ha risposto.",I questioned Ma'at about you. She did not answer.
 In quattromila anni non era mai accaduto.,In quattromila anni non era mai accaduto.,In four thousand years that had never happened.
-"Il terzo segno: un pane. Ibis, cerchio, pane. Il nome si legge quasi, ma un segno manca ancora.","Il terzo segno: un pane. Ibis, cerchio, pane. Il nome si legge quasi, ma un segno manca ancora.",
-Thoth dice che l'ultimo segno torna solo quando la notte finisce. Poi tace. È peggio di quando dice che non sa.,Thoth dice che l'ultimo segno torna solo quando la notte finisce. Poi tace. È peggio di quando dice che non sa.,
+"Il terzo segno: un pane. Ibis, cerchio, pane. Il nome si legge quasi, ma un segno manca ancora.","Il terzo segno: un pane. Ibis, cerchio, pane. Il nome si legge quasi, ma un segno manca ancora.","The third sign: a loaf of bread. Ibis, circle, bread. The name can almost be read, but one sign is still missing."
+Thoth dice che l'ultimo segno torna solo quando la notte finisce. Poi tace. È peggio di quando dice che non sa.,Thoth dice che l'ultimo segno torna solo quando la notte finisce. Poi tace. È peggio di quando dice che non sa.,Thoth says the last sign returns only when the night ends. Then he falls silent. It is worse than when he says he does not know.
 Venti discese. I guardiani delle porte hanno smesso di chiedermi chi sei. Ti chiamano 'quello che torna'.,Venti discese. I guardiani delle porte hanno smesso di chiedermi chi sei. Ti chiamano 'quello che torna'.,Twenty descents. The gatekeepers no longer ask me who you are. They call you 'the one who returns'.
 Non è un nome. Ma è più di quanto avevi.,Non è un nome. Ma è più di quanto avevi.,It is not a name. But it is more than you had.
-"Cinque volte Am-heh è caduto, e l'ultimo segno non torna.","Cinque volte Am-heh è caduto, e l'ultimo segno non torna.",
-"Chiunque abbia cancellato Akhet, Scriba, aveva molta paura di lui. O lo amava molto. Non so dire quale delle due.","Chiunque abbia cancellato Akhet, Scriba, aveva molta paura di lui. O lo amava molto. Non so dire quale delle due.",
+"Cinque volte Am-heh è caduto, e l'ultimo segno non torna.","Cinque volte Am-heh è caduto, e l'ultimo segno non torna.","Five times Am-heh has fallen, and the last sign does not return."
+"Chiunque abbia cancellato Akhet, Scriba, aveva molta paura di lui. O lo amava molto. Non so dire quale delle due.","Chiunque abbia cancellato Akhet, Scriba, aveva molta paura di lui. O lo amava molto. Non so dire quale delle due.","Whoever erased Akhet, Scribe, was very afraid of him. Or loved him very much. I cannot say which."
 La piuma di Ma'at non pesa nulla. Eppure nessuno è mai riuscito a smuoverla.,La piuma di Ma'at non pesa nulla. Eppure nessuno è mai riuscito a smuoverla.,The feather of Ma'at weighs nothing. Yet no one has ever managed to move it.
 "Thoth dice che sei uno scriba. Il tuo nome, però, nessuno sa più leggerlo.","Thoth dice che sei uno scriba. Il tuo nome, però, nessuno sa più leggerlo.","Thoth says you are a scribe. Your name, though, no one can read anymore."
 Gli scarabei non portano Ka. Non sprecare il tuo tempo con loro.,Gli scarabei non portano Ka. Non sprecare il tuo tempo con loro.,Scarabs carry no Ka. Do not waste your time on them.
@@ -413,17 +425,17 @@ Il cancello è sempre aperto. Il Duat ha sempre fame.,Il cancello è sempre aper
 "Il Ka che non spendi nella discesa torna qui con te. Quello che spendi, ti tiene in vita. Scegli.","Il Ka che non spendi nella discesa torna qui con te. Quello che spendi, ti tiene in vita. Scegli.",The Ka you do not spend on the descent comes back here with you. The Ka you spend keeps you alive. Choose.
 Ka,Ka,Ka
 Cura,Cura,Healing
-Am-heh,Am-heh,
+Am-heh,Am-heh,Am-heh
 Guardiano,Guardiano,Guardian
 Traghettatore,Traghettatore,Ferryman
 La discesa,La discesa,The Descent
 Uscita,Uscita,Exit
 Dono di %s: scegli uno dei suoi poteri,Dono di %s: scegli uno dei suoi poteri,Boon of %s: choose one of their powers
-"L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa","L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa",
+"L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa","L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa","The altar of Set: a detour, you lose neither this chamber nor the other doors. Entering costs 8 health. A curse for 2 chambers, then a power for the whole descent"
 Tesoro di Ka: +25 Ka,Tesoro di Ka: +25 Ka,Ka Treasure: +25 Ka
-Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,
+Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Water of the Nile: you recover %d%% of your health. Last chamber before Am-heh
 Acqua del Nilo: recuperi il %d%% della vita,Acqua del Nilo: recuperi il %d%% della vita,Water of the Nile: you recover %d%% of your health
-"Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco",
+"Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Gate of the First Hour: Am-heh, the Devourer of Millions, awaits you in its lake of fire"
 La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,The Middle Gate: the Serpent that guards it. Defeat it for a boon of a higher level
 Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),The Ferryman: spend this descent's Ka (what you spend does not come home with you)
 Comincia la discesa: Anubi ti aspetta con il primo dono,Comincia la discesa: Anubi ti aspetta con il primo dono,The descent begins: Anubis awaits you with the first boon
@@ -433,47 +445,48 @@ Colpito! Scatta mentre arriva,Colpito! Scatta mentre arriva,Hit! Dash as it come
 Solo l'Occhio,Solo l'Occhio,Eye only
 +%d Ka,+%d Ka,+%d Ka
 CRITICO,CRITICO,CRITICAL
-Occhio pronto,Occhio pronto,
-«Ogni sponda ha il suo prezzo. Anche questa.»,«Ogni sponda ha il suo prezzo. Anche questa.»,
-«Conosci il nome di ogni parte della mia barca? No? Allora paga.»,«Conosci il nome di ogni parte della mia barca? No? Allora paga.»,
-«I morti non portano nulla con sé. Tu porti Ka. Interessante.»,«I morti non portano nulla con sé. Tu porti Ka. Interessante.»,
-"«Non svegliarmi per niente, scriba. Compra, o passa oltre.»","«Non svegliarmi per niente, scriba. Compra, o passa oltre.»",
-«Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»,«Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»,
-"«Prima di un guardiano, tutti diventano generosi. Strano, vero?»","«Prima di un guardiano, tutti diventano generosi. Strano, vero?»",
-"«Il Ka è peso. Lascialo a me, e salirai più leggero.»","«Il Ka è peso. Lascialo a me, e salirai più leggero.»",
-"«Ti ho già portato una volta, sai? No, non te lo ricordi. Nessuno se lo ricorda.»","«Ti ho già portato una volta, sai? No, non te lo ricordi. Nessuno se lo ricorda.»",
-«Hai ancora quella scheggia sotto il pollice? ...Lascia stare. Compra.»,«Hai ancora quella scheggia sotto il pollice? ...Lascia stare. Compra.»,
-"«Guardo indietro, scriba. È il mio mestiere. E più guardo, meno capisco chi ho davanti.»","«Guardo indietro, scriba. È il mio mestiere. E più guardo, meno capisco chi ho davanti.»",
-«Oggi il prezzo è più basso. Non chiedermi perché.»,«Oggi il prezzo è più basso. Non chiedermi perché.»,
-«Gli scribi di solito hanno le dita macchiate d'inchiostro. Tu no. Curioso.»,«Gli scribi di solito hanno le dita macchiate d'inchiostro. Tu no. Curioso.»,
-"«Il tuo re aveva paura di questa barca. Anche da vivo, nelle feste del Fiume, saliva sempre per ultimo.»","«Il tuo re aveva paura di questa barca. Anche da vivo, nelle feste del Fiume, saliva sempre per ultimo.»",
-«Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»,«Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»,
-"«Più scendi, meno ti costa la mia merce. Non è generosità. È fretta.»","«Più scendi, meno ti costa la mia merce. Non è generosità. È fretta.»",
-"«Ho fatto una promessa, molto tempo fa. La sto ancora pagando. Prendi, e va'.»","«Ho fatto una promessa, molto tempo fa. La sto ancora pagando. Prendi, e va'.»",
+Occhio pronto,Occhio pronto,Eye ready
+«Ogni sponda ha il suo prezzo. Anche questa.»,«Ogni sponda ha il suo prezzo. Anche questa.»,«Every shore has its price. This one too.»
+«Conosci il nome di ogni parte della mia barca? No? Allora paga.»,«Conosci il nome di ogni parte della mia barca? No? Allora paga.»,«Do you know the name of every part of my boat? No? Then pay.»
+"«I costruttori di tombe muravano stanze senza porta, per il Ka dei re. Chi guarda bene le crepe, a volte trova chi gli risponde.»","«I costruttori di tombe muravano stanze senza porta, per il Ka dei re. Chi guarda bene le crepe, a volte trova chi gli risponde.»","«The tomb builders walled up rooms without doors, for the Ka of kings. Whoever looks closely at the cracks sometimes finds someone who answers.»"
+«I morti non portano nulla con sé. Tu porti Ka. Interessante.»,«I morti non portano nulla con sé. Tu porti Ka. Interessante.»,«The dead carry nothing with them. You carry Ka. Interesting.»
+"«Non svegliarmi per niente, scriba. Compra, o passa oltre.»","«Non svegliarmi per niente, scriba. Compra, o passa oltre.»","«Do not wake me for nothing, scribe. Buy, or move on.»"
+«Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»,«Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»,«They call me He Who Looks Behind. From here I see everyone who fell before you.»
+"«Prima di un guardiano, tutti diventano generosi. Strano, vero?»","«Prima di un guardiano, tutti diventano generosi. Strano, vero?»","«Before a guardian, everyone becomes generous. Strange, isn't it?»"
+"«Il Ka è peso. Lascialo a me, e salirai più leggero.»","«Il Ka è peso. Lascialo a me, e salirai più leggero.»","«Ka is weight. Leave it to me, and you will climb lighter.»"
+"«Ti ho già portato una volta, sai? No, non te lo ricordi. Nessuno se lo ricorda.»","«Ti ho già portato una volta, sai? No, non te lo ricordi. Nessuno se lo ricorda.»","«I have carried you once before, you know? No, you don't remember. No one remembers.»"
+«Hai ancora quella scheggia sotto il pollice? ...Lascia stare. Compra.»,«Hai ancora quella scheggia sotto il pollice? ...Lascia stare. Compra.»,«Do you still have that splinter under your thumb? ...Never mind. Buy.»
+«Un muro che perde polvere è un muro che nasconde qualcosa. Lo sanno i ladri di tombe. E ora lo sai anche tu.»,«Un muro che perde polvere è un muro che nasconde qualcosa. Lo sanno i ladri di tombe. E ora lo sai anche tu.»,«A wall that sheds dust is a wall that hides something. Tomb robbers know it. And now so do you.»
+"«Guardo indietro, scriba. È il mio mestiere. E più guardo, meno capisco chi ho davanti.»","«Guardo indietro, scriba. È il mio mestiere. E più guardo, meno capisco chi ho davanti.»","«I look behind, scribe. It is my trade. And the more I look, the less I understand who stands before me.»"
+«Oggi il prezzo è più basso. Non chiedermi perché.»,«Oggi il prezzo è più basso. Non chiedermi perché.»,«Today the price is lower. Don't ask me why.»
+«Gli scribi di solito hanno le dita macchiate d'inchiostro. Tu no. Curioso.»,«Gli scribi di solito hanno le dita macchiate d'inchiostro. Tu no. Curioso.»,«Scribes usually have ink-stained fingers. You don't. Curious.»
+"«Il tuo re aveva paura di questa barca. Anche da vivo, nelle feste del Fiume, saliva sempre per ultimo.»","«Il tuo re aveva paura di questa barca. Anche da vivo, nelle feste del Fiume, saliva sempre per ultimo.»","«Your king was afraid of this boat. Even in life, at the festivals of the River, he always boarded last.»"
+«Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»,«Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»,«Don't look at me like that. I only see the past. And yours is... crowded.»
+"«Più scendi, meno ti costa la mia merce. Non è generosità. È fretta.»","«Più scendi, meno ti costa la mia merce. Non è generosità. È fretta.»","«The deeper you go, the less my wares cost you. It is not generosity. It is haste.»"
+"«Ho fatto una promessa, molto tempo fa. La sto ancora pagando. Prendi, e va'.»","«Ho fatto una promessa, molto tempo fa. La sto ancora pagando. Prendi, e va'.»","«I made a promise, a long time ago. I am still paying for it. Take it, and go.»"
 %d Ka,%d Ka,%d Ka
-Label,Label,Label
 Acqua del Nilo,Acqua del Nilo,Water of the Nile
 Recuperi il 30% della vita,Recuperi il 30% della vita,You recover 30% of your health
 Offerta agli dèi,Offerta agli dèi,Offering to the Gods
 Un dio a caso ti offre un dono,Un dio a caso ti offre un dono,A random god offers you a boon
 Inchiostro di Thoth,Inchiostro di Thoth,Ink of Thoth
 Un tuo dono a caso sale di livello,Un tuo dono a caso sale di livello,"One of your boons, at random, rises a level"
-AM-HEH,AM-HEH,
-Il Divoratore di Milioni,Il Divoratore di Milioni,
-Vive in un lago di fuoco. Il fuoco non entra nell'acqua,Vive in un lago di fuoco. Il fuoco non entra nell'acqua,
-AMMIT,AMMIT,
-La Divoratrice,La Divoratrice,
+AM-HEH,AM-HEH,AM-HEH
+Il Divoratore di Milioni,Il Divoratore di Milioni,The Devourer of Millions
+Vive in un lago di fuoco. Il fuoco non entra nell'acqua,Vive in un lago di fuoco. Il fuoco non entra nell'acqua,It lives in a lake of fire. Fire does not enter water
+AMMIT,AMMIT,AMMIT
+La Divoratrice,La Divoratrice,The Devourer
 Divora i cuori che non superano il giudizio,Divora i cuori che non superano il giudizio,She devours the hearts that fail the judgement
 IL SERPENTE DELLA PORTA,IL SERPENTE DELLA PORTA,THE SERPENT OF THE GATE
-Guardiano della quinta porta,Guardiano della quinta porta,
-Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra,Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra,
+Guardiano della quinta porta,Guardiano della quinta porta,Guardian of the fifth gate
+Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra,Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra,Every gate of the Duat has its guardian. Beware the cobra statues
 Discesa ripresa,Discesa ripresa,Descent resumed
 Stanza %d di %d,Stanza %d di %d,Chamber %d of %d
 Set mantiene la promessa,Set mantiene la promessa,Set keeps his promise
-Il Cortile di Neith si è aperto,Il Cortile di Neith si è aperto,
-La via verso Am-heh è aperta,La via verso Am-heh è aperta,
+Il Cortile di Neith si è aperto,Il Cortile di Neith si è aperto,The Courtyard of Neith has opened
+La via verso Am-heh è aperta,La via verso Am-heh è aperta,The way to Am-heh is open
 Il Serpente della Porta è caduto,Il Serpente della Porta è caduto,The Serpent of the Gate has fallen
-  ·  il prossimo dono sale di un livello in più,  ·  il prossimo dono sale di un livello in più,
+  ·  il prossimo dono sale di un livello in più,  ·  il prossimo dono sale di un livello in più,  ·  the next boon rises one extra level
 Stanza ripulita,Stanza ripulita,Chamber cleared
 Scegli una porta: la ricompensa è scritta sopra,Scegli una porta: la ricompensa è scritta sopra,Choose a door: the reward is written above it
 +10 Ka,+10 Ka,+10 Ka
@@ -482,16 +495,19 @@ Nuovo,Nuovo,New
 Livello %d,Livello %d,Level %d
 Nuovo · subito livello %d,Nuovo · subito livello %d,New · straight to level %d
 Dono pesante,Dono pesante,Heavy boon
- · solo %s, · solo %s,
+ · solo %s, · solo %s, · only %s
 Dono doppio · %s + %s,Dono doppio · %s + %s,Duo boon · %s + %s
 %s ti offre un dono,%s ti offre un dono,%s offers you a boon
-Anubi pesa il tuo cuore,Anubi pesa il tuo cuore,Anubis weighs your heart
 Dono di Anubi,Dono di Anubi,Boon of Anubis
+Anubi pesa il tuo cuore,Anubi pesa il tuo cuore,Anubis weighs your heart
 Dono di %s,Dono di %s,Boon of %s
-Prima · maledizione per %d stanze,Prima · maledizione per %d stanze,
-Poi · per tutta la discesa,Poi · per tutta la discesa,
-"Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa. Davanti ai guardiani Set tace","Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa. Davanti ai guardiani Set tace",
-Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arrivare in tempo,Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arrivare in tempo,
+Dono doppio,Dono doppio,Duo Boon
+  ·  livello %d,  ·  livello %d,  ·  level %d
+Patto di Set,Patto di Set,Pact of Set
+Prima · maledizione per %d stanze,Prima · maledizione per %d stanze,First · curse for %d chambers
+Poi · per tutta la discesa,Poi · per tutta la discesa,Then · for the whole descent
+"Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa. Davanti ai guardiani Set tace","Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa. Davanti ai guardiani Set tace","First the curse, for the next cleared chambers. Then the power, for the whole descent. Before the guardians Set is silent"
+Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arrivare in tempo,Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arrivare in tempo,Warning: only a few chambers remain before Am-heh. Set's power might not arrive in time
 Set ti propone un patto,Set ti propone un patto,Set offers you a pact
 Maledizione di Set: %d stanze,Maledizione di Set: %d stanze,Curse of Set: %d chambers
 %s. Poi: %s,%s. Poi: %s,%s. Then: %s
@@ -503,8 +519,6 @@ Torna alla Sala (abbandona),Torna alla Sala (abbandona),Back to the Hall (abando
 Esci (la discesa resta salvata),Esci (la discesa resta salvata),Quit (the descent stays saved)
 Esc / Start per riprendere,Esc / Start per riprendere,Esc / Start to resume
 Indietro,Indietro,Back
-Chiudi,Chiudi,Close
-Button,Button,Button
 "[center][b][color=#f0b94c]I tuoi doni[/color][/b]   [color=#a89878](%s)[/color][/center]
 
 ","[center][b][color=#f0b94c]I tuoi doni[/color][/b]   [color=#a89878](%s)[/color][/center]
@@ -544,27 +558,29 @@ liv. %d,liv. %d,lv. %d
 %s
 
 "
-"Am-heh, il Divoratore di Milioni","Am-heh, il Divoratore di Milioni",
+"Am-heh, il Divoratore di Milioni","Am-heh, il Divoratore di Milioni","Am-heh, the Devourer of Millions"
 stanza %d di %d,stanza %d di %d,chamber %d of %d
 il Serpente della Porta,il Serpente della Porta,the Serpent of the Gate
 Il tuo cuore è stato pesato,Il tuo cuore è stato pesato,Your heart has been weighed
 Sei caduto: ,Sei caduto: ,You fell: 
 Ti ha ucciso ,Ti ha ucciso ,Killed by 
 Tocca lo schermo,Tocca lo schermo,Tap the screen
+Premi Start,Premi Start,Press Start
+Premi R,Premi R,Press R
 %s per tornare alla Sala del Giudizio,%s per tornare alla Sala del Giudizio,%s to return to the Hall of Judgement
-"AM-HEH, IL DIVORATORE DI MILIONI","AM-HEH, IL DIVORATORE DI MILIONI",
+"AM-HEH, IL DIVORATORE DI MILIONI","AM-HEH, IL DIVORATORE DI MILIONI","AM-HEH, THE DEVOURER OF MILLIONS"
 "AMMIT, LA DIVORATRICE","AMMIT, LA DIVORATRICE","AMMIT, THE DEVOURER"
-L'altare di Set,L'altare di Set,
-Una deviazione nel deserto rosso. Le tue porte ti aspettano,Una deviazione nel deserto rosso. Le tue porte ti aspettano,
+L'altare di Set,L'altare di Set,The altar of Set
+Una deviazione nel deserto rosso. Le tue porte ti aspettano,Una deviazione nel deserto rosso. Le tue porte ti aspettano,A detour into the red desert. Your doors are waiting for you
 Il Traghettatore,Il Traghettatore,The Ferryman
-Mahaf: ,Mahaf: ,
+Mahaf: ,Mahaf: ,Mahaf: 
 Non hai abbastanza Ka,Non hai abbastanza Ka,You don't have enough Ka
 %s sale al livello %d,%s sale al livello %d,%s rises to level %d
 La colonna crolla,La colonna crolla,The pillar crumbles
-Am-heh ti cede il suo Sekhem,Am-heh ti cede il suo Sekhem,
+Am-heh ti cede il suo Sekhem,Am-heh ti cede il suo Sekhem,Am-heh yields its Sekhem to you
 Dalla prossima discesa potrai caricare la Forma Divina,Dalla prossima discesa potrai caricare la Forma Divina,From your next descent you can charge the Divine Form
-Am-heh è caduto,Am-heh è caduto,
-Il lago di fuoco si spegne. La notte continua,Il lago di fuoco si spegne. La notte continua,
+Am-heh è caduto,Am-heh è caduto,Am-heh has fallen
+Il lago di fuoco si spegne. La notte continua,Il lago di fuoco si spegne. La notte continua,The lake of fire goes out. The night goes on
 Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Time %d:%02d   ·   Enemies slain %d   ·   Damage dealt %d
 Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Boons gathered %d   ·   Ka gathered %d%s   ·   Stored Ka %d
  (Peso del Cuore +%d%%), (Peso del Cuore +%d%%), (Weight of the Heart +%d%%)
@@ -574,13 +590,16 @@ Nuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro
 New powers: the Sekhem and the Divine Form (Q / LT), and one more slot in the Book of the Dead"
 "
 Un ricordo è riaffiorato: «%s». Lo trovi nei Papiri di Thoth","
-Un ricordo è riaffiorato: «%s». Lo trovi nei Papiri di Thoth",
+Un ricordo è riaffiorato: «%s». Lo trovi nei Papiri di Thoth","
+A memory has resurfaced: «%s». You will find it in the Scrolls of Thoth"
 "
 +%d Lacrime di Iside, prima vittoria con %s (ne hai %d)","
-+%d Lacrime di Iside, prima vittoria con %s (ne hai %d)",
++%d Lacrime di Iside, prima vittoria con %s (ne hai %d)","
++%d Tears of Isis, first victory with %s (you have %d)"
 "
 Con %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto","
-Con %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto",
+Con %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto","
+With %s you already have Am-heh's Tears: try another weapon, or a higher Weight of the Heart"
 "Hai sconfitto Am-heh!
 La Prima Ora è superata. Le altre ore della notte ti attendono.%s
 
@@ -591,39 +610,50 @@ La Prima Ora è superata. Le altre ore della notte ti attendono.%s
 
 %s
 
-Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio",
+Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio","You defeated Am-heh!
+The First Hour is over. The other hours of the night await you.%s
+
+%s
+
+Press R (or Start, or tap the screen) to return to the Hall of Judgement"
 pronto,pronto,ready
 PRONTO (Q / LT),PRONTO (Q / LT),READY (Q / LT)
 FORMA DIVINA %.1fs,FORMA DIVINA %.1fs,DIVINE FORM %.1fs
+Ammit · colonne: %d,Ammit · colonne: %d,Ammit · pillars: %d
+Stanza %d/%d,Stanza %d/%d,Chamber %d/%d
 Addestramento,Addestramento,Training
 Piuma di Ma'at: -%d%% danni,Piuma di Ma'at: -%d%% danni,Feather of Ma'at: -%d%% damage
+Doni: %d,Doni: %d,Boons: %d
 Doni: %d (Tab per vederli),Doni: %d (Tab per vederli),Boons: %d (Tab to view)
     Maledizione: %s (ancora %d stanze),    Maledizione: %s (ancora %d stanze),    Curse: %s (%d chambers left)
-Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,
-WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,
-Ureo!,Ureo!,
-"Nuova versione, aggiorna!","Nuova versione, aggiorna!",
+"%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, you have %d)"
+Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Left stick move · right aim · RB attack · RT Eye · LB/A dash · LT Divine Form · Select boons · Start pause
+WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD move · mouse aim · left click attack · Space dash · right click Eye · Q Divine Form (after the first boss) · Tab boons · Esc pause · F1 hitbox
+Ureo!,Ureo!,Uraeus!
+"Nuova versione, aggiorna!","Nuova versione, aggiorna!","New version, update!"
 "Sala del Giudizio
 Ka custodito %d · Discese %d · Vittorie %d","Sala del Giudizio
-Ka custodito %d · Discese %d · Vittorie %d",
+Ka custodito %d · Discese %d · Vittorie %d","Hall of Judgement
+Stored Ka %d · Descents %d · Victories %d"
 Levetta muovi · LB/A scatto · Y interagisci · Start opzioni,Levetta muovi · LB/A scatto · Y interagisci · Start opzioni,Stick move · LB/A dash · Y interact · Start options
 WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD move · Space dash · E interact · Esc options
 %s · Parla con Anubi,%s · Parla con Anubi,%s · Speak with Anubis
 %s · Apri il Libro dei Morti,%s · Apri il Libro dei Morti,%s · Open the Book of the Dead
 %s · Leggi i Papiri di Thoth (%d su %d),%s · Leggi i Papiri di Thoth (%d su %d),%s · Read the Scrolls of Thoth (%d of %d)
- · un ricordo nuovo, · un ricordo nuovo,
+ · un ricordo nuovo, · un ricordo nuovo, · a new memory
 "%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)","%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)","%s · The Weight of the Heart (current weight %d, Ka +%d%%)"
-La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,
-Il Cortile di Neith · le armi · entra dalla porta,Il Cortile di Neith · le armi · entra dalla porta,
-Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,
+La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,The scales of Ma'at · Defeat Am-heh to lay down your weights
+Il Cortile di Neith · le armi · entra dalla porta,Il Cortile di Neith · le armi · entra dalla porta,The Courtyard of Neith · the weapons · enter through the door
+Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,The Courtyard of Neith · it will open when you have defeated the Serpent of the Gate
 Il cancello del Duat è a nord,Il cancello del Duat è a nord,The gate of the Duat lies to the north
-"Tocca una voce per leggerla, toccala di nuovo per sceglierla","Tocca una voce per leggerla, toccala di nuovo per sceglierla",
+"Tocca una voce per leggerla, toccala di nuovo per sceglierla","Tocca una voce per leggerla, toccala di nuovo per sceglierla","Tap an item to read it, tap it again to choose it"
 E / Y / B per chiudere,E / Y / B per chiudere,E / Y / B to close
 Il Libro dei Morti,Il Libro dei Morti,The Book of the Dead
 Ka custodito: %d    ·    Capitoli attivi: %d di %d,Ka custodito: %d    ·    Capitoli attivi: %d di %d,Stored Ka: %d    ·    Active chapters: %d of %d
+ATTIVO,ATTIVO,ACTIVE
 comprato,comprato,bought
-  · liv. %d/%d,  · liv. %d/%d,
-Un posto in più nel Libro   [%d Ka],Un posto in più nel Libro   [%d Ka],
+  · liv. %d/%d,  · liv. %d/%d,  · lv. %d/%d
+Un posto in più nel Libro   [%d Ka],Un posto in più nel Libro   [%d Ka],One more place in the Book   [%d Ka]
 Capitolo %d · %s%s,Capitolo %d · %s%s,Chapter %d · %s%s
   (livello %d di %d),  (livello %d di %d),  (level %d of %d)
 Livello %d: %s,Livello %d: %s,Level %d: %s
@@ -638,62 +668,81 @@ Un posto in più nel Libro,Un posto in più nel Libro,One more place in the Book
 
 Costa %d Ka: ne hai %d.","Puoi tenere attivo un capitolo in più a ogni discesa.
 
-Costa %d Ka: ne hai %d.",
-Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.,Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.,
+Costa %d Ka: ne hai %d.","You can keep one more chapter active on every descent.
+
+It costs %d Ka: you have %d."
+Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.,Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.,A longer papyrus for more spells. The richest had Books of the Dead painted tens of metres long: Ani's is over twenty-three.
 Piuma di Ma'at,Piuma di Ma'at,Feather of Ma'at
 "Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva.","Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva.","A mode for those who want help. You take 10% less damage, and another 2% less after each death, up to 50%. In return you store only 40% of your Ka at the end of a descent, and the Weight of the Heart does not count while it is on."
 Scuotimento dello schermo,Scuotimento dello schermo,Screen shake
 La telecamera trema quando colpisci o vieni colpito. Spegnilo se ti dà fastidio agli occhi.,La telecamera trema quando colpisci o vieni colpito. Spegnilo se ti dà fastidio agli occhi.,The camera shakes when you hit or get hit. Turn it off if it bothers your eyes.
 Pausa sui colpi,Pausa sui colpi,Hit pause
 Il gioco si ferma per un istante quando un colpo va a segno: dà peso ai colpi. Spegnila se preferisci un'azione sempre fluida.,Il gioco si ferma per un istante quando un colpo va a segno: dà peso ai colpi. Spegnila se preferisci un'azione sempre fluida.,The game freezes for an instant when a hit lands: it gives weight to your blows. Turn it off if you prefer an always smooth action.
-Mira automatica (telefono),Mira automatica (telefono),
-"Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento.","Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento.",
+Mira automatica (telefono),Mira automatica (telefono),Auto aim (phone)
+"Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento.","Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento.","On the phone, when you stand still, your weapon and the Eye aim by themselves at the nearest enemy. When you move you always strike in the direction you are going, with a little help if an enemy is more or less in front of you. Turn it off if you prefer to always aim with movement."
 Rifai l'addestramento,Rifai l'addestramento,Redo the training
 "Alla prossima discesa la prima stanza torna a essere l'addestramento di Anubi: movimento, khopesh, scatto, Occhio, Ka e porte.","Alla prossima discesa la prima stanza torna a essere l'addestramento di Anubi: movimento, khopesh, scatto, Occhio, Ka e porte.","On your next descent the first chamber becomes Anubis's training again: movement, khopesh, dash, Eye, Ka and doors."
-Trascina le barre. Le trovi anche nella pausa della discesa.,Trascina le barre. Le trovi anche nella pausa della discesa.,
-Aggiorna il gioco,Aggiorna il gioco,
-Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,
+Trascina le barre. Le trovi anche nella pausa della discesa.,Trascina le barre. Le trovi anche nella pausa della discesa.,Drag the bars. You also find them in the descent's pause menu.
+Lingua · Language,Lingua · Language,Lingua · Language
+"La lingua del gioco. All'inizio segue quella del telefono o del computer.
+The language of the game. At first it follows your phone or computer.","La lingua del gioco. All'inizio segue quella del telefono o del computer.
+The language of the game. At first it follows your phone or computer.","La lingua del gioco. All'inizio segue quella del telefono o del computer.
+The language of the game. At first it follows your phone or computer."
+Aggiorna il gioco,Aggiorna il gioco,Update the game
+Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,Downloads the latest version of the game and reopens it. Your progress stays: there is no need to delete the app from the Home screen.
 Esci dal gioco,Esci dal gioco,Quit the game
 Chiude il gioco. I progressi della Sala sono già salvati.,Chiude il gioco. I progressi della Sala sono già salvati.,Closes the game. Your progress in the Hall is already saved.
 Opzioni,Opzioni,Options
 Esc / Start / B per tornare alla Sala,Esc / Start / B per tornare alla Sala,Esc / Start / B to return to the Hall
 ATTIVA,ATTIVA,ON
+spenta,spenta,off
+sì,sì,yes
+no,no,no
 "sì, alla prossima","sì, alla prossima","yes, next time"
-":  generale %d%%, musica %d%%",":  generale %d%%, musica %d%%",
-:  NUOVA VERSIONE,:  NUOVA VERSIONE,
-:  aggiornato,:  aggiornato,
-:  controllo...,:  controllo...,
+Italiano,Italiano,Italiano
+":  generale %d%%, musica %d%%",":  generale %d%%, musica %d%%",":  overall %d%%, music %d%%"
+:  NUOVA VERSIONE,:  NUOVA VERSIONE,:  NEW VERSION
+:  aggiornato,:  aggiornato,:  up to date
+:  controllo...,:  controllo...,:  checking...
 Ora subisci il %d%% di danni in meno.,Ora subisci il %d%% di danni in meno.,You now take %d%% less damage.
-HSlider,HSlider,
-Versione installata: %s,Versione installata: %s,
+Versione installata: %s,Versione installata: %s,Installed version: %s
 "
 Ultima versione pubblicata: %s","
-Ultima versione pubblicata: %s",
+Ultima versione pubblicata: %s","
+Latest published version: %s"
 "
 
 C'è una versione nuova: premi per scaricarla.","
 
-C'è una versione nuova: premi per scaricarla.",
+C'è una versione nuova: premi per scaricarla.","
+
+There is a new version: press to download it."
 "
 
 Hai già l'ultima versione.","
 
-Hai già l'ultima versione.",
+Hai già l'ultima versione.","
+
+You already have the latest version."
 "
 
 Sto controllando se c'è una versione nuova...","
 
-Sto controllando se c'è una versione nuova...",
+Sto controllando se c'è una versione nuova...","
+
+Checking whether there is a new version..."
 "
 
 Non riesco a controllare: forse il telefono non è connesso. Premi per riprovare.","
 
-Non riesco a controllare: forse il telefono non è connesso. Premi per riprovare.",
-Aggiornamento in corso... il gioco si riapre da solo tra un momento.,Aggiornamento in corso... il gioco si riapre da solo tra un momento.,
-Controllo in corso...,Controllo in corso...,
+Non riesco a controllare: forse il telefono non è connesso. Premi per riprovare.","
+
+I can't check: maybe the phone is not connected. Press to try again."
+Aggiornamento in corso... il gioco si riapre da solo tra un momento.,Aggiornamento in corso... il gioco si riapre da solo tra un momento.,Updating... the game will reopen by itself in a moment.
+Controllo in corso...,Controllo in corso...,Checking...
 nessuno,nessuno,none
 Il Peso del Cuore,Il Peso del Cuore,The Weight of the Heart
-Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s,Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s,
+Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s,Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s,Total weight: %d    ·    Ka at the end of a descent: +%d%%    ·    Record against Am-heh: %s
 "%s
 
 Livello %d di %d. Premi per cambiarlo.","%s
@@ -704,7 +753,7 @@ Level %d of %d. Press to change it."
 "Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.","Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.","Every level of weight makes the descent harder and lets you store 10% more Ka. Anubis watches: the heavier the heart that manages to pass, the stronger the one who carries it."
 I Papiri di Thoth,I Papiri di Thoth,The Scrolls of Thoth
 Tutto ciò che gli dèi ti hanno raccontato    ·    %d papiri su %d,Tutto ciò che gli dèi ti hanno raccontato    ·    %d papiri su %d,Everything the gods have told you    ·    %d scrolls of %d
-NUOVO · Cortile di Neith,NUOVO · Cortile di Neith,
+NUOVO · Cortile di Neith,NUOVO · Cortile di Neith,NEW · Courtyard of Neith
 "Anubi, il Guardiano","Anubi, il Guardiano","Anubis, the Guardian"
 La bilancia,La bilancia,The scale
 "Prima che tu discenda, Scriba, io ti peso. Ogni mio dono è un piatto della bilancia: ciò che prendi da un lato, lo lasci sull'altro. Così è il giudizio. Così sarà sempre.","Prima che tu discenda, Scriba, io ti peso. Ogni mio dono è un piatto della bilancia: ciò che prendi da un lato, lo lasci sull'altro. Così è il giudizio. Così sarà sempre.","Before you descend, Scribe, I weigh you. Each of my boons is a pan of the scale: what you take on one side, you leave on the other. So is the judgement. So it shall always be."
@@ -867,8 +916,8 @@ La bestia senza nome,La bestia senza nome,The nameless beast
 "Porto la testa di una bestia che nessun uomo sa nominare. Muso lungo e ricurvo, orecchie squadrate, coda dritta come una freccia. Vedo i sapienti delle terre future discuterne per secoli: un cane? un asino? Lasciali discutere.","Porto la testa di una bestia che nessun uomo sa nominare. Muso lungo e ricurvo, orecchie squadrate, coda dritta come una freccia. Vedo i sapienti delle terre future discuterne per secoli: un cane? un asino? Lasciali discutere.","I bear the head of a beast no man can name. A long curved snout, squared ears, a tail straight as an arrow. I see the scholars of future lands debating it for centuries: a dog? a donkey? Let them debate."
 Il nome dei faraoni,Il nome dei faraoni,The name of the pharaohs
 "Non sempre fui il nemico. Alcuni faraoni portarono il mio nome con orgoglio. Seti, il padre del grande Ramses, significa 'colui che appartiene a Set'. I re sanno riconoscere la forza, anche quando gli altri la temono.","Non sempre fui il nemico. Alcuni faraoni portarono il mio nome con orgoglio. Seti, il padre del grande Ramses, significa 'colui che appartiene a Set'. I re sanno riconoscere la forza, anche quando gli altri la temono.","I was not always the enemy. Some pharaohs bore my name with pride. Seti, father of the great Ramesses, means 'he who belongs to Set'. Kings know how to recognise strength, even when others fear it."
-Il tuo faraone,Il tuo faraone,
-"Mi parli del tuo faraone come si parla di un fratello morto. Io di fratelli morti me ne intendo. Lo conoscevo, il tuo Akhet: un re che non voleva morire. Ne ho visti tanti, di re così. Lui però ci è quasi riuscito. Chiedi agli altri dèi perché nessuno ne parla volentieri. Io rido, e basta.","Mi parli del tuo faraone come si parla di un fratello morto. Io di fratelli morti me ne intendo. Lo conoscevo, il tuo Akhet: un re che non voleva morire. Ne ho visti tanti, di re così. Lui però ci è quasi riuscito. Chiedi agli altri dèi perché nessuno ne parla volentieri. Io rido, e basta.",
+Il tuo faraone,Il tuo faraone,Your pharaoh
+"Mi parli del tuo faraone come si parla di un fratello morto. Io di fratelli morti me ne intendo. Lo conoscevo, il tuo Akhet: un re che non voleva morire. Ne ho visti tanti, di re così. Lui però ci è quasi riuscito. Chiedi agli altri dèi perché nessuno ne parla volentieri. Io rido, e basta.","Mi parli del tuo faraone come si parla di un fratello morto. Io di fratelli morti me ne intendo. Lo conoscevo, il tuo Akhet: un re che non voleva morire. Ne ho visti tanti, di re così. Lui però ci è quasi riuscito. Chiedi agli altri dèi perché nessuno ne parla volentieri. Io rido, e basta.","You speak of your pharaoh the way one speaks of a dead brother. I know a thing or two about dead brothers. I knew him, your Akhet: a king who did not want to die. I have seen many kings like that. He, though, almost managed it. Ask the other gods why none of them likes to speak of him. I laugh, and that is all."
 "Prima il prezzo, poi il premio.","Prima il prezzo, poi il premio.","The price first, then the reward."
 Il dolore insegna. Tu impari lentamente.,Il dolore insegna. Tu impari lentamente.,Pain teaches. You learn slowly.
 Un patto è un patto.,Un patto è un patto.,A pact is a pact.
@@ -884,38 +933,37 @@ I quarantadue giudici,I quarantadue giudici,The forty-two judges
 Le parti dell'anima,Le parti dell'anima,The parts of the soul
 "L'uomo non è una cosa sola. C'è il Ka, la forza che lo tiene in vita. Il Ba, che vola come un uccello dal volto umano. Lo Sheut, la sua ombra. L'Ib, il cuore. E il Ren, il nome. Perdi il nome, Scriba, e perdi la parte di te che gli altri ricordano.","L'uomo non è una cosa sola. C'è il Ka, la forza che lo tiene in vita. Il Ba, che vola come un uccello dal volto umano. Lo Sheut, la sua ombra. L'Ib, il cuore. E il Ren, il nome. Perdi il nome, Scriba, e perdi la parte di te che gli altri ricordano.","A man is not one thing alone. There is the Ka, the force that keeps him alive. The Ba, which flies like a bird with a human face. The Sheut, his shadow. The Ib, the heart. And the Ren, the name. Lose the name, Scribe, and you lose the part of you that others remember."
 "Il Libro dei Morti non è un libro solo. È un insieme di formule scritte sul papiro e deposte nella tomba, per guidare il morto nel viaggio. Gli uomini lo chiamavano 'Formule per uscire al giorno'. Ciascuno ne prendeva quante poteva pagarne. Come te.","Il Libro dei Morti non è un libro solo. È un insieme di formule scritte sul papiro e deposte nella tomba, per guidare il morto nel viaggio. Gli uomini lo chiamavano 'Formule per uscire al giorno'. Ciascuno ne prendeva quante poteva pagarne. Come te.","The Book of the Dead is not a single book. It is a collection of spells written on papyrus and laid in the tomb, to guide the dead on their journey. Men called it the 'Spells for Coming Forth by Day'. Each took as many as they could afford. Like you."
-"Am-heh, il Divoratore di Milioni. Ha la testa di un cane e vive in un lago di fuoco, nelle prime ore della notte. Il Libro dei Morti insegna una formula per sfuggirgli, perché nessuno sa contare le anime che ha inghiottito. Solo l'acqua lo ferma: il fuoco di Am-heh non entra nel Fiume.","Am-heh, il Divoratore di Milioni. Ha la testa di un cane e vive in un lago di fuoco, nelle prime ore della notte. Il Libro dei Morti insegna una formula per sfuggirgli, perché nessuno sa contare le anime che ha inghiottito. Solo l'acqua lo ferma: il fuoco di Am-heh non entra nel Fiume.",
+"Am-heh, il Divoratore di Milioni. Ha la testa di un cane e vive in un lago di fuoco, nelle prime ore della notte. Il Libro dei Morti insegna una formula per sfuggirgli, perché nessuno sa contare le anime che ha inghiottito. Solo l'acqua lo ferma: il fuoco di Am-heh non entra nel Fiume.","Am-heh, il Divoratore di Milioni. Ha la testa di un cane e vive in un lago di fuoco, nelle prime ore della notte. Il Libro dei Morti insegna una formula per sfuggirgli, perché nessuno sa contare le anime che ha inghiottito. Solo l'acqua lo ferma: il fuoco di Am-heh non entra nel Fiume.","Am-heh, the Devourer of Millions. It has the head of a dog and lives in a lake of fire, in the first hours of the night. The Book of the Dead teaches a spell to escape it, because no one can count the souls it has swallowed. Only water stops it: the fire of Am-heh does not enter the River."
 "Ammit non ha templi. Nessuno la prega, tutti la temono. Ha la testa del coccodrillo, il petto del leone, le zampe dell'ippopotamo: le tre bestie più letali della Terra Nera, in un corpo solo. Siede accanto alla bilancia. E attende.","Ammit non ha templi. Nessuno la prega, tutti la temono. Ha la testa del coccodrillo, il petto del leone, le zampe dell'ippopotamo: le tre bestie più letali della Terra Nera, in un corpo solo. Siede accanto alla bilancia. E attende.","Ammit has no temples. No one prays to her, everyone fears her. She has the head of a crocodile, the chest of a lion, the legs of a hippopotamus: the three deadliest beasts of the Black Land, in a single body. She sits beside the scale. And waits."
 Il Duat,Il Duat,The Duat
 "Il Duat è il mondo che giace sotto il mondo. Sulle pareti delle tombe dei re, nella valle a occidente di Tebe, i sacerdoti dipinsero l'Amduat, il libro di ciò che è nel Duat, ora per ora. Dodici ore, dodici porte, e in ognuna dèi e mostri.","Il Duat è il mondo che giace sotto il mondo. Sulle pareti delle tombe dei re, nella valle a occidente di Tebe, i sacerdoti dipinsero l'Amduat, il libro di ciò che è nel Duat, ora per ora. Dodici ore, dodici porte, e in ognuna dèi e mostri.","The Duat is the world that lies beneath the world. On the walls of the kings' tombs, in the valley west of Thebes, the priests painted the Amduat, the book of what is in the Duat, hour by hour. Twelve hours, twelve gates, and in each, gods and monsters."
 Il nome cancellato,Il nome cancellato,The erased name
-"Cancellare un nome dalla pietra è peggio che uccidere. Dopo la loro morte, scalpellarono il nome della regina Hatshepsut e quello del faraone Akhenaton da templi e monumenti, perché il ricordo morisse con loro. Qualcuno ha fatto lo stesso con il tuo re, e con lui con te, che lo scrivevi. E io voglio sapere chi.","Cancellare un nome dalla pietra è peggio che uccidere. Dopo la loro morte, scalpellarono il nome della regina Hatshepsut e quello del faraone Akhenaton da templi e monumenti, perché il ricordo morisse con loro. Qualcuno ha fatto lo stesso con il tuo re, e con lui con te, che lo scrivevi. E io voglio sapere chi.",
+"Cancellare un nome dalla pietra è peggio che uccidere. Dopo la loro morte, scalpellarono il nome della regina Hatshepsut e quello del faraone Akhenaton da templi e monumenti, perché il ricordo morisse con loro. Qualcuno ha fatto lo stesso con il tuo re, e con lui con te, che lo scrivevi. E io voglio sapere chi.","Cancellare un nome dalla pietra è peggio che uccidere. Dopo la loro morte, scalpellarono il nome della regina Hatshepsut e quello del faraone Akhenaton da templi e monumenti, perché il ricordo morisse con loro. Qualcuno ha fatto lo stesso con il tuo re, e con lui con te, che lo scrivevi. E io voglio sapere chi.","Erasing a name from stone is worse than killing. After their deaths, they chiselled the names of queen Hatshepsut and of the pharaoh Akhenaten from temples and monuments, so that their memory would die with them. Someone did the same to your king, and with him to you, who wrote it. And I want to know who."
 Il Campo dei Giunchi,Il Campo dei Giunchi,The Field of Reeds
 "Oltre la bilancia si stende l'Aaru, il Campo dei Giunchi: una Terra Nera senza fame né dolore, con canali limpidi e grano più alto di un uomo. Ma anche là si lavora la terra. Per questo i morti portavano con sé gli ushabti, che rispondevano al loro posto.","Oltre la bilancia si stende l'Aaru, il Campo dei Giunchi: una Terra Nera senza fame né dolore, con canali limpidi e grano più alto di un uomo. Ma anche là si lavora la terra. Per questo i morti portavano con sé gli ushabti, che rispondevano al loro posto.","Beyond the scale stretches the Aaru, the Field of Reeds: a Black Land without hunger or pain, with clear canals and grain taller than a man. But there too the earth must be worked. That is why the dead took ushabti with them, to answer in their place."
-I · La lancia di Buto,I · La lancia di Buto,
-"Scrissi la battaglia di Buto come me la dettarono i capitani. Il re scese dal carro prima che le linee si toccassero e prese la lancia dalle mani del portatore: una lancia antica, dissero, uscita dal tempio di Neith a Sais. I capitani ricordavano le grida, la polvere, il fiume rosso. Io ricordo il legno. Liscio, caldo di sole, con una scheggia sotto il pollice destro che il re non volle mai far limare. Non so perché lo ricordo. Forse me lo raccontò lui.","Scrissi la battaglia di Buto come me la dettarono i capitani. Il re scese dal carro prima che le linee si toccassero e prese la lancia dalle mani del portatore: una lancia antica, dissero, uscita dal tempio di Neith a Sais. I capitani ricordavano le grida, la polvere, il fiume rosso. Io ricordo il legno. Liscio, caldo di sole, con una scheggia sotto il pollice destro che il re non volle mai far limare. Non so perché lo ricordo. Forse me lo raccontò lui.",
-II · La doppia corona,II · La doppia corona,
-"Il giorno dell'incoronazione scrissi i cinque nomi del re su cento rotoli. Toro possente. Amato di Ma'at. Colui che sorge all'orizzonte. La corona bianca dentro la corona rossa, una sola corona per le Due Terre. Dalla folla sembrava leggera. Non lo era: faceva sudare la nuca, e il lino sotto si bagnava tutto prima del tramonto. Questo nei rotoli non c'è. Non l'ho mai scritto. Eppure lo so, come se me l'avesse confidato lui, quella sera, togliendosela davanti a me.","Il giorno dell'incoronazione scrissi i cinque nomi del re su cento rotoli. Toro possente. Amato di Ma'at. Colui che sorge all'orizzonte. La corona bianca dentro la corona rossa, una sola corona per le Due Terre. Dalla folla sembrava leggera. Non lo era: faceva sudare la nuca, e il lino sotto si bagnava tutto prima del tramonto. Questo nei rotoli non c'è. Non l'ho mai scritto. Eppure lo so, come se me l'avesse confidato lui, quella sera, togliendosela davanti a me.",
-III · La casa dell'eternità,III · La casa dell'eternità,
-"Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»","Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»",
-Questo ricordo è ancora sepolto. Riaffiora quando cade un signore della notte.,Questo ricordo è ancora sepolto. Riaffiora quando cade un signore della notte.,
-Ricordi dello scriba,Ricordi dello scriba,
+I · La lancia di Buto,I · La lancia di Buto,I · The spear of Buto
+"Scrissi la battaglia di Buto come me la dettarono i capitani. Il re scese dal carro prima che le linee si toccassero e prese la lancia dalle mani del portatore: una lancia antica, dissero, uscita dal tempio di Neith a Sais. I capitani ricordavano le grida, la polvere, il fiume rosso. Io ricordo il legno. Liscio, caldo di sole, con una scheggia sotto il pollice destro che il re non volle mai far limare. Non so perché lo ricordo. Forse me lo raccontò lui.","Scrissi la battaglia di Buto come me la dettarono i capitani. Il re scese dal carro prima che le linee si toccassero e prese la lancia dalle mani del portatore: una lancia antica, dissero, uscita dal tempio di Neith a Sais. I capitani ricordavano le grida, la polvere, il fiume rosso. Io ricordo il legno. Liscio, caldo di sole, con una scheggia sotto il pollice destro che il re non volle mai far limare. Non so perché lo ricordo. Forse me lo raccontò lui.","I wrote the battle of Buto as the captains dictated it to me. The king stepped down from his chariot before the lines met and took the spear from the hands of his bearer: an ancient spear, they said, come from the temple of Neith at Sais. The captains remembered the shouting, the dust, the red river. I remember the wood. Smooth, warm from the sun, with a splinter under the right thumb that the king never let anyone file away. I don't know why I remember it. Perhaps he told me."
+II · La doppia corona,II · La doppia corona,II · The double crown
+"Il giorno dell'incoronazione scrissi i cinque nomi del re su cento rotoli. Toro possente. Amato di Ma'at. Colui che sorge all'orizzonte. La corona bianca dentro la corona rossa, una sola corona per le Due Terre. Dalla folla sembrava leggera. Non lo era: faceva sudare la nuca, e il lino sotto si bagnava tutto prima del tramonto. Questo nei rotoli non c'è. Non l'ho mai scritto. Eppure lo so, come se me l'avesse confidato lui, quella sera, togliendosela davanti a me.","Il giorno dell'incoronazione scrissi i cinque nomi del re su cento rotoli. Toro possente. Amato di Ma'at. Colui che sorge all'orizzonte. La corona bianca dentro la corona rossa, una sola corona per le Due Terre. Dalla folla sembrava leggera. Non lo era: faceva sudare la nuca, e il lino sotto si bagnava tutto prima del tramonto. Questo nei rotoli non c'è. Non l'ho mai scritto. Eppure lo so, come se me l'avesse confidato lui, quella sera, togliendosela davanti a me.","On the day of the coronation I wrote the king's five names on a hundred scrolls. Mighty Bull. Beloved of Ma'at. He who rises on the horizon. The white crown inside the red crown, a single crown for the Two Lands. From the crowd it looked light. It was not: it made the nape sweat, and the linen beneath was soaked through before sunset. That is not in the scrolls. I never wrote it. And yet I know it, as if he had confided it to me himself, that evening, taking it off in front of me."
+III · La casa dell'eternità,III · La casa dell'eternità,III · The house of eternity
+"Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»","Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»","The king began digging his tomb in the first year of his reign, like every king. But he went down into it every night. A single lamp, and hours before the walls still white, where the painters would paint the weighing of the heart. One night he called me and asked me to read him chapter one hundred and twenty-five. I read it twice. The second time, my hand... his hand gripped the scroll until its edge broke. He said only: «I do not want to be weighed.»"
+Questo ricordo è ancora sepolto. Riaffiora quando cade un signore della notte.,Questo ricordo è ancora sepolto. Riaffiora quando cade un signore della notte.,This memory is still buried. It resurfaces when a lord of the night falls.
+Ricordi dello scriba,Ricordi dello scriba,Memories of the scribe
 Il giudizio,Il giudizio,The judgement
 Capitolo %d · %s,Capitolo %d · %s,Chapter %d · %s
 Questo papiro è ancora sigillato.,Questo papiro è ancora sigillato.,This scroll is still sealed.
-Patto di Set,Patto di Set,Pact of Set
 Occhio di Horus,Occhio di Horus,Eye of Horus
-GIUDIZIO,GIUDIZIO,
+GIUDIZIO,GIUDIZIO,JUDGEMENT
 Scudo -%d,Scudo -%d,Shield -%d
 Il cuore non testimonia,Il cuore non testimonia,The heart does not testify
 Bastet ti protegge!,Bastet ti protegge!,Bastet protects you!
-Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,
-"O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.",
-"Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.",
-"Chi tocca questa immagine, il coccodrillo lo afferri nell'acqua e il serpente sulla terra.","Chi tocca questa immagine, il coccodrillo lo afferri nell'acqua e il serpente sulla terra.",
-Lo scultore Ptahmose ha fatto questa immagine del re. Sia ricordato il suo lavoro.,Lo scultore Ptahmose ha fatto questa immagine del re. Sia ricordato il suo lavoro.,
-Questa è la casa del Ka. Il re siede qui e guarda il mondo dei vivi da una fessura.,Questa è la casa del Ka. Il re siede qui e guarda il mondo dei vivi da una fessura.,
-Un serdab,Un serdab,
+Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,An offering that the king gives: a thousand loaves and a thousand jars of beer for the Ka of the lord of this house.
+"O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O you who pass before this statue, say «bread and beer» for the Ka of the king."
+"Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","The king is a falcon of gold. The king flies toward the sky, and the sky welcomes him."
+"Chi tocca questa immagine, il coccodrillo lo afferri nell'acqua e il serpente sulla terra.","Chi tocca questa immagine, il coccodrillo lo afferri nell'acqua e il serpente sulla terra.","Whoever touches this image, may the crocodile seize him in the water and the serpent on land."
+Lo scultore Ptahmose ha fatto questa immagine del re. Sia ricordato il suo lavoro.,Lo scultore Ptahmose ha fatto questa immagine del re. Sia ricordato il suo lavoro.,The sculptor Ptahmose made this image of the king. May his work be remembered.
+Questa è la casa del Ka. Il re siede qui e guarda il mondo dei vivi da una fessura.,Questa è la casa del Ka. Il re siede qui e guarda il mondo dei vivi da una fessura.,This is the house of the Ka. The king sits here and watches the world of the living through a slit.
+Un serdab,Un serdab,A serdab
 IL SERPENTE SI INFURIA,IL SERPENTE SI INFURIA,THE SERPENT IS ENRAGED
 Volume generale,Volume generale,Master volume
 Musica,Musica,Music
@@ -925,11 +973,24 @@ Danni subiti,Danni subiti,Damage taken
 Nemici e boss,Nemici e boss,Enemies and bosses
 Trappole,Trappole,Traps
 Ricompense e menu,Ricompense e menu,Rewards and menus
-KHOPESH,KHOPESH,
+SCATTO,SCATTO,DASH
+DONI,DONI,BOONS
+KHOPESH,KHOPESH,KHOPESH
+OCCHIO,OCCHIO,EYE
+SEKHEM,SEKHEM,SEKHEM
+COMPRA,COMPRA,BUY
 Ruota il telefono in orizzontale,Ruota il telefono in orizzontale,Turn your phone sideways
+la levetta sinistra,la levetta sinistra,the left stick
+la levetta a sinistra,la levetta a sinistra,the stick on the left
 W A S D (o le frecce),W A S D (o le frecce),W A S D (or the arrows)
+X o RB,X o RB,X or RB
+il pulsante KHOPESH,il pulsante KHOPESH,the KHOPESH button
 il clic sinistro (o J),il clic sinistro (o J),left click (or J)
+A o LB,A o LB,A or LB
+il pulsante SCATTO,il pulsante SCATTO,the DASH button
 Spazio,Spazio,Space
+Y o RT,Y o RT,Y or RT
+il pulsante OCCHIO,il pulsante OCCHIO,the EYE button
 il clic destro (o L),il clic destro (o L),right click (or L)
 Salta ›,Salta ›,Skip ›
 Il cammino,Il cammino,The Path
@@ -937,54 +998,57 @@ Anubi ti fa provare le armi prima della discesa. Muoviti con %s.,Anubi ti fa pro
 Il khopesh,Il khopesh,The Khopesh
 Rompi i due fantocci con %s. Il terzo colpo di fila è il più forte.,Rompi i due fantocci con %s. Il terzo colpo di fila è il più forte.,Break the two dummies with %s. The third strike in a row is the strongest.
 Lo scatto,Lo scatto,The Dash
-"Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte.","Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte.",
+"Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte.","Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte.","Red = about to strike. When the mummy charges press %s: while dashing nothing can touch you. You have two dashes, then a short pause (the dots under your feet). Dodge it 2 times."
 I fantocci azzurri si rompono solo con l'Occhio: %s. Si ricarica da solo (il cerchio in alto).,I fantocci azzurri si rompono solo con l'Occhio: %s. Si ricarica da solo (il cerchio in alto).,The blue dummies break only with the Eye: %s. It recharges on its own (the circle at the top).
 Il Ka,Il Ka,Ka
 "Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.","Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.","Pick up the golden light: it is Ka, your life force. It stays yours even if you die: in the Hall you spend it in the Book of the Dead for permanent powers."
 Le porte,Le porte,The Doors
 Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.,Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.,Above every door is its reward. The arrows on the edge point to doors off screen. Go in: the descent begins.
-window.duatCheck || '',window.duatCheck || '',
-"(window.duatCheckUpdate && window.duatCheckUpdate(), '')","(window.duatCheckUpdate && window.duatCheckUpdate(), '')",
-window.DUAT_BUILD || '',window.DUAT_BUILD || '',
-window.duatLatest || '',window.duatLatest || '',
-%s/%s ore %s:%s,%s/%s ore %s:%s,
-Khopesh,Khopesh,
-La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,
-"Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.","Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.",
-Aspetto del Faraone,Aspetto del Faraone,
-"La lama dei re, equilibrata in ogni colpo. +{v}% di danni.","La lama dei re, equilibrata in ogni colpo. +{v}% di danni.",
-"Ramses II la impugna nei rilievi della battaglia di Qadesh, scolpiti sulle pareti di mezzo Egitto.","Ramses II la impugna nei rilievi della battaglia di Qadesh, scolpiti sulle pareti di mezzo Egitto.",
-Aspetto di Montu,Aspetto di Montu,
-Il terzo colpo affonda più lontano e fa il {v}% di danni in più.,Il terzo colpo affonda più lontano e fa il {v}% di danni in più.,
-"Montu, il dio falco della guerra di Tebe. I faraoni guerrieri del Medio Regno portavano il suo nome: Mentuhotep, 'Montu è soddisfatto'.","Montu, il dio falco della guerra di Tebe. I faraoni guerrieri del Medio Regno portavano il suo nome: Mentuhotep, 'Montu è soddisfatto'.",
-Aspetto di Wepwawet,Aspetto di Wepwawet,
-Il primo colpo dopo uno scatto è un fendente circolare che fa il {v}% di danni in più.,Il primo colpo dopo uno scatto è un fendente circolare che fa il {v}% di danni in più.,
-"Wepwawet, lo sciacallo 'che apre le vie'. Il suo stendardo apriva le processioni del re e la strada dei morti verso l'Occidente.","Wepwawet, lo sciacallo 'che apre le vie'. Il suo stendardo apriva le processioni del re e la strada dei morti verso l'Occidente.",
-"Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Se attacchi subito dopo uno scatto, la lancia affonda il doppio più lontano.","Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Se attacchi subito dopo uno scatto, la lancia affonda il doppio più lontano.",
-"Neith di Sais è tra le dee più antiche: il suo segno, uno scudo con due frecce incrociate, compare già prima dei faraoni. I Greci la confusero con Atena.","Neith di Sais è tra le dee più antiche: il suo segno, uno scudo con due frecce incrociate, compare già prima dei faraoni. I Greci la confusero con Atena.",
-Aspetto di Neith,Aspetto di Neith,
-"La lancia della dea guerriera, come la forgiò. +{v}% di danni.","La lancia della dea guerriera, come la forgiò. +{v}% di danni.",
-"A Sais si diceva che Neith avesse tessuto il mondo come una tela, e che continuasse a tesserlo ogni giorno.","A Sais si diceva che Neith avesse tessuto il mondo come una tela, e che continuasse a tesserlo ogni giorno.",
-Aspetto di Onuris,Aspetto di Onuris,
-Gli affondi arrivano il {v}% più lontano.,Gli affondi arrivano il {v}% più lontano.,
-"Onuris, il cacciatore, andò fino ai confini del mondo a riprendere la dea lontana, l'Occhio di Ra fuggito nel deserto. Il suo nome vuol dire 'colui che riporta la lontana'.","Onuris, il cacciatore, andò fino ai confini del mondo a riprendere la dea lontana, l'Occhio di Ra fuggito nel deserto. Il suo nome vuol dire 'colui che riporta la lontana'.",
-Aspetto di Khonsu,Aspetto di Khonsu,
-La spazzata stordisce i nemici per {v} secondi.,La spazzata stordisce i nemici per {v} secondi.,
-"Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta.","Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta.",
-Arco di Satet,Arco di Satet,
-Flagello di Osiride,Flagello di Osiride,
-Scettro was,Scettro was,
-Artigli di Bastet,Artigli di Bastet,
-La lancia,La lancia,
-il khopesh,il khopesh,
-la lancia,la lancia,
-del khopesh,del khopesh,
-della lancia,della lancia,
-dal khopesh,dal khopesh,
-dalla lancia,dalla lancia,
-al khopesh,al khopesh,
-alla lancia,alla lancia,
-Lancia,Lancia,
+"
+%s: %s","
+%s: %s","
+%s: %s"
+Prezzo: ,Prezzo: ,Price: 
+%s/%s ore %s:%s,%s/%s ore %s:%s,%s/%s at %s:%s
+Khopesh,Khopesh,Khopesh
+il khopesh,il khopesh,the khopesh
+La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,The curved sword of the pharaohs. Wide slashes at close range: the third blow of the combo is the strongest.
+"Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.","Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.","The khopesh comes from a battle axe and takes its name from the foreleg of an animal, which it resembles. In temple paintings the pharaoh receives it from the hands of the gods before battle."
+Aspetto del Faraone,Aspetto del Faraone,Aspect of the Pharaoh
+"La lama dei re, equilibrata in ogni colpo. +{v}% di danni.","La lama dei re, equilibrata in ogni colpo. +{v}% di danni.","The blade of kings, balanced in every blow. +{v}% damage."
+"Ramses II la impugna nei rilievi della battaglia di Qadesh, scolpiti sulle pareti di mezzo Egitto.","Ramses II la impugna nei rilievi della battaglia di Qadesh, scolpiti sulle pareti di mezzo Egitto.","Ramesses II wields it in the reliefs of the battle of Kadesh, carved on the walls of half of Egypt."
+Aspetto di Montu,Aspetto di Montu,Aspect of Montu
+Il terzo colpo affonda più lontano e fa il {v}% di danni in più.,Il terzo colpo affonda più lontano e fa il {v}% di danni in più.,The third blow reaches farther and deals {v}% more damage.
+"Montu, il dio falco della guerra di Tebe. I faraoni guerrieri del Medio Regno portavano il suo nome: Mentuhotep, 'Montu è soddisfatto'.","Montu, il dio falco della guerra di Tebe. I faraoni guerrieri del Medio Regno portavano il suo nome: Mentuhotep, 'Montu è soddisfatto'.","Montu, the falcon god of war of Thebes. The warrior pharaohs of the Middle Kingdom bore his name: Mentuhotep, 'Montu is satisfied'."
+Aspetto di Wepwawet,Aspetto di Wepwawet,Aspect of Wepwawet
+Il primo colpo dopo uno scatto è un fendente circolare che fa il {v}% di danni in più.,Il primo colpo dopo uno scatto è un fendente circolare che fa il {v}% di danni in più.,The first blow after a dash is a circular slash that deals {v}% more damage.
+"Wepwawet, lo sciacallo 'che apre le vie'. Il suo stendardo apriva le processioni del re e la strada dei morti verso l'Occidente.","Wepwawet, lo sciacallo 'che apre le vie'. Il suo stendardo apriva le processioni del re e la strada dei morti verso l'Occidente.","Wepwawet, the jackal 'who opens the ways'. His standard led the king's processions and the road of the dead toward the West."
+LANCIA,LANCIA,SPEAR
+la lancia,la lancia,the spear
+"Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Se attacchi subito dopo uno scatto, la lancia affonda il doppio più lontano.","Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Se attacchi subito dopo uno scatto, la lancia affonda il doppio più lontano.","Long, narrow thrusts to strike from afar; the third blow is a wide sweep. If you attack right after a dash, the spear thrusts twice as far."
+"Neith di Sais è tra le dee più antiche: il suo segno, uno scudo con due frecce incrociate, compare già prima dei faraoni. I Greci la confusero con Atena.","Neith di Sais è tra le dee più antiche: il suo segno, uno scudo con due frecce incrociate, compare già prima dei faraoni. I Greci la confusero con Atena.","Neith of Sais is among the most ancient goddesses: her sign, a shield with two crossed arrows, appears even before the pharaohs. The Greeks confused her with Athena."
+Aspetto di Neith,Aspetto di Neith,Aspect of Neith
+"La lancia della dea guerriera, come la forgiò. +{v}% di danni.","La lancia della dea guerriera, come la forgiò. +{v}% di danni.","The spear of the warrior goddess, as she forged it. +{v}% damage."
+"A Sais si diceva che Neith avesse tessuto il mondo come una tela, e che continuasse a tesserlo ogni giorno.","A Sais si diceva che Neith avesse tessuto il mondo come una tela, e che continuasse a tesserlo ogni giorno.","In Sais it was said that Neith had woven the world like a cloth, and that she kept weaving it every day."
+Aspetto di Onuris,Aspetto di Onuris,Aspect of Onuris
+Gli affondi arrivano il {v}% più lontano.,Gli affondi arrivano il {v}% più lontano.,Thrusts reach {v}% farther.
+"Onuris, il cacciatore, andò fino ai confini del mondo a riprendere la dea lontana, l'Occhio di Ra fuggito nel deserto. Il suo nome vuol dire 'colui che riporta la lontana'.","Onuris, il cacciatore, andò fino ai confini del mondo a riprendere la dea lontana, l'Occhio di Ra fuggito nel deserto. Il suo nome vuol dire 'colui che riporta la lontana'.","Onuris, the hunter, went to the ends of the world to bring back the distant goddess, the Eye of Ra who had fled into the desert. His name means 'he who brings back the distant one'."
+Aspetto di Khonsu,Aspetto di Khonsu,Aspect of Khonsu
+La spazzata stordisce i nemici per {v} secondi.,La spazzata stordisce i nemici per {v} secondi.,The sweep stuns enemies for {v} seconds.
+"Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta.","Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta.","Khonsu, the moon, 'he who travels' through the night. One of his statues, it was told, was sent as far as Asia to heal a possessed princess."
+Arco di Satet,Arco di Satet,Bow of Satet
+Flagello di Osiride,Flagello di Osiride,Flail of Osiris
+Scettro was,Scettro was,Was sceptre
+Artigli di Bastet,Artigli di Bastet,Claws of Bastet
+Spear,Spear,Spear
+La lancia,La lancia,The spear
+del khopesh,del khopesh,of the khopesh
+della lancia,della lancia,of the spear
+dal khopesh,dal khopesh,from the khopesh
+dalla lancia,dalla lancia,from the spear
+al khopesh,al khopesh,to the khopesh
+alla lancia,alla lancia,to the spear
+Lancia,Lancia,Spear
 Piume di piombo,Piume di piombo,Leaden feathers
 I nemici hanno il 20% di vita in più per livello.,I nemici hanno il 20% di vita in più per livello.,Enemies have 20% more health per level.
 Zanne affilate,Zanne affilate,Sharpened fangs
@@ -999,8 +1063,8 @@ Il Nilo in secca,Il Nilo in secca,The Nile run dry
 L'Acqua del Nilo cura la metà.,L'Acqua del Nilo cura la metà.,The Water of the Nile heals half as much.
 Il silenzio degli dèi,Il silenzio degli dèi,The silence of the gods
 Gli dèi ti offrono solo due doni invece di tre.,Gli dèi ti offrono solo due doni invece di tre.,The gods offer you only two boons instead of three.
-La fame di Am-heh,La fame di Am-heh,
-Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,
+La fame di Am-heh,La fame di Am-heh,The hunger of Am-heh
+Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh has 30% more health and the tide of fire comes more often.
 Vita,Vita,Health
 Comandi,Comandi,Controls
 "Ammit, la Divoratrice","Ammit, la Divoratrice","Ammit, the Devourer"
@@ -1009,17 +1073,13 @@ Ogni porta del Duat ha il suo guardiano,Ogni porta del Duat ha il suo guardiano,
 Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Schivala 2 volte.,Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Schivala 2 volte.,Red = about to strike. When the mummy charges press %s: nothing touches you while dashing. Dodge it twice.
 "
 Nuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco","
-Nuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco",
-Trascina le barre (ci sono anche nella pausa della discesa).,Trascina le barre (ci sono anche nella pausa della discesa).,
-:  sei all'ultima versione,:  sei all'ultima versione,
-"
-%s: %s","
-%s: %s",
-Prezzo: ,Prezzo: ,Price: 
+Nuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco","
+New version available: Options (pause), then Update the game"
+Trascina le barre (ci sono anche nella pausa della discesa).,Trascina le barre (ci sono anche nella pausa della discesa).,Drag the bars (they are also in the descent's pause menu).
+:  sei all'ultima versione,:  sei all'ultima versione,:  you have the latest version
 Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa.,Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa.,Press to change. The other sound categories are set from the pause menu during a descent.
 Premi per cambiare.,Premi per cambiare.,Press to change.
-NUOVA VERSIONE,NUOVA VERSIONE,
-window.duatUpdate || '',window.duatUpdate || '',
+NUOVA VERSIONE,NUOVA VERSIONE,NEW VERSION
 I nemici sono più veloci del 30%,I nemici sono più veloci del 30%,Enemies are 30% faster
 Subisci il 50% di danni in più,Subisci il 50% di danni in più,You take 50% more damage
 I nemici hanno il 40% di vita in più,I nemici hanno il 40% di vita in più,Enemies have 40% more health
@@ -1032,7 +1092,7 @@ Attacchi con il khopesh il 15% più rapidamente,Attacchi con il khopesh il 15% p
 Lo scatto si ricarica il %d%% più in fretta e ti muovi il 10%% più veloce.,Lo scatto si ricarica il %d%% più in fretta e ti muovi il 10%% più veloce.,Your dash recharges %d%% faster and you move 10%% faster.
 Scatto -%d%% · +10%% velocità,Scatto -%d%% · +10%% velocità,Dash -%d%% · +10%% speed
 "Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa","Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa","First the curse, for the next cleared chambers. Then the power, for the whole descent"
-Attenzione: la maledizione ti seguirà anche contro Am-heh,Attenzione: la maledizione ti seguirà anche contro Am-heh,
+Attenzione: la maledizione ti seguirà anche contro Am-heh,Attenzione: la maledizione ti seguirà anche contro Am-heh,Warning: the curse will follow you even against Am-heh
 "Mahaf, il Traghettatore: «Ogni sponda ha il suo prezzo. Anche questa.»","Mahaf, il Traghettatore: «Ogni sponda ha il suo prezzo. Anche questa.»","Mahaf, the Ferryman: «Every shore has its price. This one too.»"
 "Mahaf, il Traghettatore: «Conosci il nome di ogni parte della mia barca? No? Allora paga.»","Mahaf, il Traghettatore: «Conosci il nome di ogni parte della mia barca? No? Allora paga.»","Mahaf, the Ferryman: «Do you know the name of every part of my boat? No? Then pay.»"
 "Mahaf, il Traghettatore: «I morti non portano nulla con sé. Tu porti Ka. Interessante.»","Mahaf, il Traghettatore: «I morti non portano nulla con sé. Tu porti Ka. Interessante.»","Mahaf, the Ferryman: «The dead carry nothing with them. You carry Ka. Interesting.»"
@@ -1040,15 +1100,15 @@ Attenzione: la maledizione ti seguirà anche contro Am-heh,Attenzione: la maledi
 "Mahaf, il Traghettatore: «Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»","Mahaf, il Traghettatore: «Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»","Mahaf, the Ferryman: «They call me He Who Looks Behind. From here I see everyone who fell before you.»"
 "Mahaf, il Traghettatore: «Prima di un guardiano, tutti diventano generosi. Strano, vero?»","Mahaf, il Traghettatore: «Prima di un guardiano, tutti diventano generosi. Strano, vero?»","Mahaf, the Ferryman: «Before a guardian, everyone becomes generous. Strange, isn't it?»"
 "Mahaf, il Traghettatore: «Il Ka è peso. Lascialo a me, e salirai più leggero.»","Mahaf, il Traghettatore: «Il Ka è peso. Lascialo a me, e salirai più leggero.»","Mahaf, the Ferryman: «Ka is weight. Leave it to me, and you will climb lighter.»"
-   · SCELTO,   · SCELTO,
+   · SCELTO,   · SCELTO,   · CHOSEN
 "Khopesh incendia: %d danni ogni 0,5 s","Khopesh incendia: %d danni ogni 0,5 s",Khopesh burns: %d damage every 0.5 s
 Ti rialzi una volta con il %d%%,Ti rialzi una volta con il %d%%,Rise once with %d%%
 Scatto lascia pozza: -%d%% velocità nemici,Scatto lascia pozza: -%d%% velocità nemici,Dash leaves a pool: enemies -%d%% speed
 +%d%% danni a storditi e rallentati,+%d%% danni a storditi e rallentati,+%d%% damage to stunned and slowed
-"Spazzata +%d%% danni, spinta doppia","Spazzata +%d%% danni, spinta doppia",
-Affondo dopo scatto: %d%% critico,Affondo dopo scatto: %d%% critico,
-"Fendenti +%d%% portata, più ampi","Fendenti +%d%% portata, più ampi",
-Affondi +%d%% danni sulla punta,Affondi +%d%% danni sulla punta,
+"Spazzata +%d%% danni, spinta doppia","Spazzata +%d%% danni, spinta doppia","Sweep +%d%% damage, double knockback"
+Affondo dopo scatto: %d%% critico,Affondo dopo scatto: %d%% critico,Thrust after dash: %d%% critical
+"Fendenti +%d%% portata, più ampi","Fendenti +%d%% portata, più ampi","Slashes +%d%% reach, wider"
+Affondi +%d%% danni sulla punta,Affondi +%d%% danni sulla punta,Thrusts +%d%% damage at the tip
 Sotto 1/3 di vita: -%d%% danni subiti,Sotto 1/3 di vita: -%d%% danni subiti,Below 1/3 health: -%d%% damage taken
 Occhio torna indietro: %d%% danni,Occhio torna indietro: %d%% danni,Eye comes back: %d%% damage
 Colpiti dall'Occhio: +%d%% dal khopesh,Colpiti dall'Occhio: +%d%% dal khopesh,Hit by the Eye: +%d%% from the khopesh
@@ -1059,10 +1119,10 @@ Critico dell'Occhio: ricarica dimezzata,Critico dell'Occhio: ricarica dimezzata,
 -1 vita ogni 2 s in combattimento,-1 vita ogni 2 s in combattimento,-1 health every 2 s in combat
 Occhio ricarica più del doppio,Occhio ricarica più del doppio,Eye recharges more than twice as fast
 Occhio danni ×2 · trapassa tutti,Occhio danni ×2 · trapassa tutti,Eye damage ×2 · pierces all
-"Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.",
-La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,
-"Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.",
-Lacrime di Iside: %d  ·  si ottengono battendo Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),
+"Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","The weapons here are sleeping. The Tears of Isis awaken them: Isis weeps only for the great lords of the night, like Ammit, when they fall to a weapon that has never touched them. Bring them to my altar."
+La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,My spear has touched the heart of Ammit. Now I know you can hold it.
+"Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","The khopesh of kings has defeated the Devourer. But winning again with the same blade teaches you nothing new, and brings you no more Tears."
+Lacrime di Iside: %d  ·  si ottengono battendo Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Tears of Isis: %d  ·  earned by defeating Ammit for the first time with each weapon (and again with the Weight of the Heart at 4 and at 8)
 "Hai visto la Divoratrice in volto. Pochi morti possono dirlo, e nessuno lo ha mai raccontato.","Hai visto la Divoratrice in volto. Pochi morti possono dirlo, e nessuno lo ha mai raccontato.","You have looked the Devourer in the face. Few of the dead can say so, and none has ever lived to tell it."
 "Ammit ti ha assaggiato, e ti ha risputato. Non eri ancora pronto per lei.","Ammit ti ha assaggiato, e ti ha risputato. Non eri ancora pronto per lei.","Ammit tasted you, and spat you out. You were not yet ready for her."
 "Le colonne la stordiscono, ma crollano. Usale con saggezza: sono poche.","Le colonne la stordiscono, ma crollano. Usale con saggezza: sono poche.","The pillars stun her, but they crumble. Use them wisely: they are few."
@@ -1070,17 +1130,18 @@ La Divoratrice è caduta. Da secoli nessun morto alzava la mano contro di lei.,L
 "Ammit è caduta di nuovo. La bilancia ha tremato, stanotte.","Ammit è caduta di nuovo. La bilancia ha tremato, stanotte.",Ammit has fallen again. The scale trembled tonight.
 Il Libro dei Morti ora ti concede un capitolo in più. E Ammit ti ha lasciato il suo Sekhem.,Il Libro dei Morti ora ti concede un capitolo in più. E Ammit ti ha lasciato il suo Sekhem.,The Book of the Dead now grants you one more chapter. And Ammit has left you her Sekhem.
 "Ora che hai abbattuto la Divoratrice, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Ora che hai abbattuto la Divoratrice, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Now that you have felled the Devourer, the scale knows you. You may lay weights upon it before you descend."
-"Cinque volte la Divoratrice è caduta, e l'ultimo segno non torna.","Cinque volte la Divoratrice è caduta, e l'ultimo segno non torna.",
+"Cinque volte la Divoratrice è caduta, e l'ultimo segno non torna.","Cinque volte la Divoratrice è caduta, e l'ultimo segno non torna.","Five times the Devourer has fallen, and the last sign does not return."
 Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Ammit,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Ammit,Water of the Nile: you recover %d%% of your health. Last chamber before Ammit
 "Cancello della Prima Ora: Ammit, la Divoratrice, ti aspetta","Cancello della Prima Ora: Ammit, la Divoratrice, ti aspetta","Gate of the First Hour: Ammit, the Devourer, awaits you"
-La via verso Ammit è aperta,La via verso Ammit è aperta,
+La via verso Ammit è aperta,La via verso Ammit è aperta,The way to Ammit is open
 Attenzione: la maledizione ti seguirà anche contro Ammit,Attenzione: la maledizione ti seguirà anche contro Ammit,Beware: the curse will follow you against Ammit too
 Ammit ti cede il suo Sekhem,Ammit ti cede il suo Sekhem,Ammit yields her Sekhem to you
 Ammit è caduta,Ammit è caduta,Ammit has fallen
 Il primo cancello del Duat si apre,Il primo cancello del Duat si apre,The first gate of the Duat opens
 "
 Con %s hai già la Lacrima di Ammit: prova un'altra arma, o un Peso del Cuore più alto","
-Con %s hai già la Lacrima di Ammit: prova un'altra arma, o un Peso del Cuore più alto",
+Con %s hai già la Lacrima di Ammit: prova un'altra arma, o un Peso del Cuore più alto","
+With %s you already have Ammit's Tear: try another weapon, or a higher Weight of the Heart"
 "Hai sconfitto Ammit!
 La Prima Ora è superata.%s
 
@@ -1097,9 +1158,7 @@ The First Hour is behind you.%s
 %s
 
 Press R (or Start, or tap the screen) to return to the Hall of Judgement"
-Ammit · colonne: %d,Ammit · colonne: %d,Ammit · pillars: %d
-Stanza %d/%d,Stanza %d/%d,Chamber %d/%d
-WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,
+WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,WASD move · mouse aim · left click attack · Space dash · right click Eye · Q Divine Form (after Ammit) · Tab boons · Esc pause · F1 hitbox
 La bilancia di Ma'at · Sconfiggi Ammit per poter posare i tuoi pesi,La bilancia di Ma'at · Sconfiggi Ammit per poter posare i tuoi pesi,The scale of Ma'at · Defeat Ammit to lay your weights upon it
 Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Ammit: %s,Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Ammit: %s,Total weight: %d    ·    Ka at the end of the descent: +%d%%    ·    Record against Ammit: %s
 La fame di Ammit,La fame di Ammit,The hunger of Ammit
@@ -1118,13 +1177,13 @@ Sala del Giudizio    Ka custodito %d    Discese %d    Vittorie su Ammit %d,Sala 
 "Cancellare un nome dalla pietra è peggio che uccidere. Dopo la loro morte, scalpellarono il nome della regina Hatshepsut e quello del faraone Akhenaton da templi e monumenti, perché il ricordo morisse con loro. Qualcuno ha fatto lo stesso con te. E io voglio sapere chi.","Cancellare un nome dalla pietra è peggio che uccidere. Dopo la loro morte, scalpellarono il nome della regina Hatshepsut e quello del faraone Akhenaton da templi e monumenti, perché il ricordo morisse con loro. Qualcuno ha fatto lo stesso con te. E io voglio sapere chi.","Erasing a name from stone is worse than killing. After their deaths, they chiselled the names of Queen Hatshepsut and of Pharaoh Akhenaten from temples and monuments, so that memory would die with them. Someone has done the same to you. And I want to know who."
 Levetta sinistra muovi · destra mira · RB khopesh · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB khopesh · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Left stick move · right aim · RB khopesh · RT Eye · LB/A dash · LT Divine Form · Select boons · Start pause
 WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,WASD move · mouse aim · left click khopesh · Space dash · right click Eye · Q Divine Form (after Ammit) · Tab boons · Esc pause · F1 hitboxes
-"Le armi qui dormono. Le Lacrime di Iside le risvegliano: battine i guardiani con un'arma che non li ha mai toccati, e portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: battine i guardiani con un'arma che non li ha mai toccati, e portamele all'altare.",
-Non hai Lacrime. Il pianto di Iside cade solo sui guardiani battuti con un'arma che non li ha ancora conosciuti. Cambia lama.,Non hai Lacrime. Il pianto di Iside cade solo sui guardiani battuti con un'arma che non li ha ancora conosciuti. Cambia lama.,
-Lacrime di Iside: %d  ·  si ottengono battendo un guardiano o Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo un guardiano o Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),
-+%d Lacrima di Iside,+%d Lacrima di Iside,
-+%d Lacrime di Iside,+%d Lacrime di Iside,
-Lacrima già presa con quest'arma,Lacrima già presa con quest'arma,
-  ·  il Cortile di Neith si è aperto,  ·  il Cortile di Neith si è aperto,
+"Le armi qui dormono. Le Lacrime di Iside le risvegliano: battine i guardiani con un'arma che non li ha mai toccati, e portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: battine i guardiani con un'arma che non li ha mai toccati, e portamele all'altare.","The weapons here are sleeping. The Tears of Isis awaken them: defeat the guardians with a weapon that has never touched them, and bring them to my altar."
+Non hai Lacrime. Il pianto di Iside cade solo sui guardiani battuti con un'arma che non li ha ancora conosciuti. Cambia lama.,Non hai Lacrime. Il pianto di Iside cade solo sui guardiani battuti con un'arma che non li ha ancora conosciuti. Cambia lama.,You have no Tears. Isis weeps only for guardians defeated with a weapon that has not yet known them. Change your blade.
+Lacrime di Iside: %d  ·  si ottengono battendo un guardiano o Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo un guardiano o Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Tears of Isis: %d  ·  earned by defeating a guardian or Ammit for the first time with each weapon (and again with the Weight of the Heart at 4 and at 8)
++%d Lacrima di Iside,+%d Lacrima di Iside,+%d Tear of Isis
++%d Lacrime di Iside,+%d Lacrime di Iside,+%d Tears of Isis
+Lacrima già presa con quest'arma,Lacrima già presa con quest'arma,Tear already taken with this weapon
+  ·  il Cortile di Neith si è aperto,  ·  il Cortile di Neith si è aperto,  ·  the Courtyard of Neith has opened
 I nemici storditi dal Morso o rallentati dalla Marea subiscono il %d%% di danni in più.,I nemici storditi dal Morso o rallentati dalla Marea subiscono il %d%% di danni in più.,Enemies stunned by the Bite or slowed by the Tide take %d%% more damage.
 Ogni lacrima vale più di mille Ka. Il Libro sa cosa farne: le formule più alte non si pagano soltanto con la forza.,Ogni lacrima vale più di mille Ka. Il Libro sa cosa farne: le formule più alte non si pagano soltanto con la forza.,Every tear is worth more than a thousand Ka. The Book knows what to do with it: the highest spells are not paid for with strength alone.
 +1 Lacrima di Iside  ·  il prossimo dono sale di un livello in più,+1 Lacrima di Iside  ·  il prossimo dono sale di un livello in più,+1 Tear of Isis  ·  the next boon gains an extra level

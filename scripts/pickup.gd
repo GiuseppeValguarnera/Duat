@@ -49,11 +49,11 @@ func label() -> String:
 		"boon":
 			return Boons.god_name(god)
 		"set":
-			return "Patto di Set"
+			return Lang.t("Patto di Set")
 		"ka":
-			return "Ka"
+			return Lang.t("Ka")
 		_:
-			return "Cura"
+			return Lang.t("Cura")
 
 
 func _draw() -> void:

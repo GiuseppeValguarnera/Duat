@@ -127,7 +127,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				state = "exhausted"
 				st = exhausted_time
 				Sfx.play("amheh_pant", 0.05)
-				Fx.float_text(global_position + Vector2(0, -36), "ESAUSTO", Color(1, 0.85, 0.3))
+				Fx.float_text(global_position + Vector2(0, -36), Lang.t("ESAUSTO"), Color(1, 0.85, 0.3))
 			return Vector2.ZERO
 		"exhausted", "recover":
 			if st <= 0.0:
@@ -191,7 +191,7 @@ func _dry_a_pool() -> void:
 		return
 	pools.sort_custom(func(a, b): return a.global_position.distance_to(global_position) < b.global_position.distance_to(global_position))
 	pools[0].evaporate()
-	Fx.float_text(pools[0].global_position + Vector2(0, -20), "L'acqua evapora", Color(0.75, 0.85, 1.0))
+	Fx.float_text(pools[0].global_position + Vector2(0, -20), Lang.t("L'acqua evapora"), Color(0.75, 0.85, 1.0))
 
 
 func _clamp_arena(p: Vector2) -> Vector2:

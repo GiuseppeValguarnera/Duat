@@ -86,6 +86,8 @@ Nella Sala, Esc o Start aprono le opzioni:
 
 Se il gioco perde il focus (una chiamata, un'altra finestra) va in pausa da solo. *Esci* dal menu di pausa lascia la discesa salvata.
 
+
+**Lingua · Language:** italiano o inglese. All'inizio segue la lingua del telefono o del computer; il nome della voce è nelle due lingue, così la trova anche chi capita nella lingua che non conosce. Le traduzioni sono in `i18n/` (vedi `i18n/README.md`).
 ## Il Cortile di Neith e le armi
 
 Dalla Sala del Giudizio, una porta nella parete ovest (con lo scudo e le frecce incrociate di Neith) porta al **Cortile di Neith**. Si apre dopo la prima vittoria sul Serpente della Porta: la prima volta Neith, la dea guerriera di Sais, ti consegna la **Lancia di Neith** (`scripts/armory.gd`, `scenes/armory.tscn`).

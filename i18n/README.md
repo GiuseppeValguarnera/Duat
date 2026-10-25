@@ -25,16 +25,17 @@ python3 i18n/extract.py --check   # elenca solo le frasi ancora senza inglese
 - Termini di gioco: Sala del Giudizio → Hall of Judgement · Scriba → Scribe · dono → boon · dono pesante → heavy boon · Dono Doppio → Duo Boon · patto → pact · maledizione → curse · benedizione → blessing · Forma Divina → Divine Form · Occhio di Horus → Eye of Horus · khopesh resta khopesh · Peso del Cuore → Weight of the Heart · Papiri di Thoth → Scrolls of Thoth · Serpente della Porta → Serpent of the Gate · Traghettatore → Ferryman · Acqua del Nilo → Water of the Nile · Ka custodito → Stored Ka · discesa → descent · stanza → chamber.
 - Ogni dio conserva la sua voce: Ra cosmico, Sekhmet feroce, Thoth misurato, Bastet regale, Sobek lento, Iside materna, Set sprezzante, Anubi grave e asciutto.
 
-## Cosa manca per usarle nel gioco
+## Come le usa il gioco
 
-1. Registrare il file in `project.godot` (Godot crea da solo i file `.translation` quando importa il CSV):
-   ```
-   [internationalization]
-   locale/translations=PackedStringArray("res://i18n/duat_translations.en.translation", "res://i18n/duat_translations.it.translation")
-   ```
-2. Le etichette con testo fisso (impostato nelle scene o con `label.text = "Frase"`) vengono tradotte da sole, perché i nodi Control di Godot traducono il loro testo automaticamente.
-3. Le frasi con segnaposto vanno avvolte in `tr()` **prima** del `%`: `tr("Stanza %d/%d") % [a, b]`, non `tr("Stanza %d/%d" % [a, b])`. Lo stesso per i testi presi dai dizionari (`tr(Boons.ALL[id]["name"])`, `tr(c["desc"])`, i testi di `Lore` e `Dialogue`), e per i testi disegnati con `draw_string`, che non passano dai nodi Control.
-4. Scelta della lingua: all'avvio `TranslationServer.set_locale(OS.get_locale_language())`, più una voce nel menu opzioni salvata in `Meta`.
+- Il CSV è registrato in `project.godot` (`[internationalization]`): Godot crea da solo i file `.translation` quando importa.
+- **La lingua** si sceglie in Opzioni, voce *Lingua · Language*. All'inizio segue quella del telefono o del computer (italiano per chi ce l'ha in italiano, inglese per tutti gli altri). È salvata in `Meta.options["lang"]`. Per le prove automatiche `DUAT_LANG=it` (o `en`) la impone: il bot di playtest legge le carte in italiano.
+- `scripts/lang.gd` ha tutto: `Lang.t("frase")` traduce, `Lang.apply()` cambia lingua, `Lang.deep()` fa la copia tradotta di un dato costante.
+- **Frasi nel codice:** `Lang.t("...")`. Con un segnaposto la traduzione va fatta **prima** di riempirlo: `Lang.t("Stanza %d/%d") % [a, b]`, non `Lang.t("Stanza %d/%d" % [a, b])`.
+- **Dati costanti grandi** (doni, capitoli, storie degli dèi, armi, pesi): la costante in italiano si chiama `ALL_IT` (o `GODS_IT`, ...), il gioco legge `ALL`, una copia tradotta rifatta a ogni cambio di lingua (`refresh_lang()` in ogni file, chiamata da `Lang.refresh_data()`).
+- **Liste costanti piccole** (frasi del Traghettatore, iscrizioni del serdab, testi delle Opzioni, nomi di chi ti ha ucciso, presentazione dei boss): si traducono con `Lang.t()` dove si leggono.
+- **Etichette con testo fisso** (nelle scene o `label.text = "Frase"`): si traducono da sole, i nodi Control di Godot lo fanno in automatico.
+- **khopesh e lancia:** `Weapons.adapt()` va chiamata sul testo già tradotto; in inglese cambia solo il nome (khopesh → spear).
+- **Decimali:** in inglese con il punto (0.6), in italiano con la virgola (0,6).
 
 ## Altre lingue (più avanti)
 

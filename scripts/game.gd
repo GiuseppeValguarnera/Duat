@@ -162,7 +162,7 @@ func _ready() -> void:
 		bonus_boon = d.get("bonus", false)
 		Run.room = int(d["room"]) - 1
 		start_room(d.get("reward", {"kind": "none"}))
-		_banner("Discesa ripresa", "Stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN] if Run.room <= Run.ROOMS_PER_RUN else "Am-heh", Color(0.94, 0.72, 0.3))
+		_banner(Lang.t("Discesa ripresa"), Lang.t("Stanza %d di %d") % [Run.room, Run.ROOMS_PER_RUN] if Run.room <= Run.ROOMS_PER_RUN else Lang.t("Am-heh"), Color(0.94, 0.72, 0.3))
 		return
 	# la primissima volta: la stanza dell'addestramento, poi la discesa vera
 	if not Meta.tutorial_done and OS.get_environment("DUAT_PERSONA") == "" and OS.get_environment("DUAT_NOTUT") == "":
@@ -376,7 +376,7 @@ func _boss_intro(e: Enemy, kind: String) -> void:
 	var cam: Camera2D = player.get_node("Camera") if player != null and is_instance_valid(player) else null
 	var to_boss: Vector2 = (e.global_position - player.global_position) * 0.8 if cam != null else Vector2.ZERO
 	var intro := BossIntro.new()
-	intro.setup(cam, to_boss, info[0], info[1], info[2], info[4], first)
+	intro.setup(cam, to_boss, Lang.t(info[0]), Lang.t(info[1]), Lang.t(info[2]), info[4], first)
 	# la barra della vita del boss arriva a presentazione finita (prima si sovrapponeva al nome)
 	boss_bar.visible = false
 	intro.finished.connect(func() -> void:
@@ -406,7 +406,7 @@ func _on_enemy_killed(e: Enemy) -> void:
 
 func _on_blessing_granted(id: String) -> void:
 	var b: Dictionary = Boons.SET_BLESSINGS[id]
-	_banner("Set mantiene la promessa", "%s: %s" % [b["name"], Weapons.adapt(b["desc"])], Boons.god_color("set"))
+	_banner(Lang.t("Set mantiene la promessa"), "%s: %s" % [b["name"], Weapons.adapt(b["desc"])], Boons.god_color("set"))
 	if player != null and is_instance_valid(player):
 		player.max_hp = Run.max_hp
 		player.hp = Run.hp
@@ -456,15 +456,15 @@ func _room_cleared() -> void:
 		# il guardiano di mezzo non dà Lacrime di Iside: quelle cadono solo sui boss delle regioni
 		var first_serpent := Meta.serpent_wins == 0
 		Meta.serpent_wins += 1
-		var tear_txt := "Il Cortile di Neith si è aperto" if first_serpent else "La via verso Am-heh è aperta"
+		var tear_txt := Lang.t("Il Cortile di Neith si è aperto") if first_serpent else Lang.t("La via verso Am-heh è aperta")
 		var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
 		if not gods.is_empty():
 			current_reward = {"kind": "boon", "god": gods.pick_random()}
-			_banner("Il Serpente della Porta è caduto", tear_txt + "  ·  il prossimo dono sale di un livello in più", Color(0.6, 1, 0.5))
+			_banner(Lang.t("Il Serpente della Porta è caduto"), tear_txt + Lang.t("  ·  il prossimo dono sale di un livello in più"), Color(0.6, 1, 0.5))
 		else:
 			current_reward = {"kind": "ka"}
 	if current_reward.get("kind", "none") == "none":
-		_banner("Stanza ripulita", "Scegli una porta: la ricompensa è scritta sopra", Color(0.94, 0.72, 0.3))
+		_banner(Lang.t("Stanza ripulita"), Lang.t("Scegli una porta: la ricompensa è scritta sopra"), Color(0.94, 0.72, 0.3))
 		_open_doors()
 		return
 	var p = PickupScript.new()
@@ -485,11 +485,11 @@ func _on_pickup_collected(p: Area2D) -> void:
 		"ka":
 			if tut.step >= 0:
 				Run.ka += 10
-				Fx.float_text(player.global_position, "+10 Ka", Color(0.94, 0.72, 0.3))
+				Fx.float_text(player.global_position, Lang.t("+10 Ka"), Color(0.94, 0.72, 0.3))
 				tut.next.call_deferred()
 				return
 			Run.ka += roundi(25 * Run.treasure_mult())
-			Fx.float_text(player.global_position, "+%d Ka" % roundi(25 * Run.treasure_mult()), Color(0.94, 0.72, 0.3))
+			Fx.float_text(player.global_position, Lang.t("+%d Ka") % roundi(25 * Run.treasure_mult()), Color(0.94, 0.72, 0.3))
 			_open_doors.call_deferred()
 		"heal":
 			player.heal(roundf(Run.max_hp * Run.nile_heal()))
@@ -675,7 +675,7 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 	# i doni che hai già, per vedere le combinazioni (Tab / Select, o questo pulsante)
 	if not Run.boons.is_empty() or not Run.blessings.is_empty():
 		var mine := Button.new()
-		mine.text = "I tuoi doni (%d)%s" % [Run.boons.size() + Run.blessings.size(), "" if Fx.device == "touch" else ("  ·  Select" if Fx.device == "pad" else "  ·  Tab")]
+		mine.text = Lang.t("I tuoi doni (%d)%s") % [Run.boons.size() + Run.blessings.size(), "" if Fx.device == "touch" else ("  ·  Select" if Fx.device == "pad" else "  ·  Tab")]
 		UiStyle.papyrus_button(mine, UiStyle.GOLD)
 		mine.add_theme_font_size_override("font_size", Fx.fs(8))
 		mine.focus_mode = Control.FOCUS_NONE
@@ -732,7 +732,7 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 		var bonus := roundi(25 * Run.ka_mult())
 		Run.ka += bonus
 		bonus_boon = false
-		Fx.float_text(player.global_position, "+%d Ka" % bonus, Color(0.94, 0.72, 0.3))
+		Fx.float_text(player.global_position, Lang.t("+%d Ka") % bonus, Color(0.94, 0.72, 0.3))
 		if then_doors:
 			_open_doors()
 		return
@@ -751,16 +751,16 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 	var cards := []
 	for id in options:
 		var lvl := mini(Run.level(id) + (2 if bonus_boon else 1), _max_level(id))
-		var tag := "Nuovo" if Run.level(id) == 0 else "Livello %d" % lvl
+		var tag := Lang.t("Nuovo") if Run.level(id) == 0 else Lang.t("Livello %d") % lvl
 		if Run.level(id) == 0 and lvl > 1:
-			tag = "Nuovo · subito livello %d" % lvl
+			tag = Lang.t("Nuovo · subito livello %d") % lvl
 		if Boons.is_heavy(id):
-			tag = "Dono pesante"
+			tag = Lang.t("Dono pesante")
 		if Boons.ALL[id].has("weapon"):
-			tag += " · solo %s" % String(Weapons.ALL[Boons.ALL[id]["weapon"]]["short"]).to_lower()
+			tag += Lang.t(" · solo %s") % String(Weapons.ALL[Boons.ALL[id]["weapon"]]["short"]).to_lower()
 		if Boons.is_duo(id):
 			var gs: Array = Boons.ALL[id]["gods"]
-			tag = "Dono doppio · %s + %s" % [Boons.god_name(gs[0]), Boons.god_name(gs[1])]
+			tag = Lang.t("Dono doppio · %s + %s") % [Boons.god_name(gs[0]), Boons.god_name(gs[1])]
 		var sh := Boons.short(id, lvl)
 		cards.append({
 			"tag": tag, "name": Boons.ALL[id]["name"], "body": Boons.text(id, lvl),
@@ -770,7 +770,7 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 			"heavy": Boons.is_heavy(id),
 			"on_pick": _choose_boon.bind(id),
 		})
-	_open_choice("%s ti offre un dono" % Boons.god_name(from_god), Boons.god_color(from_god), "", cards, Lore.speech(from_god), from_god)
+	_open_choice(Lang.t("%s ti offre un dono") % Boons.god_name(from_god), Boons.god_color(from_god), "", cards, Lore.speech(from_god), from_god)
 
 
 ## All'inizio di ogni run Anubi offre uno dei suoi doni.
@@ -779,12 +779,12 @@ func _show_anubi_menu() -> void:
 	for id in Boons.offers("anubi", Run.boons):
 		var sh := Boons.short(id, 1)
 		cards.append({
-			"tag": "Dono di Anubi", "name": Boons.ALL[id]["name"], "body": Boons.text(id, 1),
+			"tag": Lang.t("Dono di Anubi"), "name": Boons.ALL[id]["name"], "body": Boons.text(id, 1),
 			"cost": Weapons.adapt(Boons.ALL[id]["cost"]), "gain": sh[0], "loss": sh[1],
 			"color": Boons.god_color("anubi"), "heavy": false,
 			"on_pick": _choose_start_boon.bind(id),
 		})
-	_open_choice("Anubi pesa il tuo cuore", Boons.god_color("anubi"), "", cards, Lore.speech("anubi"), "anubi")
+	_open_choice(Lang.t("Anubi pesa il tuo cuore"), Boons.god_color("anubi"), "", cards, Lore.speech("anubi"), "anubi")
 
 
 func _choose_start_boon(id: String) -> void:
@@ -793,7 +793,7 @@ func _choose_start_boon(id: String) -> void:
 	_close_choice()
 	player.max_hp = Run.max_hp
 	player.hp = Run.hp
-	_boon_fx(Boons.god_color("anubi"), "Dono di Anubi", Boons.ALL[id]["name"])
+	_boon_fx(Boons.god_color("anubi"), Lang.t("Dono di Anubi"), Boons.ALL[id]["name"])
 
 
 func _max_level(id: String) -> int:
@@ -808,7 +808,7 @@ func _choose_boon(id: String) -> void:
 	_close_choice()
 	var g: String = Boons.ALL[id]["god"]
 	var lvl := Run.level(id)
-	_boon_fx(Boons.god_color(g), "Dono di %s" % Boons.god_name(g) if g != "duo" else "Dono doppio", Boons.ALL[id]["name"] + ("" if lvl <= 1 else "  ·  livello %d" % lvl))
+	_boon_fx(Boons.god_color(g), Lang.t("Dono di %s") % Boons.god_name(g) if g != "duo" else Lang.t("Dono doppio"), Boons.ALL[id]["name"] + ("" if lvl <= 1 else Lang.t("  ·  livello %d") % lvl))
 	if doors_after_boon:
 		_open_doors()
 
@@ -844,10 +844,10 @@ func _show_set_menu() -> void:
 		var curse: Dictionary = Boons.SET_CURSES[o["curse"]]
 		var bless: Dictionary = Boons.SET_BLESSINGS[o["blessing"]]
 		cards.append({
-			"tag": "Patto di Set", "name": bless["name"],
+			"tag": Lang.t("Patto di Set"), "name": bless["name"],
 			"sections": [
-				["Prima · maledizione per %d stanze" % curse["rooms"], curse["desc"], UiStyle.INK_RED],
-				["Poi · per tutta la discesa", Weapons.adapt(bless["desc"]), UiStyle.INK_GREEN],
+				[Lang.t("Prima · maledizione per %d stanze") % curse["rooms"], curse["desc"], UiStyle.INK_RED],
+				[Lang.t("Poi · per tutta la discesa"), Weapons.adapt(bless["desc"]), UiStyle.INK_GREEN],
 			],
 			"color": Boons.god_color("set"), "heavy": true,
 			"on_pick": _choose_pact.bind(o["curse"], o["blessing"]),
@@ -859,17 +859,17 @@ func _show_set_menu() -> void:
 		else:
 			_open_doors()
 		return
-	var sub := "Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa. Davanti ai guardiani Set tace"
+	var sub := Lang.t("Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa. Davanti ai guardiani Set tace")
 	if Run.room + 2 > Run.ROOMS_PER_RUN:
-		sub = "Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arrivare in tempo"
-	_open_choice("Set ti propone un patto", Boons.god_color("set"), sub, cards, Lore.speech("set"), "set")
+		sub = Lang.t("Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arrivare in tempo")
+	_open_choice(Lang.t("Set ti propone un patto"), Boons.god_color("set"), sub, cards, Lore.speech("set"), "set")
 
 
 func _choose_pact(curse: String, blessing: String) -> void:
 	Run.add_pact(curse, blessing)
 	_close_choice()
 	var cdesc: Dictionary = Boons.SET_CURSES[curse]
-	_boon_fx(Boons.god_color("set"), "Maledizione di Set: %d stanze" % cdesc["rooms"], "%s. Poi: %s" % [cdesc["desc"], Weapons.adapt(Boons.SET_BLESSINGS[blessing]["desc"])])
+	_boon_fx(Boons.god_color("set"), Lang.t("Maledizione di Set: %d stanze") % cdesc["rooms"], Lang.t("%s. Poi: %s") % [cdesc["desc"], Weapons.adapt(Boons.SET_BLESSINGS[blessing]["desc"])])
 	if current_reward.get("kind", "") == "set":
 		_reopen_doors()
 	else:
@@ -942,13 +942,13 @@ func _toggle_pause() -> void:
 	box.custom_minimum_size = Vector2(160, 140) * Fx.ui
 	pause_menu.add_child(box)
 	var title := Label.new()
-	title.text = "Pausa"
+	title.text = Lang.t("Pausa")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", Fx.fs(18))
 	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
 	box.add_child(title)
 	var first: Button = null
-	for entry in [["Riprendi", _toggle_pause], ["Volume", _show_audio_menu], ["Ricomincia la run", _restart_run], ["Torna alla Sala (abbandona)", _abandon_run], ["Esci (la discesa resta salvata)", _quit_game]]:
+	for entry in [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Volume"), _show_audio_menu], [Lang.t("Ricomincia la run"), _restart_run], [Lang.t("Torna alla Sala (abbandona)"), _abandon_run], [Lang.t("Esci (la discesa resta salvata)"), _quit_game]]:
 		var b := Button.new()
 		b.text = entry[0]
 		b.custom_minimum_size = Vector2(160, 26) * Fx.ui
@@ -958,7 +958,7 @@ func _toggle_pause() -> void:
 		if first == null:
 			first = b
 	var hint := Label.new()
-	hint.text = "Esc / Start per riprendere"
+	hint.text = Lang.t("Esc / Start per riprendere")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_font_size_override("font_size", Fx.fs(8))
 	hint.add_theme_color_override("font_color", Color(0.66, 0.6, 0.47))
@@ -987,7 +987,7 @@ func _show_audio_menu() -> void:
 	box.add_theme_constant_override("separation", 4)
 	pause_menu.add_child(box)
 	var title := Label.new()
-	title.text = "Volume"
+	title.text = Lang.t("Volume")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", Fx.fs(16))
 	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
@@ -1019,7 +1019,7 @@ func _show_audio_menu() -> void:
 		if first == null:
 			first = slider
 	var back := Button.new()
-	back.text = "Indietro"
+	back.text = Lang.t("Indietro")
 	back.add_theme_font_size_override("font_size", Fx.fs(11))
 	back.pressed.connect(_close_audio_menu)
 	box.add_child(back)
@@ -1103,7 +1103,7 @@ func _toggle_boons_panel() -> void:
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	panel.add_child(dim)
 	var close := Button.new()
-	close.text = "Chiudi"
+	close.text = Lang.t("Chiudi")
 	UiStyle.papyrus_button(close, UiStyle.GOLD)
 	close.add_theme_font_size_override("font_size", Fx.fs(9))
 	close.focus_mode = Control.FOCUS_NONE
@@ -1136,23 +1136,23 @@ func _refocus_choice() -> void:
 
 
 func _boons_text() -> String:
-	var t := "[center][b][color=#f0b94c]I tuoi doni[/color][/b]   [color=#a89878](%s)[/color][/center]\n\n" % ("tocca per chiudere" if Fx.device == "touch" else "Tab o Select per chiudere")
+	var t := Lang.t("[center][b][color=#f0b94c]I tuoi doni[/color][/b]   [color=#a89878](%s)[/color][/center]\n\n") % (Lang.t("tocca per chiudere") if Fx.device == "touch" else Lang.t("Tab o Select per chiudere"))
 	if Run.boons.is_empty() and Run.blessings.is_empty() and Run.curses.is_empty():
-		t += "[center]Nessun dono, per ora. Ripulisci una stanza e scegline uno.[/center]"
+		t += Lang.t("[center]Nessun dono, per ora. Ripulisci una stanza e scegline uno.[/center]")
 		return t
 	for id in Run.boons:
 		var b: Dictionary = Boons.ALL[id]
 		var col: String = Boons.god_color(b["god"]).to_html(false)
-		var lvl := "pesante" if Boons.is_heavy(id) else ("bilancia" if Boons.ALL[id].get("balanced", false) else ("doppio" if Boons.is_duo(id) else "liv. %d" % Run.boons[id]))
-		t += "[color=#%s][b]%s[/b] · %s · %s[/color]\n%s" % [col, Boons.god_name(b["god"]), b["name"], lvl, Boons.text(id, Run.boons[id])]
+		var lvl := Lang.t("pesante") if Boons.is_heavy(id) else ("bilancia" if Boons.ALL[id].get("balanced", false) else (Lang.t("doppio") if Boons.is_duo(id) else Lang.t("liv. %d") % Run.boons[id]))
+		t += Lang.t("[color=#%s][b]%s[/b] · %s · %s[/color]\n%s") % [col, Boons.god_name(b["god"]), b["name"], lvl, Boons.text(id, Run.boons[id])]
 		if Boons.has_cost(id):
-			t += " [color=#ff9c8c]Prezzo: %s[/color]" % Weapons.adapt(b["cost"])
+			t += Lang.t(" [color=#ff9c8c]Prezzo: %s[/color]") % Weapons.adapt(b["cost"])
 		t += "\n\n"
 	var set_col: String = Boons.god_color("set").to_html(false)
 	for c in Run.curses:
-		t += "[color=#%s][b]Maledizione di Set[/b] · ancora %d stanze[/color]\n%s. Poi: %s\n\n" % [set_col, c["rooms"], Boons.SET_CURSES[c["curse"]]["desc"], Weapons.adapt(Boons.SET_BLESSINGS[c["blessing"]]["desc"])]
+		t += Lang.t("[color=#%s][b]Maledizione di Set[/b] · ancora %d stanze[/color]\n%s. Poi: %s\n\n") % [set_col, c["rooms"], Boons.SET_CURSES[c["curse"]]["desc"], Weapons.adapt(Boons.SET_BLESSINGS[c["blessing"]]["desc"])]
 	for b in Run.blessings:
-		t += "[color=#%s][b]Set[/b] · %s · permanente[/color]\n%s\n\n" % [set_col, Boons.SET_BLESSINGS[b]["name"], Weapons.adapt(Boons.SET_BLESSINGS[b]["desc"])]
+		t += Lang.t("[color=#%s][b]Set[/b] · %s · permanente[/color]\n%s\n\n") % [set_col, Boons.SET_BLESSINGS[b]["name"], Weapons.adapt(Boons.SET_BLESSINGS[b]["desc"])]
 	return t
 
 
@@ -1162,14 +1162,14 @@ func _on_player_died() -> void:
 	finished = true
 	can_leave = false
 	Run.clear_descent()
-	var where := "Am-heh, il Divoratore di Milioni" if Run.room > Run.ROOMS_PER_RUN else "stanza %d di %d" % [Run.room, Run.ROOMS_PER_RUN]
+	var where := Lang.t("Am-heh, il Divoratore di Milioni") if Run.room > Run.ROOMS_PER_RUN else Lang.t("stanza %d di %d") % [Run.room, Run.ROOMS_PER_RUN]
 	if current_reward.get("kind", "") == "guardian":
-		where = "il Serpente della Porta"
+		where = Lang.t("il Serpente della Porta")
 	Meta.last_end = "ammit" if Run.room > Run.ROOMS_PER_RUN else "room"   # "ammit" = morto contro il boss della regione (nome storico nel salvataggio)
 	if Meta.feather:
 		Meta.feather_deaths += 1
 	Meta.last_room = Run.room
-	var killer: String = KILLER_NAMES.get(Run.last_hit, "")
+	var killer: String = Lang.t(KILLER_NAMES.get(Run.last_hit, ""))
 	var summary := _end_run_summary()
 	boss_bar.visible = false
 	Music.play("death")
@@ -1218,7 +1218,7 @@ func _death_panel(layer: CanvasLayer, where: String, killer: String, summary: St
 	scale_draw.custom_minimum_size = Vector2(120, 70) * u
 	scale_draw.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	box.add_child(scale_draw)
-	var title := UiStyle.heading("Il tuo cuore è stato pesato", 18, Color(0.95, 0.4, 0.3))
+	var title := UiStyle.heading(Lang.t("Il tuo cuore è stato pesato"), 18, Color(0.95, 0.4, 0.3))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(title)
 	var pap := PanelContainer.new()
@@ -1231,18 +1231,18 @@ func _death_panel(layer: CanvasLayer, where: String, killer: String, summary: St
 	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	pap.add_child(col)
 	var w := minf(440.0 * u, vs.x - 40.0)
-	var l1 := UiStyle.label("Sei caduto: " + where, 10, UiStyle.INK, true, w)
+	var l1 := UiStyle.label(Lang.t("Sei caduto: ") + where, 10, UiStyle.INK, true, w)
 	l1.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(l1)
 	if killer != "":
-		var l2 := UiStyle.label("Ti ha ucciso " + killer, 9, UiStyle.INK_RED, false, w)
+		var l2 := UiStyle.label(Lang.t("Ti ha ucciso ") + killer, 9, UiStyle.INK_RED, false, w)
 		l2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		col.add_child(l2)
 	var l3 := UiStyle.label(summary, 8, UiStyle.INK_SOFT, false, w)
 	l3.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(l3)
-	var how := "Tocca lo schermo" if Fx.device == "touch" else ("Premi Start" if Fx.device == "pad" else "Premi R")
-	var hint := UiStyle.label("%s per tornare alla Sala del Giudizio" % how, 9, Color(0.95, 0.85, 0.6))
+	var how := Lang.t("Tocca lo schermo") if Fx.device == "touch" else (Lang.t("Premi Start") if Fx.device == "pad" else Lang.t("Premi R"))
+	var hint := UiStyle.label(Lang.t("%s per tornare alla Sala del Giudizio") % how, 9, Color(0.95, 0.85, 0.6))
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_color_override("font_outline_color", Color(0, 0, 0))
 	hint.add_theme_constant_override("outline_size", 3)
@@ -1263,10 +1263,10 @@ func _start_boss() -> void:
 	Music.stop()
 	boss_fill.color = Color(0.85, 0.2, 0.15)
 	if BOSS_KIND == "amheh":
-		boss_name.text = "AM-HEH, IL DIVORATORE DI MILIONI"
+		boss_name.text = Lang.t("AM-HEH, IL DIVORATORE DI MILIONI")
 		boss_fill.color = Color(0.95, 0.45, 0.1)
 	else:
-		boss_name.text = "AMMIT, LA DIVORATRICE"
+		boss_name.text = Lang.t("AMMIT, LA DIVORATRICE")
 	boss_bar.visible = true
 	boss_fill.size.x = boss_bar.size.x
 	spawning += 1
@@ -1284,7 +1284,7 @@ func _start_guardian() -> void:
 		if world.get_child(i).get_script() == DecorScript:
 			world.move_child(ur, i + 1)
 			break
-	boss_name.text = "IL SERPENTE DELLA PORTA"
+	boss_name.text = Lang.t("IL SERPENTE DELLA PORTA")
 	boss_fill.color = Color(0.35, 0.8, 0.3)
 	boss_bar.visible = true
 	boss_fill.size.x = boss_bar.size.x
@@ -1295,7 +1295,7 @@ func _start_guardian() -> void:
 ## L'altare di Set: una sala rossa senza nemici, con il patto da scegliere.
 func _start_set_altar() -> void:
 	cleared = true
-	_banner("L'altare di Set", "Una deviazione nel deserto rosso. Le tue porte ti aspettano", Boons.god_color("set"))
+	_banner(Lang.t("L'altare di Set"), Lang.t("Una deviazione nel deserto rosso. Le tue porte ti aspettano"), Boons.god_color("set"))
 	var p = PickupScript.new()
 	p.kind = "set"
 	world.add_child(p)
@@ -1313,7 +1313,7 @@ func _start_shop() -> void:
 	var boat := FerrymanScript.new()
 	boat.position = Vector2(cx, mid_y - 50.0)
 	world.add_child(boat)
-	_banner("Il Traghettatore", "Mahaf: " + FerrymanScript.line(), Color(0.6, 0.85, 0.95))
+	_banner(Lang.t("Il Traghettatore"), Lang.t("Mahaf: ") + FerrymanScript.line(), Color(0.6, 0.85, 0.95))
 	var items := SHOP_ITEMS.duplicate()
 	if _upgradable().is_empty():
 		items = items.filter(func(it: Dictionary) -> bool: return it["kind"] != "upgrade")
@@ -1321,8 +1321,8 @@ func _start_shop() -> void:
 		var it: Dictionary = items[i]
 		var node := FerrymanScript.ShopItem.new()
 		node.kind = it["kind"]
-		node.title = it["title"]
-		node.desc = it["desc"]
+		node.title = Lang.t(it["title"])
+		node.desc = Lang.t(it["desc"])
 		node.price = roundi(it["price"] * (1.0 - Chapters.value("c94") / 100.0) * FerrymanScript.trust_discount())
 		node.position = Vector2(cx + (i - (items.size() - 1) / 2.0) * 90.0, mid_y + 50.0)
 		world.add_child(node)
@@ -1345,7 +1345,7 @@ func _buy(item) -> void:
 	if item.sold:
 		return
 	if Run.ka < item.price:
-		Fx.float_text(player.global_position + Vector2(0, -20), "Non hai abbastanza Ka", Color(0.9, 0.4, 0.35))
+		Fx.float_text(player.global_position + Vector2(0, -20), Lang.t("Non hai abbastanza Ka"), Color(0.9, 0.4, 0.35))
 		Fx.shake(2.0)
 		return
 	Run.ka -= item.price
@@ -1364,7 +1364,7 @@ func _buy(item) -> void:
 			if not ups.is_empty():
 				var id: String = ups.pick_random()
 				Run.add_boon(id)
-				_banner("Inchiostro di Thoth", "%s sale al livello %d" % [Boons.ALL[id]["name"], Run.level(id)], Boons.god_color("thoth"))
+				_banner(Lang.t("Inchiostro di Thoth"), Lang.t("%s sale al livello %d") % [Boons.ALL[id]["name"], Run.level(id)], Boons.god_color("thoth"))
 
 
 ## Il boss chiama rinforzi (Ammit in furia, Am-heh quando fa evaporare una pozza).
@@ -1387,7 +1387,7 @@ func _on_pillar_broken(body: StaticBody2D) -> void:
 		var p: Vector2 = pillars[best]
 		pillars.remove_at(best)
 		Fx.burst(p + Vector2(0, -24), Color(0.77, 0.6, 0.39), 40, 180.0)
-		Fx.float_text(p + Vector2(0, -40), "La colonna crolla", Color(0.95, 0.85, 0.65))
+		Fx.float_text(p + Vector2(0, -40), Lang.t("La colonna crolla"), Color(0.95, 0.85, 0.65))
 	body.queue_free()
 	queue_redraw()
 
@@ -1406,9 +1406,9 @@ func _boss_defeated() -> void:
 	Meta.sekhem_unlocked = true
 	Meta.save()
 	if first_win:
-		_banner("Am-heh ti cede il suo Sekhem", "Dalla prossima discesa potrai caricare la Forma Divina", Color(1, 0.85, 0.4))
+		_banner(Lang.t("Am-heh ti cede il suo Sekhem"), Lang.t("Dalla prossima discesa potrai caricare la Forma Divina"), Color(1, 0.85, 0.4))
 	else:
-		_banner("Am-heh è caduto", "Il lago di fuoco si spegne. La notte continua", Color(0.94, 0.72, 0.3))
+		_banner(Lang.t("Am-heh è caduto"), Lang.t("Il lago di fuoco si spegne. La notte continua"), Color(0.94, 0.72, 0.3))
 	await get_tree().create_timer(2.0).timeout
 	_victory()
 
@@ -1438,7 +1438,7 @@ func _build_vignette() -> void:
 func _build_boss_bar() -> void:
 	var ui: CanvasLayer = $UI
 	boss_name = Label.new()
-	boss_name.text = "AMMIT, LA DIVORATRICE"
+	boss_name.text = Lang.t("AMMIT, LA DIVORATRICE")
 	boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	boss_name.add_theme_font_size_override("font_size", Fx.fs(9))
 	boss_name.add_theme_color_override("font_color", Color(1, 0.5, 0.4))
@@ -1482,8 +1482,8 @@ func _end_run_summary() -> String:
 	Meta.save()
 	var secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
 	var lines := [
-		"Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d" % [floori(secs / 60.0), secs % 60, Run.kills, int(Run.damage_dealt)],
-		"Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d" % [Run.boons.size() + Run.blessings.size(), banked, "" if Weights.total() == 0 else " (Peso del Cuore +%d%%)" % int(round((Weights.ka_mult() - 1.0) * 100.0)), Meta.ka_bank],
+		Lang.t("Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d") % [floori(secs / 60.0), secs % 60, Run.kills, int(Run.damage_dealt)],
+		Lang.t("Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d") % [Run.boons.size() + Run.blessings.size(), banked, "" if Weights.total() == 0 else Lang.t(" (Peso del Cuore +%d%%)") % int(round((Weights.ka_mult() - 1.0) * 100.0)), Meta.ka_bank],
 	]
 	return "\n".join(lines)
 
@@ -1496,16 +1496,30 @@ func _victory() -> void:
 		if c is Enemy:
 			c.queue_free()
 	message.visible = true
-	var extra := "\nNuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti" if Meta.ammit_wins == 1 else ""
+	var extra := Lang.t("\nNuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti") if Meta.ammit_wins == 1 else ""
 	var ric := Lore.ricordo_for(Meta.ammit_wins)
 	if ric != "":
-		extra += "\nUn ricordo è riaffiorato: «%s». Lo trovi nei Papiri di Thoth" % ric
+		extra += Lang.t("\nUn ricordo è riaffiorato: «%s». Lo trovi nei Papiri di Thoth") % ric
 	if ammit_tears > 0:
-		extra += "\n+%d Lacrime di Iside, prima vittoria con %s (ne hai %d)" % [ammit_tears, Weapons.ALL[Run.weapon]["the"], Meta.tears]
+		extra += Lang.t("\n+%d Lacrime di Iside, prima vittoria con %s (ne hai %d)") % [ammit_tears, Weapons.ALL[Run.weapon]["the"], Meta.tears]
 	else:
-		extra += "\nCon %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto" % Weapons.ALL[Run.weapon]["the"]
+		extra += Lang.t("\nCon %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto") % Weapons.ALL[Run.weapon]["the"]
 	Meta.last_end = "win"
-	message.text = "Hai sconfitto Am-heh!\nLa Prima Ora è superata. Le altre ore della notte ti attendono.%s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio" % [extra, _end_run_summary()]
+	message.text = Lang.t("Hai sconfitto Am-heh!\nLa Prima Ora è superata. Le altre ore della notte ti attendono.%s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio") % [extra, _end_run_summary()]
+	_fit_message()
+
+
+## La scritta della vittoria va a capo e, se non entra in altezza, rimpicciolisce: sul telefono
+## (e in inglese, con righe più lunghe) usciva dai lati dello schermo.
+func _fit_message() -> void:
+	message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	message.offset_left = 20.0
+	message.offset_right = -20.0
+	var vh := get_viewport().get_visible_rect().size.y
+	var fs := message.get_theme_font_size("font_size")
+	while fs > Fx.fs(8) and message.get_minimum_size().y > vh - 16.0:
+		fs -= 1
+		message.add_theme_font_size_override("font_size", fs)
 
 
 # ---------------------------------------------------------------- ogni frame
@@ -1520,13 +1534,13 @@ func _process(_delta: float) -> void:
 	if player == null or not is_instance_valid(player):
 		return
 
-	var eye_txt := "pronto" if player.eye_ready() else "%.1fs" % player.eye_cd
-	var sek := "PRONTO (Q / LT)" if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
+	var eye_txt := Lang.t("pronto") if player.eye_ready() else "%.1fs" % player.eye_cd
+	var sek := Lang.t("PRONTO (Q / LT)") if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
 	if player.divine_t > 0.0:
-		sek = "FORMA DIVINA %.1fs" % player.divine_t
-	var room_txt := ("Ammit · colonne: %d" % pillars.size() if BOSS_KIND == "ammit" else "Am-heh") if Run.room > Run.ROOMS_PER_RUN else "Stanza %d/%d" % [Run.room, Run.ROOMS_PER_RUN]
+		sek = Lang.t("FORMA DIVINA %.1fs") % player.divine_t
+	var room_txt := (Lang.t("Ammit · colonne: %d") % pillars.size() if BOSS_KIND == "ammit" else Lang.t("Am-heh")) if Run.room > Run.ROOMS_PER_RUN else Lang.t("Stanza %d/%d") % [Run.room, Run.ROOMS_PER_RUN]
 	if tut.step >= 0:
-		room_txt = "Addestramento"
+		room_txt = Lang.t("Addestramento")
 		tut.tick()
 	# vita, Ka, stanza, Occhio e Sekhem sono disegnati come barre da HudBars; qui resta il testo
 	hud.text = ""
@@ -1534,15 +1548,15 @@ func _process(_delta: float) -> void:
 	hud_eye = eye_txt
 	hud_sek = sek
 	if Meta.feather:
-		hud.text = "Piuma di Ma'at: -%d%% danni" % int(round(Run.feather_guard() * 100.0))
+		hud.text = Lang.t("Piuma di Ma'at: -%d%% danni") % int(round(Run.feather_guard() * 100.0))
 	if boss != null and is_instance_valid(boss) and not boss.dead:
 		boss_fill.size.x = boss_bar.size.x * clampf(boss.hp / boss.max_hp, 0.0, 1.0)
 	var n := Run.boons.size() + Run.blessings.size()
 	var line2 := ""
 	if n > 0:
-		line2 = ("Doni: %d" % n) if Fx.device == "touch" else "Doni: %d (Tab per vederli)" % n
+		line2 = (Lang.t("Doni: %d") % n) if Fx.device == "touch" else Lang.t("Doni: %d (Tab per vederli)") % n
 	for c in Run.curses:
-		line2 += "    Maledizione: %s (ancora %d stanze)" % [Boons.SET_CURSES[c["curse"]]["desc"], c["rooms"]]
+		line2 += Lang.t("    Maledizione: %s (ancora %d stanze)") % [Boons.SET_CURSES[c["curse"]]["desc"], c["rooms"]]
 	if line2 != "":
 		hud.text += ("\n" if hud.text != "" else "") + line2.strip_edges()
 	var vsz := get_viewport().get_visible_rect().size
@@ -1554,7 +1568,7 @@ func _process(_delta: float) -> void:
 		if is_instance_valid(it) and not it.sold and player.global_position.distance_to(it.global_position) < 26.0:
 			shop_near = it
 	if shop_near != null:
-		near = "%s · %s: %s (%d Ka, ne hai %d)" % ["Y" if Fx.device == "pad" else "E", shop_near.title, shop_near.desc, shop_near.price, Run.ka]
+		near = Lang.t("%s · %s: %s (%d Ka, ne hai %d)") % ["Y" if Fx.device == "pad" else "E", shop_near.title, shop_near.desc, shop_near.price, Run.ka]
 		if Input.is_action_just_pressed("interact") and menu == null:
 			_buy(shop_near)
 	for d in doors:
@@ -1569,9 +1583,9 @@ func _process(_delta: float) -> void:
 	if Fx.device == "touch":
 		help.text = ""
 	elif Fx.device == "pad":
-		help.text = "Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa"
+		help.text = Lang.t("Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa")
 	else:
-		help.text = "WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox"
+		help.text = Lang.t("WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox")
 
 
 # ---------------------------------------------------------------- muri e pavimento

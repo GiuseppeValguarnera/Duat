@@ -30,13 +30,13 @@ func ctl(what: String) -> String:
 	var dev := Fx.device
 	match what:
 		"move":
-			return {"pad": "la levetta sinistra", "touch": "la levetta a sinistra"}.get(dev, "W A S D (o le frecce)")
+			return {"pad": Lang.t("la levetta sinistra"), "touch": Lang.t("la levetta a sinistra")}.get(dev, Lang.t("W A S D (o le frecce)"))
 		"attack":
-			return {"pad": "X o RB", "touch": "il pulsante KHOPESH"}.get(dev, "il clic sinistro (o J)")
+			return {"pad": Lang.t("X o RB"), "touch": Lang.t("il pulsante KHOPESH")}.get(dev, Lang.t("il clic sinistro (o J)"))
 		"dash":
-			return {"pad": "A o LB", "touch": "il pulsante SCATTO"}.get(dev, "Spazio")
+			return {"pad": Lang.t("A o LB"), "touch": Lang.t("il pulsante SCATTO")}.get(dev, Lang.t("Spazio"))
 		"eye":
-			return {"pad": "Y o RT", "touch": "il pulsante OCCHIO"}.get(dev, "il clic destro (o L)")
+			return {"pad": Lang.t("Y o RT"), "touch": Lang.t("il pulsante OCCHIO")}.get(dev, Lang.t("il clic destro (o L)"))
 	return ""
 
 
@@ -64,7 +64,7 @@ func begin() -> void:
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(title_label)
 	var skip := Button.new()
-	skip.text = "Salta ›"
+	skip.text = Lang.t("Salta ›")
 	skip.flat = true
 	skip.focus_mode = Control.FOCUS_NONE
 	skip.add_theme_font_size_override("font_size", Fx.fs(8))
@@ -137,32 +137,32 @@ func next() -> void:
 		0:
 			start = g.player.global_position
 			walked = 0.0
-			say("Il cammino", "Anubi ti fa provare le armi prima della discesa. Muoviti con %s." % ctl("move"))
+			say(Lang.t("Il cammino"), Lang.t("Anubi ti fa provare le armi prima della discesa. Muoviti con %s.") % ctl("move"))
 		1:
 			dummy(Vector2(mid.x - 50.0, 340.0))
 			dummy(Vector2(mid.x + 50.0, 340.0))
-			say("Il khopesh", "Rompi i due fantocci con %s. Il terzo colpo di fila è il più forte." % ctl("attack"))
+			say(Lang.t("Il khopesh"), Lang.t("Rompi i due fantocci con %s. Il terzo colpo di fila è il più forte.") % ctl("attack"))
 		2:
 			var m := dummy(Vector2(mid.x, 290.0), false, true)
 			m.dodged.connect(func() -> void: dodges += 1)
 			dodges = 0
 			dashes = 0
-			say("Lo scatto", "Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte." % ctl("dash"))
+			say(Lang.t("Lo scatto"), Lang.t("Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte.") % ctl("dash"))
 		3:
 			clear_targets()
 			for at in [Vector2(110, 320), Vector2(g.ROOM.size.x - 110.0, 320), Vector2(mid.x, 300)]:
 				dummy(at, true)
-			say("L'Occhio di Horus", "I fantocci azzurri si rompono solo con l'Occhio: %s. Si ricarica da solo (il cerchio in alto)." % ctl("eye"))
+			say(Lang.t("L'Occhio di Horus"), Lang.t("I fantocci azzurri si rompono solo con l'Occhio: %s. Si ricarica da solo (il cerchio in alto).") % ctl("eye"))
 		4:
 			var p = g.PickupScript.new()
 			p.kind = "ka"
 			g.world.add_child(p)
 			p.position = mid
 			p.collected.connect(g._on_pickup_collected)
-			say("Il Ka", "Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.")
+			say(Lang.t("Il Ka"), Lang.t("Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti."))
 		5:
 			g._add_door("n", {"kind": "tutorial_end"})
-			say("Le porte", "Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.")
+			say(Lang.t("Le porte"), Lang.t("Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa."))
 		_:
 			pass
 

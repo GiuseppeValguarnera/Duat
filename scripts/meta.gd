@@ -30,7 +30,7 @@ var last_god := ""                    ## il dio da cui hai preso più doni nell'
 var last_pacts := 0                   ## quanti patti di Set hai stretto nell'ultima discesa
 var weights := {}                     ## Peso del Cuore: livello di ogni peso (vedi weights.gd)
 var best_weight := -1                 ## il Peso più alto con cui hai battuto Ammit
-var options := {"shake": true, "hitstop": true, "autoaim": true}   ## opzioni di gioco
+var options := {"shake": true, "hitstop": true, "autoaim": true, "lang": "auto"}   ## opzioni di gioco ("lang": auto, it o en)
 var tutorial_done := false            ## addestramento della prima stanza già fatto
 var feather := false                  ## Piuma di Ma'at (modalità aiuto) attiva
 var feather_deaths := 0               ## morti da quando la Piuma è attiva
@@ -73,6 +73,7 @@ func _ready() -> void:
 		tutorial_done = cfg.get_value("storia", "addestramento", runs > 0)
 		feather = cfg.get_value("piuma", "attiva", false)
 		feather_deaths = cfg.get_value("piuma", "morti", 0)
+	Lang.apply(String(options.get("lang", "auto")))
 
 
 func save() -> void:

@@ -154,6 +154,17 @@ static func label(text: String, size: int, color: Color, title: bool = false, wr
 	return l
 
 
+## Il riquadro del dialogo (Anubi nella Sala, Neith nel Cortile): papiro come le carte dei doni,
+## nome in Cinzel del colore del dio, testo in inchiostro. Prima era un rettangolo grigio.
+static func talk_style(box: PanelContainer, name_label: Label, text_label: Label, accent: Color) -> void:
+	box.add_theme_stylebox_override("panel", papyrus_box(accent.darkened(0.35)))
+	name_label.add_theme_font_override("font", title_font())
+	name_label.add_theme_color_override("font_color", accent.darkened(0.5))
+	text_label.add_theme_font_override("font", body_font())
+	text_label.add_theme_color_override("font_color", INK)
+	text_label.add_theme_font_size_override("font_size", text_label.get_theme_font_size("font_size") + 1)
+
+
 ## Titolo grande: Cinzel Decorative con il riflesso d'oro che scorre.
 static func heading(text: String, size: int, color: Color) -> Label:
 	var l := label(text, size, color)

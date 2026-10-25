@@ -9,6 +9,7 @@ extends Node2D
 const LINES := [
 	"«Ogni sponda ha il suo prezzo. Anche questa.»",
 	"«Conosci il nome di ogni parte della mia barca? No? Allora paga.»",
+	"«I costruttori di tombe muravano stanze senza porta, per il Ka dei re. Chi guarda bene le crepe, a volte trova chi gli risponde.»",
 	"«I morti non portano nulla con sé. Tu porti Ka. Interessante.»",
 	"«Non svegliarmi per niente, scriba. Compra, o passa oltre.»",
 	"«Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»",
@@ -18,6 +19,7 @@ const LINES := [
 const LINES_CURIOUS := [
 	"«Ti ho già portato una volta, sai? No, non te lo ricordi. Nessuno se lo ricorda.»",
 	"«Hai ancora quella scheggia sotto il pollice? ...Lascia stare. Compra.»",
+	"«Un muro che perde polvere è un muro che nasconde qualcosa. Lo sanno i ladri di tombe. E ora lo sai anche tu.»",
 	"«Guardo indietro, scriba. È il mio mestiere. E più guardo, meno capisco chi ho davanti.»",
 	"«Oggi il prezzo è più basso. Non chiedermi perché.»",
 	"«Gli scribi di solito hanno le dita macchiate d'inchiostro. Tu no. Curioso.»",
@@ -45,7 +47,7 @@ static func line() -> String:
 	var k := trust()
 	if k > 0 and randf() < 0.25:
 		k -= 1
-	return (pools[k] as Array).pick_random()
+	return Lang.t((pools[k] as Array).pick_random())
 
 
 ## Lo sconto silenzioso: più Mahaf sa, meno ti fa pagare.
@@ -122,7 +124,7 @@ class ShopItem extends Node2D:
 				draw_rect(Rect2(-2, y - 7, 4, 12), c)
 				draw_rect(Rect2(-6, y - 3, 12, 3), c)
 		var font := ThemeDB.fallback_font
-		var label := "%d Ka" % price
+		var label := Lang.t("%d Ka") % price
 		var w := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
 		var col := Color(0.94, 0.72, 0.3) if Run.ka >= price else Color(0.7, 0.4, 0.35)
 		draw_string(font, Vector2(-w / 2.0, 16), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)

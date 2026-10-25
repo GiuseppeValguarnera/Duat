@@ -47,7 +47,7 @@ func setup(game: Game, x: float) -> void:
 	g = game
 	position = Vector2(x, g.TOP - 4.0)
 	rng.seed = randi()
-	inscription = INSCRIPTIONS[rng.randi() % INSCRIPTIONS.size()]
+	inscription = Lang.t(INSCRIPTIONS[rng.randi() % INSCRIPTIONS.size()])
 	add_to_group("breakables")
 	# le pareti della stanzetta: righe di geroglifici in alto e colonne ai lati
 	var top_y := _local(Vector2(0, -SIZE.y)).y
@@ -144,7 +144,7 @@ func _process(delta: float) -> void:
 		if inside and not visited:
 			visited = true
 			Sfx.play("soul", 0.0)
-			g._banner("Un serdab", inscription, Color(0.85, 0.75, 0.55), 4.5)
+			g._banner(Lang.t("Un serdab"), inscription, Color(0.85, 0.75, 0.55), 4.5)
 	for loot in treasures:
 		if loot[3] or p.global_position.distance_to(loot[1]) > 15.0:
 			continue
@@ -152,7 +152,7 @@ func _process(delta: float) -> void:
 		if loot[0] == "ka":
 			Run.ka += int(loot[2])
 			Sfx.play("pickup", 0.1)
-			Fx.float_text(loot[1], "+%d Ka" % int(loot[2]), Color(0.94, 0.72, 0.3))
+			Fx.float_text(loot[1], Lang.t("+%d Ka") % int(loot[2]), Color(0.94, 0.72, 0.3))
 			Fx.burst(loot[1] + Vector2(0, -4), Color(0.95, 0.75, 0.3), 10, 60.0)
 		else:
 			p.heal(float(loot[2]))

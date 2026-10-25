@@ -7,7 +7,7 @@ class_name Chapters
 ## Ogni capitolo ha fino a 3 livelli: "values" è il valore a ogni livello (sostituisce {v} nella
 ## descrizione) e "cost" il prezzo in Ka di ogni livello. Le Lacrime di Iside servono alle armi.
 
-const ALL := {
+const ALL_IT := {
 	"c17": {"num": 17, "name": "Uscire al giorno", "desc": "Inizi ogni discesa con +{v} vita massima.", "values": [15, 25, 35], "cost": [60, 140, 260], "lore": "Gli Egizi chiamavano il Libro dei Morti 'Formule per uscire al giorno'. Il capitolo 17 è uno dei più antichi e lunghi: spiega chi sono gli dèi che il morto incontrerà nel viaggio."},
 	"c89": {"num": 89, "name": "Il ritorno del Ba", "desc": "L'Occhio di Horus si ricarica il {v}% più in fretta.", "values": [15, 22, 30], "cost": [60, 140, 260], "lore": "Il Ba, la parte dell'anima con corpo d'uccello e testa umana, di giorno vola fuori dalla tomba. Il capitolo 89 serve a farlo tornare ogni notte nel suo corpo."},
 	"c56": {"num": 56, "name": "Il soffio d'aria", "desc": "Lo scatto si ricarica il {v}% più in fretta.", "values": [10, 18, 25], "cost": [60, 140, 260], "lore": "I capitoli dal 54 al 59 danno al morto il respiro nell'aldilà: 'Io sono l'uovo del Grande Starnazzatore, respiro l'aria che è in lui'. Senza aria, nel Duat non si va da nessuna parte."},
@@ -61,7 +61,7 @@ static func value(id: String) -> float:
 static func text(id: String, lvl: int) -> String:
 	var c: Dictionary = ALL[id]
 	var v = c["values"][clampi(lvl, 1, max_level(id)) - 1]
-	var vs := str(v) if v is int else ("%.1f" % v).replace(".", ",")
+	var vs := str(v) if v is int else ("%.1f" % v).replace(".", "." if Lang.is_en() else ",")   # in inglese il punto
 	var out := String(c["desc"]).replace("{v}", vs)
 	if c.has("heal"):
 		out = out.replace("{h}", str(c["heal"][clampi(lvl, 1, max_level(id)) - 1]))
@@ -124,3 +124,12 @@ static func toggle(id: String) -> bool:
 		return false
 	Meta.save()
 	return true
+
+
+## I testi qui sopra sono in italiano (le costanti *_IT); il gioco legge le copie tradotte
+## nella lingua scelta, rifatte da Lang.refresh_data() quando cambia la lingua.
+static var ALL: Dictionary = Lang.deep(ALL_IT)
+
+
+static func refresh_lang() -> void:
+	ALL = Lang.deep(ALL_IT)

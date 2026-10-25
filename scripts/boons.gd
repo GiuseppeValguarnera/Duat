@@ -14,7 +14,7 @@ const MIN_ROOM := {}
 ## Probabilità che tra le tre scelte compaia il dono pesante del dio.
 const HEAVY_CHANCE := 0.35
 
-const GODS := {
+const GODS_IT := {
 	"ra": {"name": "Ra", "color": Color(0.96, 0.65, 0.14)},
 	"sekhmet": {"name": "Sekhmet", "color": Color(0.94, 0.37, 0.24)},
 	"thoth": {"name": "Thoth", "color": Color(0.31, 0.76, 0.78)},
@@ -29,7 +29,7 @@ const GODS := {
 
 ## `values` = il numero del dono ai livelli 1, 2 e 3 (entra nel %d della descrizione).
 ## I doni pesanti hanno un solo livello e un prezzo (`cost`).
-const ALL := {
+const ALL_IT := {
 	"ra_burn": {"god": "ra", "name": "Colpo Solare", "desc": "Il khopesh incendia i nemici: %d danni ogni mezzo secondo per 2 secondi.", "values": [4, 5, 6]},
 	"ra_disc": {"god": "ra", "name": "Disco di Ra", "desc": "L'Occhio di Horus esplode quando si ferma: %d danni a chi sta vicino.", "values": [14, 20, 26]},
 	"ra_dawn": {"god": "ra", "name": "Corsa dell'Alba", "desc": "Lo scatto ferisce i nemici che attraversi (%d danni) e li incendia per 1 secondo.", "values": [4, 6, 8], "cost": "Lo scatto si ricarica il 40% più lentamente."},
@@ -101,7 +101,7 @@ const ALL := {
 }
 
 ## Maledizioni di Set: durano le prossime stanze (contate quando le ripulisci), poi arriva la benedizione.
-const SET_CURSES := {
+const SET_CURSES_IT := {
 	"fast_enemies": {"desc": "I nemici sono più veloci del 20%", "rooms": 2},
 	"fragile": {"desc": "Subisci il 30% di danni in più", "rooms": 2},
 	"tough": {"desc": "I nemici hanno il 25% di vita in più", "rooms": 2},
@@ -110,7 +110,7 @@ const SET_CURSES := {
 }
 
 ## Benedizioni di Set: arrivano quando la maledizione finisce e durano tutta la run.
-const SET_BLESSINGS := {
+const SET_BLESSINGS_IT := {
 	"set_might": {"name": "Forza di Set", "desc": "+25% a tutti i danni"},
 	"set_vigor": {"name": "Vigore del Deserto", "desc": "+15 vita massima"},
 	"set_sekhem": {"name": "Tempesta Interiore", "desc": "Il Sekhem si carica il 50% più in fretta"},
@@ -269,7 +269,7 @@ static func duos_for(god: String, owned: Dictionary) -> Array:
 
 ## Riassunto breve di ogni dono, mostrato in fondo alla carta: [vantaggio, prezzo].
 ## Il %d prende il valore del livello, come nella descrizione.
-const SHORT := {
+const SHORT_IT := {
 	"ra_burn": ["Arma: fuoco %d ogni 0,5 s", ""],
 	"ra_disc": ["Occhio esplode: %d danni", ""],
 	"ra_dawn": ["Scatto ferisce: %d danni", "Scatto -40% più lento"],
@@ -341,3 +341,20 @@ static func short(id: String, level: int) -> Array:
 	if gain.find("%d") >= 0 and b.has("values"):
 		gain = gain % int(round(b["values"][clampi(level, 1, b["values"].size()) - 1]))
 	return [Weapons.adapt(gain), Weapons.adapt(SHORT[id][1])]
+
+
+## I testi qui sopra sono in italiano (le costanti *_IT); il gioco legge le copie tradotte
+## nella lingua scelta, rifatte da Lang.refresh_data() quando cambia la lingua.
+static var ALL: Dictionary = Lang.deep(ALL_IT)
+static var SET_CURSES: Dictionary = Lang.deep(SET_CURSES_IT)
+static var SET_BLESSINGS: Dictionary = Lang.deep(SET_BLESSINGS_IT)
+static var SHORT: Dictionary = Lang.deep(SHORT_IT)
+static var GODS: Dictionary = Lang.deep(GODS_IT)
+
+
+static func refresh_lang() -> void:
+	ALL = Lang.deep(ALL_IT)
+	SET_CURSES = Lang.deep(SET_CURSES_IT)
+	SET_BLESSINGS = Lang.deep(SET_BLESSINGS_IT)
+	SHORT = Lang.deep(SHORT_IT)
+	GODS = Lang.deep(GODS_IT)

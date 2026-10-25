@@ -56,7 +56,7 @@ static func pretty(build: String) -> String:
 	if parts.size() < 2 or parts[1].length() < 12:
 		return build if build != "" else "sconosciuta"
 	var d := parts[1]
-	return "%s/%s ore %s:%s" % [d.substr(6, 2), d.substr(4, 2), d.substr(8, 2), d.substr(10, 2)]
+	return Lang.t("%s/%s ore %s:%s") % [d.substr(6, 2), d.substr(4, 2), d.substr(8, 2), d.substr(10, 2)]
 
 
 ## Salva, lascia al browser il tempo di scrivere il salvataggio, poi scarica la versione nuova.

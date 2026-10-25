@@ -388,7 +388,7 @@ func _swing() -> void:
 			if e.mark_t > 0.0:
 				hit_dmg *= 1.0 + Run.val("horus_mark") / 100.0
 			if crit > 1.0:
-				Fx.float_text(e.global_position + Vector2(0, -20), "CRITICO", Boons.god_color("bastet"))
+				Fx.float_text(e.global_position + Vector2(0, -20), Lang.t("CRITICO"), Boons.god_color("bastet"))
 				Sfx.play("crit")
 				if Run.has("duo_sekhmet_bastet"):
 					_shockwave.call_deferred(40.0, 12.0 * Run.all_damage_mult(), 150.0, Boons.god_color("duo"))
@@ -402,7 +402,7 @@ func _swing() -> void:
 			if not e.dead and not e.is_boss and not e.miniboss:
 				# Giudizio della Leonessa (Anubi e Sekhmet): sotto il 15% della vita il nemico cade
 				if Run.has("duo_anubi_sekhmet") and e.hp < e.max_hp * 0.15:
-					Fx.float_text(e.global_position + Vector2(0, -24), "GIUDIZIO", Boons.god_color("duo"))
+					Fx.float_text(e.global_position + Vector2(0, -24), Lang.t("GIUDIZIO"), Boons.god_color("duo"))
 					e.die()
 			# Arpione del Coccodrillo (Sobek e Horus): la punta della lancia stordisce
 			if spear and not sweep and Run.has("duo_sobek_horus") and not e.dead and to.length() > swing_range * 0.5:
@@ -523,7 +523,7 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 		var absorbed := minf(shield, amount)
 		shield -= absorbed
 		amount -= absorbed
-		Fx.float_text(global_position + Vector2(0, -14), "Scudo -%d" % int(absorbed), Boons.god_color("iside"))
+		Fx.float_text(global_position + Vector2(0, -14), Lang.t("Scudo -%d") % int(absorbed), Boons.god_color("iside"))
 		if amount <= 0.0:
 			invuln_t = 0.4
 			return true
@@ -551,14 +551,14 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 		Run.heart_used = true
 		hp = maxf(1.0, roundf(max_hp * Chapters.value("c30") / 100.0))
 		invuln_t = 1.5
-		Fx.float_text(global_position + Vector2(0, -20), "Il cuore non testimonia", Color(0.62, 0.56, 0.92))
+		Fx.float_text(global_position + Vector2(0, -20), Lang.t("Il cuore non testimonia"), Color(0.62, 0.56, 0.92))
 		Fx.burst(global_position + Vector2(0, -10), Color(0.62, 0.56, 0.92), 30, 140.0)
 	if hp <= 0.0 and Run.has("bastet_lives") and not Run.revived:
 		Run.revived = true
 		hp = roundf(max_hp * Run.val("bastet_lives") / 100.0)
 		invuln_t = 1.5
 		Fx.burst(global_position + Vector2(0, -10), Boons.god_color("bastet"), 40, 160.0)
-		Fx.float_text(global_position + Vector2(0, -20), "Bastet ti protegge!", Boons.god_color("bastet"))
+		Fx.float_text(global_position + Vector2(0, -20), Lang.t("Bastet ti protegge!"), Boons.god_color("bastet"))
 	if hp <= 0.0:
 		hp = 0.0
 		dead = true
@@ -575,6 +575,39 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 
 # ---------------------------------------------------------------- disegno provvisorio
 # Forme semplici al posto degli sprite: servono solo a provare il combattimento.
+
+## Il khopesh: impugnatura di legno con la guardia d'oro, un tratto dritto e poi la lama a falce
+## di bronzo, con il filo all'esterno. Contorno scuro: si legge anche sul telefono.
+func _draw_khopesh(hand: Vector2, wdir: Vector2, sc: float, a: float) -> void:
+	var n := wdir.orthogonal() * (-1.0 if wdir.x >= 0.0 else 1.0)    # la falce si apre verso l'alto
+	var outline := Color(0.16, 0.1, 0.05, a)
+	var bronze := Color(0.86, 0.7, 0.42, a)
+	var edge := Color(1.0, 0.97, 0.88, a)
+	var grip_a := hand - wdir * 3.0 * sc
+	var grip_b := hand + wdir * 3.0 * sc
+	draw_line(grip_a, grip_b, outline, 4.0)
+	draw_line(grip_a, grip_b, Color(0.42, 0.26, 0.12, a), 2.4)
+	draw_line(grip_b - n * 2.5, grip_b + n * 2.5, Color(0.94, 0.72, 0.3, a), 1.6)   # la guardia
+	var shaft_end := grip_b + wdir * 6.0 * sc
+	draw_line(grip_b, shaft_end, outline, 3.6)
+	draw_line(grip_b, shaft_end, bronze, 2.0)
+	# la falce: una mezzaluna attorno a un centro poco oltre il tratto dritto
+	var c := shaft_end + wdir * 4.5 * sc + n * 1.5 * sc
+	var outer := PackedVector2Array()
+	var inner := PackedVector2Array()
+	var a0 := (shaft_end - c).angle()
+	for i in range(9):
+		var f := i / 8.0
+		var ang := a0 + f * deg_to_rad(230.0) * (1.0 if n.cross(wdir) < 0.0 else -1.0)
+		outer.append(c + Vector2.from_angle(ang) * 6.0 * sc)
+		inner.append(c + Vector2.from_angle(ang) * lerpf(4.2, 1.2, f) * sc)
+	var poly := outer.duplicate()
+	for i in range(inner.size() - 1, -1, -1):
+		poly.append(inner[i])
+	draw_colored_polygon(poly, bronze)
+	draw_polyline(poly + PackedVector2Array([poly[0]]), outline, 1.0)
+	draw_polyline(outer, edge, 1.0)
+
 
 ## Le cariche dello scatto: due puntini sotto i piedi. Pieni = pronte, vuoti = in ricarica
 ## (si riempiono man mano che passa la pausa). Nella Sala non servono.
@@ -656,13 +689,7 @@ func _draw() -> void:
 		var tipp := hand + wdir * reach
 		draw_colored_polygon(PackedVector2Array([tipp + wdir * 6.0, tipp + wdir.orthogonal() * 2.2, tipp - wdir.orthogonal() * 2.2]), Color(0.85, 0.85, 0.9, a))
 	else:
-		var blade := PackedVector2Array()
-		var bl := 10.0 if swing_k < 0.0 else 13.0
-		for i in range(7):
-			var k := i / 6.0
-			blade.append(hand + wdir * (4.0 + bl * k) + wdir.orthogonal() * (sin(k * PI) * -3.0 - k * 2.0))
-		draw_line(hand - wdir * 1.0, hand + wdir * 4.0, gold, 2.0)
-		draw_polyline(blade, Color(0.82, 0.82, 0.88, a), 2.0)
+		_draw_khopesh(hand, wdir, 1.0 if swing_k < 0.0 else 1.15, a)
 	# indicatore di mira
 	var tip := Vector2(0, -8) + aim * 20.0
 	var side := aim.orthogonal() * 4.0

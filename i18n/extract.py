@@ -14,17 +14,19 @@ CSV_PATH = os.path.join(ROOT, "i18n", "duat_translations.csv")
 # stringhe GDScript tra doppi apici (con escape)
 STR_RE = re.compile(r'"((?:[^"\\\n]|\\.)*)"')
 # chiavi di dizionario che contengono testo visibile
-VISIBLE_KEYS = {"name", "desc", "cost", "title", "text", "lore", "lines"}
+VISIBLE_KEYS = {"name", "desc", "cost", "title", "text", "lore", "lines", "short", "the"}
 # parole che indicano un identificatore e non un testo
 SKIP_EXACT = set()
 # parole singole minuscole che però si vedono a schermo (non riconoscibili in automatico)
-EXTRA_VISIBLE = {"pronto", "nessuno", "comprato", "pesante", "doppio", "bilancia"}
+EXTRA_VISIBLE = {"pronto", "nessuno", "comprato", "pesante", "doppio", "bilancia", "sì", "no", "spenta", "colpo", "combo"}
 ITALIAN_HINT = re.compile(r"[àèéìòùÀÈÉÌÒÙ]|\b(il|lo|la|i|gli|le|di|del|della|dei|un|una|che|non|per|con|sei|ti|tu|io|è|ogni|sono|più|nel|nella|alla|dal|anche|ma|se|come|al|ai|da|in)\b", re.I)
 
 
 def looks_visible(s: str) -> bool:
     if s in EXTRA_VISIBLE:
         return True
+    if s in ("Label", "Button", "HSlider") or s.startswith(("window.", "(window")):   # nomi tecnici, codice della pagina web
+        return False
     if not s.strip():
         return False
     if s.startswith(("res://", "user://", "#")):
@@ -77,7 +79,7 @@ def unescape(s: str) -> str:
 def scan():
     found = []          # (stringa, file:riga) in ordine di apparizione
     seen = set()
-    files = sorted(glob.glob(os.path.join(ROOT, "scripts", "*.gd"))) + sorted(glob.glob(os.path.join(ROOT, "scenes", "*.tscn")))
+    files = sorted(glob.glob(os.path.join(ROOT, "scripts", "**", "*.gd"), recursive=True)) + sorted(glob.glob(os.path.join(ROOT, "scenes", "*.tscn")))
     for path in files:
         rel = os.path.relpath(path, ROOT)
         is_scene = path.endswith(".tscn")
@@ -94,6 +96,10 @@ def scan():
                 for m in STR_RE.finditer(code):
                     s = m.group(1)
                     before = code[:m.start()]
+                    # avvolta in Lang.t(): è testo visibile per definizione
+                    if before.endswith("Lang.t("):
+                        cands.append(s)
+                        continue
                     # chiave di dizionario visibile: "name": "..."
                     km = re.search(r'"(\w+)":\s*$', before)
                     if km and km.group(1) in VISIBLE_KEYS:

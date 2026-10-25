@@ -175,7 +175,7 @@ func die() -> void:
 	var ka := roundi(ka_value * Run.ka_mult())
 	if ka > 0:
 		Run.ka += ka
-		Fx.float_text(global_position + Vector2(0, -12), "+%d Ka" % ka, Color(0.94, 0.72, 0.3))
+		Fx.float_text(global_position + Vector2(0, -12), Lang.t("+%d Ka") % ka, Color(0.94, 0.72, 0.3))
 	if Run.has("sekhmet_blood"):
 		Run.blood_kills += 1
 		if Run.blood_kills >= 5:

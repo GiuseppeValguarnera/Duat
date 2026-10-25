@@ -76,6 +76,7 @@ func _ready() -> void:
 	Fx.scale_labels($UI)
 	_build_update_tag()
 	talk_box.visible = false
+	UiStyle.talk_style(talk_box, talk_name, talk_text, Boons.god_color("anubi"))
 	if Meta.runs == 0 or Meta.last_end != "":
 		_start_talk()
 
@@ -176,7 +177,7 @@ func _solid(rect: Rect2) -> void:
 ## Solo nella Sala: aggiornare a metà discesa la farebbe perdere.
 func _build_update_tag() -> void:
 	update_tag = Button.new()
-	update_tag.text = "Nuova versione, aggiorna!"
+	update_tag.text = Lang.t("Nuova versione, aggiorna!")
 	update_tag.flat = true
 	update_tag.focus_mode = Control.FOCUS_NONE
 	update_tag.visible = false
@@ -219,14 +220,14 @@ func _process(delta: float) -> void:
 			var keep := shown_option
 			_fill_options(keep)
 			_show_option(keep)
-	hud.text = "Sala del Giudizio\nKa custodito %d · Discese %d · Vittorie %d" % [Meta.ka_bank, Meta.runs, Meta.ammit_wins]
+	hud.text = Lang.t("Sala del Giudizio\nKa custodito %d · Discese %d · Vittorie %d") % [Meta.ka_bank, Meta.runs, Meta.ammit_wins]
 	_update_update_tag()
 	if Fx.device == "touch":
 		help.text = ""
 	elif Fx.device == "pad":
-		help.text = "Levetta muovi · LB/A scatto · Y interagisci · Start opzioni"
+		help.text = Lang.t("Levetta muovi · LB/A scatto · Y interagisci · Start opzioni")
 	else:
-		help.text = "WASD muovi · Spazio scatto · E interagisci · Esc opzioni"
+		help.text = Lang.t("WASD muovi · Spazio scatto · E interagisci · Esc opzioni")
 
 	if talk_box.visible or book != null:
 		prompt.visible = false
@@ -250,26 +251,26 @@ func _process(delta: float) -> void:
 	var key := "Y" if Fx.device == "pad" else "E"
 	match near:
 		"anubi":
-			prompt.text = "%s · Parla con Anubi" % key
+			prompt.text = Lang.t("%s · Parla con Anubi") % key
 		"libro":
-			prompt.text = "%s · Apri il Libro dei Morti" % key
+			prompt.text = Lang.t("%s · Apri il Libro dei Morti") % key
 		"papiri":
 			var n := Lore.count_seen()
-			prompt.text = "%s · Leggi i Papiri di Thoth (%d su %d)" % [key, n.x, n.y]
+			prompt.text = Lang.t("%s · Leggi i Papiri di Thoth (%d su %d)") % [key, n.x, n.y]
 			if Lore.unread_ricordi() > 0:
-				prompt.text += " · un ricordo nuovo"
+				prompt.text += Lang.t(" · un ricordo nuovo")
 		"bilancia":
 			if Weights.unlocked():
-				prompt.text = "%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)" % [key, Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0))]
+				prompt.text = Lang.t("%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)") % [key, Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0))]
 			else:
-				prompt.text = "La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi"
+				prompt.text = Lang.t("La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi")
 		"cortile":
 			if Meta.serpent_wins > 0:
-				prompt.text = "Il Cortile di Neith · le armi · entra dalla porta"
+				prompt.text = Lang.t("Il Cortile di Neith · le armi · entra dalla porta")
 			else:
-				prompt.text = "Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta"
+				prompt.text = Lang.t("Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta")
 		_:
-			prompt.text = "Il cancello del Duat è a nord" if player.global_position.y < TOP + 90.0 else ""
+			prompt.text = Lang.t("Il cancello del Duat è a nord") if player.global_position.y < TOP + 90.0 else ""
 	prompt.visible = prompt.text != ""
 
 
@@ -325,7 +326,7 @@ func _advance_talk() -> void:
 		player.set_physics_process(true)
 		return
 	Sfx.play("ui", 0.0)
-	talk_name.text = "Anubi"
+	talk_name.text = Lang.t("Anubi")
 	talk_text.text = talk_lines.pop_front()
 
 
@@ -426,13 +427,13 @@ func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxCont
 	page_extra.add_theme_constant_override("separation", 4)
 	right.add_child(page_extra)
 	var close := Button.new()
-	close.text = "Chiudi"
+	close.text = Lang.t("Chiudi")
 	close.add_theme_font_size_override("font_size", Fx.fs(10))
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	close.pressed.connect(_close_book)
 	outer.add_child(close)
 	var hint := Label.new()
-	hint.text = "Tocca una voce per leggerla, toccala di nuovo per sceglierla" if Fx.device == "touch" else "E / Y / B per chiudere"
+	hint.text = Lang.t("Tocca una voce per leggerla, toccala di nuovo per sceglierla") if Fx.device == "touch" else Lang.t("E / Y / B per chiudere")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_font_size_override("font_size", Fx.fs(8))
 	hint.add_theme_color_override("font_color", Color(0.66, 0.6, 0.47))
@@ -512,24 +513,24 @@ func _list_button(parent: Control, text: String, color: Color) -> Button:
 # ---------------------------------------------------------------- Libro dei Morti
 
 func _fill_book(focus_id: String = "") -> void:
-	var left := _frame("Il Libro dei Morti", "Ka custodito: %d    ·    Capitoli attivi: %d di %d" % [Meta.ka_bank, Meta.chapters_equipped.size(), Chapters.slots()], 260)
+	var left := _frame(Lang.t("Il Libro dei Morti"), Lang.t("Ka custodito: %d    ·    Capitoli attivi: %d di %d") % [Meta.ka_bank, Meta.chapters_equipped.size(), Chapters.slots()], 260)
 	var first: Button = null
 	for id in Chapters.ALL:
 		var c: Dictionary = Chapters.ALL[id]
 		var lvl := Chapters.level(id)
 		var cost := Chapters.next_cost(id)
-		var state := "%d Ka" % cost[0]
+		var state := Lang.t("%d Ka") % cost[0]
 		var col := Color(0.95, 0.9, 0.78)
 		if Chapters.is_equipped(id):
-			state = "ATTIVO"
+			state = Lang.t("ATTIVO")
 			col = Color(0.62, 0.95, 0.7)
 		elif lvl > 0:
-			state = "comprato"
+			state = Lang.t("comprato")
 		elif Meta.ka_bank < cost[0]:
 			col = Color(0.6, 0.55, 0.48)
 		var stars := ""
 		if Chapters.max_level(id) > 1 and lvl > 0:
-			stars = "  · liv. %d/%d" % [lvl, Chapters.max_level(id)]    # niente ●○: il telefono non li ha
+			stars = Lang.t("  · liv. %d/%d") % [lvl, Chapters.max_level(id)]    # niente ●○: il telefono non li ha
 		var b := _list_button(left, "%d · %s%s   [%s]" % [c["num"], c["name"], stars, state], col)
 		_tap(b, _on_chapter_pressed.bind(id))
 		b.focus_entered.connect(_show_chapter.bind(id))
@@ -539,7 +540,7 @@ func _fill_book(focus_id: String = "") -> void:
 	# un posto in più nel Libro, con le Lacrime di Iside
 	var sc := Chapters.slot_cost()
 	if sc > 0:
-		var sb := _list_button(left, "Un posto in più nel Libro   [%d Ka]" % sc, Color(0.7, 0.8, 1.0) if Meta.ka_bank >= sc else Color(0.5, 0.52, 0.6))
+		var sb := _list_button(left, Lang.t("Un posto in più nel Libro   [%d Ka]") % sc, Color(0.7, 0.8, 1.0) if Meta.ka_bank >= sc else Color(0.5, 0.52, 0.6))
 		_tap(sb, _on_slot_pressed)
 		sb.focus_entered.connect(_show_slot)
 		sb.mouse_entered.connect(_show_slot)
@@ -552,28 +553,28 @@ func _show_chapter(id: String) -> void:
 	var c: Dictionary = Chapters.ALL[id]
 	var lvl := Chapters.level(id)
 	var maxl := Chapters.max_level(id)
-	page_title.text = "Capitolo %d · %s%s" % [c["num"], c["name"], "" if maxl == 1 else "  (livello %d di %d)" % [maxi(lvl, 1), maxl]]
+	page_title.text = Lang.t("Capitolo %d · %s%s") % [c["num"], c["name"], "" if maxl == 1 else Lang.t("  (livello %d di %d)") % [maxi(lvl, 1), maxl]]
 	var lines := [Chapters.text(id, maxi(lvl, 1))]
 	var cost := Chapters.next_cost(id)
 	if lvl > 0 and cost[0] >= 0:
-		lines.append("Livello %d: %s" % [lvl + 1, Chapters.text(id, lvl + 1)])
+		lines.append(Lang.t("Livello %d: %s") % [lvl + 1, Chapters.text(id, lvl + 1)])
 	var action := ""
 	if Chapters.is_equipped(id):
-		action = "Attivo. Premi per toglierlo."
+		action = Lang.t("Attivo. Premi per toglierlo.")
 	elif lvl > 0:
-		action = "Comprato. Premi per attivarlo (posti liberi: %d)." % (Chapters.slots() - Meta.chapters_equipped.size())
+		action = Lang.t("Comprato. Premi per attivarlo (posti liberi: %d).") % (Chapters.slots() - Meta.chapters_equipped.size())
 	elif Meta.ka_bank >= cost[0]:
-		action = "Premi per comprarlo: %d Ka." % cost[0]
+		action = Lang.t("Premi per comprarlo: %d Ka.") % cost[0]
 	else:
-		action = "Costa %d Ka: te ne mancano %d." % [cost[0], cost[0] - Meta.ka_bank]
+		action = Lang.t("Costa %d Ka: te ne mancano %d.") % [cost[0], cost[0] - Meta.ka_bank]
 	lines.append(action)
 	page_body.text = "\n\n".join(lines)
 	page_lore.text = c["lore"]
 	# potenziamento: pulsante a parte, così premere il capitolo resta "attiva / togli"
 	page_action.visible = lvl > 0 and cost[0] >= 0
 	if page_action.visible:
-		var price := "%d Ka" % cost[0] + (" + 1 Lacrima di Iside" if cost[1] > 0 else "")
-		page_action.text = "Potenzia al livello %d  ·  %s" % [lvl + 1, price]
+		var price := Lang.t("%d Ka") % cost[0] + (Lang.t(" + 1 Lacrima di Iside") if cost[1] > 0 else "")
+		page_action.text = Lang.t("Potenzia al livello %d  ·  %s") % [lvl + 1, price]
 		page_action.disabled = Meta.ka_bank < cost[0] or Meta.tears < cost[1]
 		page_action_cb = func() -> void:
 			if Chapters.buy(id):
@@ -583,9 +584,9 @@ func _show_chapter(id: String) -> void:
 
 
 func _show_slot() -> void:
-	page_title.text = "Un posto in più nel Libro"
-	page_body.text = "Puoi tenere attivo un capitolo in più a ogni discesa.\n\nCosta %d Ka: ne hai %d." % [Chapters.slot_cost(), Meta.ka_bank]
-	page_lore.text = "Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré."
+	page_title.text = Lang.t("Un posto in più nel Libro")
+	page_body.text = Lang.t("Puoi tenere attivo un capitolo in più a ogni discesa.\n\nCosta %d Ka: ne hai %d.") % [Chapters.slot_cost(), Meta.ka_bank]
+	page_lore.text = Lang.t("Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.")
 	page_action.visible = false
 
 
@@ -617,6 +618,7 @@ const OPTION_TEXT := {
 	"autoaim": ["Mira automatica (telefono)", "Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento."],
 	"tutorial": ["Rifai l'addestramento", "Alla prossima discesa la prima stanza torna a essere l'addestramento di Anubi: movimento, khopesh, scatto, Occhio, Ka e porte."],
 	"audio": ["Volume", "Trascina le barre. Le trovi anche nella pausa della discesa."],
+	"lang": ["Lingua · Language", "La lingua del gioco. All'inizio segue quella del telefono o del computer.\nThe language of the game. At first it follows your phone or computer."],
 	"update": ["Aggiorna il gioco", "Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home."],
 	"quit": ["Esci dal gioco", "Chiude il gioco. I progressi della Sala sono già salvati."],
 }
@@ -624,30 +626,32 @@ const OPTION_TEXT := {
 
 func _fill_options(focus_id: String = "") -> void:
 	update_label_state = Updater.check_state() + str(Updater.available())
-	var left := _frame("Opzioni", "Esc / Start / B per tornare alla Sala", 270)
+	var left := _frame(Lang.t("Opzioni"), Lang.t("Esc / Start / B per tornare alla Sala"), 270)
 	var first: Button = null
-	var ids := ["feather", "shake", "hitstop", "autoaim", "tutorial", "audio"]
+	var ids := ["feather", "shake", "hitstop", "autoaim", "tutorial", "audio", "lang"]
 	if Updater.supported():
 		ids.append("update")		  # solo nella versione web: l'app installata non si aggiorna da sola
 	ids.append("quit")
 	for id in ids:
-		var label: String = OPTION_TEXT[id][0]
+		var label: String = Lang.t(OPTION_TEXT[id][0])
 		match id:
 			"feather":
-				label += ":  " + ("ATTIVA" if Meta.feather else "spenta")
+				label += ":  " + (Lang.t("ATTIVA") if Meta.feather else Lang.t("spenta"))
 			"shake", "hitstop", "autoaim":
-				label += ":  " + ("sì" if Meta.options.get(id, true) else "no")
+				label += ":  " + (Lang.t("sì") if Meta.options.get(id, true) else Lang.t("no"))
 			"tutorial":
-				label += ":  " + ("sì, alla prossima" if not Meta.tutorial_done else "no")
+				label += ":  " + (Lang.t("sì, alla prossima") if not Meta.tutorial_done else Lang.t("no"))
+			"lang":
+				label += ":  " + Lang.NAMES.get(Lang.code(), "Italiano")
 			"audio":
-				label += ":  generale %d%%, musica %d%%" % [roundi(Sfx.volumes.get("generale", 1.0) * 100.0), roundi(Sfx.volumes.get("musica", 0.7) * 100.0)]
+				label += Lang.t(":  generale %d%%, musica %d%%") % [roundi(Sfx.volumes.get("generale", 1.0) * 100.0), roundi(Sfx.volumes.get("musica", 0.7) * 100.0)]
 			"update":
 				if Updater.available():
-					label += ":  NUOVA VERSIONE"
+					label += Lang.t(":  NUOVA VERSIONE")
 				elif Updater.check_state() == "ok":
-					label += ":  aggiornato"
+					label += Lang.t(":  aggiornato")
 				else:
-					label += ":  controllo..."
+					label += Lang.t(":  controllo...")
 		var col := Color(0.62, 0.95, 0.7) if id == "feather" and Meta.feather else Color(0.95, 0.9, 0.78)
 		var b := _list_button(left, label, col)
 		option_buttons[id] = b
@@ -669,11 +673,11 @@ func _show_option(id: String) -> void:
 	page_lore.visible = id != "audio"
 	if id == "audio":
 		_volume_sliders()
-	page_title.text = OPTION_TEXT[id][0]
-	page_body.text = OPTION_TEXT[id][1]
+	page_title.text = Lang.t(OPTION_TEXT[id][0])
+	page_body.text = Lang.t(OPTION_TEXT[id][1])
 	page_lore.text = ""
 	if id == "feather" and Meta.feather:
-		page_lore.text = "Ora subisci il %d%% di danni in meno." % roundi(Run.feather_guard() * 100.0)
+		page_lore.text = Lang.t("Ora subisci il %d%% di danni in meno.") % roundi(Run.feather_guard() * 100.0)
 	if id == "update":
 		page_lore.text = _update_status()
 
@@ -745,20 +749,20 @@ func _on_volume_slider(value: float, category: String, pct: Label) -> void:
 			Sfx.play(snd, 0.0)
 			break
 	if option_buttons.has("audio") and is_instance_valid(option_buttons["audio"]):
-		option_buttons["audio"].text = OPTION_TEXT["audio"][0] + ":  generale %d%%, musica %d%%" % [roundi(Sfx.volumes.get("generale", 1.0) * 100.0), roundi(Sfx.volumes.get("musica", 0.7) * 100.0)]
+		option_buttons["audio"].text = Lang.t(OPTION_TEXT["audio"][0]) + Lang.t(":  generale %d%%, musica %d%%") % [roundi(Sfx.volumes.get("generale", 1.0) * 100.0), roundi(Sfx.volumes.get("musica", 0.7) * 100.0)]
 
 
 ## Le versioni, per la pagina di "Aggiorna il gioco".
 func _update_status() -> String:
-	var txt := "Versione installata: %s" % Updater.current()
+	var txt := Lang.t("Versione installata: %s") % Updater.current()
 	match Updater.check_state():
 		"ok":
-			txt += "\nUltima versione pubblicata: %s" % Updater.latest()
-			txt += "\n\nC'è una versione nuova: premi per scaricarla." if Updater.available() else "\n\nHai già l'ultima versione."
+			txt += Lang.t("\nUltima versione pubblicata: %s") % Updater.latest()
+			txt += Lang.t("\n\nC'è una versione nuova: premi per scaricarla.") if Updater.available() else Lang.t("\n\nHai già l'ultima versione.")
 		"pending":
-			txt += "\n\nSto controllando se c'è una versione nuova..."
+			txt += Lang.t("\n\nSto controllando se c'è una versione nuova...")
 		_:
-			txt += "\n\nNon riesco a controllare: forse il telefono non è connesso. Premi per riprovare."
+			txt += Lang.t("\n\nNon riesco a controllare: forse il telefono non è connesso. Premi per riprovare.")
 	return txt
 
 
@@ -770,6 +774,10 @@ func _on_option_pressed(id: String) -> void:
 			Meta.options[id] = not Meta.options.get(id, true)
 		"tutorial":
 			Meta.tutorial_done = not Meta.tutorial_done
+		"lang":
+			var next := "it" if Lang.is_en() else "en"
+			Meta.options["lang"] = next
+			Lang.apply(next)
 		"audio":
 			# le barre sono già sulla pagina: il tocco sulla voce porta il dito lì
 			if page_extra.get_child_count() > 0:
@@ -783,13 +791,13 @@ func _on_option_pressed(id: String) -> void:
 			return
 		"update":
 			if Updater.available():
-				page_body.text = "Aggiornamento in corso... il gioco si riapre da solo tra un momento."
+				page_body.text = Lang.t("Aggiornamento in corso... il gioco si riapre da solo tra un momento.")
 				page_lore.text = ""
 				await Updater.update_now(get_tree())
 				return
 			# niente da scaricare: si controlla di nuovo e si mostra l'esito, senza ricaricare
 			Updater.recheck()
-			page_lore.text = "Controllo in corso..."
+			page_lore.text = Lang.t("Controllo in corso...")
 			await get_tree().create_timer(1.5, true, false, true).timeout
 			if book_kind == "opzioni":
 				_fill_options("update")
@@ -803,8 +811,8 @@ func _on_option_pressed(id: String) -> void:
 # ---------------------------------------------------------------- Il Peso del Cuore
 
 func _fill_weights(focus_id: String = "") -> void:
-	var record := "nessuno" if Meta.best_weight < 0 else str(Meta.best_weight)
-	var left := _frame("Il Peso del Cuore", "Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s" % [Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0)), record], 250)
+	var record := Lang.t("nessuno") if Meta.best_weight < 0 else str(Meta.best_weight)
+	var left := _frame(Lang.t("Il Peso del Cuore"), Lang.t("Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s") % [Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0)), record], 250)
 	var first: Button = null
 	for id in Weights.ALL:
 		var w: Dictionary = Weights.ALL[id]
@@ -822,8 +830,8 @@ func _fill_weights(focus_id: String = "") -> void:
 func _show_weight(id: String) -> void:
 	var w: Dictionary = Weights.ALL[id]
 	page_title.text = w["name"]
-	page_body.text = "%s\n\nLivello %d di %d. Premi per cambiarlo." % [w["desc"], Weights.rank(id), w["max"]]
-	page_lore.text = "Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta."
+	page_body.text = Lang.t("%s\n\nLivello %d di %d. Premi per cambiarlo.") % [w["desc"], Weights.rank(id), w["max"]]
+	page_lore.text = Lang.t("Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.")
 
 
 func _on_weight_pressed(id: String) -> void:
@@ -836,7 +844,7 @@ func _on_weight_pressed(id: String) -> void:
 
 func _fill_papiri() -> void:
 	var count := Lore.count_seen()
-	var left := _frame("I Papiri di Thoth", "Tutto ciò che gli dèi ti hanno raccontato    ·    %d papiri su %d" % [count.x, count.y], 300)
+	var left := _frame(Lang.t("I Papiri di Thoth"), Lang.t("Tutto ciò che gli dèi ti hanno raccontato    ·    %d papiri su %d") % [count.x, count.y], 300)
 	var cols := HBoxContainer.new()
 	cols.add_theme_constant_override("separation", 8)
 	left.add_child(cols)
@@ -1327,7 +1335,7 @@ class NewRoomArrow extends Control:
 		draw_polyline(PackedVector2Array([tip, l, back, rr, tip]), Color(1, 0.96, 0.85), 1.3)
 		var font := UiStyle.title_font()
 		var fs := Fx.fs(8)
-		var txt := "NUOVO · Cortile di Neith"
+		var txt := Lang.t("NUOVO · Cortile di Neith")
 		var tw := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		var tp := pos + Vector2(-tw / 2.0, r + 14.0 * u)
 		tp.x = clampf(tp.x, 6.0, vs.x - tw - 6.0)

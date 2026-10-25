@@ -12,7 +12,7 @@ class_name Lore
 ## Set sprezzante). Non dicono mai "gli Egizi credevano": per loro è tutto vero, e il futuro
 ## (musei, archeologi) lo vedono come una profezia. I fatti sono storici, solo semplificati.
 
-const GODS := {
+const GODS_IT := {
 	"anubi": {
 		"name": "Anubi, il Guardiano",
 		"intro": {"title": "La bilancia", "text": "Prima che tu discenda, Scriba, io ti peso. Ogni mio dono è un piatto della bilancia: ciò che prendi da un lato, lo lasci sull'altro. Così è il giudizio. Così sarà sempre."},
@@ -124,7 +124,7 @@ const GODS := {
 }
 
 ## Le lezioni di Anubi nella Sala del Giudizio (le racconta quando non ha altro di nuovo da dire).
-const JUDGEMENT := [
+const JUDGEMENT_IT := [
 	{"title": "La pesatura del cuore", "text": "Nella Sala delle Due Verità il cuore del morto viene posato su un piatto, la piuma di Ma'at sull'altro. Se il cuore è leggero, il morto attraversa e raggiunge il Campo dei Giunchi. Se è greve di colpe, Ammit lo divora. Quella è la seconda morte. Dalla seconda, non si torna."},
 	{"title": "Ma'at", "text": "Ma'at è la verità, la giustizia, l'ordine che regge il mondo. È anche una dea, e la sua piuma è la misura di ogni cuore. Il faraone regnava per custodirla. Il suo contrario è isfet: il caos, la menzogna, la fame del serpente."},
 	{"title": "I quarantadue giudici", "text": "Prima della bilancia, il morto si ferma davanti a quarantadue giudici e a ciascuno dichiara una colpa che non ha commesso. Non ho rubato. Non ho mentito. Non ho fatto piangere nessuno. È la Confessione negativa, il capitolo centoventicinque del Libro."},
@@ -143,7 +143,7 @@ const JUDGEMENT := [
 ## ma la terza persona scivola: è il colpo di scena che arriva attraverso la scrittura
 ## (vedi docs/storia.md, "I Ricordi dello scriba"). Prima della tappa 2 non si nomina il nome di Ra
 ## rubato, prima della tappa 3 non si nomina la regina.
-const RICORDI := [
+const RICORDI_IT := [
 	{"needs": 1, "title": "I · La lancia di Buto", "text": "Scrissi la battaglia di Buto come me la dettarono i capitani. Il re scese dal carro prima che le linee si toccassero e prese la lancia dalle mani del portatore: una lancia antica, dissero, uscita dal tempio di Neith a Sais. I capitani ricordavano le grida, la polvere, il fiume rosso. Io ricordo il legno. Liscio, caldo di sole, con una scheggia sotto il pollice destro che il re non volle mai far limare. Non so perché lo ricordo. Forse me lo raccontò lui."},
 	{"needs": 2, "title": "II · La doppia corona", "text": "Il giorno dell'incoronazione scrissi i cinque nomi del re su cento rotoli. Toro possente. Amato di Ma'at. Colui che sorge all'orizzonte. La corona bianca dentro la corona rossa, una sola corona per le Due Terre. Dalla folla sembrava leggera. Non lo era: faceva sudare la nuca, e il lino sotto si bagnava tutto prima del tramonto. Questo nei rotoli non c'è. Non l'ho mai scritto. Eppure lo so, come se me l'avesse confidato lui, quella sera, togliendosela davanti a me."},
 	{"needs": 3, "title": "III · La casa dell'eternità", "text": "Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»"},
@@ -213,13 +213,13 @@ static func codex() -> Array:
 		e["id"] = "ricordo_%d" % i
 		e["new"] = e["seen"] and not Meta.dialogue_seen.has(e["id"])
 		if not e["seen"]:
-			e["text"] = "Questo ricordo è ancora sepolto. Riaffiora quando cade un signore della notte."
+			e["text"] = Lang.t("Questo ricordo è ancora sepolto. Riaffiora quando cade un signore della notte.")
 		ricordi.append(e)
-	out.append({"title": "Ricordi dello scriba", "entries": ricordi})
+	out.append({"title": Lang.t("Ricordi dello scriba"), "entries": ricordi})
 	var judgement := []
 	for i in range(JUDGEMENT.size()):
 		judgement.append(_entry(JUDGEMENT[i], Meta.dialogue_seen.has("giudizio_%d" % i)))
-	out.append({"title": "Il giudizio", "entries": judgement})
+	out.append({"title": Lang.t("Il giudizio"), "entries": judgement})
 	for god in ["anubi", "ra", "sekhmet", "thoth", "bastet", "sobek", "iside", "horus", "set"]:
 		var list := []
 		var entries := _entries(god)
@@ -229,13 +229,13 @@ static func codex() -> Array:
 	var chapters := []
 	for id in Chapters.ALL:
 		var c: Dictionary = Chapters.ALL[id]
-		chapters.append(_entry({"title": "Capitolo %d · %s" % [c["num"], c["name"]], "text": c["lore"]}, Chapters.is_unlocked(id)))
-	out.append({"title": "Il Libro dei Morti", "entries": chapters})
+		chapters.append(_entry({"title": Lang.t("Capitolo %d · %s") % [c["num"], c["name"]], "text": c["lore"]}, Chapters.is_unlocked(id)))
+	out.append({"title": Lang.t("Il Libro dei Morti"), "entries": chapters})
 	return out
 
 
 static func _entry(e: Dictionary, seen: bool) -> Dictionary:
-	return {"title": e["title"] if seen else "???", "text": e["text"] if seen else "Questo papiro è ancora sigillato.", "seen": seen}
+	return {"title": e["title"] if seen else "???", "text": e["text"] if seen else Lang.t("Questo papiro è ancora sigillato."), "seen": seen}
 
 
 static func count_seen() -> Vector2i:
@@ -247,3 +247,16 @@ static func count_seen() -> Vector2i:
 			if e["seen"]:
 				seen += 1
 	return Vector2i(seen, total)
+
+
+## I testi qui sopra sono in italiano (le costanti *_IT); il gioco legge le copie tradotte
+## nella lingua scelta, rifatte da Lang.refresh_data() quando cambia la lingua.
+static var GODS: Dictionary = Lang.deep(GODS_IT)
+static var JUDGEMENT: Array = Lang.deep(JUDGEMENT_IT)
+static var RICORDI: Array = Lang.deep(RICORDI_IT)
+
+
+static func refresh_lang() -> void:
+	GODS = Lang.deep(GODS_IT)
+	JUDGEMENT = Lang.deep(JUDGEMENT_IT)
+	RICORDI = Lang.deep(RICORDI_IT)

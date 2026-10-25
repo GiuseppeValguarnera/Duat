@@ -15,7 +15,7 @@ static func make(c: Dictionary, card_w: float) -> Button:
 	btn.pivot_offset = Vector2(card_w / 2.0, 0)
 	btn.set_meta("text", "%s\n%s\n%s\n%s\n%s\n%s" % [c.get("tag", ""), c["name"], c.get("body", ""), c.get("cost", ""), c.get("gain", ""), c.get("loss", "")])
 	for sec in c.get("sections", []):
-		btn.set_meta("text", String(btn.get_meta("text")) + "\n%s: %s" % [sec[0], sec[1]])
+		btn.set_meta("text", String(btn.get_meta("text")) + Lang.t("\n%s: %s") % [sec[0], sec[1]])
 	var pad := MarginContainer.new()
 	pad.set_anchors_preset(Control.PRESET_FULL_RECT)
 	pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -48,7 +48,7 @@ static func make(c: Dictionary, card_w: float) -> Button:
 		col.add_child(body)
 	# sul telefono lo spazio in altezza è poco: il prezzo resta nel riassunto ▼ in fondo
 	if c.get("cost", "") != "":
-		var cost := UiStyle.label("Prezzo: " + c["cost"], 7 if Fx.mobile else 8, UiStyle.INK_RED, false, inner)
+		var cost := UiStyle.label(Lang.t("Prezzo: ") + c["cost"], 7 if Fx.mobile else 8, UiStyle.INK_RED, false, inner)
 		cost.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		col.add_child(cost)
 	# i patti di Set hanno due sezioni scritte per esteso: la maledizione e il potere

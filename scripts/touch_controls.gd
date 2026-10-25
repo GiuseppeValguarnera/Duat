@@ -43,19 +43,19 @@ func _layout() -> Array:
 		{"action": "pause", "pos": Vector2(r - 22, 22), "r": 14.0, "label": "II"},
 	]
 	if in_hub:
-		out.append({"action": "interact", "pos": Vector2(r - 58, b - 62), "r": 34.0, "label": "AZIONE"})
-		out.append({"action": "dash", "pos": Vector2(r - 128, b - 40), "r": 24.0, "label": "SCATTO"})
+		out.append({"action": "interact", "pos": Vector2(r - 58, b - 62), "r": 34.0, "label": Lang.t("AZIONE")})
+		out.append({"action": "dash", "pos": Vector2(r - 128, b - 40), "r": 24.0, "label": Lang.t("SCATTO")})
 		return out
-	out.append({"action": "boons_menu", "pos": Vector2(r - 58, 22), "r": 14.0, "label": "DONI"})
-	out.append({"action": "attack", "pos": Vector2(r - 58, b - 62), "r": 34.0, "label": Weapons.ALL[Run.weapon]["short"] if Weapons.ALL.has(Run.weapon) else "KHOPESH"})
-	out.append({"action": "dash", "pos": Vector2(r - 128, b - 40), "r": 24.0, "label": "SCATTO"})
-	out.append({"action": "special", "pos": Vector2(r - 108, b - 122), "r": 24.0, "label": "OCCHIO"})
+	out.append({"action": "boons_menu", "pos": Vector2(r - 58, 22), "r": 14.0, "label": Lang.t("DONI")})
+	out.append({"action": "attack", "pos": Vector2(r - 58, b - 62), "r": 34.0, "label": Weapons.ALL[Run.weapon]["short"] if Weapons.ALL.has(Run.weapon) else Lang.t("KHOPESH")})
+	out.append({"action": "dash", "pos": Vector2(r - 128, b - 40), "r": 24.0, "label": Lang.t("SCATTO")})
+	out.append({"action": "special", "pos": Vector2(r - 108, b - 122), "r": 24.0, "label": Lang.t("OCCHIO")})
 	if Run.sekhem_unlocked():
-		out.append({"action": "super", "pos": Vector2(r - 170, b - 100), "r": 20.0, "label": "SEKHEM"})
+		out.append({"action": "super", "pos": Vector2(r - 170, b - 100), "r": 20.0, "label": Lang.t("SEKHEM")})
 	if shop:
-		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": "COMPRA"})
+		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": Lang.t("COMPRA")})
 	elif scene != null and "is_armory" in scene:
-		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": "AZIONE"})
+		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": Lang.t("AZIONE")})
 	return out
 
 
@@ -181,7 +181,7 @@ func _draw_controls() -> void:
 	if _portrait():
 		var vs := get_viewport().get_visible_rect().size
 		draw_node.draw_rect(Rect2(Vector2.ZERO, vs), Color(0.03, 0.03, 0.08, 0.95))
-		var msg := "Ruota il telefono in orizzontale"
+		var msg := Lang.t("Ruota il telefono in orizzontale")
 		var w0 := font.get_string_size(msg, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
 		draw_node.draw_string(font, Vector2((vs.x - w0) / 2.0, vs.y / 2.0), msg, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(0.94, 0.72, 0.3))
 		return

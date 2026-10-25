@@ -408,10 +408,10 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 	threat_kind = "colpo"
 	# statue dell'ureo: si esce dalla riga che sta per prendere fuoco
 	for u in get_tree().get_nodes_in_group("uraeus"):
-		var d: Array = u.danger()
-		if not d.is_empty() and absf(pos.y - d[0]) < 18.0 and pos.x >= d[1] - 6.0 and pos.x <= d[2] + 6.0:
+		var d: Rect2 = u.danger()
+		if d.size != Vector2.ZERO and d.grow(8.0).has_point(pos):
 			threat_kind = "ureo"
-			return Vector2(0, 1.0 if pos.y >= d[0] else -1.0)
+			return u.escape_dir(pos)
 	# sfere e dardi in arrivo
 	for c in g.world.get_children():
 		if c is Area2D and "direction" in c and "style" in c:

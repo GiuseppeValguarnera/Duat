@@ -60,10 +60,10 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			if player != null and not _dodge_counted and global_position.distance_to(player.global_position) < 26.0:
 				_dodge_counted = true
 				if player.dash_t > 0.0:
-					Fx.float_text(global_position + Vector2(0, -24), "Schivata!", Color(0.6, 1, 0.6))
+					Fx.float_text(global_position + Vector2(0, -24), Lang.t("Schivata!"), Color(0.6, 1, 0.6))
 					dodged.emit()
 				else:
-					Fx.float_text(global_position + Vector2(0, -24), "Colpito! Scatta mentre arriva", Color(1, 0.5, 0.4))
+					Fx.float_text(global_position + Vector2(0, -24), Lang.t("Colpito! Scatta mentre arriva"), Color(1, 0.5, 0.4))
 					Fx.shake(2.0)
 			if st <= 0.0:
 				state = "rest"
@@ -79,7 +79,7 @@ func take_hit(dmg: float, dir: Vector2, _kb: float, can_burn: bool = false) -> v
 		return
 	if eye_only and not hit_by_eye:
 		flash_t = 0.1
-		Fx.float_text(global_position + Vector2(0, -22), "Solo l'Occhio", Color(0.55, 0.75, 1.0))
+		Fx.float_text(global_position + Vector2(0, -22), Lang.t("Solo l'Occhio"), Color(0.55, 0.75, 1.0))
 		return
 	hit_by_eye = false
 	super.take_hit(dmg, dir, 0.0, can_burn)

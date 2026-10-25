@@ -71,7 +71,7 @@ func _on_body_entered(body: Node) -> void:
 		_hit[body] = true
 		var crit := Run.roll_crit(Run.eye_crit_chance())
 		if crit > 1.0:
-			Fx.float_text(body.global_position + Vector2(0, -20), "CRITICO", Boons.god_color("bastet"))
+			Fx.float_text(body.global_position + Vector2(0, -20), Lang.t("CRITICO"), Boons.god_color("bastet"))
 			if Run.has("duo_thoth_bastet"):
 				var player = get_tree().get_first_node_in_group("player")
 				if player != null:
@@ -100,7 +100,7 @@ func _duo_effects(body: Node) -> void:
 		return
 	if Run.has("duo_horus_thoth") and body.dead:
 		player.eye_cd = 0.0              # al prossimo istante torna una carica
-		Fx.float_text(player.global_position + Vector2(0, -26), "Occhio pronto", Boons.god_color("duo"))
+		Fx.float_text(player.global_position + Vector2(0, -26), Lang.t("Occhio pronto"), Boons.god_color("duo"))
 	if Run.has("duo_iside_horus") and not _healed:
 		_healed = true                   # una cura per lancio, anche se trapassa più nemici
 		player.heal(2.0)
