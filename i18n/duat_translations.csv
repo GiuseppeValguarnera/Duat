@@ -462,6 +462,9 @@ Stanza ripulita,Stanza ripulita,Chamber cleared
 Scegli una porta: la ricompensa è scritta sopra,Scegli una porta: la ricompensa è scritta sopra,Choose a door: the reward is written above it
 +10 Ka,+10 Ka,+10 Ka
 I tuoi doni (%d)%s,I tuoi doni (%d)%s,Your boons (%d)%s
+"
+%s: %s","
+%s: %s",
 Prezzo: ,Prezzo: ,Price: 
 Nuovo,Nuovo,New
 Livello %d,Livello %d,Level %d
@@ -473,6 +476,8 @@ Dono doppio · %s + %s,Dono doppio · %s + %s,Duo boon · %s + %s
 Anubi pesa il tuo cuore,Anubi pesa il tuo cuore,Anubis weighs your heart
 Dono di Anubi,Dono di Anubi,Boon of Anubis
 Dono di %s,Dono di %s,Boon of %s
+Prima · maledizione per %d stanze,Prima · maledizione per %d stanze,
+Poi · per tutta la discesa,Poi · per tutta la discesa,
 "Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa","Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa","First the curse, for the next cleared chambers. Then the power, for the whole descent"
 Attenzione: la maledizione ti seguirà anche contro Am-heh,Attenzione: la maledizione ti seguirà anche contro Am-heh,
 Set ti propone un patto,Set ti propone un patto,Set offers you a pact

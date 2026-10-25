@@ -536,7 +536,7 @@ func _on_enemy_killed(e: Enemy) -> void:
 
 func _on_blessing_granted(id: String) -> void:
 	var b: Dictionary = Boons.SET_BLESSINGS[id]
-	_banner("Set mantiene la promessa", "%s: %s" % [b["name"], b["desc"]], Boons.god_color("set"))
+	_banner("Set mantiene la promessa", "%s: %s" % [b["name"], Weapons.adapt(b["desc"])], Boons.god_color("set"))
 	if player != null and is_instance_valid(player):
 		player.max_hp = Run.max_hp
 		player.hp = Run.hp
@@ -727,10 +727,24 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 		words.add_child(said)
 		var tw := said.create_tween()
 		tw.tween_property(said, "visible_ratio", 1.0, clampf(speech.length() * 0.012, 0.4, 1.6))
+	var sub: Label = null
 	if subtitle != "":
-		var sub := UiStyle.label(subtitle, 9, Color(0.9, 0.8, 0.6))
+		sub = UiStyle.label(subtitle, 9, Color(0.9, 0.8, 0.6))
 		sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		box.add_child(sub)
+	# sul telefono il menu può non entrare nello schermo: prima si accorcia il discorso del dio
+	# (resta per intero nei Papiri di Thoth), poi sparisce la riga di spiegazione
+	var said_ref: Label = words.get_child(words.get_child_count() - 1) if speech != "" else null
+	var shrink := func() -> void:
+		if not is_instance_valid(box):
+			return
+		var vh := get_viewport().get_visible_rect().size.y
+		if box.get_combined_minimum_size().y > vh - 8.0 and said_ref != null and is_instance_valid(said_ref):
+			said_ref.max_lines_visible = 2
+			said_ref.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		if box.get_combined_minimum_size().y > vh - 8.0 and sub != null and is_instance_valid(sub):
+			sub.visible = false
+	get_tree().create_timer(0.05, true, false, true).timeout.connect(shrink)
 
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -784,6 +798,8 @@ func _make_card(c: Dictionary, card_w: float) -> Button:
 	btn.custom_minimum_size = Vector2(card_w, 0)
 	btn.pivot_offset = Vector2(card_w / 2.0, 0)
 	btn.set_meta("text", "%s\n%s\n%s\n%s\n%s\n%s" % [c.get("tag", ""), c["name"], c.get("body", ""), c.get("cost", ""), c.get("gain", ""), c.get("loss", "")])
+	for sec in c.get("sections", []):
+		btn.set_meta("text", String(btn.get_meta("text")) + "\n%s: %s" % [sec[0], sec[1]])
 	var pad := MarginContainer.new()
 	pad.set_anchors_preset(Control.PRESET_FULL_RECT)
 	pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -819,6 +835,14 @@ func _make_card(c: Dictionary, card_w: float) -> Button:
 		var cost := UiStyle.label("Prezzo: " + c["cost"], 7 if Fx.mobile else 8, UiStyle.INK_RED, false, inner)
 		cost.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		col.add_child(cost)
+	# i patti di Set hanno due sezioni scritte per esteso: la maledizione e il potere
+	for sec in c.get("sections", []):
+		var head := UiStyle.label(sec[0], 7, sec[2], true, inner)
+		head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(head)
+		var txt := UiStyle.label(sec[1], 8 if Fx.mobile else 9, sec[2].darkened(0.1), false, inner)
+		txt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(txt)
 	# riassunto in fondo
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -826,16 +850,10 @@ func _make_card(c: Dictionary, card_w: float) -> Button:
 	col.add_child(spacer)
 	var lines := []
 	if c.get("gain", "") != "":
-		lines.append(UiStyle.label("▲ " + c["gain"], 9, UiStyle.INK_GREEN, true, inner))
+		lines.append(_summary_row(c["gain"], true, inner))
 	if c.get("loss", "") != "":
-		var l := UiStyle.label("▼ " + c["loss"], 9, UiStyle.INK_RED, true, inner)
-		# nei patti di Set la maledizione viene prima: la si legge per prima
-		if c.get("loss_first", false):
-			lines.push_front(l)
-		else:
-			lines.append(l)
+		lines.append(_summary_row(c["loss"], false, inner))
 	for ln in lines:
-		ln.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		col.add_child(ln)
 	# l'altezza giusta si conosce solo dopo che il testo è andato a capo
 	var fit := func() -> void:
@@ -844,6 +862,31 @@ func _make_card(c: Dictionary, card_w: float) -> Button:
 	col.minimum_size_changed.connect(fit)
 	fit.call_deferred()
 	return btn
+
+
+## Riga del riassunto in fondo alla carta: un triangolo disegnato (▲ vantaggio, ▼ prezzo) e il
+## testo. Il triangolo è disegnato perché il carattere delle carte non ha quei simboli, e nel
+## browser del telefono comparirebbero dei quadratini.
+func _summary_row(text: String, gain: bool, inner: float) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_theme_constant_override("separation", int(3 * Fx.ui))
+	var col := UiStyle.INK_GREEN if gain else UiStyle.INK_RED
+	var tri := TriIcon.new()
+	tri.up = gain
+	tri.color = col
+	tri.custom_minimum_size = Vector2(6, 6) * Fx.ui
+	tri.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(tri)
+	var l := UiStyle.label(text, 9, col, true)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.custom_minimum_size = Vector2(0, 0)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var tw: float = l.get_theme_font("font").get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, l.get_theme_font_size("font_size")).x
+	l.custom_minimum_size.x = minf(tw + 2.0, inner - 10.0 * Fx.ui)
+	row.add_child(l)
+	return row
 
 
 func _close_choice() -> void:
@@ -977,10 +1020,10 @@ func _show_set_menu() -> void:
 		var bless: Dictionary = Boons.SET_BLESSINGS[o["blessing"]]
 		cards.append({
 			"tag": "Patto di Set", "name": bless["name"],
-			"body": "",
-			"cost": "",
-			"gain": "Poi per sempre: " + bless["desc"], "loss": "Prima, per %d stanze: %s" % [curse["rooms"], curse["desc"]],
-			"loss_first": true,
+			"sections": [
+				["Prima · maledizione per %d stanze" % curse["rooms"], curse["desc"], UiStyle.INK_RED],
+				["Poi · per tutta la discesa", Weapons.adapt(bless["desc"]), UiStyle.INK_GREEN],
+			],
 			"color": Boons.god_color("set"), "heavy": true,
 			"on_pick": _choose_pact.bind(o["curse"], o["blessing"]),
 		})
@@ -998,7 +1041,7 @@ func _choose_pact(curse: String, blessing: String) -> void:
 	Run.add_pact(curse, blessing)
 	_close_choice()
 	var cdesc: Dictionary = Boons.SET_CURSES[curse]
-	_boon_fx(Boons.god_color("set"), "Maledizione di Set: %d stanze" % cdesc["rooms"], "%s. Poi: %s" % [cdesc["desc"], Boons.SET_BLESSINGS[blessing]["desc"]])
+	_boon_fx(Boons.god_color("set"), "Maledizione di Set: %d stanze" % cdesc["rooms"], "%s. Poi: %s" % [cdesc["desc"], Weapons.adapt(Boons.SET_BLESSINGS[blessing]["desc"])])
 	_open_doors()
 
 
@@ -1272,9 +1315,9 @@ func _boons_text() -> String:
 		t += "\n\n"
 	var set_col: String = Boons.god_color("set").to_html(false)
 	for c in Run.curses:
-		t += "[color=#%s][b]Maledizione di Set[/b] · ancora %d stanze[/color]\n%s. Poi: %s\n\n" % [set_col, c["rooms"], Boons.SET_CURSES[c["curse"]]["desc"], Boons.SET_BLESSINGS[c["blessing"]]["desc"]]
+		t += "[color=#%s][b]Maledizione di Set[/b] · ancora %d stanze[/color]\n%s. Poi: %s\n\n" % [set_col, c["rooms"], Boons.SET_CURSES[c["curse"]]["desc"], Weapons.adapt(Boons.SET_BLESSINGS[c["blessing"]]["desc"])]
 	for b in Run.blessings:
-		t += "[color=#%s][b]Set[/b] · %s · permanente[/color]\n%s\n\n" % [set_col, Boons.SET_BLESSINGS[b]["name"], Boons.SET_BLESSINGS[b]["desc"]]
+		t += "[color=#%s][b]Set[/b] · %s · permanente[/color]\n%s\n\n" % [set_col, Boons.SET_BLESSINGS[b]["name"], Weapons.adapt(Boons.SET_BLESSINGS[b]["desc"])]
 	return t
 
 
@@ -2269,3 +2312,18 @@ class DeathScale extends Control:
 		draw_circle(hp + Vector2(2.5, -1) * beat, 3.5 * beat, Color(0.75, 0.12, 0.1))
 		draw_colored_polygon(PackedVector2Array([hp + Vector2(-5.8, 0) * beat, hp + Vector2(5.8, 0) * beat, hp + Vector2(0, 7) * beat]), Color(0.75, 0.12, 0.1))
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+## Triangolo del riassunto delle carte (▲ vantaggio, ▼ prezzo).
+class TriIcon extends Control:
+	var up := true
+	var color := Color.WHITE
+
+	func _ready() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _draw() -> void:
+		var w := size.x
+		var h := size.y
+		var pts := PackedVector2Array([Vector2(w / 2.0, 0), Vector2(w, h), Vector2(0, h)]) if up else PackedVector2Array([Vector2(0, 0), Vector2(w, 0), Vector2(w / 2.0, h)])
+		draw_colored_polygon(pts, color)
