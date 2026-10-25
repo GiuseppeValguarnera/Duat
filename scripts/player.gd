@@ -362,6 +362,9 @@ func _swing() -> void:
 					_shockwave.call_deferred(40.0, 12.0 * Run.all_damage_mult(), 150.0, Boons.god_color("duo"))
 			var kb: float = c["knock"] * Run.knock_mult() * (2.0 if sweep and Run.has("sobek_tail") else 1.0)
 			e.take_hit(hit_dmg, to.normalized(), kb, Run.khopesh_burns())
+			# scintilla dove la lama tocca: sul bordo del nemico rivolto verso di te
+			var heavy_hit := swing_index == 2 or lunging or crit > 1.0
+			Fx.impact(e.global_position + Vector2(0, -e.radius) - to.normalized() * e.radius * 0.6, to.normalized(), heavy_hit)
 			if spear and swing_index == 2 and Run.aspect == "khonsu" and not e.dead:
 				e.stagger_t = maxf(e.stagger_t, Run.aspect_val("khonsu") * (0.3 if (e.is_boss or e.miniboss) else 1.0))
 			if swing_index == 2 and Run.has("sobek_bite") and not e.dead:
@@ -372,8 +375,10 @@ func _swing() -> void:
 	if swing_index == 2 and Run.has("sekhmet_roar"):
 		_shockwave(46.0, Run.val("sekhmet_roar") * Run.all_damage_mult(), 200.0, Boons.god_color("sekhmet"))
 	if hit_any:
-		Fx.shake(3.0 if swing_index < 2 else 6.0)
-		Fx.hitstop(0.04 if swing_index < 2 else 0.07)
+		var heavy := swing_index == 2 or lunging
+		Fx.shake(3.0 if not heavy else 6.0)
+		Fx.hitstop(0.045 if not heavy else 0.08)
+		Fx.punch(swing_dir, 2.5 if not heavy else 5.0)
 
 
 func _shockwave(radius: float, dmg: float, kb: float, color: Color) -> void:
@@ -572,18 +577,30 @@ func _draw() -> void:
 	draw_circle(Vector2(facing.x * 2.0 + 1.5, -20 + bob), 1.0, Color(0, 0, 0, a))
 
 	# l'arma in mano: la lancia lungo la mira, il khopesh ricurvo accanto alla mano
-	var hand := Vector2(0, -11 + bob) + aim * 5.0
+	# durante il colpo l'arma si muove: il khopesh attraversa l'arco, la lancia affonda e torna
+	var swing_k := clampf(1.0 - atk_t / 0.14, 0.0, 1.0) if atk_t > 0.0 else -1.0
+	var wdir := aim
+	if swing_k >= 0.0:
+		wdir = swing_dir
+		if Run.weapon != "lancia" or (swing_index == 2 and not spin_swing):
+			var side_sign := -1.0 if swing_index % 2 == 0 else 1.0
+			var half := minf(swing_arc, PI * 1.2) * 0.5
+			wdir = swing_dir.rotated(side_sign * lerpf(-half, half, ease(swing_k, 0.4)))
+	var hand := Vector2(0, -11 + bob) + wdir * 5.0
 	if Run.weapon == "lancia":
-		var reach := 26.0 if atk_t <= 0.0 else 34.0
-		draw_line(hand - aim * 8.0, hand + aim * reach, Color(0.55, 0.38, 0.2, a), 1.6)
-		var tipp := hand + aim * reach
-		draw_colored_polygon(PackedVector2Array([tipp + aim * 6.0, tipp + aim.orthogonal() * 2.2, tipp - aim.orthogonal() * 2.2]), Color(0.85, 0.85, 0.9, a))
+		var reach := 26.0
+		if swing_k >= 0.0:
+			reach = 26.0 + sin(swing_k * PI) * (swing_range - 26.0) * 0.6
+		draw_line(hand - wdir * 8.0, hand + wdir * reach, Color(0.55, 0.38, 0.2, a), 1.6)
+		var tipp := hand + wdir * reach
+		draw_colored_polygon(PackedVector2Array([tipp + wdir * 6.0, tipp + wdir.orthogonal() * 2.2, tipp - wdir.orthogonal() * 2.2]), Color(0.85, 0.85, 0.9, a))
 	else:
 		var blade := PackedVector2Array()
+		var bl := 10.0 if swing_k < 0.0 else 13.0
 		for i in range(7):
 			var k := i / 6.0
-			blade.append(hand + aim * (4.0 + 10.0 * k) + aim.orthogonal() * (sin(k * PI) * -3.0 - k * 2.0))
-		draw_line(hand - aim * 1.0, hand + aim * 4.0, gold, 2.0)
+			blade.append(hand + wdir * (4.0 + bl * k) + wdir.orthogonal() * (sin(k * PI) * -3.0 - k * 2.0))
+		draw_line(hand - wdir * 1.0, hand + wdir * 4.0, gold, 2.0)
 		draw_polyline(blade, Color(0.82, 0.82, 0.88, a), 2.0)
 	# indicatore di mira
 	var tip := Vector2(0, -8) + aim * 20.0
@@ -601,7 +618,25 @@ func _draw() -> void:
 		for i in range(steps, -1, -1):
 			var ang := base - swing_arc * 0.5 + swing_arc * float(i) / steps
 			pts.append(Vector2.from_angle(ang) * swing_range * 0.4)
-		var col := Color(1.0, 0.75, 0.3, 0.6) if divine_t > 0.0 else Color(1.0, 0.88, 0.55, 0.45 + atk_t * 2.0)
+		var col := Color(1.0, 0.75, 0.3, 0.6) if divine_t > 0.0 else Color(1.0, 0.88, 0.55, 0.18 + atk_t * 1.6)
 		draw_colored_polygon(pts, col)
+		# la scia: un filo luminoso sul bordo esterno che si apre con il movimento della lama
+		var sk := clampf(1.0 - atk_t / 0.14, 0.0, 1.0)
+		var trail := PackedVector2Array()
+		var from_k := maxf(0.0, ease(sk, 0.4) - 0.65)
+		var to_k := ease(sk, 0.4)
+		var sgn := -1.0 if swing_index % 2 == 0 else 1.0
+		for i in range(11):
+			var f := lerpf(from_k, to_k, i / 10.0)
+			var ang2 := base + sgn * (-swing_arc * 0.5 + swing_arc * f)
+			trail.append(Vector2.from_angle(ang2) * swing_range * 0.94)
+		var bright := Color(1, 0.97, 0.85, 0.95) if divine_t <= 0.0 else Color(1, 0.85, 0.4, 0.95)
+		if swing_arc < deg_to_rad(60.0):
+			# affondo: una scia dritta lungo la lancia, che corre fino alla punta
+			var dpos := swing_dir * swing_range
+			draw_line(swing_dir * swing_range * lerpf(0.3, 0.75, sk), dpos * lerpf(0.75, 1.0, sk), bright, 3.0)
+			draw_line(swing_dir * swing_range * 0.3, dpos * lerpf(0.75, 1.0, sk), Color(bright, 0.35), 1.5)
+		else:
+			draw_polyline(trail, bright, 3.0 if swing_index == 2 else 2.0)
 		if Fx.show_hitboxes:
 			draw_polyline(pts, Color(1, 0.2, 0.2, 0.9), 1.0)

@@ -14,6 +14,7 @@ var ui := 1.0
 
 var _shake := 0.0
 var _hitstops := 0
+var _punch := Vector2.ZERO			  ## contraccolpo della telecamera nella direzione del colpo
 
 
 func _ready() -> void:
@@ -49,11 +50,12 @@ func _input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	if camera == null or not is_instance_valid(camera):
 		return
+	var off := _punch
+	_punch = _punch.move_toward(Vector2.ZERO, 60.0 * delta)
 	if _shake > 0.0:
-		camera.offset = Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)) * _shake
+		off += Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)) * _shake
 		_shake = maxf(0.0, _shake - 40.0 * delta)
-	else:
-		camera.offset = Vector2.ZERO
+	camera.offset = off
 
 
 func shake(amount: float) -> void:
@@ -78,16 +80,46 @@ func _end_hitstop() -> void:
 		Engine.time_scale = 1.0
 
 
-func damage_number(pos: Vector2, value: float, color: Color = Color(1, 0.95, 0.8)) -> void:
-	float_text(pos, str(int(round(value))), color)
+## La telecamera si sposta un poco nella direzione del colpo e torna: il colpo "spinge".
+func punch(dir: Vector2, amount: float) -> void:
+	if not Meta.options.get("shake", true):
+		return
+	_punch = dir.normalized() * amount
 
 
-func float_text(pos: Vector2, text: String, color: Color = Color(1, 0.95, 0.8)) -> void:
+func damage_number(pos: Vector2, value: float, color: Color = Color(1, 0.95, 0.8), size: int = 11) -> void:
+	float_text(pos, str(int(round(value))), color, size)
+
+
+## Scintilla d'impatto dove la lama tocca: raggi bianchi e un anello che si allarga.
+func impact(pos: Vector2, dir: Vector2, big: bool = false) -> void:
+	if world == null or not is_instance_valid(world):
+		return
+	var n := Impact.new()
+	n.dir = dir
+	n.big = big
+	n.z_index = 60
+	world.add_child(n)
+	n.global_position = pos
+
+
+## L'anima del nemico abbattuto: un piccolo Ba (uccello dal volto umano) che sale e svanisce.
+func soul(pos: Vector2, color: Color = Color(0.95, 0.85, 0.55)) -> void:
+	if world == null or not is_instance_valid(world):
+		return
+	var n := Soul.new()
+	n.color = color
+	n.z_index = 55
+	world.add_child(n)
+	n.global_position = pos
+
+
+func float_text(pos: Vector2, text: String, color: Color = Color(1, 0.95, 0.8), size: int = 11) -> void:
 	if world == null or not is_instance_valid(world):
 		return
 	var l := Label.new()
 	l.text = text
-	l.add_theme_font_size_override("font_size", 11)
+	l.add_theme_font_size_override("font_size", size)
 	l.add_theme_color_override("font_color", color)
 	l.add_theme_color_override("font_outline_color", Color.BLACK)
 	l.add_theme_constant_override("outline_size", 4)
@@ -138,3 +170,55 @@ func _redraw(n: Node) -> void:
 		(n as CanvasItem).queue_redraw()
 	for c in n.get_children():
 		_redraw(c)
+
+
+class Impact extends Node2D:
+	var dir := Vector2.RIGHT
+	var big := false
+	var t := 0.0
+	const LIFE := 0.16
+
+	func _process(delta: float) -> void:
+		t += delta
+		if t > LIFE:
+			queue_free()
+		queue_redraw()
+
+	func _draw() -> void:
+		var k := t / LIFE
+		var r := (10.0 if big else 6.0) + (16.0 if big else 10.0) * k
+		var a := 1.0 - k
+		draw_arc(Vector2.ZERO, r, 0.0, TAU, 20, Color(1, 0.95, 0.8, 0.8 * a), 2.0 if big else 1.4)
+		# raggi soprattutto nella direzione del colpo
+		var n := 7 if big else 5
+		for i in range(n):
+			var ang := dir.angle() + (i - (n - 1) / 2.0) * 0.45 + sin(i * 7.3) * 0.15
+			var l0 := r * 0.4
+			var l1 := r * (1.3 + 0.4 * sin(i * 3.1))
+			draw_line(Vector2.from_angle(ang) * l0, Vector2.from_angle(ang) * l1, Color(1, 1, 0.9, a), 2.0 if big else 1.4)
+		draw_circle(Vector2.ZERO, (5.0 if big else 3.0) * a, Color(1, 1, 1, a))
+
+
+class Soul extends Node2D:
+	var color := Color(0.95, 0.85, 0.55)
+	var t := 0.0
+	const LIFE := 0.9
+
+	func _process(delta: float) -> void:
+		t += delta
+		position.y -= 38.0 * delta
+		position.x += sin(t * 9.0) * 12.0 * delta
+		if t > LIFE:
+			queue_free()
+		queue_redraw()
+
+	func _draw() -> void:
+		var a := clampf(1.0 - t / LIFE, 0.0, 1.0) * 0.85
+		var c := Color(color, a)
+		var flap := sin(t * 18.0) * 3.0
+		# corpo d'uccello, due ali che battono, testa umana tonda
+		draw_circle(Vector2(0, -8), 2.6, c)
+		draw_circle(Vector2(0, -12), 2.0, c)
+		draw_colored_polygon(PackedVector2Array([Vector2(-1, -8), Vector2(-8, -10 - flap), Vector2(-5, -6)]), c)
+		draw_colored_polygon(PackedVector2Array([Vector2(1, -8), Vector2(8, -10 - flap), Vector2(5, -6)]), c)
+		draw_circle(Vector2(0, -8), 7.0, Color(color, a * 0.15))

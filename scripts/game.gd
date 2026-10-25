@@ -413,6 +413,9 @@ func start_room(reward: Dictionary) -> void:
 	cam.limit_top = int(ROOM.position.y)
 	cam.limit_right = int(ROOM.end.x)
 	cam.limit_bottom = int(ROOM.end.y)
+	# sul telefono, nelle stanze normali, la telecamera si avvicina un poco: personaggi più leggibili.
+	# Contro i boss resta larga, perché serve vedere l'arena.
+	cam.zoom = Vector2.ONE * (1.12 if Fx.mobile and not boss_room else 1.0)
 	cam.reset_smoothing()
 	player.died.connect(_on_player_died)
 	if Run.chap("c6"):

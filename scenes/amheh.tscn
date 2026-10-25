@@ -3,21 +3,21 @@
 [ext_resource type="Script" path="res://scripts/amheh.gd" id="1_amheh"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
-radius = 15.0
+radius = 17.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_contact"]
-radius = 15.0
+radius = 16.0
 
 [node name="Amheh" type="CharacterBody2D"]
 collision_layer = 4
 collision_mask = 1
 motion_mode = 1
 script = ExtResource("1_amheh")
-max_hp = 900.0
+max_hp = 1000.0
 speed = 58.0
 contact_damage = 16.0
 ka_value = 40
-radius = 15.0
+radius = 18.0
 
 [node name="Body" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_body")
@@ -27,5 +27,5 @@ collision_layer = 0
 collision_mask = 8
 
 [node name="Shape" type="CollisionShape2D" parent="ContactArea"]
-position = Vector2(0, -12)
+position = Vector2(0, -16)
 shape = SubResource("CircleShape2D_contact")

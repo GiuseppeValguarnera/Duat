@@ -13,6 +13,8 @@ extends Enemy
 
 signal summon(kinds: Array)
 
+const S := 1.35                       ## il corpo è disegnato più grande dell'area che colpisce: si legge anche sul telefono
+
 @export_group("Morso")
 @export var bite_range := 64.0
 @export var bite_windup := 0.45
@@ -320,24 +322,24 @@ func _draw_body(flash: bool) -> void:
 	if state == "leap":
 		var kk := clampf(1.0 - st / leap_time, 0.0, 1.0)
 		lift = sin(kk * PI) * 34.0
-	draw_set_transform(Vector2(0, 2), 0.0, Vector2(1.0, 0.4))
+	draw_set_transform(Vector2(0, 2), 0.0, Vector2(1.0, 0.4) * S)
 	draw_circle(Vector2.ZERO, 18.0 - lift * 0.15, Color(0, 0, 0, 0.35))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	if phase > 0:
-		draw_circle(Vector2(0, -14 - lift), radius + 9.0, Color(1, 0.3, 0.1, 0.08 * phase))
+		draw_circle(Vector2(0, -14 * S - lift), radius * S + 9.0, Color(1, 0.3, 0.1, 0.08 * phase))
 
 	var shake_x := randf_range(-1.0, 1.0) if state in ["howl", "breath_windup"] else 0.0
 	var head_up := -6.0 if state == "howl" else 0.0
-	draw_set_transform(Vector2(shake_x, -lift), 0.0, Vector2(dir, 1.0))
+	draw_set_transform(Vector2(shake_x, -lift), 0.0, Vector2(dir, 1.0) * S)
 	# zampe
 	var step := sin(t * 10.0) * 2.0 if state == "chase" else 0.0
 	for lx in [-15.0, -9.0, 5.0, 11.0]:
 		var off := step if int(lx) % 2 == 0 else -step
 		draw_line(Vector2(lx, -10), Vector2(lx + off, 0), fur, 3.0)
 	# corpo snello da cane, con le crepe di brace
-	draw_set_transform(Vector2(shake_x, -lift - 15.0), 0.0, Vector2(dir, 0.55))
+	draw_set_transform(Vector2(shake_x, -lift - 15.0 * S), 0.0, Vector2(dir, 0.55) * S)
 	draw_circle(Vector2(-3, 0), 16.0, fur)
-	draw_set_transform(Vector2(shake_x, -lift), 0.0, Vector2(dir, 1.0))
+	draw_set_transform(Vector2(shake_x, -lift), 0.0, Vector2(dir, 1.0) * S)
 	for i in range(3):
 		var cx := -12.0 + i * 7.0
 		draw_line(Vector2(cx, -18), Vector2(cx + 3, -12), Color(ember, 0.7 + 0.3 * sin(tt * 5.0 + i)), 1.0)
@@ -370,4 +372,4 @@ func _draw_body(flash: bool) -> void:
 	if state == "exhausted":
 		for i in range(3):
 			var a := tt * 3.0 + i * TAU / 3.0
-			draw_circle(Vector2(cos(a) * 12.0, -44 + sin(a) * 3.0), 2.0, Color(0.75, 0.75, 0.75, 0.8))
+			draw_circle(Vector2(cos(a) * 14.0, -44 * S + sin(a) * 3.0), 2.5, Color(0.75, 0.75, 0.75, 0.8))

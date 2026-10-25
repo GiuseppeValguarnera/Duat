@@ -144,7 +144,7 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 		burn_t = 2.0
 	_on_hit(dmg)
 	Run.add_sekhem(dmg * 0.15)
-	Fx.damage_number(global_position, dmg)
+	Fx.damage_number(global_position, dmg, Color(1, 0.95, 0.8), 11 if dmg < 25.0 else 14)
 	Fx.burst(global_position + Vector2(0, -radius), Color(1, 0.9, 0.6), 5, 70.0)
 	Sfx.play("hit", 0.15)
 	if hp <= 0.0:
@@ -184,6 +184,8 @@ func die() -> void:
 			if player != null and not player.dead:
 				player.heal(Run.val("sekhmet_blood"))
 	Fx.burst(global_position + Vector2(0, -radius), Color(0.94, 0.72, 0.3), 18, 130.0)
+	if not is_boss:
+		Fx.soul(global_position + Vector2(0, -radius))
 	# capitolo 26: a volte il nemico lascia un cuore che cura
 	var heart_chance := Chapters.value("c26")
 	if heart_chance > 0.0 and not Run.training and not is_boss and randf() * 100.0 < heart_chance:
