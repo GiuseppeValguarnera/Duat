@@ -101,7 +101,7 @@ Il terzo colpo della combo stordisce i nemici per %.1f secondi.,Il terzo colpo d
 Marea del Nilo,Marea del Nilo,Tide of the Nile
 Alla fine dello scatto lasci una pozza che rallenta i nemici del %d%% per 3 secondi.,Alla fine dello scatto lasci una pozza che rallenta i nemici del %d%% per 3 secondi.,At the end of your dash you leave a pool that slows enemies by %d%% for 3 seconds.
 Forza del Fiume,Forza del Fiume,Might of the River
-I nemici storditi dal Morso o rallentati dalla Marea subiscono il %d%% di danni in più.,I nemici storditi dal Morso o rallentati dalla Marea subiscono il %d%% di danni in più.,Enemies stunned by the Bite or slowed by the Tide take %d%% more damage.
+I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.,I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.,
 Ali di Iside,Ali di Iside,Wings of Isis
 All'inizio di ogni stanza hai uno scudo che assorbe %d danni.,All'inizio di ogni stanza hai uno scudo che assorbe %d danni.,At the start of every chamber you gain a shield that absorbs %d damage.
 Lacrime di Iside,Lacrime di Iside,Tears of Isis
@@ -622,6 +622,7 @@ Level %d of %d. Press to change it."
 "Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.","Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.","Every level of weight makes the descent harder and lets you store 10% more Ka. Anubis watches: the heavier the heart that manages to pass, the stronger the one who carries it."
 I Papiri di Thoth,I Papiri di Thoth,The Scrolls of Thoth
 Tutto ciò che gli dèi ti hanno raccontato    ·    %d papiri su %d,Tutto ciò che gli dèi ti hanno raccontato    ·    %d papiri su %d,Everything the gods have told you    ·    %d scrolls of %d
+NUOVO · Cortile di Neith,NUOVO · Cortile di Neith,
 "Anubi, il Guardiano","Anubi, il Guardiano","Anubis, the Guardian"
 La bilancia,La bilancia,The scale
 "Prima che tu discenda, Scriba, io ti peso. Ogni mio dono è un piatto della bilancia: ciò che prendi da un lato, lo lasci sull'altro. Così è il giudizio. Così sarà sempre.","Prima che tu discenda, Scriba, io ti peso. Ogni mio dono è un piatto della bilancia: ciò che prendi da un lato, lo lasci sull'altro. Così è il giudizio. Così sarà sempre.","Before you descend, Scribe, I weigh you. Each of my boons is a pan of the scale: what you take on one side, you leave on the other. So is the judgement. So it shall always be."
@@ -877,6 +878,7 @@ La fame di Ammit,La fame di Ammit,The hunger of Ammit
 Ammit ha il 30% di vita in più e ogni Ruggito libera due onde.,Ammit ha il 30% di vita in più e ogni Ruggito libera due onde.,Ammit has 30% more health and every Roar unleashes two waves.
 Vita,Vita,Health
 Comandi,Comandi,Controls
+I nemici storditi dal Morso o rallentati dalla Marea subiscono il %d%% di danni in più.,I nemici storditi dal Morso o rallentati dalla Marea subiscono il %d%% di danni in più.,Enemies stunned by the Bite or slowed by the Tide take %d%% more damage.
 Ogni lacrima vale più di mille Ka. Il Libro sa cosa farne: le formule più alte non si pagano soltanto con la forza.,Ogni lacrima vale più di mille Ka. Il Libro sa cosa farne: le formule più alte non si pagano soltanto con la forza.,Every tear is worth more than a thousand Ka. The Book knows what to do with it: the highest spells are not paid for with strength alone.
 +1 Lacrima di Iside  ·  il prossimo dono sale di un livello in più,+1 Lacrima di Iside  ·  il prossimo dono sale di un livello in più,+1 Tear of Isis  ·  the next boon gains an extra level
 "

@@ -140,7 +140,6 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("super") and Run.sekhem_ready() and divine_t <= 0.0:
 		_divine_form()
 
-	var was_dashing := dash_t > 0.0
 	if dash_t > 0.0:
 		velocity = dash_dir * dash_speed
 		_dash_damage()
@@ -151,28 +150,23 @@ func _physics_process(delta: float) -> void:
 			walk += delta * 10.0
 	knock = knock.move_toward(Vector2.ZERO, 900.0 * delta)
 	move_and_slide()
-	if was_dashing and dash_t <= 0.0:
-		after_dash_t = 0.3
-		if Run.has("sekhmet_leap"):
-			leap_ready = true
-		if Run.has("sobek_tide"):
-			var pool := PuddleScript.new()
-			get_parent().add_child(pool)
-			pool.global_position = global_position
 	_heavy_drain(delta)
 	_poison_update(delta)
 	queue_redraw()
 
 
 func _tick(delta: float) -> void:
+	after_dash_t = maxf(0.0, after_dash_t - delta)
+	var dash_ending := dash_t > 0.0 and dash_t <= delta
 	dash_t = maxf(0.0, dash_t - delta)
+	if dash_ending:
+		_dash_ended()
 	dash_cd = maxf(0.0, dash_cd - delta)
 	invuln_t = maxf(0.0, invuln_t - delta)
 	flash_t = maxf(0.0, flash_t - delta)
 	atk_t = maxf(0.0, atk_t - delta)
 	atk_cd = maxf(0.0, atk_cd - delta)
 	combo_window = maxf(0.0, combo_window - delta)
-	after_dash_t = maxf(0.0, after_dash_t - delta)
 	# l'Occhio si ricarica una carica alla volta (di base ne ha una sola)
 	var max_charges := Run.eye_charges()
 	eye_charges = mini(eye_charges, max_charges)
@@ -243,6 +237,18 @@ func _start_dash(move: Vector2) -> void:
 	Fx.burst(global_position, Color(0.85, 0.75, 0.55), 8, 60.0)
 
 
+## Fine dello scatto: apre la finestra per l'affondo della lancia (o il fendente di Wepwawet)
+## e attiva i doni legati allo scatto. Va chiamata in _tick, prima che si legga l'attacco.
+func _dash_ended() -> void:
+	after_dash_t = 0.35
+	if Run.has("sekhmet_leap"):
+		leap_ready = true
+	if Run.has("sobek_tide"):
+		var pool := PuddleScript.new()
+		get_parent().add_child(pool)
+		pool.global_position = global_position
+
+
 ## Corsa dell'Alba: lo scatto ferisce i nemici attraversati.
 func _dash_damage() -> void:
 	if not Run.has("ra_dawn"):
@@ -265,7 +271,8 @@ func _swing() -> void:
 	swing_index = combo
 	spin_swing = false
 	# subito dopo uno scatto: la lancia affonda lontanissimo, il khopesh di Wepwawet gira su se stesso
-	if after_dash_t > 0.0 and spear:
+	var lunging := after_dash_t > 0.0 and spear
+	if lunging:
 		c = SPEAR_LUNGE
 	combo = (combo + 1) % table.size()
 	combo_window = 0.55
@@ -290,6 +297,10 @@ func _swing() -> void:
 	after_dash_t = 0.0
 	swing_dir = _assisted(aim, swing_range + 24.0)
 	Sfx.play("swing", 0.15)
+	if lunging:
+		# l'affondo dopo lo scatto si deve vedere: scia dorata lungo la lancia
+		for i in range(4):
+			Fx.burst(global_position + Vector2(0, -6) + swing_dir * (18.0 + i * 18.0), Color(0.98, 0.86, 0.45), 4, 50.0)
 	knock = swing_dir * lunge
 
 	var dmg: float = attack_damage * Run.khopesh_mult() * c["mult"] * Run.combo_mult(swing_index) * aspect_mult

@@ -51,7 +51,7 @@ const ALL := {
 	"sobek_skin": {"god": "sobek", "name": "Pelle di Coccodrillo", "desc": "Subisci il %d%% di danni in meno.", "values": [12, 18, 24]},
 	"sobek_bite": {"god": "sobek", "name": "Morso di Sobek", "desc": "Il terzo colpo della combo stordisce i nemici per %.1f secondi.", "values": [0.6, 0.9, 1.2]},
 	"sobek_tide": {"god": "sobek", "name": "Marea del Nilo", "desc": "Alla fine dello scatto lasci una pozza che rallenta i nemici del %d%% per 3 secondi.", "values": [30, 40, 50]},
-	"sobek_river": {"god": "sobek", "name": "Forza del Fiume", "desc": "I nemici storditi dal Morso o rallentati dalla Marea subiscono il %d%% di danni in più.", "values": [20, 30, 40]},
+	"sobek_river": {"god": "sobek", "name": "Forza del Fiume", "desc": "I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.", "values": [20, 30, 40]},
 	# Iside: protezione, cure, magia
 	"iside_wings": {"god": "iside", "name": "Ali di Iside", "desc": "All'inizio di ogni stanza hai uno scudo che assorbe %d danni.", "values": [10, 15, 20]},
 	"iside_tears": {"god": "iside", "name": "Lacrime di Iside", "desc": "Tutte le cure ti curano il %d%% in più.", "values": [20, 30, 40]},
@@ -142,12 +142,33 @@ static func available_now(id: String) -> bool:
 	return not NEEDS_SEKHEM.has(id) or Meta.sekhem_unlocked
 
 
+## Doni che funzionano solo insieme ad altri: compaiono soltanto se ne possiedi almeno uno.
+const REQUIRES := {
+	"sobek_river": ["sobek_bite", "sobek_tide"],
+	"duo_ra_sekhmet": ["ra_burn", "ra_dawn", "ra_eye", "ra_heavy"],
+	"duo_sekhmet_bastet": ["bastet_claws", "bastet_heavy"],
+	"duo_thoth_bastet": ["bastet_eyes", "bastet_heavy"],
+	"duo_sobek_iside": ["iside_wings"],
+}
+
+
+static func requirements_met(id: String, owned: Dictionary) -> bool:
+	if not REQUIRES.has(id):
+		return true
+	for r in REQUIRES[id]:
+		if owned.has(r):
+			return true
+	return false
+
+
 static func offers(god: String, owned: Dictionary) -> Array:
 	var fresh := []
 	var ups := []
 	var heavy := ""
 	for id in ALL:
 		if ALL[id]["god"] != god or not available_now(id):
+			continue
+		if not owned.has(id) and not requirements_met(id, owned):
 			continue
 		if is_heavy(id):
 			if not owned.has(id):
@@ -214,7 +235,7 @@ static func has_god(owned: Dictionary, god: String) -> bool:
 static func duos_for(god: String, owned: Dictionary) -> Array:
 	var out := []
 	for id in ALL:
-		if not is_duo(id) or owned.has(id):
+		if not is_duo(id) or owned.has(id) or not requirements_met(id, owned):
 			continue
 		var gods: Array = ALL[id]["gods"]
 		if not gods.has(god):

@@ -97,6 +97,15 @@ func _build() -> void:
 		Run.from_armory = false
 		player.position = Vector2(WALL + 26.0, ARMORY_Y)
 	world.add_child(player)
+	# il Cortile di Neith si è appena aperto: una freccia lo indica finché non ci entri a prendere la lancia
+	if Meta.serpent_wins > 0 and not Meta.weapons_unlocked.has("lancia"):
+		var mark := Node2D.new()
+		mark.position = Vector2(WALL + 4.0, ARMORY_Y)
+		world.add_child(mark)
+		var arrow := NewRoomArrow.new()
+		arrow.target = mark
+		$UI.add_child(arrow)
+		$UI.move_child(arrow, 0)
 	var cam: Camera2D = player.get_node("Camera")
 	cam.limit_left = 0
 	cam.limit_top = 0
@@ -957,3 +966,56 @@ class HubLight extends Node2D:
 		var bottom_c := Color(0.35, 0.85, 0.8, 0.0)
 		var pts := PackedVector2Array([Vector2(-18, 0), Vector2(18, 0), Vector2(70, 170), Vector2(-70, 170)])
 		draw_polygon(pts, PackedColorArray([top_c, top_c, bottom_c, bottom_c]))
+
+
+## Freccia che indica una stanza appena aperta (il Cortile di Neith). Se la porta è sullo
+## schermo la freccia le danza accanto; se è fuori, resta sul bordo e punta verso di lei.
+class NewRoomArrow extends Control:
+	var target: Node2D
+
+	func _ready() -> void:
+		set_anchors_preset(Control.PRESET_FULL_RECT)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _process(_delta: float) -> void:
+		queue_redraw()
+
+	func _draw() -> void:
+		if not is_instance_valid(target):
+			return
+		var vs := get_viewport().get_visible_rect().size
+		var u: float = Fx.ui
+		var sp: Vector2 = target.get_global_transform_with_canvas().origin
+		var bob := sin(Time.get_ticks_msec() / 160.0) * 4.0 * u
+		var col := Color(0.98, 0.8, 0.32)
+		var pos: Vector2
+		var a: float
+		if Rect2(Vector2.ZERO, vs).grow(-12.0).has_point(sp):
+			# sulla porta: la freccia sta a destra e punta a sinistra, verso l'ingresso
+			a = PI
+			pos = sp + Vector2(34.0 * u + bob, 0)
+		else:
+			var center := vs / 2.0
+			var dir := (sp - center).normalized()
+			var m := 26.0 * u
+			var inner := Rect2(Vector2(m, m + 24.0 * u), vs - Vector2(m * 2.0, m * 2.0 + 24.0 * u))
+			var tx := INF if dir.x == 0.0 else ((inner.end.x if dir.x > 0.0 else inner.position.x) - center.x) / dir.x
+			var ty := INF if dir.y == 0.0 else ((inner.end.y if dir.y > 0.0 else inner.position.y) - center.y) / dir.y
+			a = dir.angle()
+			pos = center + dir * minf(tx, ty) + dir * bob
+		var r := 11.0 * u
+		var tip := pos + Vector2.from_angle(a) * r
+		var l := pos + Vector2.from_angle(a + 2.5) * r
+		var rr := pos + Vector2.from_angle(a - 2.5) * r
+		var back := pos - Vector2.from_angle(a) * r * 0.3
+		draw_circle(pos, r + 4.0 * u, Color(0, 0, 0, 0.55))
+		draw_colored_polygon(PackedVector2Array([tip, l, back, rr]), col)
+		draw_polyline(PackedVector2Array([tip, l, back, rr, tip]), Color(1, 0.96, 0.85), 1.3)
+		var font := UiStyle.title_font()
+		var fs := Fx.fs(8)
+		var txt := "NUOVO · Cortile di Neith"
+		var tw := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var tp := pos + Vector2(-tw / 2.0, r + 14.0 * u)
+		tp.x = clampf(tp.x, 6.0, vs.x - tw - 6.0)
+		draw_string_outline(font, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 4, Color(0, 0, 0, 0.8))
+		draw_string(font, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
