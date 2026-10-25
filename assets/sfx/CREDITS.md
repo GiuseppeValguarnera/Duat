@@ -15,3 +15,6 @@ con `tools/convert_sfx.py`.
 Spuntoni, mummie (passi e carica), scorpioni, cobra e Serpente della Porta sono costruiti
 mescolando suoni Kenney CC0 (rallentati, filtrati, sovrapposti) con rumore sintetico generato
 da ffmpeg (sibili, rantoli, sabbia). Stessa licenza: CC0.
+
+Ritocco per gli altoparlanti dei telefoni: charge, orb, hurt, kill, roar e death hanno meno bassi e più
+medi (filtro e volume con ffmpeg), perché sul telefono erano quasi muti.
