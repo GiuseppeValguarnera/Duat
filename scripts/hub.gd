@@ -717,6 +717,23 @@ func _volume_sliders() -> void:
 		row.add_child(pct)
 		slider.value_changed.connect(_on_volume_slider.bind(c[0], pct))
 		slider.drag_ended.connect(func(_changed: bool) -> void: Meta.save())
+		# con tastiera e pad la barra scelta si riconosce dal nome in oro; uscendo si salva
+		slider.focus_entered.connect(func() -> void: name_label.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3)))
+		slider.focus_exited.connect(func() -> void:
+			name_label.add_theme_color_override("font_color", Color(0.95, 0.9, 0.78))
+			Meta.save())
+	# Con tastiera e pad su e giù scorrono le barre in ordine di lettura. Prima la seconda colonna
+	# non si raggiungeva (destra e sinistra cambiano il volume) e giù dall'ultima finiva su
+	# «Esci dal gioco». Su dalla prima barra si torna alla voce Volume; giù dall'ultima si resta.
+	var sliders := grid.find_children("*", "HSlider", true, false)
+	for i in range(sliders.size()):
+		var sl: HSlider = sliders[i]
+		var up: Control = sliders[i - 1] if i > 0 else option_buttons.get("audio", sl)
+		var down: Control = sliders[i + 1] if i < sliders.size() - 1 else sl
+		sl.focus_neighbor_top = sl.get_path_to(up)
+		sl.focus_previous = sl.focus_neighbor_top
+		sl.focus_neighbor_bottom = sl.get_path_to(down)
+		sl.focus_next = sl.focus_neighbor_bottom
 
 
 func _on_volume_slider(value: float, category: String, pct: Label) -> void:
