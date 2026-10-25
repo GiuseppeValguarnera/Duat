@@ -348,9 +348,14 @@ func _decide(g, p) -> void:
 		for trap in get_tree().get_nodes_in_group("traps"):
 			if not trap.has_method("phase"):
 				continue
-			var near_trap: bool = pos.distance_to(trap.global_position) < 26.0
+			var tc: Vector2 = trap.global_position
+			if trap.has_method("centers"):
+				for c in trap.centers():
+					if pos.distance_to(c) < pos.distance_to(tc):
+						tc = c
+			var near_trap: bool = pos.distance_to(tc) < 26.0
 			if near_trap and (randf() < skill or (trap.phase() != "idle" and randf() < cfg["dodge"])):
-				move_dir = (move_dir + (pos - trap.global_position).normalized() * 1.5).normalized()
+				move_dir = (move_dir + (pos - tc).normalized() * 1.5).normalized()
 		if dist < 46.0 and (not (target.is_boss or target.miniboss) or want_range < 100.0):
 			want_attack = true
 		if dist < 300.0 and randf() < cfg["eye"]:

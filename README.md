@@ -132,6 +132,24 @@ Dalla terza stanza alcune mummie e alcuni sacerdoti sono **élite**: alone dorat
 
 Lo scatto le supera entrambe. A stanza ripulita si fermano.
 
+## Acqua e fuoco: le acque di Wernes
+
+La Prima Ora ha i suoi pericoli, gli stessi che si ritrovano contro Am-heh (`scripts/hazards.gd`, disposizione in `_place_elements` di `scripts/game.gd`):
+
+- **Pozze e canali d'acqua:** rallentano te e i nemici del 30% e spengono le fiamme; il fuoco non vi entra.
+- **Grate di fuoco:** file di tre grate che si arroventano per quasi un secondo e poi sputano fiamme (9 danni). Bruciano anche i nemici.
+- **Giare d'olio:** si rompono colpendole con l'arma o con l'Occhio. L'olio prende fuoco dopo 0,6 secondi (il tempo per allontanarsi) e brucia per 4 secondi; il fuoco accende le giare vicine, a catena. Sono uno strumento: rompile quando i nemici ci sono attorno.
+- Le **mummie**, fasciate di lino, prendono il 50% di danni in più dal fuoco.
+
+| Stanze | Cosa compare |
+| --- | --- |
+| 1-2 | al massimo una pozza |
+| 3-5 | acqua e giare d'olio, spuntoni come prima |
+| 6-8 | anche una grata di fuoco, uno spuntone in meno |
+| 9-10 | due grate di fuoco, due spuntoni in meno; a volte due specchi d'acqua |
+
+Gli spuntoni tornano protagonisti nel deserto di Sokar, la seconda regione. Da fare: un capitolo del Libro dei Morti che faccia lasciare Ka alle giare, come in Hades.
+
 ## Boss della Prima Ora: Am-heh, il Divoratore di Milioni
 
 Nel mito è un dio dalla testa di cane che vive in un lago di fuoco del Duat e divora le anime dei dannati (`scripts/amheh.gd`). Ha 1000 punti vita. L'arena ha **quattro pozze d'acqua**: rallentano (anche i nemici) e spengono le fiamme, e il fuoco non vi entra (`scripts/hazards.gd`).

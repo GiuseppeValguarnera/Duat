@@ -62,6 +62,8 @@ func _physics_process(delta: float) -> void:
 func _on_body_entered(body: Node) -> void:
 	if _done:
 		return
+	if body.is_in_group("breakables"):
+		body.smash()
 	if body.is_in_group("enemies"):
 		if _hit.has(body) or body.dead:
 			return

@@ -20,7 +20,7 @@ const ENEMIES := {
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "trappola": "una trappola"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -60,7 +60,8 @@ var doors: Array = []
 var finished := false
 var boss: Enemy = null
 var obstacles: Array = []             # rettangoli occupati da statue, bracieri, sarcofagi
-var traps_pos: Array = []             # posizioni delle lastre con spuntoni
+var traps_pos: Array = []             # posizioni delle lastre con spuntoni (e degli altri pericoli)
+var grates_here := 0                  # grate di fuoco nella stanza: tolgono altrettanti spuntoni
 var room_gen := 0                     # cambia a ogni stanza: annulla le comparse rimaste in sospeso
 var boss_bar: ColorRect
 var boss_fill: ColorRect
@@ -397,6 +398,9 @@ func start_room(reward: Dictionary) -> void:
 	for r in obstacles:
 		_solid(r)
 	traps_pos.clear()
+	grates_here = 0
+	if not boss_room and not calm:
+		_place_elements()
 	if not boss_room and not calm and Run.room >= TRAPS_FROM_ROOM - Weights.rank("sabbie"):
 		_place_traps()
 	queue_redraw()
@@ -1703,16 +1707,131 @@ func _spot_ok(p: Vector2) -> bool:
 	for tp in traps_pos:
 		if p.distance_to(tp) < 26.0:
 			return false
+	for off in [Vector2.ZERO, Vector2(18, 0), Vector2(-18, 0), Vector2(0, 18), Vector2(0, -18)]:
+		if Hazards.in_water(get_tree(), p + off):
+			return false
 	return true
+
+
+## Un punto del pavimento libero: lontano dalla ricompensa, dal punto di partenza e dalle porte.
+func _floor_ok(p: Vector2) -> bool:
+	var cx := ROOM.size.x / 2.0
+	var mid_y := (TOP + ROOM.size.y - WALL) / 2.0
+	if p.x < WALL + 20.0 or p.x > ROOM.size.x - WALL - 20.0 or p.y < TOP + 16.0 or p.y > ROOM.size.y - WALL - 16.0:
+		return false
+	if p.distance_to(Vector2(cx, mid_y + 20.0)) < 70.0:
+		return false
+	if p.distance_to(Vector2(cx, ROOM.size.y - WALL - 24.0)) < 100.0:
+		return false
+	if absf(p.x - cx) < 50.0 and p.y < TOP + 70.0:
+		return false
+	if absf(p.y - mid_y) < 60.0 and (p.x < WALL + 70.0 or p.x > ROOM.size.x - WALL - 70.0):
+		return false
+	return _spot_ok(p)
+
+
+## Le acque di Wernes nelle stanze della Prima Ora (vedi README, "Acqua e fuoco"):
+## stanze 1-2 al massimo una pozza; dalla 3 acqua e giare d'olio; dalla 6 le grate di fuoco,
+## che prendono il posto di altrettanti spuntoni.
+func _place_elements() -> void:
+	var r := Run.room
+	var n_water := (1 if randf() < 0.3 else 0) if r <= 2 else 1 + (1 if r >= 8 and randf() < 0.5 else 0)
+	for i in range(n_water):
+		_place_water(r >= 3 and randf() < 0.4)
+	if r >= 6:
+		var n_grates := 1 + (1 if r >= 9 else 0)
+		for i in range(n_grates):
+			if _place_grate():
+				grates_here += 1
+	if r >= 3:
+		for i in range(1 + (1 if randf() < 0.5 else 0)):
+			_place_jars()
+
+
+func _place_water(channel: bool) -> void:
+	for tries in range(40):
+		var c := Vector2(randf_range(WALL + 90.0, ROOM.size.x - WALL - 90.0), randf_range(TOP + 60.0, ROOM.size.y - WALL - 70.0))
+		var pool := Hazards.WaterPool.new()
+		var probe: Array = []
+		if channel:
+			var along := randf() < 0.65
+			pool.rect = Vector2(randf_range(150.0, 240.0), 30.0) if along else Vector2(30.0, randf_range(110.0, 170.0))
+			var h := pool.rect / 2.0
+			for k in range(7):
+				probe.append(c + Vector2(lerpf(-h.x, h.x, k / 6.0), 0) if along else c + Vector2(0, lerpf(-h.y, h.y, k / 6.0)))
+		else:
+			pool.radii = Vector2(randf_range(34.0, 46.0), randf_range(20.0, 26.0))
+			probe = [c, c + Vector2(pool.radii.x, 0), c - Vector2(pool.radii.x, 0), c + Vector2(0, pool.radii.y), c - Vector2(0, pool.radii.y)]
+		if not probe.all(func(q): return _floor_ok(q)):
+			pool.free()
+			continue
+		var near_pillar := false
+		for pl in pillars:
+			for q in probe:
+				if q.distance_to(pl) < 40.0:
+					near_pillar = true
+		if near_pillar:
+			pool.free()
+			continue
+		pool.position = c
+		world.add_child(pool)
+		return
+
+
+func _place_grate() -> bool:
+	for tries in range(40):
+		var gx := randi_range(2, int((ROOM.size.x - WALL * 2.0) / 32.0) - 3)
+		var gy := randi_range(1, int((ROOM.size.y - WALL - TOP) / 32.0) - 2)
+		var c := Vector2(WALL + 16.0 + gx * 32.0, TOP + 16.0 + gy * 32.0)
+		var dir := Vector2.RIGHT if randf() < 0.6 else Vector2.DOWN
+		var ok := true
+		var cs: Array = []
+		for i in range(3):
+			var q: Vector2 = c + dir * (i - 1) * Hazards.FireGrate.CELL
+			cs.append(q)
+			if not _floor_ok(q):
+				ok = false
+		if not ok:
+			continue
+		var g := Hazards.FireGrate.new()
+		g.dir = dir
+		g.cells = 3
+		g.t = randf() * 2.0
+		world.add_child(g)
+		g.position = c
+		traps_pos.append_array(cs)
+		return true
+	return false
+
+
+func _place_jars() -> void:
+	for tries in range(30):
+		var c := Vector2(randf_range(WALL + 40.0, ROOM.size.x - WALL - 40.0), randf_range(TOP + 30.0, ROOM.size.y - WALL - 30.0))
+		if not _floor_ok(c):
+			continue
+		var far := true
+		for g in get_tree().get_nodes_in_group("traps"):
+			if g is Hazards.FireGrate and g.near(c) < 56.0:
+				far = false
+		if not far:
+			continue
+		var n := randi_range(2, 3)
+		for k in range(n):
+			var j := Hazards.OilJar.new()
+			world.add_child(j)
+			j.position = c + Vector2((k - (n - 1) / 2.0) * 14.0, randf_range(-4.0, 4.0))
+		traps_pos.append(c)
+		return
 
 
 ## Trappole da piramide: lastre con spuntoni e, più avanti, feritoie che sparano dardi.
 func _place_traps() -> void:
 	var cx := ROOM.size.x / 2.0
 	var mid_y := (TOP + ROOM.size.y - WALL) / 2.0
-	var spikes := clampi(Run.room, 2, 4) + 2 * Weights.rank("sabbie")
+	var spikes := maxi(1, clampi(Run.room, 2, 4) - grates_here) + 2 * Weights.rank("sabbie")
 	var tries := 0
-	while traps_pos.size() < spikes and tries < 80:
+	var placed := 0
+	while placed < spikes and tries < 80:
 		tries += 1
 		var gx := randi_range(1, int((ROOM.size.x - WALL * 2.0) / 32.0) - 2)
 		var gy := randi_range(1, int((ROOM.size.y - WALL - TOP) / 32.0) - 2)
@@ -1728,6 +1847,7 @@ func _place_traps() -> void:
 		if not _spot_ok(p):
 			continue
 		traps_pos.append(p)
+		placed += 1
 		var s := Traps.Spikes.new()
 		s.t = randf() * 2.0
 		world.add_child(s)

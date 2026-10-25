@@ -61,6 +61,10 @@ static func _reaction() -> Array:
 				options.append("Il Serpente della Porta. Ogni porta del Duat ha il suo guardiano, e nessuno lascia passare chi esita. Quando sprofonda nella sabbia, guarda il cerchio: è lì che tornerà.")
 			"scorpion":
 				options.append("Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati.")
+			"grata":
+				options.append("Una grata di fuoco. Nelle acque di Wernes il fuoco di Am-heh corre anche sotto le pietre. Quando le sbarre si arroventano, non aspettare di capire perché.")
+			"olio":
+				options.append("L'olio in fiamme. Nelle tombe le giare custodivano l'olio per le lampade del morto. Tu le usi per altro. Anche il fuoco, però, non sceglie chi bruciare.")
 			"amheh", "amheh_fuoco", "amheh_marea":
 				options.append("Am-heh. Il Libro lo chiama 'colui che divora milioni', e dice che vive in un lago di fuoco nel Duat. Nessun morto ci si bagna due volte. Tu sì, a quanto pare.")
 			"cobra":

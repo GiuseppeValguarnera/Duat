@@ -325,6 +325,11 @@ func _swing() -> void:
 		leap_ready = false
 
 	var hit_any := false
+	# giare d'olio a portata di lama
+	for j in get_tree().get_nodes_in_group("breakables"):
+		var tj: Vector2 = j.global_position - global_position
+		if not j.broken and tj.length() < swing_range + 8.0 and (absf(swing_dir.angle_to(tj)) <= swing_arc * 0.5 or tj.length() < 14.0):
+			j.smash()
 	for e in get_tree().get_nodes_in_group("enemies"):
 		if e.dead:
 			continue
