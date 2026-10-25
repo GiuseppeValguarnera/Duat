@@ -664,6 +664,7 @@ ATTIVA,ATTIVA,ON
 :  aggiornato,:  aggiornato,
 :  controllo...,:  controllo...,
 Ora subisci il %d%% di danni in meno.,Ora subisci il %d%% di danni in meno.,You now take %d%% less damage.
+HSlider,HSlider,
 Versione installata: %s,Versione installata: %s,
 "
 Ultima versione pubblicata: %s","
@@ -688,7 +689,6 @@ Sto controllando se c'è una versione nuova...",
 Non riesco a controllare: forse il telefono non è connesso. Premi per riprovare.","
 
 Non riesco a controllare: forse il telefono non è connesso. Premi per riprovare.",
-HSlider,HSlider,
 Aggiornamento in corso... il gioco si riapre da solo tra un momento.,Aggiornamento in corso... il gioco si riapre da solo tra un momento.,
 Controllo in corso...,Controllo in corso...,
 nessuno,nessuno,none
