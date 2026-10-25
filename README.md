@@ -43,6 +43,8 @@ Per aggiornare la versione web dopo una modifica: `tools/deploy_web.sh /percorso
 | Pausa (nella Sala: opzioni) | Esc o P | Start |
 | Torna alla Sala (dopo morte o vittoria) | R | Start |
 
+**Lo scatto ha due cariche:** due scatti di fila, poi una pausa di 1,2 secondi dall'ultimo prima che tornino tutte e due (i doni e il capitolo 56 accorciano la pausa, mai sotto 0,6 secondi). Le cariche sono i due puntini sotto i piedi del personaggio: pieni = pronte, si riempiono man mano durante la pausa, e un piccolo lampo avvisa quando tornano. Prima si poteva scattare ogni mezzo secondo: nessun attacco faceva paura.
+
 ## La Sala del Giudizio
 
 Il gioco parte qui, e qui torni dopo ogni discesa.
@@ -107,7 +109,7 @@ Dalla Sala del Giudizio, una porta nella parete ovest (con lo scudo e le frecce 
 2. Ogni stanza ha due ondate di nemici (nelle prime due un po' più piccole; sacerdoti e trappole dalla terza). La prima stanza non ha ricompensa: i doni degli dèi arrivano dalle stanze che scegli tu.
 3. Quando la ripulisci compare la ricompensa: camminaci sopra per prenderla. Il Ka arriva soprattutto dai tesori: scarabei 0, mummie 1, sacerdoti 2.
 4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura. Le porte fuori dallo schermo hanno una **freccia sul bordo** con il colore e il nome della ricompensa.
-5. **Stanza 5: il Serpente della Porta.** Nel Libro delle Porte ogni porta del Duat è custodita da un serpente. È il guardiano a metà discesa: morde in affondo, sputa ventagli di veleno e si inabissa nella sabbia per riemergere sotto di te (un cerchio rosso avvisa dove). Sotto metà vita si infuria: più rapido, ventaglio più largo e **affondi doppi**. Combatte da solo (340 vita: più del vecchio 260, perché chi gioca davvero lo batteva al primo tentativo). Batterlo dà un dono che sale **di due livelli** invece di uno.
+5. **Stanza 5: il Serpente della Porta.** Nel Libro delle Porte ogni porta del Duat è custodita da un serpente. È il guardiano a metà discesa: morde in affondo, sputa ventagli di veleno e si inabissa nella sabbia per riemergere sotto di te (un cerchio rosso avvisa dove). Sotto metà vita si infuria: più rapido, ventaglio più largo e **affondi doppi**. Combatte da solo (340 vita: più del vecchio 260, perché chi gioca davvero lo batteva al primo tentativo). Sulle pareti della sua arena ci sono quattro **statue dell'ureo**, il cobra che sputa fuoco e proteggeva il faraone: a turno una si accende (occhi rossi e una fila di braci sul pavimento, per quasi un secondo) e sputa una lingua di fuoco attraverso la stanza, fino alla prima colonna. Brucia te (9), ma anche il Serpente (26) e i suoi scarabei, se non è sottoterra: attirarlo sulla riga che sta per prendere fuoco è una strategia, ripararsi dietro una colonna un'altra. Quando si infuria le statue sputano più spesso (`Hazards.UraeusStatues`). Batterlo dà un dono che sale **di due livelli** invece di uno.
 6. **Il Traghettatore** (Mahaf, dal capitolo 99 del Libro dei Morti): è una delle porte, ma solo nella stanza **subito prima del Serpente** (stanza 4) e **subito prima di Am-heh** (stanza 10). Vende Acqua del Nilo (20 Ka), un'offerta agli dèi (40 Ka) e l'Inchiostro di Thoth, che alza di livello un tuo dono (30 Ka). Si spende il Ka raccolto in questa discesa, e quello speso non torna a casa: più forti ora o capitoli dopo.
 7. Dalla stanza 6 arrivano due nemici nuovi: lo **scorpione di Serket** e il **cobra**.
 8. Prima dell'ultima stanza una delle porte è sempre l'**Acqua del Nilo**. Dopo la decima stanza si apre il cancello di **Am-heh**, il boss della Prima Ora. I nemici hanno il 6% di vita in più a ogni stanza.
@@ -115,6 +117,12 @@ Dalla Sala del Giudizio, una porta nella parete ovest (con lo scudo e le frecce 
 ## Il serdab: la stanza segreta
 
 Nelle tombe egizie il *serdab* era una stanzetta murata, senza porta, che custodiva la statua del Ka del defunto: gli dèi la guardavano da una fessura. Nella discesa, ogni tanto (al massimo una volta a discesa, dalla seconda stanza, mai nelle stanze del Serpente, del Traghettatore, di Set e del boss; in circa 2 discese su 3), quando ripulisci una stanza un tratto del muro in alto ha una **crepa** con un geroglifico storto, e se ti avvicini cade un filo di polvere. Tre colpi d'arma e il muro crolla. Dentro: buio, pareti piene di geroglifici, la statua del Ka con le braccia alzate e un'iscrizione (formule d'offerta e maledizioni come quelle delle tombe vere, sul re in generale), un po' di Ka (30-45) e una volta su due un cuore che cura 10. Niente nemici e niente trappole. Si esce dallo stesso buco e si prosegue (`scripts/serdab.gd`; per le prove `DUAT_SERDAB=always`).
+
+## Stanze e presentazione dei boss
+
+Le stanze normali sono **672×416**, quelle del Serpente e del boss restano **800×480**: sul telefono si vede quasi tutta la stanza e i nemici non arrivano da fuori schermo, mentre lo scontro con il boss si sente più grande (`ROOM_SMALL` / `ROOM_BIG` in `scripts/game.gd`; per le prove `DUAT_BIGROOMS=1` rimette tutte le stanze grandi).
+
+Quando compare un boss o il guardiano il gioco si ferma: la telecamera va su di lui, entrano due bande nere, il nome grande, il titolo e una riga di consiglio, con il ruggito; la musica parte in quel momento (prima la stanza è in silenzio). La prima volta dura circa 2 secondi, poi la metà; un tocco, un clic o un tasto la saltano (`scripts/ui/boss_intro.gd`, testi in `BOSS_INTROS`).
 
 ## Nemici
 

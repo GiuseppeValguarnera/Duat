@@ -261,7 +261,7 @@ func _decide(g, p) -> void:
 	tap_super = false
 	# 1. minacce
 	var threat := _threat(g, pos, enemies)
-	if threat != Vector2.ZERO and randf() < _dodge_chance(threat_kind) and p.dash_cd <= 0.0:
+	if threat != Vector2.ZERO and randf() < _dodge_chance(threat_kind) and p.can_dash():
 		move_dir = threat
 		dash_now = true
 		dodges += 1
@@ -304,7 +304,7 @@ func _decide(g, p) -> void:
 						best_pool = w
 				if best_pool != null:
 					move_dir = (best_pool.global_position - pos).normalized()
-					if pos.distance_to(best_pool.global_position) > 120.0 and p.dash_cd <= 0.0:
+					if pos.distance_to(best_pool.global_position) > 120.0 and p.can_dash():
 						dash_now = true
 			else:
 				move_dir = Vector2.ZERO
@@ -341,7 +341,7 @@ func _decide(g, p) -> void:
 				if rel.length() < 60.0:
 					away += rel.normalized()
 			move_dir = away.normalized()
-			if crowd >= 4 and p.dash_cd <= 0.0 and randf() < skill * 0.5:
+			if crowd >= 4 and p.can_dash() and randf() < skill * 0.5:
 				dash_now = true
 		# fuoco a terra: chi è bravo ci gira intorno
 		for f in get_tree().get_nodes_in_group("fire"):
@@ -406,6 +406,12 @@ func _decide(g, p) -> void:
 
 func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 	threat_kind = "colpo"
+	# statue dell'ureo: si esce dalla riga che sta per prendere fuoco
+	for u in get_tree().get_nodes_in_group("uraeus"):
+		var d: Array = u.danger()
+		if not d.is_empty() and absf(pos.y - d[0]) < 18.0 and pos.x >= d[1] - 6.0 and pos.x <= d[2] + 6.0:
+			threat_kind = "ureo"
+			return Vector2(0, 1.0 if pos.y >= d[0] else -1.0)
 	# sfere e dardi in arrivo
 	for c in g.world.get_children():
 		if c is Area2D and "direction" in c and "style" in c:

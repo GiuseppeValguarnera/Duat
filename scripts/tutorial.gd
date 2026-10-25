@@ -147,7 +147,7 @@ func next() -> void:
 			m.dodged.connect(func() -> void: dodges += 1)
 			dodges = 0
 			dashes = 0
-			say("Lo scatto", "Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Schivala 2 volte." % ctl("dash"))
+			say("Lo scatto", "Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte." % ctl("dash"))
 		3:
 			clear_targets()
 			for at in [Vector2(110, 320), Vector2(g.ROOM.size.x - 110.0, 320), Vector2(mid.x, 300)]:

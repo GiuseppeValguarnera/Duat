@@ -5,7 +5,11 @@ class_name Game
 ## Stanza 5: il Serpente della Porta (guardiano). A volte una porta porta dal Traghettatore,
 ## dove si spende il Ka della discesa.
 
-const ROOM := Rect2(0, 0, 800, 480)
+## Le stanze normali sono più piccole di quelle dei boss: sul telefono se ne vede quasi tutta
+## e i nemici non arrivano da fuori schermo. Boss e guardiano restano grandi.
+const ROOM_BIG := Rect2(0, 0, 800, 480)
+const ROOM_SMALL := Rect2(0, 0, 672, 416)
+var ROOM := ROOM_BIG                    ## la stanza di adesso (cambia in start_room)
 const WALL := 32.0
 const TOP := 64.0                     # il muro in alto è alto due file
 const PlayerScene := preload("res://scenes/player.tscn")
@@ -21,7 +25,7 @@ const ENEMIES := {
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -39,6 +43,13 @@ const BoonRing := preload("res://scripts/ui/boon_ring.gd")
 const DoorArrows := preload("res://scripts/ui/door_arrows.gd")
 const DeathScale := preload("res://scripts/ui/death_scale.gd")
 const ChoiceCard := preload("res://scripts/ui/choice_card.gd")
+const BossIntro := preload("res://scripts/ui/boss_intro.gd")
+## Nome, titolo e consiglio di ogni boss, per la presentazione; e la musica che parte con lei.
+const BOSS_INTROS := {
+	"amheh": ["AM-HEH", "Il Divoratore di Milioni", "Vive in un lago di fuoco. Il fuoco non entra nell'acqua", "boss", Color(1, 0.55, 0.2)],
+	"ammit": ["AMMIT", "La Divoratrice", "Divora i cuori che non superano il giudizio", "boss", Color(0.9, 0.35, 0.25)],
+	"serpent": ["IL SERPENTE DELLA PORTA", "Guardiano della quinta porta", "Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra", "elite", Color(0.5, 0.95, 0.45)],
+}
 const DecorScript := preload("res://scripts/room_decor.gd")
 const UshabtiScript := preload("res://scripts/ushabti.gd")
 const TRAPS_FROM_ROOM := 3            ## le trappole compaiono da questa stanza in poi
@@ -197,6 +208,7 @@ func start_room(reward: Dictionary) -> void:
 	pillars.clear()
 	var boss_room := Run.room > Run.ROOMS_PER_RUN
 	var kind: String = reward.get("kind", "none")
+	ROOM = ROOM_BIG if boss_room or kind == "guardian" or OS.get_environment("DUAT_BIGROOMS") != "" else ROOM_SMALL
 	var calm := kind == "guardian" or kind == "shop" or kind == "tutorial" or kind == "set"
 	Run.curse_paused = boss_room or kind == "guardian" or kind == "shop" or kind == "set"
 	shop_items.clear()
@@ -348,6 +360,29 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 			e.pillar_broken.connect(_on_pillar_broken)
 		if "arena" in e:
 			e.arena = Rect2(WALL, TOP, ROOM.size.x - WALL * 2.0, ROOM.size.y - WALL - TOP)
+	if (e.is_boss or e.miniboss) and BOSS_INTROS.has(kind):
+		_boss_intro(e, kind)
+
+
+## La presentazione del boss (scripts/ui/boss_intro.gd): lunga la prima volta, corta dopo.
+func _boss_intro(e: Enemy, kind: String) -> void:
+	var info: Array = BOSS_INTROS[kind]
+	var first := not Meta.intros_seen.has(kind)
+	if first:
+		Meta.intros_seen.append(kind)
+		Meta.save()
+	Music.play(info[3])
+	Sfx.play("roar", 0.0)
+	var cam: Camera2D = player.get_node("Camera") if player != null and is_instance_valid(player) else null
+	var to_boss: Vector2 = (e.global_position - player.global_position) * 0.8 if cam != null else Vector2.ZERO
+	var intro := BossIntro.new()
+	intro.setup(cam, to_boss, info[0], info[1], info[2], info[4], first)
+	# la barra della vita del boss arriva a presentazione finita (prima si sovrapponeva al nome)
+	boss_bar.visible = false
+	intro.finished.connect(func() -> void:
+		if boss != null and is_instance_valid(boss) and not boss.dead:
+			boss_bar.visible = true)
+	add_child(intro)
 
 
 func _on_enemy_killed(e: Enemy) -> void:
@@ -391,7 +426,7 @@ func _maybe_serdab() -> void:
 	serdab_found = true
 	var s := SerdabScript.new()
 	# tra due torce, lontano dalla porta nord e dalle statue di Anubi
-	s.setup(self, [177.0, 627.0].pick_random())
+	s.setup(self, [WALL + 145.0, ROOM.size.x - WALL - 145.0].pick_random())
 	world.add_child(s)
 	# sotto il personaggio e i nemici, sopra il pavimento e le pareti dipinte
 	for i in range(world.get_child_count()):
@@ -1224,16 +1259,14 @@ func _death_panel(layer: CanvasLayer, where: String, killer: String, summary: St
 # ---------------------------------------------------------------- boss
 
 func _start_boss() -> void:
-	Music.play("boss")
+	# silenzio finché il boss non si presenta: la musica parte con lui (_boss_intro)
+	Music.stop()
 	boss_fill.color = Color(0.85, 0.2, 0.15)
-	Sfx.play("roar", 0.0)
 	if BOSS_KIND == "amheh":
 		boss_name.text = "AM-HEH, IL DIVORATORE DI MILIONI"
 		boss_fill.color = Color(0.95, 0.45, 0.1)
-		_banner("Am-heh, il Divoratore di Milioni", "Vive in un lago di fuoco. Il fuoco non entra nell'acqua", Color(1, 0.55, 0.2))
 	else:
 		boss_name.text = "AMMIT, LA DIVORATRICE"
-		_banner("Ammit, la Divoratrice", "Divora i cuori che non superano il giudizio", Color(0.9, 0.35, 0.25))
 	boss_bar.visible = true
 	boss_fill.size.x = boss_bar.size.x
 	spawning += 1
@@ -1242,9 +1275,15 @@ func _start_boss() -> void:
 
 ## Stanza 5: il Serpente della Porta.
 func _start_guardian() -> void:
-	Music.play("elite")
-	Sfx.play("roar", 0.15)
-	_banner("Il Serpente della Porta", "Ogni porta del Duat ha il suo guardiano", Color(0.5, 0.95, 0.45))
+	Music.stop()
+	# le statue dell'ureo sulle pareti (Hazards.UraeusStatues), sopra le pareti dipinte
+	var ur := Hazards.UraeusStatues.new()
+	ur.setup(ROOM, WALL, TOP, pillars)
+	world.add_child(ur)
+	for i in range(world.get_child_count()):
+		if world.get_child(i).get_script() == DecorScript:
+			world.move_child(ur, i + 1)
+			break
 	boss_name.text = "IL SERPENTE DELLA PORTA"
 	boss_fill.color = Color(0.35, 0.8, 0.3)
 	boss_bar.visible = true

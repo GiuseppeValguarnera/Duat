@@ -21,7 +21,11 @@ const PuddleScript := preload("res://scripts/puddle.gd")
 @export_group("Scatto")
 @export var dash_speed := 430.0
 @export var dash_time := 0.16
-@export var dash_cooldown := 0.55
+## Lo scatto ha due cariche: dopo l'ultimo scatto, passata questa pausa, tornano tutte e due.
+## Così si scatta due volte per uscire dai guai, ma poi si resta scoperti per un momento.
+@export var dash_cooldown := 1.2
+const DASH_CHARGES := 2
+const DASH_GAP := 0.08                  ## tra uno scatto e l'altro della stessa coppia
 
 @export_group("Khopesh")
 @export var attack_damage := 12.0
@@ -64,7 +68,10 @@ var facing := Vector2.RIGHT
 var aim := Vector2.RIGHT
 
 var dash_t := 0.0
-var dash_cd := 0.0
+var dash_cd := 0.0                     # pausa prima che le cariche tornino
+var dash_charges := DASH_CHARGES
+var dash_gap_t := 0.0
+var dash_ready_t := 0.0                # lampo quando le cariche tornano
 var dash_dir := Vector2.ZERO
 var dash_hit := {}
 var leap_ready := false                # Balzo della Leonessa: il colpo dopo lo scatto
@@ -111,6 +118,15 @@ func dash_cd_max() -> float:
 	return maxf(Run.MIN_DASH_CD, dash_cooldown * Run.dash_cooldown_mult())
 
 
+func can_dash() -> bool:
+	return dash_charges > 0 and dash_t <= 0.0 and dash_gap_t <= 0.0
+
+
+## Le cariche sono tornate: un piccolo lampo ai piedi, così lo senti senza guardare.
+func _dash_ready_fx() -> void:
+	dash_ready_t = 0.25
+
+
 func heal(amount: float) -> void:
 	if dead or amount <= 0.0:
 		return
@@ -132,7 +148,7 @@ func _physics_process(delta: float) -> void:
 		facing = move.normalized()
 	_update_aim(move.length() > 0.15)
 
-	if Input.is_action_just_pressed("dash") and dash_cd <= 0.0 and dash_t <= 0.0:
+	if Input.is_action_just_pressed("dash") and can_dash():
 		_start_dash(move)
 	if Input.is_action_pressed("attack") and atk_cd <= 0.0 and dash_t <= 0.0 and not Run.in_hub:
 		_swing()
@@ -169,7 +185,15 @@ func _tick(delta: float) -> void:
 	dash_t = maxf(0.0, dash_t - delta)
 	if dash_ending:
 		_dash_ended()
-	dash_cd = maxf(0.0, dash_cd - delta)
+	dash_gap_t = maxf(0.0, dash_gap_t - delta)
+	dash_ready_t = maxf(0.0, dash_ready_t - delta)
+	if dash_charges < DASH_CHARGES and dash_t <= 0.0:
+		dash_cd -= delta
+		if dash_cd <= 0.0:
+			dash_cd = 0.0
+			dash_charges = DASH_CHARGES
+			if not Run.in_hub:
+				_dash_ready_fx()
 	invuln_t = maxf(0.0, invuln_t - delta)
 	flash_t = maxf(0.0, flash_t - delta)
 	atk_t = maxf(0.0, atk_t - delta)
@@ -241,7 +265,9 @@ func _assisted(dir: Vector2, max_dist: float) -> Vector2:
 func _start_dash(move: Vector2) -> void:
 	dash_dir = move.normalized() if move.length() > 0.15 else facing
 	dash_t = dash_time
-	dash_cd = dash_cd_max()
+	dash_charges -= 1
+	dash_gap_t = dash_time + DASH_GAP
+	dash_cd = dash_cd_max()          # la pausa riparte da ogni scatto: conta dall'ultimo
 	invuln_t = maxf(invuln_t, dash_time + 0.05)
 	knock = Vector2.ZERO
 	dash_hit.clear()
@@ -550,6 +576,25 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 # ---------------------------------------------------------------- disegno provvisorio
 # Forme semplici al posto degli sprite: servono solo a provare il combattimento.
 
+## Le cariche dello scatto: due puntini sotto i piedi. Pieni = pronte, vuoti = in ricarica
+## (si riempiono man mano che passa la pausa). Nella Sala non servono.
+func _draw_dash_pips() -> void:
+	if Run.in_hub:
+		return
+	var full := Color(0.95, 0.88, 0.62, 0.9)
+	var empty := Color(0.1, 0.08, 0.06, 0.55)
+	var fill := 1.0 - dash_cd / maxf(0.01, dash_cd_max()) if dash_charges < DASH_CHARGES else 1.0
+	for i in range(DASH_CHARGES):
+		var at := Vector2((i - (DASH_CHARGES - 1) / 2.0) * 7.0, 7.5)
+		draw_circle(at, 2.4, empty)
+		if i < dash_charges:
+			draw_circle(at, 1.9, full)
+		else:
+			draw_arc(at, 2.0, -PI / 2.0, -PI / 2.0 + TAU * fill, 10, Color(full, 0.6), 1.0)
+	if dash_ready_t > 0.0:
+		draw_arc(Vector2(0, 7.5), 9.0 - dash_ready_t * 16.0, 0.0, TAU, 16, Color(1, 0.9, 0.6, dash_ready_t * 3.0), 1.2)
+
+
 func _draw() -> void:
 	if dead:
 		return
@@ -561,6 +606,7 @@ func _draw() -> void:
 	draw_circle(Vector2.ZERO, 9.0, Color(0, 0, 0, 0.35))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
+	_draw_dash_pips()
 	if shield > 0.0:
 		draw_arc(Vector2(0, -12), 15.0, 0.0, TAU, 28, Color(Boons.god_color("iside"), 0.7), 1.5)
 	if divine_t > 0.0:

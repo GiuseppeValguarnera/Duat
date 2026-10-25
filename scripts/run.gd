@@ -7,7 +7,7 @@ signal blessing_granted(id: String)
 
 const ROOMS_PER_RUN := 10             ## stanze della Prima Ora; poi c'è la stanza del boss
 const GUARDIAN_ROOM := 5              ## a metà discesa: il Serpente della Porta
-const MIN_DASH_CD := 0.35             ## lo scatto non si ricarica mai più in fretta di così
+const MIN_DASH_CD := 0.6              ## la pausa dello scatto non scende mai sotto questa, con tutti i doni
 const SEKHEM_MAX := 100.0
 
 var max_hp := 60.0
