@@ -48,6 +48,11 @@ var shop_buys := []
 var force_anubi := ""
 var anubi_done := false
 var force_god := ""
+# --- apprendimento (DUAT_BRAIN): il tester ricorda le discese precedenti
+var brain := {}
+var brain_path := ""
+var threat_kind := ""
+var base_dodge := 0.5
 
 
 func _ready() -> void:
@@ -83,6 +88,81 @@ func _ready() -> void:
 	force_god = OS.get_environment("DUAT_GOD")
 	var s := OS.get_environment("DUAT_SEED")
 	seed(int(s) if s != "" else 1)
+	brain_path = OS.get_environment("DUAT_BRAIN")
+	if brain_path != "" and FileAccess.file_exists(brain_path):
+		var parsed = JSON.parse_string(FileAccess.get_file_as_string(brain_path))
+		if parsed is Dictionary:
+			brain = parsed
+	if brain_path != "":
+		_learn_apply()
+		_hub_shopping()
+
+
+## L'esperienza cambia il modo di giocare: riflessi e mira migliorano con la pratica (fino a un
+## limite personale), la lettura dei boss e delle trappole cresce, e ogni nemico che ti ha
+## colpito spesso viene schivato meglio.
+func _learn_apply() -> void:
+	var runs := float(brain.get("runs", 0))
+	var lr := float(cfg.get("learn", 1.0))
+	var k := pow(0.965, runs * lr)
+	cfg["reaction"] = maxf(float(cfg.get("reaction_floor", 0.07)), float(cfg["reaction"]) * k)
+	cfg["aim_err"] = maxf(2.0, float(cfg["aim_err"]) * k)
+	cfg["skill"] = minf(float(cfg.get("skill_cap", 1.0)), float(cfg["skill"]) + 0.035 * lr * runs)
+	cfg["dodge"] = minf(float(cfg.get("dodge_cap", 0.9)), float(cfg["dodge"]) + 0.012 * lr * runs)
+	cfg["panic"] = float(cfg.get("panic", 0.0)) * k
+	base_dodge = cfg["dodge"]
+	# soglia di cura: chi muore spesso con poca vita impara a curarsi prima
+	cfg["heal"] = clampf(float(cfg["heal"]) + float(brain.get("heal_shift", 0.0)), 0.0, 0.95)
+
+
+func _dodge_chance(kind: String) -> float:
+	var hits: Dictionary = brain.get("hits", {})
+	var lr := float(cfg.get("learn", 1.0))
+	var bonus := 0.05 * lr * log(1.0 + float(hits.get(kind, 0)) / 40.0)
+	return minf(float(cfg.get("dodge_cap", 0.9)) + 0.03, base_dodge + bonus)
+
+
+## Prima della discesa, nella Sala: compra capitoli e livelli con il Ka custodito, sceglie quali
+## portare, compra posti con le Lacrime e, chi cerca la sfida, posa i pesi sulla bilancia.
+func _hub_shopping() -> void:
+	var pref: Array = cfg.get("chapters", ["c17", "c30", "c125", "c89", "c6", "c151", "c99", "c110", "c56", "c42", "c154", "c94", "c72"])
+	var bought := []
+	for _i in range(40):
+		var best := ""
+		var best_cost := 99999
+		for id in pref:
+			if not Chapters.ALL.has(id):
+				continue
+			var c := Chapters.next_cost(id)
+			if c[0] < 0 or c[0] > Meta.ka_bank or c[1] > Meta.tears:
+				continue
+			# prima i capitoli nuovi in cima alle preferenze, poi i livelli
+			var rank := pref.find(id) * 10 + Chapters.level(id) * 60
+			if rank < best_cost:
+				best_cost = rank
+				best = id
+		if best == "":
+			break
+		if Chapters.buy(best):
+			bought.append(best)
+	if Meta.tears >= Chapters.slot_cost() and Chapters.slot_cost() > 0 and randf() < 0.8:
+		Chapters.buy_slot()
+	Meta.chapters_equipped.clear()
+	for id in pref:
+		if Chapters.is_unlocked(id) and Meta.chapters_equipped.size() < Chapters.slots():
+			Meta.chapters_equipped.append(id)
+	if Weights.unlocked() and float(cfg.get("challenge", 0.0)) > 0.0:
+		var want := mini(int(Meta.ammit_wins * float(cfg["challenge"])), 6)
+		Meta.weights.clear()
+		var ids := Weights.ALL.keys()
+		var i := 0
+		while Weights.total() < want and i < 30:
+			var id: String = ids[i % ids.size()]
+			if int(Meta.weights.get(id, 0)) < int(Weights.ALL[id]["max"]):
+				Meta.weights[id] = int(Meta.weights.get(id, 0)) + 1
+			i += 1
+	Meta.save()
+	brain["last_bought"] = bought
 
 
 func _process(delta: float) -> void:
@@ -169,7 +249,7 @@ func _decide(g, p) -> void:
 	tap_super = false
 	# 1. minacce
 	var threat := _threat(g, pos, enemies)
-	if threat != Vector2.ZERO and randf() < cfg["dodge"] and p.dash_cd <= 0.0:
+	if threat != Vector2.ZERO and randf() < _dodge_chance(threat_kind) and p.dash_cd <= 0.0:
 		move_dir = threat
 		dash_now = true
 		dodges += 1
@@ -262,6 +342,7 @@ func _decide(g, p) -> void:
 
 
 func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
+	threat_kind = "colpo"
 	# sfere e dardi in arrivo
 	for c in g.world.get_children():
 		if c is Area2D and "direction" in c and "style" in c:
@@ -275,15 +356,19 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 		var rel: Vector2 = pos - e.global_position
 		var d := rel.length()
 		if "lunge_dir" in e and e.state == "windup" and d < 90.0 and e.st < 0.25:
+			threat_kind = "mummy"
 			return e.lunge_dir.orthogonal()
 		if "sting_dir" in e and e.state == "windup" and d < 48.0 and e.st < 0.25:
+			threat_kind = "scorpion"
 			return rel.normalized()
 		if "strike_speed" in e:
+			threat_kind = "serpent"
 			if e.state == "windup" and e.st < 0.3 and absf(rel.normalized().dot(e.aim.orthogonal())) < 0.4:
 				return e.aim.orthogonal()
 			if e.state == "warn" and d < e.erupt_radius + 12.0:
 				return rel.normalized() if rel != Vector2.ZERO else Vector2.RIGHT
 		if e.is_boss:
+			threat_kind = "ammit"
 			if e.state == "windup" and e.st < 0.3 and absf(rel.normalized().dot(e.charge_dir.orthogonal())) < 0.35:
 				return e.charge_dir.orthogonal()
 			if e.state == "bite" and e.st < 0.25 and d < 75.0:
@@ -356,15 +441,32 @@ func _menu(g) -> void:
 	best.pressed.emit()
 
 
+func _boon_id(name: String) -> String:
+	for id in Boons.ALL:
+		if Boons.ALL[id]["name"] == name:
+			return id
+	return name
+
+
 func _card_text(b: Button) -> String:
 	return str(b.get_meta("text", b.text))
 
 
 func _score_card(text: String) -> float:
 	var pick: String = cfg["pick"]
-	var heavy := text.begins_with("DONO PESANTE")
 	var low := text.to_lower()
+	var heavy := low.begins_with("dono pesante")
 	var s := randf() * 0.5
+	# quello che l'esperienza gli ha insegnato su questo dono (media delle stanze raggiunte)
+	var lines := text.split("\n")
+	if lines.size() > 1 and brain.has("boons"):
+		var id := _boon_id(lines[1])
+		var rec = brain["boons"].get(id, null)
+		var avg := float(brain.get("avg_room", 4.0))
+		if rec is Array and rec[1] > 0:
+			s += float(cfg.get("learn", 1.0)) * clampf((float(rec[0]) / float(rec[1]) - avg) / 3.0, -1.5, 1.5)
+		elif randf() < 0.3:
+			s += 0.6                         # curiosità: prova i doni che non conosce
 	match pick:
 		"first":
 			return 0.0
@@ -496,8 +598,37 @@ func _finish(g, forced: String = "") -> void:
 		"boons": Run.boons, "blessings": Run.blessings, "curses_left": Run.curses, "choices": choices,
 		"rooms": rooms, "dodges": dodges, "shop": shop_buys, "killer": Run.last_hit,
 	}
+	data["meta"] = {"ka_bank": Meta.ka_bank, "tears": Meta.tears, "wins": Meta.ammit_wins, "chapters": Meta.chapter_levels, "equipped": Meta.chapters_equipped, "weight": Weights.total(), "bought": brain.get("last_bought", [])}
+	data["cfg_now"] = {"reaction": snappedf(float(cfg["reaction"]), 0.001), "dodge": snappedf(base_dodge, 0.01), "skill": snappedf(float(cfg["skill"]), 0.01), "aim_err": snappedf(float(cfg["aim_err"]), 0.1), "heal": snappedf(float(cfg["heal"]), 0.01)}
+	if brain_path != "":
+		_learn_store(data)
 	var f := FileAccess.open(out_path, FileAccess.READ_WRITE if FileAccess.file_exists(out_path) else FileAccess.WRITE)
 	f.seek_end()
 	f.store_line(JSON.stringify(data))
 	f.close()
 	get_tree().quit()
+
+
+
+## Dopo la discesa il tester ricorda: chi lo ha colpito, quali doni aveva e dove è arrivato.
+func _learn_store(data: Dictionary) -> void:
+	brain["runs"] = int(brain.get("runs", 0)) + 1
+	var hits: Dictionary = brain.get("hits", {})
+	for src in dmg:
+		var key: String = String(src).split("_")[0]
+		hits[key] = float(hits.get(key, 0.0)) + float(dmg[src])
+	brain["hits"] = hits
+	var reached: float = float(Run.room) + (1.0 if data["result"] == "win" else 0.0)
+	var boons: Dictionary = brain.get("boons", {})
+	for id in Run.boons:
+		var rec = boons.get(id, [0.0, 0])
+		boons[id] = [float(rec[0]) + reached, int(rec[1]) + 1]
+	brain["boons"] = boons
+	var n := float(brain["runs"])
+	brain["avg_room"] = (float(brain.get("avg_room", reached)) * (n - 1.0) + reached) / n
+	# morto con poca cura alle spalle: la prossima volta si cura un po' prima
+	if data["result"] == "death" and Run.room <= Run.ROOMS_PER_RUN:
+		brain["heal_shift"] = minf(0.4, float(brain.get("heal_shift", 0.0)) + 0.03 * float(cfg.get("learn", 1.0)))
+	var f := FileAccess.open(brain_path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(brain))
+	f.close()
