@@ -259,10 +259,14 @@ func _howl() -> void:
 	flood.warn = warn
 	flood.damage = flood_damage
 	get_parent().add_child(flood)
-	flood.setup()
-	# l'acqua va disegnata sopra la marea, così si vede dove ripararsi
+	# la marea va disegnata subito sopra il pavimento: sotto le pozze (si vede dove ripararsi)
+	# e sotto i personaggi
+	var idx := flood.get_index()
 	for w in get_tree().get_nodes_in_group("water"):
-		w.get_parent().move_child(w, -1)
+		if w.get_parent() == get_parent():
+			idx = mini(idx, w.get_index())
+	get_parent().move_child(flood, idx)
+	flood.setup()
 
 
 func _damage_mult() -> float:
