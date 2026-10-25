@@ -12,6 +12,13 @@ static func supported() -> bool:
 	return OS.has_feature("web")
 
 
+static func _js(expr: String) -> String:
+	if not supported():
+		return ""
+	var v = JavaScriptBridge.eval(expr, true)
+	return v if v is String else ""
+
+
 ## C'è una versione più nuova sul sito? (controllato al massimo ogni 5 secondi)
 static func available() -> bool:
 	if not supported():
@@ -19,9 +26,37 @@ static func available() -> bool:
 	var now := Time.get_ticks_msec()
 	if now - _checked_ms > 5000:
 		_checked_ms = now
-		var v = JavaScriptBridge.eval("window.duatUpdate || ''", true)
-		_cached = v is String and v != ""
+		_cached = _js("window.duatUpdate || ''") != ""
 	return _cached
+
+
+## "ok", "pending" (sta ancora controllando) o "error" (niente rete).
+static func check_state() -> String:
+	var s := _js("window.duatCheck || ''")
+	return s if s != "" else "error"
+
+
+## Chiede di nuovo al sito qual è l'ultima versione.
+static func recheck() -> void:
+	_checked_ms = -100000
+	_js("(window.duatCheckUpdate && window.duatCheckUpdate(), '')")
+
+
+static func current() -> String:
+	return pretty(_js("window.DUAT_BUILD || ''"))
+
+
+static func latest() -> String:
+	return pretty(_js("window.duatLatest || ''"))
+
+
+## Da "6133f22-20261025200258" a "25/10 ore 20:02". Il codice dopo il trattino è la data della pubblicazione.
+static func pretty(build: String) -> String:
+	var parts := build.split("-")
+	if parts.size() < 2 or parts[1].length() < 12:
+		return build if build != "" else "sconosciuta"
+	var d := parts[1]
+	return "%s/%s ore %s:%s" % [d.substr(6, 2), d.substr(4, 2), d.substr(8, 2), d.substr(10, 2)]
 
 
 ## Salva, lascia al browser il tempo di scrivere il salvataggio, poi scarica la versione nuova.

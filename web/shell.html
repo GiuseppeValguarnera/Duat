@@ -119,11 +119,18 @@ const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 // riapri. Il salvataggio (nel browser, IndexedDB) resta dov'è: l'app non viene cancellata.
 window.DUAT_BUILD = '__DUAT_BUILD__';
 window.duatUpdate = '';
+window.duatLatest = '';           // l'ultima versione pubblicata, letta da version.txt
+window.duatCheck = 'pending';     // 'pending' mentre controlla, 'ok', oppure 'error' (niente rete)
 window.duatCheckUpdate = function () {
-	fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then((r) => (r.ok ? r.text() : '')).then((v) => {
+	fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then((r) => {
+		if (!r.ok) throw new Error('version.txt ' + r.status);
+		return r.text();
+	}).then((v) => {
 		v = (v || '').trim();
+		window.duatLatest = v;
 		window.duatUpdate = (v !== '' && v !== window.DUAT_BUILD) ? v : '';
-	}).catch(() => {});
+		window.duatCheck = 'ok';
+	}).catch(() => { window.duatCheck = 'error'; });
 };
 window.duatDoUpdate = async function () {
 	try {

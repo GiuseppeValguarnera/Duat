@@ -26,6 +26,8 @@ var page_action: Button                 ## pulsante sulla pagina di destra (per 
 var page_action_cb := Callable()
 var papiri_entries: VBoxContainer
 var codex: Array = []
+var shown_option := ""                 # l'opzione mostrata sulla pagina di destra
+var update_label_state := ""           # com'era il controllo della versione quando le Opzioni sono state disegnate
 var t := 0.0
 
 @onready var world: Node2D = $World
@@ -163,6 +165,12 @@ func _process(delta: float) -> void:
 	queue_redraw()
 	if player == null:
 		return
+	# le Opzioni aperte si aggiornano da sole quando arriva la risposta sulla versione nuova
+	if book_kind == "opzioni" and Updater.supported() and int(t * 2.0) != int((t - delta) * 2.0):
+		if Updater.check_state() + str(Updater.available()) != update_label_state:
+			var keep := shown_option
+			_fill_options(keep)
+			_show_option(keep)
 	hud.text = "Sala del Giudizio\nKa custodito %d · Discese %d · Vittorie %d" % [Meta.ka_bank, Meta.runs, Meta.ammit_wins]
 	if Updater.available():
 		hud.text += "\nNuova versione disponibile: Opzioni (pausa), poi Aggiorna il gioco"
@@ -507,6 +515,7 @@ const OPTION_TEXT := {
 
 
 func _fill_options(focus_id: String = "") -> void:
+	update_label_state = Updater.check_state() + str(Updater.available())
 	var left := _frame("Opzioni", "Esc / Start / B per tornare alla Sala", 270)
 	var first: Button = null
 	var ids := ["feather", "shake", "hitstop", "autoaim", "tutorial", "vol", "music"]
@@ -527,7 +536,12 @@ func _fill_options(focus_id: String = "") -> void:
 			"music":
 				label += ":  %d%%" % roundi(Sfx.volumes.get("musica", 0.7) * 100.0)
 			"update":
-				label += ":  " + ("NUOVA VERSIONE" if Updater.available() else "ricarica")
+				if Updater.available():
+					label += ":  NUOVA VERSIONE"
+				elif Updater.check_state() == "ok":
+					label += ":  sei all'ultima versione"
+				else:
+					label += ":  controllo..."
 		var col := Color(0.62, 0.95, 0.7) if id == "feather" and Meta.feather else Color(0.95, 0.9, 0.78)
 		var b := _list_button(left, label, col)
 		b.pressed.connect(_on_option_pressed.bind(id))
@@ -539,11 +553,28 @@ func _fill_options(focus_id: String = "") -> void:
 
 
 func _show_option(id: String) -> void:
+	shown_option = id
 	page_title.text = OPTION_TEXT[id][0]
 	page_body.text = OPTION_TEXT[id][1]
 	page_lore.text = ""
 	if id == "feather" and Meta.feather:
 		page_lore.text = "Ora subisci il %d%% di danni in meno." % roundi(Run.feather_guard() * 100.0)
+	if id == "update":
+		page_lore.text = _update_status()
+
+
+## Le versioni, per la pagina di "Aggiorna il gioco".
+func _update_status() -> String:
+	var txt := "Versione installata: %s" % Updater.current()
+	match Updater.check_state():
+		"ok":
+			txt += "\nUltima versione pubblicata: %s" % Updater.latest()
+			txt += "\n\nC'è una versione nuova: premi per scaricarla." if Updater.available() else "\n\nHai già l'ultima versione."
+		"pending":
+			txt += "\n\nSto controllando se c'è una versione nuova..."
+		_:
+			txt += "\n\nNon riesco a controllare: forse il telefono non è connesso. Premi per riprovare."
+	return txt
 
 
 func _on_option_pressed(id: String) -> void:
@@ -565,8 +596,18 @@ func _on_option_pressed(id: String) -> void:
 			get_tree().quit()
 			return
 		"update":
-			page_body.text = "Aggiornamento in corso... il gioco si riapre da solo tra un momento."
-			await Updater.update_now(get_tree())
+			if Updater.available():
+				page_body.text = "Aggiornamento in corso... il gioco si riapre da solo tra un momento."
+				page_lore.text = ""
+				await Updater.update_now(get_tree())
+				return
+			# niente da scaricare: si controlla di nuovo e si mostra l'esito, senza ricaricare
+			Updater.recheck()
+			page_lore.text = "Controllo in corso..."
+			await get_tree().create_timer(1.5, true, false, true).timeout
+			if book_kind == "opzioni":
+				_fill_options("update")
+				_show_option("update")
 			return
 	Meta.save()
 	Sfx.play("ui", 0.0)

@@ -667,9 +667,36 @@ Opzioni,Opzioni,Options
 Esc / Start / B per tornare alla Sala,Esc / Start / B per tornare alla Sala,Esc / Start / B to return to the Hall
 ATTIVA,ATTIVA,ON
 "sì, alla prossima","sì, alla prossima","yes, next time"
-NUOVA VERSIONE,NUOVA VERSIONE,
+:  NUOVA VERSIONE,:  NUOVA VERSIONE,
+:  sei all'ultima versione,:  sei all'ultima versione,
+:  controllo...,:  controllo...,
 Ora subisci il %d%% di danni in meno.,Ora subisci il %d%% di danni in meno.,You now take %d%% less damage.
+Versione installata: %s,Versione installata: %s,
+"
+Ultima versione pubblicata: %s","
+Ultima versione pubblicata: %s",
+"
+
+C'è una versione nuova: premi per scaricarla.","
+
+C'è una versione nuova: premi per scaricarla.",
+"
+
+Hai già l'ultima versione.","
+
+Hai già l'ultima versione.",
+"
+
+Sto controllando se c'è una versione nuova...","
+
+Sto controllando se c'è una versione nuova...",
+"
+
+Non riesco a controllare: forse il telefono non è connesso. Premi per riprovare.","
+
+Non riesco a controllare: forse il telefono non è connesso. Premi per riprovare.",
 Aggiornamento in corso... il gioco si riapre da solo tra un momento.,Aggiornamento in corso... il gioco si riapre da solo tra un momento.,
+Controllo in corso...,Controllo in corso...,
 nessuno,nessuno,none
 Il Peso del Cuore,Il Peso del Cuore,The Weight of the Heart
 Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s,Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s,
@@ -895,7 +922,11 @@ Trappole,Trappole,Traps
 Ricompense e menu,Ricompense e menu,Rewards and menus
 KHOPESH,KHOPESH,
 Ruota il telefono in orizzontale,Ruota il telefono in orizzontale,Turn your phone sideways
-window.duatUpdate || '',window.duatUpdate || '',
+window.duatCheck || '',window.duatCheck || '',
+"(window.duatCheckUpdate && window.duatCheckUpdate(), '')","(window.duatCheckUpdate && window.duatCheckUpdate(), '')",
+window.DUAT_BUILD || '',window.DUAT_BUILD || '',
+window.duatLatest || '',window.duatLatest || '',
+%s/%s ore %s:%s,%s/%s ore %s:%s,
 Khopesh,Khopesh,
 La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,
 "Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.","Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.",
@@ -951,6 +982,8 @@ La fame di Am-heh,La fame di Am-heh,
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,
 Vita,Vita,Health
 Comandi,Comandi,Controls
+NUOVA VERSIONE,NUOVA VERSIONE,
+window.duatUpdate || '',window.duatUpdate || '',
 I nemici sono più veloci del 30%,I nemici sono più veloci del 30%,Enemies are 30% faster
 Subisci il 50% di danni in più,Subisci il 50% di danni in più,You take 50% more damage
 I nemici hanno il 40% di vita in più,I nemici hanno il 40% di vita in più,Enemies have 40% more health
