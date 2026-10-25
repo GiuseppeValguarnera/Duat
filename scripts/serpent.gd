@@ -197,17 +197,6 @@ func _stagger_time() -> float:
 	return 0.0
 
 
-## Il corpo ferisce solo quando si muove verso di te. Fermo a riprendersi o mentre sputa no:
-## è il momento in cui il gioco ti invita a colpirlo, e non deve punirti per averlo fatto.
-func _contact_damage() -> float:
-	match state:
-		"recover", "spit", "intro", "windup":
-			return 0.0
-		"strike":
-			return contact_damage
-	return contact_damage * 0.72
-
-
 func _on_hit(_dmg: float) -> void:
 	knock *= 0.1
 
