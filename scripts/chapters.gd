@@ -20,6 +20,7 @@ const ALL := {
 	"c125": {"num": 125, "name": "La confessione negativa", "desc": "Finché hai più dell'80% della vita fai il {v}% di danni in più.", "values": [15, 22, 30], "cost": [100, 200, 340], "lore": "La Confessione negativa: davanti a quarantadue giudici il morto elenca le colpe che non ha commesso. È il capitolo più famoso del Libro dei Morti."},
 	"c30": {"num": 30, "name": "Il cuore che non testimonia", "desc": "Una volta per discesa sopravvivi a un colpo mortale con il {v}% della vita.", "values": [5, 20, 35], "cost": [120, 220, 360], "lore": "Era inciso sullo scarabeo del cuore, un amuleto messo sul petto della mummia: 'O mio cuore, non alzarti a testimoniare contro di me'. Così il cuore non confessava le colpe sulla bilancia."},
 	"c6": {"num": 6, "name": "Gli Ushabti", "desc": "Una statuetta servitrice ti segue e colpisce il nemico più vicino ogni {v} secondi.", "values": [2.0, 1.6, 1.3], "cost": [140, 240, 380], "lore": "Gli ushabti, 'quelli che rispondono', erano statuine sepolte anche a centinaia. Quando gli dèi chiamavano il morto a lavorare i campi dell'aldilà, rispondevano al posto suo: 'Eccomi!'."},
+	"c26": {"num": 26, "name": "Il cuore restituito", "desc": "I nemici abbattuti hanno il {v}% di probabilità di lasciare un cuore che ti cura di {h} punti vita.", "values": [3, 5, 7], "heal": [5, 6, 7], "cost": [90, 190, 320], "lore": "Con il capitolo 26 il morto riceve di nuovo il suo cuore, l'ib: 'Il mio cuore è con me, e non mi sarà tolto'. Per gli Egizi si pensava con il cuore, non con il cervello, che i mummificatori buttavano via."},
 	"c72": {"num": 72, "name": "Le porte aperte", "desc": "Dopo ogni stanza si aprono sempre tre porte.", "values": [1], "cost": [220], "lore": "'Uscire al giorno e aprire la tomba': con il capitolo 72 il morto conosce i nomi dei guardiani delle porte, e chi conosce il nome di un guardiano può passare."},
 }
 
@@ -61,7 +62,16 @@ static func text(id: String, lvl: int) -> String:
 	var c: Dictionary = ALL[id]
 	var v = c["values"][clampi(lvl, 1, max_level(id)) - 1]
 	var vs := str(v) if v is int else ("%.1f" % v).replace(".", ",")
-	return String(c["desc"]).replace("{v}", vs)
+	var out := String(c["desc"]).replace("{v}", vs)
+	if c.has("heal"):
+		out = out.replace("{h}", str(c["heal"][clampi(lvl, 1, max_level(id)) - 1]))
+	return out
+
+
+## Cura del cuore del capitolo 26 al livello comprato.
+static func heart_heal() -> float:
+	var l := level("c26")
+	return 0.0 if l == 0 else float(ALL["c26"]["heal"][l - 1])
 
 
 ## Prezzo del prossimo livello: [Ka, Lacrime]. [-1, 0] se è già al massimo.

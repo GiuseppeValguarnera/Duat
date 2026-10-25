@@ -52,6 +52,12 @@ const ALL := {
 	"sobek_bite": {"god": "sobek", "name": "Morso di Sobek", "desc": "Il terzo colpo della combo stordisce i nemici per %.1f secondi.", "values": [0.6, 0.9, 1.2]},
 	"sobek_tide": {"god": "sobek", "name": "Marea del Nilo", "desc": "Alla fine dello scatto lasci una pozza che rallenta i nemici del %d%% per 3 secondi.", "values": [30, 40, 50]},
 	"sobek_river": {"god": "sobek", "name": "Forza del Fiume", "desc": "I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.", "values": [20, 30, 40]},
+	# doni che esistono solo per un'arma: compaiono soltanto se la impugni
+	"sobek_tail": {"god": "sobek", "weapon": "lancia", "name": "Colpo di Coda", "desc": "La spazzata della lancia fa il %d%% di danni in più e scaglia i nemici il doppio più lontano.", "values": [25, 35, 45]},
+	"sekhmet_crescent": {"god": "sekhmet", "weapon": "khopesh", "name": "Zanna Ricurva", "desc": "I primi due fendenti del khopesh fanno il %d%% di danni in più.", "values": [20, 30, 40]},
+	"bastet_point": {"god": "bastet", "weapon": "lancia", "name": "Punta Felina", "desc": "L'affondo della lancia dopo uno scatto ha il %d%% di probabilità di essere un colpo critico.", "values": [35, 50, 65]},
+	"bastet_dance": {"god": "bastet", "weapon": "khopesh", "name": "Danza delle Lame", "desc": "Il khopesh colpisce il %d%% più rapidamente.", "values": [10, 15, 20]},
+	"ra_edge": {"god": "ra", "weapon": "khopesh", "name": "Filo del Sole", "desc": "I fendenti del khopesh arrivano il %d%% più lontano e sono più ampi.", "values": [12, 18, 25]},
 	# Iside: protezione, cure, magia
 	"iside_wings": {"god": "iside", "name": "Ali di Iside", "desc": "All'inizio di ogni stanza hai uno scudo che assorbe %d danni.", "values": [10, 15, 20]},
 	"iside_tears": {"god": "iside", "name": "Lacrime di Iside", "desc": "Tutte le cure ti curano il %d%% in più.", "values": [20, 30, 40]},
@@ -61,6 +67,7 @@ const ALL := {
 	"horus_return": {"god": "horus", "name": "Ritorno del Falco", "desc": "L'Occhio di Horus, finito il volo, torna da te e colpisce di nuovo chi incontra: %d%% dei danni.", "values": [60, 80, 100]},
 	"horus_seek": {"god": "horus", "name": "Volo del Falco", "desc": "L'Occhio di Horus curva da solo verso il nemico più vicino e fa il %d%% di danni in più.", "values": [10, 20, 30]},
 	"horus_twin": {"god": "horus", "name": "Il Sole e la Luna", "desc": "L'Occhio di Horus ha %d cariche: puoi lanciarlo più volte di fila.", "values": [2, 3, 4]},
+	"horus_harpoon": {"god": "horus", "weapon": "lancia", "name": "Arpione di Horus", "desc": "Gli affondi della lancia fanno il %d%% di danni in più ai nemici lontani, sulla punta.", "values": [25, 40, 55]},
 	"horus_mark": {"god": "horus", "name": "Sguardo del Falco", "desc": "I nemici colpiti dall'Occhio subiscono il %d%% di danni in più dal khopesh per 3 secondi.", "values": [20, 30, 40]},
 	"anubi_light": {"god": "anubi", "balanced": true, "name": "Cuore Leggero", "desc": "Lo scatto si ricarica il %d%% più in fretta e ti muovi il 10%% più veloce.", "values": [15], "cost": "-5 vita massima."},
 	"anubi_stone": {"god": "anubi", "balanced": true, "name": "Cuore di Pietra", "desc": "+%d vita massima.", "values": [12], "cost": "Ti muovi il 6% più lento."},
@@ -170,6 +177,8 @@ static func offers(god: String, owned: Dictionary) -> Array:
 			continue
 		if not owned.has(id) and not requirements_met(id, owned):
 			continue
+		if ALL[id].has("weapon") and ALL[id]["weapon"] != Run.weapon:
+			continue
 		if is_heavy(id):
 			if not owned.has(id):
 				heavy = id
@@ -271,6 +280,12 @@ const SHORT := {
 	"sobek_bite": ["3° colpo stordisce", ""],
 	"sobek_tide": ["Scatto lascia pozza: -%d%% velocità nemici", ""],
 	"sobek_river": ["+%d%% danni a storditi e rallentati", ""],
+	"sobek_tail": ["Spazzata +%d%% danni, spinta doppia", ""],
+	"sekhmet_crescent": ["1° e 2° fendente +%d%% danni", ""],
+	"bastet_point": ["Affondo dopo scatto: %d%% critico", ""],
+	"bastet_dance": ["Khopesh +%d%% più rapido", ""],
+	"ra_edge": ["Fendenti +%d%% portata, più ampi", ""],
+	"horus_harpoon": ["Affondi +%d%% danni sulla punta", ""],
 	"iside_wings": ["Scudo di %d a ogni stanza", ""],
 	"iside_tears": ["Cure +%d%%", ""],
 	"iside_knot": ["Sotto 1/3 di vita: -%d%% danni subiti", ""],

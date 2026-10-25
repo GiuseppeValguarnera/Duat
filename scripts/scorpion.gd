@@ -2,12 +2,16 @@ extends Enemy
 ## Scorpione di Serket: veloce, ti gira intorno e punge con la coda.
 ## Avviso: la coda si alza e si illumina. La puntura avvelena: perdi vita per qualche
 ## secondo (il veleno non può ucciderti, ma ti lascia scoperto al resto).
+## Quando punge scatta in avanti: allontanarsi di un passo non basta, bisogna scattare di lato.
+## Più punture si sommano: il veleno dura di più.
 ## Serket era la dea scorpione che proteggeva dai veleni... e li sapeva usare.
 
-@export var sting_range := 34.0
-@export var sting_windup := 0.45
-@export var sting_damage := 7.0
-@export var poison_time := 3.0
+@export var sting_range := 38.0
+@export var sting_windup := 0.38
+@export var sting_damage := 8.0
+@export var poison_time := 3.5
+@export var strike_speed := 260.0        ## velocità del balzo con cui punge
+@export var strike_time := 0.12
 
 var state := "chase"
 var st := 0.0
@@ -44,17 +48,24 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				return (u * 0.6 + u.orthogonal() * circle_dir).normalized() * speed
 			return u * speed
 		"windup":
-			if st > sting_windup * 0.5:
+			if st > sting_windup * 0.4:
 				sting_dir = u
 			if st <= 0.0:
+				state = "strike"
+				st = strike_time
+			return Vector2.ZERO
+		"strike":
+			# balzo in avanti con la coda tesa: la puntura arriva alla fine del balzo
+			if st <= 0.0 or d < 14.0:
 				_sting(to)
 				state = "recover"
-				st = 0.5
-			return Vector2.ZERO
+				st = 0.45
+				return Vector2.ZERO
+			return sting_dir * strike_speed
 		"recover":
 			if st <= 0.0:
 				state = "chase"
-				st = 0.9
+				st = 0.6
 				circle_dir = -circle_dir
 			return -u * speed * 0.4
 	return Vector2.ZERO
@@ -62,7 +73,8 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 
 func _sting(to: Vector2) -> void:
 	Sfx.play_at("scorpion_sting", global_position, 0.2)
-	if to.length() > sting_range + 8.0 or absf(sting_dir.angle_to(to)) > deg_to_rad(60.0):
+	# da vicinissimo la puntura prende sempre; più in là solo davanti alla coda
+	if to.length() > sting_range + 8.0 or (to.length() > 16.0 and absf(sting_dir.angle_to(to)) > deg_to_rad(60.0)):
 		return
 	var player = get_tree().get_first_node_in_group("player")
 	if player != null and not player.dead and player.take_damage(sting_damage, global_position, self):
@@ -73,7 +85,7 @@ func _draw_body(flash: bool) -> void:
 	var shell := Color.WHITE if flash else Color(0.55, 0.3, 0.18)
 	var dark := Color.WHITE if flash else Color(0.3, 0.15, 0.08)
 	var dir := 1.0 if velocity.x >= 0.0 else -1.0
-	if state == "windup":
+	if state == "windup" or state == "strike":
 		dir = 1.0 if sting_dir.x >= 0.0 else -1.0
 	# zampe
 	for i in range(3):
@@ -91,6 +103,8 @@ func _draw_body(flash: bool) -> void:
 	var raise := 0.0
 	if state == "windup":
 		raise = 1.0 - st / sting_windup
+	elif state == "strike":
+		raise = 1.0
 	var base := Vector2(-6 * dir, -4)
 	var mid := base + Vector2(-4 * dir, -6 - raise * 4.0)
 	var tip := mid + Vector2(3 * dir + raise * 6.0 * dir, -5 - raise * 3.0)

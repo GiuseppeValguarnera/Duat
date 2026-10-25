@@ -540,13 +540,10 @@ func _room_cleared() -> void:
 	if current_reward.get("kind", "") == "guardian":
 		# premio del guardiano: un dono che sale di due livelli invece di uno
 		bonus_boon = true
-		# Lacrima di Iside: solo la prima volta con quest'arma (e di nuovo con il Peso a 4 e a 8)
+		# il guardiano di mezzo non dà Lacrime di Iside: quelle cadono solo sui boss delle regioni
 		var first_serpent := Meta.serpent_wins == 0
 		Meta.serpent_wins += 1
-		var got := Meta.claim_boss("serpent", 1)
-		var tear_txt := ("+%d Lacrima di Iside" % got) if got == 1 else (("+%d Lacrime di Iside" % got) if got > 1 else "Lacrima già presa con quest'arma")
-		if first_serpent:
-			tear_txt += "  ·  il Cortile di Neith si è aperto"
+		var tear_txt := "Il Cortile di Neith si è aperto" if first_serpent else "La via verso Ammit è aperta"
 		var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
 		if not gods.is_empty():
 			current_reward = {"kind": "boon", "god": gods.pick_random()}
@@ -871,6 +868,8 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 			tag = "Nuovo · subito livello %d" % lvl
 		if Boons.is_heavy(id):
 			tag = "Dono pesante"
+		if Boons.ALL[id].has("weapon"):
+			tag += " · solo %s" % Weapons.ALL[Boons.ALL[id]["weapon"]]["name"]
 		if Boons.is_duo(id):
 			var gs: Array = Boons.ALL[id]["gods"]
 			tag = "Dono doppio · %s + %s" % [Boons.god_name(gs[0]), Boons.god_name(gs[1])]
@@ -1481,7 +1480,7 @@ func _boss_defeated() -> void:
 		if c is Enemy and not c.dead:
 			c.die()
 	Meta.ammit_wins += 1
-	ammit_tears = Meta.claim_boss("ammit", 2)  # Lacrime di Iside: la prima volta con ogni arma
+	ammit_tears = Meta.claim_boss("ammit", 2)  # Lacrime di Iside: solo dai boss, la prima volta con ogni arma
 	if Weights.unlocked() and not Meta.feather and Weights.total() > Meta.best_weight:
 		Meta.best_weight = Weights.total()
 	var first_win := not Meta.sekhem_unlocked
@@ -1648,9 +1647,9 @@ func _process(_delta: float) -> void:
 	if Fx.device == "touch":
 		help.text = ""
 	elif Fx.device == "pad":
-		help.text = "Levetta sinistra muovi · destra mira · RB khopesh · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa"
+		help.text = "Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa"
 	else:
-		help.text = "WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox"
+		help.text = "WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox"
 
 
 # ---------------------------------------------------------------- muri e pavimento

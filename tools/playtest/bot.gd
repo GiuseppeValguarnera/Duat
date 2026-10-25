@@ -134,7 +134,7 @@ func _dodge_chance(kind: String) -> float:
 ## Prima della discesa, nella Sala: compra capitoli e livelli con il Ka custodito, sceglie quali
 ## portare, compra posti con le Lacrime e, chi cerca la sfida, posa i pesi sulla bilancia.
 func _hub_shopping() -> void:
-	var pref: Array = cfg.get("chapters", ["c17", "c30", "c125", "c89", "c6", "c151", "c99", "c110", "c56", "c42", "c154", "c94", "c72"])
+	var pref: Array = cfg.get("chapters", ["c17", "c30", "c125", "c89", "c6", "c151", "c99", "c110", "c56", "c42", "c154", "c94", "c26", "c72"])
 	var bought := []
 	for _i in range(40):
 		var best := ""

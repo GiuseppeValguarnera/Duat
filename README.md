@@ -92,7 +92,7 @@ Dalla Sala del Giudizio, una porta nella parete ovest (con lo scudo e le frecce 
 | Khopesh | Fendenti ampi da vicino, il terzo colpo è il più forte | del Faraone (+danni) · di Montu (terzo colpo più lungo e più forte) · di Wepwawet (dopo uno scatto, fendente circolare) |
 | Lancia di Neith | Due affondi lunghi e stretti, poi un'ampia spazzata; subito dopo uno scatto, un affondo lunghissimo | di Neith (+danni) · di Onuris (affondi più lunghi) · di Khonsu (la spazzata stordisce) |
 
-**Lacrime di Iside**: arrivano solo la **prima volta** che batti il Serpente (1) o Ammit (2) **con ogni arma**, e di nuovo con il Peso del Cuore a 4 e a 8. Rivincere con la stessa arma non dà altre Lacrime: per crescere bisogna cambiare arma. Il Libro dei Morti ora si paga solo in Ka (livelli e posti in più compresi). Dati in `scripts/weapons.gd`; i testi dei doni scritti per il khopesh si adattano da soli all'arma impugnata.
+**Lacrime di Iside**: arrivano solo dai boss delle regioni (oggi Ammit, 2 Lacrime), la **prima volta** che li batti **con ogni arma** e di nuovo con il Peso del Cuore a 4 e a 8. Il Serpente della Porta, guardiano di mezzo, non ne dà. Rivincere con la stessa arma non dà altre Lacrime: per crescere bisogna cambiare arma. Il Libro dei Morti ora si paga solo in Ka; il capitolo 26, *Il cuore restituito*, dà una piccola probabilità (3/5/7%) che i nemici lascino un cuore che cura 5/6/7 punti vita (livelli e posti in più compresi). Dati in `scripts/weapons.gd`; i testi dei doni scritti per il khopesh si adattano da soli all'arma impugnata.
 
 ## Come funziona una run
 
@@ -154,6 +154,19 @@ Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finit
 | Sobek (resistenza e controllo) | Pelle di Coccodrillo, Morso di Sobek, Marea del Nilo, Forza del Fiume · pesante: Fauci di Sobek |
 | Iside (protezione e cure) | Ali di Iside, Lacrime di Iside, Nodo di Iside, Nome Segreto di Ra (solo dopo aver sbloccato il Sekhem) · pesante: Abbraccio di Iside |
 | Anubi (solo a inizio run, doni-bilancia con un piccolo prezzo) | Cuore Leggero, Cuore di Pietra, Fiuto dello Sciacallo, Bilancia Giusta, Guida delle Anime, Vasi Canopi, Apertura della Bocca, Bende di Lino, Custode della Necropoli, Offerte ai Defunti |
+
+**Doni delle armi:** alcuni doni compaiono solo con un'arma in mano e ne esaltano lo stile (sulla carta: "solo Lancia di Neith" o "solo Khopesh").
+
+| Arma | Dono | Dio | Effetto |
+| --- | --- | --- | --- |
+| Lancia | Arpione di Horus | Horus | Affondi più forti sui nemici lontani, sulla punta |
+| Lancia | Punta Felina | Bastet | L'affondo dopo lo scatto può essere critico |
+| Lancia | Colpo di Coda | Sobek | Spazzata più forte, scaglia il doppio |
+| Khopesh | Zanna Ricurva | Sekhmet | Primi due fendenti più forti |
+| Khopesh | Danza delle Lame | Bastet | Colpi più rapidi |
+| Khopesh | Filo del Sole | Ra | Fendenti più lunghi e più ampi |
+
+Forza del Fiume e quattro Doni Doppi compaiono solo se hai già i doni con cui si combinano (`Boons.REQUIRES`).
 
 **Doni Doppi:** quando hai già doni di due dèi, a volte uno dei due ti offre un dono che li unisce (carta dorata).
 

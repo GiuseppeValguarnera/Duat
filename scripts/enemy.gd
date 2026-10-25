@@ -24,6 +24,7 @@ var contact: Area2D
 var is_boss := false
 var miniboss := false                 ## guardiano a metà discesa: barra in alto invece che sopra la testa
 var elite := false                     ## versione dorata: più grossa, più resistente, lascia più Ka
+const HeartScript := preload("res://scripts/heart_drop.gd")
 var stagger_t := 0.0
 var mark_t := 0.0                     ## Sguardo del Falco: secondi in cui il khopesh fa più danni
 var sobek_stun_t := 0.0                ## stordito dal Morso di Sobek (per la Forza del Fiume)                   ## dopo un colpo il nemico barcolla: non si muove e non ferisce
@@ -171,6 +172,13 @@ func die() -> void:
 			if player != null and not player.dead:
 				player.heal(Run.val("sekhmet_blood"))
 	Fx.burst(global_position + Vector2(0, -radius), Color(0.94, 0.72, 0.3), 18, 130.0)
+	# capitolo 26: a volte il nemico lascia un cuore che cura
+	var heart_chance := Chapters.value("c26")
+	if heart_chance > 0.0 and not Run.training and not is_boss and randf() * 100.0 < heart_chance:
+		var heart := HeartScript.new()
+		heart.amount = Chapters.heart_heal()
+		get_parent().add_child.call_deferred(heart)
+		heart.position = global_position
 	if Run.has("anubi_guide"):
 		_release_spirit()
 	killed.emit(self)

@@ -24,12 +24,12 @@ La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove,La stele mis
 Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,
 Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,
 "Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.","Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.",
-"Le armi qui dormono. Le Lacrime di Iside le risvegliano: battine i guardiani con un'arma che non li ha mai toccati, e portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: battine i guardiani con un'arma che non li ha mai toccati, e portamele all'altare.",
+"Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.",
 "I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.","I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.",
 La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,
 "Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.",
 "Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.","Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.",
-Non hai Lacrime. Il pianto di Iside cade solo sui guardiani battuti con un'arma che non li ha ancora conosciuti. Cambia lama.,Non hai Lacrime. Il pianto di Iside cade solo sui guardiani battuti con un'arma che non li ha ancora conosciuti. Cambia lama.,
+"Non hai Lacrime. Il pianto di Iside cade solo sui grandi signori della notte, battuti con un'arma che non li ha ancora conosciuti. Il Serpente della Porta non è degno delle sue lacrime. Cambia lama.","Non hai Lacrime. Il pianto di Iside cade solo sui grandi signori della notte, battuti con un'arma che non li ha ancora conosciuti. Il Serpente della Porta non è degno delle sue lacrime. Cambia lama.",
 Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu.,Sotto quei teli dormono altre armi. Non sono ancora pronte. Nemmeno tu.,
 A Sais mi chiamavano madre di Ra. Molto più tardi i Greci mi confusero con la loro Atena. Lasciali confondere: le dee antiche non si offendono per così poco.,A Sais mi chiamavano madre di Ra. Molto più tardi i Greci mi confusero con la loro Atena. Lasciali confondere: le dee antiche non si offendono per così poco.,
 "Si dice che io abbia tessuto il mondo come una tela, e che lo tessa ancora ogni giorno. Una lancia è come un filo: dritta, tesa, e taglia solo se sai dove tirarla.","Si dice che io abbia tessuto il mondo come una tela, e che lo tessa ancora ogni giorno. Una lancia è come un filo: dritta, tesa, e taglia solo se sai dove tirarla.",
@@ -40,7 +40,7 @@ Torna quando avrai qualcosa da mostrarmi.,Torna quando avrai qualcosa da mostrar
 Lancia di Neith,Lancia di Neith,
 Neith,Neith,
 Altare di Neith · %s,Altare di Neith · %s,
-Lacrime di Iside: %d  ·  si ottengono battendo un guardiano o Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo un guardiano o Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),
+Lacrime di Iside: %d  ·  si ottengono battendo Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),
    · SCELTO,   · SCELTO,
    (livello %d: %s),   (livello %d: %s),
 Risveglia · %d Lacrime,Risveglia · %d Lacrime,
@@ -102,6 +102,16 @@ Marea del Nilo,Marea del Nilo,Tide of the Nile
 Alla fine dello scatto lasci una pozza che rallenta i nemici del %d%% per 3 secondi.,Alla fine dello scatto lasci una pozza che rallenta i nemici del %d%% per 3 secondi.,At the end of your dash you leave a pool that slows enemies by %d%% for 3 seconds.
 Forza del Fiume,Forza del Fiume,Might of the River
 I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.,I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.,
+Colpo di Coda,Colpo di Coda,
+La spazzata della lancia fa il %d%% di danni in più e scaglia i nemici il doppio più lontano.,La spazzata della lancia fa il %d%% di danni in più e scaglia i nemici il doppio più lontano.,
+Zanna Ricurva,Zanna Ricurva,
+I primi due fendenti del khopesh fanno il %d%% di danni in più.,I primi due fendenti del khopesh fanno il %d%% di danni in più.,
+Punta Felina,Punta Felina,
+L'affondo della lancia dopo uno scatto ha il %d%% di probabilità di essere un colpo critico.,L'affondo della lancia dopo uno scatto ha il %d%% di probabilità di essere un colpo critico.,
+Danza delle Lame,Danza delle Lame,
+Il khopesh colpisce il %d%% più rapidamente.,Il khopesh colpisce il %d%% più rapidamente.,
+Filo del Sole,Filo del Sole,
+I fendenti del khopesh arrivano il %d%% più lontano e sono più ampi.,I fendenti del khopesh arrivano il %d%% più lontano e sono più ampi.,
 Ali di Iside,Ali di Iside,Wings of Isis
 All'inizio di ogni stanza hai uno scudo che assorbe %d danni.,All'inizio di ogni stanza hai uno scudo che assorbe %d danni.,At the start of every chamber you gain a shield that absorbs %d damage.
 Lacrime di Iside,Lacrime di Iside,Tears of Isis
@@ -116,6 +126,8 @@ Volo del Falco,Volo del Falco,Flight of the Falcon
 L'Occhio di Horus curva da solo verso il nemico più vicino e fa il %d%% di danni in più.,L'Occhio di Horus curva da solo verso il nemico più vicino e fa il %d%% di danni in più.,The Eye of Horus curves on its own toward the nearest enemy and deals %d%% more damage.
 Il Sole e la Luna,Il Sole e la Luna,The Sun and the Moon
 L'Occhio di Horus ha %d cariche: puoi lanciarlo più volte di fila.,L'Occhio di Horus ha %d cariche: puoi lanciarlo più volte di fila.,The Eye of Horus has %d charges: you can throw it several times in a row.
+Arpione di Horus,Arpione di Horus,
+"Gli affondi della lancia fanno il %d%% di danni in più ai nemici lontani, sulla punta.","Gli affondi della lancia fanno il %d%% di danni in più ai nemici lontani, sulla punta.",
 Sguardo del Falco,Sguardo del Falco,Gaze of the Falcon
 I nemici colpiti dall'Occhio subiscono il %d%% di danni in più dal khopesh per 3 secondi.,I nemici colpiti dall'Occhio subiscono il %d%% di danni in più dal khopesh per 3 secondi.,Enemies hit by the Eye take %d%% more damage from the khopesh for 3 seconds.
 Cuore Leggero,Cuore Leggero,Light Heart
@@ -214,6 +226,12 @@ Ti rialzi una volta con il %d%%,Ti rialzi una volta con il %d%%,Rise once with %
 3° colpo stordisce,3° colpo stordisce,3rd strike stuns
 Scatto lascia pozza: -%d%% velocità nemici,Scatto lascia pozza: -%d%% velocità nemici,Dash leaves a pool: enemies -%d%% speed
 +%d%% danni a storditi e rallentati,+%d%% danni a storditi e rallentati,+%d%% damage to stunned and slowed
+"Spazzata +%d%% danni, spinta doppia","Spazzata +%d%% danni, spinta doppia",
+1° e 2° fendente +%d%% danni,1° e 2° fendente +%d%% danni,
+Affondo dopo scatto: %d%% critico,Affondo dopo scatto: %d%% critico,
+Khopesh +%d%% più rapido,Khopesh +%d%% più rapido,
+"Fendenti +%d%% portata, più ampi","Fendenti +%d%% portata, più ampi",
+Affondi +%d%% danni sulla punta,Affondi +%d%% danni sulla punta,
 Scudo di %d a ogni stanza,Scudo di %d a ogni stanza,%d shield every chamber
 Cure +%d%%,Cure +%d%%,Healing +%d%%
 Sotto 1/3 di vita: -%d%% danni subiti,Sotto 1/3 di vita: -%d%% danni subiti,Below 1/3 health: -%d%% damage taken
@@ -294,6 +312,9 @@ Una volta per discesa sopravvivi a un colpo mortale con il {v}% della vita.,Una 
 Gli Ushabti,Gli Ushabti,The Ushabti
 Una statuetta servitrice ti segue e colpisce il nemico più vicino ogni {v} secondi.,Una statuetta servitrice ti segue e colpisce il nemico più vicino ogni {v} secondi.,A servant statuette follows you and strikes the nearest enemy every {v} seconds.
 "Gli ushabti, 'quelli che rispondono', erano statuine sepolte anche a centinaia. Quando gli dèi chiamavano il morto a lavorare i campi dell'aldilà, rispondevano al posto suo: 'Eccomi!'.","Gli ushabti, 'quelli che rispondono', erano statuine sepolte anche a centinaia. Quando gli dèi chiamavano il morto a lavorare i campi dell'aldilà, rispondevano al posto suo: 'Eccomi!'.","The ushabti, 'those who answer', were figurines buried by the hundreds. When the gods called the dead to till the fields of the afterlife, they answered in their place: 'Here I am!'."
+Il cuore restituito,Il cuore restituito,
+I nemici abbattuti hanno il {v}% di probabilità di lasciare un cuore che ti cura di {h} punti vita.,I nemici abbattuti hanno il {v}% di probabilità di lasciare un cuore che ti cura di {h} punti vita.,
+"Con il capitolo 26 il morto riceve di nuovo il suo cuore, l'ib: 'Il mio cuore è con me, e non mi sarà tolto'. Per gli Egizi si pensava con il cuore, non con il cervello, che i mummificatori buttavano via.","Con il capitolo 26 il morto riceve di nuovo il suo cuore, l'ib: 'Il mio cuore è con me, e non mi sarà tolto'. Per gli Egizi si pensava con il cuore, non con il cervello, che i mummificatori buttavano via.",
 Le porte aperte,Le porte aperte,The Open Gates
 Dopo ogni stanza si aprono sempre tre porte.,Dopo ogni stanza si aprono sempre tre porte.,After every chamber three doors always open.
 "'Uscire al giorno e aprire la tomba': con il capitolo 72 il morto conosce i nomi dei guardiani delle porte, e chi conosce il nome di un guardiano può passare.","'Uscire al giorno e aprire la tomba': con il capitolo 72 il morto conosce i nomi dei guardiani delle porte, e chi conosce il nome di un guardiano può passare.","'Going forth by day and opening the tomb': with chapter 72 the dead knows the names of the gatekeepers, and whoever knows a gatekeeper's name may pass."
@@ -423,10 +444,8 @@ Il Ka,Il Ka,Ka
 Le porte,Le porte,The Doors
 Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.,Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.,Above every door is its reward. The arrows on the edge point to doors off screen. Go in: the descent begins.
 Set mantiene la promessa,Set mantiene la promessa,Set keeps his promise
-+%d Lacrima di Iside,+%d Lacrima di Iside,
-+%d Lacrime di Iside,+%d Lacrime di Iside,
-Lacrima già presa con quest'arma,Lacrima già presa con quest'arma,
-  ·  il Cortile di Neith si è aperto,  ·  il Cortile di Neith si è aperto,
+Il Cortile di Neith si è aperto,Il Cortile di Neith si è aperto,
+La via verso Ammit è aperta,La via verso Ammit è aperta,
 Il Serpente della Porta è caduto,Il Serpente della Porta è caduto,The Serpent of the Gate has fallen
   ·  il prossimo dono sale di un livello in più,  ·  il prossimo dono sale di un livello in più,
 Stanza ripulita,Stanza ripulita,Chamber cleared
@@ -438,6 +457,7 @@ Nuovo,Nuovo,New
 Livello %d,Livello %d,Level %d
 Nuovo · subito livello %d,Nuovo · subito livello %d,New · straight to level %d
 Dono pesante,Dono pesante,Heavy boon
+ · solo %s, · solo %s,
 Dono doppio · %s + %s,Dono doppio · %s + %s,Duo boon · %s + %s
 %s ti offre un dono,%s ti offre un dono,%s offers you a boon
 Anubi pesa il tuo cuore,Anubi pesa il tuo cuore,Anubis weighs your heart
@@ -556,8 +576,8 @@ Addestramento,Addestramento,Training
 Piuma di Ma'at: -%d%% danni,Piuma di Ma'at: -%d%% danni,Feather of Ma'at: -%d%% damage
 Doni: %d (Tab per vederli),Doni: %d (Tab per vederli),Boons: %d (Tab to view)
     Maledizione: %s (ancora %d stanze),    Maledizione: %s (ancora %d stanze),    Curse: %s (%d chambers left)
-Levetta sinistra muovi · destra mira · RB khopesh · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB khopesh · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Left stick move · right aim · RB khopesh · RT Eye · LB/A dash · LT Divine Form · Select boons · Start pause
-WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,WASD move · mouse aim · left click khopesh · Space dash · right click Eye · Q Divine Form (after Ammit) · Tab boons · Esc pause · F1 hitboxes
+Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,
+WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,
 Sala del Giudizio    Ka custodito %d    Discese %d    Vittorie su Ammit %d,Sala del Giudizio    Ka custodito %d    Discese %d    Vittorie su Ammit %d,Hall of Judgement    Stored Ka %d    Descents %d    Victories over Ammit %d
 Levetta muovi · LB/A scatto · Y interagisci · Start opzioni,Levetta muovi · LB/A scatto · Y interagisci · Start opzioni,Stick move · LB/A dash · Y interact · Start options
 WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD move · Space dash · E interact · Esc options
@@ -878,6 +898,15 @@ La fame di Ammit,La fame di Ammit,The hunger of Ammit
 Ammit ha il 30% di vita in più e ogni Ruggito libera due onde.,Ammit ha il 30% di vita in più e ogni Ruggito libera due onde.,Ammit has 30% more health and every Roar unleashes two waves.
 Vita,Vita,Health
 Comandi,Comandi,Controls
+Levetta sinistra muovi · destra mira · RB khopesh · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB khopesh · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Left stick move · right aim · RB khopesh · RT Eye · LB/A dash · LT Divine Form · Select boons · Start pause
+WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro khopesh · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo Ammit) · Tab doni · Esc pausa · F1 hitbox,WASD move · mouse aim · left click khopesh · Space dash · right click Eye · Q Divine Form (after Ammit) · Tab boons · Esc pause · F1 hitboxes
+"Le armi qui dormono. Le Lacrime di Iside le risvegliano: battine i guardiani con un'arma che non li ha mai toccati, e portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: battine i guardiani con un'arma che non li ha mai toccati, e portamele all'altare.",
+Non hai Lacrime. Il pianto di Iside cade solo sui guardiani battuti con un'arma che non li ha ancora conosciuti. Cambia lama.,Non hai Lacrime. Il pianto di Iside cade solo sui guardiani battuti con un'arma che non li ha ancora conosciuti. Cambia lama.,
+Lacrime di Iside: %d  ·  si ottengono battendo un guardiano o Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo un guardiano o Ammit la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),
++%d Lacrima di Iside,+%d Lacrima di Iside,
++%d Lacrime di Iside,+%d Lacrime di Iside,
+Lacrima già presa con quest'arma,Lacrima già presa con quest'arma,
+  ·  il Cortile di Neith si è aperto,  ·  il Cortile di Neith si è aperto,
 I nemici storditi dal Morso o rallentati dalla Marea subiscono il %d%% di danni in più.,I nemici storditi dal Morso o rallentati dalla Marea subiscono il %d%% di danni in più.,Enemies stunned by the Bite or slowed by the Tide take %d%% more damage.
 Ogni lacrima vale più di mille Ka. Il Libro sa cosa farne: le formule più alte non si pagano soltanto con la forza.,Ogni lacrima vale più di mille Ka. Il Libro sa cosa farne: le formule più alte non si pagano soltanto con la forza.,Every tear is worth more than a thousand Ka. The Book knows what to do with it: the highest spells are not paid for with strength alone.
 +1 Lacrima di Iside  ·  il prossimo dono sale di un livello in più,+1 Lacrima di Iside  ·  il prossimo dono sale di un livello in più,+1 Tear of Isis  ·  the next boon gains an extra level

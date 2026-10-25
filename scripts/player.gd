@@ -288,6 +288,18 @@ func _swing() -> void:
 		lunge *= 1.6
 	if spear and swing_index < 2 and Run.aspect == "onuris":
 		swing_range *= 1.0 + Run.aspect_val("onuris") / 100.0
+	# doni delle armi
+	var sweep := spear and swing_index == 2 and not lunging
+	if not spear:
+		if Run.has("ra_edge"):
+			swing_range *= 1.0 + Run.val("ra_edge") / 100.0
+			swing_arc += deg_to_rad(20.0)
+		if swing_index < 2 and Run.has("sekhmet_crescent"):
+			aspect_mult *= 1.0 + Run.val("sekhmet_crescent") / 100.0
+		if Run.has("bastet_dance"):
+			atk_cd /= 1.0 + Run.val("bastet_dance") / 100.0
+	elif sweep and Run.has("sobek_tail"):
+		aspect_mult *= 1.0 + Run.val("sobek_tail") / 100.0
 	if after_dash_t > 0.0 and Run.aspect == "wepwawet":
 		swing_arc = TAU
 		swing_range = 42.0
@@ -319,8 +331,13 @@ func _swing() -> void:
 		if to.length() > reach:
 			continue
 		if absf(swing_dir.angle_to(to)) <= swing_arc * 0.5 or to.length() < e.radius + 6.0:
-			var crit := Run.roll_crit(Run.khopesh_crit_chance())
+			var crit_chance := Run.khopesh_crit_chance()
+			if lunging and Run.has("bastet_point"):
+				crit_chance += Run.val("bastet_point") / 100.0
+			var crit := Run.roll_crit(crit_chance)
 			var hit_dmg := dmg * crit
+			if spear and not sweep and Run.has("horus_harpoon") and to.length() > swing_range * 0.5:
+				hit_dmg *= 1.0 + Run.val("horus_harpoon") / 100.0
 			if Run.has("duo_ra_sekhmet") and e.burn_t > 0.0:
 				hit_dmg *= 1.25
 			if Run.has("duo_sobek_iside") and shield > 0.0:
@@ -332,7 +349,8 @@ func _swing() -> void:
 				Sfx.play("crit")
 				if Run.has("duo_sekhmet_bastet"):
 					_shockwave.call_deferred(40.0, 12.0 * Run.all_damage_mult(), 150.0, Boons.god_color("duo"))
-			e.take_hit(hit_dmg, to.normalized(), c["knock"] * Run.knock_mult(), Run.khopesh_burns())
+			var kb: float = c["knock"] * Run.knock_mult() * (2.0 if sweep and Run.has("sobek_tail") else 1.0)
+			e.take_hit(hit_dmg, to.normalized(), kb, Run.khopesh_burns())
 			if spear and swing_index == 2 and Run.aspect == "khonsu" and not e.dead:
 				e.stagger_t = maxf(e.stagger_t, Run.aspect_val("khonsu") * (0.3 if (e.is_boss or e.miniboss) else 1.0))
 			if swing_index == 2 and Run.has("sobek_bite") and not e.dead:
@@ -410,8 +428,12 @@ func _heavy_drain(delta: float) -> void:
 
 
 ## Veleno (scorpione di Serket): 2 vita ogni 0,6 secondi. Non può ucciderti.
+## Le punture si sommano: se sei già avvelenato il veleno dura di più (fino a 7 secondi).
 func poison(seconds: float) -> void:
-	poison_t = maxf(poison_t, seconds)
+	if poison_t > 0.0:
+		poison_t = minf(7.0, poison_t + seconds * 0.5)
+	else:
+		poison_t = seconds
 
 
 func _poison_update(delta: float) -> void:
