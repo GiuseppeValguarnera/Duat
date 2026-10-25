@@ -493,6 +493,7 @@ const OPTION_TEXT := {
 	"feather": ["Piuma di Ma'at", "Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva."],
 	"shake": ["Scuotimento dello schermo", "La telecamera trema quando colpisci o vieni colpito. Spegnilo se ti dà fastidio agli occhi."],
 	"hitstop": ["Pausa sui colpi", "Il gioco si ferma per un istante quando un colpo va a segno: dà peso ai colpi. Spegnila se preferisci un'azione sempre fluida."],
+	"autoaim": ["Mira automatica (telefono)", "Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento."],
 	"tutorial": ["Rifai l'addestramento", "Alla prossima discesa la prima stanza torna a essere l'addestramento di Anubi: movimento, khopesh, scatto, Occhio, Ka e porte."],
 	"vol": ["Volume generale", "Premi per cambiare. Le altre categorie di suoni si regolano dal menu di pausa durante una discesa."],
 	"music": ["Musica", "Premi per cambiare."],
@@ -503,12 +504,12 @@ const OPTION_TEXT := {
 func _fill_options(focus_id: String = "") -> void:
 	var left := _frame("Opzioni", "Esc / Start / B per tornare alla Sala", 270)
 	var first: Button = null
-	for id in ["feather", "shake", "hitstop", "tutorial", "vol", "music", "quit"]:
+	for id in ["feather", "shake", "hitstop", "autoaim", "tutorial", "vol", "music", "quit"]:
 		var label: String = OPTION_TEXT[id][0]
 		match id:
 			"feather":
 				label += ":  " + ("ATTIVA" if Meta.feather else "spenta")
-			"shake", "hitstop":
+			"shake", "hitstop", "autoaim":
 				label += ":  " + ("sì" if Meta.options.get(id, true) else "no")
 			"tutorial":
 				label += ":  " + ("sì, alla prossima" if not Meta.tutorial_done else "no")
@@ -538,7 +539,7 @@ func _on_option_pressed(id: String) -> void:
 	match id:
 		"feather":
 			Meta.feather = not Meta.feather
-		"shake", "hitstop":
+		"shake", "hitstop", "autoaim":
 			Meta.options[id] = not Meta.options.get(id, true)
 		"tutorial":
 			Meta.tutorial_done = not Meta.tutorial_done

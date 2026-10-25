@@ -129,7 +129,7 @@ func _physics_process(delta: float) -> void:
 	var move := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if move.length() > 0.15:
 		facing = move.normalized()
-	_update_aim()
+	_update_aim(move.length() > 0.15)
 
 	if Input.is_action_just_pressed("dash") and dash_cd <= 0.0 and dash_t <= 0.0:
 		_start_dash(move)
@@ -185,12 +185,16 @@ func _tick(delta: float) -> void:
 
 
 ## Mira: levetta destra se la usi, altrimenti mouse, altrimenti direzione di movimento.
-func _update_aim() -> void:
+func _update_aim(moving: bool = false) -> void:
 	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
 	if stick.length() > 0.3:
 		aim = stick.normalized()
+	elif Fx.device == "touch" and (moving or not Meta.options.get("autoaim", true)):
+		# sul telefono, mentre ti muovi colpisci dove vai (con l'aiuto alla mira, più largo che
+		# su PC): così il bersaglio lo scegli camminandogli incontro
+		aim = facing
 	elif Fx.device == "touch":
-		# sul telefono la mira va da sola sul nemico più vicino
+		# da fermo la mira va da sola sul nemico più vicino (si può spegnere nelle Opzioni)
 		var best = null
 		var best_d := 260.0
 		for e in get_tree().get_nodes_in_group("enemies"):
@@ -212,7 +216,7 @@ func _update_aim() -> void:
 ## Aiuto alla mira: se un nemico è entro pochi gradi, il colpo si orienta su di lui.
 func _assisted(dir: Vector2, max_dist: float) -> Vector2:
 	var best = null
-	var best_angle := deg_to_rad(aim_assist_degrees)
+	var best_angle := deg_to_rad(aim_assist_degrees * (1.6 if Fx.device == "touch" else 1.0))
 	for e in get_tree().get_nodes_in_group("enemies"):
 		if e.dead:
 			continue

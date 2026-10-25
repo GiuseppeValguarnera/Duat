@@ -21,7 +21,7 @@ Sul telefono il gioco si avvicina un po' e testi, carte e menu sono più grandi 
 
 **Salvataggio a metà discesa:** all'inizio di ogni stanza la discesa viene salvata. Se chiudi il gioco (o il telefono chiude la pagina), al prossimo avvio riparti dall'inizio di quella stanza. Morte, vittoria e abbandono cancellano il salvataggio.
 
-Sul telefono: levetta virtuale a sinistra (appare dove appoggi il pollice), a destra khopesh (tieni premuto), scatto, Occhio di Horus e Forma Divina, in alto pausa e doni. La mira va da sola sul nemico più vicino. Nella Sala il pulsante grande diventa *Azione*; nei menu si tocca direttamente.
+Sul telefono: levetta virtuale a sinistra (appare dove appoggi il pollice), a destra l'arma (tieni premuto), scatto, Occhio di Horus e Forma Divina, in alto pausa e doni. Mentre ti muovi colpisci nella direzione in cui vai, con un aiuto alla mira se c'è un nemico più o meno davanti; da fermo la mira va da sola sul nemico più vicino (si può spegnere: Opzioni, *Mira automatica*). Nella Sala il pulsante grande diventa *Azione*; nei menu si tocca direttamente.
 
 Per aggiornare la versione web dopo una modifica: `tools/deploy_web.sh /percorso/di/Godot` (serve il modello di esportazione *Web* di Godot 4.7.2).
 
