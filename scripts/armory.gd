@@ -407,8 +407,9 @@ func _open_aspects(focus: String = "") -> void:
 		var box := VBoxContainer.new()
 		box.add_theme_constant_override("separation", 1)
 		col.add_child(box)
-		var stars := "●".repeat(lvl) + "○".repeat(Weapons.MAX_LEVEL - lvl)
-		var name_l := UiStyle.label("%s   %s%s" % [ad["name"], stars, "   · SCELTO" if chosen else ""], 10, UiStyle.INK if lvl > 0 else UiStyle.INK_SOFT, true, inner)
+		# niente pallini ●○: i caratteri del gioco non li hanno e sul telefono diventano quadratini
+		var stars := ("livello %d/%d" % [lvl, Weapons.MAX_LEVEL]) if lvl > 0 else "da risvegliare"
+		var name_l := UiStyle.label("%s  ·  %s%s" % [ad["name"], stars, "  ·  SCELTO" if chosen else ""], 10, UiStyle.INK if lvl > 0 else UiStyle.INK_SOFT, true, inner)
 		box.add_child(name_l)
 		var desc := Weapons.text(w, a, maxi(lvl, 1))
 		var nxt := Weapons.next_cost(w, a)

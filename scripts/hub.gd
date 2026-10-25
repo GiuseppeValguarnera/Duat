@@ -408,7 +408,7 @@ func _fill_book(focus_id: String = "") -> void:
 			col = Color(0.6, 0.55, 0.48)
 		var stars := ""
 		if Chapters.max_level(id) > 1 and lvl > 0:
-			stars = "  " + "●".repeat(lvl) + "○".repeat(Chapters.max_level(id) - lvl)
+			stars = "  · liv. %d/%d" % [lvl, Chapters.max_level(id)]    # niente ●○: il telefono non li ha
 		var b := _list_button(left, "%d · %s%s   [%s]" % [c["num"], c["name"], stars, state], col)
 		b.pressed.connect(_on_chapter_pressed.bind(id))
 		b.focus_entered.connect(_show_chapter.bind(id))
@@ -566,9 +566,7 @@ func _fill_weights(focus_id: String = "") -> void:
 	for id in Weights.ALL:
 		var w: Dictionary = Weights.ALL[id]
 		var r := Weights.rank(id)
-		var pips := ""
-		for i in range(int(w["max"])):
-			pips += "●" if i < r else "○"
+		var pips := "%d/%d" % [r, int(w["max"])]
 		var b := _list_button(left, "%s   %s" % [pips, w["name"]], Color(0.95, 0.55, 0.45) if r > 0 else Color(0.95, 0.9, 0.78))
 		b.pressed.connect(_on_weight_pressed.bind(id))
 		b.focus_entered.connect(_show_weight.bind(id))

@@ -290,6 +290,8 @@ python3 tools/playtest/run_playtest.py --godot /percorso/di/Godot --seeds 16
 python3 tools/playtest/run_playtest.py --godot ... --personas veterano --env "DUAT_ANUBI=Cuore di Pietra"
 ```
 
+Prima di pubblicare: `python3 tools/check_glyphs.py` controlla che ogni simbolo dei testi esista nei caratteri del gioco (nel browser del telefono un simbolo mancante diventa un quadratino).
+
 Il bot gioca peggio di una persona, quindi serve per i **confronti** (stesse partite, cambia una sola scelta), non per misurare la difficoltà assoluta. Con lui sono stati bilanciati i patti di Set, i doni di Anubi e il Peso del Cuore: per esempio Cuore di Pietra a +30 vita portava il bot da 1 a 7 vittorie su 16, ora è a +12. Con la Prima Ora a 10 stanze, il bot "veterano" arriva da Ammit circa 9 volte su 16, con circa 8 doni, e il Serpente della Porta ne ferma circa un quarto.
 
 ## Regolare la sensazione di gioco

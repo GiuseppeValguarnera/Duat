@@ -45,7 +45,9 @@ Lancia di Neith,Lancia di Neith,
 Neith,Neith,
 Altare di Neith · %s,Altare di Neith · %s,
 Lacrime di Iside: %d  ·  si ottengono battendo Am-heh la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),Lacrime di Iside: %d  ·  si ottengono battendo Am-heh la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8),
-   · SCELTO,   · SCELTO,
+livello %d/%d,livello %d/%d,
+da risvegliare,da risvegliare,
+  ·  SCELTO,  ·  SCELTO,
    (livello %d: %s),   (livello %d: %s),
 Risveglia · %d Lacrime,Risveglia · %d Lacrime,
 Potenzia al livello %d · %d Lacrime,Potenzia al livello %d · %d Lacrime,
@@ -209,7 +211,7 @@ Tributo,Tributo,Tribute
 +50% di Ka,+50% di Ka,+50% Ka
 Ira del Deserto,Ira del Deserto,Wrath of the Desert
 Attacchi con il khopesh il 15% più rapidamente,Attacchi con il khopesh il 15% più rapidamente,You strike with your khopesh 15% faster
-"Khopesh incendia: %d danni ogni 0,5 s","Khopesh incendia: %d danni ogni 0,5 s",Khopesh burns: %d damage every 0.5 s
+"Arma: fuoco %d ogni 0,5 s","Arma: fuoco %d ogni 0,5 s",
 Occhio esplode: %d danni,Occhio esplode: %d danni,Eye explodes: %d damage
 Scatto ferisce: %d danni,Scatto ferisce: %d danni,Dash wounds: %d damage
 Scatto -40% più lento,Scatto -40% più lento,Dash 40% slower
@@ -225,25 +227,25 @@ Occhio +%d%% danni,Occhio +%d%% danni,Eye +%d%% damage
 Khopesh %d%% critico,Khopesh %d%% critico,Khopesh %d%% critical
 Occhio %d%% critico,Occhio %d%% critico,Eye %d%% critical
 Scatto ricarica -%d%%,Scatto ricarica -%d%%,Dash recharge -%d%%
-Ti rialzi una volta con il %d%%,Ti rialzi una volta con il %d%%,Rise once with %d%%
+Ti rialzi con il %d%%,Ti rialzi con il %d%%,
 -%d%% danni subiti,-%d%% danni subiti,-%d%% damage taken
 3° colpo stordisce,3° colpo stordisce,3rd strike stuns
-Scatto lascia pozza: -%d%% velocità nemici,Scatto lascia pozza: -%d%% velocità nemici,Dash leaves a pool: enemies -%d%% speed
-+%d%% danni a storditi e rallentati,+%d%% danni a storditi e rallentati,+%d%% damage to stunned and slowed
-"Spazzata +%d%% danni, spinta doppia","Spazzata +%d%% danni, spinta doppia",
+Pozza: nemici -%d%% veloci,Pozza: nemici -%d%% veloci,
++%d%% su storditi e lenti,+%d%% su storditi e lenti,
+"Spazzata +%d%%, spinta ×2","Spazzata +%d%%, spinta ×2",
 1° e 2° fendente +%d%% danni,1° e 2° fendente +%d%% danni,
-Affondo dopo scatto: %d%% critico,Affondo dopo scatto: %d%% critico,
+Affondo: %d%% critico,Affondo: %d%% critico,
 Khopesh +%d%% più rapido,Khopesh +%d%% più rapido,
-"Fendenti +%d%% portata, più ampi","Fendenti +%d%% portata, più ampi",
-Affondi +%d%% danni sulla punta,Affondi +%d%% danni sulla punta,
+Fendenti +%d%% più lunghi,Fendenti +%d%% più lunghi,
+Punta: affondi +%d%%,Punta: affondi +%d%%,
 Scudo di %d a ogni stanza,Scudo di %d a ogni stanza,%d shield every chamber
 Cure +%d%%,Cure +%d%%,Healing +%d%%
-Sotto 1/3 di vita: -%d%% danni subiti,Sotto 1/3 di vita: -%d%% danni subiti,Below 1/3 health: -%d%% damage taken
+Sotto 1/3 vita: -%d%% danni,Sotto 1/3 vita: -%d%% danni,
 Sekhem +%d%% più rapido,Sekhem +%d%% più rapido,Sekhem +%d%% faster
-Occhio torna indietro: %d%% danni,Occhio torna indietro: %d%% danni,Eye comes back: %d%% damage
+Occhio torna: %d%% danni,Occhio torna: %d%% danni,
 Occhio insegue · +%d%% danni,Occhio insegue · +%d%% danni,Eye seeks · +%d%% damage
 Occhio: %d cariche,Occhio: %d cariche,Eye: %d charges
-Colpiti dall'Occhio: +%d%% dal khopesh,Colpiti dall'Occhio: +%d%% dal khopesh,Hit by the Eye: +%d%% from the khopesh
+Colpiti dall'Occhio: +%d%%,Colpiti dall'Occhio: +%d%%,
 Scatto -%d%% · +10%% velocità,Scatto -%d%% · +10%% velocità,Dash -%d%% · +10%% speed
 -5 vita massima,-5 vita massima,-5 max health
 +%d vita massima,+%d vita massima,+%d max health
@@ -259,26 +261,26 @@ Occhio -10% danni,Occhio -10% danni,Eye -10% damage
 3° colpo +%d%%,3° colpo +%d%%,3rd strike +%d%%
 1° e 2° colpo -10%,1° e 2° colpo -10%,1st and 2nd strike -10%
 +%d%% Ka,+%d%% Ka,+%d%% Ka
-Spiriti: %d danni a ogni uccisione,Spiriti: %d danni a ogni uccisione,Spirits: %d damage on every kill
+Spiriti da %d danni,Spiriti da %d danni,
 Nemici +5% vita,Nemici +5% vita,Enemies +5% health
-Occhio incendia ed esplode sempre,Occhio incendia ed esplode sempre,Eye always burns and explodes
-+25% khopesh sui nemici in fiamme,+25% khopesh sui nemici in fiamme,+25% khopesh on burning enemies
+"Occhio incendia, esplode","Occhio incendia, esplode",
++25% sui nemici in fiamme,+25% sui nemici in fiamme,
 Critici: ruggito di 12 danni,Critici: ruggito di 12 danni,Crits: 12 damage roar
-Critico dell'Occhio: ricarica dimezzata,Critico dell'Occhio: ricarica dimezzata,Eye crit: recharge halved
+Critico: ricarica Occhio -50%,Critico: ricarica Occhio -50%,
 Con lo scudo: khopesh +25%,Con lo scudo: khopesh +25%,With the shield: khopesh +25%
 Tutto incendia · fiamme +60%,Tutto incendia · fiamme +60%,Everything burns · flames +60%
 Occhio ricarica +50%,Occhio ricarica +50%,Eye recharge +50%
 Khopesh +50%,Khopesh +50%,Khopesh +50%
--1 vita ogni 2 s in combattimento,-1 vita ogni 2 s in combattimento,-1 health every 2 s in combat
+In lotta: -1 vita ogni 2 s,In lotta: -1 vita ogni 2 s,
 Critici ×3 · almeno 10%,Critici ×3 · almeno 10%,Crits ×3 · at least 10%
 -15 vita massima,-15 vita massima,-15 max health
 Khopesh +40% · spinta doppia,Khopesh +40% · spinta doppia,Khopesh +40% · double knockback
 -15% velocità,-15% velocità,-15% speed
 +15% vita a ogni stanza,+15% vita a ogni stanza,+15% health every chamber
 Khopesh -25%,Khopesh -25%,Khopesh -25%
-Occhio ricarica più del doppio,Occhio ricarica più del doppio,Eye recharges more than twice as fast
+Occhio: ricarica ×2,Occhio: ricarica ×2,
 Khopesh -35%,Khopesh -35%,Khopesh -35%
-Occhio danni ×2 · trapassa tutti,Occhio danni ×2 · trapassa tutti,Eye damage ×2 · pierces all
+"Occhio ×2, trapassa tutti","Occhio ×2, trapassa tutti",
 Khopesh -40%,Khopesh -40%,Khopesh -40%
 Uscire al giorno,Uscire al giorno,Coming Forth by Day
 Inizi ogni discesa con +{v} vita massima.,Inizi ogni discesa con +{v} vita massima.,Start every descent with +{v} max health.
@@ -606,6 +608,7 @@ E / Y / B per chiudere,E / Y / B per chiudere,E / Y / B to close
 Il Libro dei Morti,Il Libro dei Morti,The Book of the Dead
 Ka custodito: %d    ·    Capitoli attivi: %d di %d,Ka custodito: %d    ·    Capitoli attivi: %d di %d,Stored Ka: %d    ·    Active chapters: %d of %d
 comprato,comprato,bought
+  · liv. %d/%d,  · liv. %d/%d,
 Un posto in più nel Libro   [%d Ka],Un posto in più nel Libro   [%d Ka],
 Capitolo %d · %s%s,Capitolo %d · %s%s,Chapter %d · %s%s
   (livello %d di %d),  (livello %d di %d),  (level %d of %d)
@@ -912,6 +915,25 @@ La fame di Am-heh,La fame di Am-heh,
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,
 Vita,Vita,Health
 Comandi,Comandi,Controls
+   · SCELTO,   · SCELTO,
+"Khopesh incendia: %d danni ogni 0,5 s","Khopesh incendia: %d danni ogni 0,5 s",Khopesh burns: %d damage every 0.5 s
+Ti rialzi una volta con il %d%%,Ti rialzi una volta con il %d%%,Rise once with %d%%
+Scatto lascia pozza: -%d%% velocità nemici,Scatto lascia pozza: -%d%% velocità nemici,Dash leaves a pool: enemies -%d%% speed
++%d%% danni a storditi e rallentati,+%d%% danni a storditi e rallentati,+%d%% damage to stunned and slowed
+"Spazzata +%d%% danni, spinta doppia","Spazzata +%d%% danni, spinta doppia",
+Affondo dopo scatto: %d%% critico,Affondo dopo scatto: %d%% critico,
+"Fendenti +%d%% portata, più ampi","Fendenti +%d%% portata, più ampi",
+Affondi +%d%% danni sulla punta,Affondi +%d%% danni sulla punta,
+Sotto 1/3 di vita: -%d%% danni subiti,Sotto 1/3 di vita: -%d%% danni subiti,Below 1/3 health: -%d%% damage taken
+Occhio torna indietro: %d%% danni,Occhio torna indietro: %d%% danni,Eye comes back: %d%% damage
+Colpiti dall'Occhio: +%d%% dal khopesh,Colpiti dall'Occhio: +%d%% dal khopesh,Hit by the Eye: +%d%% from the khopesh
+Spiriti: %d danni a ogni uccisione,Spiriti: %d danni a ogni uccisione,Spirits: %d damage on every kill
+Occhio incendia ed esplode sempre,Occhio incendia ed esplode sempre,Eye always burns and explodes
++25% khopesh sui nemici in fiamme,+25% khopesh sui nemici in fiamme,+25% khopesh on burning enemies
+Critico dell'Occhio: ricarica dimezzata,Critico dell'Occhio: ricarica dimezzata,Eye crit: recharge halved
+-1 vita ogni 2 s in combattimento,-1 vita ogni 2 s in combattimento,-1 health every 2 s in combat
+Occhio ricarica più del doppio,Occhio ricarica più del doppio,Eye recharges more than twice as fast
+Occhio danni ×2 · trapassa tutti,Occhio danni ×2 · trapassa tutti,Eye damage ×2 · pierces all
 "Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Ammit, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.",
 La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,La mia lancia ha toccato il cuore di Ammit. Ora so che sai tenerla.,
 "Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","Il khopesh dei re ha vinto la Divoratrice. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.",

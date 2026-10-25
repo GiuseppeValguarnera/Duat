@@ -879,12 +879,21 @@ func _summary_row(text: String, gain: bool, inner: float) -> HBoxContainer:
 	tri.custom_minimum_size = Vector2(6, 6) * Fx.ui
 	tri.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(tri)
-	var l := UiStyle.label(text, 9, col, true)
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size = Vector2(0, 0)
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var tw: float = l.get_theme_font("font").get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, l.get_theme_font_size("font_size")).x
-	l.custom_minimum_size.x = minf(tw + 2.0, inner - 10.0 * Fx.ui)
+	# su una riga sola, se serve con il carattere un po' più piccolo; solo se non basta va a capo,
+	# e allora il triangolo resta accanto alla prima riga
+	var avail := inner - 10.0 * Fx.ui
+	var font := UiStyle.title_font()
+	var sz := 9
+	while sz > 7 and font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(sz)).x > avail:
+		sz -= 1
+	var l := UiStyle.label(text, sz, col, true)
+	var tw: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(sz)).x
+	if tw > avail:
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		l.custom_minimum_size.x = avail
+		tri.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		tri.custom_minimum_size.y = font.get_height(Fx.fs(sz)) * 0.8
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	row.add_child(l)
 	return row
 
@@ -932,7 +941,7 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 		if Boons.is_heavy(id):
 			tag = "Dono pesante"
 		if Boons.ALL[id].has("weapon"):
-			tag += " · solo %s" % Weapons.ALL[Boons.ALL[id]["weapon"]]["name"]
+			tag += " · solo %s" % String(Weapons.ALL[Boons.ALL[id]["weapon"]]["short"]).to_lower()
 		if Boons.is_duo(id):
 			var gs: Array = Boons.ALL[id]["gods"]
 			tag = "Dono doppio · %s + %s" % [Boons.god_name(gs[0]), Boons.god_name(gs[1])]
@@ -2323,7 +2332,8 @@ class TriIcon extends Control:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	func _draw() -> void:
-		var w := size.x
-		var h := size.y
-		var pts := PackedVector2Array([Vector2(w / 2.0, 0), Vector2(w, h), Vector2(0, h)]) if up else PackedVector2Array([Vector2(0, 0), Vector2(w, 0), Vector2(w / 2.0, h)])
+		# triangolo di lato fisso, centrato nello spazio (che può essere alto quanto una riga)
+		var k := minf(size.x, size.y)
+		var o := Vector2((size.x - k) / 2.0, (size.y - k) / 2.0)
+		var pts := PackedVector2Array([o + Vector2(k / 2.0, 0), o + Vector2(k, k), o + Vector2(0, k)]) if up else PackedVector2Array([o, o + Vector2(k, 0), o + Vector2(k / 2.0, k)])
 		draw_colored_polygon(pts, color)
