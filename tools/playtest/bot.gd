@@ -46,6 +46,8 @@ var modded := false
 var interact_release := false
 var shop_buys := []
 var force_anubi := ""
+var force_pact := 0                    # stanza in cui prendere per forza un patto di Set (0 = mai)
+var force_pact_done := false
 var anubi_done := false
 var force_god := ""
 # --- apprendimento (DUAT_BRAIN): il tester ricorda le discese precedenti
@@ -80,8 +82,9 @@ func _ready() -> void:
 		cfg["heavy"] = 3.0
 	elif force_heavy == "never":
 		cfg["heavy"] = -3.0
-	force_anubi = OS.get_environment("DUAT_ANUBI")
+	force_anubi = OS.get_environment("DUAT_ANUBI").replace("_", " ")   # gli spazi non passano negli elenchi di prove
 	skip = OS.get_environment("DUAT_SKIP")
+	force_pact = int(OS.get_environment("DUAT_FORCEPACT")) if OS.get_environment("DUAT_FORCEPACT") != "" else 0
 	var sm := OS.get_environment("DUAT_SERPENT")
 	if sm != "":
 		serpent_mod = JSON.parse_string(sm)
@@ -385,6 +388,13 @@ func _decide(g, p) -> void:
 		if c.has_signal("collected"):
 			move_dir = (c.global_position - pos).normalized()
 			return
+	# esperimento: patto di Set forzato in una stanza precisa (DUAT_FORCEPACT=numero di stanza)
+	if force_pact > 0 and not force_pact_done and not g.doors.is_empty() and Run.room == force_pact:
+		force_pact_done = true
+		Run.hp = maxf(1.0, Run.hp - 10.0)
+		g.doors.clear()
+		g.start_room.call_deferred({"kind": "set"})
+		return
 	if not g.doors.is_empty():
 		var d = _pick_door(g)
 		if d != null:
@@ -624,6 +634,8 @@ func _release_all() -> void:
 func _metrics(g, _p) -> void:
 	if last_hp >= 0.0 and Run.hp < last_hp - 0.01:
 		var src: String = Run.last_hit if Run.last_hit != "" else "?"
+		if src == "serpent" and g.boss != null and is_instance_valid(g.boss):
+			src = "serpent_" + str(g.boss.state)
 		if src == "amheh" and g.boss != null and is_instance_valid(g.boss):
 			src = "amheh_" + str(g.boss.state)
 		if src == "ammit" and g.boss != null and is_instance_valid(g.boss):

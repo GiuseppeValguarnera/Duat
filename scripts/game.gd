@@ -371,6 +371,7 @@ func start_room(reward: Dictionary) -> void:
 	var boss_room := Run.room > Run.ROOMS_PER_RUN
 	var kind: String = reward.get("kind", "none")
 	var calm := kind == "guardian" or kind == "shop" or kind == "tutorial"
+	Run.curse_paused = boss_room or kind == "guardian" or kind == "shop"
 	shop_items.clear()
 	if not boss_room and kind != "guardian":
 		Music.play("hub" if kind == "shop" else "room")
@@ -1043,9 +1044,9 @@ func _show_set_menu() -> void:
 		Run.ka += roundi(25 * Run.ka_mult())
 		_open_doors()
 		return
-	var sub := "Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa"
+	var sub := "Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa. Davanti ai guardiani Set tace"
 	if Run.room + 2 > Run.ROOMS_PER_RUN:
-		sub = "Attenzione: la maledizione ti seguirà anche contro Am-heh"
+		sub = "Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arrivare in tempo"
 	_open_choice("Set ti propone un patto", Boons.god_color("set"), sub, cards, Lore.speech("set"), "set")
 
 

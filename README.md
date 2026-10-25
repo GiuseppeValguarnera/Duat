@@ -228,7 +228,7 @@ Ogni volta che un dio ti offre un dono, ti parla. La prima volta si presenta; po
 
 A volte compare una porta di **Set**: entrare costa 10 punti vita. A fine stanza scegli un patto: una **maledizione** che dura le 2 stanze successive e poi una **benedizione** permanente per tutta la run. Tempesta Interiore (Sekhem) compare solo dopo aver sbloccato il Sekhem.
 
-Le maledizioni colpiscono qualunque stile di gioco, così non si possono aggirare: nemici più veloci del 30%, +50% di danni subiti, nemici con il 40% di vita in più, cure dimezzate, oppure 1 vita persa ogni 2 secondi mentre combatti. Se il patto arriva dopo la stanza 4, la maledizione dura anche contro Ammit (la carta lo dice).
+Davanti ai guardiani, ai boss e al Traghettatore Set tace: la maledizione non agisce e non conta la stanza. Le maledizioni colpiscono qualunque stile di gioco, così non si possono aggirare: nemici più veloci del 30%, +50% di danni subiti, nemici con il 40% di vita in più, cure dimezzate, oppure 1 vita persa ogni 2 secondi mentre combatti. Se il patto arriva dopo la stanza 4, la maledizione dura anche contro Ammit (la carta lo dice).
 
 ## Il Peso del Cuore
 

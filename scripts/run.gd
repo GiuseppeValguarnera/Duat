@@ -166,7 +166,14 @@ func add_pact(curse: String, blessing: String) -> void:
 	curses.append({"curse": curse, "rooms": Boons.SET_CURSES[curse]["rooms"], "blessing": blessing})
 
 
+## Davanti ai guardiani, ai boss e al Traghettatore Set tace: la maledizione non agisce
+## e non conta la stanza. Così il patto non ti lascia maledetto nello scontro più duro.
+var curse_paused := false
+
+
 func cursed(curse: String) -> bool:
+	if curse_paused:
+		return false
 	for c in curses:
 		if c["curse"] == curse:
 			return true
@@ -175,6 +182,8 @@ func cursed(curse: String) -> bool:
 
 ## Da chiamare a ogni stanza ripulita: le maledizioni scadono e arrivano le benedizioni.
 func room_cleared() -> void:
+	if curse_paused:
+		return
 	var still := []
 	for c in curses:
 		c["rooms"] -= 1
@@ -297,7 +306,7 @@ func burn_tick_damage() -> float:
 func move_mult() -> float:
 	var m := 1.15 if has("set_swift") else 1.0
 	if has("anubi_light"):
-		m *= 1.1
+		m *= 1.12
 	if has("anubi_stone"):
 		m *= 0.94
 	if has("sobek_heavy"):

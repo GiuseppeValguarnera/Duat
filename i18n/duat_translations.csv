@@ -137,7 +137,7 @@ Arpione di Horus,Arpione di Horus,
 Sguardo del Falco,Sguardo del Falco,Gaze of the Falcon
 I nemici colpiti dall'Occhio subiscono il %d%% di danni in più dal khopesh per 3 secondi.,I nemici colpiti dall'Occhio subiscono il %d%% di danni in più dal khopesh per 3 secondi.,Enemies hit by the Eye take %d%% more damage from the khopesh for 3 seconds.
 Cuore Leggero,Cuore Leggero,Light Heart
-Lo scatto si ricarica il %d%% più in fretta e ti muovi il 10%% più veloce.,Lo scatto si ricarica il %d%% più in fretta e ti muovi il 10%% più veloce.,Your dash recharges %d%% faster and you move 10%% faster.
+Lo scatto si ricarica il %d%% più in fretta e ti muovi il 12%% più veloce.,Lo scatto si ricarica il %d%% più in fretta e ti muovi il 12%% più veloce.,
 -5 vita massima.,-5 vita massima.,-5 max health.
 Cuore di Pietra,Cuore di Pietra,Heart of Stone
 +%d vita massima.,+%d vita massima.,+%d max health.
@@ -246,7 +246,7 @@ Occhio torna: %d%% danni,Occhio torna: %d%% danni,
 Occhio insegue · +%d%% danni,Occhio insegue · +%d%% danni,Eye seeks · +%d%% damage
 Occhio: %d cariche,Occhio: %d cariche,Eye: %d charges
 Colpiti dall'Occhio: +%d%%,Colpiti dall'Occhio: +%d%%,
-Scatto -%d%% · +10%% velocità,Scatto -%d%% · +10%% velocità,Dash -%d%% · +10%% speed
+Scatto -%d%% · +12%% velocità,Scatto -%d%% · +12%% velocità,
 -5 vita massima,-5 vita massima,-5 max health
 +%d vita massima,+%d vita massima,+%d max health
 -6% velocità,-6% velocità,-6% speed
@@ -489,8 +489,8 @@ Dono di Anubi,Dono di Anubi,Boon of Anubis
 Dono di %s,Dono di %s,Boon of %s
 Prima · maledizione per %d stanze,Prima · maledizione per %d stanze,
 Poi · per tutta la discesa,Poi · per tutta la discesa,
-"Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa","Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa","First the curse, for the next cleared chambers. Then the power, for the whole descent"
-Attenzione: la maledizione ti seguirà anche contro Am-heh,Attenzione: la maledizione ti seguirà anche contro Am-heh,
+"Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa. Davanti ai guardiani Set tace","Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa. Davanti ai guardiani Set tace",
+Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arrivare in tempo,Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arrivare in tempo,
 Set ti propone un patto,Set ti propone un patto,Set offers you a pact
 Maledizione di Set: %d stanze,Maledizione di Set: %d stanze,Curse of Set: %d chambers
 %s. Poi: %s,%s. Poi: %s,%s. Then: %s
@@ -941,6 +941,10 @@ La fame di Am-heh,La fame di Am-heh,
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,
 Vita,Vita,Health
 Comandi,Comandi,Controls
+Lo scatto si ricarica il %d%% più in fretta e ti muovi il 10%% più veloce.,Lo scatto si ricarica il %d%% più in fretta e ti muovi il 10%% più veloce.,Your dash recharges %d%% faster and you move 10%% faster.
+Scatto -%d%% · +10%% velocità,Scatto -%d%% · +10%% velocità,Dash -%d%% · +10%% speed
+"Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa","Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa","First the curse, for the next cleared chambers. Then the power, for the whole descent"
+Attenzione: la maledizione ti seguirà anche contro Am-heh,Attenzione: la maledizione ti seguirà anche contro Am-heh,
 "Mahaf, il Traghettatore: «Ogni sponda ha il suo prezzo. Anche questa.»","Mahaf, il Traghettatore: «Ogni sponda ha il suo prezzo. Anche questa.»","Mahaf, the Ferryman: «Every shore has its price. This one too.»"
 "Mahaf, il Traghettatore: «Conosci il nome di ogni parte della mia barca? No? Allora paga.»","Mahaf, il Traghettatore: «Conosci il nome di ogni parte della mia barca? No? Allora paga.»","Mahaf, the Ferryman: «Do you know the name of every part of my boat? No? Then pay.»"
 "Mahaf, il Traghettatore: «I morti non portano nulla con sé. Tu porti Ka. Interessante.»","Mahaf, il Traghettatore: «I morti non portano nulla con sé. Tu porti Ka. Interessante.»","Mahaf, the Ferryman: «The dead carry nothing with them. You carry Ka. Interesting.»"
