@@ -65,6 +65,9 @@ func _ready() -> void:
 	Music.play("hub")
 	Run.new_run()
 	Fx.world = world
+	# l'interpolazione fisica (project.godot) solo per chi si muove a ogni passo della fisica:
+	# eroe e nemici (vedi i loro _ready). Il resto (scintille, numeri, proiettili) no.
+	world.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	spots = {
 		"neith": Vector2(104, 186),
 		"altare": Vector2(104, 292),

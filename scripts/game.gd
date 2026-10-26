@@ -138,6 +138,9 @@ func _ready() -> void:
 	Engine.time_scale = 1.0
 	get_tree().paused = false
 	Fx.world = world
+	# l'interpolazione fisica (project.godot) solo per chi si muove a ogni passo della fisica:
+	# eroe e nemici (vedi i loro _ready). Il resto (scintille, numeri, proiettili) no.
+	world.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	Fx.set_hitboxes(Fx.show_hitboxes)
 	Run.in_hub = false
 	Run.new_run()
@@ -245,6 +248,7 @@ func start_room(reward: Dictionary) -> void:
 	pillar_art = DecorScript.Pillars.new()
 	pillar_art.list = pillars
 	world.add_child(pillar_art)
+	_cover_until_baked(decor)
 	for r in obstacles:
 		_solid(r)
 	traps_pos.clear()
@@ -273,6 +277,7 @@ func start_room(reward: Dictionary) -> void:
 		helper.every = Chapters.value("c6")
 		world.add_child(helper)
 		helper.global_position = player.global_position + Vector2(-18, -6)
+		helper.reset_physics_interpolation()       # parte da qui, non dall'angolo della stanza
 
 	if boss_room:
 		waves = []
@@ -595,12 +600,66 @@ func _on_door_chosen(d: Area2D) -> void:
 	Sfx.play("door")
 	var kind: String = d.reward["kind"]
 	if kind == "boss":
-		start_room.call_deferred({"kind": "none"})
+		_fade_to_room({"kind": "none"})
 		return
 	if kind == "set":
 		# il tributo di Set: 10 punti vita, ma non può ucciderti
 		Run.hp = maxf(1.0, Run.hp - SET_DOOR_COST)
-	start_room.call_deferred(d.reward)
+	_fade_to_room(d.reward)
+
+
+# ---------------------------------------------------------------- passaggio tra le stanze
+# Una dissolvenza breve al nero: la stanza nuova si costruisce e si cuoce (room_decor.gd, _bake)
+# mentre lo schermo è nero, così quel lavoro, che sul telefono prende un decimo di secondo, non
+# si vede come uno scatto. In tutto dura circa un terzo di secondo.
+
+var veil: ColorRect
+var _veil_tw: Tween
+var _veil_token := 0
+
+
+func _ensure_veil() -> void:
+	if veil != null:
+		return
+	var layer := CanvasLayer.new()
+	layer.layer = 20                     # sopra il gioco e l'interfaccia, sotto i comandi touch
+	add_child(layer)
+	veil = ColorRect.new()
+	veil.color = Color(0.02, 0.015, 0.03)
+	veil.set_anchors_preset(Control.PRESET_FULL_RECT)
+	veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	veil.modulate.a = 0.0
+	layer.add_child(veil)
+
+
+func _fade_to_room(reward: Dictionary) -> void:
+	_ensure_veil()
+	if _veil_tw != null:
+		_veil_tw.kill()
+	_veil_tw = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_veil_tw.tween_property(veil, "modulate:a", 1.0, 0.12)
+	_veil_tw.tween_callback(func() -> void: start_room(reward))
+
+
+## Lo schermo resta nero finché la stanza non è cotta (o al massimo 0,6 secondi), poi si schiarisce.
+func _cover_until_baked(decor: Node2D) -> void:
+	_ensure_veil()
+	if _veil_tw != null:
+		_veil_tw.kill()
+	veil.modulate.a = 1.0
+	_veil_token += 1
+	var token := _veil_token
+	decor.bake_done.connect(_reveal.bind(token), CONNECT_ONE_SHOT)
+	get_tree().create_timer(0.6, true).timeout.connect(_reveal.bind(token))     # anche a gioco fermo (presentazione del boss)
+
+
+func _reveal(token: int) -> void:
+	if token != _veil_token or veil == null:
+		return
+	_veil_token += 1                     # una volta sola
+	_veil_tw = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_veil_tw.tween_interval(0.03)        # un fotogramma in più: la texture è già sullo schermo
+	_veil_tw.tween_property(veil, "modulate:a", 0.0, 0.2)
 
 
 # ---------------------------------------------------------------- scelta dei doni

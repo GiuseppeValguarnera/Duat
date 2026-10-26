@@ -29,6 +29,7 @@ var painter := false                    ## vero per la copia che disegna dentro 
 ## Chi disegna sotto l'arredamento (il pavimento e i muri della stanza, in game.gd): finisce
 ## anche lui nella texture.
 var under: Callable
+signal bake_done                        ## la texture è pronta (game.gd toglie il nero del passaggio)
 var _vp: SubViewport
 ## Quanto è buia la stanza lontano dalle luci (la penombra cotta, vedi _draw_shade).
 var SHADE := 0.52
@@ -141,7 +142,8 @@ func build(seed_value: int, room_rect: Rect2, top_y: float, wall_w: float, pilla
 func _bake() -> void:
 	if painter or not is_inside_tree():
 		return
-	var s := clampf(ceilf(get_window().size.y / 360.0 * 1.12), 2.0, 3.0)
+	# il doppio dei pixel del gioco basta: di più costava troppo al cambio di stanza sul telefono
+	var s := 2.0
 	var vp := SubViewport.new()
 	vp.size = Vector2i(ceili(room.size.x * s), ceili(room.size.y * s))
 	vp.transparent_bg = true
@@ -176,6 +178,7 @@ func _bake() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	material = Atmos.premult_mat()        # la texture ha l'alfa già moltiplicato
 	queue_redraw()
+	bake_done.emit()
 
 
 func _near_pillar(pos: Vector2, pillars: Array, d: float) -> bool:
@@ -259,11 +262,14 @@ func _draw_shade() -> void:
 	lights.append([Vector2(room.size.x / 2.0, top), 90.0, 0.8])                          # porta nord
 	lights.append([Vector2(wall, mid.y), 80.0, 0.7])
 	lights.append([Vector2(room.size.x - wall, mid.y), 80.0, 0.7])
-	var cell := 16.0
+	# una sola chiamata con tutti i triangoli (prima era un poligono per quadratino: più di mille
+	# chiamate, e il cambio di stanza scattava)
+	var cell := 20.0
 	var nx := ceili(room.size.x / cell)
 	var ny := ceili(room.size.y / cell)
-	var alpha := PackedFloat32Array()
-	alpha.resize((nx + 1) * (ny + 1))
+	var pts := PackedVector2Array()
+	var cols := PackedColorArray()
+	var col := Color(0.03, 0.02, 0.05)
 	for j in range(ny + 1):
 		for i in range(nx + 1):
 			var q := Vector2(i * cell, j * cell)
@@ -274,21 +280,18 @@ func _draw_shade() -> void:
 				if d < r:
 					var k := 1.0 - d / r
 					lit += k * k * (3.0 - 2.0 * k) * float(l[2])
-			alpha[j * (nx + 1) + i] = SHADE * (1.0 - clampf(lit, 0.0, 1.0))
-	var col := Color(0.03, 0.02, 0.05)
+			pts.append(q)
+			cols.append(Color(col, SHADE * (1.0 - clampf(lit, 0.0, 1.0))))
+	var idx := PackedInt32Array()
+	var w := nx + 1
 	for j in range(ny):
 		for i in range(nx):
-			var a0 := alpha[j * (nx + 1) + i]
-			var a1 := alpha[j * (nx + 1) + i + 1]
-			var a2 := alpha[(j + 1) * (nx + 1) + i + 1]
-			var a3 := alpha[(j + 1) * (nx + 1) + i]
-			if a0 + a1 + a2 + a3 < 0.01:
+			var v0 := j * w + i
+			if cols[v0].a + cols[v0 + 1].a + cols[v0 + w].a + cols[v0 + w + 1].a < 0.01:
 				continue
-			var x := i * cell
-			var y := j * cell
-			draw_polygon(PackedVector2Array([Vector2(x, y), Vector2(x + cell, y), Vector2(x + cell, y + cell), Vector2(x, y + cell)]),
-				PackedColorArray([Color(col, a0), Color(col, a1), Color(col, a2), Color(col, a3)]))
-
+			idx.append_array(PackedInt32Array([v0, v0 + 1, v0 + w + 1, v0, v0 + w + 1, v0 + w]))
+	if not idx.is_empty():
+		RenderingServer.canvas_item_add_triangle_array(get_canvas_item(), idx, pts, cols)
 
 func _draw_floor() -> void:
 	var cx := room.size.x / 2.0

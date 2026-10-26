@@ -11,6 +11,10 @@ var t := 0.0
 var bob := 0.0
 
 
+func _ready() -> void:
+	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_ON     # segue l'eroe senza tremolare
+
+
 func _physics_process(delta: float) -> void:
 	var player = get_tree().get_first_node_in_group("player")
 	if player == null or player.dead:

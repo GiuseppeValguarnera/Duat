@@ -64,6 +64,9 @@ func _ready() -> void:
 	Music.play("hub")
 	Run.new_run()
 	Fx.world = world
+	# l'interpolazione fisica (project.godot) solo per chi si muove a ogni passo della fisica:
+	# eroe e nemici (vedi i loro _ready). Il resto (scintille, numeri, proiettili) no.
+	world.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	var cx := ROOM.size.x / 2.0
 	spots = {
 		"anubi": Vector2(cx - 120.0, 200.0),

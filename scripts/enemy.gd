@@ -31,6 +31,7 @@ var sobek_stun_t := 0.0                ## stordito dal Morso di Sobek (per la Fo
 
 
 func _ready() -> void:
+	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_ON
 	if not is_boss:
 		max_hp *= Run.enemy_hp_mult()
 	if elite:

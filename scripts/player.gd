@@ -101,6 +101,8 @@ var walk := 0.0
 
 
 func _ready() -> void:
+	# movimento fluido anche quando lo schermo va a 90 o 120 Hz e la fisica a 60 (vedi project.godot)
+	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_ON
 	max_hp = Run.max_hp
 	hp = Run.hp
 	Run.divine = false
