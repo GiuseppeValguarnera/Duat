@@ -24,6 +24,7 @@ var spots := {}
 var near := ""
 var t := 0.0
 var menu: CanvasLayer = null
+var menu_scroll: ScrollContainer = null   ## la pagina della finestra aperta (la levetta destra la scorre)
 var _news_t := 0.0
 var _forge_news := false
 var _wall_news := false
@@ -121,6 +122,11 @@ func _process(delta: float) -> void:
 		_forge_news = Amulets.something_to_forge()
 		_wall_news = Challenges.to_claim() > 0
 		_imhotep_news = Imhotep.has_news()
+	if menu != null and menu_scroll != null and is_instance_valid(menu_scroll):
+		# la levetta destra scorre la pagina, come una rotella
+		var ax := Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y)
+		if absf(ax) > 0.25:
+			menu_scroll.scroll_vertical += int(ax * 700.0 * delta)
 	if menu != null or talk_box.visible:
 		prompt.visible = false
 		return
@@ -214,6 +220,7 @@ func _window(title: String, sub: String) -> VBoxContainer:
 	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(COLOR.darkened(0.3)))
 	center.add_child(pap)
 	var scroll := ScrollContainer.new()
+	menu_scroll = scroll
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
 	pap.add_child(scroll)
@@ -239,6 +246,37 @@ func _window(title: String, sub: String) -> VBoxContainer:
 		s.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		col.add_child(s)
 	return col
+
+
+## Una voce della finestra che si può selezionare con il pad (o le frecce): prima si potevano
+## raggiungere solo i pulsanti, e le voci senza pulsante restavano fuori dallo schermo.
+## Selezionata, ha la cornice d'oro e la pagina la segue.
+func _entry(col: VBoxContainer) -> VBoxContainer:
+	var frame := PanelContainer.new()
+	frame.focus_mode = Control.FOCUS_ALL
+	var normal := StyleBoxEmpty.new()
+	normal.set_content_margin_all(3)
+	var focus := StyleBoxFlat.new()
+	focus.bg_color = Color(GOLD, 0.12)
+	focus.border_color = Color(GOLD, 0.9)
+	focus.set_border_width_all(1)
+	focus.set_corner_radius_all(3)
+	focus.set_content_margin_all(3)
+	frame.add_theme_stylebox_override("panel", normal)
+	frame.focus_entered.connect(func() -> void: frame.add_theme_stylebox_override("panel", focus))
+	frame.focus_exited.connect(func() -> void: frame.add_theme_stylebox_override("panel", normal))
+	col.add_child(frame)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 1)
+	frame.add_child(box)
+	return box
+
+
+func _first_entry(col: VBoxContainer, fallback: Control) -> Control:
+	for c in col.get_children():
+		if c is PanelContainer and (c as Control).focus_mode == Control.FOCUS_ALL:
+			return c
+	return fallback
 
 
 func _button(parent: Control, text: String, enabled: bool, cb: Callable) -> Button:
@@ -269,9 +307,7 @@ func _open_forge(focus: String = "") -> void:
 		var d: Dictionary = Amulets.data()[id]
 		var own := Amulets.owned(id)
 		var worn: bool = Meta.amulet == id
-		var box := VBoxContainer.new()
-		box.add_theme_constant_override("separation", 1)
-		col.add_child(box)
+		var box := _entry(col)
 		var lvl := Amulets.level(id)
 		var title: String = d["name"]
 		if own:
@@ -312,7 +348,7 @@ func _open_forge(focus: String = "") -> void:
 			row.add_child(UiStyle.label(Lang.t("Sfida: %s") % _challenge_for(id), 8, Color(0.5, 0.36, 0.2), false, inner))
 	var close := _button(col, Lang.t("Chiudi"), true, _close_menu)
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	(first if first != null else close).grab_focus.call_deferred()
+	(first if first != null else _first_entry(col, close)).grab_focus.call_deferred()
 
 
 func _challenge_for(amulet_id: String) -> String:
@@ -333,9 +369,7 @@ func _open_wall() -> void:
 		var d: Dictionary = Challenges.data()[id]
 		var st := Challenges.state(id)
 		var pr := Challenges.progress(id)
-		var box := VBoxContainer.new()
-		box.add_theme_constant_override("separation", 1)
-		col.add_child(box)
+		var box := _entry(col)
 		var mark := Lang.t("  ·  FATTA") if st == 2 else (Lang.t("  ·  COMPIUTA!") if st == 1 else "  ·  %d/%d" % [pr.x, pr.y])
 		box.add_child(UiStyle.label(String(d["name"]) + mark, 10, UiStyle.INK if st > 0 else UiStyle.INK_SOFT, true, inner))
 		box.add_child(UiStyle.label(String(d["desc"]) + Lang.t("  Premio: %s.") % Challenges.reward_text(id), 8, UiStyle.INK_SOFT, false, inner))
@@ -354,7 +388,7 @@ func _open_wall() -> void:
 	col.add_child(more)
 	var close := _button(col, Lang.t("Chiudi"), true, _close_menu)
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	(first if first != null else close).grab_focus.call_deferred()
+	(first if first != null else _first_entry(col, close)).grab_focus.call_deferred()
 
 
 # ---------------------------------------------------------------- disegno
