@@ -192,7 +192,7 @@ func _advance_talk() -> void:
 		return
 	Sfx.play("ui", 0.0)
 	talk_name.text = "Imhotep"
-	talk_text.text = talk_lines.pop_front()
+	talk_text.text = UiStyle.next_talk_page(talk_lines)
 
 
 ## Start / Esc: la pausa, con la scelta di restare o di tornare nella Sala. Prima Start faceva

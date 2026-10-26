@@ -165,6 +165,55 @@ static func talk_style(box: PanelContainer, name_label: Label, text_label: Label
 	text_label.add_theme_font_override("font", body_font())
 	text_label.add_theme_color_override("font_color", INK)
 	text_label.add_theme_font_size_override("font_size", text_label.get_theme_font_size("font_size") + 1)
+	# Il riquadro è ancorato in basso: se il testo non ci sta deve crescere verso l'ALTO (prima
+	# cresceva verso il basso e sul telefono l'ultima riga usciva dallo schermo). E prende la
+	# larghezza dello schermo: la larghezza minima fissa (520) sul telefono (544 meno i margini)
+	# lo faceva sbordare a destra.
+	box.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	text_label.custom_minimum_size.x = 0.0
+	if Fx.mobile:
+		box.offset_left = 14.0
+		box.offset_right = -14.0
+		box.offset_bottom = -8.0
+
+
+## Quanti caratteri al massimo per pagina di dialogo: sul telefono circa tre righe.
+const TALK_PAGE_MOBILE := 200
+const TALK_PAGE_PC := 330
+
+
+## La prossima pagina di un dialogo. Le battute lunghe si dividono in pagine a fine frase (mai a
+## metà): il resto torna in testa alla lista e arriva al tocco dopo. Sul telefono un blocco di
+## cinque righe copriva metà schermo e non si leggeva.
+static func next_talk_page(lines: Array) -> String:
+	var text: String = lines.pop_front()
+	var limit := TALK_PAGE_MOBILE if Fx.mobile else TALK_PAGE_PC
+	if text.length() <= limit:
+		return text
+	# le frasi, con la loro punteggiatura
+	var sentences: Array[String] = []
+	var cur := ""
+	for i in range(text.length()):
+		var ch := text[i]
+		cur += ch
+		if ch in [".", "?", "!"] and (i + 1 >= text.length() or text[i + 1] == " "):
+			sentences.append(cur.strip_edges())
+			cur = ""
+	if cur.strip_edges() != "":
+		sentences.append(cur.strip_edges())
+	var pages: Array[String] = []
+	var page := ""
+	for s in sentences:
+		if page != "" and page.length() + 1 + s.length() > limit:
+			pages.append(page)
+			page = s
+		else:
+			page = s if page == "" else page + " " + s
+	if page != "":
+		pages.append(page)
+	for i in range(pages.size() - 1, 0, -1):
+		lines.push_front(pages[i])
+	return pages[0]
 
 
 ## Titolo grande: il grassetto con il riflesso d'oro che scorre.

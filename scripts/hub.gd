@@ -496,7 +496,7 @@ func _advance_talk() -> void:
 		return
 	Sfx.play("ui", 0.0)
 	talk_name.text = Lang.t("Anubi")
-	talk_text.text = talk_lines.pop_front()
+	talk_text.text = UiStyle.next_talk_page(talk_lines)
 
 
 # ---------------------------------------------------------------- finestre (Libro dei Morti e Papiri di Thoth)
