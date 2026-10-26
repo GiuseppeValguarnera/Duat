@@ -25,7 +25,7 @@ ITALIAN_HINT = re.compile(r"[àèéìòùÀÈÉÌÒÙ]|\b(il|lo|la|i|gli|le|di|d
 def looks_visible(s: str) -> bool:
     if s in EXTRA_VISIBLE:
         return True
-    if s in ("Label", "Button", "HSlider") or s.startswith(("window.", "(window")):   # nomi tecnici, codice della pagina web
+    if s in ("Label", "Button", "HSlider", "CanvasModulate") or s.startswith(("window.", "(window")):   # nomi tecnici, codice della pagina web
         return False
     if not s.strip():
         return False
