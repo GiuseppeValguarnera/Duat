@@ -755,7 +755,7 @@ func _finish(g, forced: String = "") -> void:
 		boss_hp = snappedf(g.boss.hp / g.boss.max_hp, 0.01)
 	var data := {
 		"persona": persona, "exp": OS.get_environment("DUAT_EXP"), "tester": OS.get_environment("DUAT_TESTER"), "run_n": OS.get_environment("DUAT_RUN"), "seed": OS.get_environment("DUAT_SEED"), "result": result, "room": Run.room,
-		"time": snappedf(gt, 0.1), "boss_time": snappedf(boss_time, 0.1), "boss_hp_left": boss_hp,
+		"region": Run.region, "time": snappedf(gt, 0.1), "boss_time": snappedf(boss_time, 0.1), "boss_hp_left": boss_hp,
 		"max_hp": Run.max_hp, "hp": Run.hp, "dmg_taken": dmg, "healed": snappedf(heals, 1),
 		"kills": Run.kills, "dmg_dealt": int(Run.damage_dealt), "ka": Run.ka,
 		"boons": Run.boons, "blessings": Run.blessings, "curses_left": Run.curses, "choices": choices,

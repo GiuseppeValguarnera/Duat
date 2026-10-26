@@ -68,7 +68,7 @@ func _process(dt: float) -> void:
 		6:
 			if t > 1.2:
 				shot("3_dentro")
-				for tr in s.treasures: p.global_position = tr[1]; await get_tree().process_frame; await get_tree().process_frame
+				for tri in s.treasures: p.global_position = tri[1]; await get_tree().process_frame; await get_tree().process_frame
 				step = 7; t = 0
 		7:
 			if t > 0.5:

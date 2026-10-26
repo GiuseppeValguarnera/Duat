@@ -61,6 +61,12 @@ def make_testers(n):
     return testers
 
 
+def reach(r):
+    """Fin dove è arrivata una discesa. Con Sokar le stanze ripartono da 1: la seconda regione
+    conta dopo le 11 stanze della prima (10 + il boss)."""
+    return (int(r.get("region", 1)) - 1) * 11 + r["room"] + (1 if r["result"] == "win" else 0)
+
+
 def play(t):
     tid = t["id"]
     home = os.path.join(OUT, "homes", tid)
@@ -77,7 +83,7 @@ def play(t):
     stale = 0
     for line in (open(out) if os.path.exists(out) else []):
         r = json.loads(line)
-        reached = r["room"] + (1 if r["result"] == "win" else 0)
+        reached = reach(r)
         if reached > best:
             best, stale = reached, 0
         else:
@@ -105,7 +111,7 @@ def play(t):
                 f.write(json.dumps({"tester": tid, "run_n": str(run), "exp": t["arch"], "persona": t["persona"], "result": "crash", "room": 0}) + "\n")
             continue
         r = json.loads(open(out).read().strip().split("\n")[-1])
-        reached = r["room"] + (1 if r["result"] == "win" else 0)
+        reached = reach(r)
         if reached > best:
             best, stale = reached, 0
         else:
