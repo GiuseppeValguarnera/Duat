@@ -240,6 +240,8 @@ func start_room(reward: Dictionary) -> void:
 			world.add_child(pool)
 			pool_spots.append(pool.position)
 	obstacles = decor.build(Run.room * 7919 + randi() % 1000, ROOM, TOP, WALL, pillars + pool_spots, boss_room)
+	if current_reward.get("kind", "") == "set":
+		decor.mosaic = ""                  # al centro c'è l'altare di Set: niente mosaico sopra
 	pillar_art = DecorScript.Pillars.new()
 	pillar_art.list = pillars
 	world.add_child(pillar_art)
@@ -665,16 +667,23 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 		box.add_child(sub)
 	# sul telefono il menu può non entrare nello schermo: prima si accorcia il discorso del dio
 	# (resta per intero nei Papiri di Thoth), poi sparisce la riga di spiegazione
-	var said_ref: Label = words.get_child(words.get_child_count() - 1) if speech != "" else null
+	var said_lbl: Label = words.get_child(words.get_child_count() - 1) if speech != "" else null
+	# riferimenti deboli: se il menu si chiude prima dei 0,05 secondi i nodi non ci sono più
+	var box_ref: WeakRef = weakref(box)
+	var said_ref: WeakRef = weakref(said_lbl) if said_lbl != null else null
+	var sub_ref: WeakRef = weakref(sub) if sub != null else null
 	var shrink := func() -> void:
-		if not is_instance_valid(box):
+		var bx: Control = box_ref.get_ref()
+		if bx == null or not is_inside_tree():
 			return
 		var vh := get_viewport().get_visible_rect().size.y
-		if box.get_combined_minimum_size().y > vh - 8.0 and said_ref != null and is_instance_valid(said_ref):
-			said_ref.max_lines_visible = 2
-			said_ref.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		if box.get_combined_minimum_size().y > vh - 8.0 and sub != null and is_instance_valid(sub):
-			sub.visible = false
+		var sl: Label = said_ref.get_ref() if said_ref != null else null
+		var sb: Label = sub_ref.get_ref() if sub_ref != null else null
+		if bx.get_combined_minimum_size().y > vh - 8.0 and sl != null:
+			sl.max_lines_visible = 2
+			sl.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		if bx.get_combined_minimum_size().y > vh - 8.0 and sb != null:
+			sb.visible = false
 	get_tree().create_timer(0.05, true, false, true).timeout.connect(shrink)
 
 	var row := HBoxContainer.new()
@@ -1645,7 +1654,7 @@ func paint_floor(ci: CanvasItem) -> void:
 			var x1 := minf(x + tile, r.end.x - WALL)
 			var n := fmod(absf(sin(x * 12.9898 + y * 78.233 + Run.room) * 43758.5453), 1.0)
 			var c := base.darkened(n * 0.16)
-			if n > 0.93:
+			if n > 0.93 and not set_altar:
 				c = c.lerp(Color(0.62, 0.5, 0.34), 0.5)        # qualche lastra più chiara, rifatta
 			var slab := Rect2(x0 + 1, y + 1, x1 - x0 - 2, tile - 2)
 			ci.draw_rect(slab, c)

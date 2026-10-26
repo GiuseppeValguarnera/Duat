@@ -72,9 +72,15 @@ static func make(c: Dictionary, card_w: float) -> Button:
 	for ln in lines:
 		col.add_child(ln)
 	# l'altezza giusta si conosce solo dopo che il testo è andato a capo
+	# la lambda tiene i nodi per riferimento debole: se il menu si chiude subito (un tocco
+	# veloce) la carta sparisce prima che la chiamata arrivi, e un riferimento pieno dava errore
+	var btn_ref: WeakRef = weakref(btn)
+	var col_ref: WeakRef = weakref(col)
 	var fit := func() -> void:
-		if is_instance_valid(btn) and is_instance_valid(col):
-			btn.custom_minimum_size.y = col.get_combined_minimum_size().y + 16.0 * Fx.ui
+		var b: Button = btn_ref.get_ref()
+		var cc: Control = col_ref.get_ref()
+		if b != null and cc != null:
+			b.custom_minimum_size.y = cc.get_combined_minimum_size().y + 16.0 * Fx.ui
 	col.minimum_size_changed.connect(fit)
 	fit.call_deferred()
 	return btn
