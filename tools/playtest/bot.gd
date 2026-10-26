@@ -157,6 +157,27 @@ func _hub_shopping() -> void:
 			break
 		if Chapters.buy(best):
 			bought.append(best)
+	# lapislazzuli e Casa della Vita: prima si apre la Casa (40), poi premi, amuleti e restauri
+	if not Meta.casa and Meta.lapis >= 40:
+		Meta.lapis -= 40
+		Meta.casa = true
+	if Meta.casa:
+		for cid in Challenges.ALL_IT:
+			Challenges.claim(cid)
+		for aid in Amulets.ALL_IT:
+			Amulets.forge(aid)
+		var am_pref: Array = cfg.get("amulets", ["was", "kheper", "ankh", "djed", "shen", "hathor", "iside", "udjat"])
+		for aid in am_pref:
+			if Amulets.owned(aid):
+				Meta.amulet = aid
+				break
+		var cheapest := ""
+		for rid in Restorations.ALL_IT:
+			if Restorations.can_buy(rid) and (cheapest == "" or int(Restorations.ALL_IT[rid]["cost"]) < int(Restorations.ALL_IT[cheapest]["cost"])):
+				cheapest = rid
+		if cheapest != "":
+			Restorations.buy(cheapest)
+	Meta.save()
 	if Chapters.slot_cost() > 0 and Meta.ka_bank >= Chapters.slot_cost() + 150 and randf() < 0.8:
 		Chapters.buy_slot()
 	Meta.chapters_equipped.clear()
@@ -683,7 +704,7 @@ func _finish(g, forced: String = "") -> void:
 		"boons": Run.boons, "blessings": Run.blessings, "curses_left": Run.curses, "choices": choices,
 		"rooms": rooms, "dodges": dodges, "shop": shop_buys, "killer": Run.last_hit,
 	}
-	data["meta"] = {"ka_bank": Meta.ka_bank, "tears": Meta.tears, "wins": Meta.ammit_wins, "chapters": Meta.chapter_levels, "equipped": Meta.chapters_equipped, "weight": Weights.total(), "bought": brain.get("last_bought", [])}
+	data["meta"] = {"lapis": Meta.lapis, "casa": Meta.casa, "sfide": Meta.challenges, "amuleto": Run.amulet, "amuleti": Meta.amulets, "restauri": Meta.restorations, "serpent_wins": Meta.serpent_wins, "ka_bank": Meta.ka_bank, "tears": Meta.tears, "wins": Meta.ammit_wins, "chapters": Meta.chapter_levels, "equipped": Meta.chapters_equipped, "weight": Weights.total(), "bought": brain.get("last_bought", [])}
 	data["cfg_now"] = {"reaction": snappedf(float(cfg["reaction"]), 0.001), "dodge": snappedf(base_dodge, 0.01), "skill": snappedf(float(cfg["skill"]), 0.01), "aim_err": snappedf(float(cfg["aim_err"]), 0.1), "heal": snappedf(float(cfg["heal"]), 0.01)}
 	if brain_path != "":
 		_learn_store(data)
