@@ -46,6 +46,11 @@ var ira := false                   # Peso del Cuore: l'ira del Serpente (due mos
 func _ready() -> void:
 	miniboss = true
 	ira = Weights.rank("ira_serpente") > 0
+	# finché non l'hai battuto una volta ha un quarto di vita in meno: il test con i tester
+	# virtuali mostrava che il Serpente faceva smettere di giocare chi è alle prime armi
+	# (30 su 40 si sono arresi lì). Chi è bravo non se ne accorge: lo batte comunque al primo colpo.
+	if Meta.serpent_wins == 0:
+		max_hp *= 0.75
 	super._ready()
 	for i in range(24):
 		trail.append(global_position + Vector2(0, -i * 3.0))

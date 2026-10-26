@@ -112,7 +112,7 @@ static func story() -> Array:
 			Lang.t("Un dio che parla di sé rivela sempre più di quanto vorrebbe.")]},
 		{"id": "casa0", "if": Meta.lapis >= 10 and not Meta.casa, "lines": [
 			Lang.t("Porti lapislazzuli. La pietra del cielo notturno: gli dèi hanno i capelli fatti di questa pietra."),
-			Lang.t("Vedi la porta murata a oriente? Dietro c'è la Casa della Vita, dove gli scribi copiavano i libri sacri. Con quaranta pietre lo scalpellino la riaprirà."),
+			Lang.t("Vedi la porta murata a oriente? Dietro c'è la Casa della Vita, dove gli scribi copiavano i libri sacri. Con trenta pietre lo scalpellino la riaprirà."),
 			Lang.t("Dentro troverai amuleti, e un maestro. Parla molto più di me. Molto più di me.")]},
 		{"id": "casa1", "if": Meta.casa, "lines": [
 			Lang.t("Hai riaperto la Casa della Vita. Ho sentito Imhotep parlare fin da qui."),

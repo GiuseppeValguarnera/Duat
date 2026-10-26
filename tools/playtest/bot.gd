@@ -157,9 +157,9 @@ func _hub_shopping() -> void:
 			break
 		if Chapters.buy(best):
 			bought.append(best)
-	# lapislazzuli e Casa della Vita: prima si apre la Casa (40), poi premi, amuleti e restauri
-	if not Meta.casa and Meta.lapis >= 40:
-		Meta.lapis -= 40
+	# lapislazzuli e Casa della Vita: prima si apre la Casa (30), poi premi, amuleti e restauri
+	if not Meta.casa and Meta.lapis >= 30:
+		Meta.lapis -= 30
 		Meta.casa = true
 	if Meta.casa:
 		for cid in Challenges.ALL_IT:

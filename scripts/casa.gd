@@ -1,6 +1,6 @@
 extends Node2D
 ## La Casa della Vita (per-ankh): nei templi era il luogo degli scribi e degli artigiani, la
-## biblioteca e la bottega insieme. Si apre dalla parete est della Sala del Giudizio con 40
+## biblioteca e la bottega insieme. Si apre dalla parete est della Sala del Giudizio con 30
 ## lapislazzuli.
 ## - il banco dell'orafo: si forgiano gli amuleti (amulets.gd) e si sceglie quello da portare;
 ## - la parete di Thoth: le sfide (challenges.gd), con il premio da riscuotere. Le vedi ogni
@@ -16,7 +16,7 @@ const PlayerScene := preload("res://scenes/player.tscn")
 const COLOR := Color(0.3, 0.62, 0.66)       ## il turchese di Thoth: titoli e cornici
 const GOLD := Color(0.94, 0.72, 0.3)
 const EXIT_Y := 210.0                        ## la porta verso la Sala, nella parete ovest
-const OPEN_COST := 40
+const OPEN_COST := 30
 
 var is_armory := true                  # i comandi touch mostrano anche il pulsante Azione
 var player

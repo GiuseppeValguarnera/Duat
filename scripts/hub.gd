@@ -318,7 +318,7 @@ func _process(delta: float) -> void:
 		Sfx.play("door")
 		get_tree().change_scene_to_file("res://scenes/armory.tscn")
 		return
-	# la porta della Casa della Vita, a est: si attraversa quando è aperta (40 lapislazzuli)
+	# la porta della Casa della Vita, a est: si attraversa quando è aperta (30 lapislazzuli)
 	if Meta.casa and player.global_position.x > ROOM.size.x - WALL - 14.0 and absf(player.global_position.y - CASA_Y) < 24.0:
 		Sfx.play("door")
 		get_tree().change_scene_to_file("res://scenes/casa.tscn")
@@ -401,7 +401,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-const CASA_COST := 40
+const CASA_COST := 30
 
 ## Si apre la Casa della Vita: i lapislazzuli spesi, la porta murata che crolla.
 func _open_casa() -> void:

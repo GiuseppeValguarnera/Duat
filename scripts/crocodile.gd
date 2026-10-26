@@ -13,8 +13,8 @@ extends Enemy
 
 @export var lunge_speed := 250.0
 @export var lunge_time := 0.32
-@export var warn_time := 0.5
-@export var bite_damage := 14.0
+@export var warn_time := 0.65
+@export var bite_damage := 10.0
 @export var land_time := 1.8
 @export var notice := 82.0                 ## a che distanza dal bordo dell'acqua si accorge di te
 

@@ -15,7 +15,7 @@ motion_mode = 1
 script = ExtResource("1_croc")
 max_hp = 48.0
 speed = 70.0
-contact_damage = 8.0
+contact_damage = 6.0
 ka_value = 2
 radius = 10.0
 
