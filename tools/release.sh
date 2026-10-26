@@ -51,7 +51,7 @@ git add VERSION CHANGELOG.md web/stable_version.txt
 git commit -qm "Versione stabile $VER"
 git tag -f "v$VER"
 git push -q origin HEAD:main
-git push -qf origin "v$VER"
+git push -qf origin "v$VER" || echo "(etichetta non caricata su GitHub: resta solo in locale)"
 # il sito di sviluppo porta anche stable/version.txt: così chi gioca su itch.io vede «Nuova versione»
 bash "$ROOT/tools/deploy_web.sh" "$GODOT"
 echo "Versione stabile $VER pronta (build $BUILD)."
