@@ -201,38 +201,67 @@ func _on_hit(_dmg: float) -> void:
 	knock *= 0.1
 
 
+## Il grande serpente delle porte: scaglie verde scuro a fasce d'oro, ventre chiaro, la testa
+## larga col cappuccio dipinto e gli occhi che si accendono di rosso nella furia.
 func _draw_body(flash: bool) -> void:
-	var skin := Color.WHITE if flash else Color(0.25, 0.45, 0.3)
-	var belly := Color.WHITE if flash else Color(0.85, 0.75, 0.45)
-	var band := Color(0.94, 0.72, 0.3)
+	var skin := _f(Color(0.2, 0.4, 0.28), flash)
+	var skin_d := _f(Color(0.12, 0.26, 0.18), flash)
+	var belly := _f(Color(0.88, 0.76, 0.45), flash)
+	var band := _f(GOLD, flash)
 	if state == "under" or state == "warn":
-		# sotto la sabbia: solo un solco che si muove, e il cerchio d'avviso
+		# sotto la sabbia: una gobba di sabbia che si muove, e il cerchio d'avviso
+		_op(_ell(Vector2.ZERO, 10.0, 4.0, 14), Color(0.66, 0.5, 0.3), 0.6)
 		for i in range(4):
-			var p: Vector2 = Vector2(sin(t * 9.0 + i) * 6.0, cos(t * 7.0 + i * 2.0) * 3.0)
-			draw_circle(p, 3.0, Color(0.75, 0.62, 0.4, 0.8))
+			var p: Vector2 = Vector2(sin(t * 9.0 + i) * 7.0, cos(t * 7.0 + i * 2.0) * 3.0 - 2.0)
+			draw_circle(p, 1.8, Color(0.82, 0.68, 0.45, 0.9))
 		if state == "warn":
 			var k := 1.0 - st / erupt_warn
 			draw_arc(Vector2.ZERO, erupt_radius, 0.0, TAU, 40, Color(1, 0.3, 0.2, 0.5 + 0.4 * k), 2.0)
 			draw_circle(Vector2.ZERO, erupt_radius * k, Color(1, 0.3, 0.2, 0.18))
 		return
-	# corpo: cerchi lungo la scia, dalla coda alla testa
-	for i in range(trail.size() - 1, 0, -2):
-		var p: Vector2 = trail[i] - global_position
-		var r := lerpf(10.0, 4.0, float(i) / trail.size())
-		draw_circle(p + Vector2(0, -6), r, skin.darkened(0.15 if int(i / 2.0) % 2 == 0 else 0.0))
-		if int(i / 2.0) % 3 == 0:
-			draw_arc(p + Vector2(0, -6), r, 0.0, TAU, 12, band, 1.0)
-	# testa con il cappuccio
+	# il corpo lungo la scia, dalla coda alla testa: prima tutti i contorni, poi le scaglie
+	var n := trail.size()
+	for pass_i in range(2):
+		for i in range(n - 1, 0, -2):
+			var p: Vector2 = trail[i] - global_position + Vector2(0, -6)
+			var r := lerpf(10.0, 3.5, float(i) / n)
+			if pass_i == 0:
+				draw_circle(p, r + 1.0, OUT)
+				continue
+			var seg := int(i / 2.0)
+			draw_circle(p, r, skin_d if seg % 2 == 0 else skin)
+			draw_circle(p + Vector2(0, r * 0.45), r * 0.55, belly)
+			if seg % 3 == 0:
+				draw_arc(p, r * 0.8, PI * 1.1, PI * 1.9, 8, band, 1.4)
+			draw_circle(p + Vector2(-r * 0.3, -r * 0.35), r * 0.18, Color(1, 1, 1, 0.18))
+	# la testa col cappuccio, girata dove guarda
 	var h := Vector2(0, -12)
 	if state == "windup":
 		h -= aim * 6.0
 		draw_line(Vector2(0, -12), Vector2(0, -12) + aim * strike_speed * strike_time, Color(1, 0.2, 0.15, 0.5), 3.0)
-	draw_circle(h, 13.0, skin)
-	draw_circle(h + aim * 6.0, 8.0, skin.lightened(0.1))
-	draw_circle(h + Vector2(0, 4), 6.0, belly)
-	var eye_side := aim.orthogonal() * 4.0
+	draw_set_transform(h, aim.angle(), Vector2.ONE)
+	var hood := PackedVector2Array([Vector2(-9, 0), Vector2(-6, -12), Vector2(1, -14), Vector2(5, -8), Vector2(5, 8), Vector2(1, 14), Vector2(-6, 12)])
+	_op(hood, skin_d, 1.0)
+	# il disegno sul cappuccio: due occhi finti d'oro e le fasce
+	for sy in [-1.0, 1.0]:
+		_op(_ell(Vector2(-2.5, 7.5 * sy), 2.4, 2.0, 10), band, 0.6)
+		draw_circle(Vector2(-2.3, 7.5 * sy), 0.9, OUT)
+	draw_line(Vector2(-6, -9), Vector2(-6, 9), band, 1.0)
+	# la testa: larga dietro, muso arrotondato in avanti
+	var head := PackedVector2Array([Vector2(-1, -7), Vector2(7, -6.5), Vector2(14, -3.5), Vector2(16, 0), Vector2(14, 3.5), Vector2(7, 6.5), Vector2(-1, 7)])
+	_op(head, skin, 1.0)
+	draw_line(Vector2(3, 0), Vector2(14, 0), skin_d, 0.8)
+	for k in range(3):
+		draw_arc(Vector2(2.0 + k * 3.0, 0), 4.5, -0.9, 0.9, 5, skin_d, 0.6)
 	var glow := Color(1, 0.25, 0.15) if enraged else Color(1, 0.85, 0.3)
-	draw_circle(h + aim * 9.0 + eye_side, 1.8, glow)
-	draw_circle(h + aim * 9.0 - eye_side, 1.8, glow)
+	if flash:
+		glow = Color.WHITE
+	for sy in [-1.0, 1.0]:
+		draw_circle(Vector2(9.0, 4.0 * sy), 2.2, OUT)
+		draw_circle(Vector2(9.0, 4.0 * sy), 1.6, glow)
+		draw_line(Vector2(8.0, 4.0 * sy), Vector2(10.0, 4.0 * sy), OUT, 0.5)
 	if state == "spit":
-		draw_circle(h + aim * 14.0, 3.0 + (0.55 - st) * 6.0, Color(0.5, 1, 0.4, 0.6))
+		_op(PackedVector2Array([Vector2(13, -2.5), Vector2(19, -3.5), Vector2(19, 3.5), Vector2(13, 2.5)]), Color(0.7, 0.15, 0.15), 0.6)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	if state == "spit":
+		draw_circle(h + aim * 18.0, 3.0 + (0.55 - st) * 6.0, Color(0.5, 1, 0.4, 0.6))

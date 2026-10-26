@@ -102,32 +102,58 @@ func _hide(on: bool) -> void:
 			contact.monitoring = true
 
 
+## Il cobra egizio, l'ureo: spire a terra a fasce scure e d'oro, il collo che si alza, il
+## cappuccio largo con il disegno sul davanti e la lingua biforcuta. Avviso: il cappuccio si
+## apre e gli occhi diventano verdi. Sotto la sabbia si vede solo una gobba che si muove.
 func _draw_body(flash: bool) -> void:
 	if state == "under":
+		var sand := Color(0.66, 0.5, 0.3)
+		_op(_ell(Vector2(0, -1.0), 7.0, 2.6, 14), sand, 0.6)
 		for i in range(3):
-			draw_circle(Vector2(sin(t * 10.0 + i * 2.0) * 4.0, 0), 2.5, Color(0.75, 0.62, 0.4, 0.8))
+			draw_circle(Vector2(sin(t * 10.0 + i * 2.0) * 5.0, -2.0 - absf(cos(t * 8.0 + i)) * 2.0), 1.2, Color(0.82, 0.68, 0.45, 0.9))
 		return
-	var skin := Color.WHITE if flash else Color(0.2, 0.22, 0.18)
-	var belly := Color.WHITE if flash else Color(0.85, 0.7, 0.35)
+	var skin := _f(Color(0.17, 0.19, 0.15), flash)
+	var band := _f(Color(0.78, 0.6, 0.28), flash)
+	var belly := _f(Color(0.88, 0.74, 0.42), flash)
 	var rise := 1.0
 	if state == "emerge":
 		rise = clampf(1.0 - st / 0.6, 0.2, 1.0)
 	elif state == "dive":
 		rise = clampf(st / 0.5, 0.2, 1.0)
-	# spire a terra
-	draw_set_transform(Vector2(0, -1), 0.0, Vector2(1.0, 0.5))
-	draw_arc(Vector2.ZERO, 7.0, 0.0, TAU, 16, skin, 3.0)
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	# collo e cappuccio
-	var top := Vector2(0, -16 * rise)
-	draw_line(Vector2(0, -2), top, skin, 4.0)
-	var hood := 7.0 if state in ["hood", "spit"] else 4.5
-	draw_set_transform(top, 0.0, Vector2(1.0, 1.3))
-	draw_circle(Vector2.ZERO, hood, skin)
-	draw_circle(Vector2(0, 1), hood * 0.5, belly)
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	var dir := 1.0 if aim.x >= 0.0 else -1.0
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2(dir, 1.0))
+	# spire a terra, con le fasce
+	draw_set_transform(Vector2(0, -1), 0.0, Vector2(dir, 0.5))
+	draw_arc(Vector2.ZERO, 7.0, 0.0, TAU, 20, OUT, 4.6)
+	draw_arc(Vector2.ZERO, 7.0, 0.0, TAU, 20, skin, 3.0)
+	for k in range(6):
+		var a := k * TAU / 6.0 + t * 0.5
+		draw_arc(Vector2.ZERO, 7.0, a, a + 0.25, 3, band, 3.0)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2(dir, 1.0))
+	# collo che sale con il ventre chiaro
+	var top := Vector2(1.0, -16.0 * rise)
+	var neck := PackedVector2Array([Vector2(-2.5, -1.5), Vector2(2.5, -1.5), top + Vector2(2.0, 3.0), top + Vector2(-2.0, 3.0)])
+	_op(neck, skin)
+	draw_line(Vector2(1.0, -2.0), top + Vector2(0.6, 3.0), belly, 1.2)
+	# il cappuccio: più largo nell'avviso e quando sputa
+	var open := state in ["hood", "spit"]
+	var hw := 6.5 if open else 4.0
+	var hood := PackedVector2Array([top + Vector2(0, -6.5), top + Vector2(hw * 0.8, -4.0), top + Vector2(hw, 1.0), top + Vector2(hw * 0.5, 5.0), top + Vector2(-hw * 0.5, 5.0), top + Vector2(-hw, 1.0), top + Vector2(-hw * 0.8, -4.0)])
+	_op(hood, skin)
+	_op(PackedVector2Array([top + Vector2(0, -3.0), top + Vector2(hw * 0.35, 0.0), top + Vector2(hw * 0.25, 4.0), top + Vector2(-hw * 0.25, 4.0), top + Vector2(-hw * 0.35, 0.0)]), belly, 0.5)
+	for k in range(3):
+		draw_line(top + Vector2(-hw * 0.25, 0.5 + k * 1.2), top + Vector2(hw * 0.25, 0.5 + k * 1.2), band, 0.5)
+	# la testa, il muso verso di te
+	_op(_ell(top + Vector2(1.5, -5.5), 2.6, 1.9, 10), skin, 0.6)
 	var eye_col := Color(0.6, 1, 0.4) if state == "hood" else Color(1, 0.85, 0.3)
-	draw_circle(top + Vector2(-1.5, -2), 1.0, eye_col)
-	draw_circle(top + Vector2(1.5, -2), 1.0, eye_col)
+	if flash:
+		eye_col = Color.WHITE
+	draw_circle(top + Vector2(2.6, -6.0), 0.75, eye_col)
+	if fmod(t, 1.2) < 0.25:
+		var tg := top + Vector2(4.0, -5.0)
+		draw_line(tg, tg + Vector2(2.0, 0.3), Color(0.85, 0.2, 0.2), 0.5)
+		draw_line(tg + Vector2(2.0, 0.3), tg + Vector2(2.8, -0.4), Color(0.85, 0.2, 0.2), 0.4)
+		draw_line(tg + Vector2(2.0, 0.3), tg + Vector2(2.8, 0.9), Color(0.85, 0.2, 0.2), 0.4)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	if state == "hood":
-		draw_line(top, top + aim * 40.0, Color(0.5, 1, 0.35, 0.35), 1.5)
+		draw_line(top * Vector2(dir, 1.0), top * Vector2(dir, 1.0) + aim * 40.0, Color(0.5, 1, 0.35, 0.35), 1.5)

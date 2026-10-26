@@ -81,34 +81,62 @@ func _sting(to: Vector2) -> void:
 		player.poison(poison_time)
 
 
+## Lo scorpione di Serket: corazza ambrata a segmenti con le fasce turchesi della dea, otto zampe,
+## le chele aperte davanti e la coda a cinque anelli che finisce nel pungiglione ricurvo.
+## Avviso: la coda si alza e il pungiglione si accende di verde.
 func _draw_body(flash: bool) -> void:
-	var shell := Color.WHITE if flash else Color(0.55, 0.3, 0.18)
-	var dark := Color.WHITE if flash else Color(0.3, 0.15, 0.08)
+	var shell := _f(Color(0.62, 0.36, 0.17), flash)
+	var shell_l := _f(Color(0.86, 0.56, 0.27), flash)
+	var shell_d := _f(Color(0.36, 0.18, 0.08), flash)
+	var band := _f(Color(0.2, 0.6, 0.6), flash)
 	var dir := 1.0 if velocity.x >= 0.0 else -1.0
 	if state == "windup" or state == "strike":
 		dir = 1.0 if sting_dir.x >= 0.0 else -1.0
-	# zampe
-	for i in range(3):
-		var lx := -4.0 + i * 4.0
-		var w := sin(t * 18.0 + i) * 1.5
-		draw_line(Vector2(lx, -3), Vector2(lx - 3 + w, 1), dark, 1.0)
-		draw_line(Vector2(lx, -3), Vector2(lx + 3 - w, 1), dark, 1.0)
-	draw_set_transform(Vector2(0, -4), 0.0, Vector2(1.0, 0.65))
-	draw_circle(Vector2.ZERO, 6.5, shell)
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	# chele
-	draw_circle(Vector2(8 * dir, -4), 2.5, dark)
-	draw_circle(Vector2(8 * dir, -1), 2.0, dark)
-	# coda: si alza durante l'avviso
 	var raise := 0.0
 	if state == "windup":
 		raise = 1.0 - st / sting_windup
 	elif state == "strike":
 		raise = 1.0
-	var base := Vector2(-6 * dir, -4)
-	var mid := base + Vector2(-4 * dir, -6 - raise * 4.0)
-	var tip := mid + Vector2(3 * dir + raise * 6.0 * dir, -5 - raise * 3.0)
-	draw_line(base, mid, shell, 2.5)
-	draw_line(mid, tip, shell, 2.0)
-	var tip_col := Color(0.6, 1, 0.4) if raise > 0.0 else dark
-	draw_circle(tip, 2.0 + raise * 1.5, tip_col)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2(dir, 1.0))
+	# otto zampe sottili, a passi alternati
+	for i in range(4):
+		var lx := -4.5 + i * 3.0
+		var w := sin(t * 18.0 + i * 1.7) * 1.4
+		_limb(Vector2(lx, -4.0), Vector2(lx - 2.0 + w, -6.5), shell_d, 0.7)
+		_limb(Vector2(lx - 2.0 + w, -6.5), Vector2(lx - 3.0 + w, -0.5), shell_d, 0.7)
+		_limb(Vector2(lx, -3.0), Vector2(lx + 1.5 - w, 0.8), shell_d, 0.8)
+	# corpo a segmenti
+	_op(_ell(Vector2(-0.5, -4.2), 6.8, 3.6, 16), shell)
+	for k in range(3):
+		var x := -4.0 + k * 2.6
+		draw_line(Vector2(x, -7.2), Vector2(x - 0.4, -1.4), shell_d, 0.7)
+	draw_line(Vector2(-5.5, -5.5), Vector2(3.5, -5.5), band, 0.8)
+	draw_arc(Vector2(-1.0, -5.2), 4.0, PI * 1.1, PI * 1.6, 6, shell_l, 0.8)
+	# le chele: braccio e pinza aperta
+	for k in [0.0, 1.0]:
+		var base := Vector2(5.0, -5.0 + k * 2.0)
+		var elbow := Vector2(8.0, -7.0 + k * 4.0)
+		_limb(base, elbow, shell, 1.3)
+		var claw := PackedVector2Array([elbow, elbow + Vector2(3.4, -1.6), elbow + Vector2(4.4, -0.2), elbow + Vector2(2.2, 0.2), elbow + Vector2(3.8, 1.4), elbow + Vector2(1.2, 1.6)])
+		_op(claw, shell_l, 0.6)
+	# la coda: cinque anelli che salgono ad arco sopra il dorso
+	var seg := PackedVector2Array()
+	for k in range(6):
+		var u := k / 5.0
+		var ang := lerpf(PI * 0.95, PI * (0.35 - raise * 0.2), u)
+		var r := 7.0 + raise * 3.0
+		seg.append(Vector2(-7.0, -4.0) + Vector2(cos(ang) * r * 0.6 + u * (4.0 + raise * 4.0), -sin(ang) * r - u * (3.0 + raise * 3.0)))
+	for k in range(5):
+		_limb(seg[k], seg[k + 1], shell, 2.4 - k * 0.25)
+	for k in range(1, 5):
+		draw_circle(seg[k], 0.5, shell_l)
+	# il pungiglione ricurvo
+	var tip: Vector2 = seg[5]
+	var lit := raise > 0.0
+	var sting := Color(0.6, 1.0, 0.4) if lit else shell_d
+	if flash:
+		sting = Color.WHITE
+	if lit:
+		draw_circle(tip, 3.0 + raise * 2.0, Color(0.6, 1.0, 0.4, 0.25))
+	_op(PackedVector2Array([tip + Vector2(-1.4, -1.0), tip + Vector2(1.6, -1.2), tip + Vector2(2.6, 1.6), tip + Vector2(0.6, 0.6), tip + Vector2(-1.0, 1.2)]), sting, 0.6)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

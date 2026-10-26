@@ -250,8 +250,6 @@ func _on_hit(_dmg: float) -> void:
 
 func _draw_body(flash: bool) -> void:
 	var dir := -1.0 if charge_dir.x < 0.0 else 1.0
-	var skin := Color.WHITE if flash else Color(0.42, 0.35, 0.3)
-	var mane := Color.WHITE if flash else Color(0.72, 0.53, 0.18)
 	var croc := Color.WHITE if flash else Color(0.25, 0.42, 0.22)
 
 	if state == "windup":
@@ -278,21 +276,64 @@ func _draw_body(flash: bool) -> void:
 
 	var jitter := Vector2(randf_range(-1, 1), 0) if state in ["windup", "roar"] else Vector2.ZERO
 	var rear := Vector2(0, -4) if state == "roar" else Vector2.ZERO
+	var hippo := _f(Color(0.46, 0.4, 0.38), flash)
+	var hippo_d := _f(Color(0.32, 0.27, 0.26), flash)
+	var lion := _f(Color(0.82, 0.6, 0.28), flash)
+	var mane_d := _f(Color(0.55, 0.34, 0.12), flash)
+	var croc_d := _f(Color(0.15, 0.28, 0.14), flash)
+	var gold := _f(GOLD, flash)
+	var blue := _f(Color(0.18, 0.33, 0.72), flash)
+	var walk := sin(t * 8.0) * 1.6 if state == "chase" else 0.0
 	draw_set_transform(jitter + rear, 0.0, Vector2(dir, 1.0))
-	# zampe e corpo di ippopotamo
-	draw_rect(Rect2(-18, -6, 7, 8), skin)
-	draw_rect(Rect2(-6, -6, 7, 8), skin)
-	draw_rect(Rect2(-22, -24, 26, 20), skin)
-	# criniera di leone
-	draw_circle(Vector2(6, -18), 11.0, mane)
-	draw_rect(Rect2(4, -6, 6, 8), mane)
-	# testa di coccodrillo (le fauci si aprono durante il morso)
+	# dietro: zampe e groppa d'ippopotamo, grigie e pesanti
+	for k in range(2):
+		var lx := -19.0 + k * 6.0
+		var off := walk if k == 0 else -walk
+		_op(PackedVector2Array([Vector2(lx - 3, -10), Vector2(lx + 4, -10), Vector2(lx + 4 + off * 0.4, 1), Vector2(lx - 3.5 + off * 0.4, 1)]), hippo_d if k == 0 else hippo, 0.9)
+	_op(_ell(Vector2(-12, -14), 12.0, 10.0, 18), hippo, 1.0)
+	draw_arc(Vector2(-13, -16), 7.0, PI * 1.1, PI * 1.6, 6, Color(1, 1, 1, 0.15), 1.4)
+	# coda di coccodrillo, corta e a punte
+	var tail := PackedVector2Array([Vector2(-22, -16), Vector2(-30, -10 + walk * 0.5), Vector2(-33, -5 + walk * 0.5), Vector2(-26, -8), Vector2(-22, -10)])
+	_op(tail, croc, 0.8)
+	# davanti: corpo e zampe di leone, dorati
+	for k in range(2):
+		var lx := 0.0 + k * 6.0
+		var off := -walk if k == 0 else walk
+		_limb(Vector2(lx, -10), Vector2(lx + 1 + off * 0.5, 0), lion if k == 1 else mane_d, 3.2)
+		_dot(Vector2(lx + 2 + off * 0.5, -0.2), 1.6, lion)
+	_op(_ell(Vector2(0, -15), 9.0, 8.5, 16), lion, 1.0)
+	# la criniera a ciocche, scura alla radice
+	var mane := PackedVector2Array()
+	for k in range(14):
+		var a := TAU * k / 14.0
+		var r := 12.0 if k % 2 == 0 else 8.5
+		mane.append(Vector2(6, -18) + Vector2(cos(a), sin(a) * 0.95) * r)
+	_op(mane, mane_d, 0.9)
+	_op(_ell(Vector2(6, -18), 8.0, 7.5, 14), lion, 0.7)
+	# collare usekh: il giudizio è un rito, e lei ne fa parte
+	draw_arc(Vector2(6, -13), 7.5, 0.3, PI - 0.3, 10, blue, 2.4)
+	draw_arc(Vector2(6, -13), 9.2, 0.35, PI - 0.35, 10, gold, 1.2)
+	# testa di coccodrillo: muso lungo, denti a zig-zag, creste e l'occhio rosso alto sul cranio
 	var open := 4.0 if state == "bite" else 0.0
-	draw_rect(Rect2(8, -24 - open, 22, 9), croc)
-	draw_rect(Rect2(8, -15 + open, 20, 4), croc.darkened(0.2))
-	for i in range(4):
-		draw_rect(Rect2(12 + i * 4, -16 + open, 2, 2), Color(0.95, 0.92, 0.85))
-	draw_rect(Rect2(14, -23 - open, 3, 3), Color(1, 0.25, 0.15))
+	var top := PackedVector2Array([Vector2(8, -25 - open * 0.5), Vector2(16, -27 - open), Vector2(31, -22 - open), Vector2(32, -19 - open * 0.4), Vector2(9, -16)])
+	var jaw := PackedVector2Array([Vector2(9, -16), Vector2(30, -17 + open), Vector2(29, -14 + open), Vector2(10, -12)])
+	if open > 0.0:
+		draw_colored_polygon(PackedVector2Array([Vector2(10, -17), Vector2(30, -20 - open * 0.4), Vector2(29, -16 + open), Vector2(10, -14)]), Color(0.6, 0.12, 0.1))
+	_op(jaw, croc_d, 0.9)
+	_op(top, croc, 1.0)
+	var teeth := PackedVector2Array()
+	for k in range(7):
+		var x := 12.0 + k * 2.8
+		teeth.append(Vector2(x, -18.4 - open * 0.3 + (k / 6.0) * 0.0))
+		teeth.append(Vector2(x + 1.4, -16.2 - open * 0.1))
+	draw_polyline(teeth, Color(0.96, 0.93, 0.85), 0.8)
+	for k in range(4):
+		var x := 11.0 + k * 3.5
+		draw_colored_polygon(PackedVector2Array([Vector2(x, -25.5 - open * 0.7), Vector2(x + 1.5, -28.5 - open * 0.8), Vector2(x + 3, -25.8 - open * 0.75)]), croc_d)
+	draw_circle(Vector2(14, -24.5 - open * 0.7), 2.1, OUT)
+	draw_circle(Vector2(14, -24.5 - open * 0.7), 1.5, Color(1, 0.25, 0.15) if not flash else Color.WHITE)
+	draw_line(Vector2(12.5, -24.5 - open * 0.7), Vector2(17.5, -25.2 - open * 0.7), OUT, 0.6)
+	draw_circle(Vector2(30.5, -22 - open), 0.6, OUT)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 	if state == "stunned":

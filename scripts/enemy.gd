@@ -127,6 +127,48 @@ func _draw_body(_flash: bool) -> void:
 	pass
 
 
+# --- disegno: lo stesso stile del protagonista --------------------------------------
+# Contorno scuro attorno a ogni forma, colori della pittura egizia, occhi che si leggono:
+# così nemici ed eroe sembrano dello stesso mondo e si distinguono anche sul telefono.
+
+const OUT := Color(0.12, 0.08, 0.05)          ## il contorno, uguale a quello dell'eroe
+const GOLD := Color(0.94, 0.72, 0.3)
+
+
+## Una forma piena con il contorno scuro.
+func _op(pts: PackedVector2Array, fill: Color, w: float = 0.8) -> void:
+	draw_colored_polygon(pts, fill)
+	var closed := pts.duplicate()
+	closed.append(pts[0])
+	draw_polyline(closed, OUT, w)
+
+
+## Un'ellisse come poligono (per corpi e gusci).
+func _ell(c: Vector2, rx: float, ry: float, n: int = 14) -> PackedVector2Array:
+	var pts := PackedVector2Array()
+	for i in range(n):
+		var a := TAU * i / n
+		pts.append(c + Vector2(cos(a) * rx, sin(a) * ry))
+	return pts
+
+
+## Un arto: una linea col contorno.
+func _limb(a: Vector2, b: Vector2, col: Color, w: float) -> void:
+	draw_line(a, b, OUT, w + 1.0)
+	draw_line(a, b, col, w)
+
+
+## Un cerchio col contorno.
+func _dot(c: Vector2, r: float, col: Color) -> void:
+	draw_circle(c, r + 0.6, OUT)
+	draw_circle(c, r, col)
+
+
+## Il colore, o bianco nel lampo del colpo.
+func _f(c: Color, flash: bool) -> Color:
+	return Color(1, 1, 1, c.a) if flash else c
+
+
 # --- comune -----------------------------------------------------------------------
 
 func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> void:

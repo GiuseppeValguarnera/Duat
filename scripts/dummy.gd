@@ -95,9 +95,9 @@ func _draw_body(flash: bool) -> void:
 		var faience := Color.WHITE if flash else Color(0.3, 0.68, 0.72)
 		var dark := Color(0.08, 0.2, 0.28)
 		var cracks := 1.0 - hp / max_hp
-		draw_colored_polygon(PackedVector2Array([Vector2(-5, 0), Vector2(5, 0), Vector2(6, -14), Vector2(4, -20), Vector2(-4, -20), Vector2(-6, -14)]), faience)
-		draw_circle(Vector2(0, -23), 5.0, faience)
-		draw_colored_polygon(PackedVector2Array([Vector2(-6, -26), Vector2(6, -26), Vector2(5, -17), Vector2(-5, -17)]), dark)
+		_op(PackedVector2Array([Vector2(-5, 0), Vector2(5, 0), Vector2(6, -14), Vector2(4, -20), Vector2(-4, -20), Vector2(-6, -14)]), faience)
+		_dot(Vector2(0, -23), 5.0, faience)
+		_op(PackedVector2Array([Vector2(-6, -26), Vector2(6, -26), Vector2(5, -17), Vector2(-5, -17)]), dark)
 		draw_circle(Vector2(0, -22), 3.0, faience.lightened(0.15))
 		draw_line(Vector2(-4, -15), Vector2(4, -12), dark, 1.2)
 		draw_line(Vector2(4, -15), Vector2(-4, -12), dark, 1.2)
@@ -112,8 +112,8 @@ func _draw_body(flash: bool) -> void:
 	if lunger:
 		var red := state == "windup"
 		var linen := Color.WHITE if flash else (Color(0.95, 0.35, 0.3) if red else Color(0.86, 0.8, 0.66))
-		draw_rect(Rect2(-6, -22, 12, 22), linen)
-		draw_circle(Vector2(0, -25), 6.0, linen)
+		_op(PackedVector2Array([Vector2(-6, -22), Vector2(6, -22), Vector2(6, 0), Vector2(-6, 0)]), linen)
+		_dot(Vector2(0, -25), 6.0, linen)
 		for i in range(5):
 			draw_line(Vector2(-6, -20 + i * 4), Vector2(6, -18 + i * 4), linen.darkened(0.25), 1.0)
 		draw_circle(Vector2(-2, -26), 1.2, Color(1, 0.85, 0.3))
@@ -121,9 +121,9 @@ func _draw_body(flash: bool) -> void:
 		return
 	var wood := Color(0.45, 0.3, 0.16)
 	var straw := Color.WHITE if flash else (Color(0.78, 0.7, 0.95) if eye_only else Color(0.88, 0.78, 0.52))
-	draw_rect(Rect2(-1.5, -6, 3, 8), wood)
-	draw_line(Vector2(-9, -16), Vector2(9, -16), wood, 2.5)
-	draw_circle(Vector2(0, -16), 8.0, straw)
+	_op(PackedVector2Array([Vector2(-1.5, -6), Vector2(1.5, -6), Vector2(1.5, 2), Vector2(-1.5, 2)]), wood)
+	_limb(Vector2(-9, -16), Vector2(9, -16), wood, 2.5)
+	_dot(Vector2(0, -16), 8.0, straw)
 	draw_arc(Vector2(0, -16), 8.0, 0, TAU, 20, straw.darkened(0.35), 1.0)
 	if eye_only:
 		# l'Occhio dipinto sul fantoccio

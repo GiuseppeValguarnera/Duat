@@ -64,24 +64,54 @@ func _process(delta: float) -> void:
 
 
 func _draw() -> void:
-	# la barca di papiro, con il traghettatore incappucciato che si volta all'indietro
+	# la barca di papiro a fasci legati, con prua e poppa ricurve a ombrello di papiro; il
+	# traghettatore incappucciato ha la testa girata all'indietro (Mahaf: "colui che guarda dietro")
 	var bob := sin(t * 1.4) * 1.5
+	var out := Color(0.12, 0.08, 0.05)
 	draw_set_transform(Vector2(0, 10), 0.0, Vector2(1.0, 0.3))
 	draw_circle(Vector2.ZERO, 46.0, Color(0.1, 0.3, 0.4, 0.5))
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	var reed := Color(0.62, 0.52, 0.28)
-	var hull := PackedVector2Array([Vector2(-44, -2 + bob), Vector2(44, -2 + bob), Vector2(36, 8 + bob), Vector2(-36, 8 + bob)])
+	draw_arc(Vector2.ZERO, 40.0 + sin(t * 2.0) * 3.0, 0.0, TAU, 32, Color(0.5, 0.85, 0.95, 0.25), 1.5)
+	draw_set_transform(Vector2(0, bob), 0.0, Vector2.ONE)
+	var reed := Color(0.66, 0.56, 0.3)
+	var reed_d := Color(0.46, 0.38, 0.18)
+	var hull := PackedVector2Array([Vector2(-44, -3), Vector2(44, -3), Vector2(38, 4), Vector2(30, 8), Vector2(-30, 8), Vector2(-38, 4)])
 	draw_colored_polygon(hull, reed)
-	draw_line(Vector2(-44, -2 + bob), Vector2(-52, -14 + bob), reed, 4.0)
-	draw_line(Vector2(44, -2 + bob), Vector2(52, -14 + bob), reed, 4.0)
-	for k in range(6):
-		draw_line(Vector2(-34 + k * 13, -1 + bob), Vector2(-34 + k * 13, 7 + bob), reed.darkened(0.25), 1.0)
-	var cloak := Color(0.15, 0.13, 0.2)
-	draw_colored_polygon(PackedVector2Array([Vector2(-8, -2 + bob), Vector2(8, -2 + bob), Vector2(5, -26 + bob), Vector2(-5, -26 + bob)]), cloak)
-	draw_circle(Vector2(0, -28 + bob), 6.0, cloak)
-	draw_circle(Vector2(-2, -28 + bob), 1.0, Color(0.6, 1, 0.9))
-	draw_circle(Vector2(2, -28 + bob), 1.0, Color(0.6, 1, 0.9))
-	draw_line(Vector2(9, -30 + bob), Vector2(16, 6 + bob), Color(0.45, 0.32, 0.18), 2.0)
+	var hc := hull.duplicate()
+	hc.append(hull[0])
+	draw_polyline(hc, out, 1.0)
+	draw_line(Vector2(-40, 2), Vector2(40, 2), reed_d, 1.0)
+	for k in range(7):
+		var x := -36.0 + k * 12.0
+		draw_line(Vector2(x, -3), Vector2(x + 1.5, 8), Color(0.75, 0.2, 0.12), 1.2)        # le legature rosse
+	for sx in [-1.0, 1.0]:
+		var a := Vector2(44 * sx, -3)
+		var b := Vector2(52 * sx, -14)
+		draw_line(a, b, out, 5.0)
+		draw_line(a, b, reed, 3.5)
+		# l'ombrello di papiro in cima
+		var u := PackedVector2Array([b, b + Vector2(5 * sx, -6), b + Vector2(1 * sx, -8), b + Vector2(-3 * sx, -6)])
+		draw_colored_polygon(u, Color(0.42, 0.62, 0.3))
+		u.append(b)
+		draw_polyline(u, out, 0.8)
+	# il traghettatore: mantello scuro, cappuccio, il remo
+	var cloak := Color(0.17, 0.15, 0.24)
+	var body := PackedVector2Array([Vector2(-8, -3), Vector2(8, -3), Vector2(5.5, -24), Vector2(-5.5, -24)])
+	draw_colored_polygon(body, cloak)
+	var bc := body.duplicate()
+	bc.append(body[0])
+	draw_polyline(bc, out, 0.9)
+	draw_line(Vector2(-2, -22), Vector2(-4, -3), Color(0.1, 0.09, 0.15), 1.0)
+	draw_arc(Vector2(0, -23), 5.0, 0.2, PI - 0.2, 8, Color(0.25, 0.62, 0.62), 1.6)          # collare turchese
+	draw_line(Vector2(10, -31), Vector2(17, 7), out, 3.2)
+	draw_line(Vector2(10, -31), Vector2(17, 7), Color(0.5, 0.36, 0.2), 2.0)
+	draw_colored_polygon(PackedVector2Array([Vector2(15.5, 1), Vector2(19.5, 0), Vector2(20, 9), Vector2(17, 10)]), Color(0.5, 0.36, 0.2))
+	draw_circle(Vector2(0, -28), 6.6, out)
+	draw_circle(Vector2(0, -28), 6.0, cloak)
+	# la testa girata all'indietro: si vede solo un occhio, dalla parte sbagliata
+	draw_colored_polygon(PackedVector2Array([Vector2(-5.5, -30), Vector2(-1, -31), Vector2(-1, -26), Vector2(-5, -25.5)]), Color(0.06, 0.05, 0.08))
+	draw_circle(Vector2(-3.5, -28.5), 1.0, Color(0.6, 1, 0.9))
+	draw_line(Vector2(-5.5, -28.6), Vector2(-1.5, -28.3), Color(0.6, 1, 0.9, 0.5), 0.5)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 ## Un oggetto in vendita su un piedistallo. Ci si avvicina e si preme E / Y per comprarlo.
@@ -107,8 +137,13 @@ class ShopItem extends Node2D:
 				return Color(0.62, 0.56, 0.92)
 
 	func _draw() -> void:
+		# piedistallo di pietra con il bordo dipinto
+		var out := Color(0.12, 0.08, 0.05)
+		draw_rect(Rect2(-12.5, -6.5, 25, 11), out)
 		draw_rect(Rect2(-12, -6, 24, 10), Color(0.55, 0.45, 0.3))
+		draw_rect(Rect2(-14.5, -9.5, 29, 5), out)
 		draw_rect(Rect2(-14, -9, 28, 4), Color(0.7, 0.58, 0.4))
+		draw_line(Vector2(-11, -1), Vector2(11, -1), Color(0.2, 0.45, 0.7), 1.0)
 		if sold:
 			return
 		var c := color()

@@ -333,43 +333,69 @@ func _draw_body(flash: bool) -> void:
 
 	var shake_x := randf_range(-1.0, 1.0) if state in ["howl", "breath_windup"] else 0.0
 	var head_up := -6.0 if state == "howl" else 0.0
+	var fur_l := _f(Color(0.24, 0.2, 0.24), flash)
+	var gold := _f(GOLD, flash)
+	var blue := _f(Color(0.18, 0.33, 0.72), flash)
+	var glow := 0.7 + 0.3 * sin(tt * 5.0)
 	draw_set_transform(Vector2(shake_x, -lift), 0.0, Vector2(dir, 1.0) * S)
-	# zampe
+	# zampe da cane: quelle dietro più scure, unghie di brace
 	var step := sin(t * 10.0) * 2.0 if state == "chase" else 0.0
-	for lx in [-15.0, -9.0, 5.0, 11.0]:
-		var off := step if int(lx) % 2 == 0 else -step
-		draw_line(Vector2(lx, -10), Vector2(lx + off, 0), fur, 3.0)
-	# corpo snello da cane, con le crepe di brace
-	draw_set_transform(Vector2(shake_x, -lift - 15.0 * S), 0.0, Vector2(dir, 0.55) * S)
-	draw_circle(Vector2(-3, 0), 16.0, fur)
-	draw_set_transform(Vector2(shake_x, -lift), 0.0, Vector2(dir, 1.0) * S)
-	for i in range(3):
-		var cx := -12.0 + i * 7.0
-		draw_line(Vector2(cx, -18), Vector2(cx + 3, -12), Color(ember, 0.7 + 0.3 * sin(tt * 5.0 + i)), 1.0)
+	for k in range(4):
+		var lx: float = [-15.0, 5.0, -9.0, 11.0][k]
+		var off := step if k % 2 == 0 else -step
+		var col := fur if k < 2 else fur_l
+		_limb(Vector2(lx, -12), Vector2(lx + off * 0.5, -5), col, 2.6)
+		_limb(Vector2(lx + off * 0.5, -5), Vector2(lx + off, -0.5), col, 2.2)
+		draw_circle(Vector2(lx + off + 1.2, -0.3), 0.8, Color(ember, glow))
+	# coda: una frusta di fumo che finisce in fiamma
+	var tail_end := Vector2(-28, -26 + sin(tt * 6.0) * 2.0)
+	_limb(Vector2(-17, -16), Vector2(-23, -22), fur, 2.6)
+	_limb(Vector2(-23, -22), tail_end, fur, 1.8)
+	draw_circle(tail_end, 3.4, Color(1, 0.45, 0.1, 0.9))
+	draw_circle(tail_end, 1.8, Color(1, 0.85, 0.4))
+	# corpo snello da cane, nero con le crepe di brace
+	var body := _ell(Vector2(-3, -15), 16.0, 8.5, 20)
+	_op(body, fur, 1.0)
+	draw_colored_polygon(_ell(Vector2(-3, -18.5), 12.0, 3.0, 12), fur_l)
+	for i in range(4):
+		var cx := -14.0 + i * 6.5
+		var crack := PackedVector2Array([Vector2(cx, -19), Vector2(cx + 2, -16), Vector2(cx + 0.8, -14), Vector2(cx + 3, -11)])
+		draw_polyline(crack, Color(ember, glow - i * 0.05), 1.0)
+		draw_polyline(crack, Color(1, 0.85, 0.45, glow * 0.6), 0.4)
 	# criniera di fiamme lungo la schiena
 	for i in range(6):
 		var bx := -16.0 + i * 5.0
 		var h := 7.0 + 4.0 * sin(tt * 12.0 + i * 1.3)
-		draw_colored_polygon(PackedVector2Array([Vector2(bx - 3, -22), Vector2(bx + 3, -22), Vector2(bx + sin(tt * 8.0 + i) * 2.0, -22 - h)]), Color(1, 0.5, 0.1, 0.9))
+		var fl := PackedVector2Array([Vector2(bx - 3, -22), Vector2(bx + 3, -22), Vector2(bx + sin(tt * 8.0 + i) * 2.0, -22 - h)])
+		_op(fl, Color(1, 0.45, 0.1, 0.95), 0.6)
 		draw_colored_polygon(PackedVector2Array([Vector2(bx - 1.5, -22), Vector2(bx + 1.5, -22), Vector2(bx, -22 - h * 0.55)]), Color(1, 0.88, 0.4))
-	# coda di fuoco
-	draw_line(Vector2(-18, -16), Vector2(-26, -24 + sin(tt * 6.0) * 2.0), fur, 3.0)
-	draw_circle(Vector2(-27, -25 + sin(tt * 6.0) * 2.0), 3.0, Color(1, 0.55, 0.1))
-	# collo e testa di cane: muso lungo, orecchie dritte
+	# collo con il collare usekh d'oro e lapislazzuli: è un dio, non una bestia
 	var hy := -24.0 + head_up
-	draw_line(Vector2(8, -18), Vector2(13, hy + 2), fur, 6.0)
-	draw_circle(Vector2(14, hy), 6.0, fur)
+	var neck := PackedVector2Array([Vector2(4, -21), Vector2(10, -23), Vector2(16, hy + 2), Vector2(12, hy + 6), Vector2(6, -13)])
+	_op(neck, fur, 1.0)
+	draw_arc(Vector2(9, -19), 6.0, -2.2, 0.6, 8, blue, 2.2)
+	draw_arc(Vector2(9, -19), 7.6, -2.2, 0.6, 8, gold, 1.2)
+	# testa di cane: cranio, muso lungo con le fauci, orecchie dritte
+	_op(_ell(Vector2(14, hy), 6.0, 5.2, 12), fur, 1.0)
 	var open := 3.0 if state in ["bite", "breath", "howl"] else 0.0
-	draw_colored_polygon(PackedVector2Array([Vector2(17, hy - 3), Vector2(30, hy - 1 - open * 0.3), Vector2(30, hy + 1), Vector2(17, hy + 1)]), fur)
-	draw_colored_polygon(PackedVector2Array([Vector2(17, hy + 2), Vector2(28, hy + 2 + open), Vector2(27, hy + 4 + open), Vector2(16, hy + 4)]), fur.darkened(0.2))
 	if open > 0.0:
-		draw_rect(Rect2(18, hy + 1, 9, open + 1), Color(1, 0.5, 0.1, 0.9))
-	draw_colored_polygon(PackedVector2Array([Vector2(10, hy - 4), Vector2(13, hy - 15), Vector2(15, hy - 4)]), fur)
-	draw_colored_polygon(PackedVector2Array([Vector2(14, hy - 4), Vector2(17, hy - 14), Vector2(19, hy - 3)]), fur)
-	draw_circle(Vector2(17, hy - 2), 1.6, Color(1, 0.3, 0.1))
+		draw_colored_polygon(PackedVector2Array([Vector2(17, hy), Vector2(29, hy - 0.5), Vector2(28, hy + 2 + open), Vector2(17, hy + 3)]), Color(1, 0.5, 0.1, 0.95))
+		for k in range(3):
+			draw_line(Vector2(20 + k * 3, hy + 0.6), Vector2(20.6 + k * 3, hy + 1.8), Color(0.95, 0.92, 0.85), 0.8)
+	_op(PackedVector2Array([Vector2(16, hy - 3.5), Vector2(30, hy - 1.5 - open * 0.3), Vector2(31, hy + 0.5), Vector2(17, hy + 1)]), fur, 0.9)
+	_op(PackedVector2Array([Vector2(17, hy + 2), Vector2(28, hy + 2 + open), Vector2(27, hy + 4 + open), Vector2(16, hy + 4)]), fur_l, 0.8)
+	draw_circle(Vector2(30.5, hy - 0.6), 1.0, OUT)
+	for ear in [Vector2(10, hy - 3), Vector2(14.5, hy - 3.5)]:
+		var e := PackedVector2Array([ear, ear + Vector2(2.4, -11), ear + Vector2(5, -0.5)])
+		_op(e, fur, 0.9)
+		draw_colored_polygon(PackedVector2Array([ear + Vector2(1.4, -1), ear + Vector2(2.4, -8), ear + Vector2(3.6, -1)]), Color(ember, 0.55))
+	# l'occhio di brace con il kohl, come negli dèi dipinti
+	draw_circle(Vector2(17.5, hy - 1.5), 2.0, OUT)
+	draw_circle(Vector2(17.5, hy - 1.5), 1.4, Color(1, 0.35, 0.1) if not flash else Color.WHITE)
+	draw_line(Vector2(15.5, hy - 1.3), Vector2(21.5, hy - 2.2), OUT, 0.7)
 	if state == "breath":
 		for i in range(3):
-			draw_circle(Vector2(31 + i * 4, hy + 1 + randf_range(-1, 1)), 2.5 - i * 0.5, Color(1, 0.75, 0.3, 0.9))
+			draw_circle(Vector2(32 + i * 4, hy + 1 + randf_range(-1, 1)), 2.5 - i * 0.5, Color(1, 0.75, 0.3, 0.9))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 	if state == "exhausted":
