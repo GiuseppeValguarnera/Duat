@@ -1410,6 +1410,11 @@ func _start_shop() -> void:
 	boat.position = Vector2(cx, mid_y - 50.0)
 	world.add_child(boat)
 	ferry = boat
+	# la barca è un ostacolo vero (prima ci si passava sopra) e si disegna davanti o dietro
+	# all'eroe a seconda di chi è più in basso (vedi _process)
+	rooms.solid(Rect2(boat.position + Vector2(-46, -6), Vector2(92, 16)))
+	if player != null and is_instance_valid(player):
+		world.move_child(boat, player.get_index())
 	_banner(Lang.t("Il Traghettatore"), Lang.t("Mahaf: ") + FerrymanScript.greeting(), Color(0.6, 0.85, 0.95))
 	var items := SHOP_ITEMS.duplicate()
 	if _upgradable().is_empty():
@@ -1689,6 +1694,7 @@ func _process(_delta: float) -> void:
 			_buy(shop_near)
 	# parlare con Mahaf: vicino alla barca (gli oggetti in vendita hanno la precedenza)
 	if is_instance_valid(ferry):
+		ferry.z_index = 1 if player.global_position.y < ferry.global_position.y + 6.0 else 0
 		var by_boat: bool = shop_near == null and player.global_position.distance_to(ferry.global_position + Vector2(0, 12)) < 56.0
 		ferry.near = by_boat
 		if by_boat:

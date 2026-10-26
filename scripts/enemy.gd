@@ -25,6 +25,7 @@ var is_boss := false
 var miniboss := false                 ## guardiano a metà discesa: barra in alto invece che sopra la testa
 var elite := false                     ## versione dorata: più grossa, più resistente, lascia più Ka
 const HeartScript := preload("res://scripts/heart_drop.gd")
+const KA_DROP_CHANCE := 0.4             ## quante volte un nemico lascia il suo Ka (vedi die())
 var stagger_t := 0.0
 var mark_t := 0.0                     ## Sguardo del Falco: secondi in cui il khopesh fa più danni
 var sobek_stun_t := 0.0                ## stordito dal Morso di Sobek (per la Forza del Fiume)                   ## dopo un colpo il nemico barcolla: non si muove e non ferisce
@@ -242,8 +243,13 @@ func die() -> void:
 	dead = true
 	Run.kills += 1
 	Sfx.play("kill")
-	# solo i nemici più grossi lasciano un po' di Ka: il grosso arriva dai tesori
+	# solo i nemici più grossi lasciano un po' di Ka, e non sempre (il 40% delle volte; di più con
+	# il capitolo 105 del Libro). Il grosso arriva dai tesori: prima si arrivava al Traghettatore
+	# con Ka per comprare tutto, e al boss con doni troppo alti e troppa cura.
 	var ka := roundi(ka_value * Run.ka_mult())
+	var ka_chance := KA_DROP_CHANCE if not Run.chap("c105") else Chapters.value("c105") / 100.0
+	if not (is_boss or miniboss or elite) and randf() >= ka_chance:
+		ka = 0
 	if ka > 0:
 		Run.ka += ka
 		Fx.float_text(global_position + Vector2(0, -12), Lang.t("+%d Ka") % ka, Color(0.94, 0.72, 0.3))
