@@ -133,7 +133,7 @@ Dalla Sala del Giudizio, una porta nella parete ovest (con lo scudo e le frecce 
 4. Si aprono 2 o 3 porte, e sopra ognuna vedi cosa c'è dietro: il dono di un dio, un tesoro di Ka o una cura. Le porte fuori dallo schermo hanno una **freccia sul bordo** con il colore e il nome della ricompensa.
 5. **Stanza 5: il Serpente della Porta.** Nel Libro delle Porte ogni porta del Duat è custodita da un serpente. È il guardiano a metà discesa: morde in affondo, sputa ventagli di veleno e si inabissa nella sabbia per riemergere sotto di te (un cerchio rosso avvisa dove). Sotto metà vita si infuria: più rapido, ventaglio più largo e **affondi doppi**. Combatte da solo (340 vita: più del vecchio 260, perché chi gioca davvero lo batteva al primo tentativo). Sulle pareti della sua arena ci sono quattro **statue dell'ureo**, il cobra che sputa fuoco e proteggeva il faraone: a turno una si accende (occhi rossi e una fila di braci sul pavimento, per quasi un secondo) e sputa una lingua di fuoco attraverso la stanza, fino alla prima colonna. Brucia te (9), ma anche il Serpente (26) e i suoi scarabei, se non è sottoterra: attirarlo sulla riga che sta per prendere fuoco è una strategia, ripararsi dietro una colonna un'altra. Quando si infuria le statue sputano più spesso (`Hazards.UraeusStatues`). Batterlo dà un dono che sale **di due livelli** invece di uno.
 6. **Il Traghettatore** (Mahaf, dal capitolo 99 del Libro dei Morti): è una delle porte, ma solo nella stanza **subito prima del Serpente** (stanza 4) e **subito prima di Am-heh** (stanza 10). Vende Acqua del Nilo (20 Ka), un'offerta agli dèi (40 Ka) e l'Inchiostro di Thoth, che alza di livello un tuo dono (30 Ka). Si spende il Ka raccolto in questa discesa, e quello speso non torna a casa: più forti ora o capitoli dopo.
-7. Dalla stanza 6 arrivano due nemici nuovi: lo **scorpione di Serket** e il **cobra**.
+7. Dalla stanza 3, dove c'è acqua, vivono i **coccodrilli del Duat**; dalla stanza 6 arriva il **cobra**. (Gli scorpioni di Serket sono passati al deserto di Sokar, la seconda tappa.)
 8. Prima dell'ultima stanza una delle porte è sempre l'**Acqua del Nilo**. Dopo la decima stanza si apre il cancello di **Am-heh**, il boss della Prima Ora. I nemici hanno il 6% di vita in più a ogni stanza.
 
 ## Il serdab: la stanza segreta
@@ -158,7 +158,8 @@ Dalla terza stanza alcune mummie e alcuni sacerdoti sono **élite**: alone dorat
 
 ### Nemici della seconda metà
 
-- **Scorpione di Serket**: veloce, ti gira intorno e punge con la coda. Avviso: la coda si alza e si illumina di verde. La puntura **avvelena**: perdi 2 vita ogni 0,6 secondi per 3 secondi (il veleno non può ucciderti).
+- **Coccodrillo del Duat** (Libro dei Morti, cap. 31-32): vive nelle pozze e nei canali. Sott'acqua non si colpisce: si vedono gli occhi e la scia, e lui si sposta nel punto dell'acqua più vicino a te. Quando passi vicino, gli occhi diventano rossi e l'acqua ribolle: poi esce di scatto e morde. A terra è lento e vulnerabile, poi torna in acqua. Se non ti avvicini, dopo un po' esce lui a cercarti.
+- **Scorpione di Serket** (deserto di Sokar): veloce, ti gira intorno e punge con la coda. Avviso: la coda si alza e si illumina di verde. La puntura **avvelena**: perdi 2 vita ogni 0,6 secondi per 3 secondi (il veleno non può ucciderti).
 - **Cobra**: resta a distanza, alza il cappuccio (avviso con la linea verde) e sputa tre gocce in fila. Poi si nasconde sotto la sabbia e riemerge altrove: va colpito quando è fuori.
 
 ## Trappole (dalla terza stanza)

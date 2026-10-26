@@ -59,6 +59,8 @@ static func _reaction() -> Array:
 				options.append(Lang.t("Un sacerdote. In vita servì gli dèi, nel Duat serve il caos. Colpiscilo prima che la sua preghiera sia compiuta."))
 			"serpent":
 				options.append(Lang.t("Il Serpente della Porta. Ogni porta del Duat sta sul fiume della notte, e ha il suo guardiano. Quando si immerge, guarda la scia nell'acqua: ti sta cercando. Poi guarda il cerchio: è lì che tornerà."))
+			"crocodile":
+				options.append(Lang.t("Un coccodrillo. Il Libro ha due formule apposta, la trentuno e la trentadue: i coccodrilli del Duat vengono a rubare la magia del morto. Quando l'acqua ribolle vicino a te, non restare sul bordo."))
 			"scorpion":
 				options.append(Lang.t("Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati."))
 			"grata":

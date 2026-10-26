@@ -20,12 +20,13 @@ const ENEMIES := {
 	"ammit": preload("res://scenes/ammit.tscn"),   # resta per il finale (Sala delle Due Verità)
 	"amheh": preload("res://scenes/amheh.tscn"),
 	"serpent": preload("res://scenes/serpent.tscn"),
-	"scorpion": preload("res://scenes/scorpion.tscn"),
+	"scorpion": preload("res://scenes/scorpion.tscn"),   # nemici del deserto di Sokar (seconda tappa)
 	"cobra": preload("res://scenes/cobra.tscn"),
+	"crocodile": preload("res://scenes/crocodile.tscn"),
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -338,15 +339,20 @@ func start_room(reward: Dictionary) -> void:
 
 func _make_wave(budget: int, allow_priest: bool) -> Array:
 	var out := []
-	var late := Run.room > Run.GUARDIAN_ROOM    # dopo il guardiano arrivano scorpioni e cobra
+	var late := Run.room > Run.GUARDIAN_ROOM    # dopo il guardiano arrivano i cobra
+	# i coccodrilli vivono nelle acque di Wernes: solo nelle stanze con una pozza o un canale
+	# (gli scorpioni sono del deserto di Sokar, la seconda tappa)
+	var water := get_tree().get_nodes_in_group("water").size()
+	var crocs := 0
 	while budget > 0:
 		var roll := randf()
 		if late and roll < 0.22 and budget >= 3:
 			out.append("cobra")
 			budget -= 3
 			continue
-		if late and roll < 0.45 and budget >= 2:
-			out.append_array(["scorpion", "scorpion"])
+		if water > 0 and Run.room >= 3 and crocs < water and roll < (0.42 if late else 0.3) and budget >= 3:
+			out.append("crocodile")
+			crocs += 1
 			budget -= 3
 			continue
 		if late:

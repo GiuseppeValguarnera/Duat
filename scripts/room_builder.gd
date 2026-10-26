@@ -65,9 +65,11 @@ func floor_ok(p: Vector2) -> bool:
 ## che prendono il posto di altrettanti spuntoni.
 func place_elements() -> void:
 	var r := Run.room
-	var n_water := (1 if randf() < 0.3 else 0) if r <= 2 else 1 + (1 if r >= 8 and randf() < 0.5 else 0)
+	# la Prima Ora sono le acque di Wernes: l'acqua c'è quasi sempre, e dalla terza stanza ci
+	# vivono i coccodrilli
+	var n_water := (1 if randf() < 0.5 else 0) if r <= 2 else 1 + (1 if r >= 5 and randf() < 0.5 else 0)
 	for i in range(n_water):
-		place_water(r >= 3 and randf() < 0.4)
+		place_water(r >= 3 and randf() < 0.5)
 	if r >= 6:
 		var n_grates := 1 + (1 if r >= 9 else 0)
 		for i in range(n_grates):

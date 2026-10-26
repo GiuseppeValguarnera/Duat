@@ -133,7 +133,10 @@ static func paint_gate(ci: CanvasItem, r: Rect2, top: float, wall: float) -> voi
 		var inner: float = cx + sx * 56.0
 		var outer: float = cx + sx * 250.0
 		var tower := PackedVector2Array([Vector2(inner, top + 2), Vector2(outer, top + 2), Vector2(outer - sx * 16.0, 0), Vector2(inner, 0)])
-		ci.draw_colored_polygon(tower, Color(0.66, 0.56, 0.42))
+		# la luce viene da sinistra: la torre di sinistra è più chiara, la faccia esterna in ombra
+		var lit_c := Color(0.6, 0.5, 0.37) if sx < 0 else Color(0.46, 0.38, 0.28)
+		var dark_c := lit_c.darkened(0.35)
+		ci.draw_polygon(tower, PackedColorArray([lit_c, dark_c, dark_c, lit_c]))
 		ci.draw_polyline(PackedVector2Array([tower[0], tower[1], tower[2], tower[3], tower[0]]), Color(0.2, 0.15, 0.1), 1.5)
 		for k in range(4):
 			var ly := 12.0 + k * 12.0
@@ -145,6 +148,13 @@ static func paint_gate(ci: CanvasItem, r: Rect2, top: float, wall: float) -> voi
 		ci.draw_line(sc + Vector2(8, 10), sc + Vector2(8, 20), Color(0.3, 0.62, 0.3), 3.0)
 		ci.draw_circle(sc + Vector2(-8, 9), 4.0, Color(0.3, 0.62, 0.3))
 		ci.draw_circle(sc + Vector2(-9, 8), 1.0, Color(0.94, 0.72, 0.3))
+	# due obelischi ai lati del pilone, con la punta d'oro
+	for ox in [cx - 300.0, cx + 300.0]:
+		var ob := PackedVector2Array([Vector2(ox - 8, top + 2), Vector2(ox + 8, top + 2), Vector2(ox + 5, 6), Vector2(ox, 0), Vector2(ox - 5, 6)])
+		ci.draw_polygon(ob, PackedColorArray([Color(0.62, 0.5, 0.42), Color(0.4, 0.32, 0.27), Color(0.4, 0.32, 0.27), Color(0.94, 0.72, 0.3), Color(0.62, 0.5, 0.42)]))
+		ci.draw_colored_polygon(PackedVector2Array([Vector2(ox - 5, 6), Vector2(ox, 0), Vector2(ox + 5, 6)]), Color(0.94, 0.72, 0.3))
+		for k in range(4):
+			ci.draw_rect(Rect2(ox - 2, 14 + k * 11, 4, 6), Color(0.25, 0.18, 0.12, 0.7))
 	# la porta chiusa: due battenti di legno scuro con le borchie e il serpente che li attraversa
 	var door := Rect2(cx - 52, 2, 104, top - 2)
 	ci.draw_rect(door.grow(3), Color(0.94, 0.72, 0.3))

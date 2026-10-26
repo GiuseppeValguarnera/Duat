@@ -699,9 +699,8 @@ class VenomPuddle extends Node2D:
 		if p != null and not p.dead and cool <= 0.0 and p.dash_t <= 0.0:
 			var d: Vector2 = (p.global_position - global_position) / Vector2(r, r * 0.55)
 			if d.length() < 1.0:
-				p.poison(2.0)
+				p.poison(2.0, "serpent")
 				cool = 0.5
-				Run.last_hit = "serpent"
 		queue_redraw()
 
 	func _draw() -> void:

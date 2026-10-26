@@ -499,7 +499,10 @@ func _heavy_drain(delta: float) -> void:
 
 ## Veleno (scorpione di Serket): 2 vita ogni 0,6 secondi. Non può ucciderti.
 ## Le punture si sommano: se sei già avvelenato il veleno dura di più (fino a 7 secondi).
-func poison(seconds: float) -> void:
+var poison_src := "scorpion"              ## chi ti ha avvelenato (per i commenti di Anubi)
+
+func poison(seconds: float, src: String = "scorpion") -> void:
+	poison_src = src
 	if poison_t > 0.0:
 		poison_t = minf(7.0, poison_t + seconds * 0.5)
 	else:
@@ -516,7 +519,7 @@ func _poison_update(delta: float) -> void:
 		if hp > 1.0:
 			hp = maxf(1.0, hp - 2.0)
 			Run.hp = hp
-			Run.last_hit = "scorpion"
+			Run.last_hit = poison_src
 			Fx.float_text(global_position + Vector2(0, -16), "-2", Color(0.5, 1, 0.4))
 			health_changed.emit(hp, max_hp)
 
