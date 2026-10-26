@@ -219,6 +219,7 @@ func _build_update_tag() -> void:
 	ver.offset_top = -14.0 * Fx.ui
 	ver.offset_bottom = -2.0
 	ver.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ver.visible = OS.get_environment("DUAT_TRAILER") == ""
 	$UI.add_child(ver)
 	update_tag = Button.new()
 	update_tag.text = Lang.t("Nuova versione, aggiorna!") if Updater.channel() == "dev" else Lang.t("Nuova versione: ricarica la pagina!")
@@ -272,6 +273,9 @@ func _process(delta: float) -> void:
 		help.text = Lang.t("Levetta muovi · LB/A scatto · Y interagisci · Start opzioni")
 	else:
 		help.text = Lang.t("WASD muovi · Spazio scatto · E interagisci · Esc opzioni")
+	if OS.get_environment("DUAT_TRAILER") != "":
+		help.text = ""                       # riprese per trailer e screenshot
+		hud.text = ""
 
 	if talk_box.visible or book != null:
 		prompt.visible = false

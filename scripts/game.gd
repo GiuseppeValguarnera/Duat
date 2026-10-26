@@ -84,6 +84,8 @@ const BOSS_LAYOUT := [Vector2(0.22, 0.3), Vector2(0.78, 0.3), Vector2(0.12, 0.62
 
 var player
 var pillars: Array = []
+## Modalità riprese (DUAT_TRAILER=1): niente scritte d'aiuto né mirino, per trailer e screenshot.
+var TRAILER := OS.get_environment("DUAT_TRAILER") != ""
 var pillar_art: Node2D                  ## disegna le colonne (room_decor.gd, Pillars)
 var room_decor: Node2D                  ## l'arredamento della stanza: cuoce anche pavimento e muri
 var waves: Array = []
@@ -1717,6 +1719,9 @@ func _process(_delta: float) -> void:
 		help.text = Lang.t("Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa")
 	else:
 		help.text = Lang.t("WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox")
+	if TRAILER:
+		help.text = ""                       # riprese per trailer e screenshot: niente scritte d'aiuto
+		reticle.visible = false
 
 
 # ---------------------------------------------------------------- muri e pavimento
