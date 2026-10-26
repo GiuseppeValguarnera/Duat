@@ -5,6 +5,30 @@ ESAUSTO,ESAUSTO,EXHAUSTED
 L'acqua evapora,L'acqua evapora,The water evaporates
 Ruggito del Giudizio,Ruggito del Giudizio,Roar of Judgement
 STORDITA,STORDITA,STUNNED
+Nodo di Iside,Nodo di Iside,Knot of Isis
+"Le trappole (spuntoni, grate di fuoco, olio in fiamme, statue dell'ureo) ti fanno il %d%% di danni in meno.","Le trappole (spuntoni, grate di fuoco, olio in fiamme, statue dell'ureo) ti fanno il %d%% di danni in meno.","Traps (spikes, fire grates, burning oil, uraeus statues) deal %d%% less damage to you."
+"Il tyet, il nodo della veste di Iside, era fatto di diaspro rosso: si legava al collo della mummia perché «il sangue di Iside» la proteggesse.","Il tyet, il nodo della veste di Iside, era fatto di diaspro rosso: si legava al collo della mummia perché «il sangue di Iside» la proteggesse.","The tyet, the knot of Isis's robe, was carved from red jasper and tied around the mummy's neck so that ""the blood of Isis"" would protect it."
+Ankh,Ankh,Ankh
+Ogni volta che entri in una stanza nuova recuperi %d punti vita.,Ogni volta che entri in una stanza nuova recuperi %d punti vita.,Every time you enter a new chamber you recover %d health.
+Il segno della vita. Gli dèi lo tengono per l'ansa e lo avvicinano al naso del re: gli danno il respiro dell'eternità.,Il segno della vita. Gli dèi lo tengono per l'ansa e lo avvicinano al naso del re: gli danno il respiro dell'eternità.,The sign of life. The gods hold it by the loop and bring it to the king's nose: they give him the breath of eternity.
+Pilastro Djed,Pilastro Djed,Djed Pillar
+Lo scatto lascia dietro di te una statua di pietra che attira i nemici per %s secondi.,Lo scatto lascia dietro di te una statua di pietra che attira i nemici per %s secondi.,Your dash leaves behind a stone statue that draws enemies to it for %s seconds.
+"La spina dorsale di Osiride, il segno della stabilità. Nella festa di Sokar il re in persona rialzava un grande pilastro djed con le corde.","La spina dorsale di Osiride, il segno della stabilità. Nella festa di Sokar il re in persona rialzava un grande pilastro djed con le corde.","The backbone of Osiris, the sign of stability. At the feast of Sokar the king himself raised a great djed pillar with ropes."
+Scettro Was,Scettro Was,Was Sceptre
+Ogni stanza finita senza perdere vita ti dà +%d%% di danni fino alla fine della discesa (al massimo 5 volte).,Ogni stanza finita senza perdere vita ti dà +%d%% di danni fino alla fine della discesa (al massimo 5 volte).,Every chamber you clear without losing health gives you +%d%% damage until the end of the descent (up to 5 times).
+Lo scettro con la testa di animale e la base a forcella: il potere e il dominio. Lo reggono gli dèi in quasi ogni pittura.,Lo scettro con la testa di animale e la base a forcella: il potere e il dominio. Lo reggono gli dèi in quasi ogni pittura.,The sceptre with an animal head and a forked base: power and dominion. The gods hold it in almost every painting.
+Anello Shen,Anello Shen,Shen Ring
+Gli dèi da cui hai già un dono compaiono alle porte %d volte più spesso.,Gli dèi da cui hai già un dono compaiono alle porte %d volte più spesso.,Gods you already have a boon from appear at the doors %d times as often.
+"Un giro di corda legato senza fine: l'eternità. Allungato, diventò il cartiglio che chiude il nome del re.","Un giro di corda legato senza fine: l'eternità. Allungato, diventò il cartiglio che chiude il nome del re.","A loop of rope tied without end: eternity. Stretched out, it became the cartouche that encloses the king's name."
+Collana di Hathor,Collana di Hathor,Necklace of Hathor
+"Il Traghettatore ha un'offerta agli dèi in più, scontata del %d%%.","Il Traghettatore ha un'offerta agli dèi in più, scontata del %d%%.","The Ferryman has one extra offering to the gods, %d%% off."
+"Il menat, la collana pesante delle sacerdotesse di Hathor: la scuotevano come un sonaglio per calmare la dea e portare gioia.","Il menat, la collana pesante delle sacerdotesse di Hathor: la scuotevano come un sonaglio per calmare la dea e portare gioia.","The menat, the heavy necklace of Hathor's priestesses: they shook it like a rattle to soothe the goddess and bring joy."
+Occhio Udjat,Occhio Udjat,Udjat Eye
+"La crepa delle stanze segrete brilla da lontano, e le stanze segrete compaiono il %d%% più spesso.","La crepa delle stanze segrete brilla da lontano, e le stanze segrete compaiono il %d%% più spesso.","The crack of secret rooms shines from afar, and secret rooms appear %d%% more often."
+"L'occhio di Horus strappato da Set e guarito da Thoth. Era l'amuleto più comune di tutti: «udjat» vuol dire «integro, sano».","L'occhio di Horus strappato da Set e guarito da Thoth. Era l'amuleto più comune di tutti: «udjat» vuol dire «integro, sano».","The eye of Horus, torn out by Set and healed by Thoth. It was the most common amulet of all: ""udjat"" means ""whole, sound""."
+Scarabeo Kheper,Scarabeo Kheper,Kheper Scarab
+I primi %d doni della discesa arrivano già al livello 2.,I primi %d doni della discesa arrivano già al livello 2.,The first %d boons of the descent arrive already at level 2.
+"Lo scarabeo che spinge il sole fuori dalla notte: il dio del divenire, di ciò che rinasce. Kheper, come te.","Lo scarabeo che spinge il sole fuori dalla notte: il dio del divenire, di ciò che rinasce. Kheper, come te.","The scarab that pushes the sun out of the night: the god of becoming, of what is reborn. Kheper, like you."
 Sciame di scarabei,Sciame di scarabei,Swarm of scarabs
 Due mummie,Due mummie,Two mummies
 Un sacerdote,Un sacerdote,A priest
@@ -127,7 +151,6 @@ Ali di Iside,Ali di Iside,Wings of Isis
 All'inizio di ogni stanza hai uno scudo che assorbe %d danni.,All'inizio di ogni stanza hai uno scudo che assorbe %d danni.,At the start of every chamber you gain a shield that absorbs %d damage.
 Lacrime di Iside,Lacrime di Iside,Tears of Isis
 Tutte le cure ti curano il %d%% in più.,Tutte le cure ti curano il %d%% in più.,All healing heals you %d%% more.
-Nodo di Iside,Nodo di Iside,Knot of Isis
 Sotto un terzo della vita subisci il %d%% di danni in meno.,Sotto un terzo della vita subisci il %d%% di danni in meno.,Below a third of your health you take %d%% less damage.
 Nome Segreto di Ra,Nome Segreto di Ra,Secret Name of Ra
 Il Sekhem si carica il %d%% più in fretta.,Il Sekhem si carica il %d%% più in fretta.,Your Sekhem charges %d%% faster.
@@ -299,6 +322,58 @@ Occhio: ricarica ×2,Occhio: ricarica ×2,Eye: recharge ×2
 Khopesh -35%,Khopesh -35%,Khopesh -35%
 "Occhio ×2, trapassa tutti","Occhio ×2, trapassa tutti","Eye ×2, pierces all"
 Khopesh -40%,Khopesh -40%,Khopesh -40%
+nessuno,nessuno,none
+Casa della Vita    Lapislazzuli: %d    Amuleto: %s,Casa della Vita    Lapislazzuli: %d    Amuleto: %s,House of Life    Lapis lazuli: %d    Amulet: %s
+Levetta muovi · LB/A scatto · Y interagisci · B chiudi,Levetta muovi · LB/A scatto · Y interagisci · B chiudi,Stick move · LB/A dash · Y interact · B close
+WASD muovi · Spazio scatto · E interagisci · Esc esci,WASD muovi · Spazio scatto · E interagisci · Esc esci,WASD move · Space dash · E interact · Esc leave
+%s · Il banco dell'orafo: gli amuleti,%s · Il banco dell'orafo: gli amuleti,%s · The goldsmith's bench: amulets
+%s · La parete di Thoth: le sfide (%d da riscuotere),%s · La parete di Thoth: le sfide (%d da riscuotere),%s · The wall of Thoth: challenges (%d to collect)
+"Thoth, il signore della scrittura, guarda gli scribi al lavoro","Thoth, il signore della scrittura, guarda gli scribi al lavoro","Thoth, lord of writing, watches the scribes at work"
+Il banco dell'orafo,Il banco dell'orafo,The goldsmith's bench
+"Porti un solo amuleto per volta. Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.","Porti un solo amuleto per volta. Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.","You wear one amulet at a time. You earn them with the challenges on the wall of Thoth, then forge them with lapis lazuli (you have %d). They grow with use: level 2 after 20 chambers worn, level 3 after 50."
+  ·  livello %d,  ·  livello %d,  ·  level %d
+  ·  AL COLLO,  ·  AL COLLO,  ·  WORN
+"   (al livello %d: %s, dopo %d stanze; ne hai fatte %d)","   (al livello %d: %s, dopo %d stanze; ne hai fatte %d)","   (level %d: %s, after %d chambers; you have done %d)"
+Mettilo al collo,Mettilo al collo,Wear it
+Toglilo,Toglilo,Take it off
+Forgialo · gratis,Forgialo · gratis,Forge it · free
+Forgialo · %d lapislazzuli,Forgialo · %d lapislazzuli,Forge it · %d lapis lazuli
+Sfida: %s,Sfida: %s,Challenge: %s
+La parete di Thoth,La parete di Thoth,The wall of Thoth
+Le sfide si compiono giocando; il premio si riscuote qui. Sfide compiute: %d su %d.,Le sfide si compiono giocando; il premio si riscuote qui. Sfide compiute: %d su %d.,Challenges are completed by playing; you collect the reward here. Challenges completed: %d of %d.
+  ·  FATTA,  ·  FATTA,  ·  DONE
+  ·  COMPIUTA!,  ·  COMPIUTA!,  ·  COMPLETED!
+  Premio: %s.,  Premio: %s.,  Reward: %s.
+Riscuoti il premio,Riscuoti il premio,Collect the reward
+La seconda parete è coperta da un telo: si svelerà quando avrai compiuto %d sfide.,La seconda parete è coperta da un telo: si svelerà quando avrai compiuto %d sfide.,The second wall is covered by a cloth: it will be revealed once you have completed %d challenges.
+"Thoth sta ancora incidendo la seconda parete: tornerà presto, con sfide più dure.","Thoth sta ancora incidendo la seconda parete: tornerà presto, con sfide più dure.","Thoth is still carving the second wall: it will return soon, with harder challenges."
+La Porta,La Porta,The Gate
+Batti il Serpente della Porta.,Batti il Serpente della Porta.,Defeat the Serpent of the Gate.
+Senza un graffio,Senza un graffio,Without a scratch
+Finisci 3 stanze di fila senza essere colpito.,Finisci 3 stanze di fila senza essere colpito.,Clear 3 chambers in a row without being hit.
+Piedi piantati,Piedi piantati,Feet planted
+Finisci 3 stanze di fila senza scattare.,Finisci 3 stanze di fila senza scattare.,Clear 3 chambers in a row without dashing.
+Il devoto,Il devoto,The devotee
+Prendi 3 doni dallo stesso dio in una discesa.,Prendi 3 doni dallo stesso dio in una discesa.,Take 3 boons from the same god in one descent.
+Un buon cliente,Un buon cliente,A good customer
+Spendi 120 Ka dal Traghettatore in una discesa.,Spendi 120 Ka dal Traghettatore in una discesa.,Spend 120 Ka at the Ferryman in one descent.
+Il cercatore,Il cercatore,The seeker
+Trova 3 stanze segrete.,Trova 3 stanze segrete.,Find 3 secret rooms.
+Per un soffio,Per un soffio,By a breath
+Batti il Serpente della Porta con meno di un quarto della vita.,Batti il Serpente della Porta con meno di un quarto della vita.,Defeat the Serpent of the Gate with less than a quarter of your health.
+Il Divoratore,Il Divoratore,The Devourer
+Batti Am-heh.,Batti Am-heh.,Defeat Am-heh.
+Sterminatore,Sterminatore,Exterminator
+Abbatti 100 scarabei.,Abbatti 100 scarabei.,Kill 100 scarabs.
+Due mani,Due mani,Two hands
+Arriva al Serpente della Porta con due armi diverse.,Arriva al Serpente della Porta con due armi diverse.,Reach the Serpent of the Gate with two different weapons.
+amuleto: %s,amuleto: %s,amulet: %s
+%d Ka custodito,%d Ka custodito,%d Stored Ka
+%d lapislazzuli,%d lapislazzuli,%d lapis lazuli
+%d Lacrima di Iside,%d Lacrima di Iside,%d Tear of Isis
+%d Lacrime di Iside,%d Lacrime di Iside,%d Tears of Isis
+Sfida compiuta,Sfida compiuta,Challenge completed
+%s · riscuoti il premio alla Casa della Vita,%s · riscuoti il premio alla Casa della Vita,%s · collect the reward at the House of Life
 Uscire al giorno,Uscire al giorno,Coming Forth by Day
 Inizi ogni discesa con +{v} vita massima.,Inizi ogni discesa con +{v} vita massima.,Start every descent with +{v} max health.
 Gli Egizi chiamavano il Libro dei Morti 'Formule per uscire al giorno'. Il capitolo 17 è uno dei più antichi e lunghi: spiega chi sono gli dèi che il morto incontrerà nel viaggio.,Gli Egizi chiamavano il Libro dei Morti 'Formule per uscire al giorno'. Il capitolo 17 è uno dei più antichi e lunghi: spiega chi sono gli dèi che il morto incontrerà nel viaggio.,The Egyptians called the Book of the Dead the 'Spells for Coming Forth by Day'. Chapter 17 is among the oldest and longest: it tells who the gods are that the dead will meet on the journey.
@@ -471,6 +546,7 @@ Occhio pronto,Occhio pronto,Eye ready
 "«Ho fatto una promessa, molto tempo fa. La sto ancora pagando. Prendi, e va'.»","«Ho fatto una promessa, molto tempo fa. La sto ancora pagando. Prendi, e va'.»","«I made a promise, a long time ago. I am still paying for it. Take it, and go.»"
 "«Sali, scriba. O compra e scendi. Ma prima parlami: le mie parole sono gratis.»","«Sali, scriba. O compra e scendi. Ma prima parlami: le mie parole sono gratis.»","«Climb aboard, scribe. Or buy and go down. But talk to me first: my words are free.»"
 %d Ka,%d Ka,%d Ka
+Kheper: Reborn in the Duat,Kheper: Reborn in the Duat,Kheper: Reborn in the Duat
 Acqua del Nilo,Acqua del Nilo,Water of the Nile
 Recuperi il 30% della vita,Recuperi il 30% della vita,You recover 30% of your health
 Offerta agli dèi,Offerta agli dèi,Offering to the Gods
@@ -489,6 +565,7 @@ Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra,Ogni port
 Discesa ripresa,Discesa ripresa,Descent resumed
 Stanza %d di %d,Stanza %d di %d,Chamber %d of %d
 Set mantiene la promessa,Set mantiene la promessa,Set keeps his promise
+di fila,di fila,in a row
 Il Cortile di Neith si è aperto,Il Cortile di Neith si è aperto,The Courtyard of Neith has opened
 La via verso Am-heh è aperta,La via verso Am-heh è aperta,The way to Am-heh is open
 Il Serpente della Porta è caduto,Il Serpente della Porta è caduto,The Serpent of the Gate has fallen
@@ -508,7 +585,6 @@ Dono di Anubi,Dono di Anubi,Boon of Anubis
 Anubi pesa il tuo cuore,Anubi pesa il tuo cuore,Anubis weighs your heart
 Dono di %s,Dono di %s,Boon of %s
 Dono doppio,Dono doppio,Duo Boon
-  ·  livello %d,  ·  livello %d,  ·  level %d
 Patto di Set,Patto di Set,Pact of Set
 Prima · maledizione per %d stanze,Prima · maledizione per %d stanze,First · curse for %d chambers
 Poi · per tutta la discesa,Poi · per tutta la discesa,Then · for the whole descent
@@ -580,6 +656,7 @@ L'altare di Set,L'altare di Set,The altar of Set
 Una deviazione nel deserto rosso. Le tue porte ti aspettano,Una deviazione nel deserto rosso. Le tue porte ti aspettano,A detour into the red desert. Your doors are waiting for you
 Il Traghettatore,Il Traghettatore,The Ferryman
 Mahaf: ,Mahaf: ,Mahaf: 
+Dono di Hathor,Dono di Hathor,Gift of Hathor
 Non hai abbastanza Ka,Non hai abbastanza Ka,You don't have enough Ka
 %s sale al livello %d,%s sale al livello %d,%s rises to level %d
 La colonna crolla,La colonna crolla,The pillar crumbles
@@ -655,9 +732,12 @@ WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD muovi · Spazio
 La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,The scales of Ma'at · Defeat Am-heh to lay down your weights
 %s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d),%s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d),%s · The stonemason's chest: restore the Hall (lapis lazuli: %d)
 %s · Accarezza il gatto,%s · Accarezza il gatto,%s · Pet the cat
+La Casa della Vita · amuleti e sfide · entra dalla porta,La Casa della Vita · amuleti e sfide · entra dalla porta,The House of Life · amulets and challenges · walk through the door
+"%s · Apri la Casa della Vita: amuleti e sfide (%d lapislazzuli, ne hai %d)","%s · Apri la Casa della Vita: amuleti e sfide (%d lapislazzuli, ne hai %d)","%s · Open the House of Life: amulets and challenges (%d lapis lazuli, you have %d)"
 Il Cortile di Neith · le armi · entra dalla porta,Il Cortile di Neith · le armi · entra dalla porta,The Courtyard of Neith · the weapons · enter through the door
 Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,The Courtyard of Neith · it will open when you have defeated the Serpent of the Gate
 Il cancello del Duat è a nord,Il cancello del Duat è a nord,The gate of the Duat lies to the north
+Servono %d lapislazzuli,Servono %d lapislazzuli,You need %d lapis lazuli
 "Tocca una voce per leggerla, toccala di nuovo per sceglierla · × per chiudere","Tocca una voce per leggerla, toccala di nuovo per sceglierla · × per chiudere","Tap an entry to read it, tap it again to choose it · × to close"
 E / Esc / B per chiudere,E / Esc / B per chiudere,E / Esc / B to close
 Il Libro dei Morti,Il Libro dei Morti,The Book of the Dead
@@ -686,7 +766,6 @@ It costs %d Ka: you have %d."
 Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.,Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.,A longer papyrus for more spells. The richest had Books of the Dead painted tens of metres long: Ani's is over twenty-three.
 I restauri della Sala,I restauri della Sala,Restoring the Hall
 Lapislazzuli: %d    ·    Restauri fatti: %d di %d,Lapislazzuli: %d    ·    Restauri fatti: %d di %d,Lapis lazuli: %d    ·    Restorations done: %d of %d
-%d lapislazzuli,%d lapislazzuli,%d lapis lazuli
 Già restaurato.,Già restaurato.,Already restored.
 Premi per restaurarlo: %d lapislazzuli.,Premi per restaurarlo: %d lapislazzuli.,Press to restore it: %d lapis lazuli.
 "Costa %d lapislazzuli: te ne mancano %d. Li lasciano il Serpente della Porta, Am-heh e le stanze segrete.","Costa %d lapislazzuli: te ne mancano %d. Li lasciano il Serpente della Porta, Am-heh e le stanze segrete.","It costs %d lapis lazuli: you need %d more. The Serpent of the Gate, Am-heh and the secret chambers leave them behind."
@@ -761,7 +840,6 @@ I can't check: maybe the phone is not connected. Press to try again."
 C'è una versione nuova: ricarica la pagina di itch.io (i progressi restano).,C'è una versione nuova: ricarica la pagina di itch.io (i progressi restano).,There is a new version: reload the itch.io page (your progress stays).
 Aggiornamento in corso... il gioco si riapre da solo tra un momento.,Aggiornamento in corso... il gioco si riapre da solo tra un momento.,Updating... the game will reopen by itself in a moment.
 Controllo in corso...,Controllo in corso...,Checking...
-nessuno,nessuno,none
 Il Peso del Cuore,Il Peso del Cuore,The Weight of the Heart
 Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s,Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s,Total weight: %d    ·    Ka at the end of a descent: +%d%%    ·    Record against Am-heh: %s
 "%s
@@ -1016,6 +1094,7 @@ Capitolo %d · %s,Capitolo %d · %s,Chapter %d · %s
 Questo papiro è ancora sigillato.,Questo papiro è ancora sigillato.,This scroll is still sealed.
 Occhio di Horus,Occhio di Horus,Eye of Horus
 GIUDIZIO,GIUDIZIO,JUDGEMENT
+Il nodo di Iside ti protegge,Il nodo di Iside ti protegge,The knot of Isis protects you
 Scudo -%d,Scudo -%d,Shield -%d
 Il cuore non testimonia,Il cuore non testimonia,The heart does not testify
 Bastet ti protegge!,Bastet ti protegge!,Bastet protects you!
@@ -1415,3 +1494,6 @@ The First Hour is behind you.%s
 %s
 
 Press R (or Start) to return to the Hall of Judgement"
+Il Traghettatore ha un'offerta agli dèi in più.,Il Traghettatore ha un'offerta agli dèi in più.,The Ferryman has one extra offering to the gods.
+La crepa delle stanze segrete brilla da lontano.,La crepa delle stanze segrete brilla da lontano.,The crack of secret rooms shines from afar.
+Il primo dono della discesa arriva già al livello 2.,Il primo dono della discesa arriva già al livello 2.,The first boon of the descent arrives already at level 2.

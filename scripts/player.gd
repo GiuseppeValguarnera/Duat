@@ -273,6 +273,14 @@ func _start_dash(move: Vector2) -> void:
 	invuln_t = maxf(invuln_t, dash_time + 0.05)
 	knock = Vector2.ZERO
 	dash_hit.clear()
+	Run.room_dashed = true
+	# Pilastro Djed: al posto tuo resta una statua che attira i nemici (una sola alla volta)
+	if Run.amulet == "djed" and not Run.training and Run.decoy_t <= 0.0:
+		var decoy := Amulets.Decoy.new()
+		decoy.life = Amulets.val()
+		decoy.position = position
+		get_parent().add_child(decoy)
+		get_parent().move_child(decoy, get_index())
 	Sfx.play("dash")
 	Fx.burst(global_position, Color(0.85, 0.75, 0.55), 8, 60.0)
 
@@ -517,6 +525,13 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 	if dead or invuln_t > 0.0 or dash_t > 0.0:
 		return false
 	amount *= Run.damage_taken_mult()
+	# Nodo di Iside: le trappole fanno meno male (spuntoni, grate, olio, statue dell'ureo)
+	if Run.amulet == "iside" and attacker == null and kind in ["", "grata", "ureo", "olio"]:
+		amount *= 1.0 - Amulets.val() / 100.0
+		if amount <= 0.05:
+			invuln_t = 0.3
+			Fx.float_text(global_position + Vector2(0, -14), Lang.t("Il nodo di Iside ti protegge"), Color(0.86, 0.32, 0.26))
+			return false
 	if Run.training:
 		amount = minf(amount, hp - 1.0)       # nel Cortile di Neith i colpi si sentono, ma non uccidono
 	if Run.chap("c151") and not Run.mask_used:
@@ -536,6 +551,7 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 		Run.add_sekhem(amount * 0.5)
 		knock = (global_position - from_pos).normalized() * 230.0
 	hp -= amount
+	Run.room_hit = true
 	Run.last_hit = "trappola"
 	if attacker != null and attacker.scene_file_path != "":
 		Run.last_hit = attacker.scene_file_path.get_file().get_basename()

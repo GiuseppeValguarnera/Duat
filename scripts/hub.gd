@@ -11,13 +11,14 @@ const TOP := 64.0
 const PlayerScene := preload("res://scenes/player.tscn")
 const DecorScript := preload("res://scripts/room_decor.gd")
 const ARMORY_Y := 218.0                   ## la porta del Cortile di Neith, nella parete ovest
+const CASA_Y := 218.0                     ## la porta della Casa della Vita, nella parete est
 
 var player
 var spots := {}                       # nome -> posizione dei punti con cui interagire
 var near := ""
 var talk_lines: Array = []
 var commented := false
-var _news := [false, false, false, false]   ## Anubi, Libro, Papiri, cassa: c'è qualcosa di nuovo? (_draw_markers)
+var _news := [false, false, false, false, false]   ## Anubi, Libro, Papiri, cassa: c'è qualcosa di nuovo? (_draw_markers)
 var bastet_cat: Node2D = null           ## il gatto di Bastet (restauro)
 var _news_t := 0.0
 var book: CanvasLayer = null           # finestra aperta (Libro dei Morti o Papiri di Thoth)
@@ -138,6 +139,9 @@ func _build() -> void:
 	if Run.from_armory:
 		Run.from_armory = false
 		player.position = Vector2(WALL + 26.0, ARMORY_Y)
+	if Run.from_casa:
+		Run.from_casa = false
+		player.position = Vector2(ROOM.size.x - WALL - 26.0, CASA_Y)
 	if Run.from_restore:
 		Run.from_restore = false
 		player.position = spots["cassa"] + Vector2(0, 30)
@@ -298,9 +302,16 @@ func _process(delta: float) -> void:
 		Sfx.play("door")
 		get_tree().change_scene_to_file("res://scenes/armory.tscn")
 		return
+	# la porta della Casa della Vita, a est: si attraversa quando è aperta (40 lapislazzuli)
+	if Meta.casa and player.global_position.x > ROOM.size.x - WALL - 14.0 and absf(player.global_position.y - CASA_Y) < 24.0:
+		Sfx.play("door")
+		get_tree().change_scene_to_file("res://scenes/casa.tscn")
+		return
 	near = ""
 	if player.global_position.x < WALL + 40.0 and absf(player.global_position.y - ARMORY_Y) < 30.0:
 		near = "cortile"
+	if player.global_position.x > ROOM.size.x - WALL - 40.0 and absf(player.global_position.y - CASA_Y) < 30.0:
+		near = "casa"
 	for k in ["anubi", "libro", "bilancia", "papiri", "cassa"]:
 		if player.global_position.distance_to(spots[k]) < 40.0:
 			near = k
@@ -326,6 +337,11 @@ func _process(delta: float) -> void:
 			prompt.text = Lang.t("%s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d)") % [key, Meta.lapis]
 		"gatto":
 			prompt.text = Lang.t("%s · Accarezza il gatto") % key
+		"casa":
+			if Meta.casa:
+				prompt.text = Lang.t("La Casa della Vita · amuleti e sfide · entra dalla porta")
+			else:
+				prompt.text = Lang.t("%s · Apri la Casa della Vita: amuleti e sfide (%d lapislazzuli, ne hai %d)") % [key, CASA_COST, Meta.lapis]
 		"cortile":
 			if Meta.serpent_wins > 0:
 				prompt.text = Lang.t("Il Cortile di Neith · le armi · entra dalla porta")
@@ -359,12 +375,33 @@ func _unhandled_input(event: InputEvent) -> void:
 			_open_book("restauri")
 		elif near == "gatto":
 			bastet_cat.pet()
+		elif near == "casa" and not Meta.casa:
+			_open_casa()
 		elif near == "bilancia" and Weights.unlocked():
 			_open_book("pesi")
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("pause"):
 		_open_book("opzioni")
 		get_viewport().set_input_as_handled()
+
+
+const CASA_COST := 40
+
+## Si apre la Casa della Vita: i lapislazzuli spesi, la porta murata che crolla.
+func _open_casa() -> void:
+	if Meta.lapis < CASA_COST:
+		Fx.float_text(player.global_position + Vector2(0, -20), Lang.t("Servono %d lapislazzuli") % CASA_COST, Color(0.9, 0.4, 0.35))
+		Fx.shake(2.0)
+		return
+	Meta.lapis -= CASA_COST
+	Meta.casa = true
+	Meta.save()
+	Sfx.play("jar_break", 0.0)
+	Sfx.play("boon", 0.0)
+	Fx.shake(6.0)
+	Fx.burst(Vector2(ROOM.size.x - WALL, CASA_Y), Color(0.78, 0.66, 0.46), 40, 140.0)
+	Fx.burst(Vector2(ROOM.size.x - WALL, CASA_Y), Restorations.LAPIS_COLOR, 20, 110.0)
+	queue_redraw()
 
 
 func _start_run() -> void:
@@ -1157,6 +1194,22 @@ func _draw() -> void:
 	var ec := Vector2(WALL + 12, ARMORY_Y - 40)
 	draw_line(ec + Vector2(-7, -7), ec + Vector2(7, 7), Color(0.94, 0.72, 0.3, 0.8), 1.5)
 	draw_line(ec + Vector2(7, -7), ec + Vector2(-7, 7), Color(0.94, 0.72, 0.3, 0.8), 1.5)
+	# porta della Casa della Vita, a est: murata finché non la apri con i lapislazzuli
+	var ex := ROOM.size.x - WALL
+	draw_rect(Rect2(ex, CASA_Y - 26, WALL, 52), Color(0.03, 0.02, 0.05))
+	if Meta.casa:
+		draw_rect(Rect2(ex + 2, CASA_Y - 24, WALL - 4, 48), Color(0.3, 0.62, 0.66, 0.18 + 0.12 * pulse))
+	else:
+		for by in range(4):
+			for bx in range(2):
+				var off := 0.0 if by % 2 == 0 else 6.0
+				draw_rect(Rect2(ex + 3 + bx * 13 + off * 0.5, CASA_Y - 24 + by * 12, 12, 11), Color(0.6, 0.52, 0.42))
+	draw_rect(Rect2(ex, CASA_Y - 30, 3, 60), Color(0.94, 0.72, 0.3))
+	# l'ankh sopra la porta: la Casa della Vita
+	var ac := Vector2(ex - 12, CASA_Y - 42)
+	draw_arc(ac + Vector2(0, -4), 3.5, 0, TAU, 12, Color(0.3, 0.62, 0.66, 0.9), 1.5)
+	draw_line(ac + Vector2(0, -1), ac + Vector2(0, 9), Color(0.3, 0.62, 0.66, 0.9), 1.5)
+	draw_line(ac + Vector2(-5, 1), ac + Vector2(5, 1), Color(0.3, 0.62, 0.66, 0.9), 1.5)
 	_draw_cartouche(Vector2(g.x, 15.0))
 	_draw_scale(spots["bilancia"])
 	if Restorations.has("trono"):
@@ -1185,10 +1238,12 @@ func _draw_markers() -> void:
 	UiStyle.sparkle(self, spots["cancello"] + Vector2(0, 16), 18.0, t, false, 5.2)
 	if Meta.serpent_wins > 0:
 		UiStyle.sparkle(self, Vector2(WALL + 6.0, ARMORY_Y), 16.0, t, near == "cortile", 2.6)
+	UiStyle.sparkle(self, Vector2(ROOM.size.x - WALL - 6.0, CASA_Y), 16.0, t, near == "casa", 3.7)
 	# le novità si ricontrollano due volte al secondo, non a ogni fotogramma (la storia è lunga)
 	if t >= _news_t:
 		_news_t = t + 0.5
-		_news = [Dialogue.has_news(not commented), Chapters.something_affordable(), Lore.unread_ricordi() > 0, Restorations.something_affordable()]
+		_news = [Dialogue.has_news(not commented), Chapters.something_affordable(), Lore.unread_ricordi() > 0, Restorations.something_affordable(),
+			(Meta.casa and (Challenges.to_claim() > 0 or Amulets.something_to_forge())) or (not Meta.casa and Meta.lapis >= CASA_COST)]
 	if _news[0]:
 		UiStyle.exclaim(self, a + Vector2(0, -82), t)
 	if _news[1]:
@@ -1199,6 +1254,8 @@ func _draw_markers() -> void:
 	UiStyle.sparkle(self, cs + Vector2(0, -12), 18.0, t, near == "cassa", 6.1)
 	if _news[3]:
 		UiStyle.exclaim(self, cs + Vector2(0, -36), t)
+	if _news[4]:
+		UiStyle.exclaim(self, Vector2(ROOM.size.x - WALL - 12.0, CASA_Y - 66.0), t)
 
 
 ## Il cartiglio del faraone Akhet, sopra il cancello. I segni del nome (ibis, placenta, pane,

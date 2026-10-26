@@ -30,6 +30,7 @@ var in_hub := false                   # true nella Sala del Giudizio
 var training := false                 # nel Cortile di Neith: non si muore
 var from_armory := false              # si torna nella Sala dalla porta del Cortile
 var from_restore := false             # la Sala si è appena rinnovata (restauro): si riappare alla cassa
+var from_casa := false                # si torna nella Sala dalla porta della Casa della Vita
 var last_hit := ""                    # chi ti ha colpito per ultimo (per i commenti di Anubi)
 var resume := {}                      # discesa salvata da riprendere (la imposta la Sala all'avvio)
 
@@ -40,6 +41,16 @@ const DESCENT_PATH := "user://duat_discesa.cfg"   ## salvataggio a metà discesa
 var weapon := "khopesh"
 var aspect := "faraone"
 var aspect_level := 1
+# l'amuleto della Casa della Vita (amulets.gd) e ciò che serve alle sfide (challenges.gd)
+var amulet := ""
+var amulet_level := 1
+var room_hit := false                  ## in questa stanza hai perso vita
+var room_dashed := false               ## in questa stanza hai scattato
+var ka_spent := 0                      ## Ka spesi dal Traghettatore in questa discesa
+var was_stacks := 0                    ## Scettro Was: stanze pulite contate
+var kheper_left := 0                   ## Scarabeo Kheper: doni che arrivano ancora al livello 2
+var decoy_pos := Vector2.ZERO          ## Pilastro Djed: dove sta la statua che attira i nemici
+var decoy_t := 0.0
 
 
 func aspect_val(id: String) -> float:
@@ -69,6 +80,18 @@ func new_run() -> void:
 	heart_used = false
 	last_hit = ""
 	mask_used = false
+	amulet = Meta.amulet if Amulets.owned(Meta.amulet) else ""
+	amulet_level = Amulets.level(amulet) if amulet != "" else 1
+	if OS.get_environment("DUAT_AMULET") != "":       # per le prove: un amuleto al livello 3
+		amulet = OS.get_environment("DUAT_AMULET")
+		amulet_level = 3
+	room_hit = false
+	room_dashed = false
+	ka_spent = 0
+	was_stacks = 0
+	kheper_left = int(Amulets.value("kheper", amulet_level)) if amulet == "kheper" else 0
+	decoy_t = 0.0
+	Challenges.on_run_start()
 	if chap("c17"):
 		max_hp += Chapters.value("c17")
 		hp = max_hp
@@ -86,6 +109,7 @@ func save_descent(reward: Dictionary, extra: Dictionary) -> void:
 		"blessings": Array(blessings), "curses": curses.duplicate(true), "sekhem": sekhem,
 		"revived": revived, "blood_kills": blood_kills, "kills": kills, "damage_dealt": damage_dealt,
 		"elapsed": Time.get_ticks_msec() - start_msec, "heart_used": heart_used, "reward": reward,
+		"ka_spent": ka_spent, "was": was_stacks, "kheper": kheper_left,
 	}
 	d.merge(extra)
 	var cfg := ConfigFile.new()
@@ -124,6 +148,9 @@ func apply_descent(d: Dictionary) -> void:
 	damage_dealt = d.get("damage_dealt", 0.0)
 	start_msec = Time.get_ticks_msec() - int(d.get("elapsed", 0))
 	heart_used = d.get("heart_used", false)
+	ka_spent = d.get("ka_spent", 0)
+	was_stacks = d.get("was", 0)
+	kheper_left = d.get("kheper", 0)
 
 
 func level(id: String) -> int:
@@ -143,7 +170,14 @@ func val(id: String) -> float:
 
 
 func add_boon(id: String) -> void:
+	var god := String(Boons.ALL[id].get("god", ""))
+	# Scarabeo Kheper: i primi doni nuovi della discesa arrivano già al livello 2
+	if kheper_left > 0 and level(id) == 0 and not (god in ["anubi", "duo", "set"]) and not Boons.is_heavy(id) \
+			and Boons.ALL[id].has("values") and (Boons.ALL[id]["values"] as Array).size() >= 2:
+		kheper_left -= 1
+		boons[id] = 1
 	boons[id] = level(id) + 1
+	Challenges.on_boon(god)
 	if id == "anubi_stone":
 		max_hp += val(id)
 		hp += val(id)
@@ -182,6 +216,20 @@ func cursed(curse: String) -> bool:
 
 
 ## Da chiamare a ogni stanza ripulita: le maledizioni scadono e arrivano le benedizioni.
+## Una stanza della discesa è finita (anche quelle senza maledizioni da contare): le sfide "di
+## fila", lo Scettro Was e i livelli dell'amuleto al collo.
+func room_done() -> void:
+	if training:
+		return
+	Challenges.on_room_done(room_hit, room_dashed)
+	if amulet == "was" and not room_hit:
+		was_stacks = mini(5, was_stacks + 1)
+	if amulet != "":
+		Meta.amulet_rooms[amulet] = Amulets.rooms(amulet) + 1
+	room_hit = false
+	room_dashed = false
+
+
 func room_cleared() -> void:
 	if curse_paused:
 		return
@@ -231,6 +279,8 @@ func chap(id: String) -> bool:
 
 func all_damage_mult() -> float:
 	var m := 1.25 if has("set_might") else 1.0
+	if amulet == "was":
+		m *= 1.0 + was_stacks * Amulets.val() / 100.0     # Scettro Was: le stanze pulite
 	if has("anubi_stone"):
 		m *= 0.95                # Cuore di Pietra: più vita, colpi un po' più deboli
 	if chap("c125") and hp > max_hp * 0.8:

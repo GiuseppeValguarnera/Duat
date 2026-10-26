@@ -15,8 +15,8 @@ const HITS := 3                         ## colpi per far crollare il muro
 const DARK := Color(0.58, 0.55, 0.65)     ## quanto si fa buio dentro
 const INK := Color(0.62, 0.5, 0.3)      ## colore dei geroglifici incisi
 const SAND := Color(0.78, 0.66, 0.46)
-const KA_MIN := 25                       ## il Ka del serdab, quando il premio è il Ka
-const KA_MAX := 35
+const KA_MIN := 10                       ## il Ka del serdab, quando il premio è il Ka: sempre meno di una porta del tesoro (25), è un di più
+const KA_MAX := 15
 
 ## Iscrizioni sulla statua: formule d'offerta e maledizioni come quelle vere delle tombe.
 ## Parlano "del re" in generale: nessun indizio sulla storia.
@@ -157,6 +157,7 @@ func _process(delta: float) -> void:
 		shade.create_tween().tween_property(shade, "color", lit * DARK if inside else lit, 0.45)
 		if inside and not visited:
 			visited = true
+			Challenges.on_serdab()
 			Sfx.play("soul", 0.0)
 			g._banner(Lang.t("Un serdab"), inscription, Color(0.85, 0.75, 0.55), 4.5)
 	for loot in treasures:
@@ -191,6 +192,11 @@ func _draw() -> void:
 ## La crepa sulla faccia del muro e un geroglifico storto, inclinato come se fosse scivolato.
 func _draw_crack(off: Vector2) -> void:
 	var c := Color(0.16, 0.11, 0.07)
+	# Occhio Udjat: la crepa brilla d'oro, si vede da lontano
+	if Run.amulet == "udjat":
+		var pulse := 0.5 + 0.5 * sin(t * 3.0)
+		draw_circle(Vector2(0, -12) + off, 18.0 + pulse * 4.0, Color(1.0, 0.82, 0.4, 0.12 + 0.1 * pulse))
+		UiStyle.star4(self, Vector2(6, -24) + off, 3.0 + pulse * 2.0, Color(1.0, 0.9, 0.5, 0.8))
 	var pts := PackedVector2Array([Vector2(1, 2), Vector2(-3, -6), Vector2(2, -12), Vector2(-2, -19), Vector2(3, -27)])
 	for i in range(pts.size()):
 		pts[i] += off

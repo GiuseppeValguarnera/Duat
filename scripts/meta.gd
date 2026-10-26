@@ -41,6 +41,13 @@ var god_picks := {}                   ## doni presi da ogni dio, in tutte le dis
 var total_kills := 0
 var best_room := 0                    ## la stanza più lontana raggiunta
 var best_time := -1                   ## la vittoria più rapida su Am-heh, in secondi
+var casa := false                     ## la Casa della Vita è aperta (40 lapislazzuli, vedi casa.gd)
+var amulets: Array = []               ## amuleti forgiati (amulets.gd)
+var amulet_recipes: Array = []        ## amuleti che si possono forgiare (premi delle sfide)
+var amulet := ""                      ## l'amuleto al collo
+var amulet_rooms := {}                ## amuleto -> stanze portate al collo (i livelli)
+var challenges := {}                  ## sfida -> 1 compiuta, 2 premio riscosso (challenges.gd)
+var stats := {}                       ## contatori delle sfide
 
 
 func _ready() -> void:
@@ -87,6 +94,13 @@ func _ready() -> void:
 		total_kills = cfg.get_value("registro", "nemici", 0)
 		best_room = cfg.get_value("registro", "stanza", 0)
 		best_time = cfg.get_value("registro", "tempo", -1)
+		casa = cfg.get_value("casa", "aperta", false)
+		amulets = cfg.get_value("casa", "amuleti", [])
+		amulet_recipes = cfg.get_value("casa", "ricette", [])
+		amulet = cfg.get_value("casa", "al_collo", "")
+		amulet_rooms = cfg.get_value("casa", "stanze", {})
+		challenges = cfg.get_value("casa", "sfide", {})
+		stats = cfg.get_value("casa", "contatori", {})
 	Lang.apply(String(options.get("lang", "auto")))
 
 
@@ -128,6 +142,13 @@ func save() -> void:
 	cfg.set_value("registro", "nemici", total_kills)
 	cfg.set_value("registro", "stanza", best_room)
 	cfg.set_value("registro", "tempo", best_time)
+	cfg.set_value("casa", "aperta", casa)
+	cfg.set_value("casa", "amuleti", amulets)
+	cfg.set_value("casa", "ricette", amulet_recipes)
+	cfg.set_value("casa", "al_collo", amulet)
+	cfg.set_value("casa", "stanze", amulet_rooms)
+	cfg.set_value("casa", "sfide", challenges)
+	cfg.set_value("casa", "contatori", stats)
 	cfg.save(PATH)
 
 

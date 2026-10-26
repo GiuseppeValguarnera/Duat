@@ -60,6 +60,9 @@ func _physics_process(delta: float) -> void:
 	var to := Vector2.ZERO
 	if player != null and not player.dead:
 		to = player.global_position - global_position
+		# Pilastro Djed: finché la statua sta in piedi, chi le è vicino insegue lei
+		if Run.decoy_t > 0.0 and not is_boss and not miniboss and global_position.distance_to(Run.decoy_pos) < 220.0:
+			to = Run.decoy_pos - global_position
 
 	sobek_stun_t = maxf(0.0, sobek_stun_t - delta)
 	mark_t = maxf(0.0, mark_t - delta)
@@ -242,6 +245,7 @@ func die() -> void:
 		return
 	dead = true
 	Run.kills += 1
+	Challenges.on_kill(scene_file_path)
 	Sfx.play("kill")
 	# solo i nemici più grossi lasciano un po' di Ka, e non sempre (il 40% delle volte; di più con
 	# il capitolo 105 del Libro). Il grosso arriva dai tesori: prima si arrivava al Traghettatore

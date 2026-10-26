@@ -265,6 +265,13 @@ func start_room(reward: Dictionary) -> void:
 	player = PlayerScene.instantiate()
 	player.position = Vector2(ROOM.size.x / 2.0, ROOM.size.y - WALL - 24.0)
 	world.add_child(player)
+	Run.room_hit = false
+	Run.room_dashed = false
+	# Ankh: ogni stanza nuova (non la deviazione di Set) un po' di vita
+	if Run.amulet == "ankh" and Run.room > 1 and kind != "set" and kind != "tutorial":
+		player.heal(Amulets.val())
+	if kind == "guardian":
+		Challenges.on_guardian_room()
 	var cam: Camera2D = player.get_node("Camera")
 	cam.limit_left = int(ROOM.position.x)
 	cam.limit_top = int(ROOM.position.y)
@@ -441,7 +448,8 @@ func _maybe_serdab() -> void:
 		return
 	if Run.room < 2 or Run.room >= Run.ROOMS_PER_RUN:
 		return
-	if not always and randf() >= SERDAB_CHANCE:
+	var chance := SERDAB_CHANCE * (1.0 + (Amulets.val() / 100.0 if Run.amulet == "udjat" else 0.0))
+	if not always and randf() >= chance:
 		return
 	serdab_found = true
 	var s := SerdabScript.new()
@@ -470,6 +478,7 @@ func _room_cleared() -> void:
 	if cleared:
 		return
 	cleared = true
+	Run.room_done()                     # sfide "di fila", Scettro Was, livelli dell'amuleto
 	Run.room_cleared()                  # le maledizioni di Set contano le stanze ripulite
 	_maybe_serdab()
 	# a stanza ripulita le trappole si fermano
@@ -487,6 +496,7 @@ func _room_cleared() -> void:
 		# il guardiano di mezzo non dà Lacrime di Iside: quelle cadono solo sui boss delle regioni
 		var first_serpent := Meta.serpent_wins == 0
 		Meta.serpent_wins += 1
+		Challenges.on_serpent_beaten(Run.hp / Run.max_hp)
 		Restorations.gain(randi_range(4, 5), player.global_position)
 		var tear_txt := Lang.t("Il Cortile di Neith si è aperto") if first_serpent else Lang.t("La via verso Am-heh è aperta")
 		var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
@@ -547,8 +557,7 @@ func _open_doors() -> void:
 		sides = ["w", "n", "e"]              # Le porte aperte
 	var pool := []
 	var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
-	gods.shuffle()
-	for g in gods.slice(0, 2):
+	for g in Amulets.pick_gods(gods, 2):          # con l'Anello Shen pesano di più i tuoi dèi
 		pool.append({"kind": "boon", "god": g})
 	# ogni tanto, al posto del tesoro di Ka, una porta di lapislazzuli (per i restauri della Sala)
 	pool.append({"kind": "lapis"} if Run.room >= 2 and randf() < 0.15 else {"kind": "ka"})
@@ -1423,6 +1432,9 @@ func _start_shop() -> void:
 	var items := SHOP_ITEMS.duplicate()
 	if _upgradable().is_empty():
 		items = items.filter(func(it: Dictionary) -> bool: return it["kind"] != "upgrade")
+	# Collana di Hathor: un'offerta agli dèi in più, scontata con il livello
+	if Run.amulet == "hathor":
+		items.append({"kind": "boon", "title": "Dono di Hathor", "desc": "Un dio a caso ti offre un dono", "price": roundi(40 * (1.0 - Amulets.val() / 100.0))})
 	for i in range(items.size()):
 		var it: Dictionary = items[i]
 		var node := FerrymanScript.ShopItem.new()
@@ -1455,6 +1467,8 @@ func _buy(item) -> void:
 		Fx.shake(2.0)
 		return
 	Run.ka -= item.price
+	Run.ka_spent += item.price
+	Challenges.on_ka_spent(Run.ka_spent)
 	item.sold = true
 	Sfx.play("pickup", 0.0)
 	Fx.burst(item.global_position + Vector2(0, -20), item.color(), 24, 110.0)
@@ -1507,6 +1521,7 @@ func _boss_defeated() -> void:
 		if c is Enemy and not c.dead:
 			c.die()
 	Meta.ammit_wins += 1
+	Challenges.on_amheh_beaten()
 	Restorations.gain(randi_range(10, 12), player.global_position)
 	var win_secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
 	if Meta.best_time < 0 or win_secs < Meta.best_time:
