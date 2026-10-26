@@ -10,9 +10,8 @@ func _process(_delta: float) -> void:
 		_leave()
 
 func _leave() -> void:
-	Engine.time_scale = 1.0
-	get_tree().paused = false
-	get_tree().change_scene_to_file("res://scenes/hub.tscn")
+	game.can_leave = false
+	Rebirth.to_hub(game, Meta.last_end == "win")     # lo scarabeo spinge il sole, si rinasce nella Sala
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS

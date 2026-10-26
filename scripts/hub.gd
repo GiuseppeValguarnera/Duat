@@ -14,6 +14,7 @@ const ARMORY_Y := 218.0                   ## la porta del Cortile di Neith, nell
 const CASA_Y := 218.0                     ## la porta della Casa della Vita, nella parete est
 
 var player
+var emerging: Rebirth.Emergence = null           ## la riemersione dal disco solare, finché dura (rebirth.gd)
 var spots := {}                       # nome -> posizione dei punti con cui interagire
 var near := ""
 var talk_lines: Array = []
@@ -86,7 +87,10 @@ func _ready() -> void:
 	talk_box.visible = false
 	UiStyle.talk_style(talk_box, talk_name, talk_text, Boons.god_color("anubi"))
 	if Meta.runs == 0 or Meta.last_end != "":
-		_start_talk()
+		if emerging != null:
+			emerging.finished.connect(_start_talk)
+		else:
+			_start_talk()
 
 
 func _build() -> void:
@@ -145,7 +149,19 @@ func _build() -> void:
 	if Run.from_restore:
 		Run.from_restore = false
 		player.position = spots["cassa"] + Vector2(0, 30)
+	# di ritorno da una discesa: l'eroe riemerge dal disco solare al centro della Sala, come il
+	# sole all'alba (rebirth.gd). Anubi parla dopo.
+	var reborn := Run.rebirth
+	Run.rebirth = ""
+	if reborn != "":
+		player.position = Vector2(ROOM.size.x / 2.0, 238.0)
 	world.add_child(player)
+	if reborn != "":
+		emerging = Rebirth.Emergence.new()
+		emerging.player = player
+		emerging.victory = reborn == "win"
+		emerging.position = Vector2(ROOM.size.x / 2.0, 226.0)
+		world.add_child(emerging)
 	if Restorations.has("gatto"):
 		bastet_cat = HubCat.new()
 		bastet_cat.position = player.position + Vector2(-40, 6)

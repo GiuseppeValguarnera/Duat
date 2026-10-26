@@ -1167,6 +1167,7 @@ func _abandon_run() -> void:
 	Run.clear_descent()
 	Meta.last_end = "abandon"
 	Meta.last_room = Run.room
+	Run.rebirth = "death"
 	_end_run_summary()
 	get_tree().paused = false
 	Engine.time_scale = 1.0
@@ -1304,6 +1305,13 @@ func _death_screen(where: String, killer: String, summary: String) -> void:
 	dark.set_anchors_preset(Control.PRESET_FULL_RECT)
 	dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(dark)
+	# il Ba, l'anima-uccello, lascia il corpo e vola via sopra il buio: tornerà nella Sala (rebirth.gd)
+	if player != null and is_instance_valid(player):
+		var ba := Rebirth.BaSoul.new()
+		var ct: Transform2D = player.get_global_transform_with_canvas()
+		ba.position = ct.origin + Vector2(0, -14) * ct.get_scale().y
+		ba.scale = ct.get_scale() * 1.2
+		layer.add_child(ba)
 	var tw := create_tween().set_ignore_time_scale(true)
 	tw.tween_property(red, "color:a", 0.0, 0.9)
 	tw.parallel().tween_property(dark, "color:a", 0.88, 1.6)
@@ -1664,8 +1672,8 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("debug_hitbox"):
 		Fx.set_hitboxes(not Fx.show_hitboxes)
 	if Input.is_action_just_pressed("restart") and (finished or player.dead) and can_leave:
-		Engine.time_scale = 1.0
-		get_tree().change_scene_to_file("res://scenes/hub.tscn")
+		can_leave = false
+		Rebirth.to_hub(self, Meta.last_end == "win")     # lo scarabeo spinge il sole, si rinasce nella Sala
 		return
 	if player == null or not is_instance_valid(player):
 		return
