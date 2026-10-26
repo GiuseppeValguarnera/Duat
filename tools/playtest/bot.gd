@@ -59,6 +59,12 @@ var base_dodge := 0.5
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	# DUAT_WEIGHTS=max: tutti i Pesi del Cuore al massimo (prova di difficoltà massima)
+	if OS.get_environment("DUAT_WEIGHTS") == "max":
+		Meta.ammit_wins = maxi(Meta.ammit_wins, 1)
+		Meta.feather = false
+		for id in Weights.ALL:
+			Meta.weights[id] = int(Weights.ALL[id]["max"])
 	persona = OS.get_environment("DUAT_PERSONA")
 	if not P.has(persona):
 		persona = "veterano"
@@ -198,9 +204,30 @@ func _hub_shopping() -> void:
 	brain["last_bought"] = bought
 
 
+var perf_max := 0.0                    # il fotogramma più pesante (logica + fisica), in ms
+var perf_slow := 0                      # fotogrammi oltre 16 ms
+var perf_frames := 0
+var perf_enemies := 0                   # il massimo di nemici in scena insieme
+var perf_room := ""                     # dove c'è stato il fotogramma più pesante
+
+
+func _perf(g) -> void:
+	var ms := (Performance.get_monitor(Performance.TIME_PROCESS) + Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS)) * 1000.0
+	perf_frames += 1
+	if ms > 16.6:
+		perf_slow += 1
+	if ms > perf_max:
+		perf_max = ms
+		perf_room = "%d.%d" % [Run.region, Run.room]
+	perf_enemies = maxi(perf_enemies, get_tree().get_nodes_in_group("enemies").size())
+	if g == null:
+		return
+
+
 func _process(delta: float) -> void:
 	if done:
 		return
+	_perf(get_tree().current_scene)
 	var g = get_tree().current_scene
 	if g == null or g.name != "Game" or g.player == null or not is_instance_valid(g.player):
 		return
@@ -761,6 +788,7 @@ func _finish(g, forced: String = "") -> void:
 		"boons": Run.boons, "blessings": Run.blessings, "curses_left": Run.curses, "choices": choices,
 		"rooms": rooms, "dodges": dodges, "shop": shop_buys, "killer": Run.last_hit,
 	}
+	data["perf"] = {"max_ms": snappedf(perf_max, 0.1), "lenti": perf_slow, "fotogrammi": perf_frames, "nemici_max": perf_enemies, "dove": perf_room}
 	data["meta"] = {"lapis": Meta.lapis, "casa": Meta.casa, "sfide": Meta.challenges, "amuleto": Run.amulet, "amuleti": Meta.amulets, "restauri": Meta.restorations, "serpent_wins": Meta.serpent_wins, "ka_bank": Meta.ka_bank, "tears": Meta.tears, "wins": Meta.ammit_wins, "chapters": Meta.chapter_levels, "equipped": Meta.chapters_equipped, "weight": Weights.total(), "bought": brain.get("last_bought", [])}
 	data["cfg_now"] = {"reaction": snappedf(float(cfg["reaction"]), 0.001), "dodge": snappedf(base_dodge, 0.01), "skill": snappedf(float(cfg["skill"]), 0.01), "aim_err": snappedf(float(cfg["aim_err"]), 0.1), "heal": snappedf(float(cfg["heal"]), 0.01)}
 	if brain_path != "":

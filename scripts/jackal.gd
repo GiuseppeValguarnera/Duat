@@ -31,9 +31,14 @@ func _pack() -> Array:
 	return out
 
 
+## Il branco, ricalcolato con i ruoli ogni mezzo secondo: l'esca lo usa a ogni fotogramma per
+## guardare i fianchi, e ricostruirlo e riordinarlo ogni volta costava caro con molti nemici.
+var pack_cache: Array = []
+
 ## Chi fa cosa: il primo del branco ti sta davanti, gli altri ai fianchi.
 func _update_role() -> void:
 	var pack := _pack()
+	pack_cache = pack
 	var i := pack.find(self)
 	if pack.size() <= 1:
 		role = 2                                  # solo: niente esca, niente fianchi
@@ -112,8 +117,8 @@ func _start_leap() -> Vector2:
 
 ## L'esca aspetta che almeno un fianco sia vicino al suo posto (o che i fianchi stiano già saltando).
 func _flanks_ready(to: Vector2) -> bool:
-	for e in _pack():
-		if e == self or e.role == 0:
+	for e in pack_cache:
+		if not is_instance_valid(e) or e.dead or e == self or e.role == 0:
 			continue
 		if e.state == "windup" or e.state == "leap":
 			return true

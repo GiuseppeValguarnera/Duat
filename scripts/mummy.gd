@@ -88,7 +88,15 @@ func _aim_ahead(to: Vector2) -> Vector2:
 
 
 ## Le mummie si tengono un po' distanti tra loro: niente fila indiana.
+## La spinta si ricalcola circa 8 volte al secondo (scorrere tutti i nemici a ogni fotogramma, per
+## ogni mummia, cresceva col quadrato del loro numero).
+var _sep_cache := Vector2.ZERO
+var _sep_next := 0.0
+
 func _separation() -> Vector2:
+	if t < _sep_next:
+		return _sep_cache
+	_sep_next = t + 0.12
 	var push := Vector2.ZERO
 	for e in get_tree().get_nodes_in_group("enemies"):
 		if e == self or not (e is CharacterBody2D):
@@ -97,7 +105,8 @@ func _separation() -> Vector2:
 		var l := d.length()
 		if l > 0.1 and l < 34.0:
 			push += d / l * (1.0 - l / 34.0)
-	return push * 0.9
+	_sep_cache = push * 0.9
+	return _sep_cache
 
 
 ## Durante l'affondo non barcolla: o lo schivi, o lo subisci.

@@ -99,15 +99,26 @@ func _contact_damage() -> float:
 var _detour := Vector2.ZERO
 var _detour_t := 0.0
 var _side := 1.0 if randf() < 0.5 else -1.0
+## La strada davanti si controlla circa 8 volte al secondo, non a ogni fotogramma: test_move è una
+## domanda al motore fisico, e farla sempre costava 0,14 ms per nemico (uno sciame di 100 scarabei
+## da solo prendeva 14 ms, quasi tutto il fotogramma). Tra un controllo e l'altro il nemico tiene
+## la decisione presa; se nel frattempo tocca un ostacolo, move_and_slide lo fa scivolare lungo.
+var _steer_cd := randf() * 0.12
+var _steer_dir := Vector2.ZERO
 
 func _steer(v: Vector2, delta: float) -> Vector2:
 	var sp := v.length()
 	if sp < 1.0:
 		return v
 	_detour_t -= delta
+	_steer_cd -= delta
 	var dir := v / sp
 	if _detour_t > 0.0 and _detour.dot(dir) > -0.2:
 		return _detour * sp
+	if _steer_cd > 0.0 and _steer_dir.dot(dir) > 0.95:
+		return v
+	_steer_cd = 0.12
+	_steer_dir = dir
 	if not test_move(global_transform, dir * 12.0):
 		return v
 	for a in [0.7, 1.2, 1.7]:
