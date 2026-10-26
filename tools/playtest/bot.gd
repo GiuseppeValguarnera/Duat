@@ -430,7 +430,7 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 		if "sting_dir" in e and e.state == "windup" and d < 48.0 and e.st < 0.25:
 			threat_kind = "scorpion"
 			return rel.normalized()
-		if "strike_speed" in e:
+		if "strike_speed" in e and "aim" in e:
 			threat_kind = "serpent"
 			if e.state == "windup" and e.st < 0.3 and absf(rel.normalized().dot(e.aim.orthogonal())) < 0.4:
 				return e.aim.orthogonal()
@@ -451,7 +451,7 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 				return rel.normalized()
 	# marea di fuoco di Am-heh: fuori dall'acqua, si scatta nell'istante della vampata
 	for c in g.world.get_children():
-		if "cells" in c and "warn" in c and not c.hit and c.t < c.warn and c.warn - c.t < 0.15 and not Hazards.in_water(get_tree(), pos):
+		if "cells" in c and "warn" in c and "hit" in c and not c.hit and c.t < c.warn and c.warn - c.t < 0.15 and not Hazards.in_water(get_tree(), pos):
 			threat_kind = "marea"
 			return Vector2.RIGHT.rotated(randf() * TAU)
 	# onde d'urto di Ammit: attraversale scattando verso il centro

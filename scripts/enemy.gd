@@ -258,11 +258,16 @@ func _release_spirit() -> void:
 	var ref: WeakRef = weakref(best)            # il bersaglio potrebbe morire prima che arrivi lo spirito
 	var dmg := Run.val("anubi_guide")
 	Fx.burst(from + Vector2(0, -8), Boons.god_color("anubi"), 10, 60.0)
-	get_tree().create_timer(0.2).timeout.connect(func():
-		var target = ref.get_ref()
-		if target != null and not target.dead:
-			Fx.burst(target.global_position + Vector2(0, -8), Boons.god_color("anubi"), 12, 80.0)
-			target.take_hit(dmg, (target.global_position - from).normalized(), 60.0))
+	# la funzione è statica: il nemico che libera lo spirito sparisce subito, e una funzione
+	# legata a lui (una lambda) dopo 0,2 secondi trovava i suoi dati già liberati
+	get_tree().create_timer(0.2).timeout.connect(Enemy._spirit_strike.bind(ref, from, dmg))
+
+
+static func _spirit_strike(ref: WeakRef, from: Vector2, dmg: float) -> void:
+	var target = ref.get_ref()
+	if target != null and not target.dead:
+		Fx.burst(target.global_position + Vector2(0, -8), Boons.god_color("anubi"), 12, 80.0)
+		target.take_hit(dmg, (target.global_position - from).normalized(), 60.0)
 
 
 func _draw() -> void:
