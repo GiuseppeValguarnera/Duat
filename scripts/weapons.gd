@@ -83,6 +83,18 @@ static func next_cost(w: String, a: String) -> int:
 	return int(ALL[w]["aspects"][a]["cost"][lvl])
 
 
+## Con le Lacrime che hai puoi risvegliare o potenziare qualcosa? (il punto esclamativo sull'altare)
+static func something_to_spend() -> bool:
+	for w in ALL:
+		if not is_unlocked(w):
+			continue
+		for a in ALL[w]["aspects"]:
+			var c := next_cost(w, a)
+			if c > 0 and Meta.tears >= c:
+				return true
+	return false
+
+
 static func upgrade(w: String, a: String) -> bool:
 	var c := next_cost(w, a)
 	if c < 0 or Meta.tears < c or not is_unlocked(w):

@@ -41,6 +41,7 @@ var t := 0.0
 var menu: CanvasLayer = null
 var talk_lines: Array = []
 var _news := false                      ## Neith ha battute nuove (_draw)
+var _altar_news := false                ## con le Lacrime puoi risvegliare o potenziare qualcosa
 var _news_t := 0.0
 var last_dealt := 0.0
 var hits: Array = []                   # [tempo, danni] degli ultimi secondi
@@ -72,7 +73,9 @@ func _ready() -> void:
 	world.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	spots = {
 		"neith": Vector2(104, 186),
-		"altare": Vector2(104, 292),
+		# al centro, sotto le armi: l'altare dove le potenzi sta con loro, e ci passi davanti
+		# ogni volta che entri (prima era in un angolo e sembrava un pezzo d'arredo)
+		"altare": Vector2(369, 158),
 		"prove": Vector2(330, ROOM.size.y - WALL),
 		"stele": Vector2(566, 300),
 	}
@@ -103,7 +106,7 @@ func _build() -> void:
 	_solid(Rect2(ROOM.size.x - WALL, 0, WALL, 180))
 	_solid(Rect2(ROOM.size.x - WALL, 240, WALL, ROOM.size.y - 240))
 	_solid(Rect2(spots["neith"] - Vector2(16, 6), Vector2(32, 10)))
-	_solid(Rect2(spots["altare"] - Vector2(16, 8), Vector2(32, 12)))
+	_solid(Rect2(spots["altare"] - Vector2(22, 8), Vector2(44, 14)))
 	_solid(Rect2(spots["stele"] - Vector2(12, 6), Vector2(24, 10)))
 	for p in pedestals:
 		_solid(Rect2(p["pos"] - Vector2(12, 4), Vector2(24, 10)))
@@ -567,8 +570,11 @@ func _draw() -> void:
 		if t >= _news_t:
 			_news_t = t + 0.5
 			_news = _neith_has_news()
+			_altar_news = Weapons.something_to_spend()
 		if _news:
 			UiStyle.exclaim(self, spots["neith"] + Vector2(0, -80), t)
+		if _altar_news:
+			UiStyle.exclaim(self, spots["altare"] + Vector2(0, -40), t)
 	if near != "" and near != "stele" and not talk_box.visible and menu == null:
 		var at: Vector2
 		if near.begins_with("ped"):
@@ -621,10 +627,29 @@ func _draw_pedestal(p: Dictionary) -> void:
 
 
 func _draw_altar(p: Vector2) -> void:
-	var stone := Color(0.5, 0.42, 0.34)
-	draw_rect(Rect2(p.x - 15, p.y - 10, 30, 14), stone)
-	draw_rect(Rect2(p.x - 17, p.y - 12, 34, 3), stone.lightened(0.15))
-	_neith_emblem(Vector2(p.x, p.y - 3), 0.35, Color(GOLD, 0.8))
+	var stone := Color(0.56, 0.47, 0.38)
+	var outl := Color(0.12, 0.08, 0.05)
+	# ombra, gradino e blocco dell'altare con il bordo dipinto e lo scudo di Neith
+	draw_set_transform(p + Vector2(3, 6), 0.0, Vector2(1.0, 0.3))
+	draw_circle(Vector2.ZERO, 30.0, Color(0, 0, 0, 0.3))
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	draw_rect(Rect2(p.x - 26.6, p.y + 1.4, 53.2, 6.2), outl)
+	draw_rect(Rect2(p.x - 26, p.y + 2, 52, 5), stone.darkened(0.2))
+	draw_rect(Rect2(p.x - 21.6, p.y - 12.6, 43.2, 15.2), outl)
+	draw_rect(Rect2(p.x - 21, p.y - 12, 42, 14), stone)
+	draw_rect(Rect2(p.x - 21, p.y - 12, 42, 2), stone.lightened(0.2))
+	draw_rect(Rect2(p.x - 18, p.y - 8, 36, 1.2), Color(0.2, 0.45, 0.75))
+	draw_rect(Rect2(p.x - 18, p.y - 1, 36, 1.2), Color(0.72, 0.26, 0.15))
+	draw_rect(Rect2(p.x - 23.6, p.y - 15.6, 47.2, 4.2), outl)
+	draw_rect(Rect2(p.x - 23, p.y - 15, 46, 3), stone.lightened(0.1))
+	_neith_emblem(Vector2(p.x, p.y - 4.5), 0.4, Color(GOLD, 0.85))
+	# luce azzurra sul pavimento quando hai Lacrime da spendere
+	if Weapons.something_to_spend():
+		var pulse := 0.5 + 0.5 * sin(t * 2.5)
+		draw_set_transform(p + Vector2(0, 4), 0.0, Vector2(1.0, 0.4))
+		draw_circle(Vector2.ZERO, 40.0 + pulse * 4.0, Color(0.4, 0.7, 1.0, 0.08 + 0.05 * pulse))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	p += Vector2(0, -4)
 	# la ciotola delle offerte con la fiamma azzurra: più Lacrime, più luce
 	var flame := 0.5 + 0.5 * sin(t * 6.0)
 	var power := clampf(Meta.tears / 4.0, 0.2, 1.0)
