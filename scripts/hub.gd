@@ -655,7 +655,11 @@ func _list_button(parent: Control, text: String, color: Color) -> Button:
 # ---------------------------------------------------------------- Libro dei Morti
 
 func _fill_book(focus_id: String = "") -> void:
-	var left := _frame(Lang.t("Il Libro dei Morti"), Lang.t("Ka custodito: %d    ·    Capitoli attivi: %d di %d") % [Meta.ka_bank, Meta.chapters_equipped.size(), Chapters.slots()], 260)
+	var sub := Lang.t("Ka custodito: %d    ·    Capitoli attivi: %d di %d") % [Meta.ka_bank, Meta.chapters_equipped.size(), Chapters.slots()]
+	if Meta.amulet != "" and Amulets.owned(Meta.amulet):
+		# tutto l'"equipaggiamento" in un posto solo: anche l'amuleto che porterai giù
+		sub += Lang.t("    ·    Amuleto: %s (livello %d)") % [Amulets.data()[Meta.amulet]["name"], Amulets.level(Meta.amulet)]
+	var left := _frame(Lang.t("Il Libro dei Morti"), sub, 260)
 	var first: Button = null
 	for id in Chapters.ALL:
 		var c: Dictionary = Chapters.ALL[id]

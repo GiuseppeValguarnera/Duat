@@ -102,6 +102,17 @@ func _draw() -> void:
 	_text(title, Vector2(bx + 14 * u, ky), ka_txt, _fs(10 + int(3 * ka_pop)), GOLD.lerp(Color.WHITE, ka_pop * 0.6))
 	var rx := bx + 18 * u + title.get_string_size(ka_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, _fs(10)).x + 10 * u
 	_text(title, Vector2(rx, ky), game.hud_room, _fs(8), Color(0.95, 0.88, 0.72))
+	# l'amuleto al collo, accanto al riquadro: icona, livello (pallini) e, per lo Scettro
+	# Was, le stanze pulite contate. Se non lo vedi, ti dimentichi di averlo.
+	if Run.amulet != "" and not Run.training:
+		var ac := o + Vector2(pw + 14.0 * u, 13.0 * u)
+		draw_circle(ac, 9.5 * u, Color(0.05, 0.04, 0.09, 0.85))
+		draw_arc(ac, 9.5 * u, 0, TAU, 24, GOLD, 1.3 * u)
+		Amulets.draw_icon(self, Run.amulet, ac + Vector2(0, 1) * u, 0.75 * u)
+		for i in range(Run.amulet_level):
+			draw_circle(ac + Vector2((i - (Run.amulet_level - 1) / 2.0) * 4.0, 12.5) * u, 1.4 * u, GOLD)
+		if Run.amulet == "was" and Run.was_stacks > 0:
+			_text(title, ac + Vector2(-9, 25) * u, "+%d%%" % int(Run.was_stacks * Amulets.val()), _fs(8), GOLD)
 	# Occhio di Horus
 	if touch:
 		return

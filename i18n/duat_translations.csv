@@ -749,8 +749,9 @@ Il cancello del Duat è a nord,Il cancello del Duat è a nord,The gate of the Du
 Servono %d lapislazzuli,Servono %d lapislazzuli,You need %d lapis lazuli
 "Tocca una voce per leggerla, toccala di nuovo per sceglierla · × per chiudere","Tocca una voce per leggerla, toccala di nuovo per sceglierla · × per chiudere","Tap an entry to read it, tap it again to choose it · × to close"
 E / Esc / B per chiudere,E / Esc / B per chiudere,E / Esc / B to close
-Il Libro dei Morti,Il Libro dei Morti,The Book of the Dead
 Ka custodito: %d    ·    Capitoli attivi: %d di %d,Ka custodito: %d    ·    Capitoli attivi: %d di %d,Stored Ka: %d    ·    Active chapters: %d of %d
+    ·    Amuleto: %s (livello %d),    ·    Amuleto: %s (livello %d),    ·    Amulet: %s (level %d)
+Il Libro dei Morti,Il Libro dei Morti,The Book of the Dead
 ATTIVO,ATTIVO,ACTIVE
 comprato,comprato,bought
   · liv. %d/%d,  · liv. %d/%d,  · lv. %d/%d
