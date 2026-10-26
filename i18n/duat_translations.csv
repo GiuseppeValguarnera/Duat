@@ -519,6 +519,7 @@ Lapislazzuli,Lapislazzuli,Lapis lazuli
 Cura,Cura,Healing
 Am-heh,Am-heh,Am-heh
 Guardiano,Guardiano,Guardian
+Sokar,Sokar,Sokar
 Traghettatore,Traghettatore,Ferryman
 La discesa,La discesa,The Descent
 Uscita,Uscita,Exit
@@ -530,6 +531,7 @@ Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Acqua
 Acqua del Nilo: recuperi il %d%% della vita,Acqua del Nilo: recuperi il %d%% della vita,Water of the Nile: you recover %d%% of your health
 "Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Gate of the First Hour: Am-heh, the Devourer of Millions, awaits you in its lake of fire"
 La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,The Middle Gate: the Serpent that guards it. Defeat it for a boon of a higher level
+"La porta della quarta ora: oltre, la terra di Sokar","La porta della quarta ora: oltre, la terra di Sokar","The gate of the fourth hour: beyond it, the land of Sokar"
 Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),The Ferryman: spend this descent's Ka (what you spend does not come home with you)
 Comincia la discesa: Anubi ti aspetta con il primo dono,Comincia la discesa: Anubi ti aspetta con il primo dono,The descent begins: Anubis awaits you with the first boon
 Uscita: fine della discesa di prova,Uscita: fine della discesa di prova,Exit: end of the test descent
@@ -586,6 +588,8 @@ Il Serpente della Porta è caduto,Il Serpente della Porta è caduto,The Serpent 
 Stanza ripulita,Stanza ripulita,Chamber cleared
 Scegli una porta: la ricompensa è scritta sopra,Scegli una porta: la ricompensa è scritta sopra,Choose a door: the reward is written above it
 +10 Ka,+10 Ka,+10 Ka
+La quarta ora,La quarta ora,The fourth hour
+La terra di Sokar,La terra di Sokar,The land of Sokar
 I tuoi doni (%d)%s,I tuoi doni (%d)%s,Your boons (%d)%s
 Nuovo,Nuovo,New
 Livello %d,Livello %d,Level %d
@@ -677,6 +681,8 @@ Am-heh ti cede il suo Sekhem,Am-heh ti cede il suo Sekhem,Am-heh yields its Sekh
 Dalla prossima discesa potrai caricare la Forma Divina,Dalla prossima discesa potrai caricare la Forma Divina,From your next descent you can charge the Divine Form
 Am-heh è caduto,Am-heh è caduto,Am-heh has fallen
 Il lago di fuoco si spegne. La notte continua,Il lago di fuoco si spegne. La notte continua,The lake of fire goes out. The night goes on
+La porta della quarta ora,La porta della quarta ora,The gate of the fourth hour
+"Oltre il lago, la terra di Sokar. La barca di Ra ti aspetta","Oltre il lago, la terra di Sokar. La barca di Ra ti aspetta","Beyond the lake, the land of Sokar. The boat of Ra awaits you"
 Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Time %d:%02d   ·   Enemies slain %d   ·   Damage dealt %d
 Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Boons gathered %d   ·   Ka gathered %d%s   ·   Stored Ka %d
  (Peso del Cuore +%d%%), (Peso del Cuore +%d%%), (Weight of the Heart +%d%%)
@@ -1190,6 +1196,7 @@ Il gatto di Bastet,Il gatto di Bastet,The cat of Bastet
 "Comodità. Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.","Comodità. Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.","Convenience. A cat lives in the Hall: it follows you, lets you pet it, and now and then brings you a little Ka before the gate."
 "I gatti erano sacri a Bastet. Chi ne uccideva uno, anche per sbaglio, rischiava la vita; quando un gatto moriva, la famiglia si radeva le sopracciglia in segno di lutto.","I gatti erano sacri a Bastet. Chi ne uccideva uno, anche per sbaglio, rischiava la vita; quando un gatto moriva, la famiglia si radeva le sopracciglia in segno di lutto.","Cats were sacred to Bastet. Killing one, even by accident, could cost you your life; when a cat died, the family shaved their eyebrows in mourning."
 +%d Lapislazzuli,+%d Lapislazzuli,+%d Lapis lazuli
+Wernes,Wernes,Wernes
 Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,An offering that the king gives: a thousand loaves and a thousand jars of beer for the Ka of the lord of this house.
 "O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O you who pass before this statue, say «bread and beer» for the Ka of the king."
 "Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","The king is a falcon of gold. The king flies toward the sky, and the sky welcomes him."

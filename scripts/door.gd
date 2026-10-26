@@ -48,6 +48,8 @@ func reward_color() -> Color:
 			return Color(0.9, 0.3, 0.25)
 		"guardian":
 			return Color(0.45, 0.9, 0.4)
+		"region":
+			return Color(0.95, 0.8, 0.45)
 		"shop":
 			return Color(0.6, 0.85, 0.95)
 		_:
@@ -70,6 +72,8 @@ func reward_label() -> String:
 			return Lang.t("Am-heh")
 		"guardian":
 			return Lang.t("Guardiano")
+		"region":
+			return Lang.t("Sokar")
 		"shop":
 			return Lang.t("Traghettatore")
 		"tutorial_end":
@@ -97,6 +101,8 @@ func reward_description() -> String:
 			return Lang.t("Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco")
 		"guardian":
 			return Lang.t("La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore")
+		"region":
+			return Lang.t("La porta della quarta ora: oltre, la terra di Sokar")
 		"shop":
 			return Lang.t("Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa)")
 		"tutorial_end":

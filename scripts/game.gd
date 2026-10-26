@@ -344,8 +344,14 @@ func _make_wave(budget: int, allow_priest: bool) -> Array:
 	# (gli scorpioni sono del deserto di Sokar, la seconda tappa)
 	var water := get_tree().get_nodes_in_group("water").size()
 	var crocs := 0
+	var sokar := Run.region == 2
 	while budget > 0:
 		var roll := randf()
+		# Sokar: il deserto degli scorpioni di Serket (i nemici nuovi arriveranno qui)
+		if sokar and roll < 0.4 and budget >= 3:
+			out.append_array(["scorpion", "scorpion"])
+			budget -= 3
+			continue
 		if late and roll < 0.22 and budget >= 3:
 			out.append("cobra")
 			budget -= 3
@@ -658,6 +664,9 @@ func _on_door_chosen(d: Area2D) -> void:
 	if kind == "boss":
 		_fade_to_room({"kind": "none"})
 		return
+	if kind == "region":
+		_next_region()
+		return
 	if kind == "set":
 		# il tributo di Set: 10 punti vita, ma non può ucciderti
 		Run.hp = maxf(1.0, Run.hp - SET_DOOR_COST)
@@ -686,6 +695,19 @@ func _ensure_veil() -> void:
 	veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	veil.modulate.a = 0.0
 	layer.add_child(veil)
+
+
+## Si passa alla tappa successiva: la barca di Ra diventa un serpente e viene trascinata sulla
+## sabbia (rebirth.gd, SokarPassage), poi la prima stanza di Sokar.
+func _next_region() -> void:
+	Run.region += 1
+	Run.room = 0
+	shops_visited = 0
+	var p := Rebirth.RegionPassage.new()
+	p.title = Lang.t("La quarta ora")
+	p.sub = Lang.t("La terra di Sokar")
+	get_tree().root.add_child(p)
+	get_tree().create_timer(1.2, true).timeout.connect(func() -> void: start_room({"kind": "none"}))
 
 
 func _fade_to_room(reward: Dictionary) -> void:
@@ -1603,6 +1625,12 @@ func _boss_defeated() -> void:
 	else:
 		_banner(Lang.t("Am-heh è caduto"), Lang.t("Il lago di fuoco si spegne. La notte continua"), Color(0.94, 0.72, 0.3))
 	await get_tree().create_timer(2.0).timeout
+	if Run.region < Run.max_region():
+		# la notte continua: si apre la porta verso la tappa successiva
+		cleared = true
+		_banner(Lang.t("La porta della quarta ora"), Lang.t("Oltre il lago, la terra di Sokar. La barca di Ra ti aspetta"), Color(0.9, 0.75, 0.45), 3.0)
+		_add_door("n", {"kind": "region"})
+		return
 	_victory()
 
 
@@ -1738,6 +1766,8 @@ func _process(_delta: float) -> void:
 	if player.divine_t > 0.0:
 		sek = Lang.t("FORMA DIVINA %.1fs") % player.divine_t
 	var room_txt := (Lang.t("Ammit · colonne: %d") % pillars.size() if BOSS_KIND == "ammit" else Lang.t("Am-heh")) if Run.room > Run.ROOMS_PER_RUN else Lang.t("Stanza %d/%d") % [Run.room, Run.ROOMS_PER_RUN]
+	if Run.max_region() > 1 and Run.room <= Run.ROOMS_PER_RUN:
+		room_txt = Run.region_name() + " · " + room_txt
 	if tut.step >= 0:
 		room_txt = Lang.t("Addestramento")
 		tut.tick()
@@ -1841,7 +1871,8 @@ func paint_floor(ci: CanvasItem) -> void:
 	# griglia), ogni lastra con il suo tono, il bordo alto in luce e quello basso in ombra
 	var floor_r := Rect2(WALL, TOP, r.size.x - WALL * 2.0, r.size.y - WALL - TOP)
 	ci.draw_rect(floor_r, Color(0.22, 0.15, 0.09))
-	var base := Color(0.55, 0.24, 0.15) if set_altar else Color(0.53, 0.4, 0.25)
+	var sokar := Run.region == 2 and not set_altar
+	var base := Color(0.55, 0.24, 0.15) if set_altar else (Color(0.6, 0.48, 0.3) if sokar else Color(0.53, 0.4, 0.25))
 	var y := TOP
 	var row := 0
 	while y < r.end.y - WALL:
@@ -1864,6 +1895,19 @@ func paint_floor(ci: CanvasItem) -> void:
 			x += tile
 		y += tile
 		row += 1
+	if sokar:
+		# il deserto di Sokar: la sabbia ha invaso la tomba, cumuli e onde che coprono le lastre
+		var rng := RandomNumberGenerator.new()
+		rng.seed = Run.room * 977 + 13
+		for i in range(9):
+			var c := Vector2(rng.randf_range(WALL, r.size.x - WALL), rng.randf_range(TOP, r.size.y - WALL))
+			var rad := Vector2(rng.randf_range(60, 140), rng.randf_range(24, 50))
+			ci.draw_set_transform(c, 0.0, Vector2(1.0, rad.y / rad.x))
+			ci.draw_circle(Vector2.ZERO, rad.x, Color(0.78, 0.64, 0.42, 0.55))
+			ci.draw_circle(Vector2.ZERO, rad.x * 0.7, Color(0.82, 0.68, 0.46, 0.6))
+			for k in range(3):
+				ci.draw_arc(Vector2(0, rad.x * 0.2 * k), rad.x * (0.55 + 0.12 * k), PI * 1.15, PI * 1.85, 16, Color(0.66, 0.52, 0.32, 0.5), 1.2)
+			ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	var dark := Color(0.19, 0.13, 0.08)
 	ci.draw_rect(Rect2(r.position.x, r.position.y, r.size.x, WALL), dark)
 	ci.draw_rect(Rect2(r.position.x, r.position.y + WALL, r.size.x, WALL), Color(0.46, 0.33, 0.2))

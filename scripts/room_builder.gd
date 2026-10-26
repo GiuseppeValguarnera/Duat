@@ -65,6 +65,9 @@ func floor_ok(p: Vector2) -> bool:
 ## che prendono il posto di altrettanti spuntoni.
 func place_elements() -> void:
 	var r := Run.room
+	if Run.region == 2:
+		_place_sokar(r)
+		return
 	# la Prima Ora sono le acque di Wernes: l'acqua c'è quasi sempre, e dalla terza stanza ci
 	# vivono i coccodrilli
 	var n_water := (1 if randf() < 0.5 else 0) if r <= 2 else 1 + (1 if r >= 5 and randf() < 0.5 else 0)
@@ -78,6 +81,32 @@ func place_elements() -> void:
 	if r >= 3:
 		for i in range(1 + (1 if randf() < 0.5 else 0)):
 			place_jars()
+
+
+## Il deserto di Sokar: niente acqua, ma sabbie mobili, a volte la tempesta, e le giare d'olio.
+func _place_sokar(r: int) -> void:
+	for i in range((1 if r >= 2 else 0) + (1 if r >= 5 and randf() < 0.5 else 0)):
+		for tries in range(30):
+			var c := Vector2(randf_range(g.WALL + 90.0, g.ROOM.size.x - g.WALL - 90.0), randf_range(g.TOP + 60.0, g.ROOM.size.y - g.WALL - 70.0))
+			if not floor_ok(c) or c.distance_to(Vector2(g.ROOM.size.x / 2.0, g.ROOM.size.y - g.WALL - 24.0)) < 90.0:
+				continue
+			var near := false
+			for pl in g.pillars:
+				if c.distance_to(pl) < 70.0:
+					near = true
+			if near:
+				continue
+			var q := Hazards.Quicksand.new()
+			q.radii = Vector2(randf_range(38.0, 52.0), randf_range(22.0, 30.0))
+			q.position = c
+			g.world.add_child(q)
+			break
+	if r >= 3 and randf() < 0.35:
+		var storm := Hazards.Sandstorm.new()
+		storm.room = Rect2(Vector2.ZERO, g.ROOM.size)
+		g.world.add_child(storm)
+	if r >= 3:
+		place_jars()
 
 
 func place_water(channel: bool) -> void:

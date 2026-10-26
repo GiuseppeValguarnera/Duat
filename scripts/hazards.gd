@@ -798,3 +798,92 @@ class FireRing extends Node2D:
 			var fp := Vector2.from_angle(ang) * r
 			draw_circle(fp + Vector2(0, -4 - 3 * absf(sin(t * 12.0 + i))), 3.0, Color(1.0, 0.7, 0.2, 0.8 * a))
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+
+## Sabbie mobili (il deserto di Sokar): chi ci cammina sopra rallenta molto. Lo scatto le
+## attraversa. È l'equivalente dell'acqua alta della Prima Ora.
+class Quicksand extends Node2D:
+	var radii := Vector2(46, 26)
+	var t := 0.0
+
+	func _ready() -> void:
+		add_to_group("quicksand")
+
+	func contains(p: Vector2) -> bool:
+		return ((p - global_position) / radii).length() < 1.0
+
+	func _process(delta: float) -> void:
+		t += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, radii.y / radii.x))
+		draw_circle(Vector2.ZERO, radii.x + 3.0, Color(0.42, 0.3, 0.16, 0.7))
+		draw_circle(Vector2.ZERO, radii.x, Color(0.62, 0.48, 0.28))
+		# la sabbia che gira piano verso il centro
+		for i in range(5):
+			var a0 := t * 0.6 + i * TAU / 5.0
+			var pts := PackedVector2Array()
+			for k in range(10):
+				var u := k / 9.0
+				var rr := radii.x * (0.95 - u * 0.8)
+				pts.append(Vector2.from_angle(a0 + u * 2.2) * rr)
+			draw_polyline(pts, Color(0.45, 0.33, 0.18, 0.6), 1.5)
+		draw_circle(Vector2.ZERO, radii.x * 0.18, Color(0.36, 0.25, 0.13))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+## La tempesta di sabbia (il deserto di Sokar): ogni tanto un fischio e la polvere che comincia a
+## correre annunciano la raffica; poi il vento ti spinge di lato per un secondo. Contro il vento
+## si cammina a fatica, con il vento si vola: va usato, non solo subito.
+class Sandstorm extends Node2D:
+	var room := Rect2()
+	var t := 0.0
+	var phase := "idle"
+	var pt := 4.0
+	var dir := Vector2.RIGHT
+
+	func _ready() -> void:
+		z_index = 5
+		pt = randf_range(3.0, 5.0)
+
+	func _process(delta: float) -> void:
+		t += delta
+		pt -= delta
+		match phase:
+			"idle":
+				if pt <= 0.0:
+					phase = "warn"
+					pt = 1.1
+					dir = Vector2.RIGHT if randf() < 0.5 else Vector2.LEFT
+					Sfx.play("fire_whoosh", 0.3)
+			"warn":
+				if pt <= 0.0:
+					phase = "gust"
+					pt = 1.3
+					Fx.shake(2.0)
+			"gust":
+				var p = get_tree().get_first_node_in_group("player")
+				if p != null and not p.dead and p.dash_t <= 0.0:
+					p.move_and_collide(dir * 95.0 * delta)
+				if pt <= 0.0:
+					phase = "idle"
+					pt = randf_range(5.0, 8.0)
+		queue_redraw()
+
+	func _draw() -> void:
+		if phase == "idle":
+			return
+		var strong := phase == "gust"
+		var n := 26 if strong else 8
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 77
+		for i in range(n):
+			var y := rng.randf_range(room.position.y + 40.0, room.end.y - 20.0)
+			var sp := rng.randf_range(0.6, 1.0) * (520.0 if strong else 260.0)
+			var x := fposmod(rng.randf() * room.size.x + t * sp * dir.x, room.size.x)
+			var l := (34.0 if strong else 16.0) * rng.randf_range(0.6, 1.2)
+			draw_line(Vector2(x, y), Vector2(x - dir.x * l, y), Color(0.85, 0.72, 0.5, 0.5 if strong else 0.3), 1.2)
+		if strong:
+			draw_rect(room, Color(0.75, 0.6, 0.38, 0.12))

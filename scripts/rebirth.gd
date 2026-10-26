@@ -198,3 +198,72 @@ class Emergence extends Node2D:
 		for i in range(3):
 			var w := 16.0 - i * 5.0
 			draw_rect(Rect2(-w, -h, w * 2.0, h), Color(gold, (0.12 + i * 0.1) * a))
+
+
+
+## Il passaggio da una tappa all'altra: sul nero la barca di Ra, che nella terra di Sokar diventa
+## un serpente trascinato sulla sabbia (Libro dell'Amduat, quarta ora), e il nome del luogo.
+class RegionPassage extends CanvasLayer:
+	const DUR := 2.6
+	var t := 0.0
+	var title := ""
+	var sub := ""
+	var art: Control
+
+	func _ready() -> void:
+		layer = 60
+		process_mode = Node.PROCESS_MODE_ALWAYS
+		art = Control.new()
+		art.set_anchors_preset(Control.PRESET_FULL_RECT)
+		art.mouse_filter = Control.MOUSE_FILTER_STOP
+		art.draw.connect(_paint)
+		add_child(art)
+		Sfx.play("soul", 0.0)
+
+	func _process(delta: float) -> void:
+		t += delta
+		art.queue_redraw()
+		if t >= DUR:
+			queue_free()
+
+	func _paint() -> void:
+		var vs := art.get_viewport_rect().size
+		var u := minf(vs.x, vs.y) / 360.0
+		var a := clampf(t / 0.25, 0.0, 1.0) * clampf((DUR - t) / 0.5, 0.0, 1.0)
+		art.draw_rect(Rect2(Vector2.ZERO, vs), Color(0.03, 0.02, 0.02, a))
+		# le dune nel buio
+		var y := vs.y * 0.62
+		var pts := PackedVector2Array([Vector2(0, vs.y)])
+		for i in range(25):
+			var x := vs.x * i / 24.0
+			pts.append(Vector2(x, y + sin(i * 0.7 + 1.3) * 10.0 * u))
+		pts.append(Vector2(vs.x, vs.y))
+		art.draw_colored_polygon(pts, Color(0.32, 0.24, 0.14, a))
+		# la barca-serpente trascinata da sinistra a destra, con il disco del sole spento a bordo
+		var k := clampf(t / DUR, 0.0, 1.0)
+		var bx := lerpf(vs.x * 0.15, vs.x * 0.7, k)
+		var by := y - 6.0 * u
+		var body := PackedVector2Array()
+		for i in range(16):
+			var s := i / 15.0
+			body.append(Vector2(bx - 70.0 * u + s * 120.0 * u, by + sin(s * TAU + t * 6.0) * 3.0 * u))
+		art.draw_polyline(body, Color(0.2, 0.45, 0.3, a), 7.0 * u)
+		art.draw_polyline(body, Color(0.94, 0.72, 0.3, a * 0.8), 1.5 * u)
+		art.draw_circle(body[body.size() - 1] + Vector2(4, -3) * u, 5.0 * u, Color(0.2, 0.45, 0.3, a))
+		art.draw_circle(Vector2(bx - 10 * u, by - 16 * u), 9.0 * u, Color(0.45, 0.25, 0.12, a))     # il sole, spento
+		art.draw_arc(Vector2(bx - 10 * u, by - 16 * u), 9.0 * u, 0, TAU, 24, Color(0.94, 0.72, 0.3, a * 0.6), 1.2 * u)
+		# le corde e chi tira
+		for j in range(3):
+			var hx := bx + (70.0 + j * 22.0) * u
+			art.draw_line(body[body.size() - 1], Vector2(hx, by - 4 * u), Color(0.6, 0.5, 0.35, a * 0.6), 1.0 * u)
+			art.draw_line(Vector2(hx, by - 4 * u), Vector2(hx, by - 18 * u), Color(0.1, 0.08, 0.06, a), 3.0 * u)
+			art.draw_circle(Vector2(hx, by - 21 * u), 3.0 * u, Color(0.1, 0.08, 0.06, a))
+		# il nome del luogo
+		var f := UiStyle.title_font()
+		var ta := a * clampf((t - 0.4) / 0.5, 0.0, 1.0)
+		var fs := int(22 * u)
+		var w := f.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		art.draw_string(f, Vector2((vs.x - w) / 2.0, vs.y * 0.3), title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.95, 0.8, 0.45, ta))
+		var fs2 := int(12 * u)
+		var w2 := f.get_string_size(sub, HORIZONTAL_ALIGNMENT_LEFT, -1, fs2).x
+		art.draw_string(f, Vector2((vs.x - w2) / 2.0, vs.y * 0.3 + 22 * u), sub, HORIZONTAL_ALIGNMENT_LEFT, -1, fs2, Color(0.85, 0.75, 0.6, ta))

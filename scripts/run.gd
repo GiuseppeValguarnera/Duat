@@ -10,6 +10,22 @@ const GUARDIAN_ROOM := 5              ## a metà discesa: il Serpente della Port
 const MIN_DASH_CD := 0.6              ## la pausa dello scatto non scende mai sotto questa, con tutti i doni
 const SEKHEM_MAX := 100.0
 
+## Le tappe della notte: 1 = le acque di Wernes (Am-heh), 2 = il deserto di Sokar (Aker). La
+## discesa continua da una all'altra, come in Hades. Sokar è in costruzione: si gioca solo con
+## DUAT_REGION2=1 (per le prove) finché non è completa.
+const SOKAR_READY := false
+var region := 1
+
+
+func max_region() -> int:
+	return 2 if SOKAR_READY or OS.get_environment("DUAT_REGION2") != "" else 1
+
+
+## Il nome della tappa, per l'HUD e i banner.
+func region_name() -> String:
+	return Lang.t("Wernes") if region == 1 else Lang.t("Sokar")
+
+
 var max_hp := 60.0
 var hp := 60.0
 var ka := 0
@@ -76,6 +92,7 @@ func new_run() -> void:
 	max_hp = 60.0
 	hp = max_hp
 	room = 0
+	region = 1
 	boons.clear()
 	blessings.clear()
 	curses.clear()
@@ -120,7 +137,7 @@ func save_descent(reward: Dictionary, extra: Dictionary) -> void:
 		"blessings": Array(blessings), "curses": curses.duplicate(true), "sekhem": sekhem,
 		"revived": revived, "blood_kills": blood_kills, "kills": kills, "damage_dealt": damage_dealt,
 		"elapsed": Time.get_ticks_msec() - start_msec, "heart_used": heart_used, "reward": reward,
-		"ka_spent": ka_spent, "was": was_stacks, "kheper": kheper_left,
+		"ka_spent": ka_spent, "was": was_stacks, "kheper": kheper_left, "region": region,
 	}
 	d.merge(extra)
 	var cfg := ConfigFile.new()
@@ -160,6 +177,7 @@ func apply_descent(d: Dictionary) -> void:
 	start_msec = Time.get_ticks_msec() - int(d.get("elapsed", 0))
 	heart_used = d.get("heart_used", false)
 	ka_spent = d.get("ka_spent", 0)
+	region = d.get("region", 1)
 	was_stacks = d.get("was", 0)
 	kheper_left = d.get("kheper", 0)
 

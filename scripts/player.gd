@@ -166,6 +166,10 @@ func _physics_process(delta: float) -> void:
 		var s := speed * Run.move_mult() * (attack_slowdown if atk_t > 0.0 else 1.0)
 		if Run.in_deep(global_position):
 			s *= 0.75                       # l'acqua alta della Porta: si cammina a fatica (lo scatto no)
+		for q in get_tree().get_nodes_in_group("quicksand"):
+			if q.contains(global_position):
+				s *= 0.6                    # le sabbie mobili di Sokar
+				break
 		var wet := Hazards.in_water(get_tree(), global_position)
 		if wet:
 			s *= Hazards.WATER_SLOW
