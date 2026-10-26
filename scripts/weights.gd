@@ -17,6 +17,8 @@ const ALL_IT := {
 	"avarizia": {"name": "Il Nilo in secca", "max": 1, "desc": "L'Acqua del Nilo cura la metà."},
 	"silenzio": {"name": "Il silenzio degli dèi", "max": 1, "desc": "Gli dèi ti offrono solo due doni invece di tre."},
 	"fame": {"name": "La fame di Am-heh", "max": 1, "desc": "Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso."},
+	"ira_serpente": {"name": "L'ira del Serpente", "max": 1, "desc": "Il Serpente della Porta ha due mosse in più: la doppia emersione e la pioggia di veleno."},
+	"ira_amheh": {"name": "L'ira di Am-heh", "max": 1, "desc": "Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco."},
 }
 
 

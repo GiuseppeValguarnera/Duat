@@ -2,6 +2,7 @@ keys,it,en
 Fiato di fuoco,Fiato di fuoco,Fire breath
 Marea di fuoco,Marea di fuoco,Tide of fire
 ESAUSTO,ESAUSTO,EXHAUSTED
+ANELLO DI FUOCO,ANELLO DI FUOCO,RING OF FIRE
 L'acqua evapora,L'acqua evapora,The water evaporates
 Ruggito del Giudizio,Ruggito del Giudizio,Roar of Judgement
 STORDITA,STORDITA,STUNNED
@@ -1189,6 +1190,7 @@ Lo scultore Ptahmose ha fatto questa immagine del re. Sia ricordato il suo lavor
 Questa è la casa del Ka. Il re siede qui e guarda il mondo dei vivi da una fessura.,Questa è la casa del Ka. Il re siede qui e guarda il mondo dei vivi da una fessura.,This is the house of the Ka. The king sits here and watches the world of the living through a slit.
 Un serdab,Un serdab,A serdab
 IL SERPENTE SI INFURIA,IL SERPENTE SI INFURIA,THE SERPENT IS ENRAGED
+PIOGGIA DI VELENO,PIOGGIA DI VELENO,RAIN OF VENOM
 Volume generale,Volume generale,Master volume
 Musica,Musica,Music
 Attacchi e colpi,Attacchi e colpi,Attacks and hits
@@ -1290,6 +1292,10 @@ Il silenzio degli dèi,Il silenzio degli dèi,The silence of the gods
 Gli dèi ti offrono solo due doni invece di tre.,Gli dèi ti offrono solo due doni invece di tre.,The gods offer you only two boons instead of three.
 La fame di Am-heh,La fame di Am-heh,The hunger of Am-heh
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh has 30% more health and the tide of fire comes more often.
+L'ira del Serpente,L'ira del Serpente,Wrath of the Serpent
+Il Serpente della Porta ha due mosse in più: la doppia emersione e la pioggia di veleno.,Il Serpente della Porta ha due mosse in più: la doppia emersione e la pioggia di veleno.,The Serpent of the Gate has two extra moves: the double emergence and the rain of venom.
+L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
+Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 "Sala del Giudizio
 Ka custodito %d · Discese %d · Vittorie %d","Sala del Giudizio
 Ka custodito %d · Discese %d · Vittorie %d","Hall of Judgement

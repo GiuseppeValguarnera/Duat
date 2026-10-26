@@ -7,9 +7,12 @@ extends Enemy
 ##  - Morso: da vicino, un ventaglio rosso davanti alle fauci, poi azzanna.
 ##  - Balzo: un cerchio rosso segna dove atterrerà; all'atterraggio accende un anello di fuoco.
 ##  - Fiato di fuoco: un cono arancione mostra la direzione, poi soffia fiamme che restano a terra.
+##  - (Peso del Cuore "L'ira di Am-heh") Doppio balzo: un secondo balzo subito, che ti insegue.
+##  - (Peso del Cuore "L'ira di Am-heh") Anello di fuoco: si allarga da lui con un solo varco.
 ##  - Marea di fuoco: ulula, il pavimento si accende di rosso a ondata, poi divampa ovunque
 ##    tranne nell'acqua. Dopo resta esausto qualche secondo e subisce il 50% di danni in più.
-## Al 60% e al 30% della vita fa evaporare una pozza (ne restano sempre due) e chiama scarabei.
+## Al 60% e al 30% della vita fa evaporare la pozza più vicina a te, dopo un avviso (ne restano
+## sempre due), e chiama scarabei.
 
 signal summon(kinds: Array)
 
@@ -45,6 +48,8 @@ var st := 1.2
 var aim := Vector2.DOWN
 var phase := 0                         # 0, 1 sotto il 60%, 2 sotto il 30%
 var since_flood := 0                   # attacchi dall'ultima marea
+var ira := false                       # Peso del Cuore: l'ira di Am-heh (doppio balzo, anello di fuoco)
+var second_leap := false
 var leap_from := Vector2.ZERO
 var leap_to := Vector2.ZERO
 var breath_tick := 0.0
@@ -56,6 +61,7 @@ func _ready() -> void:
 	is_boss = true
 	if Weights.rank("fame") > 0:
 		max_hp *= 1.3                 # Peso del Cuore: la fame di Am-heh
+	ira = Weights.rank("ira_amheh") > 0
 	super._ready()
 
 
@@ -101,7 +107,26 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			global_position = leap_from.lerp(leap_to, k)
 			if st <= 0.0:
 				_land()
+				if ira and not second_leap:
+					# l'ira: un secondo balzo subito, che ti insegue
+					second_leap = true
+					state = "leap_windup"
+					st = leap_windup * 0.6
+					var pl = get_tree().get_first_node_in_group("player")
+					leap_to = _clamp_arena(pl.global_position if pl != null else global_position)
+					Sfx.play("amheh_growl", 0.15)
+					return Vector2.ZERO
+				second_leap = false
 				_after_attack(0.7)
+			return Vector2.ZERO
+		"ring_windup":
+			if st <= 0.0:
+				var ring := Hazards.FireRing.new()
+				ring.gap_dir = Vector2.from_angle(randf() * TAU)
+				get_parent().add_child(ring)
+				ring.global_position = global_position
+				Fx.shake(6.0)
+				_after_attack(1.0)
 			return Vector2.ZERO
 		"breath_windup":
 			if to != Vector2.ZERO:
@@ -153,6 +178,13 @@ func _choose_attack(to: Vector2) -> void:
 		return
 	var d := to.length() if to != Vector2.ZERO else 999.0
 	var r := randf()
+	if ira and randf() < 0.22:
+		# l'ira: batte le zampe, e un anello di fuoco si allarga con un solo varco
+		state = "ring_windup"
+		st = 0.8
+		Sfx.play("roar", 0.05)
+		Fx.float_text(global_position + Vector2(0, -40), Lang.t("ANELLO DI FUOCO"), Color(1, 0.6, 0.2))
+		return
 	if d < bite_range and r < 0.55:
 		state = "bite"
 		st = bite_windup
@@ -184,13 +216,16 @@ func _check_phase() -> void:
 	summon.emit(["scarab", "scarab", "scarab", "scarab"] if phase == 1 else ["scarab", "scarab", "priest"])
 
 
-## Fa evaporare la pozza più vicina a lui (ne lascia sempre almeno due).
+## Fa evaporare la pozza più vicina a TE (ne lascia sempre almeno due): proprio quella dove ti
+## sentivi al sicuro. Prima ribolle e fuma per un secondo e mezzo: è l'avviso per spostarsi.
 func _dry_a_pool() -> void:
-	var pools := get_tree().get_nodes_in_group("water").filter(func(w): return not w.drying)
+	var pools := get_tree().get_nodes_in_group("water").filter(func(w): return not w.drying and w.warn_t <= 0.0)
 	if pools.size() <= 2:
 		return
-	pools.sort_custom(func(a, b): return a.global_position.distance_to(global_position) < b.global_position.distance_to(global_position))
-	pools[0].evaporate()
+	var player = get_tree().get_first_node_in_group("player")
+	var from: Vector2 = player.global_position if player != null else global_position
+	pools.sort_custom(func(a, b): return a.global_position.distance_to(from) < b.global_position.distance_to(from))
+	pools[0].evaporate(1.5)
 	Fx.float_text(pools[0].global_position + Vector2(0, -20), Lang.t("L'acqua evapora"), Color(0.75, 0.85, 1.0))
 
 
@@ -304,6 +339,11 @@ func _draw_body(flash: bool) -> void:
 		for i in range(13):
 			pts.append(Vector2.from_angle(aim.angle() - half + half * 2.0 * i / 12.0) * bite_reach)
 		draw_colored_polygon(pts, Color(1, 0.2, 0.15, 0.12 + 0.3 * k))
+	if state == "ring_windup":
+		var kr := 1.0 - st / 0.8
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, 0.6))
+		draw_arc(Vector2.ZERO, 20.0 + 14.0 * kr, 0.0, TAU, 32, Color(1, 0.5, 0.15, 0.3 + 0.5 * kr), 3.0)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	if state == "leap_windup":
 		var k := 1.0 - st / leap_windup
 		var c := leap_to - global_position

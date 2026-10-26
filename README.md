@@ -286,6 +286,8 @@ Dopo la prima vittoria su Am-heh, la **bilancia di Ma'at** al centro della Sala 
 | Il Nilo in secca | L'Acqua del Nilo cura la metà | 1 |
 | Il silenzio degli dèi | Due doni tra cui scegliere invece di tre | 1 |
 | La fame di Am-heh | Am-heh +30% vita, la marea di fuoco arriva più spesso | 1 |
+| L'ira del Serpente | il Serpente ha due mosse in più: doppia emersione e pioggia di veleno | 1 |
+| L'ira di Am-heh | Am-heh ha due mosse in più: doppio balzo e anello di fuoco | 1 |
 
 I pesi sono in `scripts/weights.gd`.
 

@@ -8,6 +8,10 @@ extends Enemy
 ## - Sotto la sabbia: si inabissa (non si può colpire), ti insegue sotto terra e riemerge
 ##   dove eri. Un cerchio a terra avvisa dove uscirà: scatta via.
 ## Sotto metà vita si infuria: più rapido, ventaglio più largo, e gli affondi diventano doppi.
+## Gli sputi, dove cadono, lasciano pozze di veleno per qualche secondo (Hazards.VenomPuddle).
+## Con il Peso del Cuore "L'ira del Serpente" ha due mosse in più:
+## - Doppia emersione: riemerso, si rituffa subito e riemerge una seconda volta sotto di te.
+## - Pioggia di veleno: sputa in alto, e il veleno ricade su sei cerchi intorno a te.
 ## Combatte da solo.
 
 @warning_ignore("unused_signal")
@@ -19,7 +23,7 @@ const BoltScript := preload("res://scripts/enemy_bolt.gd")
 @export var strike_speed := 400.0
 @export var strike_time := 0.32
 @export var venom_count := 5
-@export var venom_damage := 11.0
+@export var venom_damage := 8.0
 @export var burrow_time := 1.5
 @export var erupt_warn := 0.65
 @export var erupt_radius := 48.0
@@ -34,10 +38,13 @@ var summoned := false
 var trail: Array[Vector2] = []        # posizioni passate della testa: il corpo le segue
 var erupt_at := Vector2.ZERO
 var second_strike := false         # infuriato, dopo un affondo ne tenta subito un altro
+var second_dive := false           # l'ira del Serpente: la seconda emersione
+var ira := false                   # Peso del Cuore: l'ira del Serpente (due mosse in più)
 
 
 func _ready() -> void:
 	miniboss = true
+	ira = Weights.rank("ira_serpente") > 0
 	super._ready()
 	for i in range(24):
 		trail.append(global_position + Vector2(0, -i * 3.0))
@@ -104,7 +111,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		"under":
 			if st <= 0.0 or (to != Vector2.ZERO and to.length() < 10.0):
 				state = "warn"
-				st = erupt_warn
+				st = erupt_warn * (0.75 if second_dive else 1.0)
 				erupt_at = global_position
 				return Vector2.ZERO
 			if to == Vector2.ZERO:
@@ -113,8 +120,21 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		"warn":
 			if st <= 0.0:
 				_erupt()
+				if ira and not second_dive:
+					# l'ira: si rituffa subito e torna a cercarti, con un avviso più corto
+					second_dive = true
+					state = "dive"
+					st = 0.35
+					return Vector2.ZERO
+				second_dive = false
 				state = "recover"
 				st = 0.9
+			return Vector2.ZERO
+		"rain":
+			if st <= 0.0:
+				_rain(to)
+				state = "recover"
+				st = 0.8
 			return Vector2.ZERO
 		"recover":
 			if st <= 0.0:
@@ -131,6 +151,12 @@ func _next(time: float) -> void:
 func _choose(to: Vector2) -> void:
 	var d := to.length() if to != Vector2.ZERO else 999.0
 	var r := randf()
+	if ira and randf() < 0.22:
+		state = "rain"
+		st = 0.7
+		Sfx.play_at("cobra_hiss", global_position, 0.05)
+		Fx.float_text(global_position + Vector2(0, -34), Lang.t("PIOGGIA DI VELENO"), Color(0.6, 1, 0.5))
+		return
 	if d < 140.0 and r < 0.5:
 		state = "windup"
 		st = strike_windup
@@ -157,8 +183,22 @@ func _venom() -> void:
 		bolt.damage = venom_damage
 		bolt.shooter = self
 		bolt.style = "venom"
+		bolt.life = randf_range(1.0, 1.5)        # lo sputo cade a terra e lascia la pozza
 		get_parent().add_child(bolt)
 		bolt.global_position = global_position + Vector2(0, -12) + aim * 12.0
+
+
+## L'ira del Serpente: il veleno ricade su sei cerchi intorno a te, uno dopo l'altro.
+func _rain(to: Vector2) -> void:
+	Sfx.play_at("cobra_spit", global_position, 0.1)
+	var center := global_position + to
+	for i in range(6):
+		var drop := Hazards.VenomDrop.new()
+		drop.delay = i * 0.12
+		drop.src = self
+		get_parent().add_child(drop)
+		var off := Vector2.ZERO if i == 0 else Vector2.from_angle(randf() * TAU) * randf_range(30.0, 85.0)
+		drop.global_position = center + off
 
 
 func _erupt() -> void:

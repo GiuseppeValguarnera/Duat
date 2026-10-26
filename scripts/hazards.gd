@@ -60,11 +60,22 @@ class WaterPool extends Node2D:
 		var d := (p - global_position) / (radii * k)
 		return d.length() < 1.0
 
-	func evaporate() -> void:
-		drying = true
+	var warn_t := 0.0            ## prima di evaporare ribolle e fuma: l'avviso per chi ci sta dentro
+
+	func evaporate(warning: float = 0.0) -> void:
+		if warning <= 0.0:
+			drying = true
+		else:
+			warn_t = warning
 
 	func _process(delta: float) -> void:
 		t += delta
+		if warn_t > 0.0:
+			warn_t -= delta
+			if randf() < 0.6:
+				Fx.burst(global_position + Vector2(randf_range(-radii.x, radii.x) * 0.7, randf_range(-radii.y, radii.y) * 0.7), Color(0.9, 0.9, 0.95, 0.7), 2, 50.0)
+			if warn_t <= 0.0:
+				drying = true
 		if drying and dry < 1.0:
 			dry = minf(1.0, dry + delta / 2.2)
 			if randf() < 0.5:
@@ -84,6 +95,13 @@ class WaterPool extends Node2D:
 		if k > 0.02:
 			draw_circle(Vector2.ZERO, (radii.x + 1.0) * k, Color(0.12, 0.2, 0.3))
 			draw_circle(Vector2.ZERO, radii.x * k - 3.0, Color(0.1, 0.26, 0.4))
+			# sta per evaporare: l'acqua bolle, rossa di calore
+			if warn_t > 0.0:
+				var boil := 0.5 + 0.5 * sin(t * 18.0)
+				draw_circle(Vector2.ZERO, radii.x * k - 3.0, Color(0.9, 0.4, 0.2, 0.18 + 0.15 * boil))
+				for i in range(6):
+					var bp := Vector2(sin(i * 2.3 + t * 3.0), cos(i * 1.7 + t * 2.0)) * radii.x * 0.6
+					draw_circle(bp, 2.0 + 1.5 * absf(sin(t * 9.0 + i)), Color(0.85, 0.95, 1.0, 0.6))
 			# increspature
 			for i in range(3):
 				var rr := fmod(t * 9.0 + i * 13.0, radii.x * k)
@@ -599,3 +617,138 @@ class UraeusStatues extends Node2D:
 		draw_circle(head - d * 1.0 - side * 1.6, 1.0, eye)
 		if lit:
 			draw_circle(head + d * 3.0, 4.0 + 2.0 * sin(t * 20.0), Color(1, 0.5, 0.15, 0.35))
+
+
+
+## Pozza di veleno del Serpente della Porta: resta dove cade uno sputo, per qualche secondo.
+## Chi ci passa sopra (senza scattare) viene avvelenato, come dagli scorpioni.
+class VenomPuddle extends Node2D:
+	var life := 3.0
+	var t := 0.0
+	var r := 14.0
+	var cool := 0.0
+
+	func _ready() -> void:
+		Sfx.play_at("orb_pop", global_position, 0.2)
+		_under.call_deferred()
+
+	## Sopra il pavimento, sotto l'eroe e i nemici (z_index negativo finiva sotto il pavimento).
+	func _under() -> void:
+		var par := get_parent()
+		if par == null:
+			return
+		for i in range(par.get_child_count()):
+			if par.get_child(i).has_method("rebake"):          # l'arredamento con il pavimento
+				par.move_child(self, i + 1)
+				return
+
+	func _process(delta: float) -> void:
+		t += delta
+		cool = maxf(0.0, cool - delta)
+		if t >= life:
+			queue_free()
+			return
+		var p = get_tree().get_first_node_in_group("player")
+		if p != null and not p.dead and cool <= 0.0 and p.dash_t <= 0.0:
+			var d: Vector2 = (p.global_position - global_position) / Vector2(r, r * 0.55)
+			if d.length() < 1.0:
+				p.poison(2.0)
+				cool = 0.5
+				Run.last_hit = "serpent"
+		queue_redraw()
+
+	func _draw() -> void:
+		var a := clampf(t / 0.15, 0.0, 1.0) * clampf((life - t) / 0.6, 0.0, 1.0)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, 0.55))
+		draw_circle(Vector2.ZERO, r + 2.0, Color(0.1, 0.25, 0.08, 0.5 * a))
+		draw_circle(Vector2.ZERO, r, Color(0.3, 0.75, 0.2, 0.55 * a))
+		draw_circle(Vector2(-3, -3), r * 0.4, Color(0.7, 1.0, 0.5, 0.35 * a))
+		for i in range(3):
+			var bp := Vector2(sin(i * 2.1 + t * 2.0), cos(i * 1.3 + t * 2.5)) * r * 0.5
+			draw_circle(bp, 1.2 + absf(sin(t * 6.0 + i)), Color(0.8, 1.0, 0.6, 0.6 * a))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+## Pioggia di veleno (Peso del Cuore, l'ira del Serpente): un cerchio d'avviso, poi la goccia
+## cade e lascia la pozza. Ferisce chi è sotto quando cade.
+class VenomDrop extends Node2D:
+	var delay := 0.0
+	var warn := 0.85
+	var damage := 8.0
+	var t := 0.0
+	var src: Node = null
+
+	func _process(delta: float) -> void:
+		t += delta
+		if t < delay:
+			return
+		if t >= delay + warn:
+			var p = get_tree().get_first_node_in_group("player")
+			if p != null and not p.dead and p.global_position.distance_to(global_position) < 16.0:
+				p.take_damage(damage, global_position, src if is_instance_valid(src) else null)
+			Fx.burst(global_position, Color(0.4, 1.0, 0.35), 10, 70.0)
+			var pud := Hazards.VenomPuddle.new()
+			get_parent().add_child(pud)
+			pud.global_position = global_position
+			queue_free()
+			return
+		queue_redraw()
+
+	func _draw() -> void:
+		if t < delay:
+			return
+		var k := clampf((t - delay) / warn, 0.0, 1.0)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, 0.55))
+		draw_arc(Vector2.ZERO, 16.0, 0.0, TAU, 24, Color(0.5, 1.0, 0.4, 0.8), 1.5)
+		draw_circle(Vector2.ZERO, 16.0 * k, Color(0.4, 0.9, 0.3, 0.25))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		# la goccia che scende dall'alto
+		var y := -120.0 * (1.0 - k)
+		draw_circle(Vector2(0, y), 3.5, Color(0.35, 0.85, 0.25, k))
+
+
+## Anello di fuoco (Peso del Cuore, l'ira di Am-heh): si allarga da lui con un solo varco.
+## Lo si passa nel varco, o attraversandolo con lo scatto.
+class FireRing extends Node2D:
+	var gap_dir := Vector2.RIGHT
+	var gap := deg_to_rad(55.0)
+	var max_r := 300.0
+	var dur := 1.7
+	var damage := 10.0
+	var t := 0.0
+	var hit := false
+
+	func _ready() -> void:
+		z_index = 1
+		Sfx.play("fire_whoosh", 0.05)
+
+	func radius() -> float:
+		return 18.0 + (max_r - 18.0) * clampf(t / dur, 0.0, 1.0)
+
+	func _process(delta: float) -> void:
+		t += delta
+		if t >= dur:
+			queue_free()
+			return
+		var p = get_tree().get_first_node_in_group("player")
+		if p != null and not p.dead and not hit:
+			var to: Vector2 = p.global_position - global_position
+			var ell := Vector2(to.x, to.y / 0.6)
+			if absf(ell.length() - radius()) < 9.0 and absf(gap_dir.angle_to(ell)) > gap * 0.5:
+				if p.take_damage(damage, global_position, null, "amheh_fuoco"):
+					hit = true
+		queue_redraw()
+
+	func _draw() -> void:
+		var r := radius()
+		var a := clampf((dur - t) / 0.4, 0.0, 1.0)
+		var start := gap_dir.angle() + gap * 0.5
+		var span := TAU - gap
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, 0.6))
+		draw_arc(Vector2.ZERO, r, start, start + span, 72, Color(1.0, 0.45, 0.1, 0.35 * a), 14.0)
+		draw_arc(Vector2.ZERO, r, start, start + span, 72, Color(1.0, 0.8, 0.3, 0.9 * a), 4.0)
+		for i in range(18):
+			var ang := start + span * (i + 0.5) / 18.0 + sin(t * 9.0 + i) * 0.02
+			var fp := Vector2.from_angle(ang) * r
+			draw_circle(fp + Vector2(0, -4 - 3 * absf(sin(t * 12.0 + i))), 3.0, Color(1.0, 0.7, 0.2, 0.8 * a))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

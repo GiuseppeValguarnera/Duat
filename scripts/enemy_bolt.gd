@@ -26,6 +26,7 @@ func _physics_process(delta: float) -> void:
 	position += direction * speed * delta
 	life -= delta
 	if life <= 0.0:
+		_land()
 		queue_free()
 	queue_redraw()
 
@@ -42,7 +43,17 @@ func _on_body_entered(body: Node) -> void:
 		Fx.burst(global_position, Color(0.85, 0.4, 1.0), 6, 60.0)
 		if style != "dart":
 			Sfx.play_at("orb_pop", global_position, 0.2)
+		_land()
 		queue_free()
+
+
+## Lo sputo del Serpente, dove cade, lascia una pozza di veleno.
+func _land() -> void:
+	if style != "venom" or not is_inside_tree():
+		return
+	var pud := Hazards.VenomPuddle.new()
+	get_parent().add_child.call_deferred(pud)
+	pud.position = position - direction * 4.0
 
 
 func _draw() -> void:
