@@ -1787,9 +1787,32 @@ func _boss_defeated() -> void:
 		# la notte continua: si apre la porta verso la tappa successiva
 		cleared = true
 		_banner(Lang.t("La porta della quarta ora"), Lang.t("Oltre il lago, la terra di Sokar. La barca di Ra ti aspetta"), Color(0.9, 0.75, 0.45), 3.0)
+		_open_lake_bridge()
 		_add_door("n", {"kind": "region"})
 		return
 	_victory()
+
+
+## Caduto Am-heh, il lago davanti alla porta si spegne e sale un ponte di basalto: la porta della
+## regione successiva sta oltre il lago di fuoco (solido), e senza ponte non si raggiungeva.
+func _open_lake_bridge() -> void:
+	var strip := Rect2(WALL, TOP, ROOM.size.x - WALL * 2.0, Arenas.LAKE_W)
+	for c in world.get_children():
+		if c is StaticBody2D and c.position.is_equal_approx(strip.get_center()):
+			c.queue_free()
+	var gap := Arenas.lake_bridge_gap(ROOM)
+	_solid(Rect2(WALL, TOP, gap.x - WALL, Arenas.LAKE_W))
+	_solid(Rect2(gap.y, TOP, ROOM.size.x - WALL - gap.y, Arenas.LAKE_W))
+	var bridge := Arenas.LakeBridge.new()
+	bridge.room = ROOM
+	bridge.top = TOP
+	world.add_child(bridge)
+	for i in range(world.get_child_count()):
+		if world.get_child(i).get_script() == DecorScript:
+			world.move_child(bridge, i + 1)       # sopra il pavimento, sotto l'eroe
+			break
+	Fx.shake(5.0)
+	Sfx.play("amheh_land", 0.05)
 
 
 ## Aker è caduto: il sole spento dell'orizzonte tremola come se volesse sorgere, e si spegne

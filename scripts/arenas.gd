@@ -671,6 +671,54 @@ static func paint_lake(ci: CanvasItem, r: Rect2, top: float, wall: float) -> voi
 		ci.draw_line(Vector2(r.size.x - 80 - k * 40, top - 4), Vector2(r.size.x - 96 - k * 40, top - 20), Color(0.2, 0.12, 0.1), 2.0)
 
 
+## Il ponte che si alza quando Am-heh cade e la notte continua verso Sokar: il lago di fuoco
+## davanti alla porta si spegne (la lava diventa crosta scura che fuma) e le lastre di basalto
+## salgono una dopo l'altra fino alla porta. Senza, la porta della regione stava oltre il lago
+## (che è solido) e non si poteva raggiungere.
+const BRIDGE_HALF := 30.0
+
+
+static func lake_bridge_gap(room: Rect2) -> Vector2:
+	return Vector2(room.size.x / 2.0 - BRIDGE_HALF, room.size.x / 2.0 + BRIDGE_HALF)
+
+
+class LakeBridge extends Node2D:
+	var room := Rect2()
+	var top := 64.0
+	var t := 0.0
+
+	func _process(delta: float) -> void:
+		t += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		var cx := room.size.x / 2.0
+		var hw := Arenas.BRIDGE_HALF
+		var cool := clampf(t / 0.8, 0.0, 1.0)
+		# la lava che si raffredda intorno al ponte
+		draw_rect(Rect2(cx - hw - 14.0, top - 2.0, hw * 2.0 + 28.0, Arenas.LAKE_W + 4.0), Color(0.16, 0.07, 0.05, 0.85 * cool))
+		# le lastre che salgono, dalla riva verso la porta
+		var n := 4
+		for i in range(n):
+			var k := clampf((t - 0.3 - (n - 1 - i) * 0.18) / 0.3, 0.0, 1.0)
+			if k <= 0.0:
+				continue
+			var y := top + i * (Arenas.LAKE_W + 4.0) / n - 2.0
+			var h := (Arenas.LAKE_W + 4.0) / n + 1.0
+			var off := (1.0 - k) * 6.0
+			draw_rect(Rect2(cx - hw - 1.0, y - 1.0 + off, hw * 2.0 + 2.0, h + 1.0), Color(0.05, 0.03, 0.03, k))
+			draw_rect(Rect2(cx - hw, y + off, hw * 2.0, h - 1.0), Color(0.22, 0.2, 0.22, k))
+			draw_line(Vector2(cx - hw, y + off + 1.0), Vector2(cx + hw, y + off + 1.0), Color(0.36, 0.33, 0.36, k), 1.0)
+		# il fumo della lava spenta, e qualche brace sui bordi
+		for i in range(6):
+			var f := fmod(t * 0.5 + i * 0.17, 1.0)
+			var sx := -1.0 if i % 2 == 0 else 1.0
+			var p := Vector2(cx + sx * (hw + 6.0 + (i % 3) * 3.0), top + Arenas.LAKE_W * 0.5 - f * 26.0)
+			draw_circle(p, 2.5 + f * 4.0, Color(0.5, 0.45, 0.45, 0.25 * (1.0 - f) * cool))
+		for sx2 in [-1.0, 1.0]:
+			draw_line(Vector2(cx + sx2 * hw, top - 2.0), Vector2(cx + sx2 * hw, top + Arenas.LAKE_W + 2.0), Color(1.0, 0.5, 0.15, 0.5 + 0.3 * sin(t * 5.0)), 1.5)
+
+
 ## Il lago che respira: bagliori che pulsano sulla lava e braci che salgono. Leggero: pochi
 ## rettangoli sommati e una manciata di particelle.
 class LakeGlow extends Node2D:

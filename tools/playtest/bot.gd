@@ -475,7 +475,7 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 		if "sting_dir" in e and e.state == "windup" and d < 48.0 and e.st < 0.25:
 			threat_kind = "scorpion"
 			return rel.normalized()
-		if "breath_range" in e:
+		if "swapped" in e and "breath_range" in e:
 			# Aker, il leone doppio: esce dal cono del soffio (il raggio e le pietre sono sotto)
 			threat_kind = "aker"
 			if e.state == "breath_windup" and e.st < 0.3:
