@@ -7,7 +7,9 @@ extends RefCounted
 
 ## Quanto è buia la penombra: stanze della discesa (calda) e Sala del Giudizio (notte blu).
 const AMBIENT_ROOM := Color(0.86, 0.8, 0.82)
-const AMBIENT_HUB := Color(0.58, 0.59, 0.76)
+const AMBIENT_HUB := Color(0.66, 0.67, 0.82)
+const AMBIENT_HUB_LIT := Color(0.93, 0.86, 0.84)      ## la Sala con i bracieri restaurati
+const AMBIENT_DAY := Color(0.97, 0.95, 0.9)          ## il Cortile di Neith, a cielo aperto
 const TORCH := Color(1.0, 0.62, 0.32)
 
 static var _tex: GradientTexture2D = null

@@ -60,7 +60,7 @@ var trial_enemies: Array = []
 
 
 func _ready() -> void:
-	Atmos.vignette(self, 1.0)
+	# niente bordi scuri: il Cortile è a cielo aperto e si fanno le prove, bisogna vedere bene
 	Engine.time_scale = 1.0
 	get_tree().paused = false
 	Run.in_hub = false
@@ -116,6 +116,10 @@ func _build() -> void:
 	for p in pedestals:
 		keep_clear.append(p["pos"])
 	var decor := DecorScript.new()
+	# il Cortile è a cielo aperto: luce del giorno, penombra appena accennata, niente polvere.
+	# Contrasto voluto con la notte blu della Sala e il buio delle tombe.
+	decor.daylight = true
+	decor.SHADE = 0.14
 	world.add_child(decor)
 	for r in decor.build(777, ROOM, TOP, WALL, keep_clear, false):
 		_solid(r)

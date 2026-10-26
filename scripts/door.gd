@@ -88,7 +88,7 @@ func reward_description() -> String:
 		"ka":
 			return Lang.t("Tesoro di Ka: +25 Ka")
 		"lapis":
-			return Lang.t("Lapislazzuli: una pietra per i restauri della Sala del Giudizio (resta anche se cadi)")
+			return Lang.t("Lapislazzuli: pietre preziose per i restauri (restano anche se cadi)")
 		"heal":
 			if Run.room + 1 == Run.ROOMS_PER_RUN:
 				return Lang.t("Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh") % roundi(Run.nile_heal() * 100.0)

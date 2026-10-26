@@ -104,6 +104,14 @@ func _build() -> void:
 	for r in decor.build(424242, ROOM, TOP, WALL, [], true):
 		_solid(r)
 	decor.ambient.color = Atmos.AMBIENT_HUB
+	# i bracieri restaurati scaldano davvero la Sala: la notte blu si fa più chiara e calda, e da
+	# ogni angolo arriva una luce ampia (vera sul computer, finta sul telefono). Il prima e dopo
+	# deve vedersi subito: è il premio del restauro.
+	if not decor.cold_braziers:
+		decor.ambient.color = Atmos.AMBIENT_HUB_LIT
+		for pr in decor.props:
+			if pr[0] == "brazier":
+				Atmos.add_light(decor, pr[1] + Vector2(0, -10), 380.0, Color(1.0, 0.64, 0.34), 1.0, false, true)
 	# si illumina ciò che conta: una luce di luna dal cancello sulla bilancia, lampade calde su
 	# Anubi, sul Libro e sui Papiri; il resto della Sala resta nella notte blu
 	Atmos.add_light(decor, spots["bilancia"] + Vector2(0, 30), 260.0, Color(0.6, 0.8, 1.0), 1.0, false, true).set_process(false)

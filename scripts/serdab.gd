@@ -15,6 +15,8 @@ const HITS := 3                         ## colpi per far crollare il muro
 const DARK := Color(0.58, 0.55, 0.65)     ## quanto si fa buio dentro
 const INK := Color(0.62, 0.5, 0.3)      ## colore dei geroglifici incisi
 const SAND := Color(0.78, 0.66, 0.46)
+const KA_MIN := 25                       ## il Ka del serdab, quando il premio è il Ka
+const KA_MAX := 35
 
 ## Iscrizioni sulla statua: formule d'offerta e maledizioni come quelle vere delle tombe.
 ## Parlano "del re" in generale: nessun indizio sulla storia.
@@ -109,16 +111,20 @@ func _collapse() -> void:
 	if g.player != null and is_instance_valid(g.player):
 		var cam: Camera2D = g.player.get_node("Camera")
 		cam.limit_top = int(-SIZE.y - 16.0)
-	# il tesoro: un po' di Ka sparso davanti alla statua, a volte un cuore
-	var total := roundi(rng.randi_range(30, 45) * Run.treasure_mult())
-	var coins := 3
-	for i in range(coins):
-		var at := Vector2(hx + (i - 1) * 34.0 + rng.randf_range(-6, 6), -SIZE.y * 0.42 + rng.randf_range(-10, 14))
-		treasures.append(["ka", at, int(total / float(coins)) + (total - int(total / float(coins)) * coins if i == 0 else 0), false])
-	if rng.randf() < 0.5:
-		treasures.append(["heart", Vector2(hx + rng.randf_range(-60, 60), -34.0), 10.0, false])
-	# sempre un lapislazzuli ai piedi della statua (a volte due): trovare il serdab vale la pena
-	treasures.append(["lapis", Vector2(hx + rng.randf_range(-20, 20), -SIZE.y * 0.6), 2 if rng.randf() < 0.4 else 1, false])
+	# il tesoro: un solo premio, a sorte, così aprire il muro è una sorpresa. Un cuore, qualche
+	# lapislazzuli ai piedi della statua oppure un po' di Ka sparso (più di una porta del tesoro,
+	# perché trovare il serdab deve valere la pena)
+	match rng.randi_range(0, 2):
+		0:
+			treasures.append(["heart", Vector2(hx + rng.randf_range(-30, 30), -SIZE.y * 0.42), 10.0, false])
+		1:
+			treasures.append(["lapis", Vector2(hx + rng.randf_range(-20, 20), -SIZE.y * 0.6), rng.randi_range(2, 3), false])
+		_:
+			var total := roundi(rng.randi_range(KA_MIN, KA_MAX) * Run.treasure_mult())
+			var coins := 3
+			for i in range(coins):
+				var at := Vector2(hx + (i - 1) * 34.0 + rng.randf_range(-6, 6), -SIZE.y * 0.42 + rng.randf_range(-10, 14))
+				treasures.append(["ka", at, int(total / float(coins)) + (total - int(total / float(coins)) * coins if i == 0 else 0), false])
 	# il buio dentro
 	# il buio dentro: si scurisce la penombra della stanza (una sola per scena, in Godot)
 	var found := g.world.find_children("*", "CanvasModulate", true, false)

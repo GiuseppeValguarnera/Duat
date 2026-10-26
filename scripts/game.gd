@@ -487,7 +487,7 @@ func _room_cleared() -> void:
 		# il guardiano di mezzo non dà Lacrime di Iside: quelle cadono solo sui boss delle regioni
 		var first_serpent := Meta.serpent_wins == 0
 		Meta.serpent_wins += 1
-		Restorations.gain(randi_range(1, 2), player.global_position)
+		Restorations.gain(randi_range(4, 5), player.global_position)
 		var tear_txt := Lang.t("Il Cortile di Neith si è aperto") if first_serpent else Lang.t("La via verso Am-heh è aperta")
 		var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
 		if not gods.is_empty():
@@ -527,7 +527,7 @@ func _on_pickup_collected(p: Area2D) -> void:
 			player.heal(roundf(Run.max_hp * Run.nile_heal()))
 			_open_doors.call_deferred()
 		"lapis":
-			Restorations.gain(1, player.global_position)
+			Restorations.gain(randi_range(4, 5), player.global_position)
 			_open_doors.call_deferred()
 		"boon":
 			_show_boon_menu.call_deferred(god)
@@ -1507,7 +1507,7 @@ func _boss_defeated() -> void:
 		if c is Enemy and not c.dead:
 			c.die()
 	Meta.ammit_wins += 1
-	Restorations.gain(randi_range(3, 5), player.global_position)
+	Restorations.gain(randi_range(10, 12), player.global_position)
 	var win_secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
 	if Meta.best_time < 0 or win_secs < Meta.best_time:
 		Meta.best_time = win_secs

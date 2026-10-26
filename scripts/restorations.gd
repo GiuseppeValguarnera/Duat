@@ -6,34 +6,35 @@ extends RefCounted
 ## e i due sistemi non si fanno concorrenza.
 ##
 ## I lapislazzuli sono rari e restano anche se muori (come le gemme di Hades): li lasciano il
-## Serpente della Porta, Am-heh, le stanze segrete e, ogni tanto, una porta apposta.
+## Serpente della Porta (4-5), Am-heh (10-12), a volte le stanze segrete (2-3) e, ogni tanto,
+## una porta apposta (4-5). Una discesa media ne porta a casa 5-10, una vittoria 20-25.
 
 const LAPIS_COLOR := Color(0.25, 0.42, 0.95)
 
 ## id -> nome, costo, descrizione, racconto. L'ordine è quello del pannello.
 const ALL_IT := {
-	"bracieri": {"name": "I bracieri della Sala", "cost": 2,
+	"bracieri": {"name": "I bracieri della Sala", "cost": 6,
 		"desc": "I bracieri spenti negli angoli della Sala tornano ad ardere: più luce calda nella notte blu.",
 		"lore": "Nei templi il fuoco non si spegneva mai: i sacerdoti lo nutrivano all'alba e al tramonto, con incenso e grasso di bue."},
-	"stendardi": {"name": "Gli stendardi degli dèi", "cost": 3,
+	"stendardi": {"name": "Gli stendardi degli dèi", "cost": 9,
 		"desc": "Gli stendardi strappati sopra la Sala tornano interi, con le frange d'oro e il simbolo di ogni dio.",
 		"lore": "Davanti ai piloni dei templi si alzavano pali di cedro con lunghe bandiere colorate: il geroglifico per «dio» è proprio uno stendardo al vento."},
-	"pitture": {"name": "Le pitture del giudizio", "cost": 4,
+	"pitture": {"name": "Le pitture del giudizio", "cost": 12,
 		"desc": "Sulla parete in alto torna la scena della pesatura del cuore: Anubi alla bilancia, Thoth che scrive, Ammit che aspetta.",
 		"lore": "Il papiro di Ani mostra la scena più famosa del Libro dei Morti: il cuore su un piatto, la piuma di Ma'at sull'altro."},
-	"vasca": {"name": "La vasca del Nilo", "cost": 5,
+	"vasca": {"name": "La vasca del Nilo", "cost": 15,
 		"desc": "Una vasca d'acqua viva con i fiori di loto, accanto alla cassa dello scalpellino.",
 		"lore": "Ogni tempio aveva il suo lago sacro: i sacerdoti vi si purificavano prima dei riti, e ogni mattina il sole sorgeva dalle sue acque."},
-	"trono": {"name": "Il trono di Anubi", "cost": 6,
+	"trono": {"name": "Il trono di Anubi", "cost": 18,
 		"desc": "Alle spalle di Anubi torna il suo trono dorato, con lo schienale dipinto e le zampe di leone.",
 		"lore": "Il trono era il segno del potere: il nome di Iside si scrive proprio con il geroglifico di un seggio."},
-	"clessidra": {"name": "La clessidra di Thoth", "cost": 3, "comfort": true,
+	"clessidra": {"name": "La clessidra di Thoth", "cost": 8, "comfort": true,
 		"desc": "Comodità. Durante la discesa vedi in alto il tempo trascorso e il tuo record contro Am-heh.",
 		"lore": "Gli Egizi misuravano le ore della notte con le clessidre ad acqua: un vaso forato, con le tacche dipinte all'interno."},
-	"registro": {"name": "Il registro dello scriba", "cost": 4, "comfort": true,
+	"registro": {"name": "Il registro dello scriba", "cost": 12, "comfort": true,
 		"desc": "Comodità. Nei Papiri di Thoth compare una pagina con le tue imprese: discese, vittorie, chi ti ha fermato più spesso, gli dèi che hai scelto.",
 		"lore": "Gli scribi tenevano registri di tutto: il grano, il bestiame, i lavoratori. Anche le imprese dei re finivano su un papiro."},
-	"gatto": {"name": "Il gatto di Bastet", "cost": 5, "comfort": true,
+	"gatto": {"name": "Il gatto di Bastet", "cost": 15, "comfort": true,
 		"desc": "Comodità. Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.",
 		"lore": "I gatti erano sacri a Bastet. Chi ne uccideva uno, anche per sbaglio, rischiava la vita; quando un gatto moriva, la famiglia si radeva le sopracciglia in segno di lutto."},
 }
