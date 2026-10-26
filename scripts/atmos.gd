@@ -6,7 +6,7 @@ extends RefCounted
 ## Il buio è atmosfera, non un ostacolo: la penombra resta leggera e ciò che conta è illuminato.
 
 ## Quanto è buia la penombra: stanze della discesa (calda) e Sala del Giudizio (notte blu).
-const AMBIENT_ROOM := Color(0.7, 0.63, 0.67)
+const AMBIENT_ROOM := Color(0.86, 0.8, 0.82)
 const AMBIENT_HUB := Color(0.58, 0.59, 0.76)
 const TORCH := Color(1.0, 0.62, 0.32)
 

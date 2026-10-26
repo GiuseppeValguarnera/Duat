@@ -26,6 +26,12 @@ var ambient: CanvasModulate             ## la penombra della stanza (il serdab l
 ## Il disegno fermo della stanza, fatto una volta sola in una texture (vedi _bake).
 var baked: Texture2D = null
 var painter := false                    ## vero per la copia che disegna dentro la texture
+## Chi disegna sotto l'arredamento (il pavimento e i muri della stanza, in game.gd): finisce
+## anche lui nella texture.
+var under: Callable
+var _vp: SubViewport
+## Quanto è buia la stanza lontano dalle luci (la penombra cotta, vedi _draw_shade).
+var SHADE := 0.62
 
 
 func build(seed_value: int, room_rect: Rect2, top_y: float, wall_w: float, pillars: Array, boss: bool) -> Array:
@@ -151,6 +157,8 @@ func _bake() -> void:
 	p.props = props
 	p.torches = torches
 	p.mosaic = mosaic
+	p.under = under
+	p.SHADE = SHADE
 	p.scale = Vector2(s, s)
 	p.set_process(false)
 	vp.add_child(p)
@@ -161,6 +169,9 @@ func _bake() -> void:
 	await RenderingServer.frame_post_draw
 	if not is_instance_valid(vp):
 		return
+	if _vp != null and is_instance_valid(_vp):
+		_vp.queue_free()                   # la texture di prima (rebake)
+	_vp = vp
 	baked = vp.get_texture()
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	material = Atmos.premult_mat()        # la texture ha l'alfa già moltiplicato
@@ -196,11 +207,20 @@ func _process(delta: float) -> void:
 	t += delta
 
 
+## Rifà la texture (per esempio quando compare l'altare di Set): la vecchia resta finché la
+## nuova non è pronta, così non si vede mai un fotogramma vuoto.
+func rebake() -> void:
+	_bake.call_deferred()
+
+
 func _draw() -> void:
 	if baked != null:
 		draw_texture_rect(baked, Rect2(Vector2.ZERO, room.size), false)
 		return
+	if under.is_valid():
+		under.call(self)
 	_draw_floor()
+	_draw_ao()
 	_draw_walls()
 	for pr in props:
 		match pr[0]:
@@ -216,9 +236,58 @@ func _draw() -> void:
 				_draw_papyrus(pr[1], pr[2])
 			"offering":
 				_draw_offering(pr[1], pr[2])
+	if painter:
+		_draw_shade()
 	for tc in torches:
 		_draw_torch(tc)
 	# le fiamme sono in Flames, che si ridisegna da solo
+
+
+## Luce e ombra cotte nella texture: la stanza è in penombra, tranne attorno alle torce, ai
+## bracieri, alle porte e al centro, dove si combatte. Una griglia di quadratini con la
+## trasparenza calcolata per ogni vertice: costa solo quando si cuoce, poi è gratis. I nemici e
+## l'eroe stanno sopra e non vengono scuriti: si leggono sempre.
+func _draw_shade() -> void:
+	var lights: Array = []           # [posizione, raggio, forza]
+	for tc in torches:
+		lights.append([tc + Vector2(0, 14), 105.0, 1.0])
+	for pr in props:
+		if pr[0] == "brazier":
+			lights.append([pr[1], 115.0, 1.0])
+	var mid := Vector2(room.size.x / 2.0, (top + room.size.y - wall) / 2.0)
+	lights.append([mid, 175.0, 0.55])
+	lights.append([Vector2(room.size.x / 2.0, top), 90.0, 0.8])                          # porta nord
+	lights.append([Vector2(wall, mid.y), 80.0, 0.7])
+	lights.append([Vector2(room.size.x - wall, mid.y), 80.0, 0.7])
+	var cell := 16.0
+	var nx := ceili(room.size.x / cell)
+	var ny := ceili(room.size.y / cell)
+	var alpha := PackedFloat32Array()
+	alpha.resize((nx + 1) * (ny + 1))
+	for j in range(ny + 1):
+		for i in range(nx + 1):
+			var q := Vector2(i * cell, j * cell)
+			var lit := 0.0
+			for l in lights:
+				var d: float = q.distance_to(l[0])
+				var r: float = l[1]
+				if d < r:
+					var k := 1.0 - d / r
+					lit += k * k * (3.0 - 2.0 * k) * float(l[2])
+			alpha[j * (nx + 1) + i] = SHADE * (1.0 - clampf(lit, 0.0, 1.0))
+	var col := Color(0.03, 0.02, 0.05)
+	for j in range(ny):
+		for i in range(nx):
+			var a0 := alpha[j * (nx + 1) + i]
+			var a1 := alpha[j * (nx + 1) + i + 1]
+			var a2 := alpha[(j + 1) * (nx + 1) + i + 1]
+			var a3 := alpha[(j + 1) * (nx + 1) + i]
+			if a0 + a1 + a2 + a3 < 0.01:
+				continue
+			var x := i * cell
+			var y := j * cell
+			draw_polygon(PackedVector2Array([Vector2(x, y), Vector2(x + cell, y), Vector2(x + cell, y + cell), Vector2(x, y + cell)]),
+				PackedColorArray([Color(col, a0), Color(col, a1), Color(col, a2), Color(col, a3)]))
 
 
 func _draw_floor() -> void:
@@ -439,6 +508,7 @@ func _draw_papyrus(p: Vector2, s: float) -> void:
 
 ## La tavola delle offerte: pane, frutta, un fiore di loto e una brocca.
 func _draw_offering(p: Vector2, k: int) -> void:
+	_shadow(p + Vector2(1, 5), 13.0, 3.0, 0.28)
 	draw_rect(Rect2(p.x - 12, p.y - 4, 24, 4), Color(0.62, 0.5, 0.32))
 	draw_rect(Rect2(p.x - 2, p.y, 4, 6), Color(0.5, 0.4, 0.25))
 	draw_rect(Rect2(p.x - 12, p.y - 4, 24, 1), YELLOW_OCHRE)
@@ -449,48 +519,148 @@ func _draw_offering(p: Vector2, k: int) -> void:
 	_lotus(p + Vector2(-10, -6), true, 0.8)
 
 
+const OUTL := Color(0.12, 0.08, 0.05)
+
+
+func _op(pts: PackedVector2Array, fill: Color, w: float = 0.8) -> void:
+	draw_colored_polygon(pts, fill)
+	var c := pts.duplicate()
+	c.append(pts[0])
+	draw_polyline(c, OUTL, w)
+
+
+## Ombra morbida a terra sotto un oggetto: è quella che lo fa stare sul pavimento.
+func _shadow(p: Vector2, rx: float, ry: float, a: float = 0.32) -> void:
+	draw_set_transform(p, 0.0, Vector2(1.0, ry / rx))
+	draw_circle(Vector2.ZERO, rx, Color(0, 0, 0, a * 0.6))
+	draw_circle(Vector2.ZERO, rx * 0.7, Color(0, 0, 0, a * 0.6))
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+## Penombra ai piedi dei muri (occlusione): sfumature con i vertici colorati, nessuna texture.
+func _draw_ao() -> void:
+	var l := wall
+	var r := room.size.x - wall
+	var b := room.size.y - wall
+	var dark := Color(0.05, 0.03, 0.02, 0.5)
+	var clear := Color(0.05, 0.03, 0.02, 0.0)
+	draw_polygon(PackedVector2Array([Vector2(l, top), Vector2(r, top), Vector2(r, top + 26), Vector2(l, top + 26)]), PackedColorArray([dark, dark, clear, clear]))
+	var side := Color(0.05, 0.03, 0.02, 0.38)
+	draw_polygon(PackedVector2Array([Vector2(l, top), Vector2(l + 16, top), Vector2(l + 16, b), Vector2(l, b)]), PackedColorArray([side, clear, clear, side]))
+	draw_polygon(PackedVector2Array([Vector2(r - 16, top), Vector2(r, top), Vector2(r, b), Vector2(r - 16, b)]), PackedColorArray([clear, side, side, clear]))
+	var low := Color(0.05, 0.03, 0.02, 0.3)
+	draw_polygon(PackedVector2Array([Vector2(l, b - 12), Vector2(r, b - 12), Vector2(r, b), Vector2(l, b)]), PackedColorArray([clear, clear, low, low]))
+	# sabbia accumulata negli angoli e lungo i muri: il vento del deserto entra nelle tombe
+	for c in [Vector2(l, top), Vector2(r, top), Vector2(l, b), Vector2(r, b)]:
+		var k := Vector2(1.0 if c.x < room.size.x / 2.0 else -1.0, 1.0 if c.y < room.size.y / 2.0 else -1.0)
+		var pile := PackedVector2Array([c, c + Vector2(34 * k.x, 0), c + Vector2(20 * k.x, 6 * k.y), c + Vector2(8 * k.x, 16 * k.y), c + Vector2(0, 26 * k.y)])
+		draw_colored_polygon(pile, Color(0.66, 0.52, 0.32, 0.55))
+		draw_colored_polygon(PackedVector2Array([c, c + Vector2(18 * k.x, 0), c + Vector2(6 * k.x, 8 * k.y), c + Vector2(0, 14 * k.y)]), Color(0.74, 0.6, 0.38, 0.6))
+
+
+## Il supporto della torcia: staffa di bronzo fissata al muro e la coppa dove brucia.
 func _draw_torch(p: Vector2) -> void:
-	draw_rect(Rect2(p.x - 2, p.y, 4, 8), Color(0.3, 0.2, 0.1))
-	draw_rect(Rect2(p.x - 4, p.y - 1, 8, 3), Color(0.85, 0.65, 0.25))
+	_op(PackedVector2Array([Vector2(p.x - 1.5, p.y + 1), Vector2(p.x + 1.5, p.y + 1), Vector2(p.x + 1, p.y + 9), Vector2(p.x - 1, p.y + 9)]), Color(0.36, 0.24, 0.12), 0.6)
+	_op(PackedVector2Array([Vector2(p.x - 5, p.y - 2), Vector2(p.x + 5, p.y - 2), Vector2(p.x + 3, p.y + 2), Vector2(p.x - 3, p.y + 2)]), Color(0.86, 0.64, 0.26), 0.7)
+	draw_line(Vector2(p.x - 4, p.y - 1.2), Vector2(p.x + 4, p.y - 1.2), Color(1, 0.6, 0.2), 0.8)
+	draw_rect(Rect2(p.x - 3, p.y + 9, 6, 2), Color(0.7, 0.5, 0.2))
 
 
+## Anubi sdraiato sul suo sacrario, come quello della tomba di Tutankhamon: lo sciacallo nero
+## col collare d'oro, la cassa dorata con i pannelli blu e rossi.
 func _draw_statue(p: Vector2) -> void:
-	# statua di Anubi seduto su un piedistallo
-	draw_rect(Rect2(p.x - 11, p.y - 4, 22, 10), Color(0.62, 0.5, 0.32))
-	draw_rect(Rect2(p.x - 11, p.y - 4, 22, 2), Color(0.85, 0.65, 0.25))
-	var black := Color(0.1, 0.09, 0.12)
-	draw_rect(Rect2(p.x - 8, p.y - 22, 16, 18), black)
-	draw_rect(Rect2(p.x - 4, p.y - 34, 9, 13), black)
-	draw_colored_polygon(PackedVector2Array([Vector2(p.x - 4, p.y - 33), Vector2(p.x - 2, p.y - 33), Vector2(p.x - 4, p.y - 43)]), black)
-	draw_colored_polygon(PackedVector2Array([Vector2(p.x + 2, p.y - 33), Vector2(p.x + 4, p.y - 33), Vector2(p.x + 3, p.y - 43)]), black)
-	draw_rect(Rect2(p.x + 4, p.y - 30, 7, 4), black)
-	draw_rect(Rect2(p.x - 8, p.y - 22, 16, 3), Color(0.85, 0.65, 0.25))
-	draw_circle(Vector2(p.x + 2, p.y - 30), 0.9, Color(0.95, 0.78, 0.35))
+	_shadow(p + Vector2(2, 5), 15.0, 5.0)
+	var gold := Color(0.88, 0.66, 0.26)
+	var gold_d := Color(0.62, 0.44, 0.16)
+	# la cassa
+	_op(PackedVector2Array([Vector2(p.x - 12, p.y - 9), Vector2(p.x + 12, p.y - 9), Vector2(p.x + 12, p.y + 5), Vector2(p.x - 12, p.y + 5)]), gold)
+	draw_rect(Rect2(p.x - 12, p.y - 9, 24, 3), gold_d)
+	for k in range(3):
+		var px := p.x - 10 + k * 7.0
+		draw_rect(Rect2(px, p.y - 5, 5, 8), LAPIS if k % 2 == 0 else RED_OCHRE)
+		draw_rect(Rect2(px, p.y - 5, 5, 8), gold_d, false, 0.6)
+		draw_line(Vector2(px + 2.5, p.y - 4), Vector2(px + 2.5, p.y + 2), gold, 0.6)
+	# lo sciacallo sdraiato
+	var black := Color(0.09, 0.08, 0.11)
+	var body := PackedVector2Array([Vector2(p.x - 10, p.y - 9), Vector2(p.x - 9, p.y - 15), Vector2(p.x - 2, p.y - 17), Vector2(p.x + 5, p.y - 16), Vector2(p.x + 8, p.y - 10), Vector2(p.x + 13, p.y - 10), Vector2(p.x + 13, p.y - 9)])
+	_op(body, black)
+	draw_line(Vector2(p.x - 10, p.y - 10), Vector2(p.x - 13, p.y - 9.5), black, 1.5)       # la coda
+	# il collo alzato, la testa col muso lungo e le orecchie dritte
+	var head := PackedVector2Array([Vector2(p.x + 3, p.y - 16), Vector2(p.x + 5, p.y - 25), Vector2(p.x + 8, p.y - 27), Vector2(p.x + 14, p.y - 25), Vector2(p.x + 14, p.y - 23.5), Vector2(p.x + 9, p.y - 22.5), Vector2(p.x + 8, p.y - 15)])
+	_op(head, black)
+	for ex in [5.5, 8.0]:
+		_op(PackedVector2Array([Vector2(p.x + ex, p.y - 26), Vector2(p.x + ex + 1, p.y - 33), Vector2(p.x + ex + 2.5, p.y - 26.5)]), black, 0.6)
+	draw_line(Vector2(p.x + 4, p.y - 19), Vector2(p.x + 9, p.y - 19.5), gold, 1.2)                # collare
+	draw_line(Vector2(p.x + 7, p.y - 25.5), Vector2(p.x + 10.5, p.y - 25.8), gold, 0.7)          # l'occhio dorato
+	draw_circle(Vector2(p.x + 10, p.y - 25.7), 0.6, Color(1, 0.9, 0.5))
 
 
+## Il braciere: tre piedi di bronzo, la coppa e le braci (la fiamma è in Flames).
 func _draw_brazier(p: Vector2) -> void:
-	draw_rect(Rect2(p.x - 2, p.y - 6, 4, 10), Color(0.35, 0.25, 0.12))
-	draw_rect(Rect2(p.x - 6, p.y + 2, 12, 3), Color(0.35, 0.25, 0.12))
-	draw_colored_polygon(PackedVector2Array([Vector2(p.x - 8, p.y - 12), Vector2(p.x + 8, p.y - 12), Vector2(p.x + 5, p.y - 6), Vector2(p.x - 5, p.y - 6)]), Color(0.85, 0.62, 0.22))
+	_shadow(p + Vector2(1, 4), 10.0, 3.5)
+	var bronze := Color(0.7, 0.48, 0.2)
+	for lx in [-5.0, 0.0, 5.0]:
+		draw_line(Vector2(p.x + lx * 0.5, p.y - 6), Vector2(p.x + lx, p.y + 4), OUTL, 2.6)
+		draw_line(Vector2(p.x + lx * 0.5, p.y - 6), Vector2(p.x + lx, p.y + 4), bronze, 1.4)
+	_op(PackedVector2Array([Vector2(p.x - 9, p.y - 12), Vector2(p.x + 9, p.y - 12), Vector2(p.x + 6, p.y - 6), Vector2(p.x - 6, p.y - 6)]), Color(0.86, 0.62, 0.22))
+	draw_line(Vector2(p.x - 8, p.y - 10), Vector2(p.x + 8, p.y - 10), RED_OCHRE, 0.8)
+	draw_set_transform(p + Vector2(0, -12), 0.0, Vector2(1.0, 0.35))
+	draw_circle(Vector2.ZERO, 8.5, OUTL)
+	draw_circle(Vector2.ZERO, 7.5, Color(0.55, 0.15, 0.05))
+	draw_circle(Vector2(-2, 0), 3.5, Color(1, 0.5, 0.15))
+	draw_circle(Vector2(3, 1), 2.0, Color(1, 0.7, 0.3))
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
+## Il sarcofago antropoide, visto dall'alto: il volto d'oro col nemes a righe, le braccia
+## incrociate, le ali di Iside dipinte sul petto e la colonna di geroglifici fino ai piedi.
 func _draw_sarcophagus(p: Vector2) -> void:
-	var r := Rect2(p.x - 11, p.y - 22, 22, 44)
-	draw_rect(r, Color(0.78, 0.56, 0.2))
-	draw_rect(Rect2(p.x - 9, p.y - 20, 18, 14), Color(0.17, 0.32, 0.55))
-	draw_rect(Rect2(p.x - 6, p.y - 18, 12, 10), Color(0.75, 0.48, 0.25))
+	_shadow(p + Vector2(3, 4), 15.0, 26.0, 0.3)
+	var wood := Color(0.78, 0.56, 0.22)
+	var shape := PackedVector2Array([Vector2(p.x - 6, p.y - 22), Vector2(p.x + 6, p.y - 22), Vector2(p.x + 10, p.y - 15), Vector2(p.x + 11, p.y - 6), Vector2(p.x + 9, p.y + 8), Vector2(p.x + 7, p.y + 20), Vector2(p.x + 3, p.y + 22), Vector2(p.x - 3, p.y + 22), Vector2(p.x - 7, p.y + 20), Vector2(p.x - 9, p.y + 8), Vector2(p.x - 11, p.y - 6), Vector2(p.x - 10, p.y - 15)])
+	_op(shape, wood, 1.0)
+	# il nemes blu e oro attorno al volto
+	_op(PackedVector2Array([Vector2(p.x - 8, p.y - 20), Vector2(p.x + 8, p.y - 20), Vector2(p.x + 9, p.y - 8), Vector2(p.x - 9, p.y - 8)]), LAPIS, 0.6)
 	for k in range(4):
-		draw_line(Vector2(p.x - 9, p.y - 2 + k * 5), Vector2(p.x + 9, p.y - 2 + k * 5), Color(0.17, 0.32, 0.55), 1.5)
-	draw_rect(r, Color(0.35, 0.22, 0.08), false, 1.5)
+		draw_line(Vector2(p.x - 8.5, p.y - 18 + k * 3), Vector2(p.x + 8.5, p.y - 18 + k * 3), YELLOW_OCHRE, 0.7)
+	_op(_ell(Vector2(p.x, p.y - 15), 4.2, 5.0), Color(0.94, 0.74, 0.32), 0.6)
+	draw_line(Vector2(p.x - 2.8, p.y - 16), Vector2(p.x - 0.8, p.y - 16), OUTL, 0.6)
+	draw_line(Vector2(p.x + 0.8, p.y - 16), Vector2(p.x + 2.8, p.y - 16), OUTL, 0.6)
+	draw_line(Vector2(p.x, p.y - 10), Vector2(p.x, p.y - 7), Color(0.3, 0.2, 0.1), 1.2)          # la barba
+	# collare e braccia incrociate con il pastorale e il flagello
+	draw_arc(Vector2(p.x, p.y - 8), 7.5, 0.2, PI - 0.2, 10, TURQ, 2.0)
+	draw_line(Vector2(p.x - 7, p.y - 3), Vector2(p.x + 5, p.y + 1), Color(0.94, 0.74, 0.32), 1.6)
+	draw_line(Vector2(p.x + 7, p.y - 3), Vector2(p.x - 5, p.y + 1), Color(0.94, 0.74, 0.32), 1.6)
+	# le ali sul petto
+	for sx in [-1.0, 1.0]:
+		var wing := PackedVector2Array([Vector2(p.x, p.y + 3), Vector2(p.x + 9 * sx, p.y + 1), Vector2(p.x + 8 * sx, p.y + 5), Vector2(p.x + 1 * sx, p.y + 7)])
+		draw_colored_polygon(wing, Color(RED_OCHRE, 0.9))
+		draw_line(Vector2(p.x + 1 * sx, p.y + 4.5), Vector2(p.x + 8 * sx, p.y + 3), YELLOW_OCHRE, 0.6)
+	# la colonna di geroglifici fino ai piedi
+	draw_rect(Rect2(p.x - 2.5, p.y + 8, 5, 12), Color(0.95, 0.88, 0.7))
+	for k in range(3):
+		draw_circle(Vector2(p.x, p.y + 10 + k * 3.8), 0.9, [LAPIS, RED_OCHRE, MALACHITE][k])
 
 
+func _ell(c: Vector2, rx: float, ry: float, n: int = 12) -> PackedVector2Array:
+	var pts := PackedVector2Array()
+	for i in range(n):
+		var a := TAU * i / n
+		pts.append(c + Vector2(cos(a) * rx, sin(a) * ry))
+	return pts
+
+
+## Un vaso d'argilla col collo stretto, le fasce dipinte e un riflesso.
 func _draw_urn(p: Vector2, s: float) -> void:
+	_shadow(p + Vector2(1, 0.5), 5.5 * s, 2.2 * s, 0.3)
 	draw_set_transform(p, 0.0, Vector2(s, s))
-	draw_circle(Vector2(0, -4), 4.5, Color(0.62, 0.38, 0.2))
-	draw_rect(Rect2(-2.5, -11, 5, 4), Color(0.62, 0.38, 0.2))
-	draw_rect(Rect2(-3.5, -12, 7, 1.5), Color(0.45, 0.27, 0.14))
-	draw_line(Vector2(-4, -4), Vector2(4, -4), TURQ, 1.2)
-	draw_line(Vector2(-4, -2), Vector2(4, -2), RED_OCHRE, 0.8)
+	var clay := Color(0.66, 0.4, 0.21)
+	var body := PackedVector2Array([Vector2(-2.5, -11), Vector2(2.5, -11), Vector2(3, -8.5), Vector2(5, -6), Vector2(4.6, -2), Vector2(2.4, 0), Vector2(-2.4, 0), Vector2(-4.6, -2), Vector2(-5, -6), Vector2(-3, -8.5)])
+	_op(body, clay, 0.7)
+	_op(PackedVector2Array([Vector2(-3.6, -12.5), Vector2(3.6, -12.5), Vector2(3.2, -11), Vector2(-3.2, -11)]), clay.darkened(0.25), 0.6)
+	draw_line(Vector2(-4.6, -5.5), Vector2(4.6, -5.5), TURQ, 1.2)
+	draw_line(Vector2(-4.2, -3.5), Vector2(4.2, -3.5), RED_OCHRE, 0.8)
+	draw_line(Vector2(-3.2, -8.0), Vector2(-3.8, -4.0), Color(1, 1, 1, 0.22), 1.0)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
@@ -559,3 +729,73 @@ class Flames extends Node2D:
 		var f := sin(tt * 13.0 + p.x) * 0.8 + sin(tt * 7.0 + p.y) * 0.6
 		draw_colored_polygon(PackedVector2Array([p + Vector2(-3.5, 0) * s, p + Vector2(3.5, 0) * s, p + Vector2(f, -10.0 - f) * s]), Color(1, 0.55, 0.15))
 		draw_colored_polygon(PackedVector2Array([p + Vector2(-1.8, 0) * s, p + Vector2(1.8, 0) * s, p + Vector2(f * 0.5, -6.0) * s]), Color(1, 0.92, 0.55))
+
+
+## Le colonne papiriformi della stanza: fusto di arenaria in luce da sinistra, scanalature,
+## un cartiglio dipinto, le fasce colorate sotto il capitello a boccio di papiro e l'abaco in cima.
+## Sono un nodo a parte, sopra l'arredamento del pavimento: Ammit le fa crollare, e quando una
+## crolla si ridisegna solo questo.
+class Pillars extends Node2D:
+	var list: Array = []                  # lo stesso Array delle colonne della stanza (game.gd)
+	const OUTL := Color(0.12, 0.08, 0.05)
+	const STONE := Color(0.8, 0.64, 0.42)
+	const STONE_D := Color(0.55, 0.4, 0.24)
+
+	func _draw() -> void:
+		for p in list:
+			_column(p)
+
+	func _op(pts: PackedVector2Array, fill: Color, w: float = 1.0) -> void:
+		draw_colored_polygon(pts, fill)
+		var c := pts.duplicate()
+		c.append(pts[0])
+		draw_polyline(c, OUTL, w)
+
+	func _column(p: Vector2) -> void:
+		# ombra a terra, verso destra e in basso (la luce viene dalle torce in alto)
+		draw_set_transform(p + Vector2(6, 6), 0.0, Vector2(1.0, 0.35))
+		draw_circle(Vector2.ZERO, 22.0, Color(0, 0, 0, 0.28))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		# base: un disco di pietra
+		draw_set_transform(p + Vector2(0, 4), 0.0, Vector2(1.0, 0.38))
+		draw_circle(Vector2.ZERO, 16.5, OUTL)
+		draw_circle(Vector2.ZERO, 15.5, STONE_D)
+		draw_circle(Vector2(-1, -2), 13.5, STONE)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		# il fusto, più chiaro a sinistra (vertici colorati: una sfumatura senza texture)
+		var top := p.y - 40.0
+		var bot := p.y + 3.0
+		var l := p.x - 11.0
+		var rr := p.x + 11.0
+		draw_rect(Rect2(l - 1, top, 24, bot - top), OUTL)
+		var mid := p.x - 3.0
+		draw_polygon(PackedVector2Array([Vector2(l, top), Vector2(mid, top), Vector2(mid, bot), Vector2(l, bot)]),
+			PackedColorArray([STONE.lightened(0.12), STONE, STONE, STONE.lightened(0.12)]))
+		draw_polygon(PackedVector2Array([Vector2(mid, top), Vector2(rr, top), Vector2(rr, bot), Vector2(mid, bot)]),
+			PackedColorArray([STONE, STONE_D, STONE_D, STONE]))
+		for fx in [-6.0, -1.0, 4.0, 8.0]:
+			draw_line(Vector2(p.x + fx, top + 2), Vector2(p.x + fx, bot - 1), Color(STONE_D, 0.6), 0.8)
+		# il cartiglio dipinto sul fusto
+		var cart := Rect2(p.x - 4.5, p.y - 30, 9, 20)
+		draw_rect(cart, Color(0.95, 0.9, 0.75))
+		draw_rect(cart, RED_OCHRE, false, 1.0)
+		draw_line(Vector2(cart.position.x, cart.end.y + 1.5), Vector2(cart.end.x, cart.end.y + 1.5), RED_OCHRE, 1.0)
+		draw_circle(Vector2(p.x, p.y - 26), 1.6, RED_OCHRE)                           # il sole
+		draw_line(Vector2(p.x - 2.5, p.y - 21.5), Vector2(p.x + 2.5, p.y - 21.5), LAPIS, 1.2)   # l'acqua
+		draw_line(Vector2(p.x - 2.0, p.y - 17.5), Vector2(p.x + 2.0, p.y - 15.5), MALACHITE, 1.2)
+		draw_circle(Vector2(p.x, p.y - 13), 1.2, LAPIS)
+		# le fasce colorate sotto il capitello
+		var cols := [LAPIS, YELLOW_OCHRE, RED_OCHRE, YELLOW_OCHRE, MALACHITE]
+		for k in range(cols.size()):
+			draw_rect(Rect2(l, top - 1.0 - k * 1.8, 22, 1.8), cols[k])
+		# il capitello a boccio di papiro: si allarga e si richiude, verde con i sepali d'oro
+		var cy := top - 9.0
+		var cap := PackedVector2Array([Vector2(l, cy + 1), Vector2(l - 3, cy - 5), Vector2(l - 1, cy - 11), Vector2(rr + 1, cy - 11), Vector2(rr + 3, cy - 5), Vector2(rr, cy + 1)])
+		_op(cap, Color(0.24, 0.52, 0.4))
+		for k in range(5):
+			var sx := l + 2.0 + k * 4.5
+			draw_colored_polygon(PackedVector2Array([Vector2(sx - 2, cy + 0.5), Vector2(sx + 2, cy + 0.5), Vector2(sx, cy - 8)]), Color(YELLOW_OCHRE, 0.9))
+		draw_line(Vector2(l - 2, cy - 5), Vector2(l + 6, cy - 9), Color(1, 1, 1, 0.2), 1.0)
+		# l'abaco in cima
+		_op(PackedVector2Array([Vector2(l - 1, cy - 11), Vector2(rr + 1, cy - 11), Vector2(rr + 1, cy - 16), Vector2(l - 1, cy - 16)]), STONE_D)
+		draw_line(Vector2(l, cy - 15.5), Vector2(rr, cy - 15.5), STONE, 1.0)

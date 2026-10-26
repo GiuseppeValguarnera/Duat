@@ -84,6 +84,8 @@ const BOSS_LAYOUT := [Vector2(0.22, 0.3), Vector2(0.78, 0.3), Vector2(0.12, 0.62
 
 var player
 var pillars: Array = []
+var pillar_art: Node2D                  ## disegna le colonne (room_decor.gd, Pillars)
+var room_decor: Node2D                  ## l'arredamento della stanza: cuoce anche pavimento e muri
 var waves: Array = []
 var alive := 0
 var spawning := 0
@@ -226,6 +228,8 @@ func start_room(reward: Dictionary) -> void:
 		pillars.append(Vector2(lerpf(WALL, ROOM.size.x - WALL, f.x), lerpf(TOP, ROOM.size.y - WALL, f.y)))
 	rooms.build_walls()
 	var decor := DecorScript.new()
+	decor.under = paint_floor
+	room_decor = decor
 	world.add_child(decor)
 	var pool_spots: Array = []
 	if boss_room and BOSS_KIND == "amheh":
@@ -236,6 +240,9 @@ func start_room(reward: Dictionary) -> void:
 			world.add_child(pool)
 			pool_spots.append(pool.position)
 	obstacles = decor.build(Run.room * 7919 + randi() % 1000, ROOM, TOP, WALL, pillars + pool_spots, boss_room)
+	pillar_art = DecorScript.Pillars.new()
+	pillar_art.list = pillars
+	world.add_child(pillar_art)
 	for r in obstacles:
 		_solid(r)
 	traps_pos.clear()
@@ -1304,7 +1311,8 @@ func _start_set_altar() -> void:
 	world.add_child(p)
 	p.position = Vector2(ROOM.size.x / 2.0, (TOP + ROOM.size.y - WALL) / 2.0)
 	p.collected.connect(_on_pickup_collected)
-	queue_redraw()
+	if is_instance_valid(room_decor):
+		room_decor.rebake()                # il pavimento diventa rosso e compare l'altare
 
 
 ## La stanza del Traghettatore: niente nemici, tre oggetti da comprare con il Ka della discesa.
@@ -1393,6 +1401,8 @@ func _on_pillar_broken(body: StaticBody2D) -> void:
 		Fx.float_text(p + Vector2(0, -40), Lang.t("La colonna crolla"), Color(0.95, 0.85, 0.65))
 	body.queue_free()
 	queue_redraw()
+	if is_instance_valid(pillar_art):
+		pillar_art.queue_redraw()
 
 
 func _boss_defeated() -> void:
@@ -1611,44 +1621,90 @@ func _solid(rect: Rect2) -> StaticBody2D:
 
 
 func _draw() -> void:
+	pass          # pavimento e muri li disegna l'arredamento (paint_floor), cotti nella sua texture
+
+
+## Pavimento, muri e altare di Set, disegnati su `ci`: l'arredamento della stanza (room_decor.gd)
+## li cuoce nella sua texture una volta sola. Disegnati a ogni fotogramma costavano molto: sono
+## più di mille rettangoli.
+func paint_floor(ci: CanvasItem) -> void:
 	var r := ROOM
 	var tile := 32.0
 	var set_altar: bool = current_reward.get("kind", "") == "set"
+	# il pavimento: lastre di pietra con la fuga scura e calda (prima era blu e sembrava una
+	# griglia), ogni lastra con il suo tono, il bordo alto in luce e quello basso in ombra
+	var floor_r := Rect2(WALL, TOP, r.size.x - WALL * 2.0, r.size.y - WALL - TOP)
+	ci.draw_rect(floor_r, Color(0.22, 0.15, 0.09))
+	var base := Color(0.55, 0.24, 0.15) if set_altar else Color(0.53, 0.4, 0.25)
 	var y := TOP
+	var row := 0
 	while y < r.end.y - WALL:
-		var x := r.position.x + WALL
+		var x := r.position.x + WALL - (16.0 if row % 2 == 1 else 0.0)        # lastre sfalsate, come i muri veri
 		while x < r.end.x - WALL:
+			var x0 := maxf(x, WALL)
+			var x1 := minf(x + tile, r.end.x - WALL)
 			var n := fmod(absf(sin(x * 12.9898 + y * 78.233 + Run.room) * 43758.5453), 1.0)
-			draw_rect(Rect2(x + 1, y + 1, tile - 2, tile - 2), (Color(0.55, 0.24, 0.15) if set_altar else Color(0.52, 0.39, 0.24)).darkened(n * 0.14))
+			var c := base.darkened(n * 0.16)
+			if n > 0.93:
+				c = c.lerp(Color(0.62, 0.5, 0.34), 0.5)        # qualche lastra più chiara, rifatta
+			var slab := Rect2(x0 + 1, y + 1, x1 - x0 - 2, tile - 2)
+			ci.draw_rect(slab, c)
+			ci.draw_rect(Rect2(slab.position, Vector2(slab.size.x, 1.5)), c.lightened(0.14))
+			ci.draw_rect(Rect2(slab.position.x, slab.end.y - 2.0, slab.size.x, 2.0), c.darkened(0.22))
+			ci.draw_rect(Rect2(slab.end.x - 1.5, slab.position.y, 1.5, slab.size.y), c.darkened(0.12))
+			if n > 0.8 and n < 0.86:
+				# un angolo scheggiato
+				ci.draw_colored_polygon(PackedVector2Array([slab.position + Vector2(slab.size.x - 7, 0), slab.position + Vector2(slab.size.x, 0), slab.position + Vector2(slab.size.x, 6)]), Color(0.22, 0.15, 0.09))
 			x += tile
 		y += tile
+		row += 1
 	var dark := Color(0.19, 0.13, 0.08)
-	draw_rect(Rect2(r.position.x, r.position.y, r.size.x, WALL), dark)
-	draw_rect(Rect2(r.position.x, r.position.y + WALL, r.size.x, WALL), Color(0.46, 0.33, 0.2))
+	ci.draw_rect(Rect2(r.position.x, r.position.y, r.size.x, WALL), dark)
+	ci.draw_rect(Rect2(r.position.x, r.position.y + WALL, r.size.x, WALL), Color(0.46, 0.33, 0.2))
 	var i := 0
 	var fx := r.position.x
 	while fx < r.end.x:
-		draw_rect(Rect2(fx, r.position.y + WALL + 12, 16, 6), Color(0.25, 0.66, 0.6) if i % 2 == 0 else Color(0.91, 0.69, 0.29))
+		ci.draw_rect(Rect2(fx, r.position.y + WALL + 12, 16, 6), Color(0.25, 0.66, 0.6) if i % 2 == 0 else Color(0.91, 0.69, 0.29))
 		fx += 16.0
 		i += 1
-	draw_rect(Rect2(r.position.x, r.end.y - WALL, r.size.x, WALL), dark)
-	draw_rect(Rect2(r.position.x, r.position.y, WALL, r.size.y), dark)
-	draw_rect(Rect2(r.end.x - WALL, r.position.y, WALL, r.size.y), dark)
-	draw_rect(Rect2(r.size.x / 2.0 - 18.0, r.end.y - WALL, 36, 14), Color(0.3, 0.22, 0.13))
+	ci.draw_rect(Rect2(r.position.x, r.end.y - WALL, r.size.x, WALL), dark)
+	ci.draw_rect(Rect2(r.position.x, r.position.y, WALL, r.size.y), dark)
+	ci.draw_rect(Rect2(r.end.x - WALL, r.position.y, WALL, r.size.y), dark)
+	# i blocchi di pietra dei muri, con la cima appena in luce: i muri hanno spessore
+	var block := Color(0.26, 0.18, 0.11)
+	var by := WALL
+	var brow := 0
+	while by < r.end.y - 4.0:
+		for side in [r.position.x, r.end.x - WALL]:
+			var off := 0.0 if brow % 2 == 0 else 8.0
+			ci.draw_line(Vector2(side, by), Vector2(side + WALL, by), block, 1.0)
+			ci.draw_line(Vector2(side + 8.0 + off, by), Vector2(side + 8.0 + off, by + 16.0), block, 1.0)
+		by += 16.0
+		brow += 1
+	var bx := r.position.x
+	var bcol := 0
+	while bx < r.end.x:
+		var off2 := 0.0 if bcol % 2 == 0 else 8.0
+		ci.draw_line(Vector2(bx + off2, r.end.y - WALL), Vector2(bx + off2, r.end.y), block, 1.0)
+		bx += 24.0
+		bcol += 1
+	ci.draw_line(Vector2(r.position.x, r.end.y - WALL + 16.0), Vector2(r.end.x, r.end.y - WALL + 16.0), block, 1.0)
+	var lip := Color(0.42, 0.3, 0.18)
+	ci.draw_rect(Rect2(WALL - 3.0, TOP, 3.0, r.size.y - WALL - TOP), lip)
+	ci.draw_rect(Rect2(r.end.x - WALL, TOP, 3.0, r.size.y - WALL - TOP), lip)
+	ci.draw_rect(Rect2(WALL - 3.0, r.end.y - WALL, r.size.x - WALL * 2.0 + 6.0, 3.0), lip)
+	ci.draw_rect(Rect2(r.size.x / 2.0 - 18.0, r.end.y - WALL, 36, 14), Color(0.3, 0.22, 0.13))
 	if set_altar:
 		# l'altare di Set: un blocco di pietra rossa con la bestia di Set incisa
 		var ac := Vector2(r.size.x / 2.0, (TOP + r.size.y - WALL) / 2.0 + 18.0)
-		draw_rect(Rect2(ac.x - 26, ac.y - 10, 52, 22), Color(0.35, 0.12, 0.08))
-		draw_rect(Rect2(ac.x - 30, ac.y + 10, 60, 6), Color(0.25, 0.08, 0.05))
-		draw_rect(Rect2(ac.x - 26, ac.y - 10, 52, 22), Color(0.75, 0.3, 0.2), false, 1.5)
+		ci.draw_rect(Rect2(ac.x - 26, ac.y - 10, 52, 22), Color(0.35, 0.12, 0.08))
+		ci.draw_rect(Rect2(ac.x - 30, ac.y + 10, 60, 6), Color(0.25, 0.08, 0.05))
+		ci.draw_rect(Rect2(ac.x - 26, ac.y - 10, 52, 22), Color(0.75, 0.3, 0.2), false, 1.5)
 		var sc := Color(0.95, 0.45, 0.3)
-		draw_line(ac + Vector2(-8, 6), ac + Vector2(-4, -2), sc, 1.5)
-		draw_line(ac + Vector2(-4, -2), ac + Vector2(6, -2), sc, 1.5)
-		draw_line(ac + Vector2(6, -2), ac + Vector2(10, -6), sc, 1.5)
-		draw_line(ac + Vector2(10, -6), ac + Vector2(9, -9), sc, 1.5)
-		draw_line(ac + Vector2(-4, -2), ac + Vector2(-9, -8), sc, 1.5)
-		draw_line(ac + Vector2(4, -2), ac + Vector2(4, 6), sc, 1.5)
-	for p in pillars:
-		draw_rect(Rect2(p.x - 13, p.y - 48, 26, 55), Color(0.77, 0.6, 0.39))
-		draw_rect(Rect2(p.x - 15, p.y - 54, 30, 8), Color(0.18, 0.56, 0.5))
-		draw_rect(Rect2(p.x - 15, p.y + 3, 30, 5), Color(0.48, 0.35, 0.22))
+		ci.draw_line(ac + Vector2(-8, 6), ac + Vector2(-4, -2), sc, 1.5)
+		ci.draw_line(ac + Vector2(-4, -2), ac + Vector2(6, -2), sc, 1.5)
+		ci.draw_line(ac + Vector2(6, -2), ac + Vector2(10, -6), sc, 1.5)
+		ci.draw_line(ac + Vector2(10, -6), ac + Vector2(9, -9), sc, 1.5)
+		ci.draw_line(ac + Vector2(-4, -2), ac + Vector2(-9, -8), sc, 1.5)
+		ci.draw_line(ac + Vector2(4, -2), ac + Vector2(4, 6), sc, 1.5)
+	# le colonne sono in room_decor.gd (Pillars), sopra l'arredamento del pavimento

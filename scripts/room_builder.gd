@@ -203,7 +203,6 @@ func build_walls() -> void:
 	solid(Rect2(r.end.x - g.WALL, r.position.y, g.WALL, r.size.y))
 	for p in g.pillars:
 		solid(Rect2(p.x - 13.0, p.y - 7.0, 26.0, 14.0)).add_to_group("pillars")
-		Atmos.occluder(g.world, Rect2(p.x - 10.0, p.y - 6.0, 20.0, 10.0))    # la colonna fa ombra
 
 
 func solid(rect: Rect2) -> StaticBody2D:
