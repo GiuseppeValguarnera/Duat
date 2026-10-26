@@ -132,6 +132,7 @@ var rooms := RoomBuilder.new(self)      ## la costruzione delle stanze (scripts/
 
 
 func _ready() -> void:
+	Atmos.vignette(self, 1.0)              # i bordi dello schermo sfumano nel buio
 	Engine.time_scale = 1.0
 	get_tree().paused = false
 	Fx.world = world
@@ -575,6 +576,8 @@ func _add_door(side: String, reward: Dictionary) -> void:
 		"s":
 			d.position = Vector2(ROOM.size.x / 2.0 + (150.0 if randf() < 0.5 else -150.0), ROOM.size.y - WALL - 2.0)
 	world.add_child(d)
+	# la porta brilla del colore della sua ricompensa: nella penombra si trova a colpo d'occhio
+	Atmos.add_light(d, Vector2(0, 14) if side == "n" else Vector2.ZERO, 110.0, d.reward_color(), 1.2, false)
 	d.chosen.connect(_on_door_chosen)
 	doors.append(d)
 

@@ -40,6 +40,7 @@ var treasures: Array = []               ## [tipo, posizione nel mondo, quantità
 var glyphs: Array = []                  ## [tipo, posizione locale, scala]
 var inscription := ""
 var shade: CanvasModulate
+var lit := Color.WHITE                  ## la penombra della stanza, a cui si torna uscendo
 var rng := RandomNumberGenerator.new()
 
 
@@ -117,9 +118,14 @@ func _collapse() -> void:
 	if rng.randf() < 0.5:
 		treasures.append(["heart", Vector2(hx + rng.randf_range(-60, 60), -34.0), 10.0, false])
 	# il buio dentro
-	shade = CanvasModulate.new()
-	shade.color = Color.WHITE
-	add_child(shade)
+	# il buio dentro: si scurisce la penombra della stanza (una sola per scena, in Godot)
+	var found := g.world.find_children("*", "CanvasModulate", true, false)
+	shade = null if found.is_empty() else found[0] as CanvasModulate
+	if shade == null:
+		shade = CanvasModulate.new()
+		shade.color = Color.WHITE
+		add_child(shade)
+	lit = shade.color
 
 
 func _process(delta: float) -> void:
@@ -140,7 +146,7 @@ func _process(delta: float) -> void:
 	var now_inside: bool = p.global_position.y < 4.0
 	if now_inside != inside:
 		inside = now_inside
-		shade.create_tween().tween_property(shade, "color", DARK if inside else Color.WHITE, 0.45)
+		shade.create_tween().tween_property(shade, "color", lit * DARK if inside else lit, 0.45)
 		if inside and not visited:
 			visited = true
 			Sfx.play("soul", 0.0)

@@ -94,6 +94,14 @@ func _build() -> void:
 	world.add_child(decor)
 	for r in decor.build(424242, ROOM, TOP, WALL, [], true):
 		_solid(r)
+	decor.ambient.color = Atmos.AMBIENT_HUB
+	# si illumina ciò che conta: una luce di luna dal cancello sulla bilancia, lampade calde su
+	# Anubi, sul Libro e sui Papiri; il resto della Sala resta nella notte blu
+	Atmos.add_light(decor, spots["bilancia"] + Vector2(0, 30), 260.0, Color(0.6, 0.8, 1.0), 1.0, false).set_process(false)
+	Atmos.add_light(decor, spots["cancello"] + Vector2(0, 40), 160.0, Color(0.45, 0.9, 0.85), 0.9, false).set_process(false)
+	for k in ["anubi", "libro", "papiri"]:
+		Atmos.add_light(decor, spots[k] + Vector2(0, -10), 120.0, Color(1.0, 0.7, 0.4), 1.1, true)
+	Atmos.vignette(self, 1.0)
 	# nella Sala niente sabbia sul pavimento: è un luogo curato, non una tomba abbandonata
 	decor.floor_bits = decor.floor_bits.filter(func(b: Array) -> bool: return b[0] != "sand")
 	# colonne papiriformi, stendardi degli dèi, luce dal cancello, polvere sospesa
@@ -1193,6 +1201,9 @@ func _draw_papiri(p: Vector2) -> void:
 ## quando lui ci cammina dietro.
 class HubColumn extends Node2D:
 	var player: Node2D
+
+	func _ready() -> void:
+		Atmos.occluder(self, Rect2(-9, -5, 18, 8))      # la colonna fa ombra
 
 	func _process(_delta: float) -> void:
 		if player != null and is_instance_valid(player):

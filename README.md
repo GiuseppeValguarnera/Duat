@@ -45,6 +45,14 @@ Per aggiornare la versione web dopo una modifica: `tools/deploy_web.sh /percorso
 
 **Lo scatto ha due cariche:** due scatti di fila, poi una pausa di 1,2 secondi dall'ultimo prima che tornino tutte e due (i doni e il capitolo 56 accorciano la pausa, mai sotto 0,6 secondi). Le cariche sono i due puntini sotto i piedi del personaggio: pieni = pronte, si riempiono man mano durante la pausa, e un piccolo lampo avvisa quando tornano. Prima si poteva scattare ogni mezzo secondo: nessun attacco faceva paura.
 
+## Aspetto: il protagonista, la luce, i colori
+
+**Il protagonista** crede di essere uno scriba: porta alla cintura la tavolozza con i due pozzetti d'inchiostro (nero e rosso), ha gli occhi con il kohl e il gonnellino di lino con la cintura d'oro. Ma in testa ha il *khat* a righe blu e oro, il copricapo della gente comune che ricorda il nemes dei faraoni, e un mantello scuro e logoro; il collare blu e oro lo fa risaltare nella penombra. Cammina davvero (gambe e braccia che si alternano, di profilo quando va di lato), durante lo scatto lascia due scie, e nella **Forma Divina** il khat diventa per un attimo il nemes dorato con l'ureo sulla fronte: un indizio per chi conosce l'Egitto (`_draw_hero` in `scripts/player.gd`).
+
+**La luce** è vera (le luci 2D di Godot, `scripts/atmos.gd`): una penombra leggera di fondo, calda nelle stanze e blu notte nella Sala; torce e bracieri fanno pozze di luce che tremolano; le colonne fanno ombra (solo per i bracieri e le lampade della Sala, perché ogni luce con ombra costa e il telefono deve reggere); le porte brillano del colore della loro ricompensa; attorno al personaggio c'è una luce debole che lo tiene sempre visibile; i bordi dello schermo sfumano nel buio e nell'aria c'è polvere sospesa. Nella Sala si illumina ciò che conta: la luna dal cancello sulla bilancia, lampade calde su Anubi, sul Libro e sui Papiri. Il buio è atmosfera, non un ostacolo: le chiazze chiare sul pavimento (la sabbia) ora sono scure, perché sembravano luce.
+
+**I colori** sono quelli della pittura egizia (lapislazzuli, turchese, ocra rossa e gialla, malachite): ogni stanza ha un motivo diverso al centro del pavimento (il sole, l'occhio udjat, lo scarabeo alato Khepri, la rosa di loto, il cielo stellato di Nut), mattonelle di faience, un fregio di fiori di loto lungo il bordo, fasce colorate e figure di portatori di offerte dipinte sulle pareti, papiri, tavole delle offerte e vasi dipinti, e gli spiriti del Ka, piccole luci azzurre e dorate che vagano nell'aria (`scripts/room_decor.gd`).
+
 ## La Sala del Giudizio
 
 Il gioco parte qui, e qui torni dopo ogni discesa.
@@ -201,7 +209,7 @@ Ogni dio offre sempre tre scelte. Ogni dono ha 3 livelli: quando un dio ha finit
 | Horus (l'Occhio) | Ritorno del Falco (l'Occhio torna e colpisce ancora), Volo del Falco (insegue il nemico più vicino), Il Sole e la Luna (2-4 cariche), Sguardo del Falco (chi è colpito dall'Occhio prende più danni dal khopesh) · pesante: Occhio del Re (Occhio ×2 e trapassa tutto, khopesh −40%) |
 | Thoth (Occhio di Horus) | Sguardo di Thoth, Calcolo di Thoth, Occhio Moltiplicato, Parola dello Scriba · pesante: Conoscenza Proibita |
 | Bastet (critici e agilità) | Artigli Affilati, Occhi di Gatto, Passo Felino, Protezione di Bastet · pesante: Gioco del Gatto |
-| Sobek (resistenza e controllo) | Pelle di Coccodrillo, Morso di Sobek, Marea del Nilo, Forza del Fiume · pesante: Fauci di Sobek |
+| Sobek (resistenza e controllo) | Pelle di Coccodrillo, Morso di Sobek, Marea del Nilo (la pozza turchese con le increspature e una luce azzurra, perché si veda dove attirare i nemici), Forza del Fiume · pesante: Fauci di Sobek |
 | Iside (protezione e cure) | Ali di Iside, Lacrime di Iside, Nodo di Iside, Nome Segreto di Ra (solo dopo aver sbloccato il Sekhem) · pesante: Abbraccio di Iside |
 | Anubi (solo a inizio run, doni-bilancia con un piccolo prezzo) | Cuore Leggero, Cuore di Pietra, Fiuto dello Sciacallo, Bilancia Giusta, Guida delle Anime, Vasi Canopi, Apertura della Bocca, Bende di Lino, Custode della Necropoli, Offerte ai Defunti |
 
@@ -344,6 +352,7 @@ scripts/  hub.gd       la Sala del Giudizio      dialogue.gd   battute di Anubi
           ui/          pezzi di interfaccia: barre dell'HUD, carte di scelta, frecce delle porte,
                        anello dei doni, bilancia della morte, icone
           room_decor.gd  arredamento delle stanze     traps.gd   trappole
+          atmos.gd     luce vera, ombre, penombra, polvere     lang.gd   lingue
           run.gd       stato della run (vita, Ka, doni) ed effetti dei doni
           boons.gd     elenco di dèi e doni
           enemy.gd     base comune a tutti i nemici

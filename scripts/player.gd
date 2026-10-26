@@ -101,6 +101,8 @@ var walk := 0.0
 
 
 func _ready() -> void:
+	# una luce debole e fredda attorno al personaggio: nella penombra resta sempre visibile
+	Atmos.add_light(self, Vector2(0, -10), 70.0, Color(0.85, 0.85, 1.0), 0.45, false).set_process(false)
 	max_hp = Run.max_hp
 	hp = Run.hp
 	Run.divine = false
@@ -283,8 +285,9 @@ func _dash_ended() -> void:
 		leap_ready = true
 	if Run.has("sobek_tide"):
 		var pool := PuddleScript.new()
+		pool.position = position
 		get_parent().add_child(pool)
-		pool.global_position = global_position
+		get_parent().move_child(pool, get_index())     # sopra il pavimento, sotto personaggio e nemici
 
 
 ## Corsa dell'Alba: lo scatto ferisce i nemici attraversati.
@@ -576,6 +579,112 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 # ---------------------------------------------------------------- disegno provvisorio
 # Forme semplici al posto degli sprite: servono solo a provare il combattimento.
 
+## Il protagonista: crede di essere uno scriba (la tavolozza con i due pozzetti d'inchiostro alla
+## cintura, gli occhi con il kohl, il gonnellino di lino) ma porta il khat a righe blu e oro, il
+## copricapo della gente comune che ricorda il nemes dei faraoni, e un mantello scuro e logoro.
+## Il collare blu e oro lo fa risaltare nella penombra. Nella Forma Divina il khat diventa per
+## un attimo il nemes dorato con l'ureo sulla fronte: chi conosce l'Egitto capisce chi è davvero.
+## Disegnato in scala 0,8: misura e colpi restano quelli di prima. `off` sposta tutto (le scie).
+func _draw_hero(off: Vector2, a: float, bob: float) -> void:
+	var divine := divine_t > 0.0
+	var skin := Color(0.72, 0.46, 0.27, a)
+	var linen := Color(0.95, 0.91, 0.8, a)
+	var linen_d := Color(0.78, 0.72, 0.6, a)
+	var gold := Color(0.94, 0.72, 0.3, a)
+	var blue := Color(0.18, 0.33, 0.72, a)
+	var cloak := Color(0.2, 0.17, 0.22, a)
+	var ink := Color(0.08, 0.06, 0.05, a)
+	var out := Color(0.12, 0.08, 0.05, a)
+	if divine:
+		cloak = Color(0.55, 0.38, 0.12, a)
+		linen = Color(1, 0.94, 0.7, a)
+	if poison_t > 0.0:
+		skin = skin.lerp(Color(0.45, 0.9, 0.35, a), 0.45)
+	if flash_t > 0.0:
+		skin = Color(1, 1, 1, a); linen = skin; linen_d = skin; gold = skin; blue = skin; cloak = skin
+	var moving := velocity.length() > 10.0
+	var prof := absf(facing.x) > 0.55             # di profilo quando vai di lato
+	var dir := -1.0 if facing.x < -0.05 else 1.0
+	var w := sin(walk) if moving else 0.0
+	draw_set_transform(off + Vector2(0, bob * 0.5), 0.0, Vector2(0.8 * dir, 0.8))
+	# gambe (con i sandali): di profilo si alternano davanti e dietro
+	var legs := [-1.5 + w * 2.5, 1.5 - w * 2.5] if prof else [-3.0 + w * 0.8, 3.0 - w * 0.8]
+	for lx in legs:
+		var lift := (absf(w) * 1.2) if moving else 0.0
+		draw_rect(Rect2(lx - 1.6, -9, 3.2, 9 - lift * 0.3), out)
+		draw_rect(Rect2(lx - 1.1, -9, 2.2, 8.5 - lift * 0.3), skin)
+		draw_rect(Rect2(lx - 1.8, -1.2 - lift * 0.3, 3.8, 1.6), Color(0.55, 0.38, 0.2, a))
+	# torso e gonnellino di lino con la cintura d'oro
+	var torso := PackedVector2Array([Vector2(-5.5, -24), Vector2(5.5, -24), Vector2(4.5, -15), Vector2(-4.5, -15)])
+	draw_colored_polygon(torso, skin)
+	draw_polyline(torso + PackedVector2Array([torso[0]]), out, 0.8)
+	var kilt := PackedVector2Array([Vector2(-5, -15.5), Vector2(5, -15.5), Vector2(6.5, -8), Vector2(-6.5, -8)])
+	draw_colored_polygon(kilt, linen)
+	draw_polyline(kilt + PackedVector2Array([kilt[0]]), out, 0.8)
+	draw_line(Vector2(0.5, -15), Vector2(2.5, -8.5), linen_d, 0.8)
+	draw_rect(Rect2(-5, -16.5, 10, 1.6), gold)
+	# il mantello scuro e logoro sulle spalle (si muove un poco camminando)
+	var flap := w * 0.8
+	var cl := PackedVector2Array([Vector2(-6.5, -24), Vector2(6.5, -24), Vector2(7.5 - flap, -12), Vector2(4, -14), Vector2(0, -12 + flap), Vector2(-4, -14), Vector2(-7.5 + flap, -12)])
+	draw_colored_polygon(cl, cloak)
+	draw_polyline(cl + PackedVector2Array([cl[0]]), out, 0.8)
+	# il collare usekh, blu e oro
+	draw_arc(Vector2(0, -24.5), 4.5, 0.1, PI - 0.1, 10, blue, 2.2)
+	draw_arc(Vector2(0, -24.5), 6.0, 0.15, PI - 0.15, 10, gold, 1.2)
+	# braccia
+	var swing := w * 1.5
+	for sx in [-1.0, 1.0]:
+		var hand_p := Vector2(sx * 7.0 + sx * swing * (1.0 if prof else 0.3), -15)
+		draw_line(Vector2(sx * 6.0, -23), hand_p, out, 2.8)
+		draw_line(Vector2(sx * 6.0, -23), hand_p, skin, 1.8)
+	# la tavolozza da scriba alla cintura: legno chiaro, due pozzetti (nero e rosso), i calami
+	draw_set_transform(off + Vector2(0, bob * 0.5) + Vector2(4.4 * dir, -11.2), 0.25 * dir, Vector2(0.8 * dir, 0.8))
+	draw_rect(Rect2(-1.3, -0.2, 2.6, 8.5), out)
+	draw_rect(Rect2(-0.9, 0.2, 1.8, 7.7), Color(0.82, 0.68, 0.42, a))
+	draw_circle(Vector2(0, 1.4), 0.6, ink)
+	draw_circle(Vector2(0, 2.9), 0.6, Color(0.75, 0.15, 0.1, a))
+	draw_line(Vector2(0, 4.2), Vector2(0, 7.4), Color(0.4, 0.3, 0.18, a), 0.5)
+	draw_set_transform(off + Vector2(0, bob * 0.5), 0.0, Vector2(0.8 * dir, 0.8))
+	# testa
+	var hc := Vector2(0, -29.5)
+	draw_circle(hc, 4.6, out)
+	draw_circle(hc, 4.0, skin)
+	# il copricapo: khat a righe blu e oro; nella Forma Divina il nemes dorato con l'ureo
+	var cloth := gold if divine else blue
+	var stripe := blue if divine else gold
+	var head := PackedVector2Array([Vector2(-5, -32.2), Vector2(0, -35.5), Vector2(5, -32.2), Vector2(5.4, -30.8), Vector2(-5.4, -30.8)])
+	var flap_l := PackedVector2Array([Vector2(-5.4, -30.8), Vector2(-3.6, -30.8), Vector2(-3.4, -25.5), Vector2(-5.8, -26)])
+	var flap_r := PackedVector2Array([Vector2(5.4, -30.8), Vector2(3.6, -30.8), Vector2(3.4, -25.5), Vector2(5.8, -26)])
+	if prof:
+		flap_l = PackedVector2Array([Vector2(-5.4, -30.8), Vector2(-1.5, -30.8), Vector2(-3.0, -24.5), Vector2(-5.8, -25.5)])
+		flap_r = PackedVector2Array()
+	for poly in [head, flap_l, flap_r]:
+		if poly.size() < 3:
+			continue
+		draw_colored_polygon(poly, cloth)
+		draw_polyline(poly + PackedVector2Array([poly[0]]), out, 0.6)
+	# le righe solo sulla stoffa: due sul capo, tre sulle bande che scendono
+	draw_line(Vector2(-4.2, -33.2), Vector2(4.2, -33.2), stripe, 0.6)
+	draw_line(Vector2(-5.0, -31.8), Vector2(5.0, -31.8), stripe, 0.6)
+	for k in range(3):
+		var yy := -29.5 + k * 1.4
+		draw_line(Vector2(-5.4, yy), Vector2(-3.6, yy), stripe, 0.5)
+		if not prof:
+			draw_line(Vector2(3.6, yy), Vector2(5.4, yy), stripe, 0.5)
+	if divine:
+		# l'ureo, il cobra d'oro sulla fronte del re
+		draw_line(Vector2(0.8, -33.5), Vector2(1.4, -36.5), Color(0.95, 0.8, 0.35, a), 1.2)
+		draw_circle(Vector2(1.5, -36.8), 0.9, Color(0.95, 0.8, 0.35, a))
+	# occhi alla maniera egizia: bianco a mandorla, pupilla, il kohl allungato verso la tempia
+	var eyes := [1.8] if prof else [1.8, -1.8]
+	for ex in eyes:
+		var back := 1.0 if ex > 0.0 else -1.0
+		draw_colored_polygon(PackedVector2Array([Vector2(ex - 1.2 * back, -29.4), Vector2(ex, -30.1), Vector2(ex + 1.2 * back, -29.4), Vector2(ex, -28.9)]), Color(0.97, 0.95, 0.9, a))
+		draw_circle(Vector2(ex + 0.2 * back, -29.45), 0.5, ink)
+		draw_line(Vector2(ex - 1.3 * back, -29.5), Vector2(ex + 2.1 * back, -29.7), ink, 0.45)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
 ## Il khopesh: impugnatura di legno con la guardia d'oro, un tratto dritto e poi la lama a falce
 ## di bronzo, con il filo all'esterno. Contorno scuro: si legge anche sul telefono.
 func _draw_khopesh(hand: Vector2, wdir: Vector2, sc: float, a: float) -> void:
@@ -647,28 +756,11 @@ func _draw() -> void:
 		draw_circle(Vector2(0, -12), 18.0 + pulse * 3.0, Color(1, 0.8, 0.3, 0.18))
 		draw_arc(Vector2(0, -12), 18.0 + pulse * 3.0, 0.0, TAU, 32, Color(1, 0.85, 0.4, 0.6), 1.5)
 
-	var skin := Color(0.75, 0.48, 0.25, a)
-	var linen := Color(0.94, 0.89, 0.76, a)
-	var blue := Color(0.19, 0.35, 0.77, a)
-	var gold := Color(0.94, 0.72, 0.3, a)
-	if divine_t > 0.0:
-		linen = Color(1, 0.92, 0.6)
-		blue = Color(0.95, 0.75, 0.25)
-	if flash_t > 0.0:
-		skin = Color(1, 1, 1, a); linen = skin; blue = skin; gold = skin
+	# durante lo scatto: due scie del personaggio, sempre più trasparenti, dietro di lui
 	if dash_t > 0.0:
-		linen = Color(linen, 0.5)
-	if poison_t > 0.0:
-		skin = skin.lerp(Color(0.45, 0.9, 0.35, a), 0.45)
-
-	draw_rect(Rect2(-6, -8 + bob, 12, 8), linen)
-	draw_rect(Rect2(-5, -15 + bob, 10, 8), skin)
-	draw_rect(Rect2(-6, -9 + bob, 12, 2), gold)
-	draw_circle(Vector2(0, -20 + bob), 5.0, skin)
-	draw_rect(Rect2(-6, -25 + bob, 12, 4), blue)
-	draw_rect(Rect2(-7, -22 + bob, 3, 8), blue)
-	draw_rect(Rect2(4, -22 + bob, 3, 8), blue)
-	draw_circle(Vector2(facing.x * 2.0 + 1.5, -20 + bob), 1.0, Color(0, 0, 0, a))
+		for k in [2, 1]:
+			_draw_hero(-dash_dir * 7.0 * k, 0.18 * (3 - k), bob)
+	_draw_hero(Vector2.ZERO, a, bob)
 
 	# l'arma in mano: la lancia lungo la mira, il khopesh ricurvo accanto alla mano
 	# durante il colpo l'arma si muove: il khopesh attraversa l'arco, la lancia affonda e torna

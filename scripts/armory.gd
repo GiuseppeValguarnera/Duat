@@ -57,6 +57,7 @@ var trial_enemies: Array = []
 
 
 func _ready() -> void:
+	Atmos.vignette(self, 1.0)
 	Engine.time_scale = 1.0
 	get_tree().paused = false
 	Run.in_hub = false
