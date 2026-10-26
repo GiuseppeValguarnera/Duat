@@ -1,5 +1,7 @@
 class_name UiStyle
-## Stile egizio dell'interfaccia: carattere Cinzel per i titoli e "papiro" per carte, menu e riquadri.
+## Stile egizio dell'interfaccia: un solo carattere, Aref Ruqaa (il tratto ruvido di una penna di
+## giunco su papiro), per titoli e testi; e "papiro" per carte, menu e riquadri. Prima i caratteri
+## erano tre (Cinzel, Cinzel Decorative, Macondo) e lo stile non stava insieme.
 ## La trama del papiro è generata qui (fibre orizzontali e verticali, bordi bruniti), così non
 ## serve nessuna immagine esterna.
 
@@ -17,24 +19,24 @@ static var _shimmer: Shader
 static var _textures := {}
 
 
-## Cinzel grassetto, per titoli e nomi.
+## Il grassetto, per titoli e nomi.
 static func title_font() -> Font:
 	if _font == null:
-		_font = load("res://assets/fonts/cinzel-bold.woff2")
+		_font = load("res://assets/fonts/aref-ruqaa-bold.woff2")
 	return _font
 
 
-## Macondo: il carattere dei testi, con il tratto di un pennello su papiro ma leggibile.
+## Il carattere dei testi.
 static func body_font() -> Font:
 	if _body == null:
-		_body = load("res://assets/fonts/macondo.woff2")
+		_body = load("res://assets/fonts/aref-ruqaa.woff2")
 	return _body
 
 
-## Cinzel Decorative: per i titoli grandi (il dio che parla, la morte, gli annunci).
+## Per i titoli grandi (il dio che parla, la morte, gli annunci): il grassetto.
 static func deco_font() -> Font:
 	if _deco == null:
-		_deco = load("res://assets/fonts/cinzel-decorative-bold.woff2")
+		_deco = load("res://assets/fonts/aref-ruqaa-bold.woff2")
 	return _deco
 
 
@@ -61,7 +63,7 @@ void fragment() {
 
 static func title_font_regular() -> Font:
 	if _font_regular == null:
-		_font_regular = load("res://assets/fonts/cinzel.woff2")
+		_font_regular = load("res://assets/fonts/aref-ruqaa.woff2")
 	return _font_regular
 
 
@@ -140,11 +142,11 @@ static func papyrus_button(b: Button, accent: Color = GOLD) -> void:
 	b.add_theme_font_override("font", title_font())
 
 
-## Etichetta già pronta: `title` usa Cinzel.
+## Etichetta già pronta: `title` usa il grassetto.
 static func label(text: String, size: int, color: Color, title: bool = false, wrap_width: float = 0.0) -> Label:
 	var l := Label.new()
 	l.text = text
-	l.add_theme_font_size_override("font_size", Fx.fs(size if title else size + 1))    # Macondo è più piccolo a parità di corpo
+	l.add_theme_font_size_override("font_size", Fx.fs(size if title else size + 1))    # il testo un punto più grande dei titoli: si legge meglio
 	l.add_theme_color_override("font_color", color)
 	l.add_theme_font_override("font", title_font() if title else body_font())
 	if wrap_width > 0.0:
@@ -155,7 +157,7 @@ static func label(text: String, size: int, color: Color, title: bool = false, wr
 
 
 ## Il riquadro del dialogo (Anubi nella Sala, Neith nel Cortile): papiro come le carte dei doni,
-## nome in Cinzel del colore del dio, testo in inchiostro. Prima era un rettangolo grigio.
+## nome in grassetto del colore del dio, testo in inchiostro. Prima era un rettangolo grigio.
 static func talk_style(box: PanelContainer, name_label: Label, text_label: Label, accent: Color) -> void:
 	box.add_theme_stylebox_override("panel", papyrus_box(accent.darkened(0.35)))
 	name_label.add_theme_font_override("font", title_font())
@@ -165,7 +167,7 @@ static func talk_style(box: PanelContainer, name_label: Label, text_label: Label
 	text_label.add_theme_font_size_override("font_size", text_label.get_theme_font_size("font_size") + 1)
 
 
-## Titolo grande: Cinzel Decorative con il riflesso d'oro che scorre.
+## Titolo grande: il grassetto con il riflesso d'oro che scorre.
 static func heading(text: String, size: int, color: Color) -> Label:
 	var l := label(text, size, color)
 	l.add_theme_font_override("font", deco_font())

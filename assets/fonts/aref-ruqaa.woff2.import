@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://0dx3nvqnawin"
-path="res://.godot/imported/cinzel-bold.woff2-218ccb74c57a1b79bf7f10da18b8511f.fontdata"
+uid="uid://beo2v1mixhrx6"
+path="res://.godot/imported/aref-ruqaa.woff2-5338a554f2cde821193778b5018e7160.fontdata"
 
 [deps]
 
-source_file="res://assets/fonts/cinzel-bold.woff2"
-dest_files=["res://.godot/imported/cinzel-bold.woff2-218ccb74c57a1b79bf7f10da18b8511f.fontdata"]
+source_file="res://assets/fonts/aref-ruqaa.woff2"
+dest_files=["res://.godot/imported/aref-ruqaa.woff2-5338a554f2cde821193778b5018e7160.fontdata"]
 
 [params]
 

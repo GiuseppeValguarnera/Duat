@@ -5,7 +5,7 @@ e compare un quadratino. Uso: python3 tools/check_glyphs.py (esce con 1 se manca
 import collections, glob, re, sys
 from fontTools.ttLib import TTFont
 
-FONTS = ["cinzel-bold", "cinzel", "cinzel-decorative-bold", "macondo"]
+FONTS = ["aref-ruqaa", "aref-ruqaa-bold"]
 cmaps = {f: set(TTFont(f"assets/fonts/{f}.woff2").getBestCmap()) for f in FONTS}
 where = collections.defaultdict(set)
 for p in glob.glob("scripts/*.gd"):

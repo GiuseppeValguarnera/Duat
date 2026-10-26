@@ -45,7 +45,7 @@ environment/defaults/default_clear_color=Color(0.04, 0.05, 0.1, 1)
 
 [gui]
 
-theme/custom_font="res://assets/fonts/macondo.woff2"
+theme/custom_font="res://assets/fonts/aref-ruqaa.woff2"
 
 [internationalization]
 
