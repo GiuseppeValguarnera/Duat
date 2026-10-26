@@ -77,15 +77,31 @@ coda in linea dalla sabbia, riemerge con un balzo in linea. Sotto metà vita: au
 Prova: `DUAT_REGION2=1 tools/dev/shot.sh serketshot 1280 720 res://scenes/game.tscn [mobile]`. Bot: `DUAT_SKIP=guardian
 DUAT_REGION2=1 DUAT_START_REGION=2` (entrano con 9 doni). Prima prova, 8 partite: veterani 6/6 in 26-60 s, casual 0/2.
 
+Boss: **Aker** (`scripts/aker.gd`, disegno in `scripts/aker_art.gd`) alla **porta dell'orizzonte** (`Arenas.paint_horizon`):
+il geroglifico akhet (due montagne, sole spento), la strada del sole da ovest (porta del tramonto, blu) a est (porta dell'alba,
+rossa), rocce negli angoli (arena ovale), NIENTE colonne: il riparo sono le pietre del ruggito. Mito: due leoni schiena contro
+schiena, Ieri (ovest, sabbia) e Domani (est, fuoco). Fase 1, leone doppio (vita 1400 in tutto, una barra sola): fianchi ×1,35,
+teste ×0,8; soffio di sabbia (cono, spinge, sabbie mobili temporanee); **raggio dell'alba** (`Hazards.DawnRay`, ruota, un
+colpo ogni 0,6 s); si gira (scambia le teste); ruggito → `Hazards.FallingStone` (ombra d'avviso, poi riparo solido 6 s che
+**ferma il raggio**; se cade su di te si frantuma). A metà trema 1,8 s (invulnerabile, cadono pietre) e si divide:
+`scripts/aker_lion.gd` Ieri (carica con scia di sabbie mobili, onda) e Domani (balzo, raggio), 350 ciascuno, **a turno**
+(mai due mosse grandi insieme; l'altro gira e ruggisce). Caduto uno, l'altro prende la sua mossa. Peso del Cuore
+`ira_aker`: se non finisci il secondo in 8 s, il primo rinasce con 175 (nascosto nell'hub finché Sokar è chiusa).
+Vittoria: la telecamera sale (`Fx.look`) e il sole **tremola ma non sorge**. `Meta.aker_wins`, Lacrime come ogni boss,
+10-12 lapis. Boss per regione: `_boss_kind()`; due boss insieme: `boss_group`, `_on_boss_split`, `_bosses_alive()`.
+Prova: `DUAT_REGION2=1 tools/dev/shot.sh akershot 1280 720 res://scenes/game.tscn [mobile]`.
+Bot: `DUAT_SKIP=ammit DUAT_REGION2=1 DUAT_START_REGION=2` (13 doni). Prima prova: veterani 1/6 vinte (5/6 alla seconda
+fase); stesso test con Am-heh: 3/6. Danni più alti dal raggio → tick portato da 0,45 a 0,6 s. Da ritarare di notte.
+
 Dialoghi (Anubi, Imhotep, Neith): `UiStyle.next_talk_page` divide le battute lunghe in pagine a fine frase (≈3 righe sul
-telefono) e il riquadro cresce verso l'alto. Prova: `tools/dev/shot.sh talkshot 1300 600 "" mobile`.
+telefono), il riquadro cresce verso l'alto, e un triangolo che pulsa (`UiStyle.ContinueMark`) dice "tocca per continuare".
+Prova: `tools/dev/shot.sh talkshot 1300 600 "" mobile`.
 
 ## Prossimi passi (in ordine)
-1. ~~Serket~~ fatta (ottobre 2026). Ritocco proposto: un segno "tocca per continuare" nei dialoghi, ora che vanno a pagine.
-2. **Aker**, boss di Sokar: due teste (sabbia e fuoco), ruggito con pietre che cadono; a metà vita **trema (invulnerabile) e si divide in due**; arena = porta dell'orizzonte con il sole spento.
-3. Storia di Sokar: Ricordo IV, secondo segno del cartiglio, "il sole che non sorge"; battute di Anubi, Mahaf, Imhotep.
-4. `SOKAR_READY = true` e bilanciamento con i bot (test grande di notte).
-5. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
+1. ~~Serket~~ e ~~Aker~~ fatti (ottobre 2026).
+2. Storia di Sokar: Ricordo IV, secondo segno del cartiglio, "il sole che non sorge"; battute di Anubi, Mahaf, Imhotep.
+3. `SOKAR_READY = true` e bilanciamento con i bot (test grande di notte).
+4. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
    se segnalato, lo stesso fix dello scorrimento col pad (`_settle_entries` in casa.gd) in altre finestre.
 
 ## Dati dei test (per confronto)

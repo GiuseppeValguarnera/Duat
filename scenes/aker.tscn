@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/aker.gd" id="1_aker"]
+
+[sub_resource type="RectangleShape2D" id="Rect_body"]
+size = Vector2(100, 22)
+
+[sub_resource type="RectangleShape2D" id="Rect_contact"]
+size = Vector2(70, 16)
+
+[node name="Aker" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 5
+motion_mode = 1
+script = ExtResource("1_aker")
+max_hp = 1400.0
+speed = 40.0
+contact_damage = 10.0
+ka_value = 40
+radius = 24.0
+
+[node name="Body" type="CollisionShape2D" parent="."]
+position = Vector2(0, -6)
+shape = SubResource("Rect_body")
+
+[node name="ContactArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+
+[node name="Shape" type="CollisionShape2D" parent="ContactArea"]
+position = Vector2(0, -14)
+shape = SubResource("Rect_contact")

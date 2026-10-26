@@ -14,6 +14,7 @@ var ui := 1.0
 
 var _shake := 0.0
 var _hitstops := 0
+var look := Vector2.ZERO               ## la regia sposta lo sguardo (es. verso il sole quando cade Aker); si somma allo scuotimento
 var _punch := Vector2.ZERO			  ## contraccolpo della telecamera nella direzione del colpo
 
 
@@ -62,7 +63,7 @@ func _process(delta: float) -> void:
 	if _shake > 0.0:
 		off += Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)) * _shake
 		_shake = maxf(0.0, _shake - 40.0 * delta)
-	camera.offset = off
+	camera.offset = off + look
 
 
 func shake(amount: float) -> void:

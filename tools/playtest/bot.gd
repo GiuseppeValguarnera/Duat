@@ -220,6 +220,8 @@ func _process(delta: float) -> void:
 		var n := 3 if skip == "guardian" else 7
 		if skip == "guardian" and Run.region == 2:
 			n = 9                  # a Serket si arriva dopo tutta la Prima Ora e Am-heh: molti più doni
+		if skip == "ammit" and Run.region == 2:
+			n = 12                 # ad Aker si arriva in fondo a Sokar: la discesa più ricca
 		var pool := []
 		for id in Boons.ALL:
 			var gd: String = Boons.ALL[id].get("god", "")
@@ -439,6 +441,22 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 		if d.size != Vector2.ZERO and d.grow(8.0).has_point(pos):
 			threat_kind = "ureo"
 			return u.escape_dir(pos)
+	# Aker: l'ombra delle pietre che cadono, e il raggio dell'alba che ruota
+	for c in g.world.get_children():
+		if c is Hazards.FallingStone and not c.landed and c.t > c.warn - 0.45 and c._under(pos, 10.0):
+			threat_kind = "aker_pietra"
+			var away: Vector2 = pos - c.global_position
+			return away.normalized() if away != Vector2.ZERO else Vector2.RIGHT
+		if c is Hazards.DawnRay and c.t > c.warn - 0.3:
+			var o: Vector2 = c.global_position
+			var e2: Vector2 = c.end_point() if c.active() else o + Vector2.from_angle(c.angle) * c.length
+			var ab := e2 - o
+			var kk := clampf((pos - o).dot(ab) / maxf(ab.length_squared(), 0.01), 0.0, 1.0)
+			if pos.distance_to(o + ab * kk) < 26.0:
+				threat_kind = "aker_raggio"
+				# si esce dal lato già spazzato dal raggio (o lo si passa con lo scatto)
+				var rr: Vector2 = (pos - o).normalized()
+				return rr.orthogonal() * -signf(c.sweep)
 	# sfere e dardi in arrivo
 	for c in g.world.get_children():
 		if c is Area2D and "direction" in c and "style" in c:
@@ -457,6 +475,27 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 		if "sting_dir" in e and e.state == "windup" and d < 48.0 and e.st < 0.25:
 			threat_kind = "scorpion"
 			return rel.normalized()
+		if "breath_range" in e:
+			# Aker, il leone doppio: esce dal cono del soffio (il raggio e le pietre sono sotto)
+			threat_kind = "aker"
+			if e.state == "breath_windup" and e.st < 0.3:
+				var hp_o: Vector2 = e.head_pos(e.side)
+				var rel_h: Vector2 = pos - hp_o
+				if rel_h.length() < e.breath_range + 16.0 and absf(e.aim.angle_to(rel_h)) < deg_to_rad(e.breath_angle) * 0.5 + 0.2:
+					return Vector2(0.0, 1.0 if rel.y > 0.0 else -1.0)      # verso il fianco
+			continue
+		if "charge_speed" in e and "kind" in e:
+			# Ieri e Domani
+			threat_kind = "aker"
+			if e.state == "charge_windup" and e.st < 0.3:
+				var a2: Vector2 = e.aim
+				if e._charge_line_dist(pos) < 26.0:
+					return a2.orthogonal() * (1.0 if rel.dot(a2.orthogonal()) > 0.0 else -1.0)
+			if e.state == "wave_windup" and e.st < 0.3 and d < e.wave_range + 16.0:
+				return rel.normalized() if rel != Vector2.ZERO else Vector2.RIGHT
+			if e.state == "pounce_windup" and e.st < 0.3 and pos.distance_to(e.leap_to) < e.pounce_radius + 14.0:
+				return (pos - e.leap_to).normalized() if pos != e.leap_to else Vector2.RIGHT
+			continue
 		if "breach_len" in e:
 			# Serket: esce dallo spicchio del ventaglio, esce dalle linee della coda
 			threat_kind = "serket"

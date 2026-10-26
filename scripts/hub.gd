@@ -1086,6 +1086,8 @@ func _fill_weights(focus_id: String = "") -> void:
 	var left := _frame(Lang.t("Il Peso del Cuore"), Lang.t("Peso totale: %d    ·    Ka a fine discesa: +%d%%    ·    Record contro Am-heh: %s") % [Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0)), record], 250)
 	var first: Button = null
 	for id in Weights.ALL:
+		if id == "ira_aker" and Run.max_region() < 2:
+			continue                  # il peso di Aker si vede solo quando Sokar è aperta
 		var w: Dictionary = Weights.ALL[id]
 		var r := Weights.rank(id)
 		var pips := "%d/%d" % [r, int(w["max"])]
@@ -1148,7 +1150,7 @@ func _fill_papiri() -> void:
 ## Il registro dello scriba (restauro): le tue imprese, in quattro pagine.
 func _registro() -> Dictionary:
 	var names := {"mummy": Lang.t("le mummie"), "scarab": Lang.t("gli scarabei"), "priest": Lang.t("i sacerdoti di Set"), "scorpion": Lang.t("gli scorpioni"), "crocodile": Lang.t("i coccodrilli"), "jackal": Lang.t("gli sciacalli"), "vulture": Lang.t("gli avvoltoi"), "sokar_guard": Lang.t("i guardiani di Sokar"), "damned_ba": Lang.t("i Ba dannati"),
-		"cobra": Lang.t("i cobra"), "serpent": Lang.t("il Serpente della Porta"), "serket": Lang.t("Serket"), "amheh": Lang.t("Am-heh"), "ammit": Lang.t("Ammit"),
+		"cobra": Lang.t("i cobra"), "serpent": Lang.t("il Serpente della Porta"), "serket": Lang.t("Serket"), "aker": Lang.t("Aker"), "aker_lion": Lang.t("i leoni di Aker"), "aker_pietra": Lang.t("le pietre di Aker"), "aker_raggio": Lang.t("il raggio dell'alba"), "amheh": Lang.t("Am-heh"), "ammit": Lang.t("Ammit"),
 		"trappola": Lang.t("le trappole"), "grata": Lang.t("le grate di fuoco"), "olio": Lang.t("l'olio in fiamme"), "ureo": Lang.t("le statue dell'ureo")}
 	var time_txt := Lang.t("nessuna vittoria ancora") if Meta.best_time < 0 else "%d:%02d" % [floori(Meta.best_time / 60.0), Meta.best_time % 60]
 	var descents := Lang.t("Discese: %d\nVittorie su Am-heh: %d\nSerpenti della Porta battuti: %d\nLa stanza più lontana: %d\nLa vittoria più rapida: %s") % [Meta.runs, Meta.ammit_wins, Meta.serpent_wins, Meta.best_room, time_txt]

@@ -40,6 +40,8 @@ static func solids(kind: String, room: Rect2, top: float, wall: float, pools: Ar
 		out.append(Rect2(wall, top, room.size.x - wall * 2.0, LAKE_W))
 		for b in baboons(pools):
 			out.append(Rect2(b - Vector2(11, 6), Vector2(22, 10)))
+	elif kind == "horizon":
+		out.append_array(horizon_rocks(room, top, wall))
 	return out
 
 
@@ -390,6 +392,153 @@ class TempleDust extends Node2D:
 			draw_set_transform(Vector2(x, y1), 0.0, Vector2(1.0, 0.4))
 			draw_circle(Vector2.ZERO, 5.0, Color(0.82, 0.68, 0.44, 0.6))
 			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+# ---------------------------------------------------------------- la porta dell'orizzonte (Aker)
+
+## Le rocce negli angoli: l'arena è un ovale, niente angoli dove rintanarsi (contro pietre e
+## raggi l'angolo sarebbe una trappola o un trucco). Frazioni della stanza: x, y, larghezza, altezza.
+const HORIZON_ROCKS := [Rect2(0.0, 0.0, 0.13, 0.18), Rect2(0.87, 0.0, 0.13, 0.18), Rect2(0.0, 0.86, 0.11, 0.14), Rect2(0.89, 0.86, 0.11, 0.14)]
+const SUN_POS := Vector2(400, 30)          ## il disco del sole spento, tra le due montagne
+
+
+static func horizon_rocks(room: Rect2, top: float, wall: float) -> Array:
+	var out := []
+	var w := room.size.x - wall * 2.0
+	var h := room.size.y - wall - top
+	for rr in HORIZON_ROCKS:
+		var f: Rect2 = rr
+		out.append(Rect2(wall + f.position.x * w, top + f.position.y * h, f.size.x * w, f.size.y * h))
+	return out
+
+
+## La porta dell'orizzonte: il geroglifico akhet, il sole tra due montagne, ma il sole è spento.
+## Il pavimento è la strada del sole, da ovest (la porta del tramonto, sabbia e blu notte) a est
+## (la porta dell'alba, rosso e oro): quando Aker si divide, Ieri esce a ovest e Domani a est.
+## Niente colonne: il riparo lo creano le pietre del ruggito, diverse a ogni scontro.
+static func paint_horizon(ci: CanvasItem, r: Rect2, top: float, wall: float) -> void:
+	var cx := r.size.x / 2.0
+	var floor_r := Rect2(wall, top, r.size.x - wall * 2.0, r.size.y - wall - top)
+	var mid_y := floor_r.get_center().y
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4242
+	# la sabbia della notte, più scura verso i bordi
+	ci.draw_rect(floor_r, Color(0.48, 0.36, 0.23))
+	for i in range(5):
+		var g := floor_r.grow(-i * 26.0)
+		ci.draw_rect(g, Color(0.56, 0.43, 0.27, 0.22))
+	# la strada del sole: una fascia chiara da ovest a est, con i dischi del sole in cammino
+	ci.draw_rect(Rect2(wall, mid_y - 40.0, floor_r.size.x, 80.0), Color(0.62, 0.49, 0.3, 0.75))
+	ci.draw_line(Vector2(wall, mid_y - 40.0), Vector2(r.size.x - wall, mid_y - 40.0), Color(0.36, 0.27, 0.17), 1.5)
+	ci.draw_line(Vector2(wall, mid_y + 40.0), Vector2(r.size.x - wall, mid_y + 40.0), Color(0.36, 0.27, 0.17), 1.5)
+	for i in range(9):
+		var x := lerpf(wall + 60.0, r.size.x - wall - 60.0, i / 8.0)
+		var u := i / 8.0
+		# il sole che tramonta a ovest, si spegne nel mezzo, rinasce a est
+		var col := Color(0.25, 0.3, 0.55).lerp(Color(0.86, 0.32, 0.14), u)
+		var a := 0.25 + 0.5 * absf(u - 0.5) * 2.0
+		ci.draw_circle(Vector2(x, mid_y), 7.0, Color(col, a))
+		ci.draw_arc(Vector2(x, mid_y), 9.0, 0.0, TAU, 16, Color(0.94, 0.72, 0.3, a * 0.8), 1.0)
+	# sassi sparsi
+	for i in range(40):
+		var p := Vector2(rng.randf_range(floor_r.position.x + 8, floor_r.end.x - 8), rng.randf_range(floor_r.position.y + 8, floor_r.end.y - 8))
+		ci.draw_circle(p, rng.randf_range(0.8, 2.2), Color(0.32, 0.24, 0.15, 0.7))
+	# il cielo notturno sopra le montagne, con le stelle
+	ci.draw_rect(Rect2(0, 0, r.size.x, top), Color(0.06, 0.06, 0.14))
+	for i in range(40):
+		var sp := Vector2(rng.randf_range(0, r.size.x), rng.randf_range(2, top - 6))
+		ci.draw_circle(sp, rng.randf_range(0.5, 1.1), Color(1, 1, 0.9, rng.randf_range(0.3, 0.8)))
+	# le due montagne del geroglifico akhet, con il sole spento in mezzo
+	for sx in [-1.0, 1.0]:
+		var mx: float = cx + sx * 96.0
+		var hill := PackedVector2Array()
+		for k in range(21):
+			var u := k / 20.0
+			var x := mx - 100.0 + u * 200.0
+			hill.append(Vector2(x, top + 12.0 - sin(u * PI) * (top + 2.0)))
+		var lit := Color(0.62, 0.48, 0.3) if sx < 0.0 else Color(0.5, 0.38, 0.24)
+		ci.draw_colored_polygon(hill, lit)
+		ci.draw_polyline(hill, Color(0.2, 0.14, 0.08), 2.0)
+		for k in range(4):
+			ci.draw_line(Vector2(mx - 60.0 + k * 34.0, top + 4.0), Vector2(mx - 40.0 + k * 30.0, 12.0 + k * 3.0), Color(0.35, 0.26, 0.16, 0.6), 1.2)
+	var sc := SUN_POS
+	ci.draw_circle(sc, 26.0, Color(0.12, 0.08, 0.05))
+	ci.draw_circle(sc, 24.0, Color(0.36, 0.36, 0.4))
+	ci.draw_circle(sc + Vector2(-5, -5), 15.0, Color(0.44, 0.44, 0.48))
+	for i in range(5):
+		var a := 0.6 + i * 1.25
+		ci.draw_line(sc + Vector2.from_angle(a) * 5.0, sc + Vector2.from_angle(a) * 22.0, Color(0.2, 0.2, 0.24), 1.2)
+	# le pareti di roccia ai lati e in basso
+	var rock := Color(0.22, 0.16, 0.11)
+	ci.draw_rect(Rect2(0, top, wall, r.size.y - top), rock)
+	ci.draw_rect(Rect2(r.size.x - wall, top, wall, r.size.y - top), rock)
+	ci.draw_rect(Rect2(0, r.size.y - wall, r.size.x, wall), rock)
+	# la porta del tramonto (ovest) e quella dell'alba (est), a metà dei lati
+	for sx2 in [-1.0, 1.0]:
+		var gx: float = wall * 0.5 if sx2 < 0.0 else r.size.x - wall * 0.5
+		var main := Color(0.2, 0.26, 0.5) if sx2 < 0.0 else Color(0.72, 0.24, 0.12)
+		var trim := Color(0.94, 0.72, 0.3)
+		ci.draw_rect(Rect2(gx - 14.0, mid_y - 50.0, 28.0, 100.0), Color(0.12, 0.08, 0.05))
+		ci.draw_rect(Rect2(gx - 12.0, mid_y - 48.0, 24.0, 96.0), main)
+		ci.draw_rect(Rect2(gx - 12.0, mid_y - 48.0, 24.0, 4.0), trim)
+		ci.draw_rect(Rect2(gx - 12.0, mid_y + 44.0, 24.0, 4.0), trim)
+		# il mezzo sole: che scende a ovest, che sale a est
+		ci.draw_arc(Vector2(gx, mid_y + 6.0), 8.0, PI, TAU, 12, trim, 2.5)
+		ci.draw_line(Vector2(gx - 10.0, mid_y + 6.0), Vector2(gx + 10.0, mid_y + 6.0), trim, 1.5)
+		# la freccia: a ovest il sole scende, a est sale
+		var up: bool = sx2 > 0.0
+		var a0 := Vector2(gx, mid_y - 26.0)
+		var a1 := Vector2(gx, mid_y - 12.0)
+		ci.draw_line(a0, a1, trim, 1.2)
+		var head := a0 if up else a1
+		var back := 4.0 if up else -4.0
+		ci.draw_line(head, head + Vector2(-3.0, back), trim, 1.2)
+		ci.draw_line(head, head + Vector2(3.0, back), trim, 1.2)
+	# le rocce degli angoli: massi ammucchiati
+	for rr in horizon_rocks(r, top, wall):
+		var box: Rect2 = rr
+		for k in range(9):
+			var c := Vector2(rng.randf_range(box.position.x + 6, box.end.x - 6), rng.randf_range(box.position.y + 6, box.end.y - 4))
+			var rad := rng.randf_range(10.0, 18.0)
+			ci.draw_set_transform(c, 0.0, Vector2(1.0, 0.75))
+			ci.draw_circle(Vector2(3, 4), rad, Color(0, 0, 0, 0.3))
+			ci.draw_circle(Vector2.ZERO, rad, Color(0.14, 0.1, 0.07))
+			ci.draw_circle(Vector2.ZERO, rad - 1.5, Color(0.42, 0.32, 0.22))
+			ci.draw_circle(Vector2(-rad * 0.3, -rad * 0.35), rad * 0.5, Color(0.52, 0.41, 0.29))
+			ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+## Il sole spento dell'orizzonte: un brace che respira appena. Quando Aker cade, tremola come se
+## volesse sorgere... e si spegne di nuovo. Il sole sorge solo nel finale (docs/storia.md).
+class HorizonSun extends Node2D:
+	var t := 0.0
+	var flick := -1.0
+
+	func flicker() -> void:
+		flick = 0.0
+
+	func _process(delta: float) -> void:
+		t += delta
+		if flick >= 0.0:
+			flick += delta
+			if flick > 4.0:
+				flick = -1.0
+		queue_redraw()
+
+	func _draw() -> void:
+		var c := Arenas.SUN_POS
+		var a := 0.06 + 0.04 * sin(t * 1.3)
+		if flick >= 0.0:
+			# si accende a scatti, arriva quasi a splendere, poi muore
+			var rise := clampf(flick / 1.5, 0.0, 1.0) * clampf((4.0 - flick) / 1.5, 0.0, 1.0)
+			var jitter := 0.6 + 0.4 * absf(sin(flick * 23.0) * sin(flick * 7.0))
+			a = 0.1 + 0.8 * rise * jitter
+			draw_circle(c, 24.0, Color(1.0, 0.75, 0.3, 0.7 * rise * jitter))
+			for i in range(12):
+				var ang := TAU * i / 12.0 + flick * 0.3
+				draw_line(c + Vector2.from_angle(ang) * 28.0, c + Vector2.from_angle(ang) * (34.0 + 10.0 * rise), Color(1.0, 0.8, 0.4, 0.6 * rise * jitter), 2.0)
+		draw_circle(c, 40.0, Color(1.0, 0.55, 0.2, a * 0.5))
+		draw_arc(c, 25.0, 0.0, TAU, 40, Color(1.0, 0.5, 0.2, a), 2.0)
 
 
 ## Una foglia di loto: un disco con la tacca.

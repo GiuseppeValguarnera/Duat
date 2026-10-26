@@ -21,6 +21,8 @@ const ENEMIES := {
 	"amheh": preload("res://scenes/amheh.tscn"),
 	"serpent": preload("res://scenes/serpent.tscn"),
 	"serket": preload("res://scenes/serket.tscn"),       # guardiana di Sokar
+	"aker": preload("res://scenes/aker.tscn"),           # boss di Sokar (si divide in Ieri e Domani)
+	"aker_lion": preload("res://scenes/aker_lion.tscn"),
 	"scorpion": preload("res://scenes/scorpion.tscn"),   # nemici del deserto di Sokar (seconda tappa)
 	"cobra": preload("res://scenes/cobra.tscn"),
 	"crocodile": preload("res://scenes/crocodile.tscn"),
@@ -32,7 +34,7 @@ const ENEMIES := {
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -56,6 +58,7 @@ const BOSS_INTROS := {
 	"amheh": ["AM-HEH", "Il guardiano del Lago di Fuoco", "Per il giusto il lago è acqua, per il dannato è fuoco. Resta nell'acqua", "boss", Color(1, 0.55, 0.2)],
 	"ammit": ["AMMIT", "La Divoratrice", "Divora i cuori che non superano il giudizio", "boss", Color(0.9, 0.35, 0.25)],
 	"serpent": ["IL SERPENTE DELLA PORTA", "Guardiano della quinta porta", "Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra", "elite", Color(0.5, 0.95, 0.45)],
+	"aker": ["AKER", "Il leone dell'orizzonte", "Non ha un dietro: colpiscilo sui fianchi. Dietro le pietre il raggio non passa", "boss", Color(1.0, 0.7, 0.3)],
 	"serket": ["SERKET", "Colei che fa respirare la gola", "Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare", "elite", Color(0.4, 0.9, 0.82)],
 }
 const DecorScript := preload("res://scripts/room_decor.gd")
@@ -84,7 +87,12 @@ const LAYOUTS := [
 	[Vector2(0.2, 0.3), Vector2(0.8, 0.3), Vector2(0.2, 0.75), Vector2(0.8, 0.75), Vector2(0.5, 0.55)],
 ]
 ## Boss della Prima Ora (Ammit tornerà come boss finale).
-const BOSS_KIND := "amheh"
+const BOSS_KIND := "amheh"            ## il boss della Prima Ora (Ammit resta per il finale)
+
+
+## Il boss della regione: Am-heh nelle acque di Wernes, Aker nel deserto di Sokar.
+func _boss_kind() -> String:
+	return "aker" if Run.region == 2 else BOSS_KIND
 ## Arena di Am-heh: quattro pozze d'acqua (posizione nel pavimento, raggi dell'ellisse).
 const AMHEH_POOLS := [[Vector2(0.25, 0.36), Vector2(54, 30)], [Vector2(0.75, 0.36), Vector2(54, 30)], [Vector2(0.36, 0.8), Vector2(48, 27)], [Vector2(0.64, 0.8), Vector2(48, 27)]]
 ## Arena di Ammit: 6 colonne, ognuna crolla dopo averla stordita una volta.
@@ -126,7 +134,10 @@ var shops_visited := 0
 var shop_items: Array = []
 var ferry: Node2D                       ## la barca del Traghettatore, se la stanza è la sua
 var doors_after_boon := true
-var ammit_tears := 0                  # Lacrime arrivate battendo Ammit in questa discesa
+var ammit_tears := 0                  # Lacrime arrivate battendo il boss della regione in questa discesa
+var boss_group: Array = []            # i boss vivi della stanza: uno, o Ieri e Domani (Aker diviso)
+var boss_full := 0.0                  # la vita piena per la barra (Aker: tutte e due le fasi)
+var horizon_sun: Node2D = null
 var can_leave := true                 # alla morte: si torna alla Sala solo dopo l'animazione
 var hud_room := ""
 var hud_eye := ""
@@ -212,6 +223,10 @@ func start_room(reward: Dictionary) -> void:
 		Run.room += 1
 	room_gen += 1
 	boss = null
+	Fx.look = Vector2.ZERO
+	boss_group = []
+	boss_full = 0.0
+	horizon_sun = null
 	guardian_down = false
 	current_reward = reward
 	Run.mask_used = false
@@ -238,7 +253,7 @@ func start_room(reward: Dictionary) -> void:
 		Music.play("hub" if kind == "shop" else "room")
 	var layout: Array = LAYOUTS.pick_random() if Run.room > 1 else LAYOUTS[0]
 	if boss_room:
-		layout = BOSS_LAYOUT if BOSS_KIND == "ammit" else []
+		layout = BOSS_LAYOUT if _boss_kind() == "ammit" else []
 	elif kind == "shop" or kind == "tutorial":
 		layout = []
 	elif kind == "guardian":
@@ -249,7 +264,9 @@ func start_room(reward: Dictionary) -> void:
 	var decor := DecorScript.new()
 	decor.under = paint_floor
 	# le arene dei guardiani e dei boss sono luoghi a parte (scripts/arenas.gd)
-	var arena := "lake" if boss_room and BOSS_KIND == "amheh" else ("gate" if kind == "guardian" else "")
+	var arena := "lake" if boss_room and _boss_kind() == "amheh" else ("gate" if kind == "guardian" else "")
+	if boss_room and _boss_kind() == "aker":
+		arena = "horizon"                # Sokar: la porta dell'orizzonte
 	if arena == "gate" and Run.region == 2:
 		arena = "temple"                 # Sokar: il tempio di Serket
 	if arena == "lake":
@@ -258,6 +275,8 @@ func start_room(reward: Dictionary) -> void:
 		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_gate(ci, ROOM, TOP, WALL)
 	elif arena == "temple":
 		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_temple(ci, ROOM, TOP, WALL)
+	elif arena == "horizon":
+		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_horizon(ci, ROOM, TOP, WALL)
 	decor.arena = arena
 	Run.deep_center = Arenas.deep_center(ROOM, TOP, WALL) if arena == "gate" else Vector2.ZERO
 	Run.deep_radii = Arenas.DEEP_RADII if arena == "gate" else Vector2.ZERO
@@ -266,7 +285,7 @@ func start_room(reward: Dictionary) -> void:
 	room_decor = decor
 	world.add_child(decor)
 	var pool_spots: Array = []
-	if boss_room and BOSS_KIND == "amheh":
+	if boss_room and _boss_kind() == "amheh":
 		for pd in (Arenas.LAKE_POOLS if arena == "lake" else AMHEH_POOLS):
 			var pool := Hazards.WaterPool.new()
 			pool.radii = pd[1]
@@ -464,12 +483,18 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 		e.summon.connect(_on_boss_summon)
 	if e.is_boss:
 		boss = e
+		boss_group = [e]
+		boss_full = e.max_hp
 		e.summon.connect(_on_boss_summon)
 		if e.has_signal("pillar_broken"):
 			e.pillar_broken.connect(_on_pillar_broken)
+		if e.has_signal("split"):
+			e.split.connect(_on_boss_split)
+		if "floor_rect" in e:
+			e.floor_rect = Rect2(WALL, TOP, ROOM.size.x - WALL * 2.0, ROOM.size.y - WALL - TOP)
 		if "arena" in e:
 			e.arena = Rect2(WALL, TOP, ROOM.size.x - WALL * 2.0, ROOM.size.y - WALL - TOP)
-			if BOSS_KIND == "amheh":
+			if _boss_kind() == "amheh":
 				e.arena = Arenas.island(ROOM, TOP, WALL)     # il lago di fuoco tutto intorno
 	if (e.is_boss or e.miniboss) and BOSS_INTROS.has(kind):
 		_boss_intro(e, kind)
@@ -499,7 +524,8 @@ func _boss_intro(e: Enemy, kind: String) -> void:
 func _on_enemy_killed(e: Enemy) -> void:
 	alive -= 1
 	if Run.room > Run.ROOMS_PER_RUN:
-		if e.is_boss:
+		# il boss è vinto quando non ne resta nessuno (Aker diviso: Ieri E Domani)
+		if e.is_boss and _bosses_alive() == 0:
 			_boss_defeated.call_deferred()
 		return
 	if e == boss and e.miniboss:
@@ -1384,7 +1410,7 @@ func _on_player_died() -> void:
 	finished = true
 	can_leave = false
 	Run.clear_descent()
-	var where := Lang.t("Am-heh, il Divoratore di Milioni") if Run.room > Run.ROOMS_PER_RUN else Lang.t("stanza %d di %d") % [Run.room, Run.ROOMS_PER_RUN]
+	var where := (Lang.t("Aker, il leone dell'orizzonte") if Run.region == 2 else Lang.t("Am-heh, il Divoratore di Milioni")) if Run.room > Run.ROOMS_PER_RUN else Lang.t("stanza %d di %d") % [Run.room, Run.ROOMS_PER_RUN]
 	if current_reward.get("kind", "") == "guardian":
 		where = Lang.t("il Serpente della Porta") if Run.region == 1 else Lang.t("Serket, la dea scorpione")
 		if Run.region == 1:
@@ -1493,7 +1519,10 @@ func _start_boss() -> void:
 	# silenzio finché il boss non si presenta: la musica parte con lui (_boss_intro)
 	Music.stop()
 	boss_fill.color = Color(0.85, 0.2, 0.15)
-	if BOSS_KIND == "amheh":
+	if _boss_kind() == "aker":
+		boss_name.text = Lang.t("AKER, IL LEONE DELL'ORIZZONTE")
+		boss_fill.color = Color(0.95, 0.65, 0.25)
+	elif _boss_kind() == "amheh":
 		boss_name.text = Lang.t("AM-HEH, IL DIVORATORE DI MILIONI")
 		boss_fill.color = Color(0.95, 0.45, 0.1)
 	else:
@@ -1501,7 +1530,10 @@ func _start_boss() -> void:
 	boss_bar.visible = true
 	boss_fill.size.x = boss_bar.size.x
 	spawning += 1
-	_spawn_after(BOSS_KIND, Vector2(ROOM.size.x / 2.0, TOP + 110.0), 1.6)
+	var at := Vector2(ROOM.size.x / 2.0, TOP + 110.0)
+	if _boss_kind() == "aker":
+		at = Vector2(ROOM.size.x / 2.0, (TOP + ROOM.size.y - WALL) / 2.0 - 30.0)   # sulla strada del sole
+	_spawn_after(_boss_kind(), at, 1.6)
 
 
 ## I pezzi vivi delle arene: il lago che respira e i babbuini, l'acqua che luccica e la grata
@@ -1521,6 +1553,10 @@ func _build_arena(arena: String, pool_spots: Array) -> void:
 				if bab.pool == null or w.global_position.distance_to(b) < bab.pool.global_position.distance_to(b):
 					bab.pool = w
 			world.add_child(bab)
+	elif arena == "horizon":
+		var sun := Arenas.HorizonSun.new()
+		world.add_child(sun)
+		horizon_sun = sun
 	elif arena == "temple":
 		var dust := Arenas.TempleDust.new()
 		dust.room = ROOM
@@ -1658,6 +1694,39 @@ func _buy(item) -> void:
 
 
 ## Il boss chiama rinforzi (Ammit in furia, Am-heh quando fa evaporare una pozza).
+func _bosses_alive() -> int:
+	var n := 0
+	for b in boss_group:
+		if is_instance_valid(b) and not b.dead:
+			n += 1
+	return n
+
+
+## Aker si divide in Ieri e Domani (o, con l'ira di Aker, un leone rinasce): i nuovi boss entrano
+## nella stanza e nella stessa barra della vita. Aker se ne va senza "morire" (niente vittoria).
+func _on_boss_split(lions: Array) -> void:
+	var from: Node = boss
+	var keep: Array = []
+	for b in boss_group:
+		if not is_instance_valid(b) or b.dead:
+			continue
+		if b.get("split_done") == true:
+			alive -= 1                     # Aker si è diviso: non c'è più, ma non è stato ucciso
+			continue
+		keep.append(b)
+	boss_group = keep
+	for l in lions:
+		var lion: Enemy = l
+		world.add_child(lion)
+		alive += 1
+		lion.killed.connect(_on_enemy_killed)
+		lion.summon.connect(_on_boss_summon)
+		lion.split.connect(_on_boss_split)
+		boss_group.append(lion)
+	if from == null or not is_instance_valid(from) or from.dead:
+		boss = boss_group[0] if not boss_group.is_empty() else null
+
+
 ## Ogni voce è un tipo di nemico (posto libero a caso) o [tipo, posizione] (Serket: i cumuli).
 func _on_boss_summon(kinds: Array) -> void:
 	for i in range(kinds.size()):
@@ -1694,6 +1763,9 @@ func _boss_defeated() -> void:
 	for c in world.get_children():
 		if c is Enemy and not c.dead:
 			c.die()
+	if _boss_kind() == "aker":
+		await _aker_defeated()
+		return
 	Meta.ammit_wins += 1
 	Challenges.on_amheh_beaten()
 	Restorations.gain(randi_range(10, 12), player.global_position)
@@ -1715,6 +1787,35 @@ func _boss_defeated() -> void:
 		# la notte continua: si apre la porta verso la tappa successiva
 		cleared = true
 		_banner(Lang.t("La porta della quarta ora"), Lang.t("Oltre il lago, la terra di Sokar. La barca di Ra ti aspetta"), Color(0.9, 0.75, 0.45), 3.0)
+		_add_door("n", {"kind": "region"})
+		return
+	_victory()
+
+
+## Aker è caduto: il sole spento dell'orizzonte tremola come se volesse sorgere, e si spegne
+## di nuovo. Il sole sorge solo nel finale: qui è "il sole che non sorge" (Ricordo IV).
+func _aker_defeated() -> void:
+	Meta.aker_wins += 1
+	Restorations.gain(randi_range(10, 12), player.global_position)
+	var win_secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
+	if Meta.best_time < 0 or win_secs < Meta.best_time:
+		Meta.best_time = win_secs
+	ammit_tears = Meta.claim_boss("aker", 2)    # Lacrime di Iside: la prima volta con ogni arma
+	if Weights.unlocked() and not Meta.feather and Weights.total() > Meta.best_weight:
+		Meta.best_weight = Weights.total()
+	Meta.save()
+	if horizon_sun != null and is_instance_valid(horizon_sun):
+		horizon_sun.call("flicker")
+		# la telecamera sale verso il sole: il momento si deve vedere, anche se sei in fondo all'arena
+		var to_sun: Vector2 = Arenas.SUN_POS + Vector2(0, 90) - player.global_position
+		var tw := create_tween()
+		tw.tween_property(Fx, "look", to_sun, 0.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		tw.tween_interval(2.8)
+		tw.tween_property(Fx, "look", Vector2.ZERO, 0.6).set_trans(Tween.TRANS_SINE)
+	_banner(Lang.t("Aker è caduto"), Lang.t("Il sole tra le montagne trema... e non sorge"), Color(1.0, 0.75, 0.35))
+	await get_tree().create_timer(4.2).timeout
+	if Run.region < Run.max_region():
+		cleared = true
 		_add_door("n", {"kind": "region"})
 		return
 	_victory()
@@ -1816,9 +1917,12 @@ func _victory() -> void:
 	if ammit_tears > 0:
 		extra += Lang.t("\n+%d Lacrime di Iside, prima vittoria con %s (ne hai %d)") % [ammit_tears, Weapons.ALL[Run.weapon]["the"], Meta.tears]
 	else:
-		extra += Lang.t("\nCon %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto") % Weapons.ALL[Run.weapon]["the"]
+		extra += (Lang.t("\nCon %s hai già le Lacrime di Aker: prova un'altra arma, o un Peso del Cuore più alto") if Run.region == 2 else Lang.t("\nCon %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto")) % Weapons.ALL[Run.weapon]["the"]
 	Meta.last_end = "win"
-	message.text = Lang.t("Hai sconfitto Am-heh!\nLa Prima Ora è superata. Le altre ore della notte ti attendono.%s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio") % [extra, _end_run_summary()]
+	var head := Lang.t("Hai sconfitto Am-heh!\nLa Prima Ora è superata. Le altre ore della notte ti attendono.")
+	if Run.region == 2:
+		head = Lang.t("Hai sconfitto Aker!\nIeri e Domani sono caduti, ma il sole non è sorto. La notte continua.")
+	message.text = Lang.t("%s%s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio") % [head, extra, _end_run_summary()]
 	_fit_message()
 
 
@@ -1851,7 +1955,7 @@ func _process(_delta: float) -> void:
 	var sek := Lang.t("PRONTO (Q / LT)") if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
 	if player.divine_t > 0.0:
 		sek = Lang.t("FORMA DIVINA %.1fs") % player.divine_t
-	var room_txt := (Lang.t("Ammit · colonne: %d") % pillars.size() if BOSS_KIND == "ammit" else Lang.t("Am-heh")) if Run.room > Run.ROOMS_PER_RUN else Lang.t("Stanza %d/%d") % [Run.room, Run.ROOMS_PER_RUN]
+	var room_txt := (Lang.t("Ammit · colonne: %d") % pillars.size() if _boss_kind() == "ammit" else (Lang.t("Aker") if _boss_kind() == "aker" else Lang.t("Am-heh"))) if Run.room > Run.ROOMS_PER_RUN else Lang.t("Stanza %d/%d") % [Run.room, Run.ROOMS_PER_RUN]
 	if Run.max_region() > 1 and Run.room <= Run.ROOMS_PER_RUN:
 		room_txt = Run.region_name() + " · " + room_txt
 	if tut.step >= 0:
@@ -1864,7 +1968,14 @@ func _process(_delta: float) -> void:
 	hud_sek = sek
 	if Meta.feather:
 		hud.text = Lang.t("Piuma di Ma'at: -%d%% danni") % int(round(Run.feather_guard() * 100.0))
-	if boss != null and is_instance_valid(boss) and not boss.dead:
+	if boss_group.size() > 1 or (boss != null and is_instance_valid(boss) and boss.is_boss and boss_full > 0.0):
+		# una barra sola per tutto lo scontro (Aker: le due fasi, poi Ieri + Domani insieme)
+		var sum := 0.0
+		for b in boss_group:
+			if is_instance_valid(b) and not b.dead:
+				sum += b.hp
+		boss_fill.size.x = boss_bar.size.x * clampf(sum / boss_full, 0.0, 1.0)
+	elif boss != null and is_instance_valid(boss) and not boss.dead:
 		boss_fill.size.x = boss_bar.size.x * clampf(boss.hp / boss.max_hp, 0.0, 1.0)
 	var n := Run.boons.size() + Run.blessings.size()
 	var line2 := ""

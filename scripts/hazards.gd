@@ -847,6 +847,7 @@ class FireRing extends Node2D:
 class Quicksand extends Node2D:
 	var radii := Vector2(46, 26)
 	var t := 0.0
+	var life := 0.0              ## 0 = per sempre; altrimenti sparisce dopo `life` secondi (il soffio di Aker)
 
 	func _ready() -> void:
 		add_to_group("quicksand")
@@ -856,10 +857,18 @@ class Quicksand extends Node2D:
 
 	func _process(delta: float) -> void:
 		t += delta
+		if life > 0.0 and t >= life:
+			queue_free()
+			return
 		queue_redraw()
 
 	func _draw() -> void:
-		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, radii.y / radii.x))
+		if life > 0.0:
+			# quelle temporanee si aprono e si richiudono
+			var k := clampf(t / 0.3, 0.0, 1.0) * clampf((life - t) / 0.6, 0.0, 1.0)
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2(k, k * radii.y / radii.x))
+		else:
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, radii.y / radii.x))
 		draw_circle(Vector2.ZERO, radii.x + 3.0, Color(0.42, 0.3, 0.16, 0.7))
 		draw_circle(Vector2.ZERO, radii.x, Color(0.62, 0.48, 0.28))
 		# la sabbia che gira piano verso il centro
@@ -928,3 +937,188 @@ class Sandstorm extends Node2D:
 			draw_line(Vector2(x, y), Vector2(x - dir.x * l, y), Color(0.85, 0.72, 0.5, 0.5 if strong else 0.3), 1.2)
 		if strong:
 			draw_rect(room, Color(0.75, 0.6, 0.38, 0.12))
+
+
+
+## Le pietre di Aker: al ruggito cadono dalle montagne dell'orizzonte. Prima l'ombra a terra che
+## si allarga (avviso), poi la pietra cade: ferisce chi è sotto. Se nessuno era sotto resta qualche
+## secondo come riparo SOLIDO: ferma il raggio dell'alba (Hazards.DawnRay). Se cade su di te si
+## frantuma (non ti imprigiona mai).
+class FallingStone extends StaticBody2D:
+	const R := 11.0
+	var warn := 0.9
+	var life := 6.0
+	var damage := 12.0
+	var t := 0.0
+	var landed := false
+	var shard_seed := 0.0
+
+	func _ready() -> void:
+		collision_layer = 0
+		collision_mask = 0
+		z_index = 1
+		shard_seed = randf() * TAU
+
+	func _process(delta: float) -> void:
+		t += delta
+		if not landed and t >= warn:
+			_land()
+		if landed and t >= warn + life:
+			Fx.burst(global_position + Vector2(0, -6), Color(0.55, 0.45, 0.35), 10, 60.0)
+			queue_free()
+			return
+		queue_redraw()
+
+	func _land() -> void:
+		landed = true
+		Fx.shake(3.0)
+		Fx.burst(global_position, Color(0.7, 0.58, 0.42), 14, 90.0)
+		Sfx.play_at("amheh_land", global_position, 0.2)
+		var p = get_tree().get_first_node_in_group("player")
+		if p != null and not p.dead and _under(p.global_position, 6.0):
+			p.take_damage(damage, global_position, null, "aker_pietra")
+			life = 0.25                       # caduta su di te: si frantuma subito
+			return
+		collision_layer = 1                   # come un muro: blocca te, i leoni e il raggio
+		var shape := CollisionShape2D.new()
+		var c := CircleShape2D.new()
+		c.radius = R
+		shape.shape = c
+		add_child(shape)
+		add_to_group("aker_stones")
+
+	func _under(p: Vector2, extra: float) -> bool:
+		var d := p - global_position
+		return Vector2(d.x, d.y / 0.6).length() < R + extra
+
+	## Il raggio dell'alba (da a verso b) colpisce la pietra? Restituisce la frazione 0..1 del
+	## segmento dove la incontra, o -1.
+	func ray_hit(a: Vector2, b: Vector2) -> float:
+		if not landed or life <= 0.3:
+			return -1.0
+		var c := global_position + Vector2(0, -6)
+		var d := b - a
+		var f := a - c
+		var aa := d.dot(d)
+		var bb := 2.0 * f.dot(d)
+		var cc := f.dot(f) - (R + 2.0) * (R + 2.0)
+		var disc := bb * bb - 4.0 * aa * cc
+		if disc < 0.0 or aa < 0.001:
+			return -1.0
+		var k := (-bb - sqrt(disc)) / (2.0 * aa)
+		return k if k >= 0.0 and k <= 1.0 else -1.0
+
+	func _draw() -> void:
+		if not landed:
+			var k := clampf(t / warn, 0.0, 1.0)
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, 0.6))
+			draw_circle(Vector2.ZERO, (R + 4.0) * (0.4 + 0.6 * k), Color(0, 0, 0, 0.18 + 0.25 * k))
+			draw_arc(Vector2.ZERO, R + 6.0, 0.0, TAU, 24, Color(1, 0.3, 0.2, 0.4 + 0.5 * k), 1.5)
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+			# la pietra che scende dall'alto
+			var y := -180.0 * (1.0 - k * k)
+			_rock(Vector2(0, y - 6), 0.85 + 0.15 * k, 1.0)
+			return
+		var a := clampf((warn + life - t) / 0.4, 0.0, 1.0)
+		draw_set_transform(Vector2(3, 2), 0.0, Vector2(1.0, 0.45))
+		draw_circle(Vector2.ZERO, R + 2.0, Color(0, 0, 0, 0.3 * a))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		_rock(Vector2(0, -6), 1.0, a)
+
+	func _rock(c: Vector2, s: float, a: float) -> void:
+		var pts := PackedVector2Array()
+		for i in range(8):
+			var ang := TAU * i / 8.0 + shard_seed
+			var rr := R * s * (0.82 + 0.18 * sin(i * 2.7 + shard_seed))
+			pts.append(c + Vector2(cos(ang) * rr, sin(ang) * rr * 0.8))
+		draw_colored_polygon(pts, Color(0.5, 0.4, 0.3, a))
+		var cl := pts.duplicate()
+		cl.append(pts[0])
+		draw_polyline(cl, Color(0.12, 0.08, 0.05, a), 1.2)
+		draw_circle(c + Vector2(-3, -3) * s, 3.5 * s, Color(0.66, 0.55, 0.42, a))
+		draw_line(c + Vector2(-2, 2) * s, c + Vector2(4, -1) * s, Color(0.3, 0.22, 0.15, a), 1.0)
+
+
+## Il raggio dell'alba di Aker (la testa di fuoco, poi Domani): una linea di fuoco che parte dalla
+## testa e RUOTA piano, come una lancetta. Avviso: la linea sottile dove comincerà e la freccia del
+## verso. Le pietre cadute lo fermano: dietro una pietra sei al riparo. Si passa anche con lo scatto.
+class DawnRay extends Node2D:
+	var angle := 0.0              ## dove comincia (radianti)
+	var sweep := deg_to_rad(100.0) ## quanto ruota, col segno del verso
+	var warn := 0.7
+	var dur := 1.6
+	var length := 430.0
+	var damage := 9.0
+	var t := 0.0
+	var cool := 0.0
+	var cut := 1.0                ## fin dove arriva (frazione), fermato dalle pietre
+	var src: Node = null
+
+	func _ready() -> void:
+		z_index = 2
+		Sfx.play_at("fire_whoosh", global_position, 0.1)
+
+	func cur_angle() -> float:
+		var k := clampf((t - warn) / dur, 0.0, 1.0)
+		return angle + sweep * k
+
+	func active() -> bool:
+		return t >= warn and t < warn + dur
+
+	func end_point() -> Vector2:
+		return global_position + Vector2.from_angle(cur_angle()) * length * cut
+
+	func _process(delta: float) -> void:
+		t += delta
+		cool = maxf(0.0, cool - delta)
+		if t >= warn + dur:
+			queue_free()
+			return
+		var a := global_position
+		var b := global_position + Vector2.from_angle(cur_angle()) * length
+		cut = 1.0
+		if active():
+			for st in get_tree().get_nodes_in_group("aker_stones"):
+				var k: float = st.ray_hit(a, b)
+				if k >= 0.0 and k < cut:
+					cut = k
+			var p = get_tree().get_first_node_in_group("player")
+			if p != null and not p.dead and cool <= 0.0:
+				var e := a + (b - a) * cut
+				var ab := e - a
+				var kk := clampf((p.global_position + Vector2(0, -6) - a).dot(ab) / maxf(ab.length_squared(), 0.01), 0.0, 1.0)
+				if (p.global_position + Vector2(0, -6)).distance_to(a + ab * kk) < 10.0:
+					if p.take_damage(damage, a, null, "aker_raggio"):
+						cool = 0.6
+			if randf() < 0.5:
+				Fx.burst(a + (b - a) * cut, Color(1.0, 0.75, 0.3), 2, 50.0)
+		queue_redraw()
+
+	func _draw() -> void:
+		if t < warn:
+			var k := t / warn
+			var d := Vector2.from_angle(angle)
+			# la linea sottile tratteggiata dove partirà, e l'arco con la freccia del verso
+			var i := 0.0
+			while i < length:
+				draw_line(d * i, d * minf(i + 10.0, length), Color(1, 0.55, 0.2, 0.35 + 0.4 * k), 1.5)
+				i += 18.0
+			var r := 60.0
+			var steps := 16
+			var arc := PackedVector2Array()
+			for j in range(steps + 1):
+				arc.append(Vector2.from_angle(angle + sweep * j / steps) * r)
+			draw_polyline(arc, Color(1, 0.6, 0.25, 0.5 + 0.4 * k), 2.0)
+			var tip := arc[steps]
+			var tang := Vector2.from_angle(angle + sweep).orthogonal() * signf(sweep)
+			draw_line(tip, tip - tang * 7.0 + tip.normalized() * 4.0, Color(1, 0.6, 0.25, 0.9), 2.0)
+			draw_line(tip, tip - tang * 7.0 - tip.normalized() * 4.0, Color(1, 0.6, 0.25, 0.9), 2.0)
+			return
+		var e := Vector2.from_angle(cur_angle()) * length * cut
+		var fl := 0.8 + 0.2 * sin(t * 40.0)
+		draw_line(Vector2.ZERO, e, Color(1.0, 0.45, 0.1, 0.35), 16.0 * fl)
+		draw_line(Vector2.ZERO, e, Color(1.0, 0.75, 0.25, 0.85), 7.0)
+		draw_line(Vector2.ZERO, e, Color(1.0, 0.97, 0.8), 2.5)
+		draw_circle(Vector2.ZERO, 6.0 * fl, Color(1.0, 0.85, 0.4, 0.8))
+		if cut < 1.0:
+			draw_circle(e, 7.0 * fl, Color(1.0, 0.8, 0.35, 0.7))       # la pietra che si arroventa

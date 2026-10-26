@@ -19,6 +19,7 @@ const ALL_IT := {
 	"fame": {"name": "La fame di Am-heh", "max": 1, "desc": "Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso."},
 	"ira_serpente": {"name": "L'ira del Serpente", "max": 1, "desc": "Il Serpente della Porta ha due mosse in più: la doppia emersione e la pioggia di veleno."},
 	"ira_amheh": {"name": "L'ira di Am-heh", "max": 1, "desc": "Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco."},
+	"ira_aker": {"name": "L'ira di Aker", "max": 1, "desc": "Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce."},
 }
 
 

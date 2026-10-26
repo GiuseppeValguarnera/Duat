@@ -69,6 +69,12 @@ static func _reaction() -> Array:
 				options.append(Lang.t("Un Ba dannato. L'anima di un morto che la bilancia ha respinto. Non ha più un corpo dove tornare, e odia chi ce l'ha. Abbattila prima che si accenda."))
 			"crocodile":
 				options.append(Lang.t("Un coccodrillo. Il Libro ha due formule apposta, la trentuno e la trentadue: i coccodrilli del Duat vengono a rubare la magia del morto. Quando l'acqua ribolle vicino a te, non restare sul bordo."))
+			"aker", "aker_lion":
+				options.append(Lang.t("Aker. Il dio dell'orizzonte, due leoni schiena contro schiena: Ieri guarda dove il sole muore, Domani dove rinasce. Non ha un dietro, Scriba. Ha dei fianchi."))
+			"aker_raggio":
+				options.append(Lang.t("Il raggio dell'alba. Nemmeno la luce di Domani passa attraverso la pietra. Quando Aker ruggisce, le montagne ti lanciano un riparo: usalo."))
+			"aker_pietra":
+				options.append(Lang.t("Le pietre dell'orizzonte. Guarda l'ombra a terra: si allarga prima che la pietra arrivi."))
 			"serket":
 				options.append(Lang.t("Serket. La chiamavano Colei che fa respirare la gola: chi era punto la pregava, e lei toglieva il veleno. A te non lo toglierà. Guarda il solco nella sabbia, non lei: il solco ti dice dove uscirà la coda."))
 			"scorpion":

@@ -50,7 +50,7 @@ func build(seed_value: int, room_rect: Rect2, top_y: float, wall_w: float, pilla
 	var mid_y := (top + room.size.y - wall) / 2.0
 	if arena != "":
 		ambient = CanvasModulate.new()
-		ambient.color = Color(1.0, 0.84, 0.78) if arena == "lake" else (Color(1.0, 0.9, 0.8) if arena == "temple" else Color(0.84, 0.88, 0.94))
+		ambient.color = Color(1.0, 0.84, 0.78) if arena == "lake" else (Color(1.0, 0.9, 0.8) if arena == "temple" else (Color(0.86, 0.84, 0.98) if arena == "horizon" else Color(0.84, 0.88, 0.94)))
 		add_child(ambient)
 		queue_redraw()
 		_bake.call_deferred()

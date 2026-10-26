@@ -1,4 +1,8 @@
 keys,it,en
+AKER TREMA,AKER TREMA,AKER TREMBLES
+IERI PRENDE IL FUOCO DI DOMANI,IERI PRENDE IL FUOCO DI DOMANI,YESTERDAY TAKES TOMORROW'S FIRE
+DOMANI PRENDE LA SABBIA DI IERI,DOMANI PRENDE LA SABBIA DI IERI,TOMORROW TAKES YESTERDAY'S SAND
+RINASCERÀ,RINASCERÀ,IT WILL RISE AGAIN
 Fiato di fuoco,Fiato di fuoco,Fire breath
 Marea di fuoco,Marea di fuoco,Tide of fire
 ESAUSTO,ESAUSTO,EXHAUSTED
@@ -450,6 +454,9 @@ Gli scarabei. Gli uomini li veneravano: lo scarabeo che spinge la sua sfera era 
 Un guardiano di Sokar. Lo scudo para tutto ciò che vede. Non vede dietro di sé: nessuno ci riesce.,Un guardiano di Sokar. Lo scudo para tutto ciò che vede. Non vede dietro di sé: nessuno ci riesce.,A guardian of Sokar. The shield blocks everything it sees. It does not see behind itself: no one can.
 "Un Ba dannato. L'anima di un morto che la bilancia ha respinto. Non ha più un corpo dove tornare, e odia chi ce l'ha. Abbattila prima che si accenda.","Un Ba dannato. L'anima di un morto che la bilancia ha respinto. Non ha più un corpo dove tornare, e odia chi ce l'ha. Abbattila prima che si accenda.","A damned Ba. The soul of a dead man the scale rejected. It no longer has a body to return to, and it hates those who do. Strike it down before it lights up."
 "Un coccodrillo. Il Libro ha due formule apposta, la trentuno e la trentadue: i coccodrilli del Duat vengono a rubare la magia del morto. Quando l'acqua ribolle vicino a te, non restare sul bordo.","Un coccodrillo. Il Libro ha due formule apposta, la trentuno e la trentadue: i coccodrilli del Duat vengono a rubare la magia del morto. Quando l'acqua ribolle vicino a te, non restare sul bordo.","A crocodile. The Book has two spells for it, the thirty-first and the thirty-second: the crocodiles of the Duat come to steal the magic of the dead. When the water bubbles near you, don't stay on the edge."
+"Aker. Il dio dell'orizzonte, due leoni schiena contro schiena: Ieri guarda dove il sole muore, Domani dove rinasce. Non ha un dietro, Scriba. Ha dei fianchi.","Aker. Il dio dell'orizzonte, due leoni schiena contro schiena: Ieri guarda dove il sole muore, Domani dove rinasce. Non ha un dietro, Scriba. Ha dei fianchi.","Aker. The god of the horizon, two lions back to back: Yesterday looks where the sun dies, Tomorrow where it is reborn. He has no back, Scribe. He has flanks."
+"Il raggio dell'alba. Nemmeno la luce di Domani passa attraverso la pietra. Quando Aker ruggisce, le montagne ti lanciano un riparo: usalo.","Il raggio dell'alba. Nemmeno la luce di Domani passa attraverso la pietra. Quando Aker ruggisce, le montagne ti lanciano un riparo: usalo.","The ray of dawn. Not even Tomorrow's light passes through stone. When Aker roars, the mountains throw you a shelter: use it."
+Le pietre dell'orizzonte. Guarda l'ombra a terra: si allarga prima che la pietra arrivi.,Le pietre dell'orizzonte. Guarda l'ombra a terra: si allarga prima che la pietra arrivi.,The stones of the horizon. Watch the shadow on the ground: it grows before the stone arrives.
 "Serket. La chiamavano Colei che fa respirare la gola: chi era punto la pregava, e lei toglieva il veleno. A te non lo toglierà. Guarda il solco nella sabbia, non lei: il solco ti dice dove uscirà la coda.","Serket. La chiamavano Colei che fa respirare la gola: chi era punto la pregava, e lei toglieva il veleno. A te non lo toglierà. Guarda il solco nella sabbia, non lei: il solco ti dice dove uscirà la coda.","Serket. They called her She Who Lets the Throat Breathe: the stung prayed to her, and she drew out the venom. She will not draw it out of you. Watch the furrow in the sand, not her: the furrow tells you where the tail will strike."
 "Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati.","Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati.","The scorpions of Serket. The goddess shields from venom those who honour her. You have not honoured her. When the tail glows, step away."
 "Una grata di fuoco. Nelle acque di Wernes il fuoco di Am-heh corre anche sotto le pietre. Quando le sbarre si arroventano, non aspettare di capire perché.","Una grata di fuoco. Nelle acque di Wernes il fuoco di Am-heh corre anche sotto le pietre. Quando le sbarre si arroventano, non aspettare di capire perché.","A fire grate. In the waters of Wernes the fire of Am-heh runs even under the stones. When the bars glow red, do not wait to understand why."
@@ -589,6 +596,9 @@ Divora i cuori che non superano il giudizio,Divora i cuori che non superano il g
 IL SERPENTE DELLA PORTA,IL SERPENTE DELLA PORTA,THE SERPENT OF THE GATE
 Guardiano della quinta porta,Guardiano della quinta porta,Guardian of the fifth gate
 Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra,Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra,Every gate of the Duat has its guardian. Beware the cobra statues
+AKER,AKER,AKER
+Il leone dell'orizzonte,Il leone dell'orizzonte,The Lion of the Horizon
+Non ha un dietro: colpiscilo sui fianchi. Dietro le pietre il raggio non passa,Non ha un dietro: colpiscilo sui fianchi. Dietro le pietre il raggio non passa,He has no back: strike his flanks. The ray cannot pass behind the stones
 SERKET,SERKET,SERKET
 Colei che fa respirare la gola,Colei che fa respirare la gola,She Who Lets the Throat Breathe
 "Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare","Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare","Follow the furrow in the sand: where it ends, the tail strikes. On the stone she cannot dig"
@@ -672,6 +682,7 @@ liv. %d,liv. %d,lv. %d
 %s
 
 "
+"Aker, il leone dell'orizzonte","Aker, il leone dell'orizzonte","Aker, the lion of the horizon"
 "Am-heh, il Divoratore di Milioni","Am-heh, il Divoratore di Milioni","Am-heh, the Devourer of Millions"
 stanza %d di %d,stanza %d di %d,chamber %d of %d
 il Serpente della Porta,il Serpente della Porta,the Serpent of the Gate
@@ -683,6 +694,7 @@ Tocca lo schermo,Tocca lo schermo,Tap the screen
 Premi Start,Premi Start,Press Start
 Premi R,Premi R,Press R
 %s per tornare alla Sala del Giudizio,%s per tornare alla Sala del Giudizio,%s to return to the Hall of Judgement
+"AKER, IL LEONE DELL'ORIZZONTE","AKER, IL LEONE DELL'ORIZZONTE","AKER, THE LION OF THE HORIZON"
 "AM-HEH, IL DIVORATORE DI MILIONI","AM-HEH, IL DIVORATORE DI MILIONI","AM-HEH, THE DEVOURER OF MILLIONS"
 "AMMIT, LA DIVORATRICE","AMMIT, LA DIVORATRICE","AMMIT, THE DEVOURER"
 "SERKET, LA DEA SCORPIONE","SERKET, LA DEA SCORPIONE","SERKET, THE SCORPION GODDESS"
@@ -700,6 +712,8 @@ Am-heh è caduto,Am-heh è caduto,Am-heh has fallen
 Il lago di fuoco si spegne. La notte continua,Il lago di fuoco si spegne. La notte continua,The lake of fire goes out. The night goes on
 La porta della quarta ora,La porta della quarta ora,The gate of the fourth hour
 "Oltre il lago, la terra di Sokar. La barca di Ra ti aspetta","Oltre il lago, la terra di Sokar. La barca di Ra ti aspetta","Beyond the lake, the land of Sokar. The boat of Ra awaits you"
+Aker è caduto,Aker è caduto,Aker has fallen
+Il sole tra le montagne trema... e non sorge,Il sole tra le montagne trema... e non sorge,The sun between the mountains trembles... and does not rise
 Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Time %d:%02d   ·   Enemies slain %d   ·   Damage dealt %d
 Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Boons gathered %d   ·   Ka gathered %d%s   ·   Stored Ka %d
  (Peso del Cuore +%d%%), (Peso del Cuore +%d%%), (Weight of the Heart +%d%%)
@@ -716,21 +730,30 @@ A memory has resurfaced: «%s». You will find it in the Scrolls of Thoth"
 +%d Lacrime di Iside, prima vittoria con %s (ne hai %d)","
 +%d Tears of Isis, first victory with %s (you have %d)"
 "
+Con %s hai già le Lacrime di Aker: prova un'altra arma, o un Peso del Cuore più alto","
+Con %s hai già le Lacrime di Aker: prova un'altra arma, o un Peso del Cuore più alto","
+With %s you already have Aker's Tears: try another weapon, or a heavier Weight of the Heart"
+"
 Con %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto","
 Con %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto","
 With %s you already have Am-heh's Tears: try another weapon, or a higher Weight of the Heart"
 "Hai sconfitto Am-heh!
-La Prima Ora è superata. Le altre ore della notte ti attendono.%s
+La Prima Ora è superata. Le altre ore della notte ti attendono.","Hai sconfitto Am-heh!
+La Prima Ora è superata. Le altre ore della notte ti attendono.","You defeated Am-heh!
+The First Hour is behind you. The other hours of the night await."
+"Hai sconfitto Aker!
+Ieri e Domani sono caduti, ma il sole non è sorto. La notte continua.","Hai sconfitto Aker!
+Ieri e Domani sono caduti, ma il sole non è sorto. La notte continua.","You defeated Aker!
+Yesterday and Tomorrow have fallen, but the sun has not risen. The night goes on."
+"%s%s
 
 %s
 
-Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio","Hai sconfitto Am-heh!
-La Prima Ora è superata. Le altre ore della notte ti attendono.%s
+Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio","%s%s
 
 %s
 
-Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio","You defeated Am-heh!
-The First Hour is over. The other hours of the night await you.%s
+Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio","%s%s
 
 %s
 
@@ -739,6 +762,7 @@ pronto,pronto,ready
 PRONTO (Q / LT),PRONTO (Q / LT),READY (Q / LT)
 FORMA DIVINA %.1fs,FORMA DIVINA %.1fs,DIVINE FORM %.1fs
 Ammit · colonne: %d,Ammit · colonne: %d,Ammit · pillars: %d
+Aker,Aker,Aker
 Stanza %d/%d,Stanza %d/%d,Chamber %d/%d
 Addestramento,Addestramento,Training
 Piuma di Ma'at: -%d%% danni,Piuma di Ma'at: -%d%% danni,Feather of Ma'at: -%d%% damage
@@ -904,6 +928,9 @@ i guardiani di Sokar,i guardiani di Sokar,the guardians of Sokar
 i Ba dannati,i Ba dannati,the damned Ba
 i cobra,i cobra,cobras
 Serket,Serket,Serket
+i leoni di Aker,i leoni di Aker,Aker's lions
+le pietre di Aker,le pietre di Aker,Aker's stones
+il raggio dell'alba,il raggio dell'alba,the ray of dawn
 le trappole,le trappole,traps
 le grate di fuoco,le grate di fuoco,fire grates
 l'olio in fiamme,l'olio in fiamme,burning oil
@@ -1278,6 +1305,7 @@ Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte f
 %s: %s","
 %s: %s"
 Prezzo: ,Prezzo: ,Price: 
+ContinueMark,ContinueMark,ContinueMark
 %s · sviluppo,%s · sviluppo,%s · development
 %s/%s ore %s:%s,%s/%s ore %s:%s,%s/%s at %s:%s
 Khopesh,Khopesh,Khopesh
@@ -1339,6 +1367,24 @@ L'ira del Serpente,L'ira del Serpente,Wrath of the Serpent
 Il Serpente della Porta ha due mosse in più: la doppia emersione e la pioggia di veleno.,Il Serpente della Porta ha due mosse in più: la doppia emersione e la pioggia di veleno.,The Serpent of the Gate has two extra moves: the double emergence and the rain of venom.
 L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
+L'ira di Aker,L'ira di Aker,The Wrath of Aker
+"Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce.","Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce.","Yesterday and Tomorrow do not die alone: if you don't finish the second lion within 8 seconds, the first rises again."
+"Hai sconfitto Am-heh!
+La Prima Ora è superata. Le altre ore della notte ti attendono.%s
+
+%s
+
+Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio","Hai sconfitto Am-heh!
+La Prima Ora è superata. Le altre ore della notte ti attendono.%s
+
+%s
+
+Premi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio","You defeated Am-heh!
+The First Hour is over. The other hours of the night await you.%s
+
+%s
+
+Press R (or Start, or tap the screen) to return to the Hall of Judgement"
 ROOM,ROOM,
 Il Divoratore di Milioni,Il Divoratore di Milioni,The Devourer of Millions
 Vive in un lago di fuoco. Il fuoco non entra nell'acqua,Vive in un lago di fuoco. Il fuoco non entra nell'acqua,It lives in a lake of fire. Fire does not enter water
@@ -1622,3 +1668,4 @@ le statue del cobra,le statue del cobra,the cobra statues
 un avvoltoio,un avvoltoio,a vulture
 un guardiano di Sokar,un guardiano di Sokar,a guardian of Sokar
 un Ba dannato,un Ba dannato,a damned Ba
+un leone di Aker,un leone di Aker,one of Aker's lions

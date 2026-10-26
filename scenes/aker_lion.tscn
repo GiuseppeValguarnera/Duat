@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/aker_lion.gd" id="1_lion"]
+
+[sub_resource type="CircleShape2D" id="Circle_body"]
+radius = 14.0
+
+[sub_resource type="CircleShape2D" id="Circle_contact"]
+radius = 16.0
+
+[node name="AkerLion" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 5
+motion_mode = 1
+script = ExtResource("1_lion")
+max_hp = 350.0
+speed = 50.0
+contact_damage = 12.0
+ka_value = 20
+radius = 18.0
+
+[node name="Body" type="CollisionShape2D" parent="."]
+shape = SubResource("Circle_body")
+
+[node name="ContactArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+
+[node name="Shape" type="CollisionShape2D" parent="ContactArea"]
+position = Vector2(0, -14)
+shape = SubResource("Circle_contact")

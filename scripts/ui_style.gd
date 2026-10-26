@@ -171,6 +171,12 @@ static func talk_style(box: PanelContainer, name_label: Label, text_label: Label
 	# lo faceva sbordare a destra.
 	box.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	text_label.custom_minimum_size.x = 0.0
+	# il segno "tocca per continuare": un triangolo d'oro che pulsa nell'angolo in basso a destra
+	if box.get_node_or_null("ContinueMark") == null:
+		var mark := ContinueMark.new()
+		mark.name = "ContinueMark"
+		mark.color = accent.darkened(0.3)
+		box.add_child(mark)
 	if Fx.mobile:
 		box.offset_left = 14.0
 		box.offset_right = -14.0
@@ -260,3 +266,25 @@ static func exclaim(ci: CanvasItem, p: Vector2, t: float) -> void:
 	ci.draw_circle(c, 6.2, Color(0.94, 0.72, 0.3, pulse))
 	ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-1.4, -4.2), c + Vector2(1.4, -4.2), c + Vector2(0.8, 1.2), c + Vector2(-0.8, 1.2)]), Color(0.16, 0.1, 0.05))
 	ci.draw_circle(c + Vector2(0, 3.0), 1.1, Color(0.16, 0.1, 0.05))
+
+
+
+## Il segno "tocca per continuare" dei dialoghi: ora che le battute lunghe vanno a pagine, chi
+## gioca deve vedere che c'è un seguito. Un triangolo che scende e risale piano, nell'angolo.
+class ContinueMark extends Control:
+	var color := Color(0.6, 0.45, 0.2)
+	var t := 0.0
+
+	func _ready() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _process(delta: float) -> void:
+		t += delta
+		if is_visible_in_tree():
+			queue_redraw()
+
+	func _draw() -> void:
+		var s := 4.0 * Fx.ui
+		var p := size - Vector2(s * 2.2, s * 1.8) + Vector2(0, sin(t * 4.0) * s * 0.35)
+		var a := 0.55 + 0.45 * (0.5 + 0.5 * sin(t * 4.0))
+		draw_colored_polygon(PackedVector2Array([p + Vector2(-s, -s * 0.6), p + Vector2(s, -s * 0.6), p + Vector2(0, s * 0.6)]), Color(color, a))
