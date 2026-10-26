@@ -1434,14 +1434,17 @@ func _start_shop() -> void:
 		items = items.filter(func(it: Dictionary) -> bool: return it["kind"] != "upgrade")
 	# Collana di Hathor: un'offerta agli dèi in più, scontata con il livello
 	if Run.amulet == "hathor":
-		items.append({"kind": "boon", "title": "Dono di Hathor", "desc": "Un dio a caso ti offre un dono", "price": roundi(40 * (1.0 - Amulets.val() / 100.0))})
+		items.append({"kind": "boon", "title": "Dono di Hathor", "desc": "Un dio a caso ti offre un dono", "price": 40, "hathor": true})
 	for i in range(items.size()):
 		var it: Dictionary = items[i]
 		var node := FerrymanScript.ShopItem.new()
 		node.kind = it["kind"]
 		node.title = Lang.t(it["title"])
 		node.desc = Lang.t(it["desc"])
-		node.price = roundi(it["price"] * (1.0 - Chapters.value("c94") / 100.0) * FerrymanScript.trust_discount())
+		var off := Chapters.value("c94") / 100.0
+		if it.get("hathor", false):
+			off = maxf(off, Amulets.val() / 100.0)     # lo sconto di Hathor non si somma a Calamaio e tavolozza: vale il più alto
+		node.price = roundi(it["price"] * (1.0 - off) * FerrymanScript.trust_discount())
 		node.position = Vector2(cx + (i - (items.size() - 1) / 2.0) * 90.0, mid_y + 50.0)
 		world.add_child(node)
 		shop_items.append(node)

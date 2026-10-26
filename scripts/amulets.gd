@@ -28,7 +28,7 @@ const ALL_IT := {
 	"shen": {"name": "Anello Shen", "cost": 8, "values": [2, 3, 4],
 		"desc": "Gli dèi da cui hai già un dono compaiono alle porte %d volte più spesso.",
 		"lore": "Un giro di corda legato senza fine: l'eternità. Allungato, diventò il cartiglio che chiude il nome del re."},
-	"hathor": {"name": "Collana di Hathor", "cost": 6, "values": [0, 15, 30],
+	"hathor": {"name": "Collana di Hathor", "cost": 6, "values": [10, 25, 40],
 		"desc": "Il Traghettatore ha un'offerta agli dèi in più, scontata del %d%%.",
 		"desc0": "Il Traghettatore ha un'offerta agli dèi in più.",
 		"lore": "Il menat, la collana pesante delle sacerdotesse di Hathor: la scuotevano come un sonaglio per calmare la dea e portare gioia."},
