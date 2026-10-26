@@ -429,6 +429,7 @@ class UraeusStatues extends Node2D:
 	var hit_player := false
 	var hit_enemies := {}
 	var reach := Vector2.ZERO             ## dove finisce il fuoco (la parete o la prima colonna)
+	var seen_guardian := false            ## il Serpente è già uscito (se poi sparisce, è caduto)
 
 	func setup(room_rect: Rect2, wall_w: float, top_y: float, pillar_list: Array) -> void:
 		room = room_rect
@@ -466,13 +467,18 @@ class UraeusStatues extends Node2D:
 	func _physics_process(delta: float) -> void:
 		var game = get_tree().current_scene
 		var guardian = game.boss if game != null and "boss" in game else null
-		if guardian == null or not is_instance_valid(guardian):
+		var gone: bool = guardian == null or not is_instance_valid(guardian)
+		if gone and not seen_guardian:
 			return                        # il Serpente non è ancora uscito dalla sabbia
-		if guardian.dead:
+		seen_guardian = true
+		# caduto il guardiano le statue si spengono, anche a metà di una vampata. Prima, se il
+		# Serpente spariva (liberato) invece di restare "morto", la lingua di fuoco restava
+		# disegnata a schermo per sempre.
+		if gone or guardian.dead:
 			phase = "idle"
 			current = -1
 			queue_redraw()
-			set_physics_process(false)    # caduto il guardiano, le statue si spengono
+			set_physics_process(false)
 			return
 		t += delta
 		match phase:
