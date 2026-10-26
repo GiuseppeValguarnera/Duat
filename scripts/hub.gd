@@ -17,6 +17,8 @@ var spots := {}                       # nome -> posizione dei punti con cui inte
 var near := ""
 var talk_lines: Array = []
 var commented := false
+var _news := [false, false, false]      ## Anubi, Libro, Papiri: c'è qualcosa di nuovo? (_draw_markers)
+var _news_t := 0.0
 var book: CanvasLayer = null           # finestra aperta (Libro dei Morti o Papiri di Thoth)
 var book_kind := ""
 var page_title: Label
@@ -998,6 +1000,36 @@ func _draw() -> void:
 	_draw_anubi(spots["anubi"])
 	_draw_book(spots["libro"])
 	_draw_papiri(spots["papiri"])
+	_draw_markers()
+
+
+## I segni: stelline su ciò con cui si può interagire, un punto esclamativo dove c'è qualcosa di
+## nuovo (Anubi ha battute nuove, un capitolo nuovo si può comprare, un ricordo da leggere).
+func _draw_markers() -> void:
+	if book != null or talk_box.visible:
+		return
+	var a: Vector2 = spots["anubi"]
+	var l: Vector2 = spots["libro"]
+	var s: Vector2 = spots["bilancia"]
+	var pp: Vector2 = spots["papiri"]
+	UiStyle.sparkle(self, a + Vector2(0, -34), 20.0, t, near == "anubi", 0.3)
+	UiStyle.sparkle(self, l + Vector2(0, -16), 16.0, t, near == "libro", 1.9)
+	UiStyle.sparkle(self, pp + Vector2(0, -18), 22.0, t, near == "papiri", 3.1)
+	if Weights.unlocked():
+		UiStyle.sparkle(self, s + Vector2(0, -22), 20.0, t, near == "bilancia", 4.4)
+	UiStyle.sparkle(self, spots["cancello"] + Vector2(0, 16), 18.0, t, false, 5.2)
+	if Meta.serpent_wins > 0:
+		UiStyle.sparkle(self, Vector2(WALL + 6.0, ARMORY_Y), 16.0, t, near == "cortile", 2.6)
+	# le novità si ricontrollano due volte al secondo, non a ogni fotogramma (la storia è lunga)
+	if t >= _news_t:
+		_news_t = t + 0.5
+		_news = [Dialogue.has_news(not commented), Chapters.something_affordable(), Lore.unread_ricordi() > 0]
+	if _news[0]:
+		UiStyle.exclaim(self, a + Vector2(0, -82), t)
+	if _news[1]:
+		UiStyle.exclaim(self, l + Vector2(0, -36), t)
+	if _news[2]:
+		UiStyle.exclaim(self, pp + Vector2(0, -46), t)
 
 
 ## Il cartiglio del faraone Akhet, sopra il cancello. I segni del nome (ibis, placenta, pane,
@@ -1213,11 +1245,7 @@ func _draw_papiri(p: Vector2) -> void:
 	draw_rect(Rect2(p.x - 22, p.y - 36, 44, 3), wood)
 	if near == "papiri" and book == null:
 		draw_arc(Vector2(p.x, p.y - 16), 26.0, 0.0, TAU, 32, Color(0.72, 0.68, 0.9, 0.5 + 0.3 * sin(t * 4.0)), 1.5)
-	# un ricordo nuovo da leggere: il leggio brilla d'oro anche da lontano
-	if Lore.unread_ricordi() > 0 and book == null:
-		var glow := 0.5 + 0.5 * sin(t * 3.0)
-		draw_circle(Vector2(p.x, p.y - 18), 30.0 + glow * 4.0, Color(0.94, 0.72, 0.3, 0.08 + 0.08 * glow))
-		draw_arc(Vector2(p.x, p.y - 18), 30.0 + glow * 4.0, 0.0, TAU, 32, Color(0.94, 0.72, 0.3, 0.45 + 0.35 * glow), 1.5)
+	# un ricordo nuovo da leggere: lo segnala il punto esclamativo (_draw_markers)
 
 
 

@@ -194,6 +194,13 @@ static func speech(god: String) -> String:
 
 
 ## La prossima lezione di Anubi non ancora ascoltata ("" se le ha dette tutte).
+static func has_lesson() -> bool:
+	for i in range(JUDGEMENT.size()):
+		if not Meta.dialogue_seen.has("giudizio_%d" % i):
+			return true
+	return false
+
+
 static func next_lesson() -> String:
 	for i in range(JUDGEMENT.size()):
 		var id := "giudizio_%d" % i

@@ -40,6 +40,8 @@ var near := ""
 var t := 0.0
 var menu: CanvasLayer = null
 var talk_lines: Array = []
+var _news := false                      ## Neith ha battute nuove (_draw)
+var _news_t := 0.0
 var last_dealt := 0.0
 var hits: Array = []                   # [tempo, danni] degli ultimi secondi
 var last_hit := 0.0
@@ -314,7 +316,27 @@ func _neith_lines() -> Array:
 			Lang.t("Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare."),
 			Lang.t("I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova."),
 		]
-	var beats := [
+	for b in _neith_beats():
+		if b[1] and not Meta.neith_seen.has(b[0]):
+			Meta.neith_seen.append(b[0])
+			Meta.save()
+			return b[2]
+	return [[Lang.t("Misura la distanza. Poi accorciala."), Lang.t("Un'arma che non conosci ti tradirà nel momento peggiore."), Lang.t("Torna quando avrai qualcosa da mostrarmi."), Lang.t("Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.")].pick_random()]
+
+
+## Neith ha qualcosa di nuovo da dirti? (il punto esclamativo sopra di lei)
+func _neith_has_news() -> bool:
+	if not Meta.weapons_unlocked.has("lancia"):
+		return true
+	for b in _neith_beats():
+		if b[1] and not Meta.neith_seen.has(b[0]):
+			return true
+	return false
+
+
+## I pezzi di storia di Neith: [id, condizione, battute].
+func _neith_beats() -> Array:
+	return [
 		["lancia_amheh", Meta.first_kills.has("amheh|lancia|0"), [Lang.t("La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba.")]],
 		["khopesh_amheh", Meta.first_kills.has("amheh|khopesh|0"), [Lang.t("Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.")]],
 		["aspetto", Meta.aspect_levels.size() > 0, [Lang.t("Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.")]],
@@ -323,12 +345,6 @@ func _neith_lines() -> Array:
 		["sais", true, [Lang.t("A Sais mi chiamavano madre di Ra. Molto più tardi i Greci mi confusero con la loro Atena. Lasciali confondere: le dee antiche non si offendono per così poco.")]],
 		["tessitrice", true, [Lang.t("Si dice che io abbia tessuto il mondo come una tela, e che lo tessa ancora ogni giorno. Una lancia è come un filo: dritta, tesa, e taglia solo se sai dove tirarla.")]],
 	]
-	for b in beats:
-		if b[1] and not Meta.neith_seen.has(b[0]):
-			Meta.neith_seen.append(b[0])
-			Meta.save()
-			return b[2]
-	return [[Lang.t("Misura la distanza. Poi accorciala."), Lang.t("Un'arma che non conosci ti tradirà nel momento peggiore."), Lang.t("Torna quando avrai qualcosa da mostrarmi."), Lang.t("Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.")].pick_random()]
 
 
 func _start_talk() -> void:
@@ -538,6 +554,21 @@ func _draw() -> void:
 	_draw_altar(spots["altare"])
 	_draw_stele(spots["stele"])
 	_draw_neith(spots["neith"])
+	# i segni: stelline su ciò che si usa, il punto esclamativo se Neith ha battute nuove
+	if not talk_box.visible and menu == null:
+		var k := 0.0
+		for key in ["neith", "altare", "prove", "stele"]:
+			var off := Vector2(0, -40) if key == "neith" else (Vector2(0, -14) if key != "stele" else Vector2(0, -30))
+			UiStyle.sparkle(self, spots[key] + off, 18.0, t, near == key, k)
+			k += 1.3
+		for i in range(pedestals.size()):
+			if pedestals[i]["id"] != "":
+				UiStyle.sparkle(self, pedestals[i]["pos"] + Vector2(0, -16), 14.0, t, near == "ped%d" % i, k + i)
+		if t >= _news_t:
+			_news_t = t + 0.5
+			_news = _neith_has_news()
+		if _news:
+			UiStyle.exclaim(self, spots["neith"] + Vector2(0, -80), t)
 	if near != "" and near != "stele" and not talk_box.visible and menu == null:
 		var at: Vector2
 		if near.begins_with("ped"):

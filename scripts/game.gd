@@ -448,6 +448,17 @@ func _maybe_serdab() -> void:
 		if world.get_child(i).get_script() == DecorScript:
 			world.move_child(s, i + 1)
 			break
+	# si annuncia: un crollo sordo, la crepa che si apre con uno sbuffo di polvere e lo schermo che
+	# trema un poco (per chi gioca senza audio). Il segno sul muro da solo era troppo nascosto.
+	var crack_at := s.global_position + Vector2(0, 2)
+	get_tree().create_timer(0.7, false).timeout.connect(_announce_serdab.bind(crack_at))
+
+
+func _announce_serdab(at: Vector2) -> void:
+	Sfx.play("serpent_erupt", 0.05, 2.0)
+	Sfx.play("jar_break", 0.05, 0.0)
+	Fx.shake(6.0)
+	Fx.burst(at, Color(0.78, 0.66, 0.46), 26, 110.0)
 
 
 func _room_cleared() -> void:

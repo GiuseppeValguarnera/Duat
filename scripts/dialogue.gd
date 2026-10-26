@@ -174,6 +174,17 @@ static func idle() -> Array:
 
 
 ## Cosa dice Anubi adesso. `first_talk` è true la prima volta che gli parli in questa visita.
+## Anubi ha qualcosa di nuovo da dirti? (il punto esclamativo sopra di lui nella Sala)
+## `first_talk`: è la prima volta che gli parli in questa visita alla Sala (solo allora racconta
+## i pezzi nuovi della storia); le lezioni sul giudizio arrivano a ogni chiacchierata.
+static func has_news(first_talk: bool) -> bool:
+	if first_talk:
+		for b in story():
+			if b["if"] and not Meta.dialogue_seen.has(b["id"]):
+				return true
+	return Lore.has_lesson()
+
+
 static func next_lines(first_talk: bool) -> Array:
 	var out := []
 	if first_talk:

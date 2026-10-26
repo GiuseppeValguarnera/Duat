@@ -75,6 +75,15 @@ static func heart_heal() -> float:
 
 
 ## Prezzo del prossimo livello: [Ka, Lacrime]. [-1, 0] se è già al massimo.
+## C'è un capitolo nuovo (o un posto nel Libro) che puoi già comprare? Il leggio lo segnala.
+static func something_affordable() -> bool:
+	for id in ALL:
+		if level(id) == 0 and int(ALL[id]["cost"][0]) <= Meta.ka_bank:
+			return true
+	var sc := slot_cost()
+	return sc > 0 and Meta.ka_bank >= sc
+
+
 static func next_cost(id: String) -> Array:
 	var l := level(id)
 	if l >= max_level(id):

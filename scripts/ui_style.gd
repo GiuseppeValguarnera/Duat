@@ -175,3 +175,39 @@ static func heading(text: String, size: int, color: Color) -> Label:
 	l.add_theme_constant_override("outline_size", 5)
 	shimmer(l)
 	return l
+
+
+# ---------------------------------------------------------------- segni nel mondo
+# Due segni soli, sempre gli stessi: il luccichio vuol dire "puoi usarlo", il punto esclamativo
+# "c'è qualcosa di nuovo". Disegnati a mano (niente caratteri): si leggono anche piccoli.
+
+## Stelline dorate a quattro punte che si accendono a turno attorno a `c` (raggio `r`).
+## `near`: il giocatore è abbastanza vicino da interagire, e le stelline si fanno più vive.
+static func sparkle(ci: CanvasItem, c: Vector2, r: float, t: float, near: bool, seed_f: float = 0.0) -> void:
+	for i in range(5):
+		var ph := t * 1.7 + i * 1.3 + seed_f
+		# un lampo breve, poi resta accesa piano: qualcuna si vede sempre
+		var k := 0.3 + 0.7 * pow(maxf(0.0, sin(ph)), 3.0)
+		var a := i * TAU / 5.0 + seed_f + sin(t * 0.35 + i) * 0.5
+		var p := c + Vector2(cos(a) * r, sin(a) * r * 0.75)
+		var s := (1.8 + 2.4 * k) * (1.35 if near else 1.0)
+		var col := Color(1.0, 0.88, 0.5, (0.95 if near else 0.6) * k)
+		star4(ci, p, s, col)
+
+
+## Una stellina a quattro punte (due rombi sottili incrociati e un punto chiaro al centro).
+static func star4(ci: CanvasItem, p: Vector2, s: float, col: Color) -> void:
+	var w := s * 0.28
+	ci.draw_colored_polygon(PackedVector2Array([p + Vector2(0, -s), p + Vector2(w, 0), p + Vector2(0, s), p + Vector2(-w, 0)]), col)
+	ci.draw_colored_polygon(PackedVector2Array([p + Vector2(-s, 0), p + Vector2(0, -w), p + Vector2(s, 0), p + Vector2(0, w)]), col)
+	ci.draw_circle(p, w * 1.2, Color(1, 0.98, 0.9, col.a))
+
+
+## Il punto esclamativo dorato che ondeggia sopra un personaggio o un oggetto con una novità.
+static func exclaim(ci: CanvasItem, p: Vector2, t: float) -> void:
+	var c := p + Vector2(0, sin(t * 3.2) * 1.6)
+	var pulse := 0.85 + 0.15 * sin(t * 6.0)
+	ci.draw_circle(c, 7.2, Color(0.12, 0.08, 0.05, 0.85))
+	ci.draw_circle(c, 6.2, Color(0.94, 0.72, 0.3, pulse))
+	ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-1.4, -4.2), c + Vector2(1.4, -4.2), c + Vector2(0.8, 1.2), c + Vector2(-0.8, 1.2)]), Color(0.16, 0.1, 0.05))
+	ci.draw_circle(c + Vector2(0, 3.0), 1.1, Color(0.16, 0.1, 0.05))
