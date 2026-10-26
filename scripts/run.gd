@@ -230,6 +230,8 @@ func chap(id: String) -> bool:
 
 func all_damage_mult() -> float:
 	var m := 1.25 if has("set_might") else 1.0
+	if has("anubi_stone"):
+		m *= 0.95                # Cuore di Pietra: più vita, colpi un po' più deboli
 	if chap("c125") and hp > max_hp * 0.8:
 		m *= 1.0 + Chapters.value("c125") / 100.0
 	return m
@@ -307,8 +309,6 @@ func move_mult() -> float:
 	var m := 1.15 if has("set_swift") else 1.0
 	if has("anubi_light"):
 		m *= 1.12
-	if has("anubi_stone"):
-		m *= 0.94
 	if has("sobek_heavy"):
 		m *= 0.85
 	if has("anubi_linen"):
@@ -330,8 +330,6 @@ func dash_cooldown_mult() -> float:
 func damage_taken_mult() -> float:
 	var m := 1.3 if cursed("fragile") else 1.0
 	m *= 1.0 + 0.2 * Weights.rank("zanne")
-	if has("anubi_scale"):
-		m *= 1.15
 	m *= 1.0 - val("sobek_skin") / 100.0
 	m *= low_hp_guard()
 	if has("anubi_linen"):
@@ -390,6 +388,8 @@ func nile_heal() -> float:
 func ka_mult() -> float:
 	var m := 1.5 if has("set_greed") else 1.0
 	m *= 1.0 + val("anubi_tribute") / 100.0
+	if has("anubi_scale"):
+		m *= 0.85                # Bilancia Giusta: il prezzo è nel Ka, non nella difesa
 	return m
 
 

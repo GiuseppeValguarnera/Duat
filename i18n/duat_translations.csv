@@ -146,13 +146,13 @@ Lo scatto si ricarica il %d%% più in fretta e ti muovi il 12%% più veloce.,Lo 
 -5 vita massima.,-5 vita massima.,-5 max health.
 Cuore di Pietra,Cuore di Pietra,Heart of Stone
 +%d vita massima.,+%d vita massima.,+%d max health.
-Ti muovi il 6% più lento.,Ti muovi il 6% più lento.,You move 6% slower.
+Fai il 5% di danni in meno.,Fai il 5% di danni in meno.,You deal 5% less damage.
 Fiuto dello Sciacallo,Fiuto dello Sciacallo,Scent of the Jackal
 +%d%% di danni ai nemici sotto metà vita.,+%d%% di danni ai nemici sotto metà vita.,+%d%% damage to enemies below half health.
 -10% di danni ai nemici sopra metà vita.,-10% di danni ai nemici sopra metà vita.,-10% damage to enemies above half health.
 Bilancia Giusta,Bilancia Giusta,Just Scale
 Chi ti colpisce subisce il %d%% del danno che ti ha fatto.,Chi ti colpisce subisce il %d%% del danno che ti ha fatto.,Whoever strikes you suffers %d%% of the damage they dealt.
-Subisci il 15% di danni in più.,Subisci il 15% di danni in più.,You take 15% more damage.
+Raccogli il 15% di Ka in meno.,Raccogli il 15% di Ka in meno.,You gather 15% less Ka.
 Vasi Canopi,Vasi Canopi,Canopic Jars
 Ogni stanza ripulita ti cura di %d punti vita.,Ogni stanza ripulita ti cura di %d punti vita.,Every chamber you clear heals you for %d health.
 -10 vita massima.,-10 vita massima.,-10 max health.
@@ -262,11 +262,11 @@ Colpiti dall'Occhio: +%d%%,Colpiti dall'Occhio: +%d%%,Hit by the Eye: +%d%%
 Scatto -%d%% · +12%% velocità,Scatto -%d%% · +12%% velocità,Dash -%d%% · +12%% speed
 -5 vita massima,-5 vita massima,-5 max health
 +%d vita massima,+%d vita massima,+%d max health
--6% velocità,-6% velocità,-6% speed
+-5% danni,-5% danni,-5% damage
 +%d%% danni sotto metà vita,+%d%% danni sotto metà vita,+%d%% damage below half health
 -10% danni sopra metà,-10% danni sopra metà,-10% damage above half
 Rifletti il %d%% dei danni,Rifletti il %d%% dei danni,Reflect %d%% of damage
-+15% danni subiti,+15% danni subiti,+15% damage taken
+-15% Ka,-15% Ka,-15% Ka
 +%d vita a ogni stanza,+%d vita a ogni stanza,+%d health every chamber
 -10 vita massima,-10 vita massima,-10 max health
 Occhio -10% danni,Occhio -10% danni,Eye -10% damage
@@ -1065,6 +1065,10 @@ Il silenzio degli dèi,Il silenzio degli dèi,The silence of the gods
 Gli dèi ti offrono solo due doni invece di tre.,Gli dèi ti offrono solo due doni invece di tre.,The gods offer you only two boons instead of three.
 La fame di Am-heh,La fame di Am-heh,The hunger of Am-heh
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh has 30% more health and the tide of fire comes more often.
+Ti muovi il 6% più lento.,Ti muovi il 6% più lento.,You move 6% slower.
+Subisci il 15% di danni in più.,Subisci il 15% di danni in più.,You take 15% more damage.
+-6% velocità,-6% velocità,-6% speed
++15% danni subiti,+15% danni subiti,+15% damage taken
 Vita,Vita,Health
 Comandi,Comandi,Controls
 "Ammit, la Divoratrice","Ammit, la Divoratrice","Ammit, the Devourer"
