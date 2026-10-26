@@ -5,7 +5,7 @@ extends Enemy
 ## Mosse:
 ## - Affondo: si ritrae (avviso con la linea), poi scatta con la testa in linea retta.
 ## - Veleno: sputa un ventaglio di gocce verdi.
-## - Sotto la sabbia: si inabissa (non si può colpire), ti insegue sotto terra e riemerge
+## - Sott'acqua: si immerge nelle acque di Wernes (non si può colpire), ti insegue e riemerge
 ##   dove eri. Un cerchio a terra avvisa dove uscirà: scatta via.
 ## Sotto metà vita si infuria: più rapido, ventaglio più largo, e gli affondi diventano doppi.
 ## Gli sputi, dove cadono, lasciano pozze di veleno per qualche secondo (Hazards.VenomPuddle).
@@ -168,7 +168,7 @@ func _choose(to: Vector2) -> void:
 	else:
 		state = "dive"
 		st = 0.5
-		Fx.burst(global_position, Color(0.85, 0.72, 0.45), 20, 90.0)
+		Fx.burst(global_position, Color(0.55, 0.8, 0.95), 20, 90.0)
 
 
 func _venom() -> void:
@@ -204,14 +204,14 @@ func _rain(to: Vector2) -> void:
 func _erupt() -> void:
 	_set_buried(false)
 	Fx.shake(8.0)
-	Fx.burst(global_position, Color(0.85, 0.72, 0.45), 40, 180.0)
+	Fx.burst(global_position, Color(0.6, 0.85, 1.0), 40, 180.0)
 	Sfx.play_at("serpent_erupt", global_position, 0.05)
 	var player = get_tree().get_first_node_in_group("player")
 	if player != null and not player.dead and player.global_position.distance_to(global_position) < erupt_radius:
 		player.take_damage(erupt_damage, global_position, self)
 
 
-## Sotto la sabbia non lo si può colpire e non ferisce al contatto.
+## Sott'acqua non lo si può colpire e non ferisce al contatto.
 func _set_buried(on: bool) -> void:
 	if on:
 		remove_from_group("enemies")
@@ -249,11 +249,18 @@ func _draw_body(flash: bool) -> void:
 	var belly := _f(Color(0.88, 0.76, 0.45), flash)
 	var band := _f(GOLD, flash)
 	if state == "under" or state == "warn":
-		# sotto la sabbia: una gobba di sabbia che si muove, e il cerchio d'avviso
-		_op(_ell(Vector2.ZERO, 10.0, 4.0, 14), Color(0.66, 0.5, 0.3), 0.6)
-		for i in range(4):
-			var p: Vector2 = Vector2(sin(t * 9.0 + i) * 7.0, cos(t * 7.0 + i * 2.0) * 3.0 - 2.0)
-			draw_circle(p, 1.8, Color(0.82, 0.68, 0.45, 0.9))
+		# sott'acqua: un'ombra scura, due occhi che brillano e la scia a V che si allarga dietro
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, 0.45))
+		draw_circle(Vector2.ZERO, 12.0, Color(0.02, 0.08, 0.06, 0.55))
+		for i in range(3):
+			var rr := fmod(t * 22.0 + i * 8.0, 24.0)
+			draw_arc(Vector2.ZERO, rr, 0.0, TAU, 20, Color(0.7, 0.9, 1.0, 0.35 * (1.0 - rr / 24.0)), 1.2)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		var back := -velocity.normalized() if velocity.length() > 5.0 else Vector2.DOWN
+		for sx in [-1.0, 1.0]:
+			draw_line(Vector2.ZERO, back.rotated(sx * 0.45) * 26.0, Color(0.75, 0.92, 1.0, 0.45), 1.2)
+		draw_circle(Vector2(-2.5, -1), 1.1, Color(1.0, 0.85, 0.3))
+		draw_circle(Vector2(2.5, -1), 1.1, Color(1.0, 0.85, 0.3))
 		if state == "warn":
 			var k := 1.0 - st / erupt_warn
 			draw_arc(Vector2.ZERO, erupt_radius, 0.0, TAU, 40, Color(1, 0.3, 0.2, 0.5 + 0.4 * k), 2.0)

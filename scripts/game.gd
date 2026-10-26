@@ -235,17 +235,29 @@ func start_room(reward: Dictionary) -> void:
 	rooms.build_walls()
 	var decor := DecorScript.new()
 	decor.under = paint_floor
+	# le arene dei guardiani e dei boss sono luoghi a parte (scripts/arenas.gd)
+	var arena := "lake" if boss_room and BOSS_KIND == "amheh" else ("gate" if kind == "guardian" else "")
+	if arena == "lake":
+		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_lake(ci, ROOM, TOP, WALL)
+	elif arena == "gate":
+		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_gate(ci, ROOM, TOP, WALL)
+	decor.arena = arena
+	if arena != "":
+		decor.SHADE = 0.18
 	room_decor = decor
 	world.add_child(decor)
 	var pool_spots: Array = []
 	if boss_room and BOSS_KIND == "amheh":
-		for pd in AMHEH_POOLS:
+		for pd in (Arenas.LAKE_POOLS if arena == "lake" else AMHEH_POOLS):
 			var pool := Hazards.WaterPool.new()
 			pool.radii = pd[1]
 			pool.position = Vector2(lerpf(WALL, ROOM.size.x - WALL, pd[0].x), lerpf(TOP, ROOM.size.y - WALL, pd[0].y))
 			world.add_child(pool)
 			pool_spots.append(pool.position)
 	obstacles = decor.build(Run.room * 7919 + randi() % 1000, ROOM, TOP, WALL, pillars + pool_spots, boss_room)
+	if arena != "":
+		obstacles.append_array(Arenas.solids(arena, ROOM, TOP, WALL, pool_spots))
+		_build_arena(arena, pool_spots)
 	if current_reward.get("kind", "") == "set":
 		decor.mosaic = ""                  # al centro c'è l'altare di Set: niente mosaico sopra
 	pillar_art = DecorScript.Pillars.new()
@@ -387,6 +399,8 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 			e.pillar_broken.connect(_on_pillar_broken)
 		if "arena" in e:
 			e.arena = Rect2(WALL, TOP, ROOM.size.x - WALL * 2.0, ROOM.size.y - WALL - TOP)
+			if BOSS_KIND == "amheh":
+				e.arena = Arenas.island(ROOM, TOP, WALL)     # il lago di fuoco tutto intorno
 	if (e.is_boss or e.miniboss) and BOSS_INTROS.has(kind):
 		_boss_intro(e, kind)
 
@@ -1387,6 +1401,31 @@ func _start_boss() -> void:
 	boss_fill.size.x = boss_bar.size.x
 	spawning += 1
 	_spawn_after(BOSS_KIND, Vector2(ROOM.size.x / 2.0, TOP + 110.0), 1.6)
+
+
+## I pezzi vivi delle arene: il lago che respira e i babbuini, l'acqua che luccica e la grata
+## che cade alle tue spalle.
+func _build_arena(arena: String, pool_spots: Array) -> void:
+	if arena == "lake":
+		var glow := Arenas.LakeGlow.new()
+		glow.room = ROOM
+		glow.top = TOP
+		glow.wall = WALL
+		world.add_child(glow)
+		for b in Arenas.baboons(pool_spots):
+			var bab := Arenas.Baboon.new()
+			bab.position = b
+			world.add_child(bab)
+	elif arena == "gate":
+		var sh := Arenas.GateShimmer.new()
+		sh.room = ROOM
+		sh.top = TOP
+		sh.wall = WALL
+		world.add_child(sh)
+		var bars := Arenas.GateBars.new()
+		bars.position = Vector2(ROOM.size.x / 2.0, ROOM.size.y)
+		bars.z_index = 2
+		world.add_child(bars)
 
 
 ## Stanza 5: il Serpente della Porta.

@@ -487,7 +487,7 @@ class UraeusStatues extends Node2D:
 		var guardian = game.boss if game != null and "boss" in game else null
 		var gone: bool = guardian == null or not is_instance_valid(guardian)
 		if gone and not seen_guardian:
-			return                        # il Serpente non è ancora uscito dalla sabbia
+			return                        # il Serpente non è ancora uscito dall'acqua
 		seen_guardian = true
 		# caduto il guardiano le statue si spengono, anche a metà di una vampata. Prima, se il
 		# Serpente spariva (liberato) invece di restare "morto", la lingua di fuoco restava
@@ -660,8 +660,8 @@ class VenomPuddle extends Node2D:
 	func _draw() -> void:
 		var a := clampf(t / 0.15, 0.0, 1.0) * clampf((life - t) / 0.6, 0.0, 1.0)
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, 0.55))
-		draw_circle(Vector2.ZERO, r + 2.0, Color(0.1, 0.25, 0.08, 0.5 * a))
-		draw_circle(Vector2.ZERO, r, Color(0.3, 0.75, 0.2, 0.55 * a))
+		draw_circle(Vector2.ZERO, r + 2.5, Color(0.25, 0.08, 0.3, 0.6 * a))          # bordo viola: è veleno
+		draw_circle(Vector2.ZERO, r, Color(0.55, 0.95, 0.15, 0.65 * a))
 		draw_circle(Vector2(-3, -3), r * 0.4, Color(0.7, 1.0, 0.5, 0.35 * a))
 		for i in range(3):
 			var bp := Vector2(sin(i * 2.1 + t * 2.0), cos(i * 1.3 + t * 2.5)) * r * 0.5

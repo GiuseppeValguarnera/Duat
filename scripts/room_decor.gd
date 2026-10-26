@@ -33,6 +33,9 @@ signal bake_done                        ## la texture è pronta (game.gd toglie 
 var _vp: SubViewport
 ## Quanto è buia la stanza lontano dalle luci (la penombra cotta, vedi _draw_shade).
 var SHADE := 0.52
+## L'arena di un guardiano o di un boss (arenas.gd): "gate" o "lake". Niente arredamento da tomba:
+## pavimento e pareti li disegna `under`, qui resta solo la penombra cotta. Da dare prima di build().
+var arena := ""
 ## Bracieri spenti (nella Sala, finché non li restauri: vedi restorations.gd). Da dare prima di build().
 var cold_braziers := false
 
@@ -45,6 +48,13 @@ func build(seed_value: int, room_rect: Rect2, top_y: float, wall_w: float, pilla
 	var solids: Array = []
 	var cx := room.size.x / 2.0
 	var mid_y := (top + room.size.y - wall) / 2.0
+	if arena != "":
+		ambient = CanvasModulate.new()
+		ambient.color = Color(1.0, 0.84, 0.78) if arena == "lake" else Color(0.84, 0.88, 0.94)
+		add_child(ambient)
+		queue_redraw()
+		_bake.call_deferred()
+		return solids
 
 	# pavimento
 	# il motivo al centro del pavimento: ogni stanza il suo (le stanze tutte uguali annoiavano)
@@ -164,6 +174,7 @@ func _bake() -> void:
 	p.cold_braziers = cold_braziers
 	p.under = under
 	p.SHADE = SHADE
+	p.arena = arena
 	p.scale = Vector2(s, s)
 	p.set_process(false)
 	vp.add_child(p)
@@ -225,6 +236,10 @@ func _draw() -> void:
 		return
 	if under.is_valid():
 		under.call(self)
+	if arena != "":
+		if painter:
+			_draw_shade()
+		return
 	_draw_floor()
 	_draw_ao()
 	_draw_walls()
