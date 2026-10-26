@@ -33,7 +33,6 @@ signal bake_done                        ## la texture è pronta (game.gd toglie 
 var _vp: SubViewport
 ## Quanto è buia la stanza lontano dalle luci (la penombra cotta, vedi _draw_shade).
 var SHADE := 0.52
-var daylight := false                  ## il Cortile di Neith: cielo aperto, luce del giorno, niente polvere
 ## Bracieri spenti (nella Sala, finché non li restauri: vedi restorations.gd). Da dare prima di build().
 var cold_braziers := false
 
@@ -126,16 +125,13 @@ func build(seed_value: int, room_rect: Rect2, top_y: float, wall_w: float, pilla
 	# la luce (scripts/atmos.gd): penombra di fondo, torce e bracieri fanno luce. Nelle stanze
 	# sono tutte luci finte: le vere, con tanti nemici e colpi a schermo, facevano scattare il gioco.
 	ambient = CanvasModulate.new()
-	ambient.color = Atmos.AMBIENT_DAY if daylight else Atmos.AMBIENT_ROOM    # la Sala la cambia nella sua notte blu
+	ambient.color = Atmos.AMBIENT_ROOM           # la Sala la cambia nella sua notte blu
 	add_child(ambient)
 	# le pozze di luce delle torce sono finte e ferme: finiscono nella texture (_bake)
 	for pr in props:
 		if pr[0] == "brazier" and not cold_braziers:
-			Atmos.add_light(self, pr[1] + Vector2(0, -14), 140.0, Color(1.0, 0.55, 0.25), 0.3 if daylight else 1.2, false)
-	if daylight:
-		wisps.clear()                      # gli spiriti del Ka si vedono solo al buio
-	else:
-		Atmos.dust(self, Rect2(wall, top, room.size.x - wall * 2.0, room.size.y - wall - top))
+			Atmos.add_light(self, pr[1] + Vector2(0, -14), 140.0, Color(1.0, 0.55, 0.25), 1.2, false)
+	Atmos.dust(self, Rect2(wall, top, room.size.x - wall * 2.0, room.size.y - wall - top))
 	queue_redraw()
 	_bake.call_deferred()
 	return solids
@@ -172,8 +168,7 @@ func _bake() -> void:
 	p.set_process(false)
 	vp.add_child(p)
 	for tc in torches:
-		# di giorno (il Cortile) le torce quasi non si notano: niente pozze arancioni a sbiancare il pavimento
-		var pool := Atmos.add_glow(p, tc + Vector2(0, 2), 110.0 if daylight else 150.0, Atmos.TORCH, 0.35 if daylight else 1.5)
+		var pool := Atmos.add_glow(p, tc + Vector2(0, 2), 150.0, Atmos.TORCH, 1.5)
 		pool.set_process(false)
 	add_child(vp)
 	await RenderingServer.frame_post_draw

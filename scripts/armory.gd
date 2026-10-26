@@ -8,7 +8,7 @@ extends Node2D
 ## - La stele: misura l'ultimo colpo, la combinazione e i danni al secondo.
 ## - La porta delle prove: fa uscire i nemici che vuoi, per provare l'arma senza rischi.
 
-const DecorScript := preload("res://scripts/room_decor.gd")
+const CourtyardScript := preload("res://scripts/courtyard.gd")
 const ROOM := Rect2(0, 0, 640, 380)
 const WALL := 32.0
 const TOP := 64.0
@@ -110,28 +110,6 @@ func _build() -> void:
 	_solid(Rect2(spots["stele"] - Vector2(12, 6), Vector2(24, 10)))
 	for p in pedestals:
 		_solid(Rect2(p["pos"] - Vector2(12, 4), Vector2(24, 10)))
-	# l'arredamento delle stanze della discesa (pareti dipinte, torce, bracieri, vasi), tenuto
-	# lontano da piedistalli, Neith, altare, stele e porte: prima il cortile era spoglio
-	var keep_clear: Array = [spots["neith"], spots["altare"], spots["stele"], spots["prove"], Vector2(ROOM.size.x - WALL, 210.0)]
-	for p in pedestals:
-		keep_clear.append(p["pos"])
-	var decor := DecorScript.new()
-	# il Cortile è a cielo aperto: luce del giorno, penombra appena accennata, niente polvere.
-	# Contrasto voluto con la notte blu della Sala e il buio delle tombe.
-	decor.daylight = true
-	decor.SHADE = 0.14
-	world.add_child(decor)
-	for r in decor.build(777, ROOM, TOP, WALL, keep_clear, false):
-		_solid(r)
-	decor.props = decor.props.filter(func(pr: Array) -> bool:
-		if pr[0] != "urn":
-			return true
-		for k in keep_clear:
-			if (pr[1] as Vector2).distance_to(k) < 40.0:
-				return false
-		return true)
-	decor.mosaic = ""                     # al centro ci sono gli ushabti e la stele: niente mosaico
-	world.move_child(decor, 0)
 	player = PlayerScene.instantiate()
 	player.position = Vector2(ROOM.size.x - 70.0, 210.0)
 	world.add_child(player)
@@ -141,6 +119,18 @@ func _build() -> void:
 	cam.limit_right = int(ROOM.size.x)
 	cam.limit_bottom = int(ROOM.size.y)
 	cam.reset_smoothing()
+	# il cortile a cielo aperto (scripts/courtyard.gd): disegnato sotto a tutto ciò che disegna
+	# questo nodo (piedistalli, Neith, altare), con colonne, palme e tetto nel mondo
+	var court := CourtyardScript.new()
+	court.room = ROOM
+	court.top = TOP
+	court.wall = WALL
+	court.show_behind_parent = true
+	court.shadows = [[spots["neith"] + Vector2(0, 2), 8.0, 60.0], [spots["altare"] + Vector2(0, 6), 24.0, 22.0], [spots["stele"] + Vector2(0, 4), 22.0, 52.0]]
+	add_child(court)
+	move_child(court, 0)
+	for r in court.build(world, player):
+		_solid(r)
 	for pos in [Vector2(372, 238), Vector2(436, 226), Vector2(500, 246)]:
 		_spawn_target(pos)
 
@@ -529,24 +519,6 @@ func _draw() -> void:
 	if spots.is_empty():
 		return
 	var r := ROOM
-	# pavimento di arenaria del cortile, aperto sul cielo notturno
-	var y := TOP
-	while y < r.end.y - WALL:
-		var x := WALL
-		while x < r.end.x - WALL:
-			var n := fmod(absf(sin(x * 12.9898 + y * 78.233) * 43758.5453), 1.0)
-			draw_rect(Rect2(x, y, 32, 32), Color(0.42, 0.33, 0.24).darkened(n * 0.12))
-			draw_rect(Rect2(x, y, 32, 1), Color(0.3, 0.23, 0.17, 0.6))
-			draw_rect(Rect2(x, y, 1, 32), Color(0.3, 0.23, 0.17, 0.6))
-			x += 32.0
-		y += 32.0
-	var wall := Color(0.28, 0.17, 0.14)
-	draw_rect(Rect2(0, 0, r.size.x, TOP), wall.darkened(0.35))
-	draw_rect(Rect2(0, WALL, r.size.x, TOP - WALL), wall)
-	draw_rect(Rect2(0, r.end.y - WALL, r.size.x, WALL), wall.darkened(0.35))
-	draw_rect(Rect2(0, 0, WALL, r.size.y), wall.darkened(0.35))
-	draw_rect(Rect2(r.end.x - WALL, 0, WALL, r.size.y), wall.darkened(0.35))
-	# il fregio ora sono le pareti dipinte delle stanze (room_decor.gd); lo scudo di Neith resta sull'altare
 	# uscita verso la Sala, a est
 	draw_rect(Rect2(r.end.x - WALL, 184, WALL, 52), Color(0.05, 0.05, 0.1))
 	draw_rect(Rect2(r.end.x - WALL - 3, 180, 3, 60), GOLD)
