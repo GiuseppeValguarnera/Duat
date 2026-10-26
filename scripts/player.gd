@@ -101,8 +101,6 @@ var walk := 0.0
 
 
 func _ready() -> void:
-	# una luce debole e fredda attorno al personaggio: nella penombra resta sempre visibile
-	Atmos.add_light(self, Vector2(0, -10), 70.0, Color(0.85, 0.85, 1.0), 0.45, false).set_process(false)
 	max_hp = Run.max_hp
 	hp = Run.hp
 	Run.divine = false

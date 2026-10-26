@@ -7,7 +7,7 @@ extends Node2D
 var radius := 32.0
 var life := 3.0
 var t := 0.0
-var light: PointLight2D
+var light: Node2D
 
 
 func _ready() -> void:
@@ -25,7 +25,7 @@ func _process(delta: float) -> void:
 		queue_free()
 		return
 	var fade := clampf((life - t) / 0.5, 0.0, 1.0) * clampf(t / 0.12, 0.0, 1.0)
-	light.energy = 0.9 * fade
+	light.set("energy", 0.9 * fade)
 	queue_redraw()
 
 

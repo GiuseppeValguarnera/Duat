@@ -23,6 +23,9 @@ const WHITE_LIME := Color(0.95, 0.92, 0.84)
 var t := 0.0
 var glow: Node2D
 var ambient: CanvasModulate             ## la penombra della stanza (il serdab la scurisce)
+## Il disegno fermo della stanza, fatto una volta sola in una texture (vedi _bake).
+var baked: Texture2D = null
+var painter := false                    ## vero per la copia che disegna dentro la texture
 
 
 func build(seed_value: int, room_rect: Rect2, top_y: float, wall_w: float, pillars: Array, boss: bool) -> Array:
@@ -104,22 +107,64 @@ func build(seed_value: int, room_rect: Rect2, top_y: float, wall_w: float, pilla
 		for k in range(rng.randi_range(2, 3)):
 			props.append(["urn", base + Vector2(k * 9.0 - 9.0, rng.randf_range(-3, 3)), rng.randf_range(0.8, 1.2)])
 
+	var flames := Flames.new()
+	flames.decor = self
+	add_child(flames)
 	glow = Glow.new()
 	glow.decor = self
 	add_child(glow)
-	# la luce vera (scripts/atmos.gd): penombra di fondo, torce e bracieri fanno luce.
-	# Fanno ombra solo i bracieri: ogni luce con ombra costa, e il telefono deve reggere.
+	# la luce (scripts/atmos.gd): penombra di fondo, torce e bracieri fanno luce. Nelle stanze
+	# sono tutte luci finte: le vere, con tanti nemici e colpi a schermo, facevano scattare il gioco.
 	ambient = CanvasModulate.new()
 	ambient.color = Atmos.AMBIENT_ROOM           # la Sala la cambia nella sua notte blu
 	add_child(ambient)
-	for tc in torches:
-		Atmos.add_light(self, tc + Vector2(0, -4), 150.0, Atmos.TORCH, 1.25, false)
+	# le pozze di luce delle torce sono finte e ferme: finiscono nella texture (_bake)
 	for pr in props:
 		if pr[0] == "brazier":
-			Atmos.add_light(self, pr[1] + Vector2(0, -14), 190.0, Color(1.0, 0.55, 0.25), 1.4, true)
+			Atmos.add_light(self, pr[1] + Vector2(0, -14), 140.0, Color(1.0, 0.55, 0.25), 1.2, false)
 	Atmos.dust(self, Rect2(wall, top, room.size.x - wall * 2.0, room.size.y - wall - top))
 	queue_redraw()
+	_bake.call_deferred()
 	return solids
+
+
+## Pavimento, pareti dipinte, oggetti e pozze di luce delle torce non si muovono: si disegnano una
+## volta in una texture e poi, a ogni fotogramma, si disegna solo quella (un quadrato). Prima la
+## scheda grafica rifaceva centinaia di forme a ogni fotogramma, e di nuovo per ogni luce.
+## La texture è più fitta dei pixel del gioco, così resta nitida anche sugli schermi grandi.
+func _bake() -> void:
+	if painter or not is_inside_tree():
+		return
+	var s := clampf(ceilf(get_window().size.y / 360.0 * 1.12), 2.0, 3.0)
+	var vp := SubViewport.new()
+	vp.size = Vector2i(ceili(room.size.x * s), ceili(room.size.y * s))
+	vp.transparent_bg = true
+	vp.disable_3d = true
+	vp.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR
+	vp.render_target_update_mode = SubViewport.UPDATE_ONCE
+	var p: Node2D = get_script().new()
+	p.painter = true
+	p.room = room
+	p.top = top
+	p.wall = wall
+	p.floor_bits = floor_bits
+	p.props = props
+	p.torches = torches
+	p.mosaic = mosaic
+	p.scale = Vector2(s, s)
+	p.set_process(false)
+	vp.add_child(p)
+	for tc in torches:
+		var pool := Atmos.add_glow(p, tc + Vector2(0, 2), 150.0, Atmos.TORCH, 1.5)
+		pool.set_process(false)
+	add_child(vp)
+	await RenderingServer.frame_post_draw
+	if not is_instance_valid(vp):
+		return
+	baked = vp.get_texture()
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	material = Atmos.premult_mat()        # la texture ha l'alfa già moltiplicato
+	queue_redraw()
 
 
 func _near_pillar(pos: Vector2, pillars: Array, d: float) -> bool:
@@ -144,12 +189,17 @@ func _try_prop(kind: String, pos: Vector2, size: Vector2, pillars: Array, solids
 	solids.append(Rect2(pos - size / 2.0, size))
 
 
+## Il tempo passa, ma l'arredamento non si ridisegna: pavimento, pareti e oggetti sono fermi.
+## Si muovono solo le fiamme e gli spiriti, disegnati da Flames e Glow. Ridisegnare tutto a ogni
+## fotogramma, con le luci vere sopra, rallentava il gioco sul telefono.
 func _process(delta: float) -> void:
 	t += delta
-	queue_redraw()
 
 
 func _draw() -> void:
+	if baked != null:
+		draw_texture_rect(baked, Rect2(Vector2.ZERO, room.size), false)
+		return
 	_draw_floor()
 	_draw_walls()
 	for pr in props:
@@ -168,6 +218,7 @@ func _draw() -> void:
 				_draw_offering(pr[1], pr[2])
 	for tc in torches:
 		_draw_torch(tc)
+	# le fiamme sono in Flames, che si ridisegna da solo
 
 
 func _draw_floor() -> void:
@@ -401,13 +452,6 @@ func _draw_offering(p: Vector2, k: int) -> void:
 func _draw_torch(p: Vector2) -> void:
 	draw_rect(Rect2(p.x - 2, p.y, 4, 8), Color(0.3, 0.2, 0.1))
 	draw_rect(Rect2(p.x - 4, p.y - 1, 8, 3), Color(0.85, 0.65, 0.25))
-	_flame(p + Vector2(0, -2), 1.0)
-
-
-func _flame(p: Vector2, s: float) -> void:
-	var f := sin(t * 13.0 + p.x) * 0.8 + sin(t * 7.0 + p.y) * 0.6
-	draw_colored_polygon(PackedVector2Array([p + Vector2(-3.5, 0) * s, p + Vector2(3.5, 0) * s, p + Vector2(f, -10.0 - f) * s]), Color(1, 0.55, 0.15))
-	draw_colored_polygon(PackedVector2Array([p + Vector2(-1.8, 0) * s, p + Vector2(1.8, 0) * s, p + Vector2(f * 0.5, -6.0) * s]), Color(1, 0.92, 0.55))
 
 
 func _draw_statue(p: Vector2) -> void:
@@ -428,7 +472,6 @@ func _draw_brazier(p: Vector2) -> void:
 	draw_rect(Rect2(p.x - 2, p.y - 6, 4, 10), Color(0.35, 0.25, 0.12))
 	draw_rect(Rect2(p.x - 6, p.y + 2, 12, 3), Color(0.35, 0.25, 0.12))
 	draw_colored_polygon(PackedVector2Array([Vector2(p.x - 8, p.y - 12), Vector2(p.x + 8, p.y - 12), Vector2(p.x + 5, p.y - 6), Vector2(p.x - 5, p.y - 6)]), Color(0.85, 0.62, 0.22))
-	_flame(Vector2(p.x, p.y - 12), 1.4)
 
 
 func _draw_sarcophagus(p: Vector2) -> void:
@@ -494,3 +537,25 @@ class Glow extends Node2D:
 
 	func _halo(p: Vector2, r: float, c: Color) -> void:
 		draw_texture_rect(tex, Rect2(p - Vector2(r, r), Vector2(r, r) * 2.0), false, c)
+
+
+## Le fiamme delle torce e dei bracieri: le uniche cose dell'arredamento che si muovono, in un
+## nodo a parte che si ridisegna a ogni fotogramma (pochi triangoli).
+class Flames extends Node2D:
+	var decor: Node2D
+
+	func _process(_delta: float) -> void:
+		queue_redraw()
+
+	func _draw() -> void:
+		for tc in decor.torches:
+			_flame(tc + Vector2(0, -2), 1.0)
+		for pr in decor.props:
+			if pr[0] == "brazier":
+				_flame(pr[1] + Vector2(0, -12), 1.4)
+
+	func _flame(p: Vector2, s: float) -> void:
+		var tt: float = decor.t
+		var f := sin(tt * 13.0 + p.x) * 0.8 + sin(tt * 7.0 + p.y) * 0.6
+		draw_colored_polygon(PackedVector2Array([p + Vector2(-3.5, 0) * s, p + Vector2(3.5, 0) * s, p + Vector2(f, -10.0 - f) * s]), Color(1, 0.55, 0.15))
+		draw_colored_polygon(PackedVector2Array([p + Vector2(-1.8, 0) * s, p + Vector2(1.8, 0) * s, p + Vector2(f * 0.5, -6.0) * s]), Color(1, 0.92, 0.55))
