@@ -209,8 +209,19 @@ func _solid(rect: Rect2) -> void:
 ## (sul telefono sopra il pulsante AZIONE). Toccarla apre le Opzioni su «Aggiorna il gioco».
 ## Solo nella Sala: aggiornare a metà discesa la farebbe perdere.
 func _build_update_tag() -> void:
+	# il numero di versione, piccolo in basso a sinistra: chi segnala un problema sa dire quale
+	var ver := Label.new()
+	ver.text = "v" + Updater.label()
+	ver.add_theme_font_size_override("font_size", Fx.fs(7))
+	ver.add_theme_color_override("font_color", Color(0.6, 0.58, 0.7, 0.7))
+	ver.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	ver.offset_left = 6.0
+	ver.offset_top = -14.0 * Fx.ui
+	ver.offset_bottom = -2.0
+	ver.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	$UI.add_child(ver)
 	update_tag = Button.new()
-	update_tag.text = Lang.t("Nuova versione, aggiorna!")
+	update_tag.text = Lang.t("Nuova versione, aggiorna!") if Updater.channel() == "dev" else Lang.t("Nuova versione: ricarica la pagina!")
 	update_tag.flat = true
 	update_tag.focus_mode = Control.FOCUS_NONE
 	update_tag.visible = false
@@ -739,6 +750,9 @@ func _on_restoration_pressed(id: String) -> void:
 
 # ---------------------------------------------------------------- Opzioni (Esc / Start nella Sala)
 
+## Il modulo per le opinioni dei giocatori (vuoto: la voce non compare nelle Opzioni).
+const FEEDBACK_URL := ""
+
 const OPTION_TEXT := {
 	"feather": ["Piuma di Ma'at", "Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva."],
 	"shake": ["Scuotimento dello schermo", "La telecamera trema quando colpisci o vieni colpito. Spegnilo se ti dà fastidio agli occhi."],
@@ -748,6 +762,7 @@ const OPTION_TEXT := {
 	"audio": ["Volume", "Trascina le barre. Le trovi anche nella pausa della discesa."],
 	"lang": ["Lingua · Language", "La lingua del gioco. All'inizio segue quella del telefono o del computer.\nThe language of the game. At first it follows your phone or computer."],
 	"update": ["Aggiorna il gioco", "Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home."],
+	"feedback": ["Lascia un'opinione", "Cinque domande veloci su cosa ti è piaciuto, cosa ti ha frustrato e dove sei caduto. Ogni risposta finisce davvero nel gioco: si apre una pagina nel browser."],
 	"quit": ["Esci dal gioco", "Chiude il gioco. I progressi della Sala sono già salvati."],
 }
 
@@ -759,6 +774,8 @@ func _fill_options(focus_id: String = "") -> void:
 	var ids := ["feather", "shake", "hitstop", "autoaim", "tutorial", "audio", "lang"]
 	if Updater.supported():
 		ids.append("update")		  # solo nella versione web: l'app installata non si aggiorna da sola
+	if FEEDBACK_URL != "":
+		ids.append("feedback")
 	ids.append("quit")
 	for id in ids:
 		var label: String = Lang.t(OPTION_TEXT[id][0])
@@ -882,7 +899,7 @@ func _on_volume_slider(value: float, category: String, pct: Label) -> void:
 
 ## Le versioni, per la pagina di "Aggiorna il gioco".
 func _update_status() -> String:
-	var txt := Lang.t("Versione installata: %s") % Updater.current()
+	var txt := Lang.t("Versione installata: %s") % Updater.label()
 	match Updater.check_state():
 		"ok":
 			txt += Lang.t("\nUltima versione pubblicata: %s") % Updater.latest()
@@ -917,7 +934,14 @@ func _on_option_pressed(id: String) -> void:
 			Meta.save()
 			get_tree().quit()
 			return
+		"feedback":
+			OS.shell_open(FEEDBACK_URL)
+			return
 		"update":
+			if Updater.available() and Updater.channel() == "stable":
+				# su itch.io il gioco sta dentro la pagina di itch: basta ricaricarla
+				page_lore.text = Lang.t("C'è una versione nuova: ricarica la pagina di itch.io (i progressi restano).")
+				return
 			if Updater.available():
 				page_body.text = Lang.t("Aggiornamento in corso... il gioco si riapre da solo tra un momento.")
 				page_lore.text = ""

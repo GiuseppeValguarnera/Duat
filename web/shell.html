@@ -118,11 +118,16 @@ const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 // "Aggiorna il gioco", chiama window.duatDoUpdate(): via la copia vecchia, scarica la nuova,
 // riapri. Il salvataggio (nel browser, IndexedDB) resta dov'è: l'app non viene cancellata.
 window.DUAT_BUILD = '__DUAT_BUILD__';
+// due versioni: "dev" (sviluppo, si aggiorna a ogni modifica, sul sito GitHub) e "stable"
+// (la versione di prova pubblica su itch.io, aggiornata solo con tools/release.sh)
+window.DUAT_VERSION = '__DUAT_VERSION__';
+window.DUAT_CHANNEL = '__DUAT_CHANNEL__';
+window.DUAT_VERSION_URL = '__DUAT_VERSION_URL__';
 window.duatUpdate = '';
 window.duatLatest = '';           // l'ultima versione pubblicata, letta da version.txt
 window.duatCheck = 'pending';     // 'pending' mentre controlla, 'ok', oppure 'error' (niente rete)
 window.duatCheckUpdate = function () {
-	fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then((r) => {
+	fetch(window.DUAT_VERSION_URL + '?t=' + Date.now(), { cache: 'no-store' }).then((r) => {
 		if (!r.ok) throw new Error('version.txt ' + r.status);
 		return r.text();
 	}).then((v) => {
@@ -133,6 +138,10 @@ window.duatCheckUpdate = function () {
 	}).catch(() => { window.duatCheck = 'error'; });
 };
 window.duatDoUpdate = async function () {
+	// su itch.io il gioco è dentro la pagina di itch: basta ricaricare quella (lo dice il gioco)
+	if (window.DUAT_CHANNEL === 'stable') {
+		return;
+	}
 	try {
 		if ('serviceWorker' in navigator) {
 			const regs = await navigator.serviceWorker.getRegistrations();

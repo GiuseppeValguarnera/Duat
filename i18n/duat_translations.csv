@@ -640,6 +640,7 @@ Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto 
 WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD move · mouse aim · left click attack · Space dash · right click Eye · Q Divine Form (after the first boss) · Tab boons · Esc pause · F1 hitbox
 Ureo!,Ureo!,Uraeus!
 "Nuova versione, aggiorna!","Nuova versione, aggiorna!","New version, update!"
+Nuova versione: ricarica la pagina!,Nuova versione: ricarica la pagina!,New version: reload the page!
 "Sala del Giudizio
 Ka custodito %d · Lapislazzuli %d · Discese %d · Vittorie %d","Sala del Giudizio
 Ka custodito %d · Lapislazzuli %d · Discese %d · Vittorie %d","Hall of Judgement
@@ -707,6 +708,8 @@ The language of the game. At first it follows your phone or computer.","La lingu
 The language of the game. At first it follows your phone or computer."
 Aggiorna il gioco,Aggiorna il gioco,Update the game
 Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,Downloads the latest version of the game and reopens it. Your progress stays: there is no need to delete the app from the Home screen.
+Lascia un'opinione,Lascia un'opinione,Leave feedback
+"Cinque domande veloci su cosa ti è piaciuto, cosa ti ha frustrato e dove sei caduto. Ogni risposta finisce davvero nel gioco: si apre una pagina nel browser.","Cinque domande veloci su cosa ti è piaciuto, cosa ti ha frustrato e dove sei caduto. Ogni risposta finisce davvero nel gioco: si apre una pagina nel browser.","Five quick questions on what you liked, what frustrated you and where you fell. Every answer really ends up in the game: it opens a page in your browser."
 Esci dal gioco,Esci dal gioco,Quit the game
 Chiude il gioco. I progressi della Sala sono già salvati.,Chiude il gioco. I progressi della Sala sono già salvati.,Closes the game. Your progress in the Hall is already saved.
 Opzioni,Opzioni,Options
@@ -755,6 +758,7 @@ Non riesco a controllare: forse il telefono non è connesso. Premi per riprovare
 Non riesco a controllare: forse il telefono non è connesso. Premi per riprovare.","
 
 I can't check: maybe the phone is not connected. Press to try again."
+C'è una versione nuova: ricarica la pagina di itch.io (i progressi restano).,C'è una versione nuova: ricarica la pagina di itch.io (i progressi restano).,There is a new version: reload the itch.io page (your progress stays).
 Aggiornamento in corso... il gioco si riapre da solo tra un momento.,Aggiornamento in corso... il gioco si riapre da solo tra un momento.,Updating... the game will reopen by itself in a moment.
 Controllo in corso...,Controllo in corso...,Checking...
 nessuno,nessuno,none
@@ -1091,6 +1095,7 @@ Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte f
 %s: %s","
 %s: %s"
 Prezzo: ,Prezzo: ,Price: 
+%s · sviluppo,%s · sviluppo,%s · development
 %s/%s ore %s:%s,%s/%s ore %s:%s,%s/%s at %s:%s
 Khopesh,Khopesh,Khopesh
 il khopesh,il khopesh,the khopesh

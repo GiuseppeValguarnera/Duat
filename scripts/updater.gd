@@ -46,6 +46,29 @@ static func current() -> String:
 	return pretty(_js("window.DUAT_BUILD || ''"))
 
 
+## Il numero di versione ("0.1.0"): lo stesso nel file VERSION del progetto.
+static func version() -> String:
+	var v := _js("window.DUAT_VERSION || ''")
+	if v == "" or v.begins_with("__"):
+		var f := FileAccess.open("res://VERSION", FileAccess.READ)
+		v = f.get_as_text().strip_edges() if f != null else "?"
+	return v
+
+
+## "dev" (sviluppo, sul sito GitHub) o "stable" (la prova pubblica su itch.io).
+static func channel() -> String:
+	var c := _js("window.DUAT_CHANNEL || ''")
+	return "stable" if c == "stable" else "dev"
+
+
+## Versione da mostrare: "0.1.0 · sviluppo · 25/10 ore 20:02" o "0.1.0".
+static func label() -> String:
+	if channel() == "stable":
+		return version()
+	var b := current()
+	return Lang.t("%s · sviluppo") % version() + ("" if b == "sconosciuta" or b == "" else " · " + b)
+
+
 static func latest() -> String:
 	return pretty(_js("window.duatLatest || ''"))
 
