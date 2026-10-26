@@ -442,6 +442,10 @@ Hai lasciato il cammino a metà. Il Duat ricorda chi si volta indietro.,Hai lasc
 Gli scarabei. Gli uomini li veneravano: lo scarabeo che spinge la sua sfera era il sole che rinasce. Questi non rinascono. Divorano.,Gli scarabei. Gli uomini li veneravano: lo scarabeo che spinge la sua sfera era il sole che rinasce. Questi non rinascono. Divorano.,The scarabs. Men revered them: the scarab rolling its sphere was the sun reborn. These are not reborn. They devour.
 "Un sacerdote. In vita servì gli dèi, nel Duat serve il caos. Colpiscilo prima che la sua preghiera sia compiuta.","Un sacerdote. In vita servì gli dèi, nel Duat serve il caos. Colpiscilo prima che la sua preghiera sia compiuta.",A priest. In life he served the gods; in the Duat he serves chaos. Strike him before his prayer is complete.
 "Il Serpente della Porta. Ogni porta del Duat sta sul fiume della notte, e ha il suo guardiano. Quando si immerge, guarda la scia nell'acqua: ti sta cercando. Poi guarda il cerchio: è lì che tornerà.","Il Serpente della Porta. Ogni porta del Duat sta sul fiume della notte, e ha il suo guardiano. Quando si immerge, guarda la scia nell'acqua: ti sta cercando. Poi guarda il cerchio: è lì che tornerà.","The Serpent of the Gate. Every gate of the Duat stands on the river of night, and has its guardian. When it dives, watch the wake in the water: it is looking for you. Then watch the circle: that is where it will return."
+"Gli sciacalli. Mi somigliano, lo so. Cacciano in branco: uno ti guarda negli occhi mentre gli altri ti girano dietro. Non guardare quello che ringhia. Guarda quelli che tacciono.","Gli sciacalli. Mi somigliano, lo so. Cacciano in branco: uno ti guarda negli occhi mentre gli altri ti girano dietro. Non guardare quello che ringhia. Guarda quelli che tacciono.","The jackals. They look like me, I know. They hunt in packs: one looks you in the eye while the others circle behind you. Don't watch the one that growls. Watch the ones that are silent."
+"Un avvoltoio. Nekhbet, la dea avvoltoio, proteggeva il re con le ali aperte. Questi non proteggono nessuno. Quando la sua ombra si stringe su di te, sei già in ritardo.","Un avvoltoio. Nekhbet, la dea avvoltoio, proteggeva il re con le ali aperte. Questi non proteggono nessuno. Quando la sua ombra si stringe su di te, sei già in ritardo.","A vulture. Nekhbet, the vulture goddess, protected the king with her wings spread. These protect no one. When its shadow closes in on you, you are already late."
+Un guardiano di Sokar. Lo scudo para tutto ciò che vede. Non vede dietro di sé: nessuno ci riesce.,Un guardiano di Sokar. Lo scudo para tutto ciò che vede. Non vede dietro di sé: nessuno ci riesce.,A guardian of Sokar. The shield blocks everything it sees. It does not see behind itself: no one can.
+"Un Ba dannato. L'anima di un morto che la bilancia ha respinto. Non ha più un corpo dove tornare, e odia chi ce l'ha. Abbattila prima che si accenda.","Un Ba dannato. L'anima di un morto che la bilancia ha respinto. Non ha più un corpo dove tornare, e odia chi ce l'ha. Abbattila prima che si accenda.","A damned Ba. The soul of a dead man the scale rejected. It no longer has a body to return to, and it hates those who do. Strike it down before it lights up."
 "Un coccodrillo. Il Libro ha due formule apposta, la trentuno e la trentadue: i coccodrilli del Duat vengono a rubare la magia del morto. Quando l'acqua ribolle vicino a te, non restare sul bordo.","Un coccodrillo. Il Libro ha due formule apposta, la trentuno e la trentadue: i coccodrilli del Duat vengono a rubare la magia del morto. Quando l'acqua ribolle vicino a te, non restare sul bordo.","A crocodile. The Book has two spells for it, the thirty-first and the thirty-second: the crocodiles of the Duat come to steal the magic of the dead. When the water bubbles near you, don't stay on the edge."
 "Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati.","Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati.","The scorpions of Serket. The goddess shields from venom those who honour her. You have not honoured her. When the tail glows, step away."
 "Una grata di fuoco. Nelle acque di Wernes il fuoco di Am-heh corre anche sotto le pietre. Quando le sbarre si arroventano, non aspettare di capire perché.","Una grata di fuoco. Nelle acque di Wernes il fuoco di Am-heh corre anche sotto le pietre. Quando le sbarre si arroventano, non aspettare di capire perché.","A fire grate. In the waters of Wernes the fire of Am-heh runs even under the stones. When the bars glow red, do not wait to understand why."
@@ -877,6 +881,10 @@ gli scarabei,gli scarabei,scarabs
 i sacerdoti di Set,i sacerdoti di Set,priests of Set
 gli scorpioni,gli scorpioni,scorpions
 i coccodrilli,i coccodrilli,the crocodiles
+gli sciacalli,gli sciacalli,the jackals
+gli avvoltoi,gli avvoltoi,the vultures
+i guardiani di Sokar,i guardiani di Sokar,the guardians of Sokar
+i Ba dannati,i Ba dannati,the damned Ba
 i cobra,i cobra,cobras
 le trappole,le trappole,traps
 le grate di fuoco,le grate di fuoco,fire grates
@@ -1592,7 +1600,6 @@ la marea di fuoco di Am-heh,la marea di fuoco di Am-heh,Am-heh's tide of fire
 una grata di fuoco,una grata di fuoco,a fire grate
 una trappola,una trappola,a trap
 le statue del cobra,le statue del cobra,the cobra statues
-gli sciacalli,gli sciacalli,the jackals
 un avvoltoio,un avvoltoio,a vulture
 un guardiano di Sokar,un guardiano di Sokar,a guardian of Sokar
 un Ba dannato,un Ba dannato,a damned Ba

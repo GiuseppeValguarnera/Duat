@@ -1097,7 +1097,7 @@ func _fill_papiri() -> void:
 
 ## Il registro dello scriba (restauro): le tue imprese, in quattro pagine.
 func _registro() -> Dictionary:
-	var names := {"mummy": Lang.t("le mummie"), "scarab": Lang.t("gli scarabei"), "priest": Lang.t("i sacerdoti di Set"), "scorpion": Lang.t("gli scorpioni"), "crocodile": Lang.t("i coccodrilli"),
+	var names := {"mummy": Lang.t("le mummie"), "scarab": Lang.t("gli scarabei"), "priest": Lang.t("i sacerdoti di Set"), "scorpion": Lang.t("gli scorpioni"), "crocodile": Lang.t("i coccodrilli"), "jackal": Lang.t("gli sciacalli"), "vulture": Lang.t("gli avvoltoi"), "sokar_guard": Lang.t("i guardiani di Sokar"), "damned_ba": Lang.t("i Ba dannati"),
 		"cobra": Lang.t("i cobra"), "serpent": Lang.t("il Serpente della Porta"), "amheh": Lang.t("Am-heh"), "ammit": Lang.t("Ammit"),
 		"trappola": Lang.t("le trappole"), "grata": Lang.t("le grate di fuoco"), "olio": Lang.t("l'olio in fiamme"), "ureo": Lang.t("le statue dell'ureo")}
 	var time_txt := Lang.t("nessuna vittoria ancora") if Meta.best_time < 0 else "%d:%02d" % [floori(Meta.best_time / 60.0), Meta.best_time % 60]

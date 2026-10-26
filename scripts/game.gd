@@ -353,6 +353,7 @@ func _make_wave(budget: int, allow_priest: bool) -> Array:
 	var water := get_tree().get_nodes_in_group("water").size()
 	var crocs := 0
 	var sokar := Run.region == 2
+	var cnt := {}                                  # quanti di ogni tipo in questa ondata (Sokar)
 	while budget > 0:
 		var roll := randf()
 		# Sokar: scorpioni di Serket, sciacalli in branco, avvoltoi, guardiani con lo scudo, Ba
@@ -360,7 +361,8 @@ func _make_wave(budget: int, allow_priest: bool) -> Array:
 		if sokar:
 			var r := Run.room
 			var pick := randf()
-			if pick < 0.2 and budget >= 3:
+			if pick < 0.2 and budget >= 3 and cnt.get("jackal", 0) < 1:
+				cnt["jackal"] = 1                  # un branco per ondata: due insieme erano troppi
 				out.append_array(["jackal", "jackal", "jackal"])
 				budget -= 4
 				continue
@@ -368,15 +370,18 @@ func _make_wave(budget: int, allow_priest: bool) -> Array:
 				out.append_array(["scorpion", "scorpion"])
 				budget -= 3
 				continue
-			if pick < 0.48 and r >= 2 and budget >= 2:
+			if pick < 0.48 and r >= 2 and budget >= 2 and cnt.get("vulture", 0) < 2:
+				cnt["vulture"] = cnt.get("vulture", 0) + 1
 				out.append("vulture")
 				budget -= 2
 				continue
-			if pick < 0.58 and r >= 3 and budget >= 3:
+			if pick < 0.58 and r >= 3 and budget >= 3 and cnt.get("guard", 0) < 2:
+				cnt["guard"] = cnt.get("guard", 0) + 1
 				out.append("sokar_guard")
 				budget -= 3
 				continue
-			if pick < 0.68 and r >= 4 and budget >= 2:
+			if pick < 0.68 and r >= 4 and budget >= 2 and cnt.get("ba", 0) < 2:
+				cnt["ba"] = cnt.get("ba", 0) + 1
 				out.append_array(["damned_ba", "damned_ba"])
 				budget -= 2
 				continue
