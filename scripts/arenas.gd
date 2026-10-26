@@ -175,6 +175,223 @@ static func paint_gate(ci: CanvasItem, r: Rect2, top: float, wall: float) -> voi
 	ci.draw_circle(dc, 6.0, Color(0.86, 0.28, 0.12))
 
 
+# ---------------------------------------------------------------- il tempio di Serket
+
+const DAIS_RADII := Vector2(118, 62)       ## il piano di pietra al centro del tempio (Serket non ci scava)
+## I cumuli di sabbia da cui escono gli scorpioni (frazioni del pavimento): lontani dalle colonne
+## e dalle porte, intorno al piano di pietra.
+const MOUNDS := [Vector2(0.1, 0.2), Vector2(0.9, 0.2), Vector2(0.07, 0.56), Vector2(0.93, 0.56), Vector2(0.25, 0.93), Vector2(0.75, 0.93)]
+
+
+static func temple_mounds(room: Rect2, top: float, wall: float) -> Array:
+	var out := []
+	for m in MOUNDS:
+		var f: Vector2 = m
+		out.append(Vector2(lerpf(wall, room.size.x - wall, f.x), lerpf(top, room.size.y - wall, f.y)))
+	return out
+
+
+## Il tempio di Serket, semisepolto dal deserto di Sokar: pavimento di sabbia con le onde del
+## vento, al centro il piano di pietra con lo scorpione inciso (lì la dea non può scavare),
+## i cumuli da cui escono i suoi scorpioni. In fondo la facciata del santuario: la porta chiusa
+## sotto il disco alato e le due statue della dea seduta, con lo scorpione sul capo. Lungo le
+## pareti il fregio degli scorpioni, turchese e oro.
+static func paint_temple(ci: CanvasItem, r: Rect2, top: float, wall: float) -> void:
+	var cx := r.size.x / 2.0
+	var mid := deep_center(r, top, wall)
+	var floor_r := Rect2(wall, top, r.size.x - wall * 2.0, r.size.y - wall - top)
+	var sand := Color(0.68, 0.53, 0.32)
+	ci.draw_rect(floor_r, sand)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7311
+	# le onde lasciate dal vento sulla sabbia
+	var yy := top + 10.0
+	while yy < floor_r.end.y - 4.0:
+		var pts := PackedVector2Array()
+		var x := wall
+		var ph := rng.randf() * TAU
+		while x <= floor_r.end.x:
+			pts.append(Vector2(x, yy + sin(x * 0.045 + ph) * 3.0))
+			x += 8.0
+		ci.draw_polyline(pts, Color(0.56, 0.42, 0.24, 0.5), 1.2)
+		var hi := pts.duplicate()
+		for i in range(hi.size()):
+			hi[i] = hi[i] + Vector2(0, -1.5)
+		ci.draw_polyline(hi, Color(0.84, 0.7, 0.47, 0.35), 1.0)
+		yy += rng.randf_range(14.0, 22.0)
+	# sassi e frammenti di pietra
+	for i in range(50):
+		var p := Vector2(rng.randf_range(floor_r.position.x + 6, floor_r.end.x - 6), rng.randf_range(floor_r.position.y + 6, floor_r.end.y - 6))
+		ci.draw_circle(p, rng.randf_range(0.8, 2.0), Color(0.45, 0.34, 0.22, 0.7))
+	# il piano di pietra: lastre a raggiera intorno allo scorpione inciso
+	var rad := DAIS_RADII
+	ci.draw_set_transform(mid, 0.0, Vector2(1.0, rad.y / rad.x))
+	ci.draw_circle(Vector2(4, 8), rad.x + 4.0, Color(0, 0, 0, 0.25))
+	ci.draw_circle(Vector2.ZERO, rad.x + 4.0, Color(0.3, 0.24, 0.17))
+	ci.draw_circle(Vector2.ZERO, rad.x, Color(0.62, 0.55, 0.45))
+	ci.draw_circle(Vector2(-6, -6), rad.x * 0.92, Color(0.68, 0.61, 0.5))
+	for k in range(1, 3):
+		ci.draw_arc(Vector2.ZERO, rad.x * k / 3.0, 0.0, TAU, 48, Color(0.38, 0.32, 0.25), 1.6)
+	for i in range(16):
+		var a := TAU * i / 16.0
+		ci.draw_line(Vector2.from_angle(a) * rad.x / 3.0, Vector2.from_angle(a) * rad.x, Color(0.38, 0.32, 0.25), 1.4)
+	ci.draw_arc(Vector2.ZERO, rad.x - 6.0, 0.0, TAU, 64, Color(0.22, 0.7, 0.68, 0.7), 2.5)
+	ci.draw_arc(Vector2.ZERO, rad.x - 10.0, 0.0, TAU, 64, Color(0.94, 0.72, 0.3, 0.6), 1.2)
+	# lo scorpione inciso al centro, d'oro
+	var gold := Color(0.85, 0.64, 0.26)
+	ci.draw_set_transform(mid, 0.0, Vector2(1.0, 0.75))
+	ci.draw_colored_polygon(_oval(Vector2(0, 0), 14.0, 8.0), gold)
+	for sx in [-1.0, 1.0]:
+		for k in range(3):
+			var ly: float = -4.0 + k * 4.0
+			ci.draw_line(Vector2(sx * 10.0, ly), Vector2(sx * 20.0, ly + sx * 0.0 + 4.0), gold, 2.0)
+		ci.draw_line(Vector2(sx * 6.0, -6.0), Vector2(sx * 12.0, -18.0), gold, 2.5)
+		ci.draw_arc(Vector2(sx * 14.0, -21.0), 4.0, 0.0, TAU, 10, gold, 2.0)
+	var tail := PackedVector2Array()
+	for k in range(9):
+		var u := k / 8.0
+		tail.append(Vector2(sin(u * PI) * 10.0 * (1.0 - u * 0.4), 8.0 + u * 26.0))
+	ci.draw_polyline(tail, gold, 3.0)
+	ci.draw_circle(tail[tail.size() - 1], 3.5, Color(0.22, 0.7, 0.68))
+	ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	# la sabbia che invade il bordo del piano
+	for i in range(10):
+		var a := rng.randf() * TAU
+		var p := mid + Vector2(cos(a) * rad.x, sin(a) * rad.y)
+		ci.draw_set_transform(p, 0.0, Vector2(1.0, 0.45))
+		ci.draw_circle(Vector2.ZERO, rng.randf_range(10.0, 20.0), Color(sand, 0.85))
+		ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	# i cumuli: sabbia ammucchiata, con il buco scuro da cui escono gli scorpioni
+	for m in temple_mounds(r, top, wall):
+		var mp: Vector2 = m
+		ci.draw_set_transform(mp, 0.0, Vector2(1.0, 0.5))
+		ci.draw_circle(Vector2(3, 6), 22.0, Color(0, 0, 0, 0.18))
+		ci.draw_circle(Vector2.ZERO, 22.0, Color(0.55, 0.42, 0.25))
+		ci.draw_circle(Vector2(-4, -5), 16.0, Color(0.76, 0.61, 0.38))
+		ci.draw_circle(Vector2(-6, -8), 8.0, Color(0.86, 0.72, 0.48))
+		ci.draw_circle(Vector2(2, 2), 4.5, Color(0.18, 0.12, 0.08))
+		ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	# le pareti di arenaria scura, con il fregio degli scorpioni
+	var dark := Color(0.2, 0.15, 0.11)
+	ci.draw_rect(Rect2(0, 0, r.size.x, top), dark)
+	ci.draw_rect(Rect2(0, r.size.y - wall, r.size.x, wall), dark)
+	ci.draw_rect(Rect2(0, 0, wall, r.size.y), dark)
+	ci.draw_rect(Rect2(r.size.x - wall, 0, wall, r.size.y), dark)
+	for side in [wall * 0.5, r.size.x - wall * 0.5]:
+		var sx2: float = side
+		ci.draw_line(Vector2(sx2 - 9.0, top), Vector2(sx2 - 9.0, r.size.y - wall), Color(0.22, 0.7, 0.68, 0.7), 2.0)
+		ci.draw_line(Vector2(sx2 + 9.0, top), Vector2(sx2 + 9.0, r.size.y - wall), Color(0.22, 0.7, 0.68, 0.7), 2.0)
+		var y2 := top + 24.0
+		while y2 < r.size.y - wall - 12.0:
+			_glyph_scorpion(ci, Vector2(sx2, y2), 0.55, gold)
+			y2 += 40.0
+	# sabbia accumulata contro le pareti
+	for i in range(28):
+		var bx := rng.randf_range(floor_r.position.x, floor_r.end.x)
+		var on_top := i % 2 == 0
+		if absf(bx - cx) < 60.0:
+			continue
+		var p := Vector2(bx, floor_r.position.y + 2.0 if on_top else floor_r.end.y - 2.0)
+		ci.draw_set_transform(p, 0.0, Vector2(1.0, 0.4))
+		ci.draw_circle(Vector2.ZERO, rng.randf_range(14.0, 28.0), Color(0.76, 0.61, 0.38, 0.9))
+		ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	# la facciata del santuario: blocchi chiari, la cornice a gola, la porta chiusa
+	var face := Rect2(cx - 230.0, 0, 460.0, top + 2.0)
+	ci.draw_rect(face, Color(0.56, 0.45, 0.32))
+	for k in range(4):
+		ci.draw_line(Vector2(face.position.x, 14.0 + k * 13.0), Vector2(face.end.x, 14.0 + k * 13.0), Color(0.44, 0.34, 0.24), 1.0)
+	ci.draw_rect(Rect2(face.position.x, 0, face.size.x, 6), Color(0.16, 0.3, 0.68))
+	ci.draw_rect(Rect2(face.position.x, 6, face.size.x, 2), Color(0.94, 0.72, 0.3))
+	var door := Rect2(cx - 34.0, 14.0, 68.0, top - 12.0)
+	ci.draw_rect(door.grow(3.0), Color(0.94, 0.72, 0.3))
+	ci.draw_rect(door, Color(0.1, 0.07, 0.05))
+	# lo scorpione sopra la porta e il disco alato
+	_glyph_scorpion(ci, Vector2(cx, 34.0), 0.8, Color(0.22, 0.7, 0.68))
+	var dc := Vector2(cx, 10.0)
+	for sx3 in [-1.0, 1.0]:
+		ci.draw_colored_polygon(PackedVector2Array([dc + Vector2(sx3 * 6, -3), dc + Vector2(sx3 * 40, -4), dc + Vector2(sx3 * 34, 3), dc + Vector2(sx3 * 6, 3)]), Color(0.16, 0.3, 0.68))
+	ci.draw_circle(dc, 5.0, Color(0.86, 0.28, 0.12))
+	# le due statue della dea seduta, ai lati della porta
+	for sx4 in [-1.0, 1.0]:
+		_statue_serket(ci, Vector2(cx + sx4 * 130.0, top + 2.0), sx4)
+
+
+## Un piccolo scorpione stilizzato, come nei geroglifici (il segno di Serket).
+static func _glyph_scorpion(ci: CanvasItem, c: Vector2, s: float, col: Color) -> void:
+	ci.draw_colored_polygon(_oval(c, 7.0 * s, 4.0 * s), col)
+	ci.draw_line(c + Vector2(-6, 0) * s, c + Vector2(-13, -7) * s, col, 2.0 * s)
+	ci.draw_arc(c + Vector2(-11, -12) * s, 4.0 * s, PI * 0.2, PI * 1.5, 8, col, 2.0 * s)
+	for k in range(3):
+		ci.draw_line(c + Vector2(-2 + k * 3, 3) * s, c + Vector2(-4 + k * 3, 8) * s, col, 1.4 * s)
+	ci.draw_line(c + Vector2(6, -1) * s, c + Vector2(11, -5) * s, col, 1.6 * s)
+	ci.draw_line(c + Vector2(6, 1) * s, c + Vector2(11, 4) * s, col, 1.6 * s)
+
+
+## Serket seduta sul trono, di profilo, rivolta verso la porta: la parrucca nera, la veste
+## bianca, lo scorpione sul capo.
+static func _statue_serket(ci: CanvasItem, base: Vector2, side: float) -> void:
+	var f := -side            # guarda verso il centro
+	var stone := Color(0.72, 0.6, 0.44)
+	var stone_d := Color(0.44, 0.34, 0.24)
+	var o := Color(0.12, 0.08, 0.05)
+	# il trono
+	ci.draw_rect(Rect2(base.x - 14.0, base.y - 26.0, 28.0, 26.0), o)
+	ci.draw_rect(Rect2(base.x - 13.0, base.y - 25.0, 26.0, 24.0), stone_d)
+	ci.draw_rect(Rect2(base.x - 13.0, base.y - 10.0, 26.0, 3.0), Color(0.22, 0.7, 0.68))
+	# il corpo seduto: le gambe in avanti, il busto eretto
+	var body := PackedVector2Array([
+		base + Vector2(-6 * f, -26), base + Vector2(6 * f, -26), base + Vector2(8 * f, -14),
+		base + Vector2(18 * f, -14), base + Vector2(18 * f, -1), base + Vector2(12 * f, -1),
+		base + Vector2(12 * f, -8), base + Vector2(-6 * f, -8)])
+	ci.draw_colored_polygon(body, Color(0.9, 0.86, 0.76))
+	var cl := body.duplicate()
+	cl.append(body[0])
+	ci.draw_polyline(cl, o, 1.0)
+	# la testa con la parrucca
+	var h := base + Vector2(1 * f, -33)
+	ci.draw_circle(h, 7.5, o)
+	ci.draw_circle(h, 6.5, Color(0.08, 0.07, 0.1))
+	ci.draw_circle(h + Vector2(3 * f, 0.5), 3.5, stone)
+	ci.draw_line(h + Vector2(-6, -3), h + Vector2(6, -3), Color(0.94, 0.72, 0.3), 1.2)
+	# lo scorpione sul capo
+	_glyph_scorpion(ci, h + Vector2(0, -11), 0.45, Color(0.94, 0.72, 0.3))
+
+
+static func _oval(c: Vector2, rx: float, ry: float) -> PackedVector2Array:
+	var pts := PackedVector2Array()
+	for i in range(14):
+		var a := TAU * i / 14.0
+		pts.append(c + Vector2(cos(a) * rx, sin(a) * ry))
+	return pts
+
+
+## La sabbia che cola dalle crepe del soffitto del tempio, a fili sottili.
+class TempleDust extends Node2D:
+	var room := Rect2()
+	var top := 64.0
+	var wall := 32.0
+	var t := 0.0
+
+	func _process(delta: float) -> void:
+		t += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		for i in range(7):
+			var x := lerpf(wall + 30.0, room.size.x - wall - 30.0, fmod(i * 0.413 + 0.07, 1.0))
+			var y1 := lerpf(top + 40.0, room.size.y - wall - 30.0, fmod(i * 0.29 + 0.3, 1.0))
+			var on := sin(t * 0.7 + i * 1.9) > 0.2
+			if not on:
+				continue
+			for k in range(10):
+				var f := fmod(t * 1.6 + k * 0.1, 1.0)
+				var p := Vector2(x + sin(k * 3.1) * 0.8, lerpf(y1 - 120.0, y1, f))
+				draw_circle(p, 0.9, Color(0.86, 0.72, 0.48, 0.55 * (1.0 - f * 0.5)))
+			draw_set_transform(Vector2(x, y1), 0.0, Vector2(1.0, 0.4))
+			draw_circle(Vector2.ZERO, 5.0, Color(0.82, 0.68, 0.44, 0.6))
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
 ## Una foglia di loto: un disco con la tacca.
 static func _pad(c: Vector2, r: float, gap_a: float) -> PackedVector2Array:
 	var pts := PackedVector2Array([c])

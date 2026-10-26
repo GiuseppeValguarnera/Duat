@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/serket.gd" id="1_serket"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 14.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_contact"]
+radius = 15.0
+
+[node name="Serket" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 5
+motion_mode = 1
+script = ExtResource("1_serket")
+max_hp = 460.0
+speed = 58.0
+contact_damage = 12.0
+ka_value = 18
+radius = 16.0
+
+[node name="Body" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_body")
+
+[node name="ContactArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+
+[node name="Shape" type="CollisionShape2D" parent="ContactArea"]
+position = Vector2(0, -8)
+shape = SubResource("CircleShape2D_contact")

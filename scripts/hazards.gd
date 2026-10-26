@@ -715,6 +715,47 @@ class VenomPuddle extends Node2D:
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
+## Nube di veleno di Serket (adirata): resta dove è riemersa per qualche secondo, una nebbia
+## verde che sale. Chi ci cammina dentro (senza scattare) viene avvelenato. Più grande e più
+## alta di una pozza: si vede anche sopra la sabbia chiara del tempio.
+class VenomCloud extends Node2D:
+	var life := 3.5
+	var t := 0.0
+	var r := 34.0
+	var cool := 0.0
+
+	func _ready() -> void:
+		z_index = 1
+		Sfx.play_at("orb_pop", global_position, 0.2)
+
+	func _process(delta: float) -> void:
+		t += delta
+		cool = maxf(0.0, cool - delta)
+		if t >= life:
+			queue_free()
+			return
+		var p = get_tree().get_first_node_in_group("player")
+		if p != null and not p.dead and cool <= 0.0 and p.dash_t <= 0.0:
+			var d: Vector2 = (p.global_position - global_position) / Vector2(r, r * 0.6)
+			if d.length() < 1.0:
+				p.poison(1.5, "serket")
+				cool = 0.5
+		queue_redraw()
+
+	func _draw() -> void:
+		var a := clampf(t / 0.25, 0.0, 1.0) * clampf((life - t) / 0.8, 0.0, 1.0)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, 0.6))
+		draw_circle(Vector2.ZERO, r, Color(0.4, 0.85, 0.2, 0.18 * a))
+		draw_arc(Vector2.ZERO, r, 0.0, TAU, 32, Color(0.25, 0.08, 0.3, 0.5 * a), 1.5)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		for i in range(12):
+			var k := fmod(t * 0.6 + i * 0.083, 1.0)
+			var ang := i * 2.39
+			var mp := Vector2.from_angle(ang) * r * (0.2 + 0.7 * fmod(i * 0.37, 1.0))
+			mp.y *= 0.6
+			draw_circle(mp + Vector2(0, -k * 18.0), 4.0 + 4.0 * k, Color(0.5, 0.95, 0.3, 0.3 * (1.0 - k) * a))
+
+
 ## Pioggia di veleno (Peso del Cuore, l'ira del Serpente): un cerchio d'avviso, poi la goccia
 ## cade e lascia la pozza. Ferisce chi è sotto quando cade.
 class VenomDrop extends Node2D:
