@@ -127,9 +127,11 @@ func _draw_body(flash: bool) -> void:
 		var r := 7.0 + raise * 3.0
 		seg.append(Vector2(-7.0, -4.0) + Vector2(cos(ang) * r * 0.6 + u * (4.0 + raise * 4.0), -sin(ang) * r - u * (3.0 + raise * 3.0)))
 	for k in range(5):
-		_limb(seg[k], seg[k + 1], shell, 2.4 - k * 0.25)
-	for k in range(1, 5):
-		draw_circle(seg[k], 0.5, shell_l)
+		_limb(seg[k], seg[k + 1], shell_d, 1.6)
+	for k in range(5):
+		var r := 2.3 - k * 0.2
+		_dot(seg[k].lerp(seg[k + 1], 0.5), r, shell)
+		draw_circle(seg[k].lerp(seg[k + 1], 0.5) + Vector2(-0.5, -0.6), r * 0.35, shell_l)
 	# il pungiglione ricurvo
 	var tip: Vector2 = seg[5]
 	var lit := raise > 0.0

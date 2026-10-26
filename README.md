@@ -2,7 +2,7 @@
 
 Roguelike action nell'oltretomba egizio, fatto con Godot 4.7.
 
-**Stato:** fase 2. C'è la Sala del Giudizio (base tra una discesa e l'altra, con Anubi e il Libro dei Morti) e la Prima Ora completa: 10 stanze, un guardiano a metà, il Traghettatore, Am-heh alla fine, con nemici diversi, ricompense, doni degli dèi, patti di Set e Forma Divina. La grafica è provvisoria (forme semplici) di proposito: prima si rende divertente il gioco, poi arrivano gli sprite.
+**Stato:** fase 2. C'è la Sala del Giudizio (base tra una discesa e l'altra, con Anubi e il Libro dei Morti) e la Prima Ora completa: 10 stanze, un guardiano a metà, il Traghettatore, Am-heh alla fine, con nemici diversi, ricompense, doni degli dèi, patti di Set e Forma Divina. La grafica è disegnata col codice, in uno stile unico (contorni scuri, colori della pittura egizia, un solo carattere): niente sprite esterni, tutto gratuito e modificabile.
 
 ## La storia
 
@@ -49,7 +49,11 @@ Per aggiornare la versione web dopo una modifica: `tools/deploy_web.sh /percorso
 
 **Il protagonista** crede di essere uno scriba: porta alla cintura la tavolozza con i due pozzetti d'inchiostro (nero e rosso), ha gli occhi con il kohl e il gonnellino di lino con la cintura d'oro. Ma in testa ha il *khat* a righe blu e oro, il copricapo della gente comune che ricorda il nemes dei faraoni, e un mantello scuro e logoro; il collare blu e oro lo fa risaltare nella penombra. Cammina davvero (gambe e braccia che si alternano, di profilo quando va di lato), durante lo scatto lascia due scie, e nella **Forma Divina** il khat diventa per un attimo il nemes dorato con l'ureo sulla fronte: un indizio per chi conosce l'Egitto (`_draw_hero` in `scripts/player.gd`).
 
-**La luce** è vera (le luci 2D di Godot, `scripts/atmos.gd`): una penombra leggera di fondo, calda nelle stanze e blu notte nella Sala; torce e bracieri fanno pozze di luce che tremolano; le colonne fanno ombra (solo per i bracieri e le lampade della Sala, perché ogni luce con ombra costa e il telefono deve reggere); le porte brillano del colore della loro ricompensa; attorno al personaggio c'è una luce debole che lo tiene sempre visibile; i bordi dello schermo sfumano nel buio e nell'aria c'è polvere sospesa. Nella Sala si illumina ciò che conta: la luna dal cancello sulla bilancia, lampade calde su Anubi, sul Libro e sui Papiri. Il buio è atmosfera, non un ostacolo: le chiazze chiare sul pavimento (la sabbia) ora sono scure, perché sembravano luce.
+**La luce** è quasi tutta finta, per scelta (`scripts/atmos.gd`, `scripts/room_decor.gd`): le luci 2D vere di Godot, nel renderer Compatibility che usiamo sul web, ridisegnano tutto ciò che toccano una volta per luce, e con una quindicina di luci per stanza il telefono scendeva a 12 fps. Ora pavimento, muri, arredi, pozze di luce delle torce e **penombra** sono cotti una volta sola in una texture per stanza (una griglia di quadratini sfumati: buio lontano dalle luci, chiaro attorno a torce, bracieri, porte e al centro dove si combatte); bracieri, porte e la pozza dello scatto hanno aloni sommati che tremolano. Eroe e nemici stanno sopra la penombra e non vengono scuriti: si leggono sempre. Le luci vere con le ombre restano solo nella Sala, e solo sul computer. Sul computer i bordi dello schermo sfumano nel buio (si disegna solo la cornice); sul telefono no. Risultato misurato in combattimento (renderer software, telefono): da 12 a circa 40 fps.
+
+**Nemici e boss** sono disegnati nello stesso stile dell'eroe: contorno scuro attorno a ogni forma, i colori della pittura egizia, occhi che si leggono. Lo scarabeo di Khepri col pettine sulla testa, la mummia con le bende e le braccia tese, lo scorpione di Serket con le fasce turchesi e la coda ad anelli, il sacerdote con la maschera di Set, la pelle di leopardo e lo scettro uas, il cobra col cappuccio dipinto, il Serpente della Porta, Am-heh col collare d'oro e la criniera di fiamme, Ammit coccodrillo-leone-ippopotamo. Gli avvisi di gioco (rosso, verde, linee di mira) sono rimasti identici.
+
+**Le stanze** hanno profondità: lastre di pietra sfalsate con il bordo in luce e in ombra, la fuga calda (prima era una griglia blu), blocchi nei muri, sabbia negli angoli, colonne papiriformi con il cartiglio e il capitello a boccio di papiro, oggetti con l'ombra a terra (Anubi sdraiato sul suo sacrario, il sarcofago antropoide, i bracieri a tre piedi) e porte egizie con la gola a foglie di palma e il disco solare alato.
 
 **I colori** sono quelli della pittura egizia (lapislazzuli, turchese, ocra rossa e gialla, malachite): ogni stanza ha un motivo diverso al centro del pavimento (il sole, l'occhio udjat, lo scarabeo alato Khepri, la rosa di loto, il cielo stellato di Nut), mattonelle di faience, un fregio di fiori di loto lungo il bordo, fasce colorate e figure di portatori di offerte dipinte sulle pareti, papiri, tavole delle offerte e vasi dipinti, e gli spiriti del Ka, piccole luci azzurre e dorate che vagano nell'aria (`scripts/room_decor.gd`).
 
@@ -352,7 +356,7 @@ scripts/  hub.gd       la Sala del Giudizio      dialogue.gd   battute di Anubi
           ui/          pezzi di interfaccia: barre dell'HUD, carte di scelta, frecce delle porte,
                        anello dei doni, bilancia della morte, icone
           room_decor.gd  arredamento delle stanze     traps.gd   trappole
-          atmos.gd     luce vera, ombre, penombra, polvere     lang.gd   lingue
+          atmos.gd     luci finte e vere, vignettatura, polvere     lang.gd   lingue
           run.gd       stato della run (vita, Ka, doni) ed effetti dei doni
           boons.gd     elenco di dèi e doni
           enemy.gd     base comune a tutti i nemici

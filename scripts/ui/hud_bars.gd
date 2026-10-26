@@ -43,7 +43,7 @@ func _draw() -> void:
 		return
 	var u: float = 0.85 if Fx.mobile else 0.9    # compatto: sul telefono lo schermo è già ingrandito
 	hu = u
-	var font := ThemeDB.fallback_font
+	var font := UiStyle.body_font()
 	var title := UiStyle.title_font()
 	var sek: bool = Run.sekhem_unlocked()
 	var o := Vector2(6, 6) * u

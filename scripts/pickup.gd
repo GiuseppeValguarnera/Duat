@@ -65,5 +65,5 @@ func _draw() -> void:
 	draw_circle(Vector2(0, -10 + bob), 11.0 + sin(t * 4.0), Color(c, 0.25))
 	draw_circle(Vector2(0, -10 + bob), 7.0, c)
 	draw_circle(Vector2(-2, -12 + bob), 2.0, Color(1, 1, 1, 0.8))
-	var font := ThemeDB.fallback_font
+	var font := UiStyle.body_font()
 	draw_string(font, Vector2(-30, -26 + bob), label(), HORIZONTAL_ALIGNMENT_CENTER, 60, 9, Color(1, 0.95, 0.85))

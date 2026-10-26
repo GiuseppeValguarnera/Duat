@@ -177,7 +177,7 @@ func _portrait() -> bool:
 
 
 func _draw_controls() -> void:
-	var font := ThemeDB.fallback_font
+	var font := UiStyle.body_font()
 	if _portrait():
 		var vs := get_viewport().get_visible_rect().size
 		draw_node.draw_rect(Rect2(Vector2.ZERO, vs), Color(0.03, 0.03, 0.08, 0.95))

@@ -31,7 +31,7 @@ var painter := false                    ## vero per la copia che disegna dentro 
 var under: Callable
 var _vp: SubViewport
 ## Quanto è buia la stanza lontano dalle luci (la penombra cotta, vedi _draw_shade).
-var SHADE := 0.62
+var SHADE := 0.52
 
 
 func build(seed_value: int, room_rect: Rect2, top_y: float, wall_w: float, pillars: Array, boss: bool) -> Array:

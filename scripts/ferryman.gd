@@ -158,7 +158,7 @@ class ShopItem extends Node2D:
 			_:
 				draw_rect(Rect2(-2, y - 7, 4, 12), c)
 				draw_rect(Rect2(-6, y - 3, 12, 3), c)
-		var font := ThemeDB.fallback_font
+		var font := UiStyle.body_font()
 		var label := Lang.t("%d Ka") % price
 		var w := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
 		var col := Color(0.94, 0.72, 0.3) if Run.ka >= price else Color(0.7, 0.4, 0.35)
