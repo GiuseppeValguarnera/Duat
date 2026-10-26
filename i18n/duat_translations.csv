@@ -50,6 +50,9 @@ La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove,La stele mis
 %s · parla con Neith,%s · parla con Neith,%s · talk to Neith
 %s · è l'arma che impugni,%s · è l'arma che impugni,%s · it is the weapon you wield
 %s · Prendi: %s,%s · Prendi: %s,%s · Take: %s
+Pausa,Pausa,Pause
+Riprendi,Riprendi,Resume
+Torna nella Sala del Giudizio,Torna nella Sala del Giudizio,Back to the Hall of Judgement
 "Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.","Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.","Halt, mortal. This is my courtyard, and whoever enters is measured."
 Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,I am Neith of Sais. I was already ancient when Ra opened his eyes for the first time.
 Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,You felled the guardian of the gate with a curved sword. It is not enough. Whoever crosses the night must know more than one blade.
@@ -614,8 +617,6 @@ Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arriva
 Set ti propone un patto,Set ti propone un patto,Set offers you a pact
 Maledizione di Set: %d stanze,Maledizione di Set: %d stanze,Curse of Set: %d chambers
 %s. Poi: %s,%s. Poi: %s,%s. Then: %s
-Pausa,Pausa,Pause
-Riprendi,Riprendi,Resume
 Volume,Volume,Volume
 Ricomincia la run,Ricomincia la run,Restart the run
 Torna alla Sala (abbandona),Torna alla Sala (abbandona),Back to the Hall (abandon)

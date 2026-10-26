@@ -278,8 +278,19 @@ func _unhandled_input(event: InputEvent) -> void:
 				_take_weapon(int(near.substr(3)))
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("pause"):
-		_leave()
 		get_viewport().set_input_as_handled()
+		_open_pause()
+
+
+## Start / Esc: la pausa, con la scelta di restare o di tornare nella Sala. Prima Start faceva
+## uscire subito (e cambiando scena durante l'input il gioco dava errore e si bloccava).
+func _open_pause() -> void:
+	var col := _window(Lang.t("Pausa"), "")
+	var resume := _button(col, Lang.t("Riprendi"), true, _close_menu)
+	_button(col, Lang.t("Torna nella Sala del Giudizio"), true, func() -> void:
+		_close_menu()
+		_leave.call_deferred())
+	resume.grab_focus.call_deferred()
 
 
 func _leave() -> void:
