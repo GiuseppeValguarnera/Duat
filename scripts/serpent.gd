@@ -5,7 +5,8 @@ extends Enemy
 ## Mosse:
 ## - Affondo: si ritrae (avviso con la linea), poi scatta con la testa in linea retta.
 ## - Veleno: sputa un ventaglio di gocce verdi.
-## - Sott'acqua: si immerge nelle acque di Wernes (non si può colpire), ti insegue e riemerge
+## - Sott'acqua: si immerge nelle acque di Wernes (non si può colpire), ti insegue e riemerge.
+##   Nell'arena della Porta si tuffa solo dall'acqua alta al centro: quando ci va, sta per sparire.
 ##   dove eri. Un cerchio a terra avvisa dove uscirà: scatta via.
 ## Sotto metà vita si infuria: più rapido, ventaglio più largo, e gli affondi diventano doppi.
 ## Gli sputi, dove cadono, lasciano pozze di veleno per qualche secondo (Hazards.VenomPuddle).
@@ -101,6 +102,15 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				state = "recover"
 				st = 0.6
 			return Vector2.ZERO
+		"seek_deep":
+			var dc := Run.deep_center - global_position
+			if Run.in_deep(global_position + dc.normalized() * 30.0) and Run.in_deep(global_position) or st <= 0.0:
+				state = "dive"
+				st = 0.4
+				Fx.burst(global_position, Color(0.55, 0.8, 0.95), 20, 90.0)
+				return Vector2.ZERO
+			aim = dc.normalized()
+			return aim * speed * 1.4 * _rage()
 		"dive":
 			if st <= 0.0:
 				state = "under"
@@ -165,6 +175,10 @@ func _choose(to: Vector2) -> void:
 		state = "spit"
 		st = 0.55
 		Sfx.play_at("cobra_hiss", global_position, 0.05)
+	elif Run.deep_radii != Vector2.ZERO and not Run.in_deep(global_position):
+		# si tuffa solo dall'acqua alta: prima ci va (ed è il tuo avviso)
+		state = "seek_deep"
+		st = 2.5
 	else:
 		state = "dive"
 		st = 0.5

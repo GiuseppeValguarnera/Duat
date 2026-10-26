@@ -52,6 +52,15 @@ var was_stacks := 0                    ## Scettro Was: stanze pulite contate
 var kheper_left := 0                   ## Scarabeo Kheper: doni che arrivano ancora al livello 2
 var decoy_pos := Vector2.ZERO          ## Pilastro Djed: dove sta la statua che attira i nemici
 var decoy_t := 0.0
+# l'acqua alta dell'arena della Porta (arenas.gd): rallenta, scioglie il veleno, il Serpente ci si tuffa
+var deep_center := Vector2.ZERO
+var deep_radii := Vector2.ZERO
+
+
+func in_deep(p: Vector2) -> bool:
+	if deep_radii == Vector2.ZERO:
+		return false
+	return ((p - deep_center) / deep_radii).length() < 1.0
 
 
 func aspect_val(id: String) -> float:
@@ -92,6 +101,7 @@ func new_run() -> void:
 	was_stacks = 0
 	kheper_left = int(Amulets.value("kheper", amulet_level)) if amulet == "kheper" else 0
 	decoy_t = 0.0
+	deep_radii = Vector2.ZERO
 	Challenges.on_run_start()
 	if chap("c17"):
 		max_hp += Chapters.value("c17")

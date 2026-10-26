@@ -242,6 +242,8 @@ func start_room(reward: Dictionary) -> void:
 	elif arena == "gate":
 		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_gate(ci, ROOM, TOP, WALL)
 	decor.arena = arena
+	Run.deep_center = Arenas.deep_center(ROOM, TOP, WALL) if arena == "gate" else Vector2.ZERO
+	Run.deep_radii = Arenas.DEEP_RADII if arena == "gate" else Vector2.ZERO
 	if arena != "":
 		decor.SHADE = 0.18
 	room_decor = decor
@@ -251,6 +253,9 @@ func start_room(reward: Dictionary) -> void:
 		for pd in (Arenas.LAKE_POOLS if arena == "lake" else AMHEH_POOLS):
 			var pool := Hazards.WaterPool.new()
 			pool.radii = pd[1]
+			if arena == "lake":
+				pool.rect = Vector2(pd[1].x * 2.0, pd[1].y * 2.0)       # vasche sacre rettangolari
+				pool.basin = true
 			pool.position = Vector2(lerpf(WALL, ROOM.size.x - WALL, pd[0].x), lerpf(TOP, ROOM.size.y - WALL, pd[0].y))
 			world.add_child(pool)
 			pool_spots.append(pool.position)
@@ -262,6 +267,7 @@ func start_room(reward: Dictionary) -> void:
 		decor.mosaic = ""                  # al centro c'è l'altare di Set: niente mosaico sopra
 	pillar_art = DecorScript.Pillars.new()
 	pillar_art.list = pillars
+	pillar_art.in_water = arena == "gate"
 	world.add_child(pillar_art)
 	_cover_until_baked(decor)
 	for r in obstacles:
@@ -1412,9 +1418,13 @@ func _build_arena(arena: String, pool_spots: Array) -> void:
 		glow.top = TOP
 		glow.wall = WALL
 		world.add_child(glow)
+		var pools := get_tree().get_nodes_in_group("water")
 		for b in Arenas.baboons(pool_spots):
 			var bab := Arenas.Baboon.new()
 			bab.position = b
+			for w in pools:
+				if bab.pool == null or w.global_position.distance_to(b) < bab.pool.global_position.distance_to(b):
+					bab.pool = w
 			world.add_child(bab)
 	elif arena == "gate":
 		var sh := Arenas.GateShimmer.new()

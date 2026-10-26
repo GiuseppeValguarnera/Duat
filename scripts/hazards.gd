@@ -43,6 +43,7 @@ static func ignite_jars(tree: SceneTree, p: Vector2, r: float) -> void:
 class WaterPool extends Node2D:
 	var radii := Vector2(40, 24)
 	var rect := Vector2.ZERO
+	var basin := false           ## vasca sacra rettangolare con i gradini (l'arena di Am-heh)
 	var dry := 0.0               ## 0 = piena, 1 = prosciugata (Am-heh la fa evaporare)
 	var drying := false
 	var t := 0.0
@@ -86,6 +87,9 @@ class WaterPool extends Node2D:
 
 	func _draw() -> void:
 		var k := 1.0 - dry
+		if basin:
+			_draw_basin()
+			return
 		if rect != Vector2.ZERO:
 			_draw_channel()
 			return
@@ -115,6 +119,44 @@ class WaterPool extends Node2D:
 				var sway := sin(t * 1.5 + i) * 1.5
 				draw_line(base, base + Vector2(sway, -12), Color(0.35, 0.55, 0.25), 1.0)
 				draw_circle(base + Vector2(sway, -13), 2.0, Color(0.55, 0.7, 0.3))
+
+	## La vasca sacra: bordo di pietra chiara, gradini che scendono, acqua azzurra che brilla di
+	## luce fredda (l'unica cosa fresca nel Lago di Fuoco), fiori di loto. Prosciugandosi l'acqua
+	## si ritira verso il centro e restano i gradini asciutti.
+	func _draw_basin() -> void:
+		var k := 1.0 - dry
+		var h := rect / 2.0
+		var rim := Color(0.78, 0.7, 0.58)
+		draw_rect(Rect2(-h - Vector2(7, 7), rect + Vector2(14, 14)), Color(0.12, 0.08, 0.07))
+		draw_rect(Rect2(-h - Vector2(6, 6), rect + Vector2(12, 12)), rim)
+		draw_rect(Rect2(-h - Vector2(6, 6), Vector2(rect.x + 12, 2)), rim.lightened(0.2))
+		# i gradini, uno dentro l'altro
+		for s in range(3):
+			var g := Rect2(-h + Vector2(s * 4.0, s * 3.0), rect - Vector2(s * 8.0, s * 6.0))
+			draw_rect(g, rim.darkened(0.18 + s * 0.12))
+			draw_rect(Rect2(g.position, Vector2(g.size.x, 1.2)), rim.darkened(0.05 + s * 0.1))
+		if k <= 0.02:
+			return
+		var wr := Rect2(-h * k + Vector2(2, 2) * k, (rect - Vector2(4, 4)) * k)
+		var pulse := 0.5 + 0.5 * sin(t * 2.0)
+		draw_rect(wr.grow(3.0), Color(0.4, 0.8, 1.0, 0.18 + 0.08 * pulse))
+		draw_rect(wr, Color(0.16, 0.48, 0.66))
+		draw_rect(Rect2(wr.position, Vector2(wr.size.x, wr.size.y * 0.4)), Color(0.3, 0.66, 0.84, 0.6))
+		for i in range(4):
+			var f := fmod(t * 0.15 + i * 0.25, 1.0)
+			draw_line(Vector2(wr.position.x + 4, wr.position.y + f * wr.size.y), Vector2(wr.position.x + wr.size.x * 0.4, wr.position.y + f * wr.size.y), Color(0.85, 0.97, 1.0, 0.3), 1.0)
+		if warn_t > 0.0:
+			var boil := 0.5 + 0.5 * sin(t * 18.0)
+			draw_rect(wr, Color(0.9, 0.4, 0.2, 0.2 + 0.15 * boil))
+		if k > 0.5:
+			for j in range(3):
+				var lp := Vector2(lerpf(-h.x * 0.6, h.x * 0.6, j / 2.0), sin(j * 2.1) * h.y * 0.3) * k
+				draw_set_transform(lp, 0.0, Vector2(1.0, 0.6))
+				draw_circle(Vector2.ZERO, 5.0, Color(0.18, 0.45, 0.3))
+				draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+				if j != 1:
+					draw_circle(lp + Vector2(1, -2), 2.4, Color(0.98, 0.8, 0.88))
+					draw_circle(lp + Vector2(1, -2), 0.9, Color(1.0, 0.85, 0.4))
 
 	func _draw_channel() -> void:
 		var k := 1.0 - dry
@@ -629,6 +671,11 @@ class VenomPuddle extends Node2D:
 	var cool := 0.0
 
 	func _ready() -> void:
+		# nell'acqua alta della Porta il veleno si scioglie: niente pozza
+		if Run.in_deep(global_position):
+			Fx.burst(global_position, Color(0.55, 0.95, 0.3, 0.6), 6, 40.0)
+			queue_free()
+			return
 		Sfx.play_at("orb_pop", global_position, 0.2)
 		_under.call_deferred()
 
@@ -688,8 +735,8 @@ class VenomDrop extends Node2D:
 				p.take_damage(damage, global_position, src if is_instance_valid(src) else null)
 			Fx.burst(global_position, Color(0.4, 1.0, 0.35), 10, 70.0)
 			var pud := Hazards.VenomPuddle.new()
+			pud.position = position                 # prima di entrare in scena: _ready guarda dov'è (acqua alta)
 			get_parent().add_child(pud)
-			pud.global_position = global_position
 			queue_free()
 			return
 		queue_redraw()

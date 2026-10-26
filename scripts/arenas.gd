@@ -16,6 +16,12 @@ extends RefCounted
 ## (room_decor.gd, `under`); qui ci sono anche i pezzi che si muovono o fanno ostacolo.
 
 const LAKE_W := 30.0                       ## quanto è largo il lago di fuoco lungo i bordi
+const DEEP_RADII := Vector2(170, 92)       ## l'acqua alta al centro della Porta (rallenta, il Serpente ci si tuffa)
+
+
+## Il centro dell'acqua alta della Porta.
+static func deep_center(room: Rect2, top: float, wall: float) -> Vector2:
+	return Vector2(room.size.x / 2.0, (top + room.size.y - wall) / 2.0 + 6.0)
 ## Le pozze di Am-heh, ognuna davanti al suo babbuino (frazioni del pavimento, raggi).
 const LAKE_POOLS := [[Vector2(0.2, 0.33), Vector2(50, 28)], [Vector2(0.8, 0.33), Vector2(50, 28)], [Vector2(0.24, 0.8), Vector2(46, 26)], [Vector2(0.76, 0.8), Vector2(46, 26)]]
 
@@ -70,13 +76,16 @@ static func paint_gate(ci: CanvasItem, r: Rect2, top: float, wall: float) -> voi
 		row += 1
 	# le acque di Wernes allagano il cortile: le lastre si vedono sotto, verdi e blu; al centro
 	# l'acqua è più profonda, ed è lì che il Serpente si immerge
-	ci.draw_rect(floor_r, Color(0.14, 0.42, 0.52, 0.5))
-	var rad := Vector2(r.size.x * 0.33, (floor_r.size.y) * 0.36)
+	ci.draw_rect(floor_r, Color(0.14, 0.42, 0.52, 0.45))
+	var rad := DEEP_RADII
 	ci.draw_set_transform(mid, 0.0, Vector2(1.0, rad.y / rad.x))
-	ci.draw_circle(Vector2.ZERO, rad.x, Color(0.06, 0.2, 0.3, 0.45))
-	ci.draw_circle(Vector2.ZERO, rad.x * 0.6, Color(0.03, 0.12, 0.2, 0.4))
-	for k in range(1, 5):
-		ci.draw_arc(Vector2.ZERO, rad.x * k / 4.5, 0.0, TAU, 64, Color(0.55, 0.8, 0.95, 0.12), 1.2)
+	# l'acqua alta: più scura, con il bordo dove il fondo scende di colpo
+	ci.draw_circle(Vector2.ZERO, rad.x + 6.0, Color(0.1, 0.32, 0.42, 0.5))
+	ci.draw_circle(Vector2.ZERO, rad.x, Color(0.03, 0.13, 0.22, 0.8))
+	ci.draw_circle(Vector2.ZERO, rad.x * 0.6, Color(0.01, 0.07, 0.13, 0.6))
+	ci.draw_arc(Vector2.ZERO, rad.x, 0.0, TAU, 64, Color(0.6, 0.85, 0.95, 0.35), 2.0)
+	for k in range(1, 4):
+		ci.draw_arc(Vector2.ZERO, rad.x * k / 3.5, 0.0, TAU, 64, Color(0.55, 0.8, 0.95, 0.1), 1.2)
 	ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 5050
@@ -87,7 +96,7 @@ static func paint_gate(ci: CanvasItem, r: Rect2, top: float, wall: float) -> voi
 	# foglie di loto e qualche fiore, lontano dal centro
 	for i in range(16):
 		var p := Vector2(rng.randf_range(floor_r.position.x + 20, floor_r.end.x - 20), rng.randf_range(floor_r.position.y + 20, floor_r.end.y - 20))
-		if ((p - mid) / rad).length() < 1.15:
+		if ((p - mid) / rad).length() < 1.25:
 			continue
 		var lr := rng.randf_range(5.0, 8.0)
 		var gap_a := rng.randf() * TAU
@@ -345,8 +354,12 @@ class LakeGlow extends Node2D:
 ## i quattro custodi del lago (cap. 126). La pozza davanti è l'acqua che concede al giusto.
 class Baboon extends Node2D:
 	var player: Node2D
+	var pool: Node2D                       ## la sua vasca: ci versa l'acqua finché non è prosciugata
+	var t := 0.0
 
-	func _process(_delta: float) -> void:
+	func _process(delta: float) -> void:
+		t += delta
+		queue_redraw()
 		if player == null or not is_instance_valid(player):
 			player = get_tree().get_first_node_in_group("player")
 		if player != null and is_instance_valid(player):
@@ -377,6 +390,18 @@ class Baboon extends Node2D:
 		draw_colored_polygon(PackedVector2Array([Vector2(-3, -33), Vector2(3, -33), Vector2(2, -27), Vector2(-2, -27)]), shade)
 		draw_circle(Vector2(-2, -35), 0.9, Color(1.0, 0.5, 0.15))
 		draw_circle(Vector2(2, -35), 0.9, Color(1.0, 0.5, 0.15))
+		# l'acqua che versa dalle mani alzate nella sua vasca: l'acqua che il lago dà al giusto
+		if pool != null and is_instance_valid(pool) and float(pool.get("dry")) < 0.4:
+			var hand := Vector2(13.0 * signf(pool.global_position.x - global_position.x), -34.0)
+			var to: Vector2 = pool.global_position - global_position + Vector2(0, -6)
+			var pts := PackedVector2Array()
+			for i in range(9):
+				var u := i / 8.0
+				pts.append(hand.lerp(to, u) + Vector2(0, -sin(u * PI) * 16.0))
+			draw_polyline(pts, Color(0.5, 0.85, 1.0, 0.75), 2.0)
+			for i in range(4):
+				var u := fmod(t * 1.6 + i * 0.25, 1.0)
+				draw_circle(hand.lerp(to, u) + Vector2(0, -sin(u * PI) * 16.0), 1.4, Color(0.9, 1.0, 1.0, 0.9))
 		# il disco lunare sul capo, con la falce
 		draw_circle(Vector2(0, -44), 4.5, Color(0.9, 0.88, 0.8))
 		draw_arc(Vector2(0, -43), 6.0, PI * 0.15, PI * 0.85, 10, Color(0.94, 0.72, 0.3), 1.6)

@@ -164,6 +164,8 @@ func _physics_process(delta: float) -> void:
 		_dash_damage()
 	else:
 		var s := speed * Run.move_mult() * (attack_slowdown if atk_t > 0.0 else 1.0)
+		if Run.in_deep(global_position):
+			s *= 0.75                       # l'acqua alta della Porta: si cammina a fatica (lo scatto no)
 		var wet := Hazards.in_water(get_tree(), global_position)
 		if wet:
 			s *= Hazards.WATER_SLOW

@@ -762,6 +762,7 @@ class Flames extends Node2D:
 ## crolla si ridisegna solo questo.
 class Pillars extends Node2D:
 	var list: Array = []                  # lo stesso Array delle colonne della stanza (game.gd)
+	var in_water := false                 ## nell'arena allagata della Porta: escono dall'acqua
 	const OUTL := Color(0.12, 0.08, 0.05)
 	const STONE := Color(0.8, 0.64, 0.42)
 	const STONE_D := Color(0.55, 0.4, 0.24)
@@ -781,11 +782,15 @@ class Pillars extends Node2D:
 		draw_set_transform(p + Vector2(6, 6), 0.0, Vector2(1.0, 0.35))
 		draw_circle(Vector2.ZERO, 22.0, Color(0, 0, 0, 0.28))
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-		# base: un disco di pietra
+		# base: un disco di pietra, o i cerchi dell'acqua da cui la colonna esce
 		draw_set_transform(p + Vector2(0, 4), 0.0, Vector2(1.0, 0.38))
-		draw_circle(Vector2.ZERO, 16.5, OUTL)
-		draw_circle(Vector2.ZERO, 15.5, STONE_D)
-		draw_circle(Vector2(-1, -2), 13.5, STONE)
+		if in_water:
+			for k in range(3):
+				draw_arc(Vector2.ZERO, 15.0 + k * 6.0, 0.0, TAU, 28, Color(0.7, 0.9, 1.0, 0.35 - k * 0.1), 1.2)
+		else:
+			draw_circle(Vector2.ZERO, 16.5, OUTL)
+			draw_circle(Vector2.ZERO, 15.5, STONE_D)
+			draw_circle(Vector2(-1, -2), 13.5, STONE)
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		# il fusto, più chiaro a sinistra (vertici colorati: una sfumatura senza texture)
 		var top := p.y - 40.0
@@ -800,6 +805,11 @@ class Pillars extends Node2D:
 			PackedColorArray([STONE, STONE_D, STONE_D, STONE]))
 		for fx in [-6.0, -1.0, 4.0, 8.0]:
 			draw_line(Vector2(p.x + fx, top + 2), Vector2(p.x + fx, bot - 1), Color(STONE_D, 0.6), 0.8)
+		if in_water:
+			# la pietra bagnata vicino all'acqua, più scura, e i gambi di papiro legati a fascio
+			draw_rect(Rect2(l, bot - 9, 22, 9), Color(0.1, 0.25, 0.3, 0.45))
+			for k in range(3):
+				draw_line(Vector2(l, top + 6 + k * 3), Vector2(rr, top + 6 + k * 3), Color(STONE_D, 0.9), 1.0)
 		# il cartiglio dipinto sul fusto
 		var cart := Rect2(p.x - 4.5, p.y - 30, 9, 20)
 		draw_rect(cart, Color(0.95, 0.9, 0.75))
