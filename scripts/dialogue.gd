@@ -108,6 +108,15 @@ static func story() -> Array:
 			Lang.t("In fondo alla sala riposano i Papiri di Thoth."),
 			Lang.t("Ogni parola che gli dèi ti rivolgono, Thoth la copia e la ripone lì. Leggili."),
 			Lang.t("Un dio che parla di sé rivela sempre più di quanto vorrebbe.")]},
+		{"id": "casa0", "if": Meta.lapis >= 10 and not Meta.casa, "lines": [
+			Lang.t("Porti lapislazzuli. La pietra del cielo notturno: gli dèi hanno i capelli fatti di questa pietra."),
+			Lang.t("Vedi la porta murata a oriente? Dietro c'è la Casa della Vita, dove gli scribi copiavano i libri sacri. Con quaranta pietre lo scalpellino la riaprirà."),
+			Lang.t("Dentro troverai amuleti, e un maestro. Parla molto più di me. Molto più di me.")]},
+		{"id": "casa1", "if": Meta.casa, "lines": [
+			Lang.t("Hai riaperto la Casa della Vita. Ho sentito Imhotep parlare fin da qui."),
+			Lang.t("Fu un uomo, poi gli uomini ne fecero un dio. Non tutti gli dèi del Duat lo hanno perdonato. Io sì: le sue piramidi hanno reso il mio lavoro più ordinato.")]},
+		{"id": "sfide1", "if": Meta.casa and Challenges.to_claim() > 0, "lines": [
+			Lang.t("Thoth ha inciso una tua impresa sulla parete della Casa della Vita. I premi del Duat non si consegnano da soli, Scriba. Va' a prenderlo.")]},
 		{"id": "deaths3", "if": Meta.runs >= 3 and Meta.ammit_wins == 0, "lines": [
 			Lang.t("Tre volte sei disceso, tre volte sei tornato. Gli dèi hanno cominciato a parlare di te, a bassa voce."),
 			Lang.t("Set ti offrirà patti. Diffida di lui, ma non disprezzarlo: è il solo che ogni notte affronta Apophis a viso aperto.")]},

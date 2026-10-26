@@ -6,7 +6,8 @@ extends Node2D
 ## - la parete di Thoth: le sfide (challenges.gd), con il premio da riscuotere. Le vedi ogni
 ##   volta che passi a cambiare amuleto, ed è il punto: una sfida che non vedi non la fai;
 ## - la seconda parete, coperta da un telo finché non hai compiuto 7 sfide;
-## - la statua di Thoth con la testa d'ibis, che guarda gli scribi.
+## - la statua di Thoth con la testa d'ibis, che guarda gli scribi;
+## - Imhotep, il maestro della Casa: parla degli amuleti, dà consigli, ricorda Akhet (imhotep.gd).
 
 const ROOM := Rect2(0, 0, 640, 380)
 const WALL := 32.0
@@ -26,11 +27,16 @@ var menu: CanvasLayer = null
 var _news_t := 0.0
 var _forge_news := false
 var _wall_news := false
+var _imhotep_news := false
+var talk_lines: Array = []
 
 @onready var world: Node2D = $World
 @onready var hud: Label = $UI/Hud
 @onready var prompt: Label = $UI/Prompt
 @onready var help: Label = $UI/Help
+@onready var talk_box: PanelContainer = $UI/Talk
+@onready var talk_name: Label = $UI/Talk/Box/Name
+@onready var talk_text: Label = $UI/Talk/Box/Text
 
 
 func _ready() -> void:
@@ -45,6 +51,7 @@ func _ready() -> void:
 		"orafo": Vector2(170, 196),
 		"parete": Vector2(440, 150),
 		"thoth": Vector2(560, 214),
+		"imhotep": Vector2(262, 272),
 	}
 	_solid(Rect2(0, 0, ROOM.size.x, TOP + 40))                       # le pareti con gli scaffali
 	_solid(Rect2(0, ROOM.size.y - WALL, ROOM.size.x, WALL))
@@ -53,6 +60,7 @@ func _ready() -> void:
 	_solid(Rect2(ROOM.size.x - WALL, 0, WALL, ROOM.size.y))
 	_solid(Rect2(spots["orafo"] - Vector2(40, 10), Vector2(80, 18)))
 	_solid(Rect2(spots["thoth"] - Vector2(14, 6), Vector2(28, 10)))
+	_solid(Rect2(spots["imhotep"] - Vector2(8, 5), Vector2(16, 8)))
 	_solid(Rect2(56, 258, 28, 14))                                            # le casse negli angoli
 	_solid(Rect2(576, 258, 28, 14))
 	var bg := CasaArt.new()
@@ -76,6 +84,11 @@ func _ready() -> void:
 	cam.limit_bottom = int(ROOM.size.y)
 	cam.reset_smoothing()
 	Fx.scale_labels($UI)
+	talk_box.visible = false
+	UiStyle.talk_style(talk_box, talk_name, talk_text, Imhotep.NAME_COLOR)
+	# la prima volta Imhotep si presenta da solo
+	if not Meta.dialogue_seen.has("imh_intro"):
+		_start_talk.call_deferred()
 
 
 func _solid(rect: Rect2) -> void:
@@ -107,14 +120,15 @@ func _process(delta: float) -> void:
 		_news_t = t + 0.5
 		_forge_news = Amulets.something_to_forge()
 		_wall_news = Challenges.to_claim() > 0
-	if menu != null:
+		_imhotep_news = Imhotep.has_news()
+	if menu != null or talk_box.visible:
 		prompt.visible = false
 		return
 	if player.global_position.x < WALL + 14.0 and absf(player.global_position.y - EXIT_Y) < 24.0:
 		_leave()
 		return
 	near = ""
-	for k in ["orafo", "parete", "thoth"]:
+	for k in ["orafo", "parete", "thoth", "imhotep"]:
 		var reach := 70.0 if k == "parete" else 44.0
 		if player.global_position.distance_to(spots[k] + Vector2(0, 20 if k == "parete" else 0)) < reach:
 			near = k
@@ -126,6 +140,8 @@ func _process(delta: float) -> void:
 			prompt.text = Lang.t("%s · La parete di Thoth: le sfide (%d da riscuotere)") % [key, Challenges.to_claim()]
 		"thoth":
 			prompt.text = Lang.t("Thoth, il signore della scrittura, guarda gli scribi al lavoro")
+		"imhotep":
+			prompt.text = Lang.t("%s · Parla con Imhotep") % key
 		_:
 			prompt.text = ""
 	prompt.visible = prompt.text != ""
@@ -137,8 +153,16 @@ func _unhandled_input(event: InputEvent) -> void:
 			_close_menu()
 			get_viewport().set_input_as_handled()
 		return
+	if talk_box.visible:
+		var tap: bool = event is InputEventScreenTouch and event.pressed
+		if tap or event.is_action_pressed("interact") or event.is_action_pressed("ui_accept") or event.is_action_pressed("attack"):
+			_advance_talk()
+			get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("interact"):
-		if near == "orafo":
+		if near == "imhotep":
+			_start_talk()
+		elif near == "orafo":
 			_open_forge()
 		elif near == "parete":
 			_open_wall()
@@ -146,6 +170,23 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("pause"):
 		_leave()
 		get_viewport().set_input_as_handled()
+
+
+func _start_talk() -> void:
+	talk_lines = Imhotep.next_lines()
+	player.set_physics_process(false)
+	talk_box.visible = true
+	_advance_talk()
+
+
+func _advance_talk() -> void:
+	if talk_lines.is_empty():
+		talk_box.visible = false
+		player.set_physics_process(true)
+		return
+	Sfx.play("ui", 0.0)
+	talk_name.text = "Imhotep"
+	talk_text.text = talk_lines.pop_front()
 
 
 func _leave() -> void:
@@ -324,6 +365,12 @@ func _draw() -> void:
 	_draw_bench(spots["orafo"])
 	_draw_tablets()
 	_draw_thoth(spots["thoth"])
+	var face := -1.0 if player != null and is_instance_valid(player) and player.global_position.x < spots["imhotep"].x else 1.0
+	Imhotep.draw(self, spots["imhotep"], t, talk_box.visible, face)
+	if menu == null and not talk_box.visible:
+		UiStyle.sparkle(self, spots["imhotep"] + Vector2(0, -30), 18.0, t, near == "imhotep", 3.3)
+		if _imhotep_news:
+			UiStyle.exclaim(self, spots["imhotep"] + Vector2(0, -62), t)
 	if menu == null:
 		UiStyle.sparkle(self, spots["orafo"] + Vector2(0, -26), 20.0, t, near == "orafo", 0.4)
 		UiStyle.sparkle(self, spots["parete"] + Vector2(0, -40), 26.0, t, near == "parete", 2.1)

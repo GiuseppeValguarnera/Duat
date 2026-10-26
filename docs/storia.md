@@ -14,7 +14,12 @@ Uno scriba scende nel Duat per salvare dall'oblio la storia del suo faraone, Akh
 - **Mahaf, il Traghettatore** ("colui che guarda indietro", dal mito: ha il volto girato verso il passato). Fu lui a portare l'anima di Akhet nel Duat la prima notte. La regina lo pagò per proteggerlo finché non ricordasse: per questo compare sempre prima dei boss. All'inizio è avido e burbero; più la storia avanza, più abbassa i prezzi senza dirlo. Nel finale si gira e ti guarda in faccia per la prima volta.
 - **Anubi.** Custode della bilancia. Non sa chi sei e la cosa lo inquieta: la bilancia trema quando torni.
 - **Set.** Sa tutto, o quasi, e si diverte. Ride quando parli del "tuo" faraone.
+- **Imhotep.** Nella Casa della Vita. Architetto di Djoser, poi dio degli scribi. Vanitoso e chiacchierone. Akhet lo pregava in privato chiedendo un rimedio contro la morte. I suoi indizi: tieni il calamo come una lancia; Akhet gli chiese se un uomo senza nome può essere pesato; chi ha smontato il nome di Akhet lo ha fatto con cura, "forse vuole ricostruire" (la regina, senza nominarla). Battute in `scripts/imhotep.gd`.
 - **Apopi.** Il serpente del caos vuole il nome di Ra per ucciderlo per sempre. Ti dà la caccia perché sa dove si trova il nome.
+
+## La rinascita
+
+Ogni morte è un'alba mancata: il Ba lascia il corpo, lo scarabeo Kheper spinge il sole fuori dalla notte e l'eroe riemerge dal disco solare dipinto al centro della Sala (`scripts/rebirth.gd`). È il titolo del gioco.
 
 ## Perché si torna dopo ogni morte
 
