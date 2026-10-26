@@ -283,6 +283,20 @@ func _entry(col: VBoxContainer) -> VBoxContainer:
 	return box
 
 
+## Le voci con un pulsante attivo ("Riscuoti", "Forgialo", "Mettilo al collo") non si selezionano
+## da sole: con il pad si va dritti sul pulsante, che si preme con A. Prima la cornice della voce
+## prendeva la selezione al posto del pulsante, e il pulsante non si raggiungeva più.
+func _settle_entries(col: VBoxContainer) -> void:
+	for c in col.get_children():
+		var frame := c as PanelContainer
+		if frame == null or frame.focus_mode != Control.FOCUS_ALL:
+			continue
+		for b in frame.find_children("*", "Button", true, false):
+			if not (b as Button).disabled:
+				frame.focus_mode = Control.FOCUS_NONE
+				break
+
+
 func _first_entry(col: VBoxContainer, fallback: Control) -> Control:
 	for c in col.get_children():
 		if c is PanelContainer and (c as Control).focus_mode == Control.FOCUS_ALL:
@@ -357,6 +371,7 @@ func _open_forge(focus: String = "") -> void:
 				first = bf
 		else:
 			row.add_child(UiStyle.label(Lang.t("Sfida: %s") % _challenge_for(id), 8, Color(0.5, 0.36, 0.2), false, inner))
+	_settle_entries(col)
 	var close := _button(col, Lang.t("Chiudi"), true, _close_menu)
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	(first if first != null else _first_entry(col, close)).grab_focus.call_deferred()
@@ -397,6 +412,7 @@ func _open_wall() -> void:
 	var more := UiStyle.label(Lang.t("La seconda parete è coperta da un telo: si svelerà quando avrai compiuto %d sfide.") % Challenges.SECOND_WALL if done < Challenges.SECOND_WALL else Lang.t("Thoth sta ancora incidendo la seconda parete: tornerà presto, con sfide più dure."), 8, Color(0.3, 0.38, 0.42), false, inner)
 	more.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(more)
+	_settle_entries(col)
 	var close := _button(col, Lang.t("Chiudi"), true, _close_menu)
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	(first if first != null else _first_entry(col, close)).grab_focus.call_deferred()
