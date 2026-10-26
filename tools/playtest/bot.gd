@@ -218,6 +218,8 @@ func _process(delta: float) -> void:
 	if skip != "" and not skipped and g.menu == null and not Run.boons.is_empty():
 		skipped = true
 		var n := 3 if skip == "guardian" else 7
+		if skip == "guardian" and Run.region == 2:
+			n = 9                  # a Serket si arriva dopo tutta la Prima Ora e Am-heh: molti più doni
 		var pool := []
 		for id in Boons.ALL:
 			var gd: String = Boons.ALL[id].get("god", "")
@@ -277,6 +279,10 @@ func _decide(g, p) -> void:
 	for e in get_tree().get_nodes_in_group("enemies"):
 		if not e.dead:
 			enemies.append(e)
+	# Serket sotto la sabbia esce dal gruppo dei nemici, ma il solco e le linee si vedono: il bot li legge
+	var bs = g.boss if g.boss != null and is_instance_valid(g.boss) else null
+	if bs != null and "breach_len" in bs and not bs.dead and not enemies.has(bs):
+		enemies.append(bs)
 	want_attack = false
 	tap_special = false
 	tap_super = false
@@ -451,6 +457,18 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 		if "sting_dir" in e and e.state == "windup" and d < 48.0 and e.st < 0.25:
 			threat_kind = "scorpion"
 			return rel.normalized()
+		if "breach_len" in e:
+			# Serket: esce dallo spicchio del ventaglio, esce dalle linee della coda
+			threat_kind = "serket"
+			if e.state == "fan_windup" and e.st < 0.3 and d < e.fan_radius + 16.0:
+				return rel.normalized() if rel != Vector2.ZERO else Vector2.RIGHT
+			if e.state in ["line_warn", "breach_warn"] and e.st < 0.35:
+				var ln: float = e.line_len if e.state == "line_warn" else e.breach_len
+				if e._seg_dist(pos, e.global_position, e.global_position + e.aim * ln) < 26.0:
+					return e.aim.orthogonal() * (1.0 if rel.dot(e.aim.orthogonal()) > 0.0 else -1.0)
+			if e.enraged and not e.buried and d < e.aura_radius + 6.0 and e.state != "recover":
+				return rel.normalized() if rel != Vector2.ZERO else Vector2.RIGHT
+			continue
 		if "strike_speed" in e and "aim" in e:
 			threat_kind = "serpent"
 			if e.state == "windup" and e.st < 0.3 and absf(rel.normalized().dot(e.aim.orthogonal())) < 0.4:

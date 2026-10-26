@@ -67,9 +67,21 @@ Coccodrillo: imboscata dall'acqua, riemerge spazientito dopo 6 s (2 s se è l'ul
 Dopo Am-heh la partita continua (porta "regione"). Fatti: passaggio con titolo e barca-serpente, pavimento di sabbia,
 sabbie mobili (×0,6), tempeste di sabbia, giare; nemici: sciacallo (branco: esca + fianchi), avvoltoio di Nekhbet
 (ombra a terra, picchiata), guardiano di Sokar (scudo frontale, carica), ba dannato (esplode, fragile). Gli scorpioni appartengono a Sokar.
+Guardiana: **Serket** (`scripts/serket.gd`) nel **tempio** (`Arenas.paint_temple`): sabbia, piano di pietra al centro dove NON
+scava (`DAIS_RADII`), 6 cumuli da cui escono gli scorpioni, statue della dea. Mosse: ventaglio di coda (spicchio rosso: si schiva
+uscendone, non di lato); sotto la sabbia con **solco visibile**, scorpioni dai cumuli (max 4 vivi, 2-3 a scavo), a volte colpo di
+coda in linea dalla sabbia, riemerge con un balzo in linea. Sotto metà vita: aura di veleno, ventaglio doppio, nube
+(`Hazards.VenomCloud`) dove riemerge. Vita 460 (×1,24 in Sokar), niente sconto al primo incontro. Premio: dono +2, 5-6 lapis,
+`Meta.serket_wins`. Il guardiano dipende dalla regione (`_start_guardian`, premio, testo di morte); serie della Piuma e sfida
+"Due mani" restano solo del Serpente. `guardian_down`: caduto il guardiano, i rinforzi annunciati non escono più.
+Prova: `DUAT_REGION2=1 tools/dev/shot.sh serketshot 1280 720 res://scenes/game.tscn [mobile]`. Bot: `DUAT_SKIP=guardian
+DUAT_REGION2=1 DUAT_START_REGION=2` (entrano con 9 doni). Prima prova, 8 partite: veterani 6/6 in 26-60 s, casual 0/2.
+
+Dialoghi (Anubi, Imhotep, Neith): `UiStyle.next_talk_page` divide le battute lunghe in pagine a fine frase (≈3 righe sul
+telefono) e il riquadro cresce verso l'alto. Prova: `tools/dev/shot.sh talkshot 1300 600 "" mobile`.
 
 ## Prossimi passi (in ordine)
-1. **Serket**, guardiana di Sokar: colpo di coda a ventaglio, si infila sotto la sabbia, evoca scorpioni, nube di veleno, arena nel tempio.
+1. ~~Serket~~ fatta (ottobre 2026). Ritocco proposto: un segno "tocca per continuare" nei dialoghi, ora che vanno a pagine.
 2. **Aker**, boss di Sokar: due teste (sabbia e fuoco), ruggito con pietre che cadono; a metà vita **trema (invulnerabile) e si divide in due**; arena = porta dell'orizzonte con il sole spento.
 3. Storia di Sokar: Ricordo IV, secondo segno del cartiglio, "il sole che non sorge"; battute di Anubi, Mahaf, Imhotep.
 4. `SOKAR_READY = true` e bilanciamento con i bot (test grande di notte).

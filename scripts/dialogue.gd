@@ -69,6 +69,8 @@ static func _reaction() -> Array:
 				options.append(Lang.t("Un Ba dannato. L'anima di un morto che la bilancia ha respinto. Non ha più un corpo dove tornare, e odia chi ce l'ha. Abbattila prima che si accenda."))
 			"crocodile":
 				options.append(Lang.t("Un coccodrillo. Il Libro ha due formule apposta, la trentuno e la trentadue: i coccodrilli del Duat vengono a rubare la magia del morto. Quando l'acqua ribolle vicino a te, non restare sul bordo."))
+			"serket":
+				options.append(Lang.t("Serket. La chiamavano Colei che fa respirare la gola: chi era punto la pregava, e lei toglieva il veleno. A te non lo toglierà. Guarda il solco nella sabbia, non lei: il solco ti dice dove uscirà la coda."))
 			"scorpion":
 				options.append(Lang.t("Gli scorpioni di Serket. La dea protegge dal veleno chi la onora. Tu non l'hai onorata. Quando la coda si accende, allontanati."))
 			"grata":

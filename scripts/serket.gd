@@ -41,6 +41,7 @@ signal summon(kinds: Array)        # il gioco lo collega a ogni guardiano: qui e
 const SQUASH := 0.7                     ## le forme a terra sono ellissi schiacciate (prospettiva)
 const SAND := Color(0.78, 0.62, 0.38)
 const SAND_D := Color(0.5, 0.37, 0.2)
+const FURROW_LIFE := 3.0                ## quanto resta visibile il solco (secondi)
 
 var state := "intro"
 var st := 1.5
@@ -304,7 +305,7 @@ func _dig() -> void:
 
 
 func _age_furrow() -> void:
-	while not furrow.is_empty() and t - furrow[furrow.size() - 1].z > 2.6:
+	while not furrow.is_empty() and t - furrow[furrow.size() - 1].z > FURROW_LIFE:
 		furrow.pop_back()
 
 
@@ -363,13 +364,17 @@ func _draw() -> void:
 func _draw_furrow() -> void:
 	for i in range(furrow.size()):
 		var f: Vector3 = furrow[i]
-		var a := clampf(1.0 - (t - f.z) / 2.6, 0.0, 1.0)
+		var a := clampf(1.0 - (t - f.z) / FURROW_LIFE, 0.0, 1.0)
+		a = minf(1.0, a * 1.6)              # resta ben visibile quasi fino alla fine, poi si chiude
 		var p := Vector2(f.x, f.y) - global_position
-		draw_set_transform(p, 0.0, Vector2(1.0, 0.5))
-		draw_circle(Vector2.ZERO, 7.0, Color(SAND_D, 0.55 * a))
+		# il fondo scuro, largo: deve leggersi anche sul telefono, è il cuore dello scontro
+		draw_set_transform(p, 0.0, Vector2(1.0, 0.55))
+		draw_circle(Vector2.ZERO, 10.0, Color(0.32, 0.22, 0.11, 0.6 * a))
+		draw_circle(Vector2.ZERO, 6.0, Color(0.22, 0.14, 0.07, 0.65 * a))
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-		draw_circle(p + Vector2(0, -3.5), 1.6, Color(0.95, 0.82, 0.55, 0.5 * a))
-		draw_circle(p + Vector2(0, 3.5), 1.6, Color(0.95, 0.82, 0.55, 0.4 * a))
+		# le due creste chiare ai lati
+		draw_circle(p + Vector2(0, -5.5), 2.2, Color(0.97, 0.86, 0.6, 0.75 * a))
+		draw_circle(p + Vector2(0, 5.5), 2.0, Color(0.97, 0.86, 0.6, 0.6 * a))
 
 
 ## Sotto la sabbia: il cumulo che avanza, la sabbia che schizza e, quando sta per colpire,
@@ -377,7 +382,8 @@ func _draw_furrow() -> void:
 func _draw_under() -> void:
 	var wob := sin(t * 18.0) * 1.2
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, 0.5))
-	draw_circle(Vector2.ZERO, 19.0, Color(0, 0, 0, 0.25))
+	draw_circle(Vector2.ZERO, 21.0, Color(0, 0, 0, 0.3))
+	draw_circle(Vector2(0, -2), 17.5 + wob, Color(0.25, 0.16, 0.08))
 	draw_circle(Vector2(0, -2), 16.0 + wob, SAND_D)
 	draw_circle(Vector2(-2, -5), 12.0 + wob, SAND)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
@@ -457,7 +463,7 @@ func _draw_body(flash: bool) -> void:
 		raise = 1.0 - st / (fan_windup * (0.6 if second_fan else 1.0))
 	elif state == "recover" and st > 0.5:
 		raise = 0.4
-	var S := 2.3
+	var S := 2.6
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(dir * S, S))
 	# otto zampe, a passi alternati
 	var walk := velocity.length() > 5.0
@@ -503,26 +509,33 @@ func _draw_body(flash: bool) -> void:
 	if lit:
 		draw_circle(tip, 3.0 + raise * 2.5, Color(0.6, 1.0, 0.4, 0.25))
 	_op(PackedVector2Array([tip + Vector2(-1.5, -1.1), tip + Vector2(1.7, -1.3), tip + Vector2(2.8, 1.7), tip + Vector2(0.7, 0.7), tip + Vector2(-1.1, 1.3)]), sting, 0.5)
-	# il volto della dea, di profilo, davanti al corpo
-	var hp_ := Vector2(6.2, -9.5)
-	_op(PackedVector2Array([hp_ + Vector2(-3.4, -3.6), hp_ + Vector2(1.6, -4.0), hp_ + Vector2(2.6, -2.0), hp_ + Vector2(3.8, -0.4), hp_ + Vector2(2.8, 0.2), hp_ + Vector2(2.8, 1.4), hp_ + Vector2(1.8, 2.6), hp_ + Vector2(-1.0, 3.0)]), skin, 0.5)
-	# la parrucca a righe che scende dietro la nuca
-	var wig_pts := PackedVector2Array([hp_ + Vector2(-4.6, -4.2), hp_ + Vector2(1.4, -4.6), hp_ + Vector2(0.6, -1.8), hp_ + Vector2(-1.0, -1.2), hp_ + Vector2(-1.2, 4.4), hp_ + Vector2(-4.8, 4.4)])
+	# il volto della dea, di profilo, davanti al corpo: grande, perché si legga anche da lontano.
+	# Prima la parrucca (dietro la nuca, sulle spalle), poi il viso chiaro con l'occhio dipinto.
+	var hc := Vector2(6.8, -11.0)
+	var hs := 1.45
+	var wig_pts := PackedVector2Array()
+	for v in [Vector2(-3.6, -3.4), Vector2(0.4, -4.4), Vector2(1.2, -2.0), Vector2(-0.6, -0.6), Vector2(-0.8, 3.6), Vector2(-3.0, 4.2), Vector2(-4.2, 1.0)]:
+		wig_pts.append(hc + (v as Vector2) * hs)
 	_op(wig_pts, wig, 0.5)
-	for k in range(3):
-		var yy := -2.0 + k * 2.0
-		draw_line(hp_ + Vector2(-4.4, yy), hp_ + Vector2(-1.4, yy), turq, 0.35)
-	draw_line(hp_ + Vector2(-4.6, -3.0), hp_ + Vector2(1.2, -3.4), gold, 0.6)           # il diadema
-	# l'occhio dipinto, con la riga del kohl
+	draw_line(hc + Vector2(-3.4, 2.2) * hs, hc + Vector2(-1.0, 2.2) * hs, turq, 0.5)
+	var face := PackedVector2Array()
+	for v in [Vector2(-1.2, -3.2), Vector2(1.4, -3.4), Vector2(2.2, -1.8), Vector2(3.4, -0.4), Vector2(2.4, 0.2), Vector2(2.6, 1.3), Vector2(1.8, 2.4), Vector2(-0.6, 2.6), Vector2(-1.0, -0.4)]:
+		face.append(hc + (v as Vector2) * hs)
+	_op(face, skin, 0.5)
+	draw_line(hc + Vector2(-3.8, -3.0) * hs, hc + Vector2(1.6, -3.6) * hs, gold, 0.8)       # il diadema
+	# l'occhio grande, bianco, con il kohl che si allunga verso la tempia
 	var eye := Color(1, 0.3, 0.2) if enraged else Color(0.1, 0.08, 0.1)
 	if flash:
 		eye = Color.WHITE
-	draw_line(hp_ + Vector2(1.0, -1.6), hp_ + Vector2(3.0, -1.6), OUT, 0.45)
-	draw_circle(hp_ + Vector2(1.8, -1.2), 0.55, eye)
-	# lo scorpione sul capo: il segno della dea
-	var cp := hp_ + Vector2(-1.4, -5.6)
-	_op(_ell(cp, 1.8, 0.9, 10), gold, 0.4)
-	draw_arc(cp + Vector2(-1.2, -1.2), 1.4, PI * 0.5, PI * 1.6, 6, gold, 0.5)
-	draw_line(cp + Vector2(1.4, 0), cp + Vector2(2.4, -0.8), gold, 0.4)
-	draw_line(cp + Vector2(1.4, 0.2), cp + Vector2(2.4, 0.8), gold, 0.4)
+	var ec := hc + Vector2(1.3, -1.4) * hs
+	_op(_ell(ec, 1.1, 0.6, 8), Color(0.97, 0.94, 0.86), 0.35)
+	draw_circle(ec + Vector2(0.3, 0), 0.45, eye)
+	draw_line(ec + Vector2(-1.0, -0.2), ec + Vector2(-2.4, -0.6), OUT, 0.45)
+	draw_line(hc + Vector2(2.1, 1.2) * hs, hc + Vector2(2.8, 1.2) * hs, Color(0.6, 0.2, 0.15), 0.4)    # le labbra
+	# lo scorpione d'oro sul capo: il segno della dea
+	var cp := hc + Vector2(-0.8, -5.2) * hs
+	_op(_ell(cp, 2.2, 1.0, 10), gold, 0.4)
+	draw_arc(cp + Vector2(-1.6, -1.4), 1.6, PI * 0.5, PI * 1.6, 6, gold, 0.6)
+	draw_line(cp + Vector2(1.8, 0), cp + Vector2(3.0, -1.0), gold, 0.5)
+	draw_line(cp + Vector2(1.8, 0.2), cp + Vector2(3.0, 1.0), gold, 0.5)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

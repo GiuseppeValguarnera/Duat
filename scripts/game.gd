@@ -20,6 +20,7 @@ const ENEMIES := {
 	"ammit": preload("res://scenes/ammit.tscn"),   # resta per il finale (Sala delle Due Verità)
 	"amheh": preload("res://scenes/amheh.tscn"),
 	"serpent": preload("res://scenes/serpent.tscn"),
+	"serket": preload("res://scenes/serket.tscn"),       # guardiana di Sokar
 	"scorpion": preload("res://scenes/scorpion.tscn"),   # nemici del deserto di Sokar (seconda tappa)
 	"cobra": preload("res://scenes/cobra.tscn"),
 	"crocodile": preload("res://scenes/crocodile.tscn"),
@@ -31,7 +32,7 @@ const ENEMIES := {
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -55,6 +56,7 @@ const BOSS_INTROS := {
 	"amheh": ["AM-HEH", "Il guardiano del Lago di Fuoco", "Per il giusto il lago è acqua, per il dannato è fuoco. Resta nell'acqua", "boss", Color(1, 0.55, 0.2)],
 	"ammit": ["AMMIT", "La Divoratrice", "Divora i cuori che non superano il giudizio", "boss", Color(0.9, 0.35, 0.25)],
 	"serpent": ["IL SERPENTE DELLA PORTA", "Guardiano della quinta porta", "Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra", "elite", Color(0.5, 0.95, 0.45)],
+	"serket": ["SERKET", "Colei che fa respirare la gola", "Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare", "elite", Color(0.4, 0.9, 0.82)],
 }
 const DecorScript := preload("res://scripts/room_decor.gd")
 const UshabtiScript := preload("res://scripts/ushabti.gd")
@@ -118,6 +120,7 @@ var boss_name: Label
 var menu: CanvasLayer                 # scelta dei doni
 var panel: CanvasLayer
 var pause_menu: CanvasLayer           # menu di pausa (Esc / Start)
+var guardian_down := false            # il guardiano della stanza è caduto (i suoi rinforzi non escono più)
 var bonus_boon := false               # il prossimo dono sale di un livello in più (premio del guardiano)
 var shops_visited := 0
 var shop_items: Array = []
@@ -209,6 +212,7 @@ func start_room(reward: Dictionary) -> void:
 		Run.room += 1
 	room_gen += 1
 	boss = null
+	guardian_down = false
 	current_reward = reward
 	Run.mask_used = false
 	if reward.get("kind", "") != "tutorial":
@@ -246,10 +250,14 @@ func start_room(reward: Dictionary) -> void:
 	decor.under = paint_floor
 	# le arene dei guardiani e dei boss sono luoghi a parte (scripts/arenas.gd)
 	var arena := "lake" if boss_room and BOSS_KIND == "amheh" else ("gate" if kind == "guardian" else "")
+	if arena == "gate" and Run.region == 2:
+		arena = "temple"                 # Sokar: il tempio di Serket
 	if arena == "lake":
 		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_lake(ci, ROOM, TOP, WALL)
 	elif arena == "gate":
 		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_gate(ci, ROOM, TOP, WALL)
+	elif arena == "temple":
+		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_temple(ci, ROOM, TOP, WALL)
 	decor.arena = arena
 	Run.deep_center = Arenas.deep_center(ROOM, TOP, WALL) if arena == "gate" else Vector2.ZERO
 	Run.deep_radii = Arenas.DEEP_RADII if arena == "gate" else Vector2.ZERO
@@ -297,8 +305,8 @@ func start_room(reward: Dictionary) -> void:
 	# Ankh: ogni stanza nuova (non la deviazione di Set) un po' di vita
 	if Run.amulet == "ankh" and Run.room > 1 and kind != "set" and kind != "tutorial":
 		player.heal(Amulets.val())
-	if kind == "guardian":
-		Challenges.on_guardian_room()
+	if kind == "guardian" and Run.region == 1:
+		Challenges.on_guardian_room()          # la sfida "Due mani" conta le armi portate al Serpente
 	var cam: Camera2D = player.get_node("Camera")
 	cam.limit_left = int(ROOM.position.x)
 	cam.limit_top = int(ROOM.position.y)
@@ -430,8 +438,19 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 	if gen != room_gen or finished:
 		return
 	spawning -= 1
+	if guardian_down:
+		# caduto il guardiano, i suoi rinforzi annunciati non escono più (gli scorpioni di Serket
+		# comparivano dopo la sua morte e tenevano chiusa la stanza: niente premio)
+		if alive <= 0 and spawning <= 0:
+			_room_cleared.call_deferred()
+		return
 	var e: Enemy = ENEMIES[kind].instantiate()
 	e.position = pos
+	if kind == "serket":
+		# il suo tempio: il piano di pietra dove non scava e i cumuli da cui escono gli scorpioni
+		e.dais_center = Arenas.deep_center(ROOM, TOP, WALL)
+		e.dais_radii = Arenas.DAIS_RADII
+		e.mounds = Arenas.temple_mounds(ROOM, TOP, WALL)
 	# dalla terza stanza alcune mummie e alcuni sacerdoti sono élite
 	var elite_w := Weights.rank("elite")
 	if Run.room >= 3 - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind in ["mummy", "priest"] and randf() < minf(0.2, 0.06 + 0.02 * Run.room) * (1 + elite_w):
@@ -484,6 +503,7 @@ func _on_enemy_killed(e: Enemy) -> void:
 			_boss_defeated.call_deferred()
 		return
 	if e == boss and e.miniboss:
+		guardian_down = true              # i rinforzi ancora in arrivo non compaiono più
 		boss_bar.visible = false
 		for c in world.get_children():
 			if c is Enemy and not c.dead:
@@ -559,16 +579,27 @@ func _room_cleared() -> void:
 		# premio del guardiano: un dono che sale di due livelli invece di uno
 		bonus_boon = true
 		# il guardiano di mezzo non dà Lacrime di Iside: quelle cadono solo sui boss delle regioni
-		var first_serpent := Meta.serpent_wins == 0
-		Meta.serpent_wins += 1
-		Meta.serpent_streak = 0
-		Challenges.on_serpent_beaten(Run.hp / Run.max_hp)
-		Restorations.gain(randi_range(4, 5), player.global_position)
-		var tear_txt := Lang.t("Il Cortile di Neith si è aperto") if first_serpent else Lang.t("La via verso Am-heh è aperta")
+		var tear_txt := ""
+		var fallen := ""
+		var fallen_col := Color(0.6, 1, 0.5)
+		if Run.region == 2:
+			Meta.serket_wins += 1
+			Restorations.gain(randi_range(5, 6), player.global_position)
+			tear_txt = Lang.t("Il cuore di Sokar è aperto")
+			fallen = Lang.t("Serket è caduta")
+			fallen_col = Color(0.4, 0.9, 0.82)
+		else:
+			var first_serpent := Meta.serpent_wins == 0
+			Meta.serpent_wins += 1
+			Meta.serpent_streak = 0
+			Challenges.on_serpent_beaten(Run.hp / Run.max_hp)
+			Restorations.gain(randi_range(4, 5), player.global_position)
+			tear_txt = Lang.t("Il Cortile di Neith si è aperto") if first_serpent else Lang.t("La via verso Am-heh è aperta")
+			fallen = Lang.t("Il Serpente della Porta è caduto")
 		var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
 		if not gods.is_empty():
 			current_reward = {"kind": "boon", "god": gods.pick_random()}
-			_banner(Lang.t("Il Serpente della Porta è caduto"), tear_txt + Lang.t("  ·  il prossimo dono sale di un livello in più"), Color(0.6, 1, 0.5))
+			_banner(fallen, tear_txt + Lang.t("  ·  il prossimo dono sale di un livello in più"), fallen_col)
 		else:
 			current_reward = {"kind": "ka"}
 	if current_reward.get("kind", "none") == "none":
@@ -1355,7 +1386,7 @@ func _on_player_died() -> void:
 	Run.clear_descent()
 	var where := Lang.t("Am-heh, il Divoratore di Milioni") if Run.room > Run.ROOMS_PER_RUN else Lang.t("stanza %d di %d") % [Run.room, Run.ROOMS_PER_RUN]
 	if current_reward.get("kind", "") == "guardian":
-		where = Lang.t("il Serpente della Porta")
+		where = Lang.t("il Serpente della Porta") if Run.region == 1 else Lang.t("Serket, la dea scorpione")
 		if Run.region == 1:
 			Meta.serpent_streak += 1         # dopo 3 di fila Anubi offre la Piuma di Ma'at
 	Meta.last_end = "ammit" if Run.room > Run.ROOMS_PER_RUN else "room"   # "ammit" = morto contro il boss della regione (nome storico nel salvataggio)
@@ -1490,6 +1521,12 @@ func _build_arena(arena: String, pool_spots: Array) -> void:
 				if bab.pool == null or w.global_position.distance_to(b) < bab.pool.global_position.distance_to(b):
 					bab.pool = w
 			world.add_child(bab)
+	elif arena == "temple":
+		var dust := Arenas.TempleDust.new()
+		dust.room = ROOM
+		dust.top = TOP
+		dust.wall = WALL
+		world.add_child(dust)
 	elif arena == "gate":
 		var sh := Arenas.GateShimmer.new()
 		sh.room = ROOM
@@ -1505,6 +1542,15 @@ func _build_arena(arena: String, pool_spots: Array) -> void:
 ## Stanza 5: il Serpente della Porta.
 func _start_guardian() -> void:
 	Music.stop()
+	if Run.region == 2:
+		# Sokar: Serket nel suo tempio (niente statue del cobra: la complicazione sono i suoi scorpioni)
+		boss_name.text = Lang.t("SERKET, LA DEA SCORPIONE")
+		boss_fill.color = Color(0.25, 0.75, 0.7)
+		boss_bar.visible = true
+		boss_fill.size.x = boss_bar.size.x
+		spawning += 1
+		_spawn_after("serket", Vector2(ROOM.size.x / 2.0, TOP + 100.0), 1.4)
+		return
 	# le statue dell'ureo sulle pareti (Hazards.UraeusStatues), sopra le pareti dipinte
 	var ur := Hazards.UraeusStatues.new()
 	ur.setup(ROOM, WALL, TOP, pillars)
@@ -1612,10 +1658,14 @@ func _buy(item) -> void:
 
 
 ## Il boss chiama rinforzi (Ammit in furia, Am-heh quando fa evaporare una pozza).
+## Ogni voce è un tipo di nemico (posto libero a caso) o [tipo, posizione] (Serket: i cumuli).
 func _on_boss_summon(kinds: Array) -> void:
 	for i in range(kinds.size()):
 		spawning += 1
-		_spawn_after(kinds[i], _free_spot(), 0.8 + i * 0.15)
+		if kinds[i] is Array:
+			_spawn_after(kinds[i][0], kinds[i][1], 0.8 + i * 0.15)
+		else:
+			_spawn_after(kinds[i], _free_spot(), 0.8 + i * 0.15)
 
 
 ## Ammit ha sbattuto contro una colonna: la colonna crolla.
