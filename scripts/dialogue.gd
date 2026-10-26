@@ -117,6 +117,10 @@ static func story() -> Array:
 			Lang.t("Fu un uomo, poi gli uomini ne fecero un dio. Non tutti gli dèi del Duat lo hanno perdonato. Io sì: le sue piramidi hanno reso il mio lavoro più ordinato.")]},
 		{"id": "sfide1", "if": Meta.casa and Challenges.to_claim() > 0, "lines": [
 			Lang.t("Thoth ha inciso una tua impresa sulla parete della Casa della Vita. I premi del Duat non si consegnano da soli, Scriba. Va' a prenderlo.")]},
+		{"id": "lago1", "if": Meta.last_end == "ammit" or Meta.ammit_wins >= 1, "lines": [
+			Lang.t("Ti sei chiesto perché il Divoratore viva nell'acqua e sputi fuoco. Non vive nell'acqua. Vive nel Lago di Fuoco."),
+			Lang.t("Per il morto giusto quel lago è acqua fresca. Per il dannato è fiamma. Lo stesso lago, due nature: dipende da chi vi entra."),
+			Lang.t("Le pozze della sua arena sono la parte del lago che ti riconosce ancora come giusto. Il fuoco non le tocca. Finché ti riconoscono, Scriba.")]},
 		{"id": "deaths3", "if": Meta.runs >= 3 and Meta.ammit_wins == 0, "lines": [
 			Lang.t("Tre volte sei disceso, tre volte sei tornato. Gli dèi hanno cominciato a parlare di te, a bassa voce."),
 			Lang.t("Set ti offrirà patti. Diffida di lui, ma non disprezzarlo: è il solo che ogni notte affronta Apophis a viso aperto.")]},

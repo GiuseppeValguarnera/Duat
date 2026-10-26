@@ -46,7 +46,7 @@ const ChoiceCard := preload("res://scripts/ui/choice_card.gd")
 const BossIntro := preload("res://scripts/ui/boss_intro.gd")
 ## Nome, titolo e consiglio di ogni boss, per la presentazione; e la musica che parte con lei.
 const BOSS_INTROS := {
-	"amheh": ["AM-HEH", "Il Divoratore di Milioni", "Vive in un lago di fuoco. Il fuoco non entra nell'acqua", "boss", Color(1, 0.55, 0.2)],
+	"amheh": ["AM-HEH", "Il guardiano del Lago di Fuoco", "Per il giusto il lago è acqua, per il dannato è fuoco. Resta nell'acqua", "boss", Color(1, 0.55, 0.2)],
 	"ammit": ["AMMIT", "La Divoratrice", "Divora i cuori che non superano il giudizio", "boss", Color(0.9, 0.35, 0.25)],
 	"serpent": ["IL SERPENTE DELLA PORTA", "Guardiano della quinta porta", "Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra", "elite", Color(0.5, 0.95, 0.45)],
 }
