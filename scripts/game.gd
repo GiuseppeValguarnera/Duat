@@ -273,6 +273,8 @@ func start_room(reward: Dictionary) -> void:
 	# sul telefono, nelle stanze normali, la telecamera si avvicina un poco: personaggi più leggibili.
 	# Contro i boss resta larga, perché serve vedere l'arena.
 	cam.zoom = Vector2.ONE * (1.12 if Fx.mobile and not boss_room else 1.0)
+	if TRAILER:
+		cam.zoom = Vector2.ONE * (1.35 if boss_room else 1.7)     # riprese: più vicino all'azione
 	cam.reset_smoothing()
 	player.died.connect(_on_player_died)
 	if Run.chap("c6"):

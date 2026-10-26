@@ -17,7 +17,14 @@ var _hitstops := 0
 var _punch := Vector2.ZERO			  ## contraccolpo della telecamera nella direzione del colpo
 
 
+## Il titolo del gioco. Il nome interno del progetto resta "Duat" (project.godot): cambiarlo
+## sposterebbe la cartella dei salvataggi sul computer e i giocatori perderebbero i progressi.
+const TITLE := "Kheper: Reborn in the Duat"
+
+
 func _ready() -> void:
+	if not OS.has_feature("web"):
+		get_window().title = TITLE
 	mobile = OS.has_feature("web_ios") or OS.has_feature("web_android") or OS.has_feature("mobile") or OS.get_cmdline_user_args().has("--mobile")
 	if mobile:
 		ui = 1.3
