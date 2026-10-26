@@ -50,17 +50,85 @@ static func line() -> String:
 	return Lang.t((pools[k] as Array).pick_random())
 
 
+## Le frasi che puoi già sentire (fino al punto della storia), con il loro id per ricordarle.
+static func _available() -> Array:
+	var pools := [LINES, LINES_CURIOUS, LINES_WORRIED]
+	var out := []
+	for k in range(trust() + 1):
+		var pool: Array = pools[k]
+		for i in range(pool.size()):
+			out.append(["mahaf_%d_%d" % [k, i], pool[i]])
+	return out
+
+
+## Mahaf ha una frase che non hai ancora sentito? (il punto esclamativo sopra la barca)
+static func has_news() -> bool:
+	for e in _available():
+		if not Meta.dialogue_seen.has(e[0]):
+			return true
+	return false
+
+
+## Quando gli parli: la prima frase che non hai ancora sentito, o una a caso se le sai tutte.
+static func talk_line() -> String:
+	for e in _available():
+		if not Meta.dialogue_seen.has(e[0]):
+			Meta.dialogue_seen.append(e[0])
+			Meta.save()
+			return Lang.t(e[1])
+	return line()
+
+
+## Il saluto quando entri: una frase già sentita (le nuove le dice solo se gli parli).
+static func greeting() -> String:
+	var known := _available().filter(func(e: Array) -> bool: return Meta.dialogue_seen.has(e[0]))
+	if known.is_empty():
+		return Lang.t("«Sali, scriba. O compra e scendi. Ma prima parlami: le mie parole sono gratis.»")
+	return Lang.t(known.pick_random()[1])
+
+
 ## Lo sconto silenzioso: più Mahaf sa, meno ti fa pagare.
 static func trust_discount() -> float:
 	return [1.0, 0.9, 0.8][trust()]
 
 
 var t := 0.0
+var near := false                       ## il giocatore è abbastanza vicino per parlargli (game.gd)
+var _news := false
+var _news_t := 0.0
+var _speech: Label
 
 
 func _process(delta: float) -> void:
 	t += delta
+	if t >= _news_t:
+		_news_t = t + 0.5
+		_news = has_news()
 	queue_redraw()
+
+
+## Mahaf parla: la frase compare sopra la barca e svanisce dopo qualche secondo.
+func say(text: String) -> void:
+	if _speech != null and is_instance_valid(_speech):
+		_speech.queue_free()
+	_speech = Label.new()
+	_speech.text = text
+	_speech.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_speech.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_speech.size = Vector2(240, 0)
+	_speech.position = Vector2(-120, -96)
+	_speech.add_theme_font_override("font", UiStyle.body_font())
+	_speech.add_theme_font_size_override("font_size", 11)
+	_speech.add_theme_color_override("font_color", Color(0.75, 0.92, 1.0))
+	_speech.add_theme_color_override("font_outline_color", Color(0.04, 0.03, 0.06))
+	_speech.add_theme_constant_override("outline_size", 4)
+	_speech.z_index = 90
+	add_child(_speech)
+	_news = has_news()
+	var tw := _speech.create_tween()
+	tw.tween_interval(maxf(3.0, text.length() * 0.06))
+	tw.tween_property(_speech, "modulate:a", 0.0, 0.6)
+	tw.tween_callback(_speech.queue_free)
 
 
 func _draw() -> void:
@@ -112,6 +180,11 @@ func _draw() -> void:
 	draw_circle(Vector2(-3.5, -28.5), 1.0, Color(0.6, 1, 0.9))
 	draw_line(Vector2(-5.5, -28.6), Vector2(-1.5, -28.3), Color(0.6, 1, 0.9, 0.5), 0.5)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	# i segni: si può parlare con lui, e il punto esclamativo se ha qualcosa di nuovo da dire
+	UiStyle.sparkle(self, Vector2(0, -22 + bob), 22.0, t, near, 0.7)
+	if _news:
+		UiStyle.exclaim(self, Vector2(0, -50 + bob), t)
+
 
 
 ## Un oggetto in vendita su un piedistallo. Ci si avvicina e si preme E / Y per comprarlo.
@@ -146,6 +219,7 @@ class ShopItem extends Node2D:
 		draw_line(Vector2(-11, -1), Vector2(11, -1), Color(0.2, 0.45, 0.7), 1.0)
 		if sold:
 			return
+		UiStyle.sparkle(self, Vector2(0, -22), 14.0, t, false, position.x * 0.05)
 		var c := color()
 		var y := -22.0 + sin(t * 2.5) * 2.0
 		draw_circle(Vector2(0, y), 8.0, Color(c, 0.25))

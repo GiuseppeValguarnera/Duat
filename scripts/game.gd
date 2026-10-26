@@ -113,6 +113,7 @@ var pause_menu: CanvasLayer           # menu di pausa (Esc / Start)
 var bonus_boon := false               # il prossimo dono sale di un livello in più (premio del guardiano)
 var shops_visited := 0
 var shop_items: Array = []
+var ferry: Node2D                       ## la barca del Traghettatore, se la stanza è la sua
 var doors_after_boon := true
 var ammit_tears := 0                  # Lacrime arrivate battendo Ammit in questa discesa
 var can_leave := true                 # alla morte: si torna alla Sala solo dopo l'animazione
@@ -1403,7 +1404,8 @@ func _start_shop() -> void:
 	var boat := FerrymanScript.new()
 	boat.position = Vector2(cx, mid_y - 50.0)
 	world.add_child(boat)
-	_banner(Lang.t("Il Traghettatore"), Lang.t("Mahaf: ") + FerrymanScript.line(), Color(0.6, 0.85, 0.95))
+	ferry = boat
+	_banner(Lang.t("Il Traghettatore"), Lang.t("Mahaf: ") + FerrymanScript.greeting(), Color(0.6, 0.85, 0.95))
 	var items := SHOP_ITEMS.duplicate()
 	if _upgradable().is_empty():
 		items = items.filter(func(it: Dictionary) -> bool: return it["kind"] != "upgrade")
@@ -1663,6 +1665,15 @@ func _process(_delta: float) -> void:
 		near = Lang.t("%s · %s: %s (%d Ka, ne hai %d)") % ["Y" if Fx.device == "pad" else "E", shop_near.title, shop_near.desc, shop_near.price, Run.ka]
 		if Input.is_action_just_pressed("interact") and menu == null:
 			_buy(shop_near)
+	# parlare con Mahaf: vicino alla barca (gli oggetti in vendita hanno la precedenza)
+	if is_instance_valid(ferry):
+		var by_boat: bool = shop_near == null and player.global_position.distance_to(ferry.global_position + Vector2(0, 12)) < 56.0
+		ferry.near = by_boat
+		if by_boat:
+			near = Lang.t("%s · Parla con Mahaf") % ("Y" if Fx.device == "pad" else "E")
+			if Input.is_action_just_pressed("interact") and menu == null:
+				Sfx.play("ui", 0.0)
+				ferry.say(FerrymanScript.talk_line())
 	for d in doors:
 		if is_instance_valid(d) and d.open and player.global_position.distance_to(d.global_position) < 70.0:
 			near = d.reward_description()

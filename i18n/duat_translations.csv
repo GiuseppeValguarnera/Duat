@@ -464,6 +464,7 @@ Occhio pronto,Occhio pronto,Eye ready
 «Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»,«Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»,«Don't look at me like that. I only see the past. And yours is... crowded.»
 "«Più scendi, meno ti costa la mia merce. Non è generosità. È fretta.»","«Più scendi, meno ti costa la mia merce. Non è generosità. È fretta.»","«The deeper you go, the less my wares cost you. It is not generosity. It is haste.»"
 "«Ho fatto una promessa, molto tempo fa. La sto ancora pagando. Prendi, e va'.»","«Ho fatto una promessa, molto tempo fa. La sto ancora pagando. Prendi, e va'.»","«I made a promise, a long time ago. I am still paying for it. Take it, and go.»"
+"«Sali, scriba. O compra e scendi. Ma prima parlami: le mie parole sono gratis.»","«Sali, scriba. O compra e scendi. Ma prima parlami: le mie parole sono gratis.»","«Climb aboard, scribe. Or buy and go down. But talk to me first: my words are free.»"
 %d Ka,%d Ka,%d Ka
 Acqua del Nilo,Acqua del Nilo,Water of the Nile
 Recuperi il 30% della vita,Recuperi il 30% della vita,You recover 30% of your health
@@ -627,6 +628,7 @@ Doni: %d,Doni: %d,Boons: %d
 Doni: %d (Tab per vederli),Doni: %d (Tab per vederli),Boons: %d (Tab to view)
     Maledizione: %s (ancora %d stanze),    Maledizione: %s (ancora %d stanze),    Curse: %s (%d chambers left)
 "%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, you have %d)"
+%s · Parla con Mahaf,%s · Parla con Mahaf,%s · Talk to Mahaf
 Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Left stick move · right aim · RB attack · RT Eye · LB/A dash · LT Divine Form · Select boons · Start pause
 WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD move · mouse aim · left click attack · Space dash · right click Eye · Q Divine Form (after the first boss) · Tab boons · Esc pause · F1 hitbox
 Ureo!,Ureo!,Uraeus!
