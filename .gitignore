@@ -4,3 +4,4 @@
 *.tmp
 # build esportate (la versione web sta nel ramo gh-pages)
 build/
+tools/dev/.godot_bin/
