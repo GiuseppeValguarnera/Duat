@@ -287,7 +287,7 @@ func _process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if book != null:
-		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("interact") or (book_kind == "opzioni" and event.is_action_pressed("pause")):
+		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("interact") or event.is_action_pressed("pause"):
 			_close_book()
 			get_viewport().set_input_as_handled()
 		return
@@ -419,10 +419,17 @@ func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxCont
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	left.add_theme_constant_override("separation", 3)
 	scroll.add_child(left)
+	# anche la pagina a destra scorre: i capitoli del Libro hanno testi lunghi e sul telefono
+	# spingevano "Chiudi" fuori dallo schermo (non si capiva come uscire)
+	var page_scroll := ScrollContainer.new()
+	page_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	page_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	page_scroll.gui_input.connect(_on_list_drag.bind(page_scroll))
+	row.add_child(page_scroll)
 	var right := VBoxContainer.new()
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	right.add_theme_constant_override("separation", 6)
-	row.add_child(right)
+	page_scroll.add_child(right)
 	page_title = _text_label(right, 12, Color(0.94, 0.72, 0.3))
 	page_body = _text_label(right, 10, Color(0.95, 0.9, 0.78))
 	page_lore = _text_label(right, 9, Color(0.72, 0.68, 0.9))
@@ -444,11 +451,25 @@ func _frame(title_text: String, sub_text: String, left_width: float) -> VBoxCont
 	close.pressed.connect(_close_book)
 	outer.add_child(close)
 	var hint := Label.new()
-	hint.text = Lang.t("Tocca una voce per leggerla, toccala di nuovo per sceglierla") if Fx.device == "touch" else Lang.t("E / Y / B per chiudere")
+	hint.text = Lang.t("Tocca una voce per leggerla, toccala di nuovo per sceglierla · × per chiudere") if Fx.device == "touch" else Lang.t("E / Esc / B per chiudere")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_font_size_override("font_size", Fx.fs(8))
 	hint.add_theme_color_override("font_color", Color(0.66, 0.6, 0.47))
 	outer.add_child(hint)
+	# la X in alto a destra, grande: si trova subito, anche con il pollice
+	var x := Button.new()
+	x.text = "×"
+	x.tooltip_text = Lang.t("Chiudi")
+	x.focus_mode = Control.FOCUS_NONE        # non ruba lo spostamento con tastiera e pad
+	x.add_theme_font_size_override("font_size", Fx.fs(18))
+	x.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	var xs := 30.0 * Fx.ui if not Fx.mobile else 40.0
+	x.offset_left = -xs - 6.0
+	x.offset_right = -6.0
+	x.offset_top = 6.0
+	x.offset_bottom = 6.0 + xs
+	x.pressed.connect(_close_book)
+	book.add_child(x)
 	return left
 
 

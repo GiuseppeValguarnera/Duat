@@ -646,8 +646,8 @@ La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,La bilanci
 Il Cortile di Neith · le armi · entra dalla porta,Il Cortile di Neith · le armi · entra dalla porta,The Courtyard of Neith · the weapons · enter through the door
 Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,The Courtyard of Neith · it will open when you have defeated the Serpent of the Gate
 Il cancello del Duat è a nord,Il cancello del Duat è a nord,The gate of the Duat lies to the north
-"Tocca una voce per leggerla, toccala di nuovo per sceglierla","Tocca una voce per leggerla, toccala di nuovo per sceglierla","Tap an item to read it, tap it again to choose it"
-E / Y / B per chiudere,E / Y / B per chiudere,E / Y / B to close
+"Tocca una voce per leggerla, toccala di nuovo per sceglierla · × per chiudere","Tocca una voce per leggerla, toccala di nuovo per sceglierla · × per chiudere","Tap an entry to read it, tap it again to choose it · × to close"
+E / Esc / B per chiudere,E / Esc / B per chiudere,E / Esc / B to close
 Il Libro dei Morti,Il Libro dei Morti,The Book of the Dead
 Ka custodito: %d    ·    Capitoli attivi: %d di %d,Ka custodito: %d    ·    Capitoli attivi: %d di %d,Stored Ka: %d    ·    Active chapters: %d of %d
 ATTIVO,ATTIVO,ACTIVE
@@ -1065,6 +1065,8 @@ Il silenzio degli dèi,Il silenzio degli dèi,The silence of the gods
 Gli dèi ti offrono solo due doni invece di tre.,Gli dèi ti offrono solo due doni invece di tre.,The gods offer you only two boons instead of three.
 La fame di Am-heh,La fame di Am-heh,The hunger of Am-heh
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh has 30% more health and the tide of fire comes more often.
+"Tocca una voce per leggerla, toccala di nuovo per sceglierla","Tocca una voce per leggerla, toccala di nuovo per sceglierla","Tap an item to read it, tap it again to choose it"
+E / Y / B per chiudere,E / Y / B per chiudere,E / Y / B to close
 Ti muovi il 6% più lento.,Ti muovi il 6% più lento.,You move 6% slower.
 Subisci il 15% di danni in più.,Subisci il 15% di danni in più.,You take 15% more damage.
 -6% velocità,-6% velocità,-6% speed
