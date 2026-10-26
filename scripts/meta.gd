@@ -101,6 +101,11 @@ func _ready() -> void:
 		amulet_rooms = cfg.get_value("casa", "stanze", {})
 		challenges = cfg.get_value("casa", "sfide", {})
 		stats = cfg.get_value("casa", "contatori", {})
+		# le sfide contano solo da quando la Casa è aperta: i salvataggi di prima ne avevano già
+		# compiute alcune a Casa murata, si ripulisce
+		if not casa and not challenges.is_empty():
+			challenges = {}
+			stats = {"rinascite": stats.get("rinascite", 0)}
 	Lang.apply(String(options.get("lang", "auto")))
 
 

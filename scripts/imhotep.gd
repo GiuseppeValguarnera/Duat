@@ -72,7 +72,7 @@ static func _story() -> Array:
 static func _tips() -> Array:
 	if Meta.serpent_wins == 0:
 		return [Lang.t("Il Serpente della Porta sprofonda nella sabbia e riemerge dove c'è il cerchio. Non stargli addosso: aspettalo lì, e colpisci quando esce."),
-			Lang.t("Contro il Serpente il veleno è il vero nemico. Se ti avvelena, non inseguirlo: allontanati e lascia passare il bruciore."),
+			Lang.t("Quando il Serpente alza la testa e sibila, sputa a ventaglio. Non scappare all'indietro, che il ventaglio si allarga: scatta di lato, tra uno sputo e l'altro."),
 			Lang.t("Prima del Serpente c'è sempre il Traghettatore. Arrivaci con il Ka in tasca: l'Acqua del Nilo ti salva più di un dono."),
 			Lang.t("Una regola da architetto: guarda la stanza prima di correre. Le colonne sono ripari, non ostacoli.")]
 	if Meta.ammit_wins == 0:

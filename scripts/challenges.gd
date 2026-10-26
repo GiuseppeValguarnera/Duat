@@ -1,7 +1,8 @@
 class_name Challenges
 extends RefCounted
-## La parete di Thoth nella Casa della Vita: le sfide. Si compiono giocando (anche senza aver
-## aperto la Casa: le vedi già fatte quando entri) e il premio si riscuote davanti alla parete.
+## La parete di Thoth nella Casa della Vita: le sfide. Si compiono giocando, ma contano solo da
+## quando la Casa è aperta (prima comparivano premi da riscuotere in un posto ancora murato), e il
+## premio si riscuote davanti alla parete.
 ## Alcune danno la ricetta di un amuleto (amulets.gd), le altre Ka custodito, lapislazzuli o
 ## Lacrime di Iside. La seconda parete si svela dopo SECOND_WALL sfide compiute.
 ##
@@ -108,7 +109,7 @@ static func claim(id: String) -> bool:
 # ---------------------------------------------------------------- si compiono giocando
 
 static func _complete(id: String) -> void:
-	if state(id) > 0:
+	if not Meta.casa or state(id) > 0:
 		return
 	Meta.challenges[id] = 1
 	Meta.save()
@@ -120,6 +121,8 @@ static func _complete(id: String) -> void:
 
 ## Per le sfide "di fila" e "in una discesa": ricorda il migliore e la compie se basta.
 static func _reach(id: String, n: int) -> void:
+	if not Meta.casa:
+		return
 	if n > int(Meta.stats.get("best_" + id, 0)):
 		Meta.stats["best_" + id] = n
 	if n >= int(ALL_IT[id]["goal"]):
@@ -127,6 +130,8 @@ static func _reach(id: String, n: int) -> void:
 
 
 static func _count(stat: String, id: String, add: int = 1) -> void:
+	if not Meta.casa:
+		return
 	Meta.stats[stat] = int(Meta.stats.get(stat, 0)) + add
 	if int(Meta.stats[stat]) >= int(ALL_IT[id]["goal"]):
 		_complete(id)
@@ -161,6 +166,8 @@ static func on_ka_spent(total: int) -> void:
 
 
 static func on_guardian_room() -> void:
+	if not Meta.casa:
+		return
 	var list: Array = Meta.stats.get("armi_serpente", [])
 	if not list.has(Run.weapon):
 		list.append(Run.weapon)
