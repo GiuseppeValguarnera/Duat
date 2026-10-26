@@ -23,10 +23,15 @@ const ENEMIES := {
 	"scorpion": preload("res://scenes/scorpion.tscn"),   # nemici del deserto di Sokar (seconda tappa)
 	"cobra": preload("res://scenes/cobra.tscn"),
 	"crocodile": preload("res://scenes/crocodile.tscn"),
+	# il deserto di Sokar
+	"jackal": preload("res://scenes/jackal.tscn"),
+	"vulture": preload("res://scenes/vulture.tscn"),
+	"sokar_guard": preload("res://scenes/sokar_guard.tscn"),
+	"damned_ba": preload("res://scenes/damned_ba.tscn"),
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -178,6 +183,9 @@ func _ready() -> void:
 	if not Meta.tutorial_done and OS.get_environment("DUAT_PERSONA") == "" and OS.get_environment("DUAT_NOTUT") == "":
 		start_room({"kind": "tutorial"})
 		return
+	# per le prove: partire direttamente da Sokar
+	if OS.get_environment("DUAT_START_REGION") == "2" and Run.max_region() > 1:
+		Run.region = 2
 	# la prima stanza non ha ricompensa: il primo dono è quello di Anubi
 	start_room({"kind": "none"})
 	_show_anubi_menu()
@@ -347,11 +355,31 @@ func _make_wave(budget: int, allow_priest: bool) -> Array:
 	var sokar := Run.region == 2
 	while budget > 0:
 		var roll := randf()
-		# Sokar: il deserto degli scorpioni di Serket (i nemici nuovi arriveranno qui)
-		if sokar and roll < 0.4 and budget >= 3:
-			out.append_array(["scorpion", "scorpion"])
-			budget -= 3
-			continue
+		# Sokar: scorpioni di Serket, sciacalli in branco, avvoltoi, guardiani con lo scudo, Ba
+		# dannati. Mummie, scarabei e sacerdoti restano, meno spesso: le tombe sono ovunque.
+		if sokar:
+			var r := Run.room
+			var pick := randf()
+			if pick < 0.2 and budget >= 3:
+				out.append_array(["jackal", "jackal", "jackal"])
+				budget -= 4
+				continue
+			if pick < 0.36 and budget >= 3:
+				out.append_array(["scorpion", "scorpion"])
+				budget -= 3
+				continue
+			if pick < 0.48 and r >= 2 and budget >= 2:
+				out.append("vulture")
+				budget -= 2
+				continue
+			if pick < 0.58 and r >= 3 and budget >= 3:
+				out.append("sokar_guard")
+				budget -= 3
+				continue
+			if pick < 0.68 and r >= 4 and budget >= 2:
+				out.append_array(["damned_ba", "damned_ba"])
+				budget -= 2
+				continue
 		if late and roll < 0.22 and budget >= 3:
 			out.append("cobra")
 			budget -= 3

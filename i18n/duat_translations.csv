@@ -1214,6 +1214,7 @@ Danni subiti,Danni subiti,Damage taken
 Nemici e boss,Nemici e boss,Enemies and bosses
 Trappole,Trappole,Traps
 Ricompense e menu,Ricompense e menu,Rewards and menus
+PARATO,PARATO,BLOCKED
 SCATTO,SCATTO,DASH
 DONI,DONI,BOONS
 KHOPESH,KHOPESH,KHOPESH
@@ -1311,6 +1312,7 @@ L'ira del Serpente,L'ira del Serpente,Wrath of the Serpent
 Il Serpente della Porta ha due mosse in più: la doppia emersione e la pioggia di veleno.,Il Serpente della Porta ha due mosse in più: la doppia emersione e la pioggia di veleno.,The Serpent of the Gate has two extra moves: the double emergence and the rain of venom.
 L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
+ROOM,ROOM,
 Il Divoratore di Milioni,Il Divoratore di Milioni,The Devourer of Millions
 Vive in un lago di fuoco. Il fuoco non entra nell'acqua,Vive in un lago di fuoco. Il fuoco non entra nell'acqua,It lives in a lake of fire. Fire does not enter water
 "Sala del Giudizio
@@ -1590,3 +1592,7 @@ la marea di fuoco di Am-heh,la marea di fuoco di Am-heh,Am-heh's tide of fire
 una grata di fuoco,una grata di fuoco,a fire grate
 una trappola,una trappola,a trap
 le statue del cobra,le statue del cobra,the cobra statues
+gli sciacalli,gli sciacalli,the jackals
+un avvoltoio,un avvoltoio,a vulture
+un guardiano di Sokar,un guardiano di Sokar,a guardian of Sokar
+un Ba dannato,un Ba dannato,a damned Ba
