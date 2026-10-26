@@ -124,7 +124,7 @@ func _draw_body(flash: bool) -> void:
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(dir, 1.0))
 	# spire a terra, con le fasce
 	draw_set_transform(Vector2(0, -1), 0.0, Vector2(dir, 0.5))
-	draw_arc(Vector2.ZERO, 7.0, 0.0, TAU, 20, OUT, 4.6)
+	draw_arc(Vector2.ZERO, 7.0, 0.0, TAU, 20, _out(), 4.6)
 	draw_arc(Vector2.ZERO, 7.0, 0.0, TAU, 20, skin, 3.0)
 	for k in range(6):
 		var a := k * TAU / 6.0 + t * 0.5

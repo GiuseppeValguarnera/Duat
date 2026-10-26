@@ -39,7 +39,7 @@ func _ready() -> void:
 		max_hp *= 1.8
 		contact_damage *= 1.3
 		ka_value += 2
-		scale = Vector2(1.2, 1.2)
+		scale = Vector2(1.3, 1.3)
 	hp = max_hp
 	add_to_group("enemies")
 	t = randf() * 3.0
@@ -166,6 +166,8 @@ func _draw_body(_flash: bool) -> void:
 
 const OUT := Color(0.12, 0.08, 0.05)          ## il contorno, uguale a quello dell'eroe
 const GOLD := Color(0.94, 0.72, 0.3)
+const ELITE_GOLD := Color(1.0, 0.82, 0.32)
+const ELITE_RIM := Color(0.62, 0.4, 0.08)        ## il bordo degli élite: oro scuro, si legge sul pavimento
 
 
 ## Una forma piena con il contorno scuro.
@@ -173,7 +175,7 @@ func _op(pts: PackedVector2Array, fill: Color, w: float = 0.8) -> void:
 	draw_colored_polygon(pts, fill)
 	var closed := pts.duplicate()
 	closed.append(pts[0])
-	draw_polyline(closed, OUT, w)
+	draw_polyline(closed, _out(), w * (1.5 if elite else 1.0))
 
 
 ## Un'ellisse come poligono (per corpi e gusci).
@@ -187,19 +189,30 @@ func _ell(c: Vector2, rx: float, ry: float, n: int = 14) -> PackedVector2Array:
 
 ## Un arto: una linea col contorno.
 func _limb(a: Vector2, b: Vector2, col: Color, w: float) -> void:
-	draw_line(a, b, OUT, w + 1.0)
+	draw_line(a, b, _out(), w + (1.6 if elite else 1.0))
 	draw_line(a, b, col, w)
 
 
 ## Un cerchio col contorno.
 func _dot(c: Vector2, r: float, col: Color) -> void:
-	draw_circle(c, r + 0.6, OUT)
+	draw_circle(c, r + (0.9 if elite else 0.6), _out())
 	draw_circle(c, r, col)
 
 
-## Il colore, o bianco nel lampo del colpo.
+## Il colore, o bianco nel lampo del colpo. Gli élite hanno una patina d'oro che luccica: il loro
+## corpo è dorato, ma gli avvisi degli attacchi (rosso, verde) restano dei loro colori.
 func _f(c: Color, flash: bool) -> Color:
-	return Color(1, 1, 1, c.a) if flash else c
+	if flash:
+		return Color(1, 1, 1, c.a)
+	if elite:
+		var shine := 0.3 + 0.08 * sin(t * 3.0 + seed_offset)
+		return Color(c.lerp(ELITE_GOLD, shine), c.a)
+	return c
+
+
+## Il contorno: scuro, o d'oro per gli élite.
+func _out() -> Color:
+	return ELITE_RIM if elite else OUT
 
 
 # --- comune -----------------------------------------------------------------------
@@ -313,11 +326,12 @@ func _draw() -> void:
 	draw_set_transform(Vector2(0, 2), 0.0, Vector2(1.0, 0.4))
 	draw_circle(Vector2.ZERO, radius + 3.0, Color(0, 0, 0, 0.35))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	if elite:
-		var pulse := 0.5 + 0.5 * sin(t * 4.0)
-		draw_circle(Vector2(0, -radius), radius + 6.0, Color(1, 0.8, 0.3, 0.1 + 0.08 * pulse))
-		draw_arc(Vector2(0, -radius), radius + 6.0, 0.0, TAU, 24, Color(1, 0.82, 0.35, 0.55), 1.0)
 	_draw_body(flash_t > 0.0)
+	if elite:
+		# qualche scintilla d'oro che si stacca dal corpo, al posto dell'alone di prima
+		var k := fmod(t * 0.9 + seed_offset, 1.0)
+		var sp := Vector2(sin(seed_offset * 7.0 + floorf(t * 0.9) * 2.3) * radius, -radius * (1.0 + 1.6 * k))
+		UiStyle.star4(self, sp, 2.0 * (1.0 - k) + 0.6, Color(1.0, 0.9, 0.5, 0.9 * (1.0 - k)))
 	if burn_t > 0.0:
 		draw_circle(Vector2(0, -radius), radius + 3.0, Color(1, 0.5, 0.1, 0.25))
 	if mark_t > 0.0:

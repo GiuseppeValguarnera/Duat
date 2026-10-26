@@ -46,6 +46,6 @@ func _draw_body(flash: bool) -> void:
 	_op(head, shell_d)
 	for k in range(3):
 		var y := -6.6 + k * 1.6
-		draw_line(Vector2(8.0, y), Vector2(9.4, y - 0.4), OUT, 0.8)
+		draw_line(Vector2(8.0, y), Vector2(9.4, y - 0.4), _out(), 0.8)
 	draw_circle(Vector2(6.4, -6.0), 0.6, _f(Color(0.9, 0.75, 0.35), flash))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

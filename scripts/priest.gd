@@ -91,14 +91,14 @@ func _draw_body(flash: bool) -> void:
 	var pelt := PackedVector2Array([Vector2(-5.0, -21), Vector2(3.0, -21), Vector2(1.0, -15), Vector2(-4.0, -16.5)])
 	_op(pelt, pelt_c, 0.6)
 	for sp in [Vector2(-2.8, -19.5), Vector2(-0.5, -18.0), Vector2(1.2, -20.0), Vector2(-3.0, -17.2)]:
-		draw_circle(sp, 0.5, OUT)
+		draw_circle(sp, 0.5, _out())
 	# lo scettro uas: asta, testa dell'animale di Set e la forcella in basso
 	var hand := Vector2(7.0, -14.0)
 	_limb(Vector2(3.5, -19.5), hand, skin, 1.6)
 	_limb(Vector2(8.0, 1.0), Vector2(8.0, -25.0), Color(0.45, 0.3, 0.15) if not flash else Color.WHITE, 0.9)
-	draw_line(Vector2(8.0, -25.0), Vector2(10.5, -24.0), OUT, 1.6)
-	draw_line(Vector2(8.0, 1.0), Vector2(7.0, 2.2), OUT, 0.8)
-	draw_line(Vector2(8.0, 1.0), Vector2(9.0, 2.2), OUT, 0.8)
+	draw_line(Vector2(8.0, -25.0), Vector2(10.5, -24.0), _out(), 1.6)
+	draw_line(Vector2(8.0, 1.0), Vector2(7.0, 2.2), _out(), 0.8)
+	draw_line(Vector2(8.0, 1.0), Vector2(9.0, 2.2), _out(), 0.8)
 	# la maschera di Set: muso lungo e ricurvo, orecchie diritte tagliate in cima
 	var hc := Vector2(0.0, -24.5)
 	_op(_ell(hc, 4.2, 3.8, 12), mask)
