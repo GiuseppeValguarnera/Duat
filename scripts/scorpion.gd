@@ -45,8 +45,8 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				return Vector2.ZERO
 			# da vicino gira intorno al giocatore, da lontano si avvicina
 			if d < 70.0:
-				return (u * 0.6 + u.orthogonal() * circle_dir).normalized() * speed
-			return u * speed
+				return _steer((u * 0.6 + u.orthogonal() * circle_dir).normalized() * speed, delta)
+			return _steer(u * speed, delta)
 		"windup":
 			if st > sting_windup * 0.4:
 				sting_dir = u

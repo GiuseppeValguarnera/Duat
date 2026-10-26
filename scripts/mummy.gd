@@ -11,15 +11,31 @@ var state := "chase"
 var step_t := 0.0
 var st := 0.0
 var lunge_dir := Vector2.RIGHT
+var flank := 0.0                       ## da che lato ti aggira (le mummie arrivano da lati diversi)
+var lurch_t := 0.0                     ## lo scatto barcollante quando sei lontano
+var lurch_cd := 2.0
+
+## Quanto l'affondo anticipa la tua corsa (0 = mira dove sei, 1 = dove sarai).
+const LEAD := 0.33
+const LURCH_SPEED := 1.9
+
+
+func _ready() -> void:
+	super._ready()
+	flank = randf_range(0.5, 0.95) * (1.0 if randf() < 0.5 else -1.0)
+	lurch_cd = randf_range(1.5, 3.5)
 
 
 func _behave(delta: float, to: Vector2) -> Vector2:
 	st -= delta
+	lurch_cd -= delta
+	lurch_t -= delta
 	match state:
 		"chase":
 			if to == Vector2.ZERO:
 				return Vector2.ZERO
-			if to.length() < lunge_range and st <= 0.0:
+			var dist := to.length()
+			if dist < lunge_range and st <= 0.0:
 				state = "windup"
 				st = windup_time
 				lunge_dir = to.normalized()
@@ -27,13 +43,23 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				return Vector2.ZERO
 			step_t -= delta
 			if step_t <= 0.0:
-				step_t = randf_range(0.45, 0.6)
+				step_t = randf_range(0.45, 0.6) * (0.6 if lurch_t > 0.0 else 1.0)
 				Sfx.play_at("mummy_step", global_position, 0.15)
-			return to.normalized() * speed * (0.85 + 0.2 * sin(t * 3.0))
+			# da lontano ti aggira da un lato (ognuna dal suo), da vicino viene dritta
+			var curve := flank * clampf((dist - 60.0) / 140.0, 0.0, 1.0)
+			var dir := to.normalized().rotated(curve) + _separation()
+			# quando sei lontano barcolla avanti di colpo per un attimo: non la semini girando
+			if lurch_t <= 0.0 and lurch_cd <= 0.0 and dist > 150.0:
+				lurch_t = 0.55
+				lurch_cd = randf_range(3.0, 4.5)
+				Sfx.play_at("mummy_lunge", global_position, 0.2)
+			var mult := LURCH_SPEED if lurch_t > 0.0 else (0.85 + 0.2 * sin(t * 3.0))
+			return _steer(dir.normalized() * speed * mult, delta)
 		"windup":
-			# segue il giocatore solo nella prima parte dell'avviso, poi la direzione è fissa
+			# segue il giocatore nella prima parte dell'avviso; quando la direzione si blocca
+			# anticipa un poco dove stai andando (scappare dritto non basta: si scatta di lato)
 			if st > windup_time * 0.4 and to != Vector2.ZERO:
-				lunge_dir = to.normalized()
+				lunge_dir = _aim_ahead(to)
 			if st <= 0.0:
 				state = "lunge"
 				st = lunge_time
@@ -49,6 +75,29 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				state = "chase"
 				st = 0.8
 	return Vector2.ZERO
+
+
+## Dove mirare: la tua posizione più un terzo della strada che farai mentre l'affondo arriva.
+func _aim_ahead(to: Vector2) -> Vector2:
+	var player = get_tree().get_first_node_in_group("player")
+	if player == null:
+		return to.normalized()
+	var travel: float = st + to.length() / lunge_speed
+	var aim: Vector2 = to + player.velocity * travel * LEAD
+	return aim.normalized() if aim.length() > 1.0 else to.normalized()
+
+
+## Le mummie si tengono un po' distanti tra loro: niente fila indiana.
+func _separation() -> Vector2:
+	var push := Vector2.ZERO
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if e == self or not (e is CharacterBody2D):
+			continue
+		var d: Vector2 = global_position - e.global_position
+		var l := d.length()
+		if l > 0.1 and l < 34.0:
+			push += d / l * (1.0 - l / 34.0)
+	return push * 0.9
 
 
 ## Durante l'affondo non barcolla: o lo schivi, o lo subisci.

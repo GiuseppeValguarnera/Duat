@@ -89,6 +89,34 @@ func _contact_damage() -> float:
 	return contact_damage
 
 
+## Aggira gli ostacoli: se la strada davanti è chiusa (una colonna, un vaso, un altro nemico)
+## prova a girare di lato, dal lato che il nemico preferisce, e tiene la deviazione per un
+## attimo così non trema avanti e indietro. Prima le mummie restavano incastrate sulle colonne.
+var _detour := Vector2.ZERO
+var _detour_t := 0.0
+var _side := 1.0 if randf() < 0.5 else -1.0
+
+func _steer(v: Vector2, delta: float) -> Vector2:
+	var sp := v.length()
+	if sp < 1.0:
+		return v
+	_detour_t -= delta
+	var dir := v / sp
+	if _detour_t > 0.0 and _detour.dot(dir) > -0.2:
+		return _detour * sp
+	if not test_move(global_transform, dir * 12.0):
+		return v
+	for a in [0.7, 1.2, 1.7]:
+		for s in [_side, -_side]:
+			var d := dir.rotated(a * s)
+			if not test_move(global_transform, d * 12.0):
+				_detour = d
+				_detour_t = 0.45
+				_side = s
+				return d * sp
+	return v
+
+
 ## Chiamata dopo ogni colpo subito, per reazioni speciali.
 func _on_hit(_dmg: float) -> void:
 	pass

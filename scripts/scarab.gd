@@ -18,7 +18,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		Sfx.play_at("scarab_step", global_position, 0.25)
 	var u := to.normalized()
 	var v := u + u.orthogonal() * sin(t * 7.0 + seed_offset) * zigzag
-	return v.normalized() * speed
+	return _steer(v.normalized() * speed, delta)
 
 
 ## Lo scarabeo sacro di Khepri visto di tre quarti: elitre verde-turchese con il riflesso,
