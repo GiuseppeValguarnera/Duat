@@ -420,6 +420,53 @@ func _open_casa() -> void:
 	queue_redraw()
 
 
+## Anubi offre la Piuma di Ma'at: sì o no, subito, senza cercarla nelle Opzioni.
+func _offer_feather() -> void:
+	player.set_physics_process(false)
+	var layer := CanvasLayer.new()
+	layer.layer = 20
+	add_child(layer)
+	var dim := ColorRect.new()
+	dim.color = Color(0.03, 0.03, 0.06, 0.8)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(dim)
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(center)
+	var pap := PanelContainer.new()
+	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(Color(0.62, 0.56, 0.92).darkened(0.3)))
+	center.add_child(pap)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", int(5 * Fx.ui))
+	col.custom_minimum_size = Vector2(minf(420.0 * Fx.ui, get_viewport().get_visible_rect().size.x - 40.0), 0)
+	pap.add_child(col)
+	var h := UiStyle.label(Lang.t("La piuma di Ma'at"), 13, UiStyle.INK, true)
+	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(h)
+	col.add_child(UiStyle.label(Lang.t("Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka, e il Peso del Cuore non conta. Puoi toglierla quando vuoi dalle Opzioni."), 8, UiStyle.INK_SOFT, false, col.custom_minimum_size.x))
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", int(10 * Fx.ui))
+	col.add_child(row)
+	var close := func(take: bool) -> void:
+		if take:
+			Meta.feather = true
+			Meta.save()
+			Sfx.play("boon", 0.0)
+			Fx.burst(player.global_position + Vector2(0, -14), Color(0.9, 0.9, 1.0), 24, 100.0)
+		layer.queue_free()
+		player.set_physics_process(true)
+	for opt in [[Lang.t("Accetto la piuma"), true], [Lang.t("No, ci riprovo così"), false]]:
+		var b := Button.new()
+		b.text = opt[0]
+		UiStyle.papyrus_button(b, Color(0.62, 0.56, 0.92))
+		b.add_theme_font_size_override("font_size", Fx.fs(9))
+		b.pressed.connect(close.bind(opt[1]))
+		row.add_child(b)
+		if opt[1]:
+			b.grab_focus.call_deferred()
+
+
 func _start_run() -> void:
 	Meta.last_end = ""
 	Meta.save()
@@ -443,6 +490,9 @@ func _advance_talk() -> void:
 	if talk_lines.is_empty():
 		talk_box.visible = false
 		player.set_physics_process(true)
+		if Dialogue.offer_feather:
+			Dialogue.offer_feather = false
+			_offer_feather.call_deferred()
 		return
 	Sfx.play("ui", 0.0)
 	talk_name.text = Lang.t("Anubi")

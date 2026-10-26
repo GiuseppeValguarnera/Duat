@@ -561,6 +561,7 @@ func _room_cleared() -> void:
 		# il guardiano di mezzo non dà Lacrime di Iside: quelle cadono solo sui boss delle regioni
 		var first_serpent := Meta.serpent_wins == 0
 		Meta.serpent_wins += 1
+		Meta.serpent_streak = 0
 		Challenges.on_serpent_beaten(Run.hp / Run.max_hp)
 		Restorations.gain(randi_range(4, 5), player.global_position)
 		var tear_txt := Lang.t("Il Cortile di Neith si è aperto") if first_serpent else Lang.t("La via verso Am-heh è aperta")
@@ -1355,6 +1356,8 @@ func _on_player_died() -> void:
 	var where := Lang.t("Am-heh, il Divoratore di Milioni") if Run.room > Run.ROOMS_PER_RUN else Lang.t("stanza %d di %d") % [Run.room, Run.ROOMS_PER_RUN]
 	if current_reward.get("kind", "") == "guardian":
 		where = Lang.t("il Serpente della Porta")
+		if Run.region == 1:
+			Meta.serpent_streak += 1         # dopo 3 di fila Anubi offre la Piuma di Ma'at
 	Meta.last_end = "ammit" if Run.room > Run.ROOMS_PER_RUN else "room"   # "ammit" = morto contro il boss della regione (nome storico nel salvataggio)
 	if Meta.feather:
 		Meta.feather_deaths += 1

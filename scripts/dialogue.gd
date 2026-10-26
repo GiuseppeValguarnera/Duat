@@ -100,6 +100,13 @@ static func _reaction() -> Array:
 ## 3. La storia: battute in ordine, ognuna con la sua condizione, dette una volta sola.
 static func story() -> Array:
 	return [
+		# chi cade tre volte di fila contro il Serpente scopre che esiste un aiuto (e di nuovo a sei)
+		{"id": "piuma1", "if": Meta.serpent_streak >= 3 and not Meta.feather, "offer": true, "lines": [
+			Lang.t("Il Serpente della Porta ti ha fermato ancora. Tre volte di fila."),
+			Lang.t("Ma'at non chiede a tutti di camminare allo stesso passo. A chi inciampa, presta una sua piuma: i colpi pesano meno sul tuo cuore. In cambio, il Duat ti restituisce meno Ka."),
+			Lang.t("Non è una vergogna accettarla. È una vergogna non provare. Vuoi la piuma?")]},
+		{"id": "piuma2", "if": Meta.serpent_streak >= 6 and not Meta.feather, "offer": true, "lines": [
+			Lang.t("Sei volte, Scriba. La piuma di Ma'at è ancora qui, se la vuoi. Puoi anche lasciarla quando vuoi, dalle Opzioni.")]},
 		{"id": "intro1", "if": Meta.runs == 0, "lines": [
 			Lang.t("Apri gli occhi, Scriba."),
 			Lang.t("Sei morto. Lo sai già, credo. Lo si sente nelle ossa."),
@@ -172,11 +179,16 @@ static func story() -> Array:
 	]
 
 
+## Vero quando l'ultima battuta raccontata chiede una scelta (la Piuma di Ma'at): la Sala apre la
+## domanda quando il dialogo finisce.
+static var offer_feather := false
+
 static func _next_story() -> Array:
 	for b in story():
 		if b["if"] and not Meta.dialogue_seen.has(b["id"]):
 			Meta.dialogue_seen.append(b["id"])
 			Meta.save()
+			offer_feather = b.get("offer", false)
 			return b["lines"]
 	return []
 

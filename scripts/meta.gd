@@ -20,6 +20,7 @@ var aspect_levels := {}               ## "arma:aspetto" -> livello (il primo asp
 var first_kills := {}                 ## "boss|arma|peso" già premiati con le Lacrime di Iside
 var intros_seen: Array = []           ## boss già presentati (la seconda volta la presentazione è corta)
 var serpent_wins := 0                 ## volte che hai battuto il Serpente della Porta
+var serpent_streak := 0               ## sconfitte di fila contro il Serpente (Anubi offre la Piuma di Ma'at)
 var neith_seen: Array = []            ## battute di Neith già ascoltate
 var chapters_equipped: Array = []     ## capitoli attivi (limitati da Chapters.slots())
 var dialogue_seen: Array = []         ## battute di Anubi già ascoltate
@@ -70,6 +71,7 @@ func _ready() -> void:
 		aspect_levels = cfg.get_value("armi", "livelli", {})
 		first_kills = cfg.get_value("armi", "prime_vittorie", {})
 		serpent_wins = cfg.get_value("boss", "serpente", 0)
+		serpent_streak = cfg.get_value("boss", "serpente_di_fila", 0)
 		intros_seen = cfg.get_value("boss", "presentati", [])
 		neith_seen = cfg.get_value("storia", "neith", [])
 		chapters_equipped = cfg.get_value("libro", "attivi", [])
@@ -125,6 +127,7 @@ func save() -> void:
 	cfg.set_value("armi", "livelli", aspect_levels)
 	cfg.set_value("armi", "prime_vittorie", first_kills)
 	cfg.set_value("boss", "serpente", serpent_wins)
+	cfg.set_value("boss", "serpente_di_fila", serpent_streak)
 	cfg.set_value("boss", "presentati", intros_seen)
 	cfg.set_value("storia", "neith", neith_seen)
 	cfg.set_value("libro", "attivi", chapters_equipped)
