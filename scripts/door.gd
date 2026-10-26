@@ -40,6 +40,8 @@ func reward_color() -> Color:
 			return Boons.god_color("set")
 		"ka":
 			return Color(0.94, 0.72, 0.3)
+		"lapis":
+			return Restorations.LAPIS_COLOR.lightened(0.15)
 		"heal":
 			return Color(0.95, 0.35, 0.3)
 		"boss":
@@ -60,6 +62,8 @@ func reward_label() -> String:
 			return Lang.t("Set")
 		"ka":
 			return Lang.t("Ka")
+		"lapis":
+			return Lang.t("Lapislazzuli")
 		"heal":
 			return Lang.t("Cura")
 		"boss":
@@ -83,6 +87,8 @@ func reward_description() -> String:
 			return Lang.t("L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa")
 		"ka":
 			return Lang.t("Tesoro di Ka: +25 Ka")
+		"lapis":
+			return Lang.t("Lapislazzuli: una pietra per i restauri della Sala del Giudizio (resta anche se cadi)")
 		"heal":
 			if Run.room + 1 == Run.ROOMS_PER_RUN:
 				return Lang.t("Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh") % roundi(Run.nile_heal() * 100.0)

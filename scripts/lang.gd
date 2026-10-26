@@ -54,6 +54,7 @@ static func refresh_data() -> void:
 	Lore.refresh_lang()
 	Weapons.refresh_lang()
 	Weights.refresh_lang()
+	Restorations.refresh_lang()
 
 
 ## Applica la scelta delle Opzioni: "auto" segue la lingua del telefono o del computer

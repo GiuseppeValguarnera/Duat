@@ -17,7 +17,8 @@ var spots := {}                       # nome -> posizione dei punti con cui inte
 var near := ""
 var talk_lines: Array = []
 var commented := false
-var _news := [false, false, false]      ## Anubi, Libro, Papiri: c'è qualcosa di nuovo? (_draw_markers)
+var _news := [false, false, false, false]   ## Anubi, Libro, Papiri, cassa: c'è qualcosa di nuovo? (_draw_markers)
+var bastet_cat: Node2D = null           ## il gatto di Bastet (restauro)
 var _news_t := 0.0
 var book: CanvasLayer = null           # finestra aperta (Libro dei Morti o Papiri di Thoth)
 var book_kind := ""
@@ -76,6 +77,7 @@ func _ready() -> void:
 		"bilancia": Vector2(cx, 190.0),
 		"cancello": Vector2(cx, TOP + 4.0),
 		"papiri": Vector2(cx + 150.0, 322.0),
+		"cassa": Vector2(cx - 150.0, 322.0),       # la cassa dello scalpellino: i restauri
 	}
 	_build()
 	Fx.scale_labels($UI)
@@ -95,7 +97,9 @@ func _build() -> void:
 	_solid(Rect2(spots["libro"] - Vector2(12, 6), Vector2(24, 12)))
 	_solid(Rect2(spots["bilancia"] - Vector2(14, 6), Vector2(28, 12)))
 	_solid(Rect2(spots["papiri"] - Vector2(20, 8), Vector2(40, 12)))
+	_solid(Rect2(spots["cassa"] - Vector2(18, 7), Vector2(36, 12)))
 	var decor := DecorScript.new()
+	decor.cold_braziers = not Restorations.has("bracieri")
 	world.add_child(decor)
 	for r in decor.build(424242, ROOM, TOP, WALL, [], true):
 		_solid(r)
@@ -117,13 +121,29 @@ func _build() -> void:
 		_solid(Rect2(cpos - Vector2(11, 6), Vector2(22, 10)))
 	var banners := HubBanners.new()
 	world.add_child(banners)
+	var art := HubArt.new()
+	art.spots = spots
+	world.add_child(art)
 	_add_dust()
 	player = PlayerScene.instantiate()
 	player.position = Vector2(ROOM.size.x / 2.0, ROOM.size.y - WALL - 30.0)
 	if Run.from_armory:
 		Run.from_armory = false
 		player.position = Vector2(WALL + 26.0, ARMORY_Y)
+	if Run.from_restore:
+		Run.from_restore = false
+		player.position = spots["cassa"] + Vector2(0, 30)
 	world.add_child(player)
+	if Restorations.has("gatto"):
+		bastet_cat = HubCat.new()
+		bastet_cat.position = player.position + Vector2(-40, 6)
+		bastet_cat.player = player
+		world.add_child(bastet_cat)
+		# ogni tanto il gatto ti ha portato qualcosa: lo trovi davanti al cancello
+		if Meta.runs > 0 and randf() < 0.35:
+			var gift := CatGift.new()
+			gift.position = spots["cancello"] + Vector2(28, 54)
+			world.add_child(gift)
 	# il Cortile di Neith si è appena aperto: una freccia lo indica finché non ci entri a prendere la lancia
 	if Meta.serpent_wins > 0 and not Meta.weapons_unlocked.has("lancia"):
 		var mark := Node2D.new()
@@ -233,7 +253,7 @@ func _process(delta: float) -> void:
 			var keep := shown_option
 			_fill_options(keep)
 			_show_option(keep)
-	hud.text = Lang.t("Sala del Giudizio\nKa custodito %d · Discese %d · Vittorie %d") % [Meta.ka_bank, Meta.runs, Meta.ammit_wins]
+	hud.text = Lang.t("Sala del Giudizio\nKa custodito %d · Lapislazzuli %d · Discese %d · Vittorie %d") % [Meta.ka_bank, Meta.lapis, Meta.runs, Meta.ammit_wins]
 	_update_update_tag()
 	if Fx.device == "touch":
 		help.text = ""
@@ -258,9 +278,11 @@ func _process(delta: float) -> void:
 	near = ""
 	if player.global_position.x < WALL + 40.0 and absf(player.global_position.y - ARMORY_Y) < 30.0:
 		near = "cortile"
-	for k in ["anubi", "libro", "bilancia", "papiri"]:
+	for k in ["anubi", "libro", "bilancia", "papiri", "cassa"]:
 		if player.global_position.distance_to(spots[k]) < 40.0:
 			near = k
+	if bastet_cat != null and is_instance_valid(bastet_cat) and near == "" and player.global_position.distance_to(bastet_cat.position) < 26.0:
+		near = "gatto"
 	var key := "Y" if Fx.device == "pad" else "E"
 	match near:
 		"anubi":
@@ -277,6 +299,10 @@ func _process(delta: float) -> void:
 				prompt.text = Lang.t("%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)") % [key, Weights.total(), int(round((Weights.ka_mult() - 1.0) * 100.0))]
 			else:
 				prompt.text = Lang.t("La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi")
+		"cassa":
+			prompt.text = Lang.t("%s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d)") % [key, Meta.lapis]
+		"gatto":
+			prompt.text = Lang.t("%s · Accarezza il gatto") % key
 		"cortile":
 			if Meta.serpent_wins > 0:
 				prompt.text = Lang.t("Il Cortile di Neith · le armi · entra dalla porta")
@@ -306,6 +332,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			_open_book("libro")
 		elif near == "papiri":
 			_open_book("papiri")
+		elif near == "cassa":
+			_open_book("restauri")
+		elif near == "gatto":
+			bastet_cat.pet()
 		elif near == "bilancia" and Weights.unlocked():
 			_open_book("pesi")
 		get_viewport().set_input_as_handled()
@@ -360,6 +390,8 @@ func _open_book(kind: String = "libro") -> void:
 		_fill_weights()
 	elif kind == "opzioni":
 		_fill_options()
+	elif kind == "restauri":
+		_fill_restorations()
 	else:
 		_fill_papiri()
 
@@ -643,6 +675,68 @@ func _on_chapter_pressed(id: String) -> void:
 	_fill_book(id)
 
 
+# ---------------------------------------------------------------- Restauri (la cassa dello scalpellino)
+
+func _fill_restorations(focus_id: String = "") -> void:
+	var done := Meta.restorations.size()
+	var left := _frame(Lang.t("I restauri della Sala"), Lang.t("Lapislazzuli: %d    ·    Restauri fatti: %d di %d") % [Meta.lapis, done, Restorations.ALL_IT.size()], 260)
+	var first: Button = null
+	var data := Restorations.data()
+	for id in Restorations.ALL_IT:
+		var r: Dictionary = data[id]
+		var state := Lang.t("restaurato") if Restorations.has(id) else Lang.t("%d lapislazzuli") % int(r["cost"])
+		var col := Color(0.62, 0.95, 0.7) if Restorations.has(id) else (Color(0.95, 0.9, 0.78) if Restorations.can_buy(id) else Color(0.6, 0.55, 0.48))
+		var b := _list_button(left, "%s   [%s]" % [r["name"], state], col)
+		_tap(b, _on_restoration_pressed.bind(id))
+		b.focus_entered.connect(_show_restoration.bind(id))
+		b.mouse_entered.connect(_show_restoration.bind(id))
+		if first == null or id == focus_id:
+			first = b
+	first.grab_focus.call_deferred()
+
+
+func _show_restoration(id: String) -> void:
+	var r: Dictionary = Restorations.data()[id]
+	page_title.text = r["name"]
+	var action := ""
+	if Restorations.has(id):
+		action = Lang.t("Già restaurato.")
+	elif Restorations.can_buy(id):
+		action = Lang.t("Premi per restaurarlo: %d lapislazzuli.") % int(r["cost"])
+	else:
+		action = Lang.t("Costa %d lapislazzuli: te ne mancano %d. Li lasciano il Serpente della Porta, Am-heh e le stanze segrete.") % [int(r["cost"]), int(r["cost"]) - Meta.lapis]
+	page_body.text = r["desc"] + "\n\n" + action
+	page_lore.text = r["lore"]
+	page_action.visible = false
+
+
+## Un restauro fatto: la finestra si chiude, la Sala si oscura un istante e si riapre rinnovata.
+func _on_restoration_pressed(id: String) -> void:
+	if not Restorations.buy(id):
+		Fx.shake(2.0)
+		_fill_restorations(id)
+		return
+	Sfx.play("boon", 0.0)
+	_close_book()
+	Fx.shake(4.0)
+	Fx.burst(spots["cassa"] + Vector2(0, -14), Restorations.LAPIS_COLOR, 30, 140.0)
+	var layer := CanvasLayer.new()
+	layer.layer = 40
+	add_child(layer)
+	var veil := ColorRect.new()
+	veil.color = Color(0.02, 0.015, 0.04)
+	veil.set_anchors_preset(Control.PRESET_FULL_RECT)
+	veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	veil.modulate.a = 0.0
+	layer.add_child(veil)
+	var tw := create_tween()
+	tw.tween_interval(0.5)
+	tw.tween_property(veil, "modulate:a", 1.0, 0.35)
+	tw.tween_callback(func() -> void:
+		Run.from_restore = true
+		get_tree().reload_current_scene())
+
+
 # ---------------------------------------------------------------- Opzioni (Esc / Start nella Sala)
 
 const OPTION_TEXT := {
@@ -891,6 +985,8 @@ func _fill_papiri() -> void:
 	papiri_entries.add_theme_constant_override("separation", 2)
 	cols.add_child(papiri_entries)
 	codex = Lore.codex()
+	if Restorations.has("registro"):
+		codex.append(_registro())
 	var first: Button = null
 	for i in range(codex.size()):
 		var cat: Dictionary = codex[i]
@@ -904,6 +1000,36 @@ func _fill_papiri() -> void:
 		if first == null:
 			first = b
 	first.grab_focus.call_deferred()
+
+
+## Il registro dello scriba (restauro): le tue imprese, in quattro pagine.
+func _registro() -> Dictionary:
+	var names := {"mummy": Lang.t("le mummie"), "scarab": Lang.t("gli scarabei"), "priest": Lang.t("i sacerdoti di Set"), "scorpion": Lang.t("gli scorpioni"),
+		"cobra": Lang.t("i cobra"), "serpent": Lang.t("il Serpente della Porta"), "amheh": Lang.t("Am-heh"), "ammit": Lang.t("Ammit"),
+		"trappola": Lang.t("le trappole"), "grata": Lang.t("le grate di fuoco"), "olio": Lang.t("l'olio in fiamme"), "ureo": Lang.t("le statue dell'ureo")}
+	var time_txt := Lang.t("nessuna vittoria ancora") if Meta.best_time < 0 else "%d:%02d" % [floori(Meta.best_time / 60.0), Meta.best_time % 60]
+	var descents := Lang.t("Discese: %d\nVittorie su Am-heh: %d\nSerpenti della Porta battuti: %d\nLa stanza più lontana: %d\nLa vittoria più rapida: %s") % [Meta.runs, Meta.ammit_wins, Meta.serpent_wins, Meta.best_room, time_txt]
+	var ks := Meta.killers.keys()
+	ks.sort_custom(func(x: Variant, y: Variant) -> bool: return int(Meta.killers[x]) > int(Meta.killers[y]))
+	var killers_txt := ""
+	for k in ks.slice(0, 6):
+		var nm: String = names.get(k, k)
+		killers_txt += "%s: %d\n" % [nm.substr(0, 1).to_upper() + nm.substr(1), int(Meta.killers[k])]
+	if killers_txt == "":
+		killers_txt = Lang.t("Nessuno ti ha ancora fermato.")
+	var gs := Meta.god_picks.keys()
+	gs.sort_custom(func(x: Variant, y: Variant) -> bool: return int(Meta.god_picks[x]) > int(Meta.god_picks[y]))
+	var gods_txt := ""
+	for g in gs:
+		gods_txt += Lang.t("%s: %d doni\n") % [Boons.god_name(g), int(Meta.god_picks[g])]
+	if gods_txt == "":
+		gods_txt = Lang.t("Nessun dono ancora.")
+	return {"title": Lang.t("Il registro dello scriba"), "entries": [
+		{"title": Lang.t("Le discese"), "text": descents, "seen": true},
+		{"title": Lang.t("Chi ti ha fermato"), "text": killers_txt.strip_edges(), "seen": true},
+		{"title": Lang.t("Gli dèi che hai scelto"), "text": gods_txt.strip_edges(), "seen": true},
+		{"title": Lang.t("I nemici abbattuti"), "text": Lang.t("In tutte le discese: %d") % Meta.total_kills, "seen": true},
+	]}
 
 
 func _show_category(i: int) -> void:
@@ -997,7 +1123,10 @@ func _draw() -> void:
 	draw_line(ec + Vector2(7, -7), ec + Vector2(-7, 7), Color(0.94, 0.72, 0.3, 0.8), 1.5)
 	_draw_cartouche(Vector2(g.x, 15.0))
 	_draw_scale(spots["bilancia"])
+	if Restorations.has("trono"):
+		_draw_throne(spots["anubi"])
 	_draw_anubi(spots["anubi"])
+	_draw_crate(spots["cassa"])
 	_draw_book(spots["libro"])
 	_draw_papiri(spots["papiri"])
 	_draw_markers()
@@ -1023,13 +1152,17 @@ func _draw_markers() -> void:
 	# le novità si ricontrollano due volte al secondo, non a ogni fotogramma (la storia è lunga)
 	if t >= _news_t:
 		_news_t = t + 0.5
-		_news = [Dialogue.has_news(not commented), Chapters.something_affordable(), Lore.unread_ricordi() > 0]
+		_news = [Dialogue.has_news(not commented), Chapters.something_affordable(), Lore.unread_ricordi() > 0, Restorations.something_affordable()]
 	if _news[0]:
 		UiStyle.exclaim(self, a + Vector2(0, -82), t)
 	if _news[1]:
 		UiStyle.exclaim(self, l + Vector2(0, -36), t)
 	if _news[2]:
 		UiStyle.exclaim(self, pp + Vector2(0, -46), t)
+	var cs: Vector2 = spots["cassa"]
+	UiStyle.sparkle(self, cs + Vector2(0, -12), 18.0, t, near == "cassa", 6.1)
+	if _news[3]:
+		UiStyle.exclaim(self, cs + Vector2(0, -36), t)
 
 
 ## Il cartiglio del faraone Akhet, sopra il cancello. I segni del nome (ibis, placenta, pane,
@@ -1215,6 +1348,51 @@ func _draw_anubi(p: Vector2) -> void:
 		draw_arc(Vector2(p.x, p.y - 30), 30.0, 0.0, TAU, 40, Color(aura, 0.5 + 0.3 * sin(t * 4.0)), 1.5)
 
 
+## Il trono di Anubi (restauro): schienale dorato con le piume dipinte e le zampe di leone,
+## alle spalle del dio.
+func _draw_throne(p: Vector2) -> void:
+	var gold := Color(0.9, 0.68, 0.26)
+	var gold_d := Color(0.6, 0.42, 0.14)
+	var outl := Color(0.12, 0.08, 0.05)
+	var back := Rect2(p.x - 17, p.y - 56, 34, 50)
+	draw_rect(back.grow(1.0), outl)
+	draw_rect(back, gold)
+	for k in range(5):
+		var x := back.position.x + 4 + k * 6.6
+		draw_colored_polygon(PackedVector2Array([Vector2(x, back.position.y + 6), Vector2(x + 3, back.position.y + 2), Vector2(x + 6, back.position.y + 6), Vector2(x + 3, back.end.y - 10)]), [Color(0.16, 0.3, 0.68), Color(0.72, 0.26, 0.15), Color(0.2, 0.62, 0.62)][k % 3])
+	draw_rect(Rect2(back.position.x, back.end.y - 8, back.size.x, 3), gold_d)
+	for sx in [-1.0, 1.0]:
+		# le zampe di leone e i braccioli
+		draw_rect(Rect2(p.x + sx * 19 - 3, p.y - 22, 6, 24), outl)
+		draw_rect(Rect2(p.x + sx * 19 - 2.4, p.y - 21.4, 4.8, 22.8), gold)
+		draw_circle(Vector2(p.x + sx * 19, p.y + 1), 3.0, gold_d)
+
+
+## La cassa dello scalpellino: legno, pietre di lapislazzuli, scalpello e mazzuolo.
+func _draw_crate(p: Vector2) -> void:
+	var wood := Color(0.5, 0.33, 0.16)
+	var outl := Color(0.12, 0.08, 0.05)
+	draw_set_transform(p + Vector2(3, 5), 0.0, Vector2(1.0, 0.3))
+	draw_circle(Vector2.ZERO, 24.0, Color(0, 0, 0, 0.3))
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	var box := Rect2(p.x - 18, p.y - 14, 36, 16)
+	draw_rect(box.grow(1.0), outl)
+	draw_rect(box, wood)
+	for k in range(3):
+		draw_line(Vector2(box.position.x, box.position.y + 5 + k * 5), Vector2(box.end.x, box.position.y + 5 + k * 5), wood.darkened(0.3), 1.0)
+	draw_rect(Rect2(box.position.x + 2, box.position.y, 3, box.size.y), wood.darkened(0.2))
+	draw_rect(Rect2(box.end.x - 5, box.position.y, 3, box.size.y), wood.darkened(0.2))
+	# le pietre blu che spuntano dalla cassa
+	Restorations.draw_gem(self, Vector2(p.x - 7, p.y - 16), 0.9)
+	Restorations.draw_gem(self, Vector2(p.x + 4, p.y - 18), 1.1)
+	Restorations.draw_gem(self, Vector2(p.x + 12, p.y - 15), 0.7)
+	# scalpello e mazzuolo appoggiati
+	draw_line(Vector2(p.x - 24, p.y + 2), Vector2(p.x - 16, p.y - 20), outl, 2.6)
+	draw_line(Vector2(p.x - 24, p.y + 2), Vector2(p.x - 16, p.y - 20), Color(0.62, 0.62, 0.66), 1.4)
+	draw_rect(Rect2(p.x + 18, p.y - 6, 8, 6), wood.lightened(0.15))
+	draw_line(Vector2(p.x + 22, p.y - 3), Vector2(p.x + 28, p.y + 4), Color(0.4, 0.28, 0.14), 1.6)
+
+
 func _draw_book(p: Vector2) -> void:
 	var wood := Color(0.42, 0.28, 0.14)
 	draw_rect(Rect2(p.x - 3, p.y - 16, 6, 18), wood)
@@ -1298,7 +1476,16 @@ class HubBanners extends Node2D:
 			var sway := sin(t * 1.3 + x) * 1.2
 			draw_rect(Rect2(x - 13, 36, 26, 3), Color(0.55, 0.4, 0.2))
 			var cloth := col.darkened(0.35)
-			draw_colored_polygon(PackedVector2Array([Vector2(x - 10, 39), Vector2(x + 10, 39), Vector2(x + 10 + sway, 90), Vector2(x + sway, 98), Vector2(x - 10 + sway, 90)]), cloth)
+			if Restorations.has("stendardi"):
+				draw_colored_polygon(PackedVector2Array([Vector2(x - 10, 39), Vector2(x + 10, 39), Vector2(x + 10 + sway, 90), Vector2(x + sway, 98), Vector2(x - 10 + sway, 90)]), cloth)
+				# le frange d'oro in fondo
+				for k in range(5):
+					var fx := x - 8 + k * 4 + sway
+					draw_line(Vector2(fx, 90 + absf(k - 2) * -2.0 + 6), Vector2(fx, 96 + absf(k - 2) * -2.0 + 6), Color(0.94, 0.72, 0.3), 1.0)
+			else:
+				# strappati: più corti, sbiaditi e sfilacciati in fondo (si restaurano con i lapislazzuli)
+				cloth = cloth.darkened(0.3)
+				draw_colored_polygon(PackedVector2Array([Vector2(x - 10, 39), Vector2(x + 10, 39), Vector2(x + 9 + sway, 70), Vector2(x + 5 + sway, 76), Vector2(x + 2 + sway, 68), Vector2(x - 3 + sway, 79), Vector2(x - 6 + sway, 69), Vector2(x - 10 + sway, 74)]), cloth)
 			draw_rect(Rect2(x - 10, 39, 20, 2), Color(0.85, 0.62, 0.25) if met else Color(0.4, 0.4, 0.45))
 			var c := Vector2(x + sway * 0.5, 62)
 			var sym := col.lightened(0.35) if met else Color(0.45, 0.45, 0.5)
@@ -1404,3 +1591,188 @@ class NewRoomArrow extends Control:
 		tp.x = clampf(tp.x, 6.0, vs.x - tw - 6.0)
 		draw_string_outline(font, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 4, Color(0, 0, 0, 0.8))
 		draw_string(font, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
+
+
+
+## Le opere d'arte della Sala che si restaurano (restorations.gd): le pitture del giudizio sulla
+## parete in alto e la vasca del Nilo. Prima del restauro si vedono rovinate (intonaco scrostato,
+## una vasca secca): si capisce che lì c'è qualcosa da rimettere a posto.
+class HubArt extends Node2D:
+	var spots := {}
+	var t := 0.0
+	const OUTL := Color(0.12, 0.08, 0.05)
+
+	func _process(delta: float) -> void:
+		t += delta
+		if Restorations.has("vasca"):
+			queue_redraw()                 # l'acqua si muove
+
+	func _draw() -> void:
+		var cx: float = spots["cancello"].x
+		_panel(Rect2(cx - 102, 38, 70, 22), true)
+		_panel(Rect2(cx + 32, 38, 70, 22), false)
+		_pool(spots["cassa"] + Vector2(-96, 6))
+
+	func _panel(r: Rect2, left: bool) -> void:
+		if not Restorations.has("pitture"):
+			# intonaco scrostato, con qualche traccia di colore e le crepe
+			draw_rect(r, Color(0.5, 0.46, 0.42, 0.55))
+			draw_rect(Rect2(r.position + Vector2(8, 5), Vector2(14, 10)), Color(0.35, 0.3, 0.28, 0.6))
+			draw_rect(Rect2(r.position + Vector2(40, 9), Vector2(18, 8)), Color(0.42, 0.22, 0.16, 0.35))
+			draw_polyline(PackedVector2Array([r.position + Vector2(20, 0), r.position + Vector2(26, 9), r.position + Vector2(22, 15), r.position + Vector2(30, 22)]), Color(0.2, 0.17, 0.15, 0.7), 1.0)
+			return
+		draw_rect(r.grow(1.0), OUTL)
+		draw_rect(r, Color(0.93, 0.87, 0.7))
+		draw_rect(Rect2(r.position.x, r.end.y - 3, r.size.x, 3), Color(0.16, 0.3, 0.68))
+		draw_rect(Rect2(r.position.x, r.position.y, r.size.x, 2), Color(0.72, 0.26, 0.15))
+		var base := r.end.y - 3.0
+		if left:
+			# Anubi alla bilancia: il cuore su un piatto, la piuma sull'altro
+			var a := r.position + Vector2(14, 0)
+			draw_rect(Rect2(a.x - 2, base - 13, 4, 9), Color(0.08, 0.07, 0.1))
+			draw_circle(Vector2(a.x, base - 15), 2.4, Color(0.08, 0.07, 0.1))
+			draw_line(Vector2(a.x + 1, base - 16), Vector2(a.x + 4, base - 15.5), Color(0.08, 0.07, 0.1), 1.2)
+			draw_line(Vector2(a.x, base - 4), Vector2(a.x - 1, base), Color(0.08, 0.07, 0.1), 1.2)
+			var sc := r.position + Vector2(44, 0)
+			draw_line(Vector2(sc.x, base), Vector2(sc.x, base - 15), Color(0.6, 0.42, 0.14), 1.2)
+			draw_line(Vector2(sc.x - 12, base - 14), Vector2(sc.x + 12, base - 14), Color(0.6, 0.42, 0.14), 1.2)
+			draw_circle(Vector2(sc.x - 12, base - 9), 2.2, Color(0.8, 0.2, 0.15))      # il cuore
+			draw_line(Vector2(sc.x + 12, base - 13), Vector2(sc.x + 12, base - 6), Color(0.94, 0.85, 0.6), 1.6)   # la piuma
+			draw_line(Vector2(sc.x - 12, base - 14), Vector2(sc.x - 12, base - 11), Color(0.6, 0.42, 0.14), 0.6)
+			draw_line(Vector2(sc.x + 12, base - 14), Vector2(sc.x + 12, base - 13), Color(0.6, 0.42, 0.14), 0.6)
+		else:
+			# Thoth che scrive il verdetto, Ammit che aspetta
+			var th := r.position + Vector2(18, 0)
+			draw_rect(Rect2(th.x - 2, base - 12, 4, 8), Color(0.25, 0.4, 0.75))
+			draw_circle(Vector2(th.x, base - 14), 2.2, Color(0.95, 0.95, 0.92))
+			draw_line(Vector2(th.x + 1, base - 14), Vector2(th.x + 6, base - 11), Color(0.15, 0.12, 0.1), 1.0)   # il becco dell'ibis
+			draw_rect(Rect2(th.x + 4, base - 9, 4, 3), Color(0.82, 0.68, 0.42))                            # la tavolozza
+			var am := r.position + Vector2(50, 0)
+			draw_colored_polygon(PackedVector2Array([Vector2(am.x - 9, base - 1), Vector2(am.x - 8, base - 8), Vector2(am.x + 2, base - 9), Vector2(am.x + 10, base - 8), Vector2(am.x + 10, base - 6), Vector2(am.x + 3, base - 5), Vector2(am.x + 3, base - 1)]), Color(0.3, 0.45, 0.25))
+			draw_circle(Vector2(am.x - 3, base - 7), 3.2, Color(0.82, 0.6, 0.28))
+
+	func _pool(c: Vector2) -> void:
+		var full := Restorations.has("vasca")
+		var rim := PackedVector2Array()
+		for i in range(20):
+			var a := TAU * i / 20.0
+			rim.append(c + Vector2(cos(a) * 34.0, sin(a) * 13.0))
+		draw_colored_polygon(rim, Color(0.55, 0.45, 0.32))
+		var rc := rim.duplicate()
+		rc.append(rim[0])
+		draw_polyline(rc, OUTL, 1.0)
+		var inner := PackedVector2Array()
+		for i in range(20):
+			var a := TAU * i / 20.0
+			inner.append(c + Vector2(cos(a) * 29.0, sin(a) * 10.0))
+		if not full:
+			# secca: fango crepato
+			draw_colored_polygon(inner, Color(0.38, 0.3, 0.22))
+			draw_polyline(PackedVector2Array([c + Vector2(-18, -2), c + Vector2(-6, 2), c + Vector2(4, -3), c + Vector2(16, 3)]), Color(0.22, 0.16, 0.1), 1.0)
+			draw_polyline(PackedVector2Array([c + Vector2(-6, 2), c + Vector2(-2, 7)]), Color(0.22, 0.16, 0.1), 1.0)
+			return
+		draw_colored_polygon(inner, Color(0.12, 0.36, 0.52))
+		for k in range(2):
+			var rr := fmod(t * 6.0 + k * 14.0, 28.0)
+			draw_arc(c + Vector2(-6, 0), rr, 0.0, TAU, 20, Color(0.55, 0.85, 1.0, 0.35 * (1.0 - rr / 28.0)), 1.0)
+		# foglie e fiori di loto
+		for lp in [Vector2(-16, -3), Vector2(12, 2), Vector2(2, -5)]:
+			draw_set_transform(c + lp, 0.0, Vector2(1.0, 0.5))
+			draw_circle(Vector2.ZERO, 5.0, Color(0.2, 0.5, 0.28))
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		for fp in [Vector2(-16, -5), Vector2(12, 0)]:
+			var f: Vector2 = c + fp
+			draw_colored_polygon(PackedVector2Array([f + Vector2(-3, 0), f + Vector2(-1, -5), f + Vector2(0, -1), f + Vector2(1, -5), f + Vector2(3, 0)]), Color(0.95, 0.75, 0.85))
+
+
+## Il gatto di Bastet (restauro): un gatto egizio nero col collare e l'orecchino d'oro. Ti segue
+## da lontano, si siede quando ti fermi, e si lascia accarezzare.
+class HubCat extends Node2D:
+	var player: Node2D
+	var t := 0.0
+	var walk := 0.0
+	var moving := false
+	var face := 1.0
+	var happy := 0.0
+
+	func _process(delta: float) -> void:
+		t += delta
+		happy = maxf(0.0, happy - delta)
+		moving = false
+		if player != null and is_instance_valid(player):
+			var to := player.global_position + Vector2(-30.0 * face, 8) - position
+			if to.length() > 42.0:
+				moving = true
+				position += to.normalized() * 72.0 * delta
+				walk += delta * 12.0
+				if absf(to.x) > 4.0:
+					face = signf(to.x)
+		queue_redraw()
+
+	func pet() -> void:
+		happy = 1.6
+		Sfx.play("ui", 0.0)
+		Fx.float_text(global_position + Vector2(0, -18), Lang.t("Mrrr..."), Color(1.0, 0.8, 0.9), 10)
+		Fx.burst(global_position + Vector2(0, -12), Color(1.0, 0.55, 0.7), 8, 40.0)
+
+	func _draw() -> void:
+		var black := Color(0.1, 0.09, 0.12)
+		draw_set_transform(Vector2(0, 2), 0.0, Vector2(1.0, 0.35))
+		draw_circle(Vector2.ZERO, 9.0, Color(0, 0, 0, 0.3))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(face, 1.0))
+		if moving:
+			var w := sin(walk)
+			for lx in [-5.0 + w * 1.5, 4.0 - w * 1.5]:
+				draw_line(Vector2(lx, -5), Vector2(lx, 0), black, 1.8)
+			draw_colored_polygon(PackedVector2Array([Vector2(-8, -9), Vector2(5, -10), Vector2(7, -5), Vector2(-7, -4)]), black)
+			draw_line(Vector2(-8, -8), Vector2(-13, -12 + w), black, 1.4)
+			var hc := Vector2(7, -11)
+			draw_circle(hc, 3.4, black)
+			draw_colored_polygon(PackedVector2Array([hc + Vector2(-2.5, -1.5), hc + Vector2(-1.5, -6), hc + Vector2(0, -2)]), black)
+			draw_colored_polygon(PackedVector2Array([hc + Vector2(0.5, -2), hc + Vector2(2, -6), hc + Vector2(3, -1.5)]), black)
+			draw_circle(hc + Vector2(1.4, -0.5), 0.7, Color(0.9, 0.8, 0.3))
+		else:
+			# seduto, alla maniera delle statuette di Bastet
+			draw_colored_polygon(PackedVector2Array([Vector2(-5, 0), Vector2(5, 0), Vector2(4, -8), Vector2(1, -13), Vector2(-3, -12), Vector2(-5, -6)]), black)
+			draw_arc(Vector2(-6, -2), 3.5, PI * 0.5, PI * 1.6, 8, black, 1.4)       # la coda attorno alle zampe
+			var hc := Vector2(1, -16)
+			draw_circle(hc, 3.6, black)
+			draw_colored_polygon(PackedVector2Array([hc + Vector2(-3, -1.5), hc + Vector2(-2, -6.5), hc + Vector2(-0.5, -2.5)]), black)
+			draw_colored_polygon(PackedVector2Array([hc + Vector2(0.5, -2.5), hc + Vector2(2, -6.5), hc + Vector2(3, -1.5)]), black)
+			var eye := Color(0.9, 0.8, 0.3) if happy <= 0.0 else Color(0.9, 0.8, 0.3, 0.0)
+			draw_circle(hc + Vector2(1.6, -0.4), 0.7, eye)
+			if happy > 0.0:
+				draw_arc(hc + Vector2(1.6, 0.0), 0.9, PI, TAU, 4, Color(0.9, 0.8, 0.3), 0.6)   # occhi socchiusi
+			draw_line(Vector2(-2, -11), Vector2(3, -11), Color(0.2, 0.45, 0.8), 1.2)     # il collare
+			draw_circle(hc + Vector2(-1.5, 1.5), 0.7, Color(0.95, 0.75, 0.3))          # l'orecchino d'oro
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		if happy > 0.0:
+			var hp := Vector2(0, -26 - (1.6 - happy) * 8.0)
+			draw_circle(hp + Vector2(-1.5, 0), 1.6, Color(1.0, 0.5, 0.65, happy / 1.6))
+			draw_circle(hp + Vector2(1.5, 0), 1.6, Color(1.0, 0.5, 0.65, happy / 1.6))
+			draw_colored_polygon(PackedVector2Array([hp + Vector2(-3, 0.5), hp + Vector2(3, 0.5), hp + Vector2(0, 3.5)]), Color(1.0, 0.5, 0.65, happy / 1.6))
+
+
+## Il regalo del gatto: una moneta di Ka con l'impronta di una zampa, davanti al cancello.
+class CatGift extends Node2D:
+	var t := 0.0
+
+	func _process(delta: float) -> void:
+		t += delta
+		var p = get_tree().get_first_node_in_group("player")
+		if p != null and p.global_position.distance_to(global_position) < 16.0:
+			Meta.ka_bank += 5
+			Meta.save()
+			Sfx.play("pickup", 0.0)
+			Fx.float_text(global_position + Vector2(0, -16), Lang.t("Il gatto ti ha portato 5 Ka"), Color(0.94, 0.72, 0.3), 10)
+			queue_free()
+			return
+		queue_redraw()
+
+	func _draw() -> void:
+		var bob := sin(t * 3.0) * 1.0
+		draw_circle(Vector2(0, -3 + bob), 7.0, Color(1.0, 0.8, 0.35, 0.18))
+		draw_circle(Vector2(0, -3 + bob), 3.6, Color(0.96, 0.76, 0.3))
+		draw_circle(Vector2(0, -2.4 + bob), 1.1, Color(0.6, 0.42, 0.14))
+		for k in range(3):
+			draw_circle(Vector2(-1.6 + k * 1.6, -4.8 + bob), 0.55, Color(0.6, 0.42, 0.14))

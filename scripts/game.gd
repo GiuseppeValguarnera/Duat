@@ -483,6 +483,7 @@ func _room_cleared() -> void:
 		# il guardiano di mezzo non dà Lacrime di Iside: quelle cadono solo sui boss delle regioni
 		var first_serpent := Meta.serpent_wins == 0
 		Meta.serpent_wins += 1
+		Restorations.gain(randi_range(1, 2), player.global_position)
 		var tear_txt := Lang.t("Il Cortile di Neith si è aperto") if first_serpent else Lang.t("La via verso Am-heh è aperta")
 		var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
 		if not gods.is_empty():
@@ -521,6 +522,9 @@ func _on_pickup_collected(p: Area2D) -> void:
 		"heal":
 			player.heal(roundf(Run.max_hp * Run.nile_heal()))
 			_open_doors.call_deferred()
+		"lapis":
+			Restorations.gain(1, player.global_position)
+			_open_doors.call_deferred()
 		"boon":
 			_show_boon_menu.call_deferred(god)
 		"set":
@@ -542,7 +546,8 @@ func _open_doors() -> void:
 	gods.shuffle()
 	for g in gods.slice(0, 2):
 		pool.append({"kind": "boon", "god": g})
-	pool.append({"kind": "ka"})
+	# ogni tanto, al posto del tesoro di Ka, una porta di lapislazzuli (per i restauri della Sala)
+	pool.append({"kind": "lapis"} if Run.room >= 2 and randf() < 0.15 else {"kind": "ka"})
 	pool.append({"kind": "heal"})
 	pool.shuffle()
 	# il Traghettatore è una delle porte solo nella stanza subito prima del Serpente e di Ammit
@@ -1493,6 +1498,10 @@ func _boss_defeated() -> void:
 		if c is Enemy and not c.dead:
 			c.die()
 	Meta.ammit_wins += 1
+	Restorations.gain(randi_range(3, 5), player.global_position)
+	var win_secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
+	if Meta.best_time < 0 or win_secs < Meta.best_time:
+		Meta.best_time = win_secs
 	ammit_tears = Meta.claim_boss(BOSS_KIND, 2)  # Lacrime di Iside: solo dai boss, la prima volta con ogni arma
 	if Weights.unlocked() and not Meta.feather and Weights.total() > Meta.best_weight:
 		Meta.best_weight = Weights.total()
@@ -1572,6 +1581,12 @@ func _end_run_summary() -> String:
 	for g in count:
 		if Meta.last_god == "" or count[g] > count[Meta.last_god]:
 			Meta.last_god = g
+		Meta.god_picks[g] = int(Meta.god_picks.get(g, 0)) + int(count[g])
+	# il registro dello scriba (restauro): chi ti ha fermato, quanti nemici, fin dove sei arrivato
+	if not finished and Run.last_hit != "":
+		Meta.killers[Run.last_hit] = int(Meta.killers.get(Run.last_hit, 0)) + 1
+	Meta.total_kills += Run.kills
+	Meta.best_room = maxi(Meta.best_room, Run.room)
 	Meta.runs += 1
 	Meta.save()
 	var secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
@@ -1653,6 +1668,13 @@ func _process(_delta: float) -> void:
 		line2 += Lang.t("    Maledizione: %s (ancora %d stanze)") % [Boons.SET_CURSES[c["curse"]]["desc"], c["rooms"]]
 	if line2 != "":
 		hud.text += ("\n" if hud.text != "" else "") + line2.strip_edges()
+	# la clessidra di Thoth (restauro della Sala): il tempo della discesa e il record
+	if Restorations.has("clessidra") and tut.step < 0 and not finished:
+		var secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
+		var clock := Lang.t("Tempo %d:%02d") % [floori(secs / 60.0), secs % 60]
+		if Meta.best_time >= 0:
+			clock += Lang.t("  ·  record %d:%02d") % [floori(Meta.best_time / 60.0), Meta.best_time % 60]
+		hud.text += ("\n" if hud.text != "" else "") + clock
 	var vsz := get_viewport().get_visible_rect().size
 	boss_bar.position = Vector2((vsz.x - boss_bar.size.x) / 2.0, vsz.y - (12.0 if Fx.mobile else 30.0))
 

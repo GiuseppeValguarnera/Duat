@@ -424,6 +424,7 @@ Il cancello è sempre aperto. Il Duat ha sempre fame.,Il cancello è sempre aper
 "Il Traghettatore guarda sempre all'indietro. Non chiedergli perché. Paga, e sali.","Il Traghettatore guarda sempre all'indietro. Non chiedergli perché. Paga, e sali.","The Ferryman always looks behind him. Do not ask him why. Pay, and climb aboard."
 "Il Ka che non spendi nella discesa torna qui con te. Quello che spendi, ti tiene in vita. Scegli.","Il Ka che non spendi nella discesa torna qui con te. Quello che spendi, ti tiene in vita. Scegli.",The Ka you do not spend on the descent comes back here with you. The Ka you spend keeps you alive. Choose.
 Ka,Ka,Ka
+Lapislazzuli,Lapislazzuli,Lapis lazuli
 Cura,Cura,Healing
 Am-heh,Am-heh,Am-heh
 Guardiano,Guardiano,Guardian
@@ -433,6 +434,7 @@ Uscita,Uscita,Exit
 Dono di %s: scegli uno dei suoi poteri,Dono di %s: scegli uno dei suoi poteri,Boon of %s: choose one of their powers
 "L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa","L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa","The altar of Set: a detour, you lose neither this chamber nor the other doors. Entering costs 8 health. A curse for 2 chambers, then a power for the whole descent"
 Tesoro di Ka: +25 Ka,Tesoro di Ka: +25 Ka,Ka Treasure: +25 Ka
+Lapislazzuli: una pietra per i restauri della Sala del Giudizio (resta anche se cadi),Lapislazzuli: una pietra per i restauri della Sala del Giudizio (resta anche se cadi),Lapis lazuli: a stone for restoring the Hall of Judgement (you keep it even if you fall)
 Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Water of the Nile: you recover %d%% of your health. Last chamber before Am-heh
 Acqua del Nilo: recuperi il %d%% della vita,Acqua del Nilo: recuperi il %d%% della vita,Water of the Nile: you recover %d%% of your health
 "Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Gate of the First Hour: Am-heh, the Devourer of Millions, awaits you in its lake of fire"
@@ -627,6 +629,8 @@ Piuma di Ma'at: -%d%% danni,Piuma di Ma'at: -%d%% danni,Feather of Ma'at: -%d%% 
 Doni: %d,Doni: %d,Boons: %d
 Doni: %d (Tab per vederli),Doni: %d (Tab per vederli),Boons: %d (Tab to view)
     Maledizione: %s (ancora %d stanze),    Maledizione: %s (ancora %d stanze),    Curse: %s (%d chambers left)
+Tempo %d:%02d,Tempo %d:%02d,Time %d:%02d
+  ·  record %d:%02d,  ·  record %d:%02d,  ·  record %d:%02d
 "%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, you have %d)"
 %s · Parla con Mahaf,%s · Parla con Mahaf,%s · Talk to Mahaf
 Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Left stick move · right aim · RB attack · RT Eye · LB/A dash · LT Divine Form · Select boons · Start pause
@@ -634,9 +638,9 @@ WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destr
 Ureo!,Ureo!,Uraeus!
 "Nuova versione, aggiorna!","Nuova versione, aggiorna!","New version, update!"
 "Sala del Giudizio
-Ka custodito %d · Discese %d · Vittorie %d","Sala del Giudizio
-Ka custodito %d · Discese %d · Vittorie %d","Hall of Judgement
-Stored Ka %d · Descents %d · Victories %d"
+Ka custodito %d · Lapislazzuli %d · Discese %d · Vittorie %d","Sala del Giudizio
+Ka custodito %d · Lapislazzuli %d · Discese %d · Vittorie %d","Hall of Judgement
+Stored Ka %d · Lapis lazuli %d · Descents %d · Victories %d"
 Levetta muovi · LB/A scatto · Y interagisci · Start opzioni,Levetta muovi · LB/A scatto · Y interagisci · Start opzioni,Stick move · LB/A dash · Y interact · Start options
 WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD move · Space dash · E interact · Esc options
 %s · Parla con Anubi,%s · Parla con Anubi,%s · Speak with Anubis
@@ -645,6 +649,8 @@ WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD muovi · Spazio
  · un ricordo nuovo, · un ricordo nuovo, · a new memory
 "%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)","%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)","%s · The Weight of the Heart (current weight %d, Ka +%d%%)"
 La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,The scales of Ma'at · Defeat Am-heh to lay down your weights
+%s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d),%s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d),%s · The stonemason's chest: restore the Hall (lapis lazuli: %d)
+%s · Accarezza il gatto,%s · Accarezza il gatto,%s · Pet the cat
 Il Cortile di Neith · le armi · entra dalla porta,Il Cortile di Neith · le armi · entra dalla porta,The Courtyard of Neith · the weapons · enter through the door
 Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,The Courtyard of Neith · it will open when you have defeated the Serpent of the Gate
 Il cancello del Duat è a nord,Il cancello del Duat è a nord,The gate of the Duat lies to the north
@@ -674,6 +680,12 @@ Costa %d Ka: ne hai %d.","You can keep one more chapter active on every descent.
 
 It costs %d Ka: you have %d."
 Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.,Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.,A longer papyrus for more spells. The richest had Books of the Dead painted tens of metres long: Ani's is over twenty-three.
+I restauri della Sala,I restauri della Sala,Restoring the Hall
+Lapislazzuli: %d    ·    Restauri fatti: %d di %d,Lapislazzuli: %d    ·    Restauri fatti: %d di %d,Lapis lazuli: %d    ·    Restorations done: %d of %d
+%d lapislazzuli,%d lapislazzuli,%d lapis lazuli
+Già restaurato.,Già restaurato.,Already restored.
+Premi per restaurarlo: %d lapislazzuli.,Premi per restaurarlo: %d lapislazzuli.,Press to restore it: %d lapis lazuli.
+"Costa %d lapislazzuli: te ne mancano %d. Li lasciano il Serpente della Porta, Am-heh e le stanze segrete.","Costa %d lapislazzuli: te ne mancano %d. Li lasciano il Serpente della Porta, Am-heh e le stanze segrete.","It costs %d lapis lazuli: you need %d more. The Serpent of the Gate, Am-heh and the secret chambers leave them behind."
 Piuma di Ma'at,Piuma di Ma'at,Feather of Ma'at
 "Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva.","Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva.","A mode for those who want help. You take 10% less damage, and another 2% less after each death, up to 50%. In return you store only 40% of your Ka at the end of a descent, and the Weight of the Heart does not count while it is on."
 Scuotimento dello schermo,Scuotimento dello schermo,Screen shake
@@ -755,7 +767,48 @@ Level %d of %d. Press to change it."
 "Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.","Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.","Every level of weight makes the descent harder and lets you store 10% more Ka. Anubis watches: the heavier the heart that manages to pass, the stronger the one who carries it."
 I Papiri di Thoth,I Papiri di Thoth,The Scrolls of Thoth
 Tutto ciò che gli dèi ti hanno raccontato    ·    %d papiri su %d,Tutto ciò che gli dèi ti hanno raccontato    ·    %d papiri su %d,Everything the gods have told you    ·    %d scrolls of %d
+le mummie,le mummie,mummies
+gli scarabei,gli scarabei,scarabs
+i sacerdoti di Set,i sacerdoti di Set,priests of Set
+gli scorpioni,gli scorpioni,scorpions
+i cobra,i cobra,cobras
+le trappole,le trappole,traps
+le grate di fuoco,le grate di fuoco,fire grates
+l'olio in fiamme,l'olio in fiamme,burning oil
+le statue dell'ureo,le statue dell'ureo,the uraeus statues
+nessuna vittoria ancora,nessuna vittoria ancora,no victory yet
+"Discese: %d
+Vittorie su Am-heh: %d
+Serpenti della Porta battuti: %d
+La stanza più lontana: %d
+La vittoria più rapida: %s","Discese: %d
+Vittorie su Am-heh: %d
+Serpenti della Porta battuti: %d
+La stanza più lontana: %d
+La vittoria più rapida: %s","Descents: %d
+Victories over Am-heh: %d
+Serpents of the Gate defeated: %d
+Farthest chamber: %d
+Fastest victory: %s"
+"%s: %d
+","%s: %d
+","%s: %d
+"
+Nessuno ti ha ancora fermato.,Nessuno ti ha ancora fermato.,Nothing has stopped you yet.
+"%s: %d doni
+","%s: %d doni
+","%s: %d boons
+"
+Nessun dono ancora.,Nessun dono ancora.,No boons yet.
+Il registro dello scriba,Il registro dello scriba,The scribe's ledger
+Le discese,Le discese,The descents
+Chi ti ha fermato,Chi ti ha fermato,What stopped you
+Gli dèi che hai scelto,Gli dèi che hai scelto,The gods you chose
+I nemici abbattuti,I nemici abbattuti,Enemies slain
+In tutte le discese: %d,In tutte le discese: %d,Across all descents: %d
 NUOVO · Cortile di Neith,NUOVO · Cortile di Neith,NEW · Courtyard of Neith
+Mrrr...,Mrrr...,Mrrr...
+Il gatto ti ha portato 5 Ka,Il gatto ti ha portato 5 Ka,The cat brought you 5 Ka
 "Anubi, il Guardiano","Anubi, il Guardiano","Anubis, the Guardian"
 La bilancia,La bilancia,The scale
 "Prima che tu discenda, Scriba, io ti peso. Ogni mio dono è un piatto della bilancia: ciò che prendi da un lato, lo lasci sull'altro. Così è il giudizio. Così sarà sempre.","Prima che tu discenda, Scriba, io ti peso. Ogni mio dono è un piatto della bilancia: ciò che prendi da un lato, lo lasci sull'altro. Così è il giudizio. Così sarà sempre.","Before you descend, Scribe, I weigh you. Each of my boons is a pan of the scale: what you take on one side, you leave on the other. So is the judgement. So it shall always be."
@@ -959,6 +1012,30 @@ GIUDIZIO,GIUDIZIO,JUDGEMENT
 Scudo -%d,Scudo -%d,Shield -%d
 Il cuore non testimonia,Il cuore non testimonia,The heart does not testify
 Bastet ti protegge!,Bastet ti protegge!,Bastet protects you!
+I bracieri della Sala,I bracieri della Sala,The braziers of the Hall
+I bracieri spenti negli angoli della Sala tornano ad ardere: più luce calda nella notte blu.,I bracieri spenti negli angoli della Sala tornano ad ardere: più luce calda nella notte blu.,The cold braziers in the corners of the Hall burn again: more warm light in the blue night.
+"Nei templi il fuoco non si spegneva mai: i sacerdoti lo nutrivano all'alba e al tramonto, con incenso e grasso di bue.","Nei templi il fuoco non si spegneva mai: i sacerdoti lo nutrivano all'alba e al tramonto, con incenso e grasso di bue.","In the temples the fire never went out: the priests fed it at dawn and dusk, with incense and ox fat."
+Gli stendardi degli dèi,Gli stendardi degli dèi,The banners of the gods
+"Gli stendardi strappati sopra la Sala tornano interi, con le frange d'oro e il simbolo di ogni dio.","Gli stendardi strappati sopra la Sala tornano interi, con le frange d'oro e il simbolo di ogni dio.","The torn banners above the Hall are whole again, with golden fringes and the symbol of each god."
+Davanti ai piloni dei templi si alzavano pali di cedro con lunghe bandiere colorate: il geroglifico per «dio» è proprio uno stendardo al vento.,Davanti ai piloni dei templi si alzavano pali di cedro con lunghe bandiere colorate: il geroglifico per «dio» è proprio uno stendardo al vento.,"Cedar poles with long coloured flags rose before the temple pylons: the hieroglyph for ""god"" is a banner in the wind."
+Le pitture del giudizio,Le pitture del giudizio,The paintings of the judgement
+"Sulla parete in alto torna la scena della pesatura del cuore: Anubi alla bilancia, Thoth che scrive, Ammit che aspetta.","Sulla parete in alto torna la scena della pesatura del cuore: Anubi alla bilancia, Thoth che scrive, Ammit che aspetta.","The weighing of the heart returns to the upper wall: Anubis at the scale, Thoth writing, Ammit waiting."
+"Il papiro di Ani mostra la scena più famosa del Libro dei Morti: il cuore su un piatto, la piuma di Ma'at sull'altro.","Il papiro di Ani mostra la scena più famosa del Libro dei Morti: il cuore su un piatto, la piuma di Ma'at sull'altro.","The Papyrus of Ani shows the most famous scene of the Book of the Dead: the heart on one pan, Ma'at's feather on the other."
+La vasca del Nilo,La vasca del Nilo,The Nile pool
+"Una vasca d'acqua viva con i fiori di loto, accanto alla cassa dello scalpellino.","Una vasca d'acqua viva con i fiori di loto, accanto alla cassa dello scalpellino.","A pool of living water with lotus flowers, beside the stonemason's chest."
+"Ogni tempio aveva il suo lago sacro: i sacerdoti vi si purificavano prima dei riti, e ogni mattina il sole sorgeva dalle sue acque.","Ogni tempio aveva il suo lago sacro: i sacerdoti vi si purificavano prima dei riti, e ogni mattina il sole sorgeva dalle sue acque.","Every temple had its sacred lake: the priests purified themselves in it before the rites, and every morning the sun rose from its waters."
+Il trono di Anubi,Il trono di Anubi,The throne of Anubis
+"Alle spalle di Anubi torna il suo trono dorato, con lo schienale dipinto e le zampe di leone.","Alle spalle di Anubi torna il suo trono dorato, con lo schienale dipinto e le zampe di leone.","Behind Anubis his golden throne returns, with a painted back and lion's paws."
+Il trono era il segno del potere: il nome di Iside si scrive proprio con il geroglifico di un seggio.,Il trono era il segno del potere: il nome di Iside si scrive proprio con il geroglifico di un seggio.,The throne was the sign of power: Isis's name is written with the hieroglyph of a seat.
+La clessidra di Thoth,La clessidra di Thoth,The water clock of Thoth
+Comodità. Durante la discesa vedi in alto il tempo trascorso e il tuo record contro Am-heh.,Comodità. Durante la discesa vedi in alto il tempo trascorso e il tuo record contro Am-heh.,Convenience. During the descent you see the time elapsed and your record against Am-heh.
+"Gli Egizi misuravano le ore della notte con le clessidre ad acqua: un vaso forato, con le tacche dipinte all'interno.","Gli Egizi misuravano le ore della notte con le clessidre ad acqua: un vaso forato, con le tacche dipinte all'interno.",The Egyptians measured the hours of the night with water clocks: a pierced vessel with marks painted inside.
+"Comodità. Nei Papiri di Thoth compare una pagina con le tue imprese: discese, vittorie, chi ti ha fermato più spesso, gli dèi che hai scelto.","Comodità. Nei Papiri di Thoth compare una pagina con le tue imprese: discese, vittorie, chi ti ha fermato più spesso, gli dèi che hai scelto.","Convenience. A page with your deeds appears in the Scrolls of Thoth: descents, victories, what stopped you most often, the gods you chose."
+"Gli scribi tenevano registri di tutto: il grano, il bestiame, i lavoratori. Anche le imprese dei re finivano su un papiro.","Gli scribi tenevano registri di tutto: il grano, il bestiame, i lavoratori. Anche le imprese dei re finivano su un papiro.","Scribes kept records of everything: grain, cattle, workers. Even the deeds of kings ended up on papyrus."
+Il gatto di Bastet,Il gatto di Bastet,The cat of Bastet
+"Comodità. Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.","Comodità. Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.","Convenience. A cat lives in the Hall: it follows you, lets you pet it, and now and then brings you a little Ka before the gate."
+"I gatti erano sacri a Bastet. Chi ne uccideva uno, anche per sbaglio, rischiava la vita; quando un gatto moriva, la famiglia si radeva le sopracciglia in segno di lutto.","I gatti erano sacri a Bastet. Chi ne uccideva uno, anche per sbaglio, rischiava la vita; quando un gatto moriva, la famiglia si radeva le sopracciglia in segno di lutto.","Cats were sacred to Bastet. Killing one, even by accident, could cost you your life; when a cat died, the family shaved their eyebrows in mourning."
++%d Lapislazzuli,+%d Lapislazzuli,+%d Lapis lazuli
 Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,An offering that the king gives: a thousand loaves and a thousand jars of beer for the Ka of the lord of this house.
 "O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O you who pass before this statue, say «bread and beer» for the Ka of the king."
 "Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","The king is a falcon of gold. The king flies toward the sky, and the sky welcomes him."
@@ -1067,6 +1144,10 @@ Il silenzio degli dèi,Il silenzio degli dèi,The silence of the gods
 Gli dèi ti offrono solo due doni invece di tre.,Gli dèi ti offrono solo due doni invece di tre.,The gods offer you only two boons instead of three.
 La fame di Am-heh,La fame di Am-heh,The hunger of Am-heh
 Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh ha il 30% di vita in più e la marea di fuoco arriva più spesso.,Am-heh has 30% more health and the tide of fire comes more often.
+"Sala del Giudizio
+Ka custodito %d · Discese %d · Vittorie %d","Sala del Giudizio
+Ka custodito %d · Discese %d · Vittorie %d","Hall of Judgement
+Stored Ka %d · Descents %d · Victories %d"
 "Tocca una voce per leggerla, toccala di nuovo per sceglierla","Tocca una voce per leggerla, toccala di nuovo per sceglierla","Tap an item to read it, tap it again to choose it"
 E / Y / B per chiudere,E / Y / B per chiudere,E / Y / B to close
 Ti muovi il 6% più lento.,Ti muovi il 6% più lento.,You move 6% slower.

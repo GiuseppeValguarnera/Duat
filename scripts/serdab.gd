@@ -117,6 +117,8 @@ func _collapse() -> void:
 		treasures.append(["ka", at, int(total / float(coins)) + (total - int(total / float(coins)) * coins if i == 0 else 0), false])
 	if rng.randf() < 0.5:
 		treasures.append(["heart", Vector2(hx + rng.randf_range(-60, 60), -34.0), 10.0, false])
+	# sempre un lapislazzuli ai piedi della statua (a volte due): trovare il serdab vale la pena
+	treasures.append(["lapis", Vector2(hx + rng.randf_range(-20, 20), -SIZE.y * 0.6), 2 if rng.randf() < 0.4 else 1, false])
 	# il buio dentro
 	# il buio dentro: si scurisce la penombra della stanza (una sola per scena, in Godot)
 	var found := g.world.find_children("*", "CanvasModulate", true, false)
@@ -160,6 +162,8 @@ func _process(delta: float) -> void:
 			Sfx.play("pickup", 0.1)
 			Fx.float_text(loot[1], Lang.t("+%d Ka") % int(loot[2]), Color(0.94, 0.72, 0.3))
 			Fx.burst(loot[1] + Vector2(0, -4), Color(0.95, 0.75, 0.3), 10, 60.0)
+		elif loot[0] == "lapis":
+			Restorations.gain(int(loot[2]), loot[1])
 		else:
 			p.heal(float(loot[2]))
 			Sfx.play("pickup", 0.1)
@@ -262,7 +266,10 @@ func _draw_chamber() -> void:
 			continue
 		var at: Vector2 = loot[1] - position
 		var bob := sin(t * 3.0 + at.x) * 1.5
-		if loot[0] == "ka":
+		if loot[0] == "lapis":
+			draw_circle(at + Vector2(0, -4 + bob), 9.0, Color(0.3, 0.5, 1.0, 0.2))
+			Restorations.draw_gem(self, at + Vector2(0, -4 + bob), 1.2)
+		elif loot[0] == "ka":
 			draw_circle(at + Vector2(0, -4 + bob), 8.0, Color(1.0, 0.8, 0.35, 0.18))
 			draw_circle(at + Vector2(0, -4 + bob), 4.0, Color(0.96, 0.76, 0.3))
 			draw_circle(at + Vector2(-1, -5 + bob), 1.5, Color(1, 0.95, 0.75))

@@ -40,6 +40,8 @@ func color() -> Color:
 			return Boons.god_color("set")
 		"ka":
 			return Color(0.94, 0.72, 0.3)
+		"lapis":
+			return Restorations.LAPIS_COLOR
 		_:
 			return Color(0.95, 0.35, 0.3)
 
@@ -52,6 +54,8 @@ func label() -> String:
 			return Lang.t("Patto di Set")
 		"ka":
 			return Lang.t("Ka")
+		"lapis":
+			return Lang.t("Lapislazzuli")
 		_:
 			return Lang.t("Cura")
 
@@ -63,7 +67,10 @@ func _draw() -> void:
 	draw_circle(Vector2.ZERO, 8.0, Color(0, 0, 0, 0.35))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	draw_circle(Vector2(0, -10 + bob), 11.0 + sin(t * 4.0), Color(c, 0.25))
-	draw_circle(Vector2(0, -10 + bob), 7.0, c)
-	draw_circle(Vector2(-2, -12 + bob), 2.0, Color(1, 1, 1, 0.8))
+	if kind == "lapis":
+		Restorations.draw_gem(self, Vector2(0, -10 + bob), 1.3)
+	else:
+		draw_circle(Vector2(0, -10 + bob), 7.0, c)
+		draw_circle(Vector2(-2, -12 + bob), 2.0, Color(1, 1, 1, 0.8))
 	var font := UiStyle.body_font()
 	draw_string(font, Vector2(-30, -26 + bob), label(), HORIZONTAL_ALIGNMENT_CENTER, 60, 9, Color(1, 0.95, 0.85))

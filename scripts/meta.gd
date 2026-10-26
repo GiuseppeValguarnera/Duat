@@ -34,6 +34,13 @@ var options := {"shake": true, "hitstop": true, "autoaim": true, "lang": "auto"}
 var tutorial_done := false            ## addestramento della prima stanza già fatto
 var feather := false                  ## Piuma di Ma'at (modalità aiuto) attiva
 var feather_deaths := 0               ## morti da quando la Piuma è attiva
+var lapis := 0                        ## lapislazzuli: la moneta dei restauri della Sala (restorations.gd)
+var restorations: Array = []          ## restauri della Sala già fatti
+var killers := {}                     ## chi ti ha fermato e quante volte (registro dello scriba)
+var god_picks := {}                   ## doni presi da ogni dio, in tutte le discese
+var total_kills := 0
+var best_room := 0                    ## la stanza più lontana raggiunta
+var best_time := -1                   ## la vittoria più rapida su Am-heh, in secondi
 
 
 func _ready() -> void:
@@ -73,6 +80,13 @@ func _ready() -> void:
 		tutorial_done = cfg.get_value("storia", "addestramento", runs > 0)
 		feather = cfg.get_value("piuma", "attiva", false)
 		feather_deaths = cfg.get_value("piuma", "morti", 0)
+		lapis = cfg.get_value("sala", "lapislazzuli", 0)
+		restorations = cfg.get_value("sala", "restauri", [])
+		killers = cfg.get_value("registro", "uccisori", {})
+		god_picks = cfg.get_value("registro", "doni", {})
+		total_kills = cfg.get_value("registro", "nemici", 0)
+		best_room = cfg.get_value("registro", "stanza", 0)
+		best_time = cfg.get_value("registro", "tempo", -1)
 	Lang.apply(String(options.get("lang", "auto")))
 
 
@@ -107,6 +121,13 @@ func save() -> void:
 	cfg.set_value("storia", "addestramento", tutorial_done)
 	cfg.set_value("piuma", "attiva", feather)
 	cfg.set_value("piuma", "morti", feather_deaths)
+	cfg.set_value("sala", "lapislazzuli", lapis)
+	cfg.set_value("sala", "restauri", restorations)
+	cfg.set_value("registro", "uccisori", killers)
+	cfg.set_value("registro", "doni", god_picks)
+	cfg.set_value("registro", "nemici", total_kills)
+	cfg.set_value("registro", "stanza", best_room)
+	cfg.set_value("registro", "tempo", best_time)
 	cfg.save(PATH)
 
 

@@ -29,6 +29,7 @@ var heart_used := false               # Capitolo 30 già usato in questa discesa
 var in_hub := false                   # true nella Sala del Giudizio
 var training := false                 # nel Cortile di Neith: non si muore
 var from_armory := false              # si torna nella Sala dalla porta del Cortile
+var from_restore := false             # la Sala si è appena rinnovata (restauro): si riappare alla cassa
 var last_hit := ""                    # chi ti ha colpito per ultimo (per i commenti di Anubi)
 var resume := {}                      # discesa salvata da riprendere (la imposta la Sala all'avvio)
 

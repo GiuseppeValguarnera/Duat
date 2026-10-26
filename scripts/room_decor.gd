@@ -33,6 +33,8 @@ signal bake_done                        ## la texture è pronta (game.gd toglie 
 var _vp: SubViewport
 ## Quanto è buia la stanza lontano dalle luci (la penombra cotta, vedi _draw_shade).
 var SHADE := 0.52
+## Bracieri spenti (nella Sala, finché non li restauri: vedi restorations.gd). Da dare prima di build().
+var cold_braziers := false
 
 
 func build(seed_value: int, room_rect: Rect2, top_y: float, wall_w: float, pillars: Array, boss: bool) -> Array:
@@ -127,7 +129,7 @@ func build(seed_value: int, room_rect: Rect2, top_y: float, wall_w: float, pilla
 	add_child(ambient)
 	# le pozze di luce delle torce sono finte e ferme: finiscono nella texture (_bake)
 	for pr in props:
-		if pr[0] == "brazier":
+		if pr[0] == "brazier" and not cold_braziers:
 			Atmos.add_light(self, pr[1] + Vector2(0, -14), 140.0, Color(1.0, 0.55, 0.25), 1.2, false)
 	Atmos.dust(self, Rect2(wall, top, room.size.x - wall * 2.0, room.size.y - wall - top))
 	queue_redraw()
@@ -159,6 +161,7 @@ func _bake() -> void:
 	p.props = props
 	p.torches = torches
 	p.mosaic = mosaic
+	p.cold_braziers = cold_braziers
 	p.under = under
 	p.SHADE = SHADE
 	p.scale = Vector2(s, s)
@@ -255,7 +258,7 @@ func _draw_shade() -> void:
 	for tc in torches:
 		lights.append([tc + Vector2(0, 14), 105.0, 1.0])
 	for pr in props:
-		if pr[0] == "brazier":
+		if pr[0] == "brazier" and not cold_braziers:
 			lights.append([pr[1], 115.0, 1.0])
 	var mid := Vector2(room.size.x / 2.0, (top + room.size.y - wall) / 2.0)
 	lights.append([mid, 175.0, 0.55])
@@ -609,9 +612,13 @@ func _draw_brazier(p: Vector2) -> void:
 	draw_line(Vector2(p.x - 8, p.y - 10), Vector2(p.x + 8, p.y - 10), RED_OCHRE, 0.8)
 	draw_set_transform(p + Vector2(0, -12), 0.0, Vector2(1.0, 0.35))
 	draw_circle(Vector2.ZERO, 8.5, OUTL)
-	draw_circle(Vector2.ZERO, 7.5, Color(0.55, 0.15, 0.05))
-	draw_circle(Vector2(-2, 0), 3.5, Color(1, 0.5, 0.15))
-	draw_circle(Vector2(3, 1), 2.0, Color(1, 0.7, 0.3))
+	if cold_braziers:
+		draw_circle(Vector2.ZERO, 7.5, Color(0.3, 0.28, 0.27))          # cenere fredda
+		draw_circle(Vector2(-2, 0), 3.0, Color(0.42, 0.4, 0.38))
+	else:
+		draw_circle(Vector2.ZERO, 7.5, Color(0.55, 0.15, 0.05))
+		draw_circle(Vector2(-2, 0), 3.5, Color(1, 0.5, 0.15))
+		draw_circle(Vector2(3, 1), 2.0, Color(1, 0.7, 0.3))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
@@ -697,7 +704,7 @@ class Glow extends Node2D:
 		for tc in decor.torches:
 			_halo(tc + Vector2(0, -6), 12.0 + sin(tt * 9.0 + tc.x) * 1.5, Color(1, 0.6, 0.25, 0.5))
 		for pr in decor.props:
-			if pr[0] == "brazier":
+			if pr[0] == "brazier" and not decor.cold_braziers:
 				_halo(pr[1] + Vector2(0, -16), 16.0 + sin(tt * 8.0 + pr[1].y) * 2.0, Color(1, 0.55, 0.2, 0.55))
 		# gli spiriti del Ka vagano piano e pulsano: azzurri i più, qualcuno d'oro
 		for w in decor.wisps:
@@ -724,7 +731,7 @@ class Flames extends Node2D:
 		for tc in decor.torches:
 			_flame(tc + Vector2(0, -2), 1.0)
 		for pr in decor.props:
-			if pr[0] == "brazier":
+			if pr[0] == "brazier" and not decor.cold_braziers:
 				_flame(pr[1] + Vector2(0, -12), 1.4)
 
 	func _flame(p: Vector2, s: float) -> void:
