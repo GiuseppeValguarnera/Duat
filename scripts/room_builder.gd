@@ -21,10 +21,30 @@ func free_spot() -> Vector2:
 func free_spot_near(center: Vector2) -> Vector2:
 	var p := center
 	for i in range(30):
-		if spot_ok(p):
+		if spot_ok(p) and in_floor(p, 20.0):
 			return p
 		p = center + Vector2(randf_range(-80.0, 80.0), randf_range(-50.0, 50.0))
-	return p
+	# niente di libero lì vicino: un punto libero qualsiasi (prima tornava l'ultimo provato, che
+	# vicino a un muro poteva cadere fuori dalla stanza)
+	return free_spot()
+
+
+## Dentro il pavimento, lontano almeno `margin` dai muri.
+func in_floor(p: Vector2, margin: float) -> bool:
+	return p.x > g.WALL + margin and p.x < g.ROOM.size.x - g.WALL - margin and p.y > g.TOP + margin and p.y < g.ROOM.size.y - g.WALL - margin
+
+
+## Dove far ricomparire un nemico incastrato: verso il centro della stanza (la tasca contro il
+## muro, per spot_ok, può sembrare libera), su un punto libero e dentro il pavimento.
+func unstick_spot(from: Vector2) -> Vector2:
+	var center := Vector2(g.ROOM.size.x / 2.0, (g.TOP + g.ROOM.size.y - g.WALL) / 2.0)
+	for i in range(24):
+		var k := 0.25 + 0.03 * i
+		var p := from.lerp(center, minf(k, 0.95)) + Vector2(randf_range(-20.0, 20.0), randf_range(-14.0, 14.0))
+		var far_from_you: bool = g.player == null or p.distance_to(g.player.global_position) > 70.0
+		if p.distance_to(from) > 30.0 and far_from_you and spot_ok(p) and in_floor(p, 24.0):
+			return p
+	return free_spot()                 # lontano da te (oltre 160 pixel)
 
 
 func spot_ok(p: Vector2) -> bool:

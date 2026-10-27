@@ -72,7 +72,9 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity = _behave(delta, to) * Run.enemy_speed_mult() * _puddle_slow() + knock
 	knock = knock.move_toward(Vector2.ZERO, 800.0 * delta)
+	var wanted := velocity.length()
 	move_and_slide()
+	_unstick(delta, wanted)
 
 	if contact != null and contact.monitoring and stagger_t <= 0.0:
 		for a in contact.get_overlapping_areas():
@@ -80,6 +82,59 @@ func _physics_process(delta: float) -> void:
 			if o.is_in_group("player"):
 				o.take_damage(_contact_damage(), global_position, self)
 	queue_redraw()
+
+
+## Rete di sicurezza: un nemico normale che vuole muoversi ma resta fermo (incastrato in una tasca
+## tra il muro e un oggetto) per 3 secondi ricompare nel punto libero più vicino. Il mega test ha
+## trovato scarabei bloccati contro il muro in alto: la stanza non si chiudeva più, e chi combatte
+## a distanza non riusciva a colpirli. Boss e guardiani no; chi sta fermo apposta non conta.
+var _stuck_hist: Array[Vector2] = []   # dove era negli ultimi controlli (uno al secondo)
+var _stuck_check := 1.0
+var _stuck_want := 0.0                 # quanto ha "voluto" muoversi dall'ultimo controllo
+
+func _unstick(delta: float, wanted: float) -> void:
+	if is_boss or miniboss:
+		return
+	_stuck_check -= delta
+	_stuck_want = maxf(_stuck_want, wanted)
+	if _stuck_check > 0.0:
+		return
+	_stuck_check = 1.0
+	# fuori dal pavimento (una spinta fortissima, un balzo oltre il muro): dentro subito
+	var gs = get_tree().current_scene
+	if gs != null and gs.has_method("_in_floor") and not gs._in_floor(global_position, -6.0):
+		_stuck_hist.clear()
+		_relocate(gs)
+		return
+	var pl = get_tree().get_first_node_in_group("player")
+	var far: bool = pl == null or global_position.distance_to(pl.global_position) > 60.0
+	if _stuck_want < 8.0 or not far:
+		_stuck_hist.clear()                # sta fermo apposta, o è nella mischia: non è incastrato
+		_stuck_want = 0.0
+		return
+	_stuck_want = 0.0
+	_stuck_hist.append(global_position)
+	if _stuck_hist.size() < 4:
+		return
+	# in 3 secondi non è uscito da un'area di 24 pixel: è incastrato (anche se zigzaga contro il muro)
+	var stuck := true
+	for q in _stuck_hist:
+		if q.distance_to(global_position) > 24.0:
+			stuck = false
+	_stuck_hist.pop_front()
+	if not stuck:
+		return
+	_stuck_hist.clear()
+	_relocate(get_tree().current_scene)
+
+
+func _relocate(g) -> void:
+	if g == null or not g.has_method("_unstick_spot"):
+		return
+	Fx.burst(global_position, Color(0.8, 0.7, 0.5), 10, 60.0)
+	global_position = g._unstick_spot(global_position)
+	reset_physics_interpolation()
+	Fx.burst(global_position, Color(0.8, 0.7, 0.5), 10, 60.0)
 
 
 # --- da sovrascrivere nei singoli nemici ----------------------------------------

@@ -236,6 +236,10 @@ func _process(delta: float) -> void:
 	var p = g.player
 	Fx.device = "pad"
 	_metrics(g, p)
+	# stallo: troppo tempo nella stessa stanza normale (non i boss): si chiude e si registra il perché
+	if not g.finished and Run.room <= Run.ROOMS_PER_RUN and gt - room_start > float(OS.get_environment("DUAT_STALL") if OS.get_environment("DUAT_STALL") != "" else "1e9"):
+		_finish(g, "stallo")
+		return
 	if g.finished or gt > 900.0:
 		_finish(g)
 		return
@@ -788,6 +792,24 @@ func _finish(g, forced: String = "") -> void:
 		"boons": Run.boons, "blessings": Run.blessings, "curses_left": Run.curses, "choices": choices,
 		"rooms": rooms, "dodges": dodges, "shop": shop_buys, "killer": Run.last_hit,
 	}
+	if result in ["timeout", "stallo"]:
+		var es := []
+		for e in get_tree().get_nodes_in_group("enemies"):
+			es.append({"tipo": e.scene_file_path.get_file().get_basename(), "stato": str(e.get("state")), "pos": [roundi(e.global_position.x), roundi(e.global_position.y)], "vita": roundi(e.hp), "morto": e.dead})
+		var hidden := 0
+		for c in g.world.get_children():
+			if c is Enemy and not c.is_in_group("enemies") and not c.dead:
+				hidden += 1
+				es.append({"tipo": c.scene_file_path.get_file().get_basename(), "stato": str(c.get("state")) + " (fuori dal gruppo)", "pos": [roundi(c.global_position.x), roundi(c.global_position.y)], "vita": roundi(c.hp)})
+		var picks := []
+		for c in g.world.get_children():
+			if c.has_signal("collected"):
+				picks.append([roundi(c.global_position.x), roundi(c.global_position.y), str(c.get("kind"))])
+		var jars := []
+		for j in get_tree().get_nodes_in_group("breakables"):
+			jars.append([roundi(j.global_position.x), roundi(j.global_position.y)])
+		data["stallo_extra"] = {"ricompense": picks, "giare": jars}
+		data["stallo"] = {"alive": g.alive, "spawning": g.spawning, "cleared": g.cleared, "waves": g.waves.size(), "menu": g.menu != null, "porte": g.doors.size(), "giocatore": [roundi(g.player.global_position.x), roundi(g.player.global_position.y)], "nemici": es, "nascosti": hidden, "stanza": g.current_reward}
 	data["perf"] = {"max_ms": snappedf(perf_max, 0.1), "lenti": perf_slow, "fotogrammi": perf_frames, "nemici_max": perf_enemies, "dove": perf_room}
 	data["meta"] = {"lapis": Meta.lapis, "casa": Meta.casa, "sfide": Meta.challenges, "amuleto": Run.amulet, "amuleti": Meta.amulets, "restauri": Meta.restorations, "serpent_wins": Meta.serpent_wins, "ka_bank": Meta.ka_bank, "tears": Meta.tears, "wins": Meta.ammit_wins, "chapters": Meta.chapter_levels, "equipped": Meta.chapters_equipped, "weight": Weights.total(), "bought": brain.get("last_bought", [])}
 	data["cfg_now"] = {"reaction": snappedf(float(cfg["reaction"]), 0.001), "dodge": snappedf(base_dodge, 0.01), "skill": snappedf(float(cfg["skill"]), 0.01), "aim_err": snappedf(float(cfg["aim_err"]), 0.1), "heal": snappedf(float(cfg["heal"]), 0.01)}

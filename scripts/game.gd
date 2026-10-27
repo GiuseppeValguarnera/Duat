@@ -747,6 +747,13 @@ func _add_door(side: String, reward: Dictionary) -> void:
 	Atmos.add_light(d, Vector2(0, 14) if side == "n" else Vector2.ZERO, 110.0, d.reward_color(), 1.2, false)
 	d.chosen.connect(_on_door_chosen)
 	doors.append(d)
+	# se ci stai già sopra, un passo verso l'interno: la porta reagisce solo quando ci entri, e
+	# senza questo restavi fermo sulla soglia senza poter passare (trovato dal mega test).
+	# Non ti porta via da sola: la scelta della porta resta tua.
+	if player != null and is_instance_valid(player) and player.global_position.distance_to(d.global_position) < 30.0:
+		var inward: Vector2 = Vector2(ROOM.size.x / 2.0, (TOP + ROOM.size.y - WALL) / 2.0) - d.global_position
+		player.global_position = d.global_position + inward.normalized() * 34.0
+		player.reset_physics_interpolation()
 
 
 func _on_door_chosen(d: Area2D) -> void:
@@ -2066,6 +2073,14 @@ func _free_spot() -> Vector2:
 
 func _free_spot_near(center: Vector2) -> Vector2:
 	return rooms.free_spot_near(center)
+
+
+func _unstick_spot(from: Vector2) -> Vector2:
+	return rooms.unstick_spot(from)
+
+
+func _in_floor(p: Vector2, margin: float) -> bool:
+	return rooms.in_floor(p, margin)
 
 
 func _spot_ok(p: Vector2) -> bool:
