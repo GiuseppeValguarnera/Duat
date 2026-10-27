@@ -24,6 +24,15 @@ const LINES_CURIOUS := [
 	"«Oggi il prezzo è più basso. Non chiedermi perché.»",
 	"«Gli scribi di solito hanno le dita macchiate d'inchiostro. Tu no. Curioso.»",
 ]
+## Nella terra di Sokar (la quarta ora): Mahaf parla della barca trascinata, del sole che non passa
+## più, e di Aker che "riconosce ciò che porta quel nome" (akhet vuol dire orizzonte: si capisce
+## solo nel finale).
+const LINES_SOKAR := [
+	"«Su questa sabbia la mia barca non galleggia: la trascinano. Anche chi traghetta le anime, in quest'ora, deve lasciarsi portare.»",
+	"«Aker veglia sull'orizzonte. Ciò che porta quel nome, egli lo riconosce al primo sguardo. ...Non so perché te lo dico. Compra.»",
+	"«Il sole non passa più per questa terra. Un tempo era lui il mio carico. Ora sei tu.»",
+	"«Le cose sepolte, qui, non dormono. Ascoltano.»",
+]
 const LINES_WORRIED := [
 	"«Il tuo re aveva paura di questa barca. Anche da vivo, nelle feste del Fiume, saliva sempre per ultimo.»",
 	"«Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»",
@@ -43,6 +52,8 @@ static func trust() -> int:
 
 ## Una frase di Mahaf adatta al punto della storia (a volte una di quelle di prima).
 static func line() -> String:
+	if Run.region == 2 and randf() < 0.5:
+		return Lang.t(LINES_SOKAR.pick_random())
 	var pools := [LINES, LINES_CURIOUS, LINES_WORRIED]
 	var k := trust()
 	if k > 0 and randf() < 0.25:
@@ -54,6 +65,10 @@ static func line() -> String:
 static func _available() -> Array:
 	var pools := [LINES, LINES_CURIOUS, LINES_WORRIED]
 	var out := []
+	# a Sokar le frasi della quarta ora vengono prima: sono quelle che non hai ancora sentito
+	if Run.region == 2:
+		for i in range(LINES_SOKAR.size()):
+			out.append(["mahaf_s_%d" % i, LINES_SOKAR[i]])
 	for k in range(trust() + 1):
 		var pool: Array = pools[k]
 		for i in range(pool.size()):

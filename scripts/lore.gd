@@ -148,22 +148,40 @@ const RICORDI_IT := [
 	{"needs": 1, "title": "I · La lancia di Buto", "text": "Scrissi la battaglia di Buto come me la dettarono i capitani. Il re scese dal carro prima che le linee si toccassero e prese la lancia dalle mani del portatore: una lancia antica, dissero, uscita dal tempio di Neith a Sais. I capitani ricordavano le grida, la polvere, il fiume rosso. Io ricordo il legno. Liscio, caldo di sole, con una scheggia sotto il pollice destro che il re non volle mai far limare. Non so perché lo ricordo. Forse me lo raccontò lui."},
 	{"needs": 2, "title": "II · La doppia corona", "text": "Il giorno dell'incoronazione scrissi i cinque nomi del re su cento rotoli. Toro possente. Amato di Ma'at. Colui che sorge all'orizzonte. La corona bianca dentro la corona rossa, una sola corona per le Due Terre. Dalla folla sembrava leggera. Non lo era: faceva sudare la nuca, e il lino sotto si bagnava tutto prima del tramonto. Questo nei rotoli non c'è. Non l'ho mai scritto. Eppure lo so, come se me l'avesse confidato lui, quella sera, togliendosela davanti a me."},
 	{"needs": 3, "title": "III · La casa dell'eternità", "text": "Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»"},
+	{"needs": 1, "boss": "aker", "title": "IV · Il nome nascosto", "text": "Nel nono anno il re andò a Iunu, la città del sole, e non volle nessuno con sé. Nemmeno me. Lo scrissi lo stesso: il re visitò il tempio di Ra e offrì mille pani. È quello che si scrive. Ma io so che entrò nella sala dove nessun uomo entra, quella dove i sacerdoti custodiscono la storia di Iside e del nome segreto. So che il buio là dentro odora di cedro e di cera. So che le parole si dicono a bassa voce, perché anche il muro ascolta. Le dico... le disse. Uscì all'alba. Quel giorno il sole sorse, come sempre. Il sole sorse ogni giorno, finché il re visse."}
 ]
+
+
+## Ogni ricordo si sblocca con le vittorie su un boss di regione: Am-heh (I-III, la gloria del re),
+## Aker (IV, il nome nascosto).
+static func ricordo_boss(r: Dictionary) -> String:
+	return str(r.get("boss", "amheh"))
+
+
+## I ricordi di Sokar compaiono nei Papiri (anche sigillati) solo dopo che ci sei arrivato.
+## (Non si usa Run qui: Lore si carica con le lingue all'avvio, e Run dipende dalle lingue.)
+static func ricordo_visible(r: Dictionary) -> bool:
+	return ricordo_boss(r) != "aker" or Meta.sokar_seen
+
+
+static func ricordo_open(r: Dictionary) -> bool:
+	var wins: int = Meta.aker_wins if ricordo_boss(r) == "aker" else Meta.ammit_wins
+	return wins >= int(r["needs"])
 
 
 ## Ricordi già sbloccati che non hai ancora letto nei Papiri.
 static func unread_ricordi() -> int:
 	var n := 0
 	for i in range(RICORDI.size()):
-		if Meta.ammit_wins >= int(RICORDI[i]["needs"]) and not Meta.dialogue_seen.has("ricordo_%d" % i):
+		if ricordo_visible(RICORDI[i]) and ricordo_open(RICORDI[i]) and not Meta.dialogue_seen.has("ricordo_%d" % i):
 			n += 1
 	return n
 
 
-## Il ricordo appena sbloccato da una vittoria (titolo), o "".
-static func ricordo_for(wins: int) -> String:
+## Il ricordo appena sbloccato da una vittoria su `boss` (titolo), o "".
+static func ricordo_for(wins: int, boss: String = "amheh") -> String:
 	for r in RICORDI:
-		if int(r["needs"]) == wins:
+		if ricordo_boss(r) == boss and int(r["needs"]) == wins:
 			return r["title"]
 	return ""
 
@@ -217,7 +235,9 @@ static func codex() -> Array:
 	var out := []
 	var ricordi := []
 	for i in range(RICORDI.size()):
-		var e := _entry(RICORDI[i], Meta.ammit_wins >= int(RICORDI[i]["needs"]))
+		if not ricordo_visible(RICORDI[i]):
+			continue
+		var e := _entry(RICORDI[i], ricordo_open(RICORDI[i]))
 		e["id"] = "ricordo_%d" % i
 		e["new"] = e["seen"] and not Meta.dialogue_seen.has(e["id"])
 		if not e["seen"]:

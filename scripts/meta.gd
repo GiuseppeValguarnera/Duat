@@ -20,6 +20,7 @@ var aspect_levels := {}               ## "arma:aspetto" -> livello (il primo asp
 var first_kills := {}                 ## "boss|arma|peso" già premiati con le Lacrime di Iside
 var intros_seen: Array = []           ## boss già presentati (la seconda volta la presentazione è corta)
 var serpent_wins := 0                 ## volte che hai battuto il Serpente della Porta
+var sokar_seen := false               ## sei arrivato almeno una volta nella terra di Sokar
 var aker_wins := 0                    ## volte che hai battuto Aker (boss di Sokar)
 var serket_wins := 0                  ## volte che hai battuto Serket (guardiana di Sokar)
 var serpent_streak := 0               ## sconfitte di fila contro il Serpente (Anubi offre la Piuma di Ma'at)
@@ -76,6 +77,7 @@ func _ready() -> void:
 		serpent_streak = cfg.get_value("boss", "serpente_di_fila", 0)
 		serket_wins = cfg.get_value("boss", "serket", 0)
 		aker_wins = cfg.get_value("boss", "aker", 0)
+		sokar_seen = cfg.get_value("storia", "sokar", false)
 		intros_seen = cfg.get_value("boss", "presentati", [])
 		neith_seen = cfg.get_value("storia", "neith", [])
 		chapters_equipped = cfg.get_value("libro", "attivi", [])
@@ -134,6 +136,7 @@ func save() -> void:
 	cfg.set_value("boss", "serpente_di_fila", serpent_streak)
 	cfg.set_value("boss", "serket", serket_wins)
 	cfg.set_value("boss", "aker", aker_wins)
+	cfg.set_value("storia", "sokar", sokar_seen)
 	cfg.set_value("boss", "presentati", intros_seen)
 	cfg.set_value("storia", "neith", neith_seen)
 	cfg.set_value("libro", "attivi", chapters_equipped)

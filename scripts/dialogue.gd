@@ -169,13 +169,23 @@ static func story() -> Array:
 		{"id": "deaths8", "if": Meta.runs >= 8, "lines": [
 			Lang.t("Ogni volta che torni, Scriba, la bilancia trema. Come se avesse timore di te."),
 			Lang.t("Non so il perché. E io conosco quasi ogni cosa.")]},
-		{"id": "name2", "if": Meta.ammit_wins >= 2, "lines": [
-			Lang.t("Un altro segno è tornato nel cartiglio del tuo re: dopo l'ibis, un cerchio segnato da linee. Due geroglifici."),
-			Lang.t("Thoth dice che potrebbero essere l'inizio di cento nomi diversi. Thoth dice sempre così, quando non sa.")]},
+		# Sokar, la quarta ora: l'arrivo, poi Aker e il nome segreto di Ra (tappa 2, docs/storia.md)
+		{"id": "sokar1", "if": Meta.sokar_seen, "lines": [
+			Lang.t("Hai varcato il lago, e il lago ti ha lasciato passare. Ora cammini nella quarta ora: la terra di Sokar."),
+			Lang.t("Là la barca del sole non solca le acque. La trascinano sulla sabbia, come un serpente che dorme. Perfino gli dèi, in quell'ora, camminano in silenzio."),
+			Lang.t("Sokar custodisce ciò che è sepolto. Nella sua sabbia ogni cosa nascosta attende. Non tutte attendono di essere trovate.")]},
+		{"id": "aker1", "if": Meta.aker_wins >= 1, "lines": [
+			Lang.t("Hai veduto l'orizzonte, e l'orizzonte ha tremato. Ma il sole non si è levato."),
+			Lang.t("Da quando il tuo re è disceso nel buio, l'alba non è più venuta. Ogni notte la barca di Ra giunge alle due montagne, e lì si arresta, come davanti a una porta senza chiave."),
+			Lang.t("Il dio del sole rinasce pronunciando il proprio nome segreto. Quel nome gli è stato tolto. Chi lo ha preso lo ha portato quaggiù, nella notte. E la notte, Scriba, non restituisce ciò che custodisce.")]},
+		{"id": "name2_aker", "if": Meta.aker_wins >= 1 and Meta.dialogue_seen.has("aker1"), "lines": [
+			Lang.t("Un secondo segno è riaffiorato nel cartiglio del tuo re: un cerchio solcato da linee."),
+			Lang.t("Aker l'ha lasciato andare, come si restituisce ciò che non ci appartiene. I guardiani dell'orizzonte sanno di chi è ogni cosa.")]},
 		{"id": "deaths12", "if": Meta.runs >= 12, "lines": [
 			Lang.t("Ho interrogato Ma'at, su di te. Non mi ha risposto."),
 			Lang.t("In quattromila anni non era mai accaduto.")]},
-		{"id": "name3", "if": Meta.ammit_wins >= 3, "lines": [
+		# il terzo segno (il pane) tornerà con Apopi, il boss della regione 3: per ora non si dice
+		{"id": "name3", "if": false, "lines": [
 			Lang.t("Il terzo segno: un pane. Ibis, cerchio, pane. Il nome si legge quasi, ma un segno manca ancora."),
 			Lang.t("Thoth dice che l'ultimo segno torna solo quando la notte finisce. Poi tace. È peggio di quando dice che non sa.")]},
 		{"id": "deaths20", "if": Meta.runs >= 20, "lines": [

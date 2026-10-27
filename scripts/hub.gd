@@ -1330,12 +1330,16 @@ func _draw_markers() -> void:
 		UiStyle.exclaim(self, Vector2(ROOM.size.x - WALL - 12.0, CASA_Y - 66.0), t)
 
 
-## Il cartiglio del faraone Akhet, sopra il cancello. I segni del nome (ibis, placenta, pane,
-## orizzonte) tornano uno per volta con le vittorie sui boss; l'orizzonte solo nel finale.
+## Il cartiglio del faraone Akhet, sopra il cancello. Ogni boss di regione restituisce un segno del
+## nome: l'ibis Am-heh, la placenta Aker, il pane Apopi (regione 3, da fare); l'orizzonte solo nel finale.
 ## Vedi docs/storia.md.
 func _draw_cartouche(c: Vector2) -> void:
 	var gold := Color(0.94, 0.72, 0.3)
-	var shown := mini(Meta.ammit_wins, 3)
+	var signs := [Meta.ammit_wins >= 1, Meta.aker_wins >= 1, false, false]     # pane: Apopi; orizzonte: il finale
+	var shown := 0
+	for sg in signs:
+		if sg:
+			shown += 1
 	var w := 76.0
 	var h := 22.0
 	var r := Rect2(c.x - w / 2.0, c.y - h / 2.0, w, h)
@@ -1355,7 +1359,7 @@ func _draw_cartouche(c: Vector2) -> void:
 	var slots := [c + Vector2(-25, 0), c + Vector2(-9, 0), c + Vector2(7, 0), c + Vector2(23, 0)]
 	for i in range(4):
 		var p: Vector2 = slots[i]
-		if i >= shown:
+		if not signs[i]:
 			# segno ancora scalpellato: graffi chiari sulla pietra
 			var sc := Color(0.5, 0.45, 0.4, 0.45)
 			draw_line(p + Vector2(-4, -5), p + Vector2(3, 4), sc, 1.0)

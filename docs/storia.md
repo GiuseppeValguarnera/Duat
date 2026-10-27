@@ -49,7 +49,7 @@ Nella Sala del Giudizio c'è il cartiglio vuoto del faraone. Ogni boss di region
 3. il **pane** (il suono *t*)
 4. l'**orizzonte**: il sole tra due montagne. È il segno che si ricompone solo nel finale, quando il sole sorge davvero.
 
-Per ora, con una sola regione, i segni arrivano con le vittorie sul boss della Prima Ora, Am-heh.
+Un segno per boss di regione, alla prima vittoria: l'ibis con Am-heh, la placenta con Aker, il pane con Apopi (regione 3), l'orizzonte nel finale (`hub.gd`, `_draw_cartouche`).
 
 ## I Ricordi dello scriba
 
@@ -60,10 +60,22 @@ Dopo ogni boss si sblocca un ricordo: un breve racconto delle imprese di Akhet, 
 | N. | Quando | Titolo | Cosa contiene | L'indizio |
 | --- | --- | --- | --- | --- |
 | I | 1ª vittoria su Am-heh | La lancia di Buto | Akhet in battaglia con la lancia di Neith | la scheggia sotto il pollice che il re non fece mai limare: "forse me lo raccontò lui" |
-| II | 2ª vittoria | La doppia corona | l'incoronazione, i cinque nomi | il sudore sotto la corona, che "nei rotoli non c'è" |
-| III | 3ª vittoria | La casa dell'eternità | il re che scende ogni notte nella sua tomba e non vuole essere pesato | il primo scivolamento: "la mia mano... la sua mano" |
+| II | 2ª vittoria su Am-heh | La doppia corona | l'incoronazione, i cinque nomi | il sudore sotto la corona, che "nei rotoli non c'è" |
+| III | 3ª vittoria su Am-heh | La casa dell'eternità | il re che scende ogni notte nella sua tomba e non vuole essere pesato | il primo scivolamento: "la mia mano... la sua mano" |
 
-Con le nuove regioni i Ricordi continuano (IV dopo Aker, con il sole che non sorge; poi la regina; l'ultimo tutto in prima persona).
+| IV | 1ª vittoria su Aker | Il nome nascosto | il re a Iunu, solo, nella sala del nome segreto | il presente che scappa ("Le dico... le disse") e la chiusa: "Il sole sorse ogni giorno, finché il re visse" |
+
+I ricordi di Sokar compaiono nei Papiri solo dopo esserci arrivati. Poi: la regina (tappa 3), e l'ultimo tutto in prima persona.
+
+## Il registro delle voci
+
+Gli dèi e Mahaf parlano in modo **aulico, simbolico, misterioso** (l'Egitto come la Sfinge), ma sempre comprensibile: frasi brevi, immagini concrete (la barca, la sabbia, le due montagne, la porta senza chiave). Imhotep resta vanitoso e chiacchierone, ma con un lessico alto.
+
+## La storia di Sokar (tappa 2)
+
+- **Anubi**: all'arrivo (`sokar1`: la quarta ora, la barca trascinata sulla sabbia, "non tutte le cose nascoste attendono di essere trovate"); dopo Aker (`aker1`: l'alba non viene più da quando il re è disceso nel buio; Ra rinasce pronunciando il suo nome segreto, e quel nome gli è stato tolto e portato quaggiù); il secondo segno (`name2_aker`).
+- **Mahaf** a Sokar: la barca trascinata, "Aker riconosce ciò che porta quel nome" (akhet = orizzonte: si capisce nel finale), "un tempo il sole era il mio carico, ora sei tu", "le cose sepolte ascoltano".
+- **Imhotep**: Saqqara porta il nome di Sokar ("tra eterni il silenzio è cortesia"); il mito di Iside e del nome segreto, e Akhet che chiede "a cosa le serviva? A un uomo, sì".
 
 ### Le tre voci di Mahaf (`scripts/ferryman.gd`)
 

@@ -799,6 +799,9 @@ func _ensure_veil() -> void:
 ## sabbia (rebirth.gd, SokarPassage), poi la prima stanza di Sokar.
 func _next_region() -> void:
 	Run.region += 1
+	if Run.region == 2 and not Meta.sokar_seen:
+		Meta.sokar_seen = true
+		Meta.save()
 	Run.room = 0
 	shops_visited = 0
 	var p := Rebirth.RegionPassage.new()
@@ -1940,8 +1943,9 @@ func _victory() -> void:
 		if c is Enemy:
 			c.queue_free()
 	message.visible = true
-	var extra := Lang.t("\nNuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti") if Meta.ammit_wins == 1 else ""
-	var ric := Lore.ricordo_for(Meta.ammit_wins)
+	# i nuovi poteri arrivano con la prima vittoria su Am-heh: dopo Aker non si ripetono
+	var extra := Lang.t("\nNuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti") if Meta.ammit_wins == 1 and Run.region == 1 else ""
+	var ric := Lore.ricordo_for(Meta.aker_wins, "aker") if Run.region == 2 else Lore.ricordo_for(Meta.ammit_wins)
 	if ric != "":
 		extra += Lang.t("\nUn ricordo è riaffiorato: «%s». Lo trovi nei Papiri di Thoth") % ric
 	if ammit_tears > 0:

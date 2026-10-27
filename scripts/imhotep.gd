@@ -62,6 +62,13 @@ static func _story() -> Array:
 			Lang.t("Ho ricordato una cosa. Una notte Akhet mi chiese se un uomo senza nome può essere pesato."),
 			Lang.t("Gli risposi che senza nome non c'è cuore da mettere sulla bilancia, ma nemmeno una casa dove tornare. Lui sorrise come chi ha sentito solo la prima metà della frase."),
 			Lang.t("Poi mi offrì una giara di vino buono. Per un re è il modo di dire «grazie» e anche «non ne parliamo più».")]},
+		{"id": "imh_sokar1", "if": Meta.sokar_seen, "lines": [
+			Lang.t("Sokar! Signore della necropoli, dio delle barche che solcano la sabbia. Le mie piramidi sorgono a Saqqara, e Saqqara porta il suo nome. Siamo vicini da tremila anni, io e lui."),
+			Lang.t("Non ci siamo mai rivolti la parola. Tra eterni, il silenzio è una forma di cortesia.")]},
+		{"id": "imh_nome", "if": Meta.aker_wins >= 1, "lines": [
+			Lang.t("Conosci la storia del nome segreto? Iside raccolse la saliva del vecchio Ra, la impastò con la terra e ne trasse un serpente. Il suo morso bruciava più del fuoco, e solo lei sapeva spegnerlo. Il prezzo fu il nome."),
+			Lang.t("Akhet volle udirla tre volte. Alla terza mi chiese: «E Iside, dopo, divenne immortale?» Risposi che gli dèi lo sono già."),
+			Lang.t("Restò in silenzio a lungo. Poi disse: «Allora a lei non serviva. A un uomo, sì.»")]},
 		{"id": "imh_akhet4", "if": Meta.ammit_wins >= 3, "lines": [
 			Lang.t("Il nome di un uomo è un edificio. Io costruii una montagna di pietra perché quello di Djoser restasse in piedi."),
 			Lang.t("Quello di Akhet l'hanno smontato pietra per pietra. Ma con cura, allievo. Senza rompere nulla. Chi odia spacca. Chi smonta con tanta attenzione... forse vuole ricostruire, un giorno.")]},
