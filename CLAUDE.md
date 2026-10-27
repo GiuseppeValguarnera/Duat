@@ -100,12 +100,23 @@ Prova: `tools/dev/shot.sh talkshot 1300 600 "" mobile`.
 ## Prossimi passi (in ordine)
 1. ~~Serket~~ e ~~Aker~~ fatti (ottobre 2026).
 2. Storia di Sokar: Ricordo IV, secondo segno del cartiglio, "il sole che non sorge"; battute di Anubi, Mahaf, Imhotep.
-3. `SOKAR_READY = true` e bilanciamento con i bot (test grande di notte).
+3. **Bilanciamento di Sokar (da discutere)**: nel mega test chi batte Am-heh vince quasi sempre anche Sokar
+   (15 vittorie su 18 discese arrivate; 0 morti con Serket, 1 con Aker). Am-heh e il Serpente restano i muri.
+   Poi `SOKAR_READY = true`.
 4. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
    se segnalato, lo stesso fix dello scorrimento col pad (`_settle_entries` in casa.gd) in altre finestre.
 
 ## Dati dei test (per confronto)
 Learners 40×25 (629 partite): il Serpente era il muro (30/40 abbandoni, 13 mai battuto), coccodrillo 2° killer.
 Dopo i fix (40×12, prime 12 partite): mai battuto il Serpente 13→10, morti da coccodrillo 102→63, abbandoni 13→14 (non migliorati → Piuma offerta da Anubi).
+
+Mega test (27/10/2026, Sokar aperta, versione con ponte e nemici alleggeriti), learners 40×20 = 584 discese:
+battono il Serpente 80%, Am-heh 12% dei tester (18 vittorie su 34 scontri), abbandonano 70% (mediana dopo 13 discese).
+Killer: Serpente 201, coccodrillo 108, mummia 82, scarabeo 59. Sokar: 18 discese, 15 vittorie complete (campione
+piccolo: 12 di due tester "prudenti"). Boss mirati (30 partite, forza giusta): Serpente 21/30, Serket 17/30, Am-heh 7/30,
+Aker 8/30; per i bravi il raggio dell'alba è la prima fonte di danni.
+Difficoltà massima (tutti i Pesi, peso 14): 40 partite intere e prova di carico (`stressshot`), zero crash.
+Prestazioni (logica+fisica, server): stanza normale ~5 ms, boss 2-3 ms; ~0,1 ms per corpo nel motore; disegno su
+telefono non misurabile qui (stanza piena ~800 chiamate di disegno). Caccia agli stalli (`DUAT_STALL=150`): 0 da nemici.
 
 Documenti: `README.md` (panoramica e sistemi), `docs/storia.md` (storia e personaggi), `CHANGELOG.md`.
