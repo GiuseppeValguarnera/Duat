@@ -34,6 +34,8 @@ bash tools/deploy_web.sh $G                   # pubblica la versione web (ramo g
 - **Traduzioni**: `python3 i18n/extract.py` poi `--check` (elenca le stringhe senza inglese);
   `python3 tools/dev/fill_i18n.py it.txt en.txt` (una frase per riga, stesso ordine).
   I valori dei dizionari (es. KILLER_NAMES) non vengono estratti: aggiungerli a mano al CSV.
+- Mai `git add -A` mentre girano le prove severe: `shot.sh` mette `autotest.gd`, `override.cfg` e la riga
+  `AutoTest=` in `project.godot` (i primi due ora sono in .gitignore). Prima del commit: `grep -c AutoTest project.godot` deve dare 0.
 - Non usare `pkill/pgrep -f` con un pattern che compare nel tuo stesso comando (uccide la shell): usa ps+awk.
 
 ## Trappole di GDScript già incontrate

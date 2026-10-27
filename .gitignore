@@ -5,3 +5,8 @@
 # build esportate (la versione web sta nel ramo gh-pages)
 build/
 tools/dev/.godot_bin/
+
+# file temporanei delle prove severe (tools/dev/shot.sh): mai nel repository
+/autotest.gd
+/autotest.gd.uid
+/override.cfg
