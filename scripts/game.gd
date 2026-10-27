@@ -132,6 +132,7 @@ var guardian_down := false            # il guardiano della stanza è caduto (i s
 var bonus_boon := false               # il prossimo dono sale di un livello in più (premio del guardiano)
 var shops_visited := 0
 var shop_items: Array = []
+var oasis_nodes: Array = []             ## fonte, altare e statua dell'Oasi (oasis.gd)
 var ferry: Node2D                       ## la barca del Traghettatore, se la stanza è la sua
 var doors_after_boon := true
 var ammit_tears := 0                  # Lacrime arrivate battendo il boss della regione in questa discesa
@@ -219,7 +220,7 @@ func start_room(reward: Dictionary) -> void:
 		tut.finish()
 		return
 	# l'altare di Set è una deviazione: la discesa non avanza
-	if reward.get("kind", "") != "set":
+	if reward.get("kind", "") not in ["set", "oasis"]:
 		Run.room += 1
 	room_gen += 1
 	boss = null
@@ -246,15 +247,16 @@ func start_room(reward: Dictionary) -> void:
 	var boss_room := Run.room > Run.ROOMS_PER_RUN
 	var kind: String = reward.get("kind", "none")
 	ROOM = ROOM_BIG if boss_room or kind == "guardian" or OS.get_environment("DUAT_BIGROOMS") != "" else ROOM_SMALL
-	var calm := kind == "guardian" or kind == "shop" or kind == "tutorial" or kind == "set"
-	Run.curse_paused = boss_room or kind == "guardian" or kind == "shop" or kind == "set"
+	var calm := kind == "guardian" or kind == "shop" or kind == "tutorial" or kind == "set" or kind == "oasis"
+	Run.curse_paused = boss_room or kind == "guardian" or kind == "shop" or kind == "set" or kind == "oasis"
 	shop_items.clear()
+	oasis_nodes.clear()
 	if not boss_room and kind != "guardian":
-		Music.play("hub" if kind == "shop" else "room")
+		Music.play("hub" if kind == "shop" or kind == "oasis" else "room")
 	var layout: Array = LAYOUTS.pick_random() if Run.room > 1 else LAYOUTS[0]
 	if boss_room:
 		layout = BOSS_LAYOUT if _boss_kind() == "ammit" else []
-	elif kind == "shop" or kind == "tutorial":
+	elif kind == "shop" or kind == "tutorial" or kind == "oasis":
 		layout = []
 	elif kind == "guardian":
 		layout = LAYOUTS[0]
@@ -269,6 +271,8 @@ func start_room(reward: Dictionary) -> void:
 		arena = "horizon"                # Sokar: la porta dell'orizzonte
 	if arena == "gate" and Run.region == 2:
 		arena = "temple"                 # Sokar: il tempio di Serket
+	if kind == "oasis":
+		arena = "oasis"                  # la sosta tra le due regioni
 	if arena == "lake":
 		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_lake(ci, ROOM, TOP, WALL)
 	elif arena == "gate":
@@ -277,6 +281,8 @@ func start_room(reward: Dictionary) -> void:
 		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_temple(ci, ROOM, TOP, WALL)
 	elif arena == "horizon":
 		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_horizon(ci, ROOM, TOP, WALL)
+	elif arena == "oasis":
+		decor.under = func(ci: CanvasItem) -> void: Oasis.paint(ci, ROOM, TOP, WALL)
 	decor.arena = arena
 	Run.deep_center = Arenas.deep_center(ROOM, TOP, WALL) if arena == "gate" else Vector2.ZERO
 	Run.deep_radii = Arenas.DEEP_RADII if arena == "gate" else Vector2.ZERO
@@ -312,7 +318,7 @@ func start_room(reward: Dictionary) -> void:
 	grates_here = 0
 	if not boss_room and not calm:
 		rooms.place_elements()
-	if not boss_room and not calm and Run.room >= TRAPS_FROM_ROOM - Weights.rank("sabbie"):
+	if not boss_room and not calm and Run.trap_depth() >= TRAPS_FROM_ROOM - Weights.rank("sabbie"):
 		rooms.place_traps()
 	queue_redraw()
 
@@ -357,6 +363,10 @@ func start_room(reward: Dictionary) -> void:
 		waves = []
 		_start_shop()
 		return
+	if kind == "oasis":
+		waves = []
+		_start_oasis()
+		return
 	if kind == "set":
 		waves = []
 		_start_set_altar()
@@ -365,8 +375,10 @@ func start_room(reward: Dictionary) -> void:
 		waves = []
 		tut.begin()
 		return
-	var r := mini(Run.room, 8)
+	var r := mini(Run.room + (1 if Run.region == 2 else 0), 8)
 	var horde := 1.0 + 0.25 * Weights.rank("orde")
+	if Run.region == 2:
+		horde *= 1.3                              # Sokar: più nemici per ondata, non una terza ondata
 	var soft := 1 if r <= 2 else 0                # le prime due stanze sono un po' più leggere
 	waves = [_make_wave(roundi((4 + r * 2 - soft) * horde), r >= 3), _make_wave(roundi((3 + r * 2 - soft) * horde), r >= 3)]
 	_spawn_wave(waves.pop_front(), 1.0)
@@ -472,7 +484,9 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 		e.mounds = Arenas.temple_mounds(ROOM, TOP, WALL)
 	# dalla terza stanza alcune mummie e alcuni sacerdoti sono élite
 	var elite_w := Weights.rank("elite")
-	if Run.room >= 3 - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind in ["mummy", "priest"] and randf() < minf(0.2, 0.06 + 0.02 * Run.room) * (1 + elite_w):
+	var elite_kinds := ["mummy", "priest"] if Run.region == 1 else ["mummy", "priest", "sokar_guard", "vulture"]
+	var elite_from := 3 if Run.region == 1 else 2
+	if Run.room >= elite_from - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind in elite_kinds and randf() < minf(0.2, 0.06 + 0.02 * Run.room + (0.08 if Run.region == 2 else 0.0)) * (1 + elite_w):
 		e.elite = true
 		Music.play("elite")           # una stanza con nemici élite cambia musica fino alla prossima
 	world.add_child(e)
@@ -765,6 +779,9 @@ func _on_door_chosen(d: Area2D) -> void:
 	if kind == "region":
 		_next_region()
 		return
+	if kind == "desert":
+		_fade_to_room({"kind": "none"})
+		return
 	if kind == "set":
 		# il tributo di Set: 10 punti vita, ma non può ucciderti
 		Run.hp = maxf(1.0, Run.hp - SET_DOOR_COST)
@@ -808,7 +825,7 @@ func _next_region() -> void:
 	p.title = Lang.t("La quarta ora")
 	p.sub = Lang.t("La terra di Sokar")
 	get_tree().root.add_child(p)
-	get_tree().create_timer(1.2, true).timeout.connect(func() -> void: start_room({"kind": "none"}))
+	get_tree().create_timer(1.2, true).timeout.connect(func() -> void: start_room({"kind": "oasis"}))
 
 
 func _fade_to_room(reward: Dictionary) -> void:
@@ -1151,6 +1168,9 @@ func _wrap(text: String, width: int) -> String:
 	return out + line
 
 
+var _banner_tw: Tween
+
+
 func _banner(title: String, sub: String, color: Color, hold: float = 2.0) -> void:
 	if banner.material == null:
 		banner.add_theme_font_override("font", UiStyle.deco_font())
@@ -1163,9 +1183,12 @@ func _banner(title: String, sub: String, color: Color, hold: float = 2.0) -> voi
 	banner.add_theme_color_override("font_color", color)
 	banner.visible = true
 	banner.modulate.a = 1.0
-	var tw := banner.create_tween()
-	tw.tween_interval(hold)
-	tw.tween_property(banner, "modulate:a", 0.0, 0.6)
+	# un banner nuovo ferma la dissolvenza di quello prima (spegneva anche il nuovo)
+	if _banner_tw != null and _banner_tw.is_valid():
+		_banner_tw.kill()
+	_banner_tw = banner.create_tween()
+	_banner_tw.tween_interval(hold)
+	_banner_tw.tween_property(banner, "modulate:a", 0.0, 0.6)
 
 
 # ---------------------------------------------------------------- pausa (Esc / Start)
@@ -1627,11 +1650,11 @@ func _start_set_altar() -> void:
 
 
 ## La stanza del Traghettatore: niente nemici, tre oggetti da comprare con il Ka della discesa.
-func _start_shop() -> void:
+func _start_shop(oasis := false) -> void:
 	shops_visited += 1
 	cleared = true
-	var cx := ROOM.size.x / 2.0
-	var mid_y := (TOP + ROOM.size.y - WALL) / 2.0
+	var cx := ROOM.size.x / 2.0 + (150.0 if oasis else 0.0)      # nell'Oasi la barca sta a destra
+	var mid_y := (TOP + ROOM.size.y - WALL) / 2.0 + (10.0 if oasis else 0.0)
 	var boat := FerrymanScript.new()
 	boat.position = Vector2(cx, mid_y - 50.0)
 	world.add_child(boat)
@@ -1641,7 +1664,8 @@ func _start_shop() -> void:
 	rooms.solid(Rect2(boat.position + Vector2(-46, -6), Vector2(92, 16)))
 	if player != null and is_instance_valid(player):
 		world.move_child(boat, player.get_index())
-	_banner(Lang.t("Il Traghettatore"), Lang.t("Mahaf: ") + FerrymanScript.greeting(), Color(0.6, 0.85, 0.95))
+	if not oasis:
+		_banner(Lang.t("Il Traghettatore"), Lang.t("Mahaf: ") + FerrymanScript.greeting(), Color(0.6, 0.85, 0.95))
 	var items := SHOP_ITEMS.duplicate()
 	if _upgradable().is_empty():
 		items = items.filter(func(it: Dictionary) -> bool: return it["kind"] != "upgrade")
@@ -1658,10 +1682,94 @@ func _start_shop() -> void:
 		if it.get("hathor", false):
 			off = maxf(off, Amulets.val() / 100.0)     # lo sconto di Hathor non si somma a Calamaio e tavolozza: vale il più alto
 		node.price = roundi(it["price"] * (1.0 - off) * FerrymanScript.trust_discount())
-		node.position = Vector2(cx + (i - (items.size() - 1) / 2.0) * 90.0, mid_y + 50.0)
+		node.position = Vector2(cx + (i - (items.size() - 1) / 2.0) * (80.0 if oasis else 90.0), mid_y + 50.0)
 		world.add_child(node)
 		shop_items.append(node)
+	if oasis:
+		return
 	_open_doors()
+
+
+## L'Oasi della quarta ora: la sosta tra Wernes e Sokar (vedi scripts/oasis.gd). Niente nemici.
+func _start_oasis() -> void:
+	cleared = true
+	oasis_nodes.clear()
+	var pc := Oasis.pool_center(ROOM, TOP)
+	rooms.solid(Rect2(pc - Vector2(Oasis.POOL_RADII.x, Oasis.POOL_RADII.y * 0.8), Vector2(Oasis.POOL_RADII.x * 2.0, Oasis.POOL_RADII.y * 1.6)))
+	var spring := Oasis.Spring.new()
+	spring.position = pc
+	spring.title = Lang.t("La fonte della quarta ora")
+	spring.desc = Lang.t("recuperi il 25% della vita (una volta sola)")
+	world.add_child(spring)
+	oasis_nodes.append(spring)
+	Atmos.add_light(spring, Vector2(0, -6), 140.0, Color(0.55, 0.8, 1.0), 1.0, false)
+	for b in Oasis.brazier_spots(ROOM, TOP):
+		var fl := Oasis.Flame.new()
+		fl.position = b + Vector2(0, -6)
+		world.add_child(fl)
+		Atmos.add_light(fl, Vector2.ZERO, 110.0, Color(1.0, 0.62, 0.3), 1.2, false, true)
+	var altar := Oasis.Altar.new()
+	altar.position = Vector2(pc.x + 30.0, TOP + 62.0)
+	altar.title = Lang.t("L'altare di Imhotep")
+	altar.desc = Lang.t("cambia l'amuleto che porti (una volta sola)")
+	world.add_child(altar)
+	rooms.solid(Rect2(altar.position + Vector2(-26, -12), Vector2(52, 22)))
+	oasis_nodes.append(altar)
+	var statue := Oasis.Statue.new()
+	statue.position = Vector2(ROOM.size.x * 0.5 + 118.0, TOP + 66.0)
+	statue.title = Lang.t("La statua di Sokar")
+	statue.desc = Lang.t("ascolta")
+	world.add_child(statue)
+	rooms.solid(Rect2(statue.position + Vector2(-17, -4), Vector2(34, 14)))
+	Atmos.add_light(statue, Vector2(0, -40), 80.0, Color(0.94, 0.72, 0.3), 0.8, false)
+	oasis_nodes.append(statue)
+	_start_shop(true)
+	_add_door("n", {"kind": "desert"})
+	_banner(Lang.t("L'Oasi della quarta ora"), Lang.t("Qui la notte è breve. Riposa, scegli, poi entra nella sabbia"), Color(0.7, 0.85, 1.0), 3.0)
+
+
+func _use_oasis(o: Node2D) -> void:
+	Sfx.play("ui", 0.0)
+	if o is Oasis.Spring:
+		o.used = true
+		player.heal(roundf(Run.max_hp * 0.25))
+		Fx.burst(o.global_position + Vector2(0, -10), Color(0.6, 0.9, 1.0), 40, 140.0)
+		Sfx.play("pickup", 0.0)
+		_banner(Lang.t("La fonte della quarta ora"), Lang.t("L'acqua ricorda il Nilo: ti rende un poco di ciò che hai perduto"), Color(0.6, 0.85, 0.95))
+	elif o is Oasis.Altar:
+		_show_amulet_altar(o)
+	else:
+		_banner(Lang.t("Sokar"), Lang.t(Oasis.SOKAR_LINES.pick_random()), Color(0.94, 0.72, 0.3), 4.5)
+
+
+## L'altare di Imhotep: fino a due amuleti tra quelli che hai forgiato, oppure tieni il tuo.
+func _show_amulet_altar(altar: Node2D) -> void:
+	var others := []
+	for id in Amulets.ALL_IT:
+		if Amulets.owned(id) and id != Run.amulet:
+			others.append(id)
+	if others.is_empty():
+		_banner(Lang.t("L'altare di Imhotep"), Lang.t("Non hai altri amuleti da portare. Se ne forgiano alla Casa della Vita, coi lapislazzuli"), Color(0.94, 0.72, 0.3), 3.5)
+		return
+	others.shuffle()
+	var cards := []
+	for id in others.slice(0, 2):
+		var d: Dictionary = Amulets.data()[id]
+		cards.append({"tag": Lang.t("Amuleto"), "name": d["name"], "body": Amulets.text(id, Amulets.level(id)), "color": Amulets.COLOR, "on_pick": _wear_amulet.bind(id, altar)})
+	var cur := Lang.t("Nessun amuleto") if Run.amulet == "" else String(Amulets.data()[Run.amulet]["name"])
+	cards.append({"tag": Lang.t("Resta com'è"), "name": cur, "body": "" if Run.amulet == "" else Amulets.text(Run.amulet, Run.amulet_level), "color": Color(0.7, 0.7, 0.75), "on_pick": _close_choice})
+	_open_choice(Lang.t("L'altare di Imhotep"), Amulets.COLOR, Lang.t("Un solo amuleto al collo. Scegli ciò che porti, e lascia ciò che non ti serve"), cards, Lang.t("Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto."))
+
+
+func _wear_amulet(id: String, altar: Node2D) -> void:
+	Run.amulet = id
+	Run.amulet_level = Amulets.level(id)
+	Run.kheper_left = int(Amulets.value("kheper", Run.amulet_level)) if id == "kheper" else 0
+	altar.used = true
+	_close_choice()
+	Sfx.play("boon", 0.0)
+	Fx.burst(player.global_position + Vector2(0, -10), Amulets.COLOR, 30, 130.0)
+	_banner(Lang.t("Porti %s") % Amulets.data()[id]["name"], Amulets.short(id, Run.amulet_level), Amulets.COLOR)
 
 
 ## Doni che possono ancora salire di livello (per l'Inchiostro di Thoth).
@@ -2038,10 +2146,20 @@ func _process(_delta: float) -> void:
 		near = Lang.t("%s · %s: %s (%d Ka, ne hai %d)") % ["Y" if Fx.device == "pad" else "E", shop_near.title, shop_near.desc, shop_near.price, Run.ka]
 		if Input.is_action_just_pressed("interact") and menu == null:
 			_buy(shop_near)
+	# l'Oasi: fonte, altare e statua (gli oggetti del Traghettatore hanno la precedenza)
+	var oasis_near: Node2D = null
+	if shop_near == null:
+		for o in oasis_nodes:
+			if is_instance_valid(o) and not o.used and player.global_position.distance_to(o.global_position) < o.reach:
+				oasis_near = o
+		if oasis_near != null:
+			near = "%s · %s: %s" % ["Y" if Fx.device == "pad" else "E", oasis_near.title, oasis_near.desc]
+			if Input.is_action_just_pressed("interact") and menu == null:
+				_use_oasis(oasis_near)
 	# parlare con Mahaf: vicino alla barca (gli oggetti in vendita hanno la precedenza)
 	if is_instance_valid(ferry):
 		ferry.z_index = 1 if player.global_position.y < ferry.global_position.y + 6.0 else 0
-		var by_boat: bool = shop_near == null and player.global_position.distance_to(ferry.global_position + Vector2(0, 12)) < 56.0
+		var by_boat: bool = shop_near == null and oasis_near == null and player.global_position.distance_to(ferry.global_position + Vector2(0, 12)) < 56.0
 		ferry.near = by_boat
 		if by_boat:
 			near = Lang.t("%s · Parla con Mahaf") % ("Y" if Fx.device == "pad" else "E")

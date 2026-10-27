@@ -426,7 +426,16 @@ func _decide(g, p) -> void:
 		if Run.sekhem_ready() and (enemies.size() >= 3 or target.is_boss):
 			tap_super = true
 		return
-	# 3. fuori dal combattimento: negozio, ricompense, poi porte
+	# 3. fuori dal combattimento: la fonte dell'Oasi, negozio, ricompense, poi porte
+	for o in g.oasis_nodes:
+		if is_instance_valid(o) and o is Oasis.Spring and not o.used and Run.hp < Run.max_hp - 1.0:
+			var spot: Vector2 = o.global_position + Vector2(0, 42)
+			if pos.distance_to(o.global_position) < o.reach - 8.0:
+				Input.action_press("interact")
+				interact_release = true
+				shop_buys.append("fonte")
+			move_dir = (spot - pos).normalized()
+			return
 	if not g.shop_items.is_empty():
 		var want = null
 		for it in g.shop_items:

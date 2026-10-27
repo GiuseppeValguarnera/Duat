@@ -209,7 +209,7 @@ func place_jars() -> void:
 func place_traps() -> void:
 	var cx := g.ROOM.size.x / 2.0
 	var mid_y := (g.TOP + g.ROOM.size.y - g.WALL) / 2.0
-	var spikes := maxi(1, clampi(Run.room, 2, 4) - g.grates_here) + 2 * Weights.rank("sabbie")
+	var spikes := maxi(1, clampi(Run.trap_depth(), 2, 4) - g.grates_here) + 2 * Weights.rank("sabbie")
 	var tries := 0
 	var placed := 0
 	while placed < spikes and tries < 80:
@@ -233,7 +233,7 @@ func place_traps() -> void:
 		s.t = randf() * 2.0
 		g.world.add_child(s)
 		s.position = p
-	if Run.room >= g.TRAPS_FROM_ROOM + 1 - Weights.rank("sabbie"):
+	if Run.trap_depth() >= g.TRAPS_FROM_ROOM + 1 - Weights.rank("sabbie"):
 		for i in range(randi_range(1, 2)):
 			var left := randf() < 0.5
 			var y := randf_range(g.TOP + 40.0, g.ROOM.size.y - g.WALL - 40.0)

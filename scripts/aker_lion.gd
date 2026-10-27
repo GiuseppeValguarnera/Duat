@@ -336,7 +336,7 @@ func _revive_partner() -> void:
 	other.position = revive_pos
 	other.set("partner", self)
 	other.set("floor_rect", floor_rect)
-	other.max_hp = 175.0
+	other.max_hp = 190.0
 	partner = other
 	alone = false
 	speed /= 1.2

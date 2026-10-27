@@ -52,6 +52,8 @@ func reward_color() -> Color:
 			return Color(0.95, 0.8, 0.45)
 		"shop":
 			return Color(0.6, 0.85, 0.95)
+		"desert":
+			return Color(0.95, 0.8, 0.45)
 		_:
 			return Color(0.9, 0.9, 1.0)
 
@@ -76,6 +78,8 @@ func reward_label() -> String:
 			return Lang.t("Sokar")
 		"shop":
 			return Lang.t("Traghettatore")
+		"desert":
+			return Lang.t("Il deserto")
 		"tutorial_end":
 			return Lang.t("La discesa")
 		_:
@@ -105,6 +109,8 @@ func reward_description() -> String:
 			return Lang.t("La porta della quarta ora: oltre, la terra di Sokar")
 		"shop":
 			return Lang.t("Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa)")
+		"desert":
+			return Lang.t("Il deserto di Sokar: da qui la discesa ricomincia, più dura")
 		"tutorial_end":
 			return Lang.t("Comincia la discesa: Anubi ti aspetta con il primo dono")
 		_:

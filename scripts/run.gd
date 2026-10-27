@@ -409,6 +409,8 @@ func dash_cooldown_mult() -> float:
 
 func damage_taken_mult() -> float:
 	var m := 1.3 if cursed("fragile") else 1.0
+	if region >= 2:
+		m *= SOKAR_DAMAGE
 	m *= 1.0 + 0.2 * Weights.rank("zanne")
 	m *= 1.0 - val("sobek_skin") / 100.0
 	m *= low_hp_guard()
@@ -426,8 +428,20 @@ func feather_guard() -> float:
 
 
 ## Vita dei nemici: +6% per ogni stanza dopo la prima, più l'eventuale prezzo di Anubi.
+## Sokar è la seconda tappa: la regione conta, non solo la stanza. La discesa riparte da 0, ma i
+## nemici cominciano come alla quarta stanza di Wernes, colpiscono un po' più forte e lasciano più Ka.
+const SOKAR_DEPTH := 3
+const SOKAR_DAMAGE := 1.12
+const SOKAR_KA := 1.25
+
+
+## Profondità per le trappole: in Sokar sono già quelle della terza stanza.
+func trap_depth() -> int:
+	return room + (2 if region >= 2 else 0)
+
+
 func enemy_hp_mult() -> float:
-	var m := 1.0 + 0.06 * maxi(0, mini(room, ROOMS_PER_RUN) - 1)
+	var m := 1.0 + 0.06 * maxi(0, mini(room, ROOMS_PER_RUN) + SOKAR_DEPTH * (region - 1) - 1)
 	if has("anubi_guide"):
 		m *= 1.05
 	if cursed("tough"):
@@ -467,6 +481,8 @@ func nile_heal() -> float:
 
 func ka_mult() -> float:
 	var m := 1.5 if has("set_greed") else 1.0
+	if region >= 2:
+		m *= SOKAR_KA
 	m *= 1.0 + val("anubi_tribute") / 100.0
 	if has("anubi_scale"):
 		m *= 0.85                # Bilancia Giusta: il prezzo è nel Ka, non nella difesa

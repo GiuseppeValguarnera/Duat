@@ -546,6 +546,7 @@ Am-heh,Am-heh,Am-heh
 Guardiano,Guardiano,Guardian
 Sokar,Sokar,Sokar
 Traghettatore,Traghettatore,Ferryman
+Il deserto,Il deserto,The desert
 La discesa,La discesa,The Descent
 Uscita,Uscita,Exit
 Dono di %s: scegli uno dei suoi poteri,Dono di %s: scegli uno dei suoi poteri,Boon of %s: choose one of their powers
@@ -558,6 +559,7 @@ Acqua del Nilo: recuperi il %d%% della vita,Acqua del Nilo: recuperi il %d%% del
 La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,The Middle Gate: the Serpent that guards it. Defeat it for a boon of a higher level
 "La porta della quarta ora: oltre, la terra di Sokar","La porta della quarta ora: oltre, la terra di Sokar","The gate of the fourth hour: beyond it, the land of Sokar"
 Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),The Ferryman: spend this descent's Ka (what you spend does not come home with you)
+"Il deserto di Sokar: da qui la discesa ricomincia, più dura","Il deserto di Sokar: da qui la discesa ricomincia, più dura","The desert of Sokar: from here the descent begins again, harder"
 Comincia la discesa: Anubi ti aspetta con il primo dono,Comincia la discesa: Anubi ti aspetta con il primo dono,The descent begins: Anubis awaits you with the first boon
 Uscita: fine della discesa di prova,Uscita: fine della discesa di prova,Exit: end of the test descent
 Schivata!,Schivata!,Dodged!
@@ -713,6 +715,21 @@ Una deviazione nel deserto rosso. Le tue porte ti aspettano,Una deviazione nel d
 Il Traghettatore,Il Traghettatore,The Ferryman
 Mahaf: ,Mahaf: ,Mahaf: 
 Dono di Hathor,Dono di Hathor,Gift of Hathor
+La fonte della quarta ora,La fonte della quarta ora,The spring of the fourth hour
+recuperi il 25% della vita (una volta sola),recuperi il 25% della vita (una volta sola),restore 25% of your health (once only)
+L'altare di Imhotep,L'altare di Imhotep,Imhotep's altar
+cambia l'amuleto che porti (una volta sola),cambia l'amuleto che porti (una volta sola),change the amulet you wear (once only)
+La statua di Sokar,La statua di Sokar,The statue of Sokar
+L'Oasi della quarta ora,L'Oasi della quarta ora,The Oasis of the fourth hour
+"Qui la notte è breve. Riposa, scegli, poi entra nella sabbia","Qui la notte è breve. Riposa, scegli, poi entra nella sabbia","Here the night is brief. Rest, choose, then step into the sand"
+L'acqua ricorda il Nilo: ti rende un poco di ciò che hai perduto,L'acqua ricorda il Nilo: ti rende un poco di ciò che hai perduto,The water remembers the Nile: it gives back a little of what you lost
+"Non hai altri amuleti da portare. Se ne forgiano alla Casa della Vita, coi lapislazzuli","Non hai altri amuleti da portare. Se ne forgiano alla Casa della Vita, coi lapislazzuli","You have no other amulets to wear. More are forged at the House of Life, with lapis lazuli"
+Amuleto,Amuleto,Amulet
+Nessun amuleto,Nessun amuleto,No amulet
+Resta com'è,Resta com'è,Keep as it is
+"Un solo amuleto al collo. Scegli ciò che porti, e lascia ciò che non ti serve","Un solo amuleto al collo. Scegli ciò che porti, e lascia ciò che non ti serve","One amulet at your neck. Choose what you carry, and leave what you do not need"
+"Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto.","Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto.","An amulet is a thought made of stone, scribe. Wear only one: wisdom lies in leaving the rest."
+Porti %s,Porti %s,You wear %s
 Non hai abbastanza Ka,Non hai abbastanza Ka,You don't have enough Ka
 %s sale al livello %d,%s sale al livello %d,%s rises to level %d
 La colonna crolla,La colonna crolla,The pillar crumbles
@@ -1236,6 +1253,11 @@ Ricordi dello scriba,Ricordi dello scriba,Memories of the scribe
 Il giudizio,Il giudizio,The judgement
 Capitolo %d · %s,Capitolo %d · %s,Chapter %d · %s
 Questo papiro è ancora sigillato.,Questo papiro è ancora sigillato.,This scroll is still sealed.
+"«Io dimoro nel sepolto. Ciò che discende fin qui non si perde: muta forma, come il seme sotto la sabbia.»","«Io dimoro nel sepolto. Ciò che discende fin qui non si perde: muta forma, come il seme sotto la sabbia.»","«I dwell in what is buried. What descends this far is not lost: it changes form, like the seed beneath the sand.»"
+"«Nella quarta ora il sole attraversa il mio corpo e non vi porta luce. Anche la luce, per rinascere, ha bisogno del buio.»","«Nella quarta ora il sole attraversa il mio corpo e non vi porta luce. Anche la luce, per rinascere, ha bisogno del buio.»","«In the fourth hour the sun passes through my body and brings no light. Even light, to be reborn, has need of darkness.»"
+"«Hai varcato l'acqua, ora varchi la terra. Dopo la terra non resta che il cielo.»","«Hai varcato l'acqua, ora varchi la terra. Dopo la terra non resta che il cielo.»","«You have crossed the water; now you cross the earth. After the earth, only the sky remains.»"
+«Chi cammina verso l'orizzonte porta con sé la propria alba. Custodiscila: qui nessuno potrà dartene un'altra.»,«Chi cammina verso l'orizzonte porta con sé la propria alba. Custodiscila: qui nessuno potrà dartene un'altra.»,«Whoever walks toward the horizon carries their own dawn. Guard it: here no one can give you another.»
+"«Le acque ti hanno ricordato. La sabbia ti metterà alla prova. Quale delle due sia più clemente, lo dirà la fine del viaggio.»","«Le acque ti hanno ricordato. La sabbia ti metterà alla prova. Quale delle due sia più clemente, lo dirà la fine del viaggio.»","«The waters remembered you. The sand will test you. Which of the two is more merciful, the end of the journey will tell.»"
 Occhio di Horus,Occhio di Horus,Eye of Horus
 GIUDIZIO,GIUDIZIO,JUDGEMENT
 Il nodo di Iside ti protegge,Il nodo di Iside ti protegge,The knot of Isis protects you
