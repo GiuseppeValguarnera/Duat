@@ -101,6 +101,8 @@ func _draw_simple() -> void:
 			_woman(bob, eye)
 		"nefti":
 			_nefti(bob, eye)
+		"shu":
+			_shu(bob, eye)
 		"set":
 			_set_animal(bob, eye)
 		_:
@@ -122,6 +124,27 @@ func _nefti(bob: float, eye: Color) -> void:
 	draw_rect(Rect2(40, 8 + bob, 20, 10), Color(0.2, 0.22, 0.3), false, 1.5)
 	draw_colored_polygon(PackedVector2Array([Vector2(42, 8 + bob), Vector2(58, 8 + bob), Vector2(54, 2 + bob), Vector2(46, 2 + bob)]), silver)
 	draw_line(Vector2(46, 2 + bob), Vector2(54, 2 + bob), Color(0.2, 0.22, 0.3), 1.5)
+
+
+## Shu: un uomo con la parrucca nera e la barba posticcia, e sul capo la sua piuma di struzzo,
+## bianca perla con il bordo d'oro, piegata dal vento.
+func _shu(bob: float, eye: Color) -> void:
+	_wig(bob, Color(0.1, 0.09, 0.12))
+	draw_circle(Vector2(52, 42 + bob), 12, _skin())
+	draw_colored_polygon(PackedVector2Array([Vector2(62, 42 + bob), Vector2(66, 47 + bob), Vector2(61, 48 + bob)]), _skin())
+	draw_rect(Rect2(56, 52 + bob, 4, 10), Color(0.1, 0.09, 0.12))          # la barba posticcia
+	_eye_at(Vector2(56, 40 + bob), eye)
+	var pearl := Color(0.97, 0.93, 0.82)
+	var gold := Color(0.94, 0.78, 0.4)
+	draw_rect(Rect2(40, 27 + bob, 24, 3), gold)
+	var feather := PackedVector2Array([Vector2(48, 28 + bob), Vector2(44, 6 + bob), Vector2(50, -2 + bob), Vector2(56, 4 + bob), Vector2(54, 28 + bob)])
+	draw_colored_polygon(feather, pearl)
+	var edge := feather.duplicate()
+	edge.append(feather[0])
+	draw_polyline(edge, gold, 1.5)
+	draw_line(Vector2(51, 28 + bob), Vector2(50, 0 + bob), gold, 1.0)
+	for i in range(4):
+		draw_line(Vector2(50.5, 22 - i * 5 + bob), Vector2(46 + i * 0.5, 18 - i * 5 + bob), Color(gold, 0.6), 0.8)
 
 
 func _skin() -> Color:

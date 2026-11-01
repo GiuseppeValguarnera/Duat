@@ -7,6 +7,7 @@ var speed := 150.0
 var damage := 12.0
 var life := 4.0
 var shooter: Node = null              ## chi l'ha lanciata (per la Bilancia Giusta)
+var deflected := false                ## Shu l'ha rimandato indietro: ora ferisce i nemici
 var style := "orb"                    ## "orb" = sfera magica, "dart" = dardo di una trappola
 
 
@@ -32,13 +33,38 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_area_entered(area: Area2D) -> void:
+	if deflected:
+		return
 	var p = area.get_parent()
 	var src: Node = shooter if is_instance_valid(shooter) else null
+	# Shu: il Muro di Vento (ogni qualche secondo) e la raffica del Signore delle Tempeste rimandano
+	# indietro il proiettile prima che ti tocchi
+	if p.is_in_group("player") and not p.dead and style != "dart":
+		var wall: bool = Run.has("shu_wall") and p.wind_wall_cd <= 0.0
+		if wall or Run.shu_gust:
+			if wall:
+				p.wind_wall_cd = Run.val("shu_wall")
+			_deflect(src)
+			return
 	if p.is_in_group("player") and p.take_damage(damage, global_position, src):
 		queue_free()
 
 
+func _deflect(src: Node) -> void:
+	deflected = true
+	direction = (src.global_position - global_position).normalized() if src != null else -direction
+	speed = maxf(speed, 220.0)
+	life = 2.5
+	collision_mask = 1 | 4                # ora il mondo e i nemici
+	Fx.burst(global_position, Boons.god_color("shu"), 10, 80.0)
+	Sfx.play_at("orb_pop", global_position, 0.2)
+
+
 func _on_body_entered(body: Node) -> void:
+	if deflected and body is Enemy and not body.dead:
+		body.take_hit(damage * Run.all_damage_mult(), direction, 80.0)
+		queue_free()
+		return
 	if body is StaticBody2D:
 		Fx.burst(global_position, Color(0.85, 0.4, 1.0), 6, 60.0)
 		if style != "dart" and style != "javelin":

@@ -897,6 +897,7 @@ class Sandstorm extends Node2D:
 	func _ready() -> void:
 		z_index = 5
 		pt = randf_range(3.0, 5.0)
+		add_to_group("sandstorm")          # Shu, Signore delle Tempeste: nella tempesta la raffica non si ferma
 
 	func _process(delta: float) -> void:
 		t += delta

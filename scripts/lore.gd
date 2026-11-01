@@ -108,6 +108,17 @@ const GODS_IT := {
 		],
 		"idle": ["Ogni caduto ti rende qualcosa.", "Il lutto è un dono, se sai riceverlo.", "Raccolgo ciò che cade. Non temere.", "La notte è lunga. Io la conosco tutta.", "Piango per loro, perché tu possa restare in piedi."],
 	},
+	"shu": {
+		"name": "Shu, il Respiro del Mondo",
+		"intro": {"title": "Chi è Shu", "text": "Nel vento della quarta ora mi riconosci, Scriba: sono il respiro che corre sulla sabbia. Io sono Shu, l'aria che sta fra il cielo e la terra. Sul capo porto la piuma, perché nulla è più leggero di me, e nulla regge un peso più grande. Da questa notte il mio soffio ti seguirà in ogni ora del Duat."},
+		"stories": [
+			{"title": "Il primo respiro", "text": "Atum era solo, nelle acque immobili del principio. Starnutì, e nacqui io; sputò, e nacque mia sorella Tefnut, l'umidità. Il primo suono del mondo fu un respiro. Ogni respiro, da allora, è un piccolo inizio."},
+			{"title": "Le braccia alzate", "text": "Nut, il cielo, e Geb, la terra, erano stretti in un solo abbraccio, e fra loro non c'era spazio per nulla. Atum mi ordinò di separarli. Alzai le braccia, e il cielo salì. Da allora le tengo alzate, e fra le mie mani vive tutto ciò che respira."},
+			{"title": "La piuma", "text": "La piuma di struzzo che porto sul capo è la stessa che Ma'at mette sulla bilancia. L'aria e la verità pesano uguale: niente, eppure senza di loro nulla resta in piedi."},
+			{"title": "I pilastri del cielo", "text": "Quattro sostegni reggono il cielo, uno per ogni vento. I venti sono miei figli. Quello del nord porta fresco e vita; quello del sud porta sabbia e fuoco. Qui, nella terra di Sokar, soffiano tutti insieme."},
+		],
+		"idle": ["Respira, Scriba. Anche il cielo si regge su un respiro.", "Ciò che spingi lontano non ti tocca più.", "La piuma non lotta col vento. Lo cavalca.", "Fra il cielo e la terra c'è posto per te.", "Il vento non si vede. Si vede ciò che sposta."],
+	},
 	"horus": {
 		"name": "Horus, il Falco",
 		"intro": {"title": "Chi è Horus", "text": "Io sono Horus, il Falco, figlio di Iside e di Osiride. Il mio occhio destro è il sole, il sinistro è la luna. Tu porti in battaglia il mio Occhio, Scriba: lascia che ti insegni a farlo volare."},

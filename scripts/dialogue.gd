@@ -110,6 +110,7 @@ static func _reaction() -> Array:
 		"horus": Lang.t("Horus ti ha prestato il suo Occhio. Il falco sceglie con cura a chi affidarlo: non deluderlo."),
 		"iside": Lang.t("Iside ti ha posato le mani sul capo. Lei conosce il dolore di raccogliere ciò che è stato spezzato. Anche te."),
 		"nefti": Lang.t("Nefti ha raccolto per te ciò che cadeva. Il suo velo è fatto d'argento e di notte."),
+		"shu": Lang.t("Shu ti ha prestato il suo respiro. Lui regge il cielo a braccia alzate: tu reggi soltanto la tua lama."),
 	}
 	if gods.has(Meta.last_god):
 		options.append(gods[Meta.last_god])

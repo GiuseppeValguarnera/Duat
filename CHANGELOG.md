@@ -12,6 +12,8 @@
   si scende nel deserto, con fiumi di sabbia nera, lastre che crollano, statue-falco, quattro nemici
   nuovi, Serket e Aker; più dura della prima, e ogni stanza più ripida
 - Nefti, signora della casa e del lutto: una dea nuova che cura chi colpisce
+- Shu, il dio dell'aria: spinge i nemici contro muri, colonne e pericoli (lo "schianto"), vortici,
+  raffiche e proiettili rimandati indietro
 - dialoghi più aulici e simbolici, già dalla prima discesa
 - correzioni: colonne e profondità, coccodrilli sotto il pavimento, mira automatica sul telefono,
   "Esci" sul web, musica dei guardiani, Scettro Was più chiaro

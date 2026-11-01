@@ -96,6 +96,11 @@ var dash_gap_t := 0.0
 var dash_ready_t := 0.0                # lampo quando le cariche tornano
 var dash_dir := Vector2.ZERO
 var dash_hit := {}
+var shu_dash_hit := {}                 # Ali del Cielo: chi è già stato spinto in questo scatto
+var wind_wall_cd := 0.0                # Muro di Vento: pronto quando arriva a 0
+var storm_cd := 0.0                    # Signore delle Tempeste: alla prossima raffica
+var gust_t := 0.0                      # la raffica in corso
+const ShuVortex := preload("res://scripts/shu_vortex.gd")
 var leap_ready := false                # Balzo della Leonessa: il colpo dopo lo scatto
 var invuln_t := 0.0
 var flash_t := 0.0
@@ -188,12 +193,14 @@ func _physics_process(delta: float) -> void:
 		_divine_form()
 
 	if dash_t > 0.0:
-		velocity = dash_dir * dash_speed
+		velocity = dash_dir * dash_speed * (1.0 + Run.val("shu_wings") / 100.0 if Run.has("shu_wings") else 1.0)
 		_dash_damage()
 	else:
 		var s := speed * Run.move_mult() * (attack_slowdown if atk_t > 0.0 else 1.0)
 		if charging:
 			s *= CHARGE_SLOW                # mentre carichi ti muovi più lento
+		if Run.shu_gust:
+			s *= 1.2                        # la raffica di Shu
 		if Run.in_deep(global_position):
 			s *= 0.75                       # l'acqua alta della Porta: si cammina a fatica (lo scatto no)
 		for q in get_tree().get_nodes_in_group("quicksand"):
@@ -270,6 +277,11 @@ func _charged_attack() -> void:
 		base *= divine_damage_mult
 	swing_dir = dir
 	Fx.shake(7.0)
+	if Run.has("shu_column"):
+		# Colonna d'Aria: un vortice che risucchia i nemici vicini (dove finisce il lancio, o attorno a te)
+		var v := ShuVortex.new()
+		get_parent().add_child(v)
+		v.global_position = global_position + (dir * 150.0 if spear else Vector2.ZERO)
 	if spear:
 		var sp := ThrownSpear.new()
 		sp.dir = dir
@@ -315,7 +327,24 @@ func _charged_attack() -> void:
 		Fx.hitstop(0.1)
 
 
+## Shu: il Muro di Vento si ricarica; il Signore delle Tempeste alza una raffica ogni tanto (sempre,
+## durante le tempeste di sabbia di Sokar).
+func _shu_tick(delta: float) -> void:
+	wind_wall_cd = maxf(0.0, wind_wall_cd - delta)
+	gust_t = maxf(0.0, gust_t - delta)
+	if Run.has("shu_storm"):
+		storm_cd -= delta
+		if storm_cd <= 0.0:
+			storm_cd = Run.val("shu_storm")
+			gust_t = 3.0
+			Fx.burst(global_position + Vector2(0, -10), Boons.god_color("shu"), 20, 120.0)
+			Sfx.play("dash", 0.1)
+	var storm := not get_tree().get_nodes_in_group("sandstorm").is_empty()
+	Run.shu_gust = Run.has("shu_storm") and not Run.in_hub and (gust_t > 0.0 or storm)
+
+
 func _tick(delta: float) -> void:
+	_shu_tick(delta)
 	after_dash_t = maxf(0.0, after_dash_t - delta)
 	charge_cd = maxf(0.0, charge_cd - delta)
 	charge_flash_t = maxf(0.0, charge_flash_t - delta)
@@ -415,6 +444,7 @@ func _start_dash(move: Vector2) -> void:
 	invuln_t = maxf(invuln_t, dash_time + 0.05)
 	knock = Vector2.ZERO
 	dash_hit.clear()
+	shu_dash_hit.clear()
 	Run.room_dashed = true
 	# Pilastro Djed: al posto tuo resta una statua che attira i nemici (una sola alla volta)
 	if Run.amulet == "djed" and not Run.training and Run.decoy_t <= 0.0:
@@ -440,8 +470,20 @@ func _dash_ended() -> void:
 		get_parent().move_child(pool, get_index())     # sopra il pavimento, sotto personaggio e nemici
 
 
-## Corsa dell'Alba: lo scatto ferisce i nemici attraversati.
+## Corsa dell'Alba: lo scatto ferisce i nemici attraversati. Ali del Cielo (Shu): quelli che sfiori
+## vengono spinti via, di lato.
 func _dash_damage() -> void:
+	if Run.has("shu_wings"):
+		for e in get_tree().get_nodes_in_group("enemies"):
+			if e.dead or shu_dash_hit.has(e):
+				continue
+			var rel: Vector2 = e.global_position - global_position
+			if rel.length() < e.radius + 14.0:
+				shu_dash_hit[e] = true
+				var side := dash_dir.orthogonal()
+				if rel.dot(side) < 0.0:
+					side = -side
+				e.shu_push((side + dash_dir * 0.4).normalized(), 280.0)
 	if not Run.has("ra_dawn"):
 		return
 	for e in get_tree().get_nodes_in_group("enemies"):
@@ -576,6 +618,9 @@ func _swing() -> void:
 			# Arpione del Coccodrillo (Sobek e Horus): la punta della lancia stordisce
 			if spear and not sweep and Run.has("duo_sobek_horus") and not e.dead and to.length() > swing_range * 0.5:
 				e.stagger_t = maxf(e.stagger_t, 0.6 * (0.25 if (e.is_boss or e.miniboss) else 1.0))
+			# Soffio di Shu: il colpo finale della combo spinge forte (lo schianto è in enemy.gd)
+			if swing_index == 2 and Run.has("shu_breath") and not e.dead:
+				e.shu_push(to.normalized(), 330.0)
 			if swing_index == 2 and Run.has("sobek_bite") and not e.dead:
 				var stun: float = Run.val("sobek_bite") * (0.25 if e.is_boss else 1.0)
 				e.stagger_t = maxf(e.stagger_t, stun)
@@ -618,6 +663,8 @@ func _fire_eye() -> void:
 		eye.explode_damage = Run.val("ra_disc") * Run.all_damage_mult()
 		eye.seek = Run.has("horus_seek")
 		eye.return_mult = Run.val("horus_return") / 100.0
+		if Run.has("duo_shu_horus"):
+			eye.return_mult = maxf(eye.return_mult, 0.7)     # Ali del Falco: il vento lo riporta indietro
 		eye.mark = Run.has("horus_mark")
 		eye.burns = Run.eye_burns() or Run.has("duo_ra_thoth")
 		if Run.has("duo_ra_thoth"):

@@ -24,6 +24,8 @@ var contact: Area2D
 var is_boss := false
 var miniboss := false                 ## guardiano a metà discesa: barra in alto invece che sopra la testa
 var sand_shield := 0.0                ## scudo di sabbia del Sacerdote di Sokar: assorbe i colpi prima della vita
+var shu_t := 0.0                      ## Shu: sta volando per una spinta (lo schianto vale solo ora)
+var shu_pushed_t := 0.0               ## Shu, Separatore del Cielo: spinto da poco (2 s)
 var spirit_depth := 0                 ## Guida delle Anime: 0 = ucciso da te, n = dall'n-esimo spirito della catena
 var elite := false                     ## versione dorata: più grossa, più resistente, lascia più Ka
 const HeartScript := preload("res://scripts/heart_drop.gd")
@@ -72,14 +74,19 @@ func _physics_process(delta: float) -> void:
 	sobek_stun_t = maxf(0.0, sobek_stun_t - delta)
 	mark_t = maxf(0.0, mark_t - delta)
 	mourn_t = maxf(0.0, mourn_t - delta)
+	shu_pushed_t = maxf(0.0, shu_pushed_t - delta)
 	if stagger_t > 0.0:
 		stagger_t -= delta
 		velocity = knock
 	else:
-		velocity = _behave(delta, to) * Run.enemy_speed_mult() * _puddle_slow() + knock
+		var gust := 0.7 if Run.shu_gust and player != null and to.length() < 90.0 else 1.0   # raffica di Shu
+		velocity = _behave(delta, to) * Run.enemy_speed_mult() * _puddle_slow() * gust + knock
+	var flying := knock
 	knock = knock.move_toward(Vector2.ZERO, 800.0 * delta)
 	var wanted := velocity.length()
 	move_and_slide()
+	if shu_t > 0.0:
+		_shu_flight(delta, flying)
 	_unstick(delta, wanted)
 
 	if contact != null and contact.monitoring and stagger_t <= 0.0:
@@ -289,10 +296,52 @@ func _out() -> Color:
 
 # --- comune -----------------------------------------------------------------------
 
+## Shu: una spinta vera. Boss, guardiani ed élite si spostano appena. Per qualche istante il nemico
+## vola: se sbatte contro un muro, una colonna o un altro nemico subisce lo schianto; se finisce nella
+## sabbia nera o in una buca ci cade dentro (e con Sopra la Terra, se è un nemico normale, muore).
+func shu_push(dir: Vector2, force: float) -> void:
+	if dead or dir == Vector2.ZERO:
+		return
+	var heavy := is_boss or miniboss or elite
+	knock = dir.normalized() * force * (0.2 if heavy else 1.0)
+	shu_t = 0.5 if not heavy else 0.0
+	shu_pushed_t = 2.0
+
+
+func _shu_flight(delta: float, flying: Vector2) -> void:
+	shu_t -= delta
+	# Sopra la Terra: spinto nei pericoli del deserto, un nemico normale non si rialza
+	if Run.has("shu_above") and not (is_boss or miniboss or elite) and SokarTerrain.grounded(self):
+		var into := false
+		for r in get_tree().get_nodes_in_group("river"):
+			if r.contains(global_position):
+				into = true
+		for tr2 in get_tree().get_nodes_in_group("traps"):
+			if tr2 is SokarTerrain.CrumbleTile and tr2.state == "hole" and tr2._inside(global_position, -2.0):
+				into = true
+		if into:
+			Fx.burst(global_position, Color(0.97, 0.93, 0.82), 16, 90.0)
+			Fx.float_text(global_position + Vector2(0, -22), Lang.t("SOPRA LA TERRA"), Boons.god_color("shu"))
+			die()
+			return
+	if flying.length() < 70.0 or get_slide_collision_count() == 0:
+		return
+	shu_t = 0.0
+	var dmg := Run.shu_slam_damage()
+	Fx.burst(global_position + Vector2(0, -radius), Boons.god_color("shu"), 14, 100.0)
+	Fx.float_text(global_position + Vector2(0, -24), Lang.t("SCHIANTO"), Boons.god_color("shu"))
+	Fx.shake(3.0)
+	if Run.has("duo_shu_ra"):
+		burn_t = maxf(burn_t, 2.0)        # Vento Ardente: gli schianti incendiano
+	take_hit(dmg, -flying.normalized(), 0.0)
+
+
 func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> void:
 	if dead:
 		return
 	dmg *= Run.jackal_mult(hp / max_hp) * _damage_mult()
+	if shu_pushed_t > 0.0 and Run.has("shu_divide"):
+		dmg *= 1.0 + Run.val("shu_divide") / 100.0      # Separatore del Cielo: chi è appena stato spinto
 	if Run.has("sobek_river") and (sobek_stun_t > 0.0 or _in_tide()):
 		dmg *= 1.0 + Run.val("sobek_river") / 100.0
 	if mourn_t > 0.0 and Run.has("nefti_lament"):
@@ -313,6 +362,7 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 	flash_t = 0.1
 	stagger_t = maxf(stagger_t, _stagger_time())
 	knock = dir * kb
+	shu_t = 0.0                            # un colpo normale non è una spinta di Shu: niente schianto
 	if can_burn:
 		burn_t = 2.0
 	_on_hit(dmg)

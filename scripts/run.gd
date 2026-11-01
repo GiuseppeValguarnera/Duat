@@ -494,6 +494,16 @@ func jackal_mult(hp_ratio: float) -> float:
 	return 1.0 + val("anubi_jackal") / 100.0 if hp_ratio < 0.5 else 0.9
 
 
+## Shu: lo schianto di un nemico spinto contro un muro, una colonna o un altro nemico. Il Soffio di
+## Shu lo porta a 8/12/16; senza, le spinte di Shu fanno uno schianto da 6.
+func shu_slam_damage() -> float:
+	return (val("shu_breath") if has("shu_breath") else 6.0) * all_damage_mult()
+
+
+## Shu, Signore delle Tempeste: la raffica è attiva (la aggiorna player.gd ogni fotogramma).
+var shu_gust := false
+
+
 func enemy_speed_mult() -> float:
 	return 1.2 if cursed("fast_enemies") else 1.0
 

@@ -105,6 +105,7 @@ Horus,Horus,Horus
 Set,Set,Set
 Anubi,Anubi,Anubis
 Nefti,Nefti,Nephthys
+Shu,Shu,Shu
 Doppio,Doppio,Duo
 Colpo Solare,Colpo Solare,Solar Strike
 Il khopesh incendia i nemici: %d danni ogni mezzo secondo per 2 secondi.,Il khopesh incendia i nemici: %d danni ogni mezzo secondo per 2 secondi.,Your khopesh sets enemies ablaze: %d damage every half second for 2 seconds.
@@ -227,6 +228,26 @@ Ala del Nibbio,Ala del Nibbio,Wing of the Kite
 Abbattere un nemico marchiato col Lutto ti ricarica subito lo scatto.,Abbattere un nemico marchiato col Lutto ti ricarica subito lo scatto.,Felling an enemy marked with Mourning instantly recharges your dash.
 Lamento,Lamento,Lament
 I nemici marchiati col Lutto subiscono il %d%% di danni in più.,I nemici marchiati col Lutto subiscono il %d%% di danni in più.,Enemies marked with Mourning take %d%% more damage.
+Soffio di Shu,Soffio di Shu,Breath of Shu
+"Il colpo finale della combo spinge forte i nemici; lo schianto contro muri, colonne o altri nemici fa %d danni.","Il colpo finale della combo spinge forte i nemici; lo schianto contro muri, colonne o altri nemici fa %d danni.","The final blow of the combo pushes enemies hard; slamming into walls, columns or other enemies deals %d damage."
+Colonna d'Aria,Colonna d'Aria,Pillar of Air
+"L'attacco caricato crea un vortice che risucchia i nemici vicini per 1,5 secondi.","L'attacco caricato crea un vortice che risucchia i nemici vicini per 1,5 secondi.",The charged attack creates a vortex that pulls in nearby enemies for 1.5 seconds.
+Vento del Nord,Vento del Nord,North Wind
+L'Occhio di Horus spinge i nemici lungo la sua traiettoria.,L'Occhio di Horus spinge i nemici lungo la sua traiettoria.,The Eye of Horus pushes enemies along its path.
+Ali del Cielo,Ali del Cielo,Wings of the Sky
+"Lo scatto è più lungo del %d%%, e i nemici che sfiori vengono spinti via.","Lo scatto è più lungo del %d%%, e i nemici che sfiori vengono spinti via.","Your dash is %d%% longer, and enemies you brush past are pushed away."
+Muro di Vento,Muro di Vento,Wall of Wind
+Ogni %s secondi un proiettile nemico che ti raggiunge viene deviato e torna indietro.,Ogni %s secondi un proiettile nemico che ti raggiunge viene deviato e torna indietro.,Every %s seconds an enemy projectile that reaches you is deflected and sent back.
+Separatore del Cielo,Separatore del Cielo,Divider of the Sky
+"I nemici appena spinti subiscono il %d%% di danni in più, per 2 secondi.","I nemici appena spinti subiscono il %d%% di danni in più, per 2 secondi.","Enemies you have just pushed take %d%% more damage, for 2 seconds."
+Signore delle Tempeste,Signore delle Tempeste,Lord of Storms
+"Ogni %d secondi una raffica di 3 secondi: ti muovi il 20%% più veloce, i nemici vicini il 30%% più lenti, i proiettili vengono deviati. Nelle tempeste di sabbia di Sokar la raffica non si ferma.","Ogni %d secondi una raffica di 3 secondi: ti muovi il 20%% più veloce, i nemici vicini il 30%% più lenti, i proiettili vengono deviati. Nelle tempeste di sabbia di Sokar la raffica non si ferma.","Every %d seconds a 3-second gust: you move 20%% faster, nearby enemies 30%% slower, projectiles are deflected. In the sandstorms of Sokar the gust never stops."
+Sopra la Terra,Sopra la Terra,Above the Earth
+I nemici normali spinti nella sabbia nera o in una buca muoiono all'istante (non gli élite né i boss).,I nemici normali spinti nella sabbia nera o in una buca muoiono all'istante (non gli élite né i boss).,Normal enemies pushed into black sand or a pit die instantly (not elites or bosses).
+Vento Ardente,Vento Ardente,Burning Wind
+Gli schianti incendiano i nemici.,Gli schianti incendiano i nemici.,Slams set enemies on fire.
+Ali del Falco,Ali del Falco,Wings of the Falcon
+"L'Occhio spinto dal vento, finito il volo, torna indietro e colpisce di nuovo.","L'Occhio spinto dal vento, finito il volo, torna indietro e colpisce di nuovo.","The Eye pushed by the wind, at the end of its flight, comes back and strikes again."
 Le Due Sorelle,Le Due Sorelle,The Two Sisters
 "Sotto un terzo della vita, le cure del Velo del Lutto raddoppiano.","Sotto un terzo della vita, le cure del Velo del Lutto raddoppiano.","Below a third of your health, the healing of the Veil of Mourning doubles."
 Corteo delle Anime,Corteo delle Anime,Procession of Souls
@@ -281,6 +302,16 @@ Marchiato abbattuto: scatto pronto,Marchiato abbattuto: scatto pronto,Marked fel
 Marchiati: +%d%% danni,Marchiati: +%d%% danni,Marked: +%d%% damage
 Sotto 1/3: cure del Lutto x2,Sotto 1/3: cure del Lutto x2,Below 1/3: Mourning heals x2
 Gli spiriti marchiano,Gli spiriti marchiano,Spirits mark
+Colpo finale spinge · schianto %d,Colpo finale spinge · schianto %d,Final blow pushes · slam %d
+"Caricato: vortice 1,5 s","Caricato: vortice 1,5 s",Charged: vortex 1.5 s
+L'Occhio spinge,L'Occhio spinge,The Eye pushes
+Scatto +%d%% · spinge,Scatto +%d%% · spinge,Dash +%d%% · pushes
+Devia e rimanda i proiettili,Devia e rimanda i proiettili,Deflects and returns projectiles
+Spinti: +%d%% danni,Spinti: +%d%% danni,Pushed: +%d%% damage
+Raffica ogni %d s,Raffica ogni %d s,Gust every %d s
+Spinti nei pericoli: morte,Spinti nei pericoli: morte,Pushed into hazards: death
+Schianti che incendiano,Schianti che incendiano,Slams that burn
+L'Occhio torna,L'Occhio torna,The Eye returns
 "Arma: fuoco %d ogni 0,5 s","Arma: fuoco %d ogni 0,5 s",Weapon: fire %d every 0.5 s
 Occhio esplode: %d danni,Occhio esplode: %d danni,Eye explodes: %d damage
 Scatto ferisce: %d danni,Scatto ferisce: %d danni,Dash wounds: %d damage
@@ -504,6 +535,7 @@ Hai camminato con Bastet. È una dea che sceglie chi proteggere. Non sceglie mai
 Horus ti ha prestato il suo Occhio. Il falco sceglie con cura a chi affidarlo: non deluderlo.,Horus ti ha prestato il suo Occhio. Il falco sceglie con cura a chi affidarlo: non deluderlo.,Horus lent you his Eye. The falcon chooses carefully to whom he entrusts it: do not disappoint him.
 Iside ti ha posato le mani sul capo. Lei conosce il dolore di raccogliere ciò che è stato spezzato. Anche te.,Iside ti ha posato le mani sul capo. Lei conosce il dolore di raccogliere ciò che è stato spezzato. Anche te.,Isis laid her hands upon your head. She knows the pain of gathering what has been broken. You too.
 Nefti ha raccolto per te ciò che cadeva. Il suo velo è fatto d'argento e di notte.,Nefti ha raccolto per te ciò che cadeva. Il suo velo è fatto d'argento e di notte.,Nephthys gathered for you what was falling. Her veil is made of silver and of night.
+Shu ti ha prestato il suo respiro. Lui regge il cielo a braccia alzate: tu reggi soltanto la tua lama.,Shu ti ha prestato il suo respiro. Lui regge il cielo a braccia alzate: tu reggi soltanto la tua lama.,Shu has lent you his breath. He holds up the sky with raised arms: you hold only your blade.
 "Hai stretto patti con Set. Set mantiene sempre la parola data. È la parola, Scriba, che dovresti leggere meglio.","Hai stretto patti con Set. Set mantiene sempre la parola data. È la parola, Scriba, che dovresti leggere meglio.","You made pacts with Set. Set always keeps his word. It is the word, Scribe, that you should read more carefully."
 Il Serpente della Porta ti ha fermato ancora. Tre volte di fila.,Il Serpente della Porta ti ha fermato ancora. Tre volte di fila.,The Serpent of the Gate stopped you again. Three times in a row.
 "Ma'at non chiede a tutti di camminare allo stesso passo. A chi inciampa, presta una sua piuma: i colpi pesano meno sul tuo cuore. In cambio, il Duat ti restituisce meno Ka.","Ma'at non chiede a tutti di camminare allo stesso passo. A chi inciampa, presta una sua piuma: i colpi pesano meno sul tuo cuore. In cambio, il Duat ti restituisce meno Ka.","Ma'at does not ask everyone to walk at the same pace. To those who stumble, she lends one of her feathers: blows weigh less on your heart. In exchange, the Duat gives you back less Ka."
@@ -602,6 +634,8 @@ Uscita: fine della discesa di prova,Uscita: fine della discesa di prova,Exit: en
 Schivata!,Schivata!,Dodged!
 Colpito! Scatta mentre arriva,Colpito! Scatta mentre arriva,Hit! Dash as it comes
 Solo l'Occhio,Solo l'Occhio,Eye only
+SOPRA LA TERRA,SOPRA LA TERRA,ABOVE THE EARTH
+SCHIANTO,SCHIANTO,SLAM
 +%d Ka,+%d Ka,+%d Ka
 CRITICO,CRITICO,CRITICAL
 Occhio pronto,Occhio pronto,Eye ready
@@ -671,6 +705,7 @@ Nuovo,Nuovo,New
 Livello %d,Livello %d,Level %d
 Nuovo · subito livello %d,Nuovo · subito livello %d,New · straight to level %d
 Dono pesante,Dono pesante,Heavy boon
+Dono raro,Dono raro,Rare gift
  · solo %s, · solo %s, · only %s
 Dono doppio · %s + %s,Dono doppio · %s + %s,Duo boon · %s + %s
 %s ti offre un dono,%s ti offre un dono,%s offers you a boon
@@ -1236,6 +1271,22 @@ Ogni caduto ti rende qualcosa.,Ogni caduto ti rende qualcosa.,Every fallen one g
 Raccolgo ciò che cade. Non temere.,Raccolgo ciò che cade. Non temere.,I gather what falls. Do not fear.
 La notte è lunga. Io la conosco tutta.,La notte è lunga. Io la conosco tutta.,The night is long. I know all of it.
 "Piango per loro, perché tu possa restare in piedi.","Piango per loro, perché tu possa restare in piedi.","I weep for them, so that you may stay standing."
+"Shu, il Respiro del Mondo","Shu, il Respiro del Mondo","Shu, the Breath of the World"
+Chi è Shu,Chi è Shu,Who is Shu
+"Nel vento della quarta ora mi riconosci, Scriba: sono il respiro che corre sulla sabbia. Io sono Shu, l'aria che sta fra il cielo e la terra. Sul capo porto la piuma, perché nulla è più leggero di me, e nulla regge un peso più grande. Da questa notte il mio soffio ti seguirà in ogni ora del Duat.","Nel vento della quarta ora mi riconosci, Scriba: sono il respiro che corre sulla sabbia. Io sono Shu, l'aria che sta fra il cielo e la terra. Sul capo porto la piuma, perché nulla è più leggero di me, e nulla regge un peso più grande. Da questa notte il mio soffio ti seguirà in ogni ora del Duat.","In the wind of the fourth hour you know me, Scribe: I am the breath that runs over the sand. I am Shu, the air that stands between sky and earth. On my head I wear the feather, for nothing is lighter than I, and nothing bears a greater weight. From this night on, my breath will follow you in every hour of the Duat."
+Il primo respiro,Il primo respiro,The first breath
+"Atum era solo, nelle acque immobili del principio. Starnutì, e nacqui io; sputò, e nacque mia sorella Tefnut, l'umidità. Il primo suono del mondo fu un respiro. Ogni respiro, da allora, è un piccolo inizio.","Atum era solo, nelle acque immobili del principio. Starnutì, e nacqui io; sputò, e nacque mia sorella Tefnut, l'umidità. Il primo suono del mondo fu un respiro. Ogni respiro, da allora, è un piccolo inizio.","Atum was alone, in the still waters of the beginning. He sneezed, and I was born; he spat, and my sister Tefnut was born, the moisture. The first sound of the world was a breath. Every breath, since then, is a small beginning."
+Le braccia alzate,Le braccia alzate,The raised arms
+"Nut, il cielo, e Geb, la terra, erano stretti in un solo abbraccio, e fra loro non c'era spazio per nulla. Atum mi ordinò di separarli. Alzai le braccia, e il cielo salì. Da allora le tengo alzate, e fra le mie mani vive tutto ciò che respira.","Nut, il cielo, e Geb, la terra, erano stretti in un solo abbraccio, e fra loro non c'era spazio per nulla. Atum mi ordinò di separarli. Alzai le braccia, e il cielo salì. Da allora le tengo alzate, e fra le mie mani vive tutto ciò che respira.","Nut, the sky, and Geb, the earth, were locked in a single embrace, and between them there was room for nothing. Atum commanded me to part them. I raised my arms, and the sky rose. Since then I have held them up, and between my hands lives all that breathes."
+La piuma,La piuma,The feather
+"La piuma di struzzo che porto sul capo è la stessa che Ma'at mette sulla bilancia. L'aria e la verità pesano uguale: niente, eppure senza di loro nulla resta in piedi.","La piuma di struzzo che porto sul capo è la stessa che Ma'at mette sulla bilancia. L'aria e la verità pesano uguale: niente, eppure senza di loro nulla resta in piedi.","The ostrich feather I wear on my head is the same one Ma'at lays on the scale. Air and truth weigh the same: nothing, and yet without them nothing stands."
+I pilastri del cielo,I pilastri del cielo,The pillars of the sky
+"Quattro sostegni reggono il cielo, uno per ogni vento. I venti sono miei figli. Quello del nord porta fresco e vita; quello del sud porta sabbia e fuoco. Qui, nella terra di Sokar, soffiano tutti insieme.","Quattro sostegni reggono il cielo, uno per ogni vento. I venti sono miei figli. Quello del nord porta fresco e vita; quello del sud porta sabbia e fuoco. Qui, nella terra di Sokar, soffiano tutti insieme.","Four supports hold up the sky, one for each wind. The winds are my sons. The north wind brings coolness and life; the south wind brings sand and fire. Here, in the land of Sokar, they all blow at once."
+"Respira, Scriba. Anche il cielo si regge su un respiro.","Respira, Scriba. Anche il cielo si regge su un respiro.","Breathe, Scribe. Even the sky rests on a breath."
+Ciò che spingi lontano non ti tocca più.,Ciò che spingi lontano non ti tocca più.,What you push away no longer touches you.
+La piuma non lotta col vento. Lo cavalca.,La piuma non lotta col vento. Lo cavalca.,The feather does not fight the wind. It rides it.
+Fra il cielo e la terra c'è posto per te.,Fra il cielo e la terra c'è posto per te.,Between sky and earth there is room for you.
+Il vento non si vede. Si vede ciò che sposta.,Il vento non si vede. Si vede ciò che sposta.,The wind cannot be seen. What it moves can.
 "Horus, il Falco","Horus, il Falco","Horus, the Falcon"
 Chi è Horus,Chi è Horus,Who is Horus
 "Io sono Horus, il Falco, figlio di Iside e di Osiride. Il mio occhio destro è il sole, il sinistro è la luna. Tu porti in battaglia il mio Occhio, Scriba: lascia che ti insegni a farlo volare.","Io sono Horus, il Falco, figlio di Iside e di Osiride. Il mio occhio destro è il sole, il sinistro è la luna. Tu porti in battaglia il mio Occhio, Scriba: lascia che ti insegni a farlo volare.","I am Horus, the Falcon, son of Isis and Osiris. My right eye is the sun, my left is the moon. You carry my Eye into battle, Scribe: let me teach you to make it fly."

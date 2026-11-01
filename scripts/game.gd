@@ -1113,6 +1113,9 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 	if from_god == "nefti" and not Meta.nefti_met:
 		Meta.nefti_met = true             # da ora Nefti compare anche nelle acque di Wernes
 		Meta.save()
+	if from_god == "shu" and not Meta.shu_met:
+		Meta.shu_met = true               # da ora Shu compare ovunque
+		Meta.save()
 	if options.is_empty():
 		# tutti i doni sono già al massimo: al posto del dono arriva un tesoro di Ka
 		var bonus := roundi(25 * Run.ka_mult())
@@ -1142,6 +1145,8 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 			tag = Lang.t("Nuovo · subito livello %d") % lvl
 		if Boons.is_heavy(id):
 			tag = Lang.t("Dono pesante")
+		elif Boons.is_rare(id):
+			tag = Lang.t("Dono raro")
 		if Boons.ALL[id].has("weapon"):
 			tag += Lang.t(" · solo %s") % String(Weapons.ALL[Boons.ALL[id]["weapon"]]["short"]).to_lower()
 		if Boons.is_duo(id):

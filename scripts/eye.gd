@@ -80,6 +80,8 @@ func _on_body_entered(body: Node) -> void:
 		if "hit_by_eye" in body:
 			body.hit_by_eye = true
 		body.take_hit(damage * crit, direction, 60.0, burns)
+		if from_player and Run.has("shu_north") and not body.dead:
+			body.shu_push(direction, 260.0)   # Vento del Nord: l'Occhio spinge lungo la sua traiettoria
 		if mark:
 			body.mark_t = 3.0
 		_duo_effects(body)

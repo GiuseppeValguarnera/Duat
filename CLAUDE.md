@@ -143,6 +143,16 @@ Dialoghi (Anubi, Imhotep, Neith): `UiStyle.next_talk_page` divide le battute lun
 telefono), il riquadro cresce verso l'alto, e un triangolo che pulsa (`UiStyle.ContinueMark`) dice "tocca per continuare".
 Prova: `tools/dev/shot.sh talkshot 1300 600 "" mobile`.
 
+**Blocco 4 (1/11/2026) – Shu**, dio dell'aria (bianco perla e oro; `Meta.shu_met`: la prima volta in Sokar, poi ovunque;
+presentazione in `Lore.GODS["shu"]`, ritratto `_shu` in god_portrait.gd). Meccanica: `Enemy.shu_push(dir, forza)` (boss,
+guardiani ed élite ×0,2 e niente schianto); per 0,5 s il nemico "vola" (`shu_t`): se sbatte (muro, colonna, nemico) subisce lo
+**schianto** `Run.shu_slam_damage()` (6, o 8/12/16 con il Soffio); spinto nella sabbia nera o in una buca ci cade dentro.
+Un colpo normale azzera `shu_t`: la combo non spinge. Doni: Soffio (colpo finale), Colonna d'Aria (`scripts/shu_vortex.gd`
+sull'attacco caricato), Vento del Nord (eye.gd), Ali del Cielo (scatto +20/30/40% e spinge di lato), Muro di Vento
+(enemy_bolt.gd `_deflect`, `player.wind_wall_cd`), Separatore del Cielo (`shu_pushed_t`), Signore delle Tempeste
+(`Run.shu_gust`, sempre attiva se c'è una `Hazards.Sandstorm`, gruppo "sandstorm"), raro Sopra la Terra (`Boons.is_rare`,
+compare come i pesanti); doppi: Vento Ardente (Ra), Ali del Falco (Horus, l'Occhio torna).
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima
@@ -164,7 +174,7 @@ moltiplicatore dei danni subiti (Sokar ×1,25), ondate più piene ed élite più
    - ~~Fiumi di sabbia nera, lastre che crollano, statue-falco~~ (blocco 3 A), ~~4 nemici nuovi~~ (lanciatore, sacerdote di
      Sokar, scarabeo di Khepri, Miraggio: blocco 3 B), ~~ondate con limiti~~ (C), ~~Nefti~~ (dea del lifesteal, D),
      ~~dialoghi aulici~~ (E), ~~apertura e curva di difficoltà~~ (F).
-   - Aperto: **Shu** (il secondo dio approvato a ottobre) non è stato fatto: decidere se serve ancora, dopo Nefti.
+   - ~~Shu~~ (blocco 4): il dio dell'aria, spinte e schianti.
    - Le prove le fa il proprietario giocando: raccogliere le sue impressioni su Sokar (durezza della curva, Serket,
      Aker, nemici nuovi) e ritarare. Mega test con i bot solo se lo chiede, di notte.
 3. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);

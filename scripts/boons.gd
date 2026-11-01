@@ -25,6 +25,7 @@ const GODS_IT := {
 	"set": {"name": "Set", "color": Color(0.78, 0.25, 0.2)},
 	"anubi": {"name": "Anubi", "color": Color(0.62, 0.56, 0.92)},
 	"nefti": {"name": "Nefti", "color": Color(0.78, 0.84, 0.96)},          # argento e blu notte
+	"shu": {"name": "Shu", "color": Color(0.97, 0.93, 0.82)},             # bianco perla con riflessi d'oro
 	"duo": {"name": "Doppio", "color": Color(1.0, 0.86, 0.45)},
 }
 
@@ -98,6 +99,19 @@ const ALL_IT := {
 	"nefti_kite": {"god": "nefti", "name": "Ala del Nibbio", "desc": "Abbattere un nemico marchiato col Lutto ti ricarica subito lo scatto."},
 	"nefti_lament": {"god": "nefti", "name": "Lamento", "desc": "I nemici marchiati col Lutto subiscono il %d%% di danni in più.", "values": [15, 22, 30]},
 	# Iside e Nefti piansero insieme Osiride: le due sorelle, le due nibbie
+	# Shu, il dio dell'aria: spinge. Un nemico spinto che sbatte contro un muro, una colonna o un altro
+	# nemico subisce lo "schianto" (Enemy.shu_push); spinto nei pericoli ci finisce dentro. Boss ed élite
+	# si spostano appena. I colpi normali della combo non sono spinte di Shu.
+	"shu_breath": {"god": "shu", "name": "Soffio di Shu", "desc": "Il colpo finale della combo spinge forte i nemici; lo schianto contro muri, colonne o altri nemici fa %d danni.", "values": [8, 12, 16]},
+	"shu_column": {"god": "shu", "name": "Colonna d'Aria", "desc": "L'attacco caricato crea un vortice che risucchia i nemici vicini per 1,5 secondi."},
+	"shu_north": {"god": "shu", "name": "Vento del Nord", "desc": "L'Occhio di Horus spinge i nemici lungo la sua traiettoria."},
+	"shu_wings": {"god": "shu", "name": "Ali del Cielo", "desc": "Lo scatto è più lungo del %d%%, e i nemici che sfiori vengono spinti via.", "values": [20, 30, 40]},
+	"shu_wall": {"god": "shu", "name": "Muro di Vento", "desc": "Ogni %s secondi un proiettile nemico che ti raggiunge viene deviato e torna indietro.", "values": [3.0, 2.5, 2.0]},
+	"shu_divide": {"god": "shu", "name": "Separatore del Cielo", "desc": "I nemici appena spinti subiscono il %d%% di danni in più, per 2 secondi.", "values": [15, 22, 30]},
+	"shu_storm": {"god": "shu", "name": "Signore delle Tempeste", "desc": "Ogni %d secondi una raffica di 3 secondi: ti muovi il 20%% più veloce, i nemici vicini il 30%% più lenti, i proiettili vengono deviati. Nelle tempeste di sabbia di Sokar la raffica non si ferma.", "values": [12, 10, 8]},
+	"shu_above": {"god": "shu", "rare": true, "name": "Sopra la Terra", "desc": "I nemici normali spinti nella sabbia nera o in una buca muoiono all'istante (non gli élite né i boss)."},
+	"duo_shu_ra": {"god": "duo", "gods": ["shu", "ra"], "name": "Vento Ardente", "desc": "Gli schianti incendiano i nemici."},
+	"duo_shu_horus": {"god": "duo", "gods": ["shu", "horus"], "name": "Ali del Falco", "desc": "L'Occhio spinto dal vento, finito il volo, torna indietro e colpisce di nuovo."},
 	"duo_nefti_iside": {"god": "duo", "gods": ["nefti", "iside"], "name": "Le Due Sorelle", "desc": "Sotto un terzo della vita, le cure del Velo del Lutto raddoppiano."},
 	# Nefti fu madre di Anubi: il figlio guida le anime, la madre le piange
 	"duo_nefti_anubi": {"god": "duo", "gods": ["nefti", "anubi"], "name": "Corteo delle Anime", "desc": "Gli spiriti della Guida delle Anime marchiano col Lutto i nemici che colpiscono."},
@@ -144,6 +158,11 @@ static func is_heavy(id: String) -> bool:
 	return ALL[id].get("heavy", false)
 
 
+## Doni rari: senza prezzo, ma compaiono di rado (come i pesanti, al posto della terza scelta).
+static func is_rare(id: String) -> bool:
+	return ALL[id].get("rare", false)
+
+
 ## Doni con un prezzo da mostrare (pesanti e doni di Anubi).
 static func has_cost(id: String) -> bool:
 	return ALL[id].has("cost")
@@ -181,6 +200,11 @@ const REQUIRES := {
 	"nefti_lament": ["nefti_veil"],
 	"duo_nefti_iside": ["nefti_veil"],
 	"duo_nefti_anubi": ["anubi_guide"],
+	# i doni di Shu che vivono delle spinte
+	"shu_divide": ["shu_breath", "shu_column", "shu_north", "shu_wings"],
+	"shu_above": ["shu_breath", "shu_column", "shu_north", "shu_wings"],
+	"duo_shu_ra": ["shu_breath", "shu_column", "shu_north", "shu_wings"],
+	"duo_shu_horus": ["shu_north"],
 }
 
 
@@ -204,7 +228,7 @@ static func offers(god: String, owned: Dictionary) -> Array:
 			continue
 		if ALL[id].has("weapon") and ALL[id]["weapon"] != Run.weapon:
 			continue
-		if is_heavy(id):
+		if is_heavy(id) or is_rare(id):
 			if not owned.has(id):
 				heavy = id
 		elif not owned.has(id):
@@ -232,6 +256,8 @@ static func gods_with_boons(owned: Dictionary, for_room: int = 99) -> Array:
 			continue
 		if g == "nefti" and Run.region < 2 and not Meta.nefti_met:
 			continue                      # Nefti si mostra la prima volta nel deserto di Sokar
+		if g == "shu" and Run.region < 2 and not Meta.shu_met:
+			continue                      # anche Shu: la prima volta nel vento del deserto
 		if g != "set" and g != "anubi" and g != "duo" and not offers(g, owned).is_empty():
 			out.append(g)
 	return out
@@ -297,6 +323,16 @@ const SHORT_IT := {
 	"nefti_lament": ["Marchiati: +%d%% danni", ""],
 	"duo_nefti_iside": ["Sotto 1/3: cure del Lutto x2", ""],
 	"duo_nefti_anubi": ["Gli spiriti marchiano", ""],
+	"shu_breath": ["Colpo finale spinge · schianto %d", ""],
+	"shu_column": ["Caricato: vortice 1,5 s", ""],
+	"shu_north": ["L'Occhio spinge", ""],
+	"shu_wings": ["Scatto +%d%% · spinge", ""],
+	"shu_wall": ["Devia e rimanda i proiettili", ""],
+	"shu_divide": ["Spinti: +%d%% danni", ""],
+	"shu_storm": ["Raffica ogni %d s", ""],
+	"shu_above": ["Spinti nei pericoli: morte", ""],
+	"duo_shu_ra": ["Schianti che incendiano", ""],
+	"duo_shu_horus": ["L'Occhio torna", ""],
 	"ra_burn": ["Arma: fuoco %d ogni 0,5 s", ""],
 	"ra_disc": ["Occhio esplode: %d danni", ""],
 	"ra_dawn": ["Scatto ferisce: %d danni", "Scatto -40% più lento"],
