@@ -19,13 +19,13 @@ static func _ending() -> Array:
 		"room":
 			if Meta.last_room <= 2:
 				return [_pick([
-					Lang.t("Così presto, Scriba. Il Duat non concede nulla a chi corre senza guardare."),
-					Lang.t("Sei tornato prima che la sabbia della clessidra si posasse. Rialzati."),
-					Lang.t("Il tuo cuore è caduto vicino alla soglia. Non è una vergogna. Restare a terra lo sarebbe."),
+					Lang.t("Così presto, Scriba. La sabbia della clessidra non si è ancora posata."),
+					Lang.t("Il tuo cuore è caduto sulla soglia. Rialzati: anche il sole cade, ogni sera."),
+					Lang.t("Il Duat non concede nulla a chi corre senza guardare."),
 				])]
 			return [_pick([
-				Lang.t("Stanza %d. Più lontano di quanto credessi. Meno di quanto serva.") % Meta.last_room,
-				Lang.t("Sei giunto alla stanza %d. Il Duat comincia a riconoscere il tuo passo.") % Meta.last_room,
+				Lang.t("Stanza %d. Più lontano di quanto credessi, meno di quanto serva.") % Meta.last_room,
+				Lang.t("Stanza %d. Il Duat comincia a riconoscere il tuo passo.") % Meta.last_room,
 			])]
 		"ammit":
 			return [_pick([
@@ -85,6 +85,20 @@ static func _reaction() -> Array:
 				options.append(Lang.t("L'olio in fiamme. Nelle tombe le giare custodivano l'olio per le lampade del morto. Tu le usi per altro. Anche il fuoco, però, non sceglie chi bruciare."))
 			"amheh", "amheh_fuoco", "amheh_marea":
 				options.append(Lang.t("Am-heh. Il Libro lo chiama 'colui che divora milioni', e dice che vive in un lago di fuoco nel Duat. Nessun morto ci si bagna due volte. Tu sì, a quanto pare."))
+			"javelin":
+				options.append(Lang.t("Un lanciatore del deserto. La linea rossa è il suo pensiero prima del gesto: leggila, e il giavellotto non ti troverà."))
+			"sokar_priest":
+				options.append(Lang.t("Un sacerdote di Sokar. Non ferisce: veste gli altri di sabbia. Colpisci prima chi prega, poi chi combatte."))
+			"khepri", "khepri_ball":
+				options.append(Lang.t("Lo scarabeo di Khepri. Ogni mattina spinge il sole oltre l'orizzonte; laggiù spinge soltanto pietra. Guarda dove rimbalzerà, non dove si trova."))
+			"mirage":
+				options.append(Lang.t("Il Miraggio. Nel deserto la luce mente. Solo ciò che è vero getta ombra, Scriba."))
+			"fiume":
+				options.append(Lang.t("La sabbia nera di Sokar. Scorre come il Fiume, ma divora invece di nutrire. Cerca le lastre di pietra, o attraversala d'un balzo."))
+			"buca":
+				options.append(Lang.t("La sabbia ha ceduto. Nella terra di Sokar anche il suolo ha fame: quando la pietra si crepa, non restarle sopra."))
+			"falco":
+				options.append(Lang.t("Il soffio del falco di Sokar. Le sue statue vegliano sui passaggi: quando gli occhi si accendono, esci dalla linea."))
 			"cobra":
 				options.append(Lang.t("Un cobra. L'ureo sulla fronte del faraone sputava fuoco sui suoi nemici. Questi sputano veleno, e si nascondono. Colpiscili quando alzano il cappuccio."))
 	var gods := {
@@ -95,6 +109,7 @@ static func _reaction() -> Array:
 		"sobek": Lang.t("Sobek ti ha dato la sua pelle. Lui sa attendere per ore, immobile sotto l'acqua. Tu non sai attendere un istante. Imparerai."),
 		"horus": Lang.t("Horus ti ha prestato il suo Occhio. Il falco sceglie con cura a chi affidarlo: non deluderlo."),
 		"iside": Lang.t("Iside ti ha posato le mani sul capo. Lei conosce il dolore di raccogliere ciò che è stato spezzato. Anche te."),
+		"nefti": Lang.t("Nefti ha raccolto per te ciò che cadeva. Il suo velo è fatto d'argento e di notte."),
 	}
 	if gods.has(Meta.last_god):
 		options.append(gods[Meta.last_god])
@@ -217,15 +232,16 @@ static func _next_story() -> Array:
 ## Frasi brevi per quando Anubi non ha più niente di nuovo da dire.
 static func idle() -> Array:
 	return [
-		[Lang.t("La piuma di Ma'at non pesa nulla. Eppure nessuno è mai riuscito a smuoverla.")],
-		[Lang.t("Thoth dice che sei uno scriba. Il tuo nome, però, nessuno sa più leggerlo.")],
+		[Lang.t("La piuma di Ma'at non pesa nulla. Eppure nessuno l'ha mai smossa.")],
+		[Lang.t("Il tuo nome è sabbia nel vento. Raccoglilo, segno dopo segno.")],
 		[Lang.t("Gli scarabei non portano Ka. Non sprecare il tuo tempo con loro.")],
 		[Lang.t("Quando un dio ti offre un dono pesante, guarda il prezzo. Poi guardalo ancora.")],
 		[Lang.t("Il cancello è sempre aperto. Il Duat ha sempre fame.")],
-		[Lang.t("Se cerchi parole, i Papiri di Thoth sono in fondo alla sala.")],
-		[Lang.t("Ogni porta del Duat ha un guardiano. Ogni guardiano ha un nome. Impara i nomi, e le porte si aprono.")],
-		[Lang.t("Il Traghettatore guarda sempre all'indietro. Non chiedergli perché. Paga, e sali.")],
-		[Lang.t("Il Ka che non spendi nella discesa torna qui con te. Quello che spendi, ti tiene in vita. Scegli.")],
+		[Lang.t("Le parole degli dèi riposano nei Papiri di Thoth, in fondo alla sala.")],
+		[Lang.t("Ogni porta ha un guardiano, ogni guardiano un nome. Impara i nomi, e le porte si aprono.")],
+		[Lang.t("Il Traghettatore guarda sempre all'indietro. Paga, e sali sulla sua barca.")],
+		[Lang.t("Il Ka che non spendi torna qui con te. Quello che spendi ti tiene in vita. Scegli.")],
+		[Lang.t("La barca del sole attende, oltre la notte. Ogni discesa la avvicina.")],
 	]
 
 

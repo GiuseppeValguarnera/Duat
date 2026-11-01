@@ -11,9 +11,9 @@ const LINES := [
 	"«Conosci il nome di ogni parte della mia barca? No? Allora paga.»",
 	"«I costruttori di tombe muravano stanze senza porta, per il Ka dei re. Chi guarda bene le crepe, a volte trova chi gli risponde.»",
 	"«I morti non portano nulla con sé. Tu porti Ka. Interessante.»",
-	"«Non svegliarmi per niente, scriba. Compra, o passa oltre.»",
+	"«Il Fiume della notte non aspetta. Compra, o lascia che la corrente ti porti.»",
 	"«Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»",
-	"«Prima di un guardiano, tutti diventano generosi. Strano, vero?»",
+	"«Davanti a un guardiano ogni mano si apre. Il Ka pesa meno della paura, a quanto pare.»",
 	"«Il Ka è peso. Lascialo a me, e salirai più leggero.»",
 ]
 const LINES_CURIOUS := [
@@ -21,7 +21,7 @@ const LINES_CURIOUS := [
 	"«Hai ancora quella scheggia sotto il pollice? ...Lascia stare. Compra.»",
 	"«Un muro che perde polvere è un muro che nasconde qualcosa. Lo sanno i ladri di tombe. E ora lo sai anche tu.»",
 	"«Guardo indietro, scriba. È il mio mestiere. E più guardo, meno capisco chi ho davanti.»",
-	"«Oggi il prezzo è più basso. Non chiedermi perché.»",
+	"«Oggi la mia barca chiede meno. Non domandarmi il perché: il Fiume non risponde.»",
 	"«Gli scribi di solito hanno le dita macchiate d'inchiostro. Tu no. Curioso.»",
 ]
 ## Nella terra di Sokar (la quarta ora): Mahaf parla della barca trascinata, del sole che non passa
@@ -98,7 +98,7 @@ static func talk_line() -> String:
 static func greeting() -> String:
 	var known := _available().filter(func(e: Array) -> bool: return Meta.dialogue_seen.has(e[0]))
 	if known.is_empty():
-		return Lang.t("«Sali, scriba. O compra e scendi. Ma prima parlami: le mie parole sono gratis.»")
+		return Lang.t("«Sali, scriba, o compra e prosegui. Le mie parole, almeno quelle, non costano nulla.»")
 	return Lang.t(known.pick_random()[1])
 
 
