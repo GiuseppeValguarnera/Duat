@@ -17,13 +17,21 @@ NAME="$1"; W="${2:-1280}"; H="${3:-720}"; SCENE="${4:-}"; MOB="${5:-}"
 mkdir -p "$DUAT_SHOTS"
 HOMEDIR="$DUAT_SHOTS/home"; rm -rf "$HOMEDIR"; mkdir -p "$HOMEDIR"
 cd "$ROOT"
+sed -i '/^AutoTest=/d' project.godot          # resti di una prova interrotta: mai nella copia
 cp project.godot "$DUAT_SHOTS/project.bak"
+# la pulizia avviene anche se la prova viene interrotta (timeout, Ctrl+C): prima la riga AutoTest
+# restava in project.godot e finiva nei commit
+cleanup() {
+  cp "$DUAT_SHOTS/project.bak" project.godot 2>/dev/null
+  sed -i '/^AutoTest=/d' project.godot
+  rm -f autotest.gd autotest.gd.uid override.cfg
+}
+trap cleanup EXIT
+trap 'exit 143' TERM INT
 cp "$DEV/shots/$NAME.gd" autotest.gd
 cp "$DEV/override.cfg" .
 sed -i 's#^Run="\*res://scripts/run.gd"#&\nAutoTest="*res://autotest.gd"#' project.godot
 HOME="$HOMEDIR" timeout 90 "$G" --headless --path . --import > /dev/null 2>&1
 EXTRA=""; [ "$MOB" = mobile ] && EXTRA="-- --mobile"
 DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 150 xvfb-run -a -s "-screen 0 $((W+50))x$((H+50))x24" "$G" --path . --rendering-driver opengl3 --resolution ${W}x${H} $SCENE $EXTRA > "$DUAT_SHOTS/$NAME.txt" 2>&1
-cp "$DUAT_SHOTS/project.bak" project.godot
-rm -f autotest.gd autotest.gd.uid override.cfg
 grep -E "SCRIPT ERROR|Parse Error" "$DUAT_SHOTS/$NAME.txt" | sort | uniq -c | head -5
