@@ -57,6 +57,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	for c in CATEGORIES:
 		volumes[c[0]] = float(Meta.audio.get(c[0], 0.7 if c[0] == "musica" else 1.0))
+	volumes["effetti"] = float(Meta.audio.get("effetti", 1.0))
 	for sound in SOUNDS:
 		var variants: Array[AudioStream] = []
 		for i in range(1, 10):
@@ -112,8 +113,12 @@ func play(sound: String, pitch_range: float = 0.08, extra_db: float = 0.0) -> vo
 
 
 ## Volume effettivo di una categoria: il suo volume per quello generale.
+## La musica ha il suo cursore; tutti gli altri suoni passano anche da quello degli effetti.
 func volume_of(category: String) -> float:
-	return float(volumes.get("generale", 1.0)) * float(volumes.get(category, 1.0))
+	var v := float(volumes.get("generale", 1.0)) * float(volumes.get(category, 1.0))
+	if category != "musica":
+		v *= float(volumes.get("effetti", 1.0))
+	return v
 
 
 func set_volume(category: String, value: float) -> void:

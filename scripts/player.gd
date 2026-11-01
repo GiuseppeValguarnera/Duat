@@ -222,14 +222,16 @@ func _tick(delta: float) -> void:
 		Run.divine = divine_t > 0.0
 
 
-## Mira: levetta destra se la usi, altrimenti mouse, altrimenti direzione di movimento.
+## Mira: levetta destra se la usi; con il mouse dove punta; altrimenti (telefono, pad) la mira
+## automatica sul nemico più vicino, se è attiva nelle Opzioni, o la direzione di movimento.
 func _update_aim(moving: bool = false) -> void:
 	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
 	if stick.length() > 0.3:
 		aim = stick.normalized()
-	elif Fx.device == "touch" and not Meta.options.get("autoaim", true):
+	elif Fx.device != "mouse" and not Meta.options.get("autoaim", true):
 		aim = facing
-	elif Fx.device == "touch":
+	elif Fx.device != "mouse":
+		# telefono e pad (levetta destra ferma): stessa mira automatica
 		# mira automatica (si spegne nelle Opzioni): il colpo va al nemico più vicino, anche mentre
 		# cammini. Prima, camminando, si colpiva dove si andava: arretrando con i nemici davanti
 		# si attaccava alle proprie spalle. Mentre ti muovi il raggio è più corto: se non c'è
@@ -573,6 +575,7 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 	invuln_t = hit_invuln
 	flash_t = 0.15
 	Sfx.play("hurt")
+	Fx.vibrate(0.12 if amount < 12.0 else 0.22, clampf(amount / 20.0, 0.3, 1.0))   # Opzioni: vibrazione
 	Fx.shake(7.0)
 	Fx.hitstop(0.08)
 	Fx.damage_number(global_position, amount, Color(1, 0.4, 0.3))

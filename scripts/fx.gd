@@ -11,6 +11,8 @@ var show_hitboxes := false
 ## l'interfaccia usa testi più grandi: `ui` è il moltiplicatore dei caratteri.
 var mobile := false
 var ui := 1.0
+var base_ui := 1.0                     ## 1 sul computer, 1,3 sul telefono; `ui` = base_ui × grandezza del testo (Opzioni)
+const TEXT_SCALES := [1.0, 1.15, 1.3]
 
 var _shake := 0.0
 var _hitstops := 0
@@ -28,8 +30,25 @@ func _ready() -> void:
 		get_window().title = TITLE
 	mobile = OS.has_feature("web_ios") or OS.has_feature("web_android") or OS.has_feature("mobile") or OS.get_cmdline_user_args().has("--mobile")
 	if mobile:
+		base_ui = 1.3
 		ui = 1.3
 		get_window().content_scale_size = Vector2i(544, 306)
+
+
+## Grandezza del testo scelta nelle Opzioni (Normale, Grande, Molto grande).
+func apply_text_scale() -> void:
+	ui = base_ui * float(TEXT_SCALES[clampi(int(Meta.options.get("text", 0)), 0, 2)])
+
+
+## Vibrazione (Opzioni): il telefono (dove il browser lo permette) e il pad.
+func vibrate(seconds: float, strength: float = 0.5) -> void:
+	if not Meta.options.get("vibration", true):
+		return
+	if device == "touch":
+		Input.vibrate_handheld(roundi(seconds * 1000.0))
+	elif device == "pad":
+		for pad in Input.get_connected_joypads():
+			Input.start_joy_vibration(pad, strength * 0.6, strength, seconds)
 
 
 ## Dimensione di un carattere, ingrandita sul telefono.

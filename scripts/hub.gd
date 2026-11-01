@@ -400,8 +400,30 @@ func _unhandled_input(event: InputEvent) -> void:
 			_open_book("pesi")
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("pause"):
-		_open_book("opzioni")
 		get_viewport().set_input_as_handled()
+		_open_options()
+
+
+## Esc / Start nella Sala: le Opzioni (scripts/ui/options_menu.gd). In fondo le voci della Sala:
+## aggiornamento (solo web), il modulo per i commenti, l'uscita dal gioco (non sul web).
+func _open_options() -> void:
+	player.set_physics_process(false)
+	var m := OptionsMenu.new()
+	if Updater.supported():
+		m.extra.append([Lang.t("Aggiornamento del gioco"), func() -> void:
+			_open_book("opzioni")
+			_fill_options("update")
+			_show_option("update")])
+	if FEEDBACK_URL != "":
+		m.extra.append([Lang.t("Lascia un commento"), func() -> void: OS.shell_open(FEEDBACK_URL)])
+	if not OS.has_feature("web"):
+		m.extra.append([Lang.t("Esci dal gioco"), func() -> void:
+			Meta.save()
+			get_tree().quit()])
+	m.closed.connect(func() -> void:
+		if book == null:
+			player.set_physics_process(true))
+	add_child(m)
 
 
 const CASA_COST := 30

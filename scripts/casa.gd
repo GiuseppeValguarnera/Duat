@@ -200,6 +200,9 @@ func _advance_talk() -> void:
 func _open_pause() -> void:
 	var col := _window(Lang.t("Pausa"), "")
 	var resume := _button(col, Lang.t("Riprendi"), true, _close_menu)
+	_button(col, Lang.t("Opzioni"), true, func() -> void:
+		_close_menu()
+		add_child(OptionsMenu.new()))
 	_button(col, Lang.t("Torna nella Sala del Giudizio"), true, func() -> void:
 		_close_menu()
 		_leave.call_deferred())

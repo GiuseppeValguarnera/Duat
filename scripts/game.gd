@@ -1232,7 +1232,7 @@ func _toggle_pause() -> void:
 	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
 	box.add_child(title)
 	var first: Button = null
-	for entry in [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Volume"), _show_audio_menu], [Lang.t("Ricomincia la run"), _restart_run], [Lang.t("Torna alla Sala (abbandona)"), _abandon_run], [Lang.t("Esci alla Sala (la discesa resta salvata)") if OS.has_feature("web") else Lang.t("Esci (la discesa resta salvata)"), _quit_game]]:
+	for entry in [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Opzioni"), _open_options], [Lang.t("Ricomincia la run"), _restart_run], [Lang.t("Torna alla Sala (abbandona)"), _abandon_run], [Lang.t("Esci alla Sala (la discesa resta salvata)") if OS.has_feature("web") else Lang.t("Esci (la discesa resta salvata)"), _quit_game]]:
 		var b := Button.new()
 		b.text = entry[0]
 		b.custom_minimum_size = Vector2(160, 26) * Fx.ui
@@ -1250,6 +1250,22 @@ func _toggle_pause() -> void:
 	first.grab_focus()
 	box.add_theme_constant_override("separation", 6)
 	box.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)   # centrato davvero, anche con i testi grandi
+
+
+## Le Opzioni (scripts/ui/options_menu.gd) sopra il menu di pausa; chiudendole si torna alla pausa.
+func _open_options() -> void:
+	if pause_menu == null:
+		return
+	pause_menu.visible = false
+	var m := OptionsMenu.new()
+	m.closed.connect(func() -> void:
+		if pause_menu != null and is_instance_valid(pause_menu):
+			pause_menu.visible = true
+			get_tree().paused = true
+			for b in pause_menu.find_children("*", "Button", true, false):
+				b.grab_focus.call_deferred()
+				break)
+	add_child(m)
 
 
 ## Pagina del volume dentro il menu di pausa: un cursore per ogni categoria di suoni.
