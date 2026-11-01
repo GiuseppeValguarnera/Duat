@@ -2,7 +2,8 @@ extends RefCounted
 ## L'addestramento (solo la prima volta). Prima stava in game.gd: è stato spostato qui nel
 ## riordino del codice, uguale. `g` è la partita (scripts/game.gd).
 ## Una stanza vera, con fantocci al posto dei nemici: un passo alla volta, con il testo
-## in un riquadro fisso in alto (mai sopra i nemici). Qui non si può morire.
+## in una pergamena piccola e semitrasparente sul lato sinistro, sotto la barra della vita: non
+## ferma il gioco e non copre l'azione. Qui non si può morire.
 ## Passi: muoversi, khopesh, scatto, Occhio di Horus, Ka, porta.
 
 var g: Game
@@ -51,7 +52,7 @@ func begin() -> void:
 	box.content_margin_bottom = 4
 	panel.add_theme_stylebox_override("panel", box)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.modulate.a = 0.93
+	panel.modulate.a = ALPHA
 	g.get_node("UI").add_child(panel)
 	var col := VBoxContainer.new()
 	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -60,44 +61,41 @@ func begin() -> void:
 	var top := HBoxContainer.new()
 	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(top)
-	title_label = UiStyle.label("", 8, UiStyle.INK, true)
+	title_label = UiStyle.label("", 7, UiStyle.INK, true)
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(title_label)
 	var skip := Button.new()
 	skip.text = Lang.t("Salta ›")
 	skip.flat = true
 	skip.focus_mode = Control.FOCUS_NONE
-	skip.add_theme_font_size_override("font_size", Fx.fs(8))
+	skip.add_theme_font_size_override("font_size", Fx.fs(7))
 	skip.add_theme_color_override("font_color", UiStyle.INK_RED)
 	skip.add_theme_color_override("font_hover_color", UiStyle.INK)
 	skip.pressed.connect(finish)
 	skip.add_to_group("touch_tap")          # sul telefono il tocco arriva da touch_controls.gd
 	top.add_child(skip)
-	body_label = UiStyle.label("", 8, UiStyle.INK_SOFT, false, width() - 14.0)
+	body_label = UiStyle.label("", 7, UiStyle.INK_SOFT, false, width() - 14.0)
 	body_label.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
 	col.add_child(body_label)
 	panel.custom_minimum_size = Vector2(width(), 0)
 	next()
 
 
-## Il riquadro sta in alto, tra l'HUD a sinistra e i pulsanti del telefono a destra, ed è
-## stretto: i fantocci restano sempre visibili sotto.
+const ALPHA := 0.72                    ## semitrasparente: dietro si vede la stanza
+
+## La pergamena è stretta e sta a sinistra, sotto la barra della vita: lontana dal centro della
+## stanza (i fantocci) e dai pulsanti del telefono (in basso).
 func width() -> float:
 	var vw := g.get_viewport().get_visible_rect().size.x
-	var left := 168.0 if not Fx.mobile else 156.0
-	var right := vw - (84.0 if Fx.device == "touch" or Fx.mobile else 10.0)
-	return clampf(right - left, 180.0, 300.0)
+	return clampf(vw * 0.25, 140.0, 165.0) * (Fx.ui if Fx.ui > 1.0 else 1.0)
 
 
 func place() -> void:
 	if panel == null:
 		return
 	panel.reset_size()
-	var vw := g.get_viewport().get_visible_rect().size.x
-	var left := 168.0 if not Fx.mobile else 156.0
-	var right := vw - (84.0 if Fx.device == "touch" or Fx.mobile else 10.0)
-	var x := clampf((vw - panel.size.x) / 2.0, left, maxf(left, right - panel.size.x))
-	panel.position = Vector2(x, 6.0)
+	var hud_bottom := 52.0 * Fx.ui          # la barra della vita e il Ka, in alto a sinistra
+	panel.position = Vector2(6.0, hud_bottom)
 
 
 func say(title: String, body: String) -> void:
@@ -107,8 +105,8 @@ func say(title: String, body: String) -> void:
 	body_label.create_tween().tween_property(body_label, "visible_ratio", 1.0, clampf(body.length() * 0.008, 0.3, 0.8))
 	place.call_deferred()
 	Sfx.play("ui", 0.0)
-	panel.modulate = Color(1.5, 1.3, 1.0, 0.93)
-	panel.create_tween().tween_property(panel, "modulate", Color(1, 1, 1, 0.93), 0.4)
+	panel.modulate = Color(1.5, 1.3, 1.0, ALPHA)
+	panel.create_tween().tween_property(panel, "modulate", Color(1, 1, 1, ALPHA), 0.4)
 
 
 func dummy(pos: Vector2, eye_only: bool = false, lunger: bool = false) -> Enemy:
