@@ -8,7 +8,11 @@
 - Piuma di Ma'at rivista: meno nemici e più lenti, ricompense a metà; Anubi la offre anche a chi
   cade presto
 - il tutorial in una pergamena piccola a lato dello schermo
-- l'Oasi della quarta ora tra la prima e la seconda regione (seconda regione ancora nascosta)
+- la seconda regione, la terra di Sokar, è aperta: dopo Am-heh si sosta nell'Oasi della quarta ora e
+  si scende nel deserto, con fiumi di sabbia nera, lastre che crollano, statue-falco, quattro nemici
+  nuovi, Serket e Aker; più dura della prima, e ogni stanza più ripida
+- Nefti, signora della casa e del lutto: una dea nuova che cura chi colpisce
+- dialoghi più aulici e simbolici, già dalla prima discesa
 - correzioni: colonne e profondità, coccodrilli sotto il pavimento, mira automatica sul telefono,
   "Esci" sul web, musica dei guardiani, Scettro Was più chiaro
 

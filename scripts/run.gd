@@ -13,7 +13,7 @@ const SEKHEM_MAX := 100.0
 ## Le tappe della notte: 1 = le acque di Wernes (Am-heh), 2 = il deserto di Sokar (Aker). La
 ## discesa continua da una all'altra, come in Hades. Sokar è in costruzione: si gioca solo con
 ## DUAT_REGION2=1 (per le prove) finché non è completa.
-const SOKAR_READY := false
+const SOKAR_READY := true
 var region := 1
 
 
@@ -447,11 +447,15 @@ func feather_halff(x: float) -> float:
 
 
 ## Vita dei nemici: +6% per ogni stanza dopo la prima, più l'eventuale prezzo di Anubi.
-## Sokar è la seconda tappa: la regione conta, non solo la stanza. La discesa riparte da 0, ma i
-## nemici cominciano come alla quarta stanza di Wernes, colpiscono un po' più forte e lasciano più Ka.
-const SOKAR_DEPTH := 3
-const SOKAR_DAMAGE := 1.12
+## Sokar è la seconda tappa: colpisce più forte e lascia più Ka. La vita dei nemici segue la curva
+## delle regioni (region_hp_curve).
+const SOKAR_DAMAGE := 1.25
 const SOKAR_KA := 1.25
+## La curva della vita dei nemici, uguale per tutte le regioni (anche future): Wernes parte da 1 e
+## sale di REGION_STEP a stanza; ogni regione dopo parte dall'ultima stanza della precedente
+## +REGION_JUMP e sale con un passo doppio. Wernes 1,00 → 1,54; Sokar 1,77 → 2,85.
+const REGION_STEP := 0.06
+const REGION_JUMP := 1.15
 
 
 ## Profondità per le trappole: in Sokar sono già quelle della terza stanza.
@@ -459,8 +463,17 @@ func trap_depth() -> int:
 	return room + (2 if region >= 2 else 0)
 
 
+static func region_hp_curve(reg: int, rm: int) -> float:
+	var base := 1.0
+	var step := REGION_STEP
+	for i in range(1, reg):
+		base = (base + step * (ROOMS_PER_RUN - 1)) * REGION_JUMP
+		step *= 2.0
+	return base + step * (clampi(rm, 1, ROOMS_PER_RUN) - 1)
+
+
 func enemy_hp_mult() -> float:
-	var m := 1.0 + 0.06 * maxi(0, mini(room, ROOMS_PER_RUN) + SOKAR_DEPTH * (region - 1) - 1)
+	var m := region_hp_curve(region, room)
 	if has("anubi_guide"):
 		m *= 1.05
 	if cursed("tough"):

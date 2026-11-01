@@ -69,7 +69,7 @@ Coccodrillo: imboscata dall'acqua, riemerge spazientito dopo 6 s (2 s se è l'ul
   Anubi la **offre** una volta dopo 3 sconfitte di fila col Serpente (`piuma1`) e una dopo 3 morti di fila entro la stanza 4
   (`piuma3`, `Meta.early_streak`); popup in hub.gd `_offer_feather`.
 
-**Regione 2 – Sokar** (in costruzione, nascosta: `const SOKAR_READY := false` in `scripts/run.gd`).
+**Regione 2 – Sokar** (aperta dal 1/11/2026: `const SOKAR_READY := true` in `scripts/run.gd`; ci si arriva solo dopo Am-heh).
 Dopo Am-heh la partita continua (porta "regione"). Fatti: passaggio con titolo e barca-serpente, pavimento di sabbia,
 sabbie mobili (×0,6), tempeste di sabbia, giare; nemici: sciacallo (branco: esca + fianchi), avvoltoio di Nekhbet
 (ombra a terra, picchiata), guardiano di Sokar (scudo frontale, carica), ba dannato (esplode, fragile). Gli scorpioni appartengono a Sokar.
@@ -77,7 +77,7 @@ Guardiana: **Serket** (`scripts/serket.gd`) nel **tempio** (`Arenas.paint_temple
 scava (`DAIS_RADII`), 6 cumuli da cui escono gli scorpioni, statue della dea. Mosse: ventaglio di coda (spicchio rosso: si schiva
 uscendone, non di lato); sotto la sabbia con **solco visibile**, scorpioni dai cumuli (max 4 vivi, 2-3 a scavo), a volte colpo di
 coda in linea dalla sabbia, riemerge con un balzo in linea. Sotto metà vita: aura di veleno, ventaglio doppio, nube
-(`Hazards.VenomCloud`) dove riemerge. Vita 650 × moltiplicatore di regione (≈920 in Sokar, prima ≈570), niente sconto al primo incontro. Premio: dono +2, 5-6 lapis,
+(`Hazards.VenomCloud`) dove riemerge. Vita 560 × curva delle regioni (≈1260 alla stanza 5 di Sokar, tarata per chi arriva con 12-13 doni), niente sconto al primo incontro. Premio: dono +2, 5-6 lapis,
 `Meta.serket_wins`. Il guardiano dipende dalla regione (`_start_guardian`, premio, testo di morte); serie della Piuma e sfida
 "Due mani" restano solo del Serpente. `guardian_down`: caduto il guardiano, i rinforzi annunciati non escono più.
 Prova: `DUAT_REGION2=1 tools/dev/shot.sh serketshot 1280 720 res://scenes/game.tscn [mobile]`. Bot: `DUAT_SKIP=guardian
@@ -86,13 +86,13 @@ DUAT_REGION2=1 DUAT_START_REGION=2` (entrano con 9 doni). Prima prova, 8 partite
 Boss: **Aker** (`scripts/aker.gd`, disegno in `scripts/aker_art.gd`) alla **porta dell'orizzonte** (`Arenas.paint_horizon`):
 il geroglifico akhet (due montagne, sole spento), la strada del sole da ovest (porta del tramonto, blu) a est (porta dell'alba,
 rossa), rocce negli angoli (arena ovale), NIENTE colonne: il riparo sono le pietre del ruggito. Mito: due leoni schiena contro
-schiena, Ieri (ovest, sabbia) e Domani (est, fuoco). Fase 1, leone doppio (vita 1550 in tutto, una barra sola): fianchi ×1,35,
+schiena, Ieri (ovest, sabbia) e Domani (est, fuoco). Fase 1, leone doppio (vita 1700 in tutto, una barra sola): fianchi ×1,35,
 teste ×0,8; soffio di sabbia (cono, spinge, sabbie mobili temporanee); **raggio dell'alba** (`Hazards.DawnRay`, ruota, un
 colpo ogni 0,6 s); si gira (scambia le teste); ruggito → `Hazards.FallingStone` (ombra d'avviso, poi riparo solido 6 s che
 **ferma il raggio**; se cade su di te si frantuma). A metà trema 1,8 s (invulnerabile, cadono pietre) e si divide:
-`scripts/aker_lion.gd` Ieri (carica con scia di sabbie mobili, onda) e Domani (balzo, raggio), 385 ciascuno, **a turno**
+`scripts/aker_lion.gd` Ieri (carica con scia di sabbie mobili, onda) e Domani (balzo, raggio), 425 ciascuno, **a turno**
 (mai due mosse grandi insieme; l'altro gira e ruggisce). Caduto uno, l'altro prende la sua mossa. Peso del Cuore
-`ira_aker`: se non finisci il secondo in 8 s, il primo rinasce con 190 (nascosto nell'hub finché Sokar è chiusa).
+`ira_aker`: se non finisci il secondo in 8 s, il primo rinasce con 210 (nascosto nell'hub finché Sokar è chiusa).
 Vittoria: la telecamera sale (`Fx.look`) e il sole **tremola ma non sorge**. `Meta.aker_wins`, Lacrime come ogni boss,
 10-12 lapis. Boss per regione: `_boss_kind()`; due boss insieme: `boss_group`, `_on_boss_split`, `_bosses_alive()`.
 Prova: `DUAT_REGION2=1 tools/dev/shot.sh akershot 1280 720 res://scenes/game.tscn [mobile]`.
@@ -143,26 +143,30 @@ Dialoghi (Anubi, Imhotep, Neith): `UiStyle.next_talk_page` divide le battute lun
 telefono), il riquadro cresce verso l'alto, e un triangolo che pulsa (`UiStyle.ContinueMark`) dice "tocca per continuare".
 Prova: `tools/dev/shot.sh talkshot 1300 600 "" mobile`.
 
+## Regola delle regioni (vale per ogni regione futura)
+La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
+decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima
+(Sokar 1,77 → 2,85, passo 0,12; una terza regione partirebbe da ≈3,28 con passo 0,24). Ogni regione ha anche il suo
+moltiplicatore dei danni subiti (Sokar ×1,25), ondate più piene ed élite più frequenti. I mini boss prendono la curva
+(tarare la loro vita di base); i boss no (vita fissa nella scena, tarata sui doni con cui si arriva).
+
 ## Prossimi passi (in ordine)
 1. ~~Serket~~ e ~~Aker~~ fatti; ~~storia di Sokar~~ fatta (ottobre 2026).
 2. **Seconda regione più dura (concordato col proprietario, in corso)**:
-   - ~~Base~~: `Run.SOKAR_DEPTH` (vita dei nemici come dalla 4ª stanza di Wernes), `SOKAR_DAMAGE` ×1,12,
+   - ~~Base~~ (rivista nel blocco 3 F): curva della vita `Run.region_hp_curve`, `SOKAR_DAMAGE` ×1,25,
      `SOKAR_KA` ×1,25 (lapis invariati: "non esageriamo"), ondate ×1,3 (più nemici, NON una terza ondata),
-     élite anche per guardiano di Sokar e avvoltoio, trappole come due stanze più avanti (`Run.trap_depth`).
-     Boss: Serket 650 (≈920 con la regione; 5 scorpioni vivi), Aker 1550 (leoni 385, rinascita 190). Am-heh invariato.
+     élite dalla prima stanza (14% +2%/stanza, fino al 32%; mummia, guardiano, avvoltoio, sciacallo, lanciatore),
+     trappole come due stanze più avanti (`Run.trap_depth`). Boss: Serket 560 (≈1260 con la curva; 5 scorpioni vivi),
+     Aker 1700 (leoni 425, rinascita 210). Am-heh invariato. `SOKAR_READY = true`.
    - ~~Oasi della quarta ora~~ (`scripts/oasis.gd`, stanza "oasis" tra Wernes e Sokar, non conta come stanza):
      fonte (+25% vita, una volta), altare di Imhotep (cambia amuleto tra i forgiati, solo per la discesa),
      statua di Sokar che parla, Mahaf con il negozio, porta "desert". Prova: `oasisshot`.
-   - **Fiumi di sabbia nera** (approvati): fasce che trascinano e feriscono poco alla volta, si attraversano con
-     lo scatto o sulle lastre; più due trappole (sabbie che crollano, statue-falco di Sokar che soffiano in linea).
-   - **Nemici nuovi** (approvati): lanciatore di giavellotti (distanza, linea d'avviso), sacerdote di Sokar
-     (scudi di sabbia agli altri), scarabeo di Khepri (sfera che rimbalza), **miraggio** in forma di donna
-     (copie false, la vera ha l'ombra). NIENTE mummia sepolta (troppo simile al coccodrillo). Lo scorpione è Serket.
-     Coerenza con la storia e la regione obbligatoria.
-   - **Dèi nuovi** (approvati): **Nefti** (ombra: scatto, colpi alle spalle) e **Shu** (vento: spinte, deviare i
-     colpi, tempeste a favore). NIENTE patti di Sokar: i patti restano di Set.
-   - Dialoghi più aulici già dall'inizio (Anubi, dèi, Mahaf; Imhotep resta vanitoso).
-   - Poi: confronto con Hades ("cosa ha in più") e mega test di notte; infine `SOKAR_READY = true`.
+   - ~~Fiumi di sabbia nera, lastre che crollano, statue-falco~~ (blocco 3 A), ~~4 nemici nuovi~~ (lanciatore, sacerdote di
+     Sokar, scarabeo di Khepri, Miraggio: blocco 3 B), ~~ondate con limiti~~ (C), ~~Nefti~~ (dea del lifesteal, D),
+     ~~dialoghi aulici~~ (E), ~~apertura e curva di difficoltà~~ (F).
+   - Aperto: **Shu** (il secondo dio approvato a ottobre) non è stato fatto: decidere se serve ancora, dopo Nefti.
+   - Le prove le fa il proprietario giocando: raccogliere le sue impressioni su Sokar (durezza della curva, Serket,
+     Aker, nemici nuovi) e ritarare. Mega test con i bot solo se lo chiede, di notte.
 3. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
    se segnalato, lo stesso fix dello scorrimento col pad (`_settle_entries` in casa.gd) in altre finestre.
 

@@ -566,9 +566,11 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 		e.mounds = Arenas.temple_mounds(ROOM, TOP, WALL)
 	# dalla terza stanza alcune mummie e alcuni sacerdoti sono élite
 	var elite_w := Weights.rank("elite")
-	var elite_kinds := ["mummy", "priest"] if Run.region == 1 else ["mummy", "priest", "sokar_guard", "vulture"]
-	var elite_from := 3 if Run.region == 1 else 2
-	if Run.room >= elite_from - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind in elite_kinds and randf() < minf(0.2, 0.06 + 0.02 * Run.room + (0.08 if Run.region == 2 else 0.0)) * (1 + elite_w):
+	# Sokar: élite già dalla prima stanza e più spesso (anche guardiani, avvoltoi, sciacalli e lanciatori)
+	var elite_kinds := ["mummy", "priest"] if Run.region == 1 else ["mummy", "sokar_guard", "vulture", "jackal", "javelin"]
+	var elite_from := 3 if Run.region == 1 else 1
+	var elite_chance := minf(0.2, 0.06 + 0.02 * Run.room) if Run.region == 1 else minf(0.32, 0.14 + 0.02 * Run.room)
+	if Run.room >= elite_from - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind in elite_kinds and randf() < elite_chance * (1 + elite_w):
 		e.elite = true
 		# niente più cambio di musica per le élite: "Frozen Desert" era calmo quasi come la Sala e
 		# in battaglia sembrava la musica dell'hub. Le élite si riconoscono dal bordo d'oro.
