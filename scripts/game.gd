@@ -34,7 +34,7 @@ const ENEMIES := {
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra", "fiume": "la sabbia nera", "buca": "una buca nella sabbia", "falco": "il soffio del falco di Sokar"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -202,6 +202,8 @@ func _ready() -> void:
 	# per le prove: partire direttamente da Sokar
 	if OS.get_environment("DUAT_START_REGION") == "2" and Run.max_region() > 1:
 		Run.region = 2
+	if OS.get_environment("DUAT_START_ROOM") != "":
+		Run.room = int(OS.get_environment("DUAT_START_ROOM")) - 1     # per il controllo d'avvio
 	# la prima stanza non ha ricompensa: il primo dono è quello di Anubi
 	start_room({"kind": "none"})
 	_show_anubi_menu()
@@ -320,7 +322,8 @@ func start_room(reward: Dictionary) -> void:
 	grates_here = 0
 	if not boss_room and not calm:
 		rooms.place_elements()
-	if not boss_room and not calm and Run.trap_depth() >= TRAPS_FROM_ROOM - Weights.rank("sabbie"):
+	# in Sokar le trappole fanno parte della disposizione del deserto (room_builder.gd, _place_sokar)
+	if not boss_room and not calm and Run.region == 1 and Run.trap_depth() >= TRAPS_FROM_ROOM - Weights.rank("sabbie"):
 		rooms.place_traps()
 	if not boss_room and (not calm or kind == "guardian") and kind != "tutorial":
 		_seal_doors()
