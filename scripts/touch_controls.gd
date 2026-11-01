@@ -52,11 +52,24 @@ func _layout() -> Array:
 	out.append({"action": "special", "pos": Vector2(r - 108, b - 122), "r": 24.0, "label": Lang.t("OCCHIO")})
 	if Run.sekhem_unlocked():
 		out.append({"action": "super", "pos": Vector2(r - 170, b - 100), "r": 20.0, "label": Lang.t("SEKHEM")})
-	if shop or (scene != null and "oasis_nodes" in scene and not scene.oasis_nodes.is_empty()):
+	if shop or (scene != null and "oasis_nodes" in scene and not scene.oasis_nodes.is_empty()) or _near_door(scene) != null:
 		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": _interact_label(scene)})
 	elif scene != null and "is_armory" in scene:
 		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": Lang.t("AZIONE")})
 	return out
+
+
+## La porta aperta accanto a cui sei (per entrare serve "interagisci"), o null.
+func _near_door(scene):
+	if scene == null or not "doors" in scene or not "player" in scene:
+		return null
+	var pl = scene.player
+	if pl == null or not is_instance_valid(pl):
+		return null
+	for d in scene.doors:
+		if is_instance_valid(d) and d.open and d.open_k >= 0.6 and not d._used and pl.global_position.distance_to(d.global_position) < scene.DOOR_REACH:
+			return d
+	return null
 
 
 ## Cosa fa il tasto d'azione qui: la stessa scelta di game.gd (_process), con le stesse distanze.
@@ -71,6 +84,8 @@ func _interact_label(scene) -> String:
 	for o in scene.oasis_nodes:
 		if is_instance_valid(o) and not o.used and pl.global_position.distance_to(o.global_position) < o.reach:
 			return Lang.t("ASCOLTA") if o is Oasis.Statue else Lang.t("USA")
+	if _near_door(scene) != null:
+		return Lang.t("ENTRA")
 	if "ferry" in scene and is_instance_valid(scene.ferry) and pl.global_position.distance_to(scene.ferry.global_position + Vector2(0, 12)) < 56.0:
 		return Lang.t("PARLA")
 	return Lang.t("AZIONE")

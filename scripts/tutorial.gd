@@ -162,7 +162,7 @@ func next() -> void:
 			say(Lang.t("Il Ka"), Lang.t("Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti."))
 		5:
 			g._add_door("n", {"kind": "tutorial_end"})
-			say(Lang.t("Le porte"), Lang.t("Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa."))
+			say(Lang.t("Le porte"), Lang.t("Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Avvicinati e premi E (Y sul pad, ENTRA sul telefono): comincia la discesa."))
 		_:
 			pass
 

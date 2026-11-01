@@ -41,6 +41,11 @@ func _process(dt: float) -> void:
 				if dir.y < -0.3: Input.action_press("move_up")
 				if dir.x < -0.3: Input.action_press("move_left")
 				if dir.x > 0.3: Input.action_press("move_right")
+				# le porte si aprono solo con "interagisci" (blocco 2)
+				if p.global_position.distance_to(d.global_position) < g.DOOR_REACH - 6.0:
+					Input.action_press("interact")
+				else:
+					Input.action_release("interact")
 			if not photo_done and p.global_position.y < 150.0:
 				photo_done = true
 				get_viewport().get_texture().get_image().save_png(D + "porta_regione_0.png")

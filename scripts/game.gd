@@ -132,6 +132,7 @@ var guardian_down := false            # il guardiano della stanza è caduto (i s
 var bonus_boon := false               # il prossimo dono sale di un livello in più (premio del guardiano)
 var shops_visited := 0
 var shop_items: Array = []
+const DOOR_REACH := 46.0                ## da quanto vicino si entra in una porta (anche touch_controls.gd)
 var oasis_nodes: Array = []             ## fonte, altare e statua dell'Oasi (oasis.gd)
 var ferry: Node2D                       ## la barca del Traghettatore, se la stanza è la sua
 var doors_after_boon := true
@@ -321,6 +322,8 @@ func start_room(reward: Dictionary) -> void:
 		rooms.place_elements()
 	if not boss_room and not calm and Run.trap_depth() >= TRAPS_FROM_ROOM - Weights.rank("sabbie"):
 		rooms.place_traps()
+	if not boss_room and (not calm or kind == "guardian") and kind != "tutorial":
+		_seal_doors()
 	queue_redraw()
 
 	player = PlayerScene.instantiate()
@@ -746,11 +749,41 @@ func _reopen_doors() -> void:
 		_add_door(sd[0], sd[1])
 
 
+## Le tre porte di una stanza di combattimento, chiuse dall'inizio: a stanza ripulita si aprono
+## quelle con una ricompensa (_add_door), le altre restano sigillate.
+func _seal_doors() -> void:
+	for side in ["n", "w", "e"]:
+		var d = DoorScript.new()
+		d.side = side
+		d.position = _door_pos(side)
+		world.add_child(d)
+		d.chosen.connect(_on_door_chosen)
+		doors.append(d)
+
+
+func _door_pos(side: String) -> Vector2:
+	match side:
+		"n":
+			return Vector2(ROOM.size.x / 2.0, TOP + 2.0)
+		"w":
+			return Vector2(WALL + 2.0, (TOP + ROOM.size.y - WALL) / 2.0)
+		"e":
+			return Vector2(ROOM.size.x - WALL - 2.0, (TOP + ROOM.size.y - WALL) / 2.0)
+	return Vector2(ROOM.size.x / 2.0 + (150.0 if randf() < 0.5 else -150.0), ROOM.size.y - WALL - 2.0)
+
+
+## Una porta con la sua ricompensa: se c'è già quella sigillata su quel lato, si apre lei; se no ne
+## compare una (chiusa) che si apre subito. Si entra con "interagisci" (_process).
 func _add_door(side: String, reward: Dictionary) -> void:
+	for old in doors:
+		if is_instance_valid(old) and old.side == side and not old.open and old.reward.is_empty():
+			old.reward = reward
+			Atmos.add_light(old, Vector2(0, 14) if side == "n" else Vector2.ZERO, 110.0, old.reward_color(), 1.2, false)
+			old.open_door()
+			return
 	var d = DoorScript.new()
 	d.side = side
 	d.reward = reward
-	d.open = true
 	match side:
 		"n":
 			d.position = Vector2(ROOM.size.x / 2.0, TOP + 2.0)
@@ -765,13 +798,7 @@ func _add_door(side: String, reward: Dictionary) -> void:
 	Atmos.add_light(d, Vector2(0, 14) if side == "n" else Vector2.ZERO, 110.0, d.reward_color(), 1.2, false)
 	d.chosen.connect(_on_door_chosen)
 	doors.append(d)
-	# se ci stai già sopra, un passo verso l'interno: la porta reagisce solo quando ci entri, e
-	# senza questo restavi fermo sulla soglia senza poter passare (trovato dal mega test).
-	# Non ti porta via da sola: la scelta della porta resta tua.
-	if player != null and is_instance_valid(player) and player.global_position.distance_to(d.global_position) < 30.0:
-		var inward: Vector2 = Vector2(ROOM.size.x / 2.0, (TOP + ROOM.size.y - WALL) / 2.0) - d.global_position
-		player.global_position = d.global_position + inward.normalized() * 34.0
-		player.reset_physics_interpolation()
+	d.open_door()
 
 
 func _on_door_chosen(d: Area2D) -> void:
@@ -2118,6 +2145,14 @@ func _fit_message() -> void:
 ## schermo) deve essere coperto dal fusto, chi sta DAVANTI deve coprirlo. Prima i personaggi erano
 ## sempre disegnati sopra e chi passava dietro sembrava attraversare la pietra. Gli avvoltoi volano
 ## e restano sopra (z 3, vulture.gd).
+## Il tasto d'azione davanti ai suggerimenti: "E · ", "Y · " del pad; niente sul telefono, dove
+## c'è il pulsante con la scritta.
+func _key_prefix() -> String:
+	if Fx.device == "touch":
+		return ""
+	return "Y · " if Fx.device == "pad" else "E · "
+
+
 func _pillar_depth() -> void:
 	if pillars.is_empty():
 		return
@@ -2224,9 +2259,18 @@ func _process(_delta: float) -> void:
 			if Input.is_action_just_pressed("interact") and menu == null:
 				Sfx.play("ui", 0.0)
 				ferry.say(FerrymanScript.talk_line())
+	# le porte: da vicino si legge cosa c'è dietro; accanto si entra con "interagisci"
 	for d in doors:
-		if is_instance_valid(d) and d.open and player.global_position.distance_to(d.global_position) < 70.0:
+		if not is_instance_valid(d) or not d.open or d._used:
+			continue
+		var dd: float = player.global_position.distance_to(d.global_position)
+		if dd < 70.0:
 			near = d.reward_description()
+		if dd < DOOR_REACH and d.open_k >= 0.6 and shop_near == null and oasis_near == null:
+			near = _key_prefix() + Lang.t("Entra · %s") % d.reward_description()
+			if Input.is_action_just_pressed("interact") and menu == null:
+				d.enter()
+				break
 	prompt.text = near
 	prompt.visible = near != ""
 

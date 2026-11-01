@@ -1,11 +1,15 @@
 extends Area2D
 ## Porta verso la stanza successiva. Mostra sopra di sé la ricompensa che c'è dietro.
+## È una porta vera: chiusa (battenti di legno con le borchie) finché la stanza non è ripulita, poi
+## i battenti si aprono e compare la ricompensa. Si entra solo con "interagisci" (game.gd): niente
+## più ingressi per sbaglio camminando contro il muro.
 
 signal chosen(door: Area2D)
 
 var side := "n"                       # n | w | e | s (s: la porta di Set, nella parete sud)
 var reward := {}                      # {"kind": "boon"/"set"/"ka"/"heal"/"end", "god": "..."}
 var open := false
+var open_k := 0.0                     ## 0 battenti chiusi, 1 aperti (l'animazione dell'apertura)
 var t := 0.0
 var _used := false
 
@@ -18,16 +22,28 @@ func _ready() -> void:
 	rect.size = Vector2(44, 12) if side in ["n", "s"] else Vector2(12, 44)
 	shape.shape = rect
 	add_child(shape)
-	body_entered.connect(_on_body_entered)
+	if open:
+		open_k = 1.0
 
 
 func _process(delta: float) -> void:
 	t += delta
+	if open and open_k < 1.0:
+		open_k = minf(1.0, open_k + delta / 0.45)
 	queue_redraw()
 
 
-func _on_body_entered(body: Node) -> void:
-	if open and not _used and body.is_in_group("player"):
+## I battenti si aprono (la stanza è ripulita): da qui si può entrare.
+func open_door() -> void:
+	if open:
+		return
+	open = true
+	Sfx.play_at("door", global_position, 0.05)
+
+
+## Il giocatore ha scelto questa porta (con "interagisci").
+func enter() -> void:
+	if open and open_k >= 0.6 and not _used:
 		_used = true
 		chosen.emit(self)
 
@@ -129,19 +145,26 @@ func _draw() -> void:
 	var rot := {"n": 0.0, "s": PI, "w": -PI / 2.0, "e": PI / 2.0}.get(side, 0.0) as float
 	draw_set_transform(Vector2.ZERO, rot, Vector2.ONE)
 	var opening := Rect2(-18, -7, 36, 14)
+	draw_rect(opening, Color(0.02, 0.02, 0.04))
 	if open:
 		var glow := reward_color()
-		draw_rect(opening, Color(0.02, 0.02, 0.04))
 		var pulse := 0.5 + 0.5 * sin(t * 3.0)
+		var a := (0.55 + 0.25 * pulse) * open_k
 		draw_polygon(PackedVector2Array([opening.position, Vector2(opening.end.x, opening.position.y), opening.end, Vector2(opening.position.x, opening.end.y)]),
-			PackedColorArray([Color(glow, 0.0), Color(glow, 0.0), Color(glow, 0.55 + 0.25 * pulse), Color(glow, 0.55 + 0.25 * pulse)]))
-	else:
-		draw_rect(opening, Color(0.36, 0.24, 0.12))
-		draw_line(Vector2(0, -7), Vector2(0, 7), outl, 1.0)
-		for bx in [-12.0, -5.0, 5.0, 12.0]:
-			for by in [-3.5, 3.0]:
-				draw_circle(Vector2(bx, by), 0.9, gold)
-		draw_rect(Rect2(-18, -1, 36, 1.5), Color(gold, 0.7))
+			PackedColorArray([Color(glow, 0.0), Color(glow, 0.0), Color(glow, a), Color(glow, a)]))
+	# i due battenti di legno: chiusi si toccano al centro, aprendosi rientrano verso gli stipiti
+	var leaf_w := 18.0 * (1.0 - open_k)
+	if leaf_w > 0.3:
+		var wood := Color(0.36, 0.24, 0.12) if not open else Color(0.36, 0.24, 0.12).lightened(0.08)
+		for sx in [-1.0, 1.0]:
+			var lr := Rect2(-18.0 if sx < 0.0 else 18.0 - leaf_w, -7, leaf_w, 14)
+			draw_rect(lr, wood)
+			draw_rect(lr, outl, false, 0.8)
+			draw_rect(Rect2(lr.position.x, -1, lr.size.x, 1.5), Color(gold, 0.7))
+			if leaf_w > 6.0:
+				for by in [-3.5, 3.0]:
+					draw_circle(Vector2(lr.position.x + lr.size.x * 0.3, by), 0.9, gold)
+					draw_circle(Vector2(lr.position.x + lr.size.x * 0.75, by), 0.9, gold)
 	# stipiti
 	for sx in [-1.0, 1.0]:
 		var j := Rect2(Vector2(18.0 if sx > 0.0 else -23.0, -8), Vector2(5, 16))
@@ -165,7 +188,7 @@ func _draw() -> void:
 		draw_colored_polygon(PackedVector2Array([Vector2(2.6 * sx, -11.2), Vector2(14 * sx, -11.6), Vector2(11 * sx, -9.4), Vector2(2.6 * sx, -8.8)]), gold)
 		draw_line(Vector2(4 * sx, -10.4), Vector2(12 * sx, -10.6), Color(0.16, 0.3, 0.68), 0.6)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	if open and not reward.is_empty():
+	if open and open_k >= 1.0 and not reward.is_empty():
 		var off := Vector2(0, 26) if side == "n" else (Vector2(0, -26) if side == "s" else (Vector2(26, 0) if side == "w" else Vector2(-26, 0)))
 		var bob := sin(t * 3.0) * 2.0
 		var c := reward_color()

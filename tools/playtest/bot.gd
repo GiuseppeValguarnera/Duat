@@ -493,6 +493,10 @@ func _decide(g, p) -> void:
 		if d != null:
 			var target_pos: Vector2 = d.global_position
 			move_dir = (target_pos - pos).normalized()
+			# si entra con "interagisci", accanto alla porta (come un giocatore)
+			if pos.distance_to(target_pos) < g.DOOR_REACH - 6.0 and d.open_k >= 0.6:
+				Input.action_press("interact")
+				interact_release = true
 			return
 	move_dir = Vector2.ZERO
 
@@ -610,8 +614,8 @@ func _pick_door(g):
 	var best = null
 	var best_score := -1e9
 	for d in g.doors:
-		if not is_instance_valid(d):
-			continue
+		if not is_instance_valid(d) or not d.open or d._used:
+			continue                         # le porte sigillate non si scelgono
 		var k: String = d.reward.get("kind", "")
 		var score := randf()
 		match k:

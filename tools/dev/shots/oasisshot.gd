@@ -85,8 +85,11 @@ func _process(dt: float) -> void:
 			if t < dt * 1.5:
 				p.global_position = g.doors[0].global_position + Vector2(0, 40)
 			Input.action_press("move_up")
+			if t > 0.6:
+				Input.action_press("interact")   # le porte si aprono solo con "interagisci"
 			if t > 3.0 or Run.room == 1:
 				Input.action_release("move_up")
+				Input.action_release("interact")
 				L("dopo la porta: regione=%d stanza=%d nemici in arrivo=%d" % [Run.region, Run.room, g.alive + g.spawning])
 				_shot("6_dopo")
 				get_tree().quit()
