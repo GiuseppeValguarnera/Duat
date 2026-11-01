@@ -248,16 +248,45 @@ static func bow_line(god: String) -> String:
 	return ""
 
 
+## La prima volta che un dio ti vede con il Flagello di Osiride: sono le insegne del faraone.
+static func flail_line(god: String) -> String:
+	match god:
+		"ra":
+			return Lang.t("Il flagello e il pastorale... le insegne che io stesso diedi ai re della terra. Uno scriba che li porta. Il Duat ha il senso dell'umorismo.")
+		"sekhmet":
+			return Lang.t("Una frusta! Finalmente qualcosa che schiocca. Colpisci con la punta, piccolo re, e lascia che urlino.")
+		"thoth":
+			return Lang.t("Il nekhakha e l'heka. Li ho disegnati mille volte nei miei registri, sempre nelle mani di un faraone. Mai in quelle di uno scriba. Annoto l'eccezione.")
+		"bastet":
+			return Lang.t("Un bastone che afferra e tira a sé la preda. Sembra quasi una zampa. Mi piace.")
+		"sobek":
+			return Lang.t("Con quel pastorale i pastori del Nilo tiravano fuori le pecore dall'acqua, prima che arrivassi io. Ora tiri fuori i nemici. Portali vicino alla riva.")
+		"iside":
+			return Lang.t("Le insegne del mio sposo. Osiride le teneva incrociate sul petto quando lo ricomposi. Portale con rispetto, Scriba: hanno guidato un regno.")
+		"horus":
+			return Lang.t("Il flagello e il pastorale di mio padre. Li ho ripresi a Set con il sangue. Non lasciarteli strappare.")
+		"anubi":
+			return Lang.t("Porti le insegne del re dei morti, Scriba. Davanti alla mia bilancia, Osiride siede con quelle stesse mani. Ricordalo, quando colpisci.")
+		"nefti":
+			return Lang.t("Il pastorale di Osiride. Io l'ho pianto quanto Iside, anche se nessuno lo ricorda. Lascia che le mie lacrime cadano su chi agganci.")
+		"shu":
+			return Lang.t("Un pastorale per tirare, un respiro per lanciare. Lancia quello che agganci, Scriba, e io lo farò volare contro le pietre.")
+		"set":
+			return Lang.t("Il flagello di mio fratello! Gliel'ho strappato una volta, sai? Con un sarcofago su misura. Facciamo un patto, piccolo re di carta.")
+	return ""
+
+
 static func speech(god: String) -> String:
 	if not GODS.has(god):
 		return ""
 	var entries := _entries(god)
-	if Run.weapon == "arco" and Meta.dialogue_seen.has("%s_0" % god) and not Meta.dialogue_seen.has("arco_" + god):
-		var bl := bow_line(god)
-		if bl != "":
-			Meta.dialogue_seen.append("arco_" + god)
+	var wid := "%s_%s" % [Run.weapon, god]
+	if Meta.dialogue_seen.has("%s_0" % god) and not Meta.dialogue_seen.has(wid):
+		var wl := bow_line(god) if Run.weapon == "arco" else (flail_line(god) if Run.weapon == "flagello" else "")
+		if wl != "":
+			Meta.dialogue_seen.append(wid)
 			Meta.save()
-			return bl
+			return wl
 	for i in range(entries.size()):
 		var id := "%s_%d" % [god, i]
 		if not Meta.dialogue_seen.has(id):

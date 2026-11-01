@@ -23,8 +23,10 @@ done
 for room in 1 4 8; do
   DUAT_NOTUT=1 DUAT_REGION2=1 DUAT_START_REGION=2 DUAT_START_ROOM=$room HOME="$HOMEDIR" timeout 60 "$G" --headless --path . --quit-after 900 res://scenes/game.tscn >> "$OUT/run.txt" 2>&1
 done
-# l'Arco di Satet: tiri, tiro carico e ventaglio con tutti i suoi doni (tools/dev/bowsmoke.gd)
-DUAT_NOTUT=1 DUAT_START_ROOM=2 DUAT_WEAPON=arco HOME="$HOMEDIR" timeout 90 "$G" --headless --path . --script res://tools/dev/bowsmoke.gd >> "$OUT/run.txt" 2>&1
+# arco e flagello: colpi, attacco caricato e in scatto con tutti i loro doni (tools/dev/weaponsmoke.gd)
+for w in arco flagello; do
+  DUAT_NOTUT=1 DUAT_START_ROOM=2 DUAT_WEAPON=$w HOME="$HOMEDIR" timeout 90 "$G" --headless --path . --script res://tools/dev/weaponsmoke.gd >> "$OUT/run.txt" 2>&1
+done
 ERR=$(cat "$OUT/import.txt" "$OUT/run.txt" | grep -E "SCRIPT ERROR|Parse Error|Compile Error|Failed to load script" -A1 | grep -v "^--$" | sort | uniq -c)
 if [ -n "$ERR" ]; then
   echo "$ERR" | head -20

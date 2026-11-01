@@ -33,7 +33,8 @@ const KA_DROP_CHANCE := 0.4             ## quante volte un nemico lascia il suo 
 var stagger_t := 0.0
 var mourn_t := 0.0                    ## il marchio del Lutto di Nefti (secondi)
 var mark_t := 0.0                     ## Sguardo del Falco: secondi in cui il khopesh fa più danni
-var arrow_slow_t := 0.0                ## Frecce della Palude (Sobek, arco): rallentato dalle frecce
+var slow_t := 0.0                      ## rallentato dalle Frecce della Palude o dalla Frusta della Palude (Sobek)
+var hook_slam := false                 ## lanciato dal pastorale: lo schianto usa il Lancio del Vento (Shu)
 var sobek_stun_t := 0.0                ## stordito dal Morso di Sobek (per la Forza del Fiume)                   ## dopo un colpo il nemico barcolla: non si muove e non ferisce
 
 
@@ -73,7 +74,7 @@ func _physics_process(delta: float) -> void:
 			to = Run.decoy_pos - global_position
 
 	sobek_stun_t = maxf(0.0, sobek_stun_t - delta)
-	arrow_slow_t = maxf(0.0, arrow_slow_t - delta)
+	slow_t = maxf(0.0, slow_t - delta)
 	mark_t = maxf(0.0, mark_t - delta)
 	mourn_t = maxf(0.0, mourn_t - delta)
 	shu_pushed_t = maxf(0.0, shu_pushed_t - delta)
@@ -210,8 +211,8 @@ func _on_hit(_dmg: float) -> void:
 ## Marea del Nilo: dentro una pozza il nemico rallenta. Anche l'acqua delle stanze rallenta
 ## (non i boss) e spegne le fiamme.
 func _puddle_slow() -> float:
-	if arrow_slow_t > 0.0:
-		return (1.0 - Run.val("arco_sobek") / 100.0) * _water_tide_slow()
+	if slow_t > 0.0:
+		return (1.0 - maxf(Run.val("arco_sobek"), Run.val("flagello_sobek")) / 100.0) * _water_tide_slow()
 	return _water_tide_slow()
 
 
@@ -307,9 +308,10 @@ func _out() -> Color:
 ## Shu: una spinta vera. Boss, guardiani ed élite si spostano appena. Per qualche istante il nemico
 ## vola: se sbatte contro un muro, una colonna o un altro nemico subisce lo schianto; se finisce nella
 ## sabbia nera o in una buca ci cade dentro (e con Sopra la Terra, se è un nemico normale, muore).
-func shu_push(dir: Vector2, force: float) -> void:
+func shu_push(dir: Vector2, force: float, hooked: bool = false) -> void:
 	if dead or dir == Vector2.ZERO:
 		return
+	hook_slam = hooked
 	var heavy := is_boss or miniboss or elite
 	knock = dir.normalized() * force * (0.2 if heavy else 1.0)
 	shu_t = 0.5 if not heavy else 0.0
@@ -336,6 +338,9 @@ func _shu_flight(delta: float, flying: Vector2) -> void:
 		return
 	shu_t = 0.0
 	var dmg := Run.shu_slam_damage()
+	if hook_slam and Run.has("flagello_shu"):
+		dmg = maxf(dmg, Run.val("flagello_shu") * Run.all_damage_mult())   # Lancio del Vento
+	hook_slam = false
 	Fx.burst(global_position + Vector2(0, -radius), Boons.god_color("shu"), 14, 100.0)
 	Fx.float_text(global_position + Vector2(0, -24), Lang.t("SCHIANTO"), Boons.god_color("shu"))
 	Fx.shake(3.0)
@@ -350,7 +355,7 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 	dmg *= Run.jackal_mult(hp / max_hp) * _damage_mult()
 	if shu_pushed_t > 0.0 and Run.has("shu_divide"):
 		dmg *= 1.0 + Run.val("shu_divide") / 100.0      # Separatore del Cielo: chi è appena stato spinto
-	if Run.has("sobek_river") and (sobek_stun_t > 0.0 or arrow_slow_t > 0.0 or _in_tide()):
+	if Run.has("sobek_river") and (sobek_stun_t > 0.0 or slow_t > 0.0 or _in_tide()):
 		dmg *= 1.0 + Run.val("sobek_river") / 100.0
 	if mourn_t > 0.0 and Run.has("nefti_lament"):
 		dmg *= 1.0 + Run.val("nefti_lament") / 100.0      # Lamento: i marchiati soffrono di più

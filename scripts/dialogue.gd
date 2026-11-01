@@ -179,6 +179,12 @@ static func story() -> Array:
 			Lang.t("Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere."),
 			Lang.t("Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro."),
 			Lang.t("Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.")]},
+		{"id": "flagello0", "if": Weapons.requirement_met("flagello") and not Weapons.is_unlocked("flagello"), "lines": [
+			Lang.t("Nel cortile di Neith qualcosa si è svegliato, Scriba. Sotto il telo dormivano il flagello e il pastorale di Osiride: le insegne del re dei morti."),
+			Lang.t("Neith li cede per trentacinque lapislazzuli. Non chiedermi perché una dea abbia bisogno di pietre: le dee hanno i loro conti.")]},
+		{"id": "flagello1", "if": Weapons.is_unlocked("flagello"), "lines": [
+			Lang.t("Porti il flagello e il pastorale. Le insegne del faraone, Scriba. Le stesse che Osiride stringe sul petto, seduto accanto alla mia bilancia."),
+			Lang.t("Un re guida con il pastorale e difende con il flagello. Uno scriba che li impugna... o è un usurpatore, o è qualcuno che il Duat non ha ancora capito.")]},
 		{"id": "arco1", "if": Meta.weapons_unlocked.has("arco"), "lines": [
 			Lang.t("Neith è venuta fin qui, nella mia sala, per darti l'arco di Satet. Non lascia il suo cortile per chiunque."),
 			Lang.t("Un arco tiene i nemici lontani. Ma nel Duat, Scriba, ciò che è lontano ha l'abitudine di avvicinarsi in fretta.")]},

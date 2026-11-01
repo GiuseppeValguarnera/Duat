@@ -66,7 +66,7 @@ const KHOPESH_DASH := {"range": 50.0, "arc": 210.0, "mult": 1.5, "cd": 0.3, "lun
 const CHARGE_DELAY := 0.25
 const CHARGE_TIME := 1.0
 const CHARGE_CD := 2.0
-const CHARGE_SLOW := 0.5
+const CHARGE_SLOW := 0.65               ## regola comune a tutte le armi: −35% mentre carichi
 ## Khopesh: il fendente a giro attorno all'eroe.
 const KHOPESH_SPIN := {"range": 58.0, "mult": 3.0, "knock": 260.0}
 ## Lancia: il lancio in linea che trapassa tutti e torna (scripts/thrown_spear.gd).
@@ -78,9 +78,21 @@ const ThrownSpear := preload("res://scripts/thrown_spear.gd")
 const BOW_SHOT := {"cd": 0.33, "mult": 0.6, "speed": 440.0, "dist": 250.0, "knock": 35.0}
 const BOW_CHARGED := {"mult": 2.4, "speed": 620.0, "dist": 360.0, "knock": 130.0}
 const BOW_FAN := {"mult": 0.6, "spread": 18.0, "speed": 420.0, "dist": 120.0, "knock": 70.0}
-const BOW_CHARGE_SLOW := 0.65
 const BOW_AIM_RANGE := 320.0
 const ArrowScript := preload("res://scripts/arrow.gd")
+## Il Flagello di Osiride: tre frustate che colpiscono tutti i nemici in linea (larghezza `width`),
+## la terza più ampia (un ventaglio di `arc` gradi). Danni pieni alla punta, metà addosso al corpo.
+const FLAIL := [
+	{"range": 80.0, "width": 9.0, "arc": 0.0, "mult": 0.85, "cd": 0.3, "lunge": 6.0, "knock": 70.0},
+	{"range": 80.0, "width": 9.0, "arc": 0.0, "mult": 0.85, "cd": 0.3, "lunge": 6.0, "knock": 70.0},
+	{"range": 86.0, "width": 0.0, "arc": 55.0, "mult": 1.4, "cd": 0.46, "lunge": 10.0, "knock": 160.0},
+]
+## Dopo lo scatto: una frustata lunga che trascina avanti, con te, i nemici colpiti.
+const FLAIL_DASH := {"range": 118.0, "width": 11.0, "arc": 0.0, "mult": 1.3, "cd": 0.34, "lunge": 110.0, "knock": 300.0}
+const FLAIL_BODY := 0.5                    ## danni addosso al corpo (alla punta 1)
+## Il pastorale (attacco caricato): aggancia il nemico nel cono davanti a te; i normali vengono
+## lanciati verso di te (o dove ti muovi), con élite, guardiani e boss sei tu a volare da loro.
+const HOOK := {"range": 240.0, "cone": 28.0, "mult": 1.6, "fling": 150.0, "pull_speed": 560.0}
 
 var hp := 0.0
 var was_wet := false					# per lo schizzo quando entri in acqua
@@ -93,7 +105,13 @@ var charge_full := false
 var charge_cd := 0.0                    # ricarica dopo l'attacco caricato
 var charge_flash_t := 0.0
 var spear_thrown: Node2D = null         # la lancia lanciata: finché non torna sei disarmato
-var spin_swing := false                 # l'ultimo colpo è stato il fendente circolare
+var spin_swing := false
+var lash_width := 0.0                   # frustata in linea: mezza larghezza (0 = ventaglio)
+var hook_vis_t := 0.0                   # il pastorale disegnato verso il nemico agganciato
+var hook_to := Vector2.ZERO
+var hook_red := false                   # rosso = è l'eroe a essere tirato (élite e boss)
+var hook_pull_t := 0.0
+var hook_pull_e = null                 # l'ultimo colpo è stato il fendente circolare
 var dead := false
 var facing := Vector2.RIGHT
 var aim := Vector2.RIGHT
@@ -201,13 +219,18 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("super") and Run.sekhem_ready() and divine_t <= 0.0:
 		_divine_form()
 
-	if dash_t > 0.0:
+	if _hook_pulling():
+		# il pastorale agganciato a un élite o a un boss: voli da lui
+		velocity = (hook_pull_e.global_position - global_position).normalized() * HOOK["pull_speed"]
+		hook_to = hook_pull_e.global_position
+		hook_vis_t = maxf(hook_vis_t, 0.08)
+	elif dash_t > 0.0:
 		velocity = dash_dir * dash_speed * (1.0 + Run.val("shu_wings") / 100.0 if Run.has("shu_wings") else 1.0)
 		_dash_damage()
 	else:
 		var s := speed * Run.move_mult() * (attack_slowdown if atk_t > 0.0 else 1.0)
 		if charging:
-			s *= BOW_CHARGE_SLOW if Run.weapon == "arco" else CHARGE_SLOW     # mentre carichi ti muovi più lento
+			s *= CHARGE_SLOW                # mentre carichi ti muovi più lento
 		if Run.shu_gust:
 			s *= 1.2                        # la raffica di Shu
 		if Run.in_deep(global_position):
@@ -299,6 +322,9 @@ func _charged_attack() -> void:
 		var v := ShuVortex.new()
 		get_parent().add_child(v)
 		v.global_position = global_position + (dir * 150.0 if spear or bow else Vector2.ZERO)
+	if Run.weapon == "flagello":
+		_hook(dir, base)
+		return
 	if bow:
 		# il tiro carico: una freccia grande che trapassa tutta la fila
 		var dmg: float = base * BOW_CHARGED["mult"] * (1.0 + Run.val("arco_sekhmet") / 100.0)
@@ -379,6 +405,8 @@ func _tick(delta: float) -> void:
 	after_dash_t = maxf(0.0, after_dash_t - delta)
 	charge_cd = maxf(0.0, charge_cd - delta)
 	charge_flash_t = maxf(0.0, charge_flash_t - delta)
+	hook_vis_t = maxf(0.0, hook_vis_t - delta)
+	hook_pull_t = maxf(0.0, hook_pull_t - delta)
 	var dash_ending := dash_t > 0.0 and dash_t <= delta
 	dash_t = maxf(0.0, dash_t - delta)
 	if dash_ending:
@@ -609,9 +637,206 @@ func _bow_shot() -> void:
 	knock = -dir * 8.0
 
 
+## Volo verso il nemico agganciato (élite e boss): finisce quando arrivi, se muore o dopo 0,6 s.
+func _hook_pulling() -> bool:
+	if hook_pull_t <= 0.0:
+		return false
+	if hook_pull_e == null or not is_instance_valid(hook_pull_e) or hook_pull_e.dead \
+			or global_position.distance_to(hook_pull_e.global_position) < hook_pull_e.radius + 14.0:
+		hook_pull_t = 0.0
+		hook_pull_e = null
+		Fx.burst(global_position + Vector2(0, -8), FlailArt.RED, 8, 60.0)
+		return false
+	return true
+
+
+## Il nemico che il pastorale aggancerebbe guardando verso `dir` (null se nessuno).
+func _hook_target(dir: Vector2):
+	var best = null
+	var best_score := INF
+	var cone := deg_to_rad(HOOK["cone"] * (1.4 if Fx.device == "touch" else 1.0))
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if e.dead:
+			continue
+		var to: Vector2 = e.global_position - global_position
+		var d := to.length()
+		if d > HOOK["range"] + e.radius or d < 4.0:
+			continue
+		var a := absf(dir.angle_to(to))
+		if a > cone:
+			continue
+		var score := a * 120.0 + d
+		if score < best_score:
+			best_score = score
+			best = e
+	return best
+
+
+func _hook_heavy(e) -> bool:
+	return e.is_boss or e.miniboss or e.elite
+
+
+## L'aggancio del pastorale (attacco caricato del flagello).
+func _hook(dir: Vector2, base: float) -> void:
+	var e = _hook_target(dir)
+	hook_vis_t = 0.35
+	atk_t = 0.16
+	atk_cd = 0.3
+	swing_index = 2
+	spin_swing = false
+	swing_range = 0.0
+	Sfx.play("swing", 0.0)
+	if e == null:
+		# a vuoto: il pastorale si allunga e torna
+		hook_red = false
+		hook_to = global_position + Vector2(0, -8) + dir * HOOK["range"]
+		return
+	var heavy := _hook_heavy(e)
+	hook_red = heavy
+	hook_to = e.global_position
+	var dmg: float = base * HOOK["mult"] * (1.0 + Run.val("flagello_bastet") / 100.0)
+	var crit := Run.roll_crit(1.0 if Run.has("flagello_bastet") else Run.khopesh_crit_chance())
+	if crit > 1.0:
+		Fx.float_text(e.global_position + Vector2(0, -20), Lang.t("CRITICO"), Boons.god_color("bastet"))
+		Sfx.play("crit")
+	if Run.has("flagello_iside"):
+		shield = maxf(shield, Run.val("flagello_iside"))       # Pastorale di Iside
+	if Run.has("flagello_horus"):
+		eye_charges = Run.eye_charges()                     # Pastorale del Falco: l'Occhio è di nuovo pronto
+		eye_cd = 0.0
+	if Run.has("nefti_veil") or Run.has("flagello_nefti"):
+		e.mourn_t = 4.0
+	Run.nefti_on_hit()
+	var to_me: Vector2 = global_position - e.global_position
+	e.take_hit(dmg * crit, to_me.normalized(), 0.0, Run.khopesh_burns())
+	Fx.impact(e.global_position + Vector2(0, -e.radius), -to_me.normalized(), true)
+	Fx.hitstop(0.06)
+	Fx.shake(4.0)
+	if e.dead:
+		return
+	if heavy:
+		hook_pull_e = e
+		hook_pull_t = 0.6
+		invuln_t = maxf(invuln_t, 0.65)
+		return
+	# lanciato verso di te, o nella direzione in cui ti muovi (anche nelle trappole e nella sabbia nera)
+	var move := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	var fdir := to_me.normalized()
+	var dist := maxf(0.0, to_me.length() - 28.0)
+	if move.length() > 0.3:
+		fdir = move.normalized()
+		dist = HOOK["fling"]
+	e.shu_push(fdir, clampf(sqrt(2.0 * 800.0 * dist), 140.0, 760.0), true)
+
+
+## Le frustate del flagello: tutti i nemici in linea (la terza a ventaglio); più danni alla punta.
+func _flail_swing() -> void:
+	if combo_window <= 0.0:
+		combo = 0
+	var dash_atk := after_dash_t > 0.0
+	var c: Dictionary = FLAIL_DASH if dash_atk else FLAIL[combo]
+	swing_index = 3 if dash_atk else combo
+	if not dash_atk:
+		combo = (combo + 1) % FLAIL.size()
+	spin_swing = false
+	combo_window = 0.55
+	atk_t = 0.16
+	var cd: float = c["cd"] * Run.attack_speed_mult()
+	var reach: float = c["range"] * (1.0 + Run.val("flagello_thoth") / 100.0)
+	if Run.has("flagello_anubi"):
+		cd *= 1.0 - Run.val("flagello_anubi") / 100.0       # Anubi: più rapide, ma più corte
+		reach *= 0.8
+	atk_cd = cd
+	after_dash_t = 0.0
+	var base_dir := aim
+	if dash_atk and Fx.device != "mouse" and Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() <= 0.3 and dash_dir != Vector2.ZERO:
+		base_dir = dash_dir
+	swing_dir = _assisted(base_dir, reach + 24.0)
+	swing_range = reach
+	swing_arc = deg_to_rad(c["arc"])
+	lash_width = c["width"]
+	knock = swing_dir * c["lunge"]
+	var dmg: float = attack_damage * Run.khopesh_mult() * c["mult"] * Run.combo_mult(swing_index) * _aspect_damage()
+	if divine_t > 0.0:
+		dmg *= divine_damage_mult
+	if dash_atk and Run.has("sekhmet_leap"):
+		dmg *= 1.0 + Run.val("sekhmet_leap") / 100.0
+	leap_ready = false
+	Sfx.play("swing", 0.2)
+	var burns: bool = Run.khopesh_burns() or (swing_index == 2 and Run.has("flagello_ra"))
+	var hit_any := false
+	for j in get_tree().get_nodes_in_group("breakables"):
+		if not j.broken and _in_lash(j.global_position - global_position, 4.0) >= 0.0:
+			j.smash()
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if e.dead:
+			continue
+		var to: Vector2 = e.global_position - global_position
+		var proj := _in_lash(to, e.radius)
+		if proj < 0.0:
+			continue
+		# alla punta i danni pieni, addosso al corpo la metà
+		var tip_k := clampf((proj - 22.0) / maxf(1.0, swing_range * 0.7 - 22.0), 0.0, 1.0)
+		var hit_dmg := dmg * lerpf(FLAIL_BODY, 1.0, tip_k)
+		if tip_k >= 1.0 and Run.has("flagello_sekhmet"):
+			hit_dmg *= 1.0 + Run.val("flagello_sekhmet") / 100.0
+		var crit := Run.roll_crit(Run.khopesh_crit_chance())
+		hit_dmg *= crit
+		if Run.has("duo_ra_sekhmet") and e.burn_t > 0.0:
+			hit_dmg *= 1.25
+		if Run.has("duo_sobek_iside") and shield > 0.0:
+			hit_dmg *= 1.25
+		if e.mark_t > 0.0:
+			hit_dmg *= 1.0 + Run.val("horus_mark") / 100.0
+		if crit > 1.0:
+			Fx.float_text(e.global_position + Vector2(0, -20), Lang.t("CRITICO"), Boons.god_color("bastet"))
+			Sfx.play("crit")
+			if Run.has("duo_sekhmet_bastet"):
+				_shockwave.call_deferred(40.0, 12.0 * Run.all_damage_mult(), 150.0, Boons.god_color("duo"))
+		if Run.has("nefti_veil"):
+			e.mourn_t = 4.0
+		Run.nefti_on_hit()
+		# dopo lo scatto la frusta trascina avanti i nemici colpiti, insieme a te
+		var kdir := swing_dir if dash_atk else to.normalized()
+		e.take_hit(hit_dmg, kdir, c["knock"] * Run.knock_mult(), burns)
+		Fx.impact(e.global_position + Vector2(0, -e.radius) - to.normalized() * e.radius * 0.6, to.normalized(), swing_index >= 2 or crit > 1.0)
+		if not e.dead:
+			if Run.has("flagello_sobek"):
+				e.slow_t = 2.0                    # Frusta della Palude
+			if swing_index == 2 and Run.has("shu_breath"):
+				e.shu_push(to.normalized(), 330.0)
+			if swing_index == 2 and Run.has("sobek_bite"):
+				e.stagger_t = maxf(e.stagger_t, Run.val("sobek_bite") * (0.25 if e.is_boss else 1.0))
+				e.sobek_stun_t = maxf(e.sobek_stun_t, Run.val("sobek_bite"))
+			if Run.has("duo_anubi_sekhmet") and not e.is_boss and not e.miniboss and e.hp < e.max_hp * 0.15:
+				Fx.float_text(e.global_position + Vector2(0, -24), Lang.t("GIUDIZIO"), Boons.god_color("duo"))
+				e.die()
+		hit_any = true
+	if swing_index == 2 and Run.has("sekhmet_roar"):
+		_shockwave(46.0, Run.val("sekhmet_roar") * Run.all_damage_mult(), 200.0, Boons.god_color("sekhmet"))
+	if hit_any:
+		var heavy := swing_index >= 2
+		Fx.shake(3.0 if not heavy else 6.0)
+		Fx.hitstop(0.045 if not heavy else 0.08)
+		Fx.punch(swing_dir, 2.5 if not heavy else 5.0)
+
+
+## Distanza lungo la frustata se `to` (dal giocatore) è dentro, altrimenti -1.
+func _in_lash(to: Vector2, r: float) -> float:
+	var proj := to.dot(swing_dir)
+	if proj < -r or proj > swing_range + r:
+		return -1.0
+	if lash_width > 0.0:
+		return proj if absf(to.dot(swing_dir.orthogonal())) <= lash_width + r else -1.0
+	return to.length() if absf(swing_dir.angle_to(to)) <= swing_arc * 0.5 or to.length() < r + 6.0 else -1.0
+
+
 func _swing() -> void:
 	if Run.weapon == "arco":
 		_bow_shot()
+		return
+	if Run.weapon == "flagello":
+		_flail_swing()
 		return
 	if combo_window <= 0.0:
 		combo = 0
@@ -1099,6 +1324,33 @@ func _draw_charge() -> void:
 		draw_arc(c, r, -PI / 2.0, -PI / 2.0 + TAU * k, 24, Color(0.6, 0.6, 0.65, 0.8), 2.0)
 
 
+## Il pastorale: mentre carichi indica chi aggancerai (dorato = lo tiri a te, rosso = voli tu da lui);
+## dopo il rilascio si allunga fino al nemico agganciato.
+func _draw_hook(hand: Vector2, bob: float) -> void:
+	var from := Vector2(0, -10 + bob)
+	if hook_vis_t > 0.0:
+		var to := hook_to - global_position + Vector2(0, -6)
+		var col := FlailArt.RED if hook_red else FlailArt.GOLD
+		var k := clampf(hook_vis_t / 0.35, 0.0, 1.0)
+		draw_line(from, to, Color(col, 0.35 * k), 4.0)
+		FlailArt.draw_crook(self, from, (to - from).normalized(), maxf(10.0, (to - from).length()), col)
+		return
+	var tgt = _hook_target(aim)
+	if tgt != null:
+		var col2 := FlailArt.RED if _hook_heavy(tgt) else FlailArt.GOLD
+		var tp: Vector2 = tgt.global_position - global_position + Vector2(0, -6)
+		var dirt := (tp - from).normalized()
+		var dl := (tp - from).length()
+		var dd := 0.0
+		while dd < dl:
+			draw_line(from + dirt * dd, from + dirt * minf(dd + 5.0, dl), Color(col2, 0.3 + 0.5 * charge_k), 1.2)
+			dd += 10.0
+		draw_arc(tp, tgt.radius + 5.0, 0.0, TAU, 20, Color(col2, 0.4 + 0.5 * charge_k), 1.5)
+		FlailArt.draw_crook(self, hand, dirt, 16.0, col2)
+	else:
+		FlailArt.draw_crook(self, hand, aim, 16.0, FlailArt.GOLD)
+
+
 func _draw() -> void:
 	if dead:
 		return
@@ -1136,7 +1388,21 @@ func _draw() -> void:
 			var half := minf(swing_arc, PI * 1.2) * 0.5
 			wdir = swing_dir.rotated(side_sign * lerpf(-half, half, ease(swing_k, 0.4)))
 	var hand := Vector2(0, -11 + bob) + wdir * 5.0
-	if Run.weapon == "arco":
+	if Run.weapon == "flagello":
+		if charging or hook_vis_t > 0.0:
+			_draw_hook(hand, bob)
+		elif atk_t > 0.0:
+			var lk := clampf(1.0 - atk_t / 0.16, 0.0, 1.0)
+			var from := Vector2(0, -10 + bob) + swing_dir * 6.0
+			var bright := Color(1, 0.85, 0.4) if divine_t > 0.0 else FlailArt.BEAD
+			if lash_width > 0.0:
+				FlailArt.draw_lash(self, from, swing_dir, swing_range, lk, bright)
+			else:
+				for k: float in [-0.5, 0.0, 0.5]:
+					FlailArt.draw_lash(self, from, swing_dir.rotated(swing_arc * k * 0.85), swing_range, lk, bright)
+		else:
+			FlailArt.draw_flail(self, hand, aim, 1.0)
+	elif Run.weapon == "arco":
 		# l'arco teso verso la mira: la corda si tira mentre carichi, scatta dopo il tiro
 		var bdir := swing_dir if atk_t > 0.0 else aim
 		var pull := charge_k if charging else 0.0
@@ -1163,7 +1429,7 @@ func _draw() -> void:
 		draw_arc(Vector2(0, -4), swing_range * (0.55 + 0.45 * k), 0.0, TAU, 40, Color(1.0, 0.85, 0.4, 0.9 * (1.0 - k)), 4.0)
 		draw_arc(Vector2(0, -4), swing_range * (0.4 + 0.45 * k), 0.0, TAU, 40, Color(1.0, 0.97, 0.8, 0.6 * (1.0 - k)), 2.0)
 	# fendente: la zona disegnata è esattamente quella che colpisce (l'arco non ha fendenti)
-	if atk_t > 0.0 and Run.weapon != "arco":
+	if atk_t > 0.0 and Run.weapon != "arco" and Run.weapon != "flagello":
 		var pts := PackedVector2Array()
 		var steps := 14
 		var base := swing_dir.angle()

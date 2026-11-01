@@ -112,7 +112,7 @@ func _strike(e) -> void:
 	e.take_hit(d, dir, knock * Run.knock_mult(), Run.khopesh_burns())
 	if not e.dead:
 		if Run.has("arco_sobek"):
-			e.arrow_slow_t = 2.0           # Frecce della Palude
+			e.slow_t = 2.0           # Frecce della Palude
 		if charged and Run.has("arco_shu"):
 			e.shu_push(dir, 300.0)         # Freccia del Vento: spinge, e lo schianto fa il resto
 		if Run.has("duo_anubi_sekhmet") and not e.is_boss and not e.miniboss and e.hp < e.max_hp * 0.15:

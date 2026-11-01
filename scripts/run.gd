@@ -392,7 +392,9 @@ func eye_burns() -> bool:
 
 
 func burn_tick_damage() -> float:
-	var b := maxf(val("ra_burn"), val("arco_ra")) if (has("ra_burn") or has("arco_ra")) else 5.0
+	var b := maxf(maxf(val("ra_burn"), val("arco_ra")), val("flagello_ra"))
+	if b <= 0.0:
+		b = 5.0
 	return b * (1.6 if has("ra_heavy") else 1.0)
 
 
@@ -606,8 +608,8 @@ func nefti_on_kill(e: Node) -> void:
 	if p == null or p.dead:
 		return
 	var marked: bool = e.mourn_t > 0.0
-	if marked and (has("nefti_veil") or has("arco_nefti")):
-		var h := maxf(val("nefti_veil"), val("arco_nefti"))      # Velo del Lutto o Freccia del Lutto
+	if marked and (has("nefti_veil") or has("arco_nefti") or has("flagello_nefti")):
+		var h := maxf(maxf(val("nefti_veil"), val("arco_nefti")), val("flagello_nefti"))   # Velo, Freccia o Pastorale del Lutto
 		if has("duo_nefti_iside") and p.hp < p.max_hp / 3.0:
 			h *= 2.0                          # Le Due Sorelle
 		nefti_heal(h)

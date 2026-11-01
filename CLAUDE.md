@@ -157,21 +157,41 @@ compare come i pesanti); doppi: Vento Ardente (Ra), Ali del Falco (Horus, l'Occh
 del Cortile (come prima, i salvataggi la tengono); **arco** dopo `Meta.serpent_wins >= 3` per **20 lapis**
 (`Weapons.UNLOCK_COST`, `requirement_met`, `buy`): si compra al piedistallo (gemma che pulsa) o da **Neith nella Sala**
 (`hub.gd` `_neith_here`, `_start_neith`, `_offer_bow`; disegno condiviso in `scripts/neith_art.gd`, `talk_who`).
-Flagello di Osiride: piedistallo "chiuso" con il testo del requisito futuro (prima vittoria su Am-heh o 15 discese,
-35 lapis: campo `req` in `Weapons.FUTURE_IT`, ancora da fare). Arco (`player.gd` `_bow_shot`, `_bow_aim`,
+Arco (`player.gd` `_bow_shot`, `_bow_aim`,
 `_spawn_arrow`; frecce in `scripts/arrow.gd`, disegno in `scripts/arrow_art.gd`): freccia ogni 0,33 s al 60% di un
 fendente (12×0,6), si ferma al primo nemico, muri e colonne la fermano (raggio sullo strato 1); tiro carico ×2,4 (=4
-frecce) che trapassa tutto, carica 1 s, movimento ×0,65, ricarica 2 s come ogni arma (`_charge_cd_max`, prima 3 s); ventaglio di 3 frecce corte
+frecce) che trapassa tutto, carica 1 s, movimento ×0,65 e ricarica 2 s come ogni arma (`_charge_cd_max`, prima 3 s); ventaglio di 3 frecce corte
 (±18°, 120 px) alla fine dello scatto; mira: il nemico più vicino entro 320 (levetta destra decide lei; col mouse vale
 il nemico puntato, se no il più vicino), sempre, anche con la mira automatica spenta. Unico aspetto: Satet (+5/10/15%).
 Doni `arco_*` (campo `weapon`): Ra fuoco (sostituisce `ra_burn`), Sekhmet tiro carico +30/45/60%, Thoth trapassa 1 (dietro
-60/80/100%), Bastet critico del tiro carico 35/50/65%, Sobek rallenta 20/28/36% per 2 s (`Enemy.arrow_slow_t`, conta per
+60/80/100%), Bastet critico del tiro carico 35/50/65%, Sobek rallenta 20/28/36% per 2 s (`Enemy.slow_t`, conta per
 la Forza del Fiume), Iside scudo 5/7/9 a carica piena (non si somma), Horus frecce che curvano +10/15/20%, Anubi
 (bilancia) 2 frecce a ventaglio −35% ciascuna, Nefti il tiro carico marchia col Lutto (cura 2/3/4), Shu il tiro carico
 spinge (schianto 8/12/16). `Boons.NOT_FOR["arco"]`: niente doni della combo (Ruggito, Morso di Sobek, Custode, Soffio di
 Shu) né Colpo Solare. Battute: ogni dio commenta l'arco la prima volta (`Lore.bow_line`, id `arco_<dio>`), Anubi
 `arco1`, Neith `arco_preso` e `arco_amheh`. Lacrime della prima vittoria con l'arco: automatiche (`claim_boss`).
-Prove: `DUAT_WEAPON=arco` forza l'arma; `tools/dev/bowsmoke.gd` (nel controllo d'avvio) spara con tutti i doni dell'arco.
+Prove: `DUAT_WEAPON=arco` (o `flagello`) forza l'arma; `tools/dev/weaponsmoke.gd` (nel controllo d'avvio, per arco e
+flagello) colpisce con tutti i doni dell'arma, un nemico è élite.
+
+**Regola comune dell'attacco caricato** (tutte le armi): carica 1 s, movimento ×0,65 (`CHARGE_SLOW`, prima ×0,5 per
+khopesh e lancia), ricarica 2 s (`_charge_cd_max`) col cerchio sopra la testa.
+
+**Blocco 6 (1/11/2026) – Flagello di Osiride** (id `flagello`, aspetto unico `osiride` +5/10/15%; disegno
+`scripts/flail_art.gd`: flagello a strisce oro/blu con tre code di perline, pastorale col ricciolo). Sblocco: prima vittoria
+su Am-heh **o** 15 discese, **35 lapis**, al piedistallo del Cortile (`Weapons.requirement_met/UNLOCK_COST`); Anubi lo
+annuncia (`flagello0`). Frustate (`player.gd` `_flail_swing`, `_in_lash`, `FLAIL`): 80 px in linea (mezza larghezza 9)
+×0,85, cd 0,3; terza a ventaglio 55°/86 px ×1,4, cd 0,46; colpisce **tutti** i nemici sulla linea; danni ×0,5 addosso al
+corpo che salgono fino a ×1 al 70% della portata (`FLAIL_BODY`). Dopo lo scatto (`FLAIL_DASH`): 118 px ×1,3, slancio 110,
+spinta 300 nella direzione del colpo (i nemici vengono trascinati con te). Attacco caricato = **pastorale** (`_hook`,
+`HOOK`): cono 28° (×1,4 sul telefono) fino a 240 px, ×1,6 danni; i nemici normali vengono lanciati verso di te (o 150 px
+dove ti muovi) con `Enemy.shu_push(dir, forza, true)` → volano, si schiantano, cadono in sabbia nera e trappole;
+élite/guardiani/boss: **voli tu** da loro (560 px/s, max 0,6 s, invulnerabile, `_hook_pulling`). Mentre carichi una linea
+tratteggiata e un cerchio indicano il bersaglio: **oro** = lo tiri, **rosso** = voli tu (`_draw_hook`).
+Doni `flagello_*`: Ra la 3ª frustata incendia (4/5/6), Sekhmet punta +25/35/45%, Thoth +15/22/30% di portata, Bastet
+aggancio critico sicuro +20/35/50%, Sobek rallenta 15/22/30% (`Enemy.slow_t`, rinominato da `arrow_slow_t`), Iside scudo
+6/9/12 all'aggancio, Horus l'aggancio ricarica l'Occhio, Anubi (bilancia) frustate +30% rapide e −20% di portata, Nefti
+l'agganciato è marchiato (cura 2/3/4), Shu schianto del lanciato 12/18/24 (`Enemy.hook_slam`). Battute: ogni dio la prima
+volta (`Lore.flail_line`, id `flagello_<dio>`), Anubi `flagello1`, Imhotep `imh_flagello`, Neith `flagello_preso`.
 
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
@@ -197,8 +217,8 @@ moltiplicatore dei danni subiti (Sokar ×1,25), ondate più piene ed élite più
    - ~~Shu~~ (blocco 4): il dio dell'aria, spinte e schianti.
    - Le prove le fa il proprietario giocando: raccogliere le sue impressioni su Sokar (durezza della curva, Serket,
      Aker, nemici nuovi) e ritarare. Mega test con i bot solo se lo chiede, di notte.
-3. Raccogliere le impressioni sull'arco (danni, ricarica del tiro carico, mira automatica col mouse) e ritarare;
-   Flagello di Osiride (sblocco già scritto nel piedistallo) e Pastorale.
+3. Raccogliere le impressioni su arco e flagello (danni, tiro carico, aggancio del pastorale, mira automatica col mouse)
+   e ritarare; aspetti in più per arco e flagello.
 4. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
    se segnalato, lo stesso fix dello scorrimento col pad (`_settle_entries` in casa.gd) in altre finestre.
 

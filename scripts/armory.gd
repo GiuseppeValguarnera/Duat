@@ -376,6 +376,7 @@ func _neith_has_news() -> bool:
 ## I pezzi di storia di Neith: [id, condizione, battute].
 func _neith_beats() -> Array:
 	return [
+		["flagello_preso", Meta.weapons_unlocked.has("flagello"), [Lang.t("Il flagello e il pastorale di Osiride. Non sono armi da guerriera: sono le insegne del re. Con il pastorale si guida il gregge, con il flagello lo si difende."), Lang.t("La frusta morde con la punta: chi ti sta troppo addosso la sente appena. Tieni la distanza giusta, come un pastore con il suo bastone.")]],
 		["arco_preso", Meta.weapons_unlocked.has("arco"), [Lang.t("L'arco di Satet ha scelto la tua mano. Tienilo basso, respira, e non inseguire la preda: lascia che sia la freccia a farlo."), Lang.t("Tieni la corda tesa, e il tiro trapasserà un'intera fila. Ma mentre tendi sei lento, e il Duat lo sa.")]],
 		["arco_amheh", Meta.first_kills.has("amheh|arco|0"), [Lang.t("Am-heh è caduto sotto le frecce di Satet. Lontano dalle sue fauci, vicino alla vittoria: così cacciano le dee.")]],
 		["lancia_amheh", Meta.first_kills.has("amheh|lancia|0"), [Lang.t("La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba.")]],
@@ -638,6 +639,10 @@ func _draw_pedestal(p: Dictionary) -> void:
 	var c := Vector2(pos.x, pos.y - 18 + bob)
 	if id == "arco":
 		ArrowArt.draw_bow(self, c + Vector2(0, -4), 0.0, 1.0, 0.0)
+	elif id == "flagello":
+		# le insegne incrociate, come sul petto di Osiride: il pastorale e il flagello
+		FlailArt.draw_crook(self, c + Vector2(5, 12), Vector2(-0.35, -1).normalized(), 24.0, FlailArt.GOLD)
+		FlailArt.draw_flail(self, c + Vector2(-5, 12), Vector2(0.35, -1).normalized(), 1.5)
 	elif id == "lancia":
 		draw_line(c + Vector2(0, 14), c + Vector2(0, -14), Color(0.55, 0.38, 0.2), 2.0)
 		draw_colored_polygon(PackedVector2Array([c + Vector2(0, -22), c + Vector2(3, -14), c + Vector2(-3, -14)]), Color(0.85, 0.85, 0.9))

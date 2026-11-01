@@ -62,6 +62,9 @@ static func _story() -> Array:
 			Lang.t("Ho ricordato una cosa. Una notte Akhet mi chiese se un uomo senza nome può essere pesato."),
 			Lang.t("Gli risposi che senza nome non c'è cuore da mettere sulla bilancia, ma nemmeno una casa dove tornare. Lui sorrise come chi ha sentito solo la prima metà della frase."),
 			Lang.t("Poi mi offrì una giara di vino buono. Per un re è il modo di dire «grazie» e anche «non ne parliamo più».")]},
+		{"id": "imh_flagello", "if": Weapons.is_unlocked("flagello"), "lines": [
+			Lang.t("Quelle che porti al fianco... il flagello e il pastorale! Ho servito il faraone Djoser per tutta la vita, e non ho mai osato toccarli."),
+			Lang.t("Le insegne non fanno il re, giovane scriba. Ma un re senza insegne non lo riconosce nessuno, nemmeno gli dèi. Forse è per questo che nel Duat ti guardano tutti.")]},
 		{"id": "imh_sokar1", "if": Meta.sokar_seen, "lines": [
 			Lang.t("Sokar! Signore della necropoli, dio delle barche che solcano la sabbia. Le mie piramidi sorgono a Saqqara, e Saqqara porta il suo nome. Siamo vicini da tremila anni, io e lui."),
 			Lang.t("Non ci siamo mai rivolti la parola. Tra eterni, il silenzio è una forma di cortesia.")]},

@@ -41,15 +41,23 @@ const ALL_IT := {
 				"lore": "Il nome di Satet viene forse da 'scagliare': la sua corona bianca è ornata da corna di antilope, e nei templi di Elefantina era la padrona dell'acqua fresca che scende dal sud."},
 		},
 	},
+	"flagello": {
+		"name": "Flagello di Osiride", "short": "FLAGELLO", "the": "il flagello",
+		"desc": "Le insegne del faraone. Tre frustate a media distanza che colpiscono tutti i nemici in linea (la terza è più ampia): i danni pieni arrivano alla punta, chi ti sta addosso ne subisce meno. Tenendo premuto, il pastorale aggancia un nemico lontano e lo lancia verso di te o dove ti muovi; élite e boss invece tirano te verso di loro. Attaccando dopo lo scatto, una frustata lunga trascina con te i nemici colpiti.",
+		"lore": "Il flagello (nekhakha) e il pastorale (heka) erano le insegne di Osiride, il re dei morti, e di ogni faraone dopo di lui: il pastorale del pastore che guida il gregge, il flagello di chi lo difende. Tutankhamon li stringe incrociati sul petto, nel suo sarcofago d'oro.",
+		"aspects": {
+			"osiride": {"name": "Aspetto di Osiride", "desc": "Le insegne del re dei morti. +{v}% di danni.", "values": [5, 10, 15], "cost": [0, 1, 2],
+				"lore": "Osiride regnò sull'Egitto prima degli uomini; ucciso da Set e ricomposto da Iside, scese a regnare nel Duat. Lo si dipinge verde o nero, il colore della terra fertile e della vita che rinasce."},
+		},
+	},
 }
 
 ## Le armi che si comprano nel Cortile con i lapislazzuli, quando la condizione è soddisfatta.
 ## Il khopesh è tuo da subito, la lancia te la regala Neith alla prima visita.
-const UNLOCK_COST := {"arco": 20}
+const UNLOCK_COST := {"arco": 20, "flagello": 35}
 
 ## Armi ancora da forgiare: solo il nome, coperte nel cortile.
 const FUTURE_IT := [
-	{"name": "Flagello di Osiride", "glyph": "flagello", "req": "Si sveglierà dopo la prima vittoria su Am-heh o dopo 15 discese · 35 lapislazzuli"},
 	{"name": "Scettro was", "glyph": "was"},
 	{"name": "Artigli di Bastet", "glyph": "artigli"},
 ]
@@ -68,6 +76,8 @@ static func requirement_met(w: String) -> bool:
 	match w:
 		"arco":
 			return Meta.serpent_wins >= 3
+		"flagello":
+			return Meta.ammit_wins >= 1 or Meta.runs >= 15
 	return true
 
 
@@ -76,6 +86,8 @@ static func requirement_text(w: String) -> String:
 	match w:
 		"arco":
 			return Lang.t("Batti il Serpente della Porta tre volte (%d/3)") % mini(Meta.serpent_wins, 3)
+		"flagello":
+			return Lang.t("Batti Am-heh, oppure compi 15 discese (%d/15)") % mini(Meta.runs, 15)
 	return ""
 
 
@@ -165,6 +177,10 @@ static func choose(w: String, a: String = "") -> void:
 static func adapt(s: String) -> String:
 	if Run.weapon == "khopesh" or Run.weapon == "":
 		return s
+	if Run.weapon == "flagello":
+		if Lang.is_en():
+			return s.replace("Khopesh", "Flail").replace("khopesh", "flail")
+		return s.replace("Khopesh", "Flagello").replace("khopesh", "flagello")
 	if Run.weapon == "arco":
 		if Lang.is_en():
 			return s.replace("Khopesh", "Bow").replace("khopesh", "bow")

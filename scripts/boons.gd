@@ -71,6 +71,17 @@ const ALL_IT := {
 	"arco_anubi": {"god": "anubi", "weapon": "arco", "balanced": true, "name": "Faretra dello Sciacallo", "desc": "Ogni colpo scocca %d frecce a ventaglio.", "values": [2], "cost": "Ogni freccia fa il 35% di danni in meno."},
 	"arco_nefti": {"god": "nefti", "weapon": "arco", "name": "Freccia del Lutto", "desc": "Il tiro carico marchia col Lutto chi trapassa; i marchiati che muoiono ti curano di %d.", "values": [2, 3, 4]},
 	"arco_shu": {"god": "shu", "weapon": "arco", "name": "Freccia del Vento", "desc": "Il tiro carico spinge via i nemici che trapassa; lo schianto contro muri, colonne o altri nemici fa %d danni.", "values": [8, 12, 16]},
+	# il Flagello di Osiride: frustate in linea (danni pieni alla punta) e l'aggancio del pastorale
+	"flagello_ra": {"god": "ra", "weapon": "flagello", "name": "Frusta del Sole", "desc": "La terza frustata incendia i nemici: %d danni ogni mezzo secondo per 2 secondi.", "values": [4, 5, 6]},
+	"flagello_sekhmet": {"god": "sekhmet", "weapon": "flagello", "name": "Morso della Punta", "desc": "I colpi di punta del flagello fanno il %d%% di danni in più.", "values": [25, 35, 45]},
+	"flagello_thoth": {"god": "thoth", "weapon": "flagello", "name": "Frusta Sapiente", "desc": "Le frustate arrivano il %d%% più lontano.", "values": [15, 22, 30]},
+	"flagello_bastet": {"god": "bastet", "weapon": "flagello", "name": "Presa della Gatta", "desc": "Il nemico agganciato dal pastorale subisce sempre un colpo critico, e l'aggancio fa il %d%% di danni in più.", "values": [20, 35, 50]},
+	"flagello_sobek": {"god": "sobek", "weapon": "flagello", "name": "Frusta della Palude", "desc": "Le frustate rallentano i nemici del %d%% per 2 secondi.", "values": [15, 22, 30]},
+	"flagello_iside": {"god": "iside", "weapon": "flagello", "name": "Pastorale di Iside", "desc": "Agganciare un nemico ti dà uno scudo che assorbe %d danni (non si somma).", "values": [6, 9, 12]},
+	"flagello_horus": {"god": "horus", "weapon": "flagello", "name": "Pastorale del Falco", "desc": "Agganciare un nemico ricarica subito l'Occhio di Horus."},
+	"flagello_anubi": {"god": "anubi", "weapon": "flagello", "balanced": true, "name": "Ritmo dello Sciacallo", "desc": "Le frustate sono il %d%% più rapide.", "values": [30], "cost": "La frusta arriva il 20% meno lontano."},
+	"flagello_nefti": {"god": "nefti", "weapon": "flagello", "name": "Pastorale del Lutto", "desc": "Il nemico agganciato viene marchiato col Lutto; i marchiati che muoiono ti curano di %d.", "values": [2, 3, 4]},
+	"flagello_shu": {"god": "shu", "weapon": "flagello", "name": "Lancio del Vento", "desc": "Il nemico lanciato dal pastorale si schianta contro muri, colonne o altri nemici con %d danni.", "values": [12, 18, 24]},
 	# Iside: protezione, cure, magia
 	"iside_wings": {"god": "iside", "name": "Ali di Iside", "desc": "All'inizio di ogni stanza hai uno scudo che assorbe %d danni.", "values": [10, 15, 20]},
 	"iside_tears": {"god": "iside", "name": "Lacrime di Iside", "desc": "Tutte le cure ti curano il %d%% in più.", "values": [20, 30, 40]},
@@ -199,22 +210,22 @@ static func available_now(id: String) -> bool:
 
 ## Doni che funzionano solo insieme ad altri: compaiono soltanto se ne possiedi almeno uno.
 const REQUIRES := {
-	"sobek_river": ["sobek_bite", "sobek_tide", "arco_sobek"],
-	"duo_ra_sekhmet": ["ra_burn", "ra_dawn", "ra_eye", "ra_heavy", "arco_ra"],
-	"duo_sekhmet_bastet": ["bastet_claws", "bastet_heavy", "bastet_point", "arco_bastet"],
+	"sobek_river": ["sobek_bite", "sobek_tide", "arco_sobek", "flagello_sobek"],
+	"duo_ra_sekhmet": ["ra_burn", "ra_dawn", "ra_eye", "ra_heavy", "arco_ra", "flagello_ra"],
+	"duo_sekhmet_bastet": ["bastet_claws", "bastet_heavy", "bastet_point", "arco_bastet", "flagello_bastet"],
 	"duo_thoth_bastet": ["bastet_eyes", "bastet_heavy"],
 	"duo_sobek_iside": ["iside_wings"],
 	# il dono di Anubi c'è quasi sempre (lo dà all'inizio): serve uno di quelli che riguardano i colpi
-	"duo_anubi_sekhmet": ["anubi_jackal", "anubi_guardian", "anubi_scale", "anubi_guide", "arco_anubi"],
+	"duo_anubi_sekhmet": ["anubi_jackal", "anubi_guardian", "anubi_scale", "anubi_guide", "arco_anubi", "flagello_anubi"],
 	# i doni di Nefti che vivono del marchio del Lutto
-	"nefti_kite": ["nefti_veil", "arco_nefti"],
-	"nefti_lament": ["nefti_veil", "arco_nefti"],
-	"duo_nefti_iside": ["nefti_veil", "arco_nefti"],
+	"nefti_kite": ["nefti_veil", "arco_nefti", "flagello_nefti"],
+	"nefti_lament": ["nefti_veil", "arco_nefti", "flagello_nefti"],
+	"duo_nefti_iside": ["nefti_veil", "arco_nefti", "flagello_nefti"],
 	"duo_nefti_anubi": ["anubi_guide"],
 	# i doni di Shu che vivono delle spinte
-	"shu_divide": ["shu_breath", "shu_column", "shu_north", "shu_wings", "arco_shu"],
-	"shu_above": ["shu_breath", "shu_column", "shu_north", "shu_wings", "arco_shu"],
-	"duo_shu_ra": ["shu_breath", "shu_column", "shu_north", "shu_wings", "arco_shu"],
+	"shu_divide": ["shu_breath", "shu_column", "shu_north", "shu_wings", "arco_shu", "flagello_shu"],
+	"shu_above": ["shu_breath", "shu_column", "shu_north", "shu_wings", "arco_shu", "flagello_shu"],
+	"duo_shu_ra": ["shu_breath", "shu_column", "shu_north", "shu_wings", "arco_shu", "flagello_shu"],
 	"duo_shu_horus": ["shu_north"],
 }
 
@@ -358,6 +369,16 @@ const SHORT_IT := {
 	"duo_shu_ra": ["Schianti che incendiano", ""],
 	"duo_shu_horus": ["L'Occhio torna", ""],
 	"ra_burn": ["Arma: fuoco %d ogni 0,5 s", ""],
+	"flagello_ra": ["3ª frustata: fuoco %d", ""],
+	"flagello_sekhmet": ["Punta +%d%% danni", ""],
+	"flagello_thoth": ["Frusta +%d%% più lunga", ""],
+	"flagello_bastet": ["Aggancio: critico sicuro +%d%%", ""],
+	"flagello_sobek": ["Frustate: -%d%% velocità", ""],
+	"flagello_iside": ["Aggancio: scudo %d", ""],
+	"flagello_horus": ["Aggancio: Occhio pronto", ""],
+	"flagello_anubi": ["Frustate +%d%% rapide", "Frusta -20% lunga"],
+	"flagello_nefti": ["Aggancio marchia · +%d", ""],
+	"flagello_shu": ["Lanciato: schianto %d", ""],
 	"arco_ra": ["Frecce: fuoco %d ogni 0,5 s", ""],
 	"arco_sekhmet": ["Tiro carico +%d%% danni", ""],
 	"arco_thoth": ["Trapassa 1 · dietro %d%%", ""],

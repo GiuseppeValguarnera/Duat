@@ -17,8 +17,11 @@
 - l'Arco di Satet, terza arma: frecce rapide, tiro carico che trapassa la fila, ventaglio dopo lo
   scatto, mira automatica; Neith lo offre nella Sala dopo la terza vittoria sul Serpente (20
   lapislazzuli), con dieci doni dedicati e le battute degli dèi
-- le armi si risvegliano con i lapislazzuli nel Cortile; il Flagello di Osiride è già sul suo
-  piedistallo, ancora chiuso
+- le armi si risvegliano con i lapislazzuli nel Cortile
+- il Flagello di Osiride, quarta arma: frustate che colpiscono tutta la fila (più forti alla punta) e il
+  pastorale che aggancia i nemici e li lancia, o ti porta dai più grossi; dieci doni dedicati, e dèi,
+  Anubi e Imhotep che notano le insegne del faraone
+- l'attacco caricato ha le stesse regole per tutte le armi: 1 secondo di carica, 2 di ricarica
 - dialoghi più aulici e simbolici, già dalla prima discesa
 - correzioni: colonne e profondità, coccodrilli sotto il pavimento, mira automatica sul telefono,
   "Esci" sul web, musica dei guardiani, Scettro Was più chiaro
