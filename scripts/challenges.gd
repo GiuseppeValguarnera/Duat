@@ -98,9 +98,9 @@ static func claim(id: String) -> bool:
 		"ka":
 			Meta.ka_bank += int(r[1])
 		"lapis":
-			Meta.lapis += int(r[1])
+			Meta.lapis += Run.feather_half(int(r[1]))
 		"tears":
-			Meta.tears += int(r[1])
+			Meta.tears += Run.feather_half(int(r[1]))
 	Meta.challenges[id] = 2
 	Meta.save()
 	return true

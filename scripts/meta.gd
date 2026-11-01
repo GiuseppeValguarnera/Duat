@@ -23,6 +23,7 @@ var serpent_wins := 0                 ## volte che hai battuto il Serpente della
 var sokar_seen := false               ## sei arrivato almeno una volta nella terra di Sokar
 var aker_wins := 0                    ## volte che hai battuto Aker (boss di Sokar)
 var serket_wins := 0                  ## volte che hai battuto Serket (guardiana di Sokar)
+var early_streak := 0                 ## morti di fila entro la stanza 4 (Anubi offre la Piuma di Ma'at)
 var serpent_streak := 0               ## sconfitte di fila contro il Serpente (Anubi offre la Piuma di Ma'at)
 var neith_seen: Array = []            ## battute di Neith già ascoltate
 var chapters_equipped: Array = []     ## capitoli attivi (limitati da Chapters.slots())
@@ -75,6 +76,7 @@ func _ready() -> void:
 		first_kills = cfg.get_value("armi", "prime_vittorie", {})
 		serpent_wins = cfg.get_value("boss", "serpente", 0)
 		serpent_streak = cfg.get_value("boss", "serpente_di_fila", 0)
+		early_streak = cfg.get_value("piuma", "morti_presto_di_fila", 0)
 		serket_wins = cfg.get_value("boss", "serket", 0)
 		aker_wins = cfg.get_value("boss", "aker", 0)
 		sokar_seen = cfg.get_value("storia", "sokar", false)
@@ -134,6 +136,7 @@ func save() -> void:
 	cfg.set_value("armi", "prime_vittorie", first_kills)
 	cfg.set_value("boss", "serpente", serpent_wins)
 	cfg.set_value("boss", "serpente_di_fila", serpent_streak)
+	cfg.set_value("piuma", "morti_presto_di_fila", early_streak)
 	cfg.set_value("boss", "serket", serket_wins)
 	cfg.set_value("boss", "aker", aker_wins)
 	cfg.set_value("storia", "sokar", sokar_seen)
@@ -174,6 +177,8 @@ func save() -> void:
 const TEAR_TIERS := [0, 4, 8]
 
 func claim_boss(boss: String, per_tier: int) -> int:
+	if feather:
+		return 0                # con la Piuma di Ma'at niente Lacrime "prima volta con quest'arma" (resta da prendere dopo)
 	var w := Weights.total()
 	var gained := 0
 	for tier in TEAR_TIERS:

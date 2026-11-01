@@ -108,13 +108,16 @@ static func _reaction() -> Array:
 ## 3. La storia: battute in ordine, ognuna con la sua condizione, dette una volta sola.
 static func story() -> Array:
 	return [
-		# chi cade tre volte di fila contro il Serpente scopre che esiste un aiuto (e di nuovo a sei)
+		# chi cade tre volte di fila contro il Serpente, o tre volte di fila prima della quinta stanza,
+		# scopre che esiste un aiuto. Un'offerta sola per ciascun caso: non a ogni morte.
 		{"id": "piuma1", "if": Meta.serpent_streak >= 3 and not Meta.feather, "offer": true, "lines": [
 			Lang.t("Il Serpente della Porta ti ha fermato ancora. Tre volte di fila."),
 			Lang.t("Ma'at non chiede a tutti di camminare allo stesso passo. A chi inciampa, presta una sua piuma: i colpi pesano meno sul tuo cuore. In cambio, il Duat ti restituisce meno Ka."),
 			Lang.t("Non è una vergogna accettarla. È una vergogna non provare. Vuoi la piuma?")]},
-		{"id": "piuma2", "if": Meta.serpent_streak >= 6 and not Meta.feather, "offer": true, "lines": [
-			Lang.t("Sei volte, Scriba. La piuma di Ma'at è ancora qui, se la vuoi. Puoi anche lasciarla quando vuoi, dalle Opzioni.")]},
+		{"id": "piuma3", "if": Meta.early_streak >= 3 and not Meta.feather, "offer": true, "lines": [
+			Lang.t("Tre volte sei tornato a me prima ancora di vedere la Porta, Scriba."),
+			Lang.t("Il Duat non è un sentiero per i soli forti. Ma'at può prestarti una sua piuma: meno nemici ti cercheranno, e più lenti; i loro colpi peseranno meno sul tuo cuore. In cambio le ricompense della notte saranno più povere."),
+			Lang.t("La piuma si posa e si toglie quando vuoi, dalle Opzioni. Vuoi accoglierla?")]},
 		{"id": "intro1", "if": Meta.runs == 0, "lines": [
 			Lang.t("Apri gli occhi, Scriba."),
 			Lang.t("Sei morto. Lo sai già, credo. Lo si sente nelle ossa."),

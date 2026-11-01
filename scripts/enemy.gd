@@ -36,6 +36,8 @@ func _ready() -> void:
 	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_ON
 	if not is_boss:
 		max_hp *= Run.enemy_hp_mult()
+	if Meta.feather and not is_boss and not miniboss and not Run.in_hub:
+		speed *= 0.9                       # Piuma di Ma'at: nemici un po' più lenti
 	if elite:
 		max_hp *= 1.8
 		contact_damage *= 1.3
@@ -349,9 +351,9 @@ func die() -> void:
 		Fx.soul(global_position + Vector2(0, -radius))
 	# capitolo 26: a volte il nemico lascia un cuore che cura
 	var heart_chance := Chapters.value("c26")
-	if heart_chance > 0.0 and not Run.training and not is_boss and randf() * 100.0 < heart_chance:
+	if heart_chance > 0.0 and not Run.training and Run.feather_halff(Chapters.heart_heal()) > 0.0 and not is_boss and randf() * 100.0 < heart_chance:
 		var heart := HeartScript.new()
-		heart.amount = Chapters.heart_heal()
+		heart.amount = Run.feather_halff(Chapters.heart_heal())
 		get_parent().add_child.call_deferred(heart)
 		heart.position = global_position
 	Run.last_kill_depth = spirit_depth          # statistiche (bot): la catena degli spiriti

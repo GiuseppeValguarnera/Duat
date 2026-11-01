@@ -116,11 +116,11 @@ func _collapse() -> void:
 	# perché trovare il serdab deve valere la pena)
 	match rng.randi_range(0, 2):
 		0:
-			treasures.append(["heart", Vector2(hx + rng.randf_range(-30, 30), -SIZE.y * 0.42), 10.0, false])
+			treasures.append(["heart", Vector2(hx + rng.randf_range(-30, 30), -SIZE.y * 0.42), Run.feather_halff(10.0), false])
 		1:
 			treasures.append(["lapis", Vector2(hx + rng.randf_range(-20, 20), -SIZE.y * 0.6), rng.randi_range(2, 3), false])
 		_:
-			var total := roundi(rng.randi_range(KA_MIN, KA_MAX) * Run.treasure_mult())
+			var total := Run.feather_half(roundi(rng.randi_range(KA_MIN, KA_MAX) * Run.treasure_mult()))
 			var coins := 3
 			for i in range(coins):
 				var at := Vector2(hx + (i - 1) * 34.0 + rng.randf_range(-6, 6), -SIZE.y * 0.42 + rng.randf_range(-10, 14))

@@ -446,7 +446,7 @@ func _offer_feather() -> void:
 	var h := UiStyle.label(Lang.t("La piuma di Ma'at"), 13, UiStyle.INK, true)
 	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(h)
-	col.add_child(UiStyle.label(Lang.t("Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka, e il Peso del Cuore non conta. Puoi toglierla quando vuoi dalle Opzioni."), 8, UiStyle.INK_SOFT, false, col.custom_minimum_size.x))
+	col.add_child(UiStyle.label(Lang.t("Un quarto di nemici in meno, più lenti del 10%, e il 10% di danni in meno (un altro 2% a ogni morte, fino al 30%). In cambio custodisci il 40% del Ka, e lapislazzuli, cuori, serdab e Lacrime valgono la metà. Il Peso del Cuore non conta. La storia va avanti comunque. Puoi toglierla quando vuoi dalle Opzioni."), 8, UiStyle.INK_SOFT, false, col.custom_minimum_size.x))
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", int(10 * Fx.ui))
@@ -880,7 +880,7 @@ func _on_restoration_pressed(id: String) -> void:
 const FEEDBACK_URL := ""
 
 const OPTION_TEXT := {
-	"feather": ["Piuma di Ma'at", "Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva."],
+	"feather": ["Piuma di Ma'at", "Una modalità per chi vuole un aiuto. Un quarto di nemici in meno nelle ondate, nemici più lenti del 10%, e subisci il 10% di danni in meno, un altro 2% a ogni morte, fino al 30%. In cambio custodisci il 40% del Ka, e lapislazzuli, cuori, premi del serdab e Lacrime valgono la metà; niente Lacrime per la prima vittoria con un'arma. Il Peso del Cuore non conta finché è attiva. La storia va avanti comunque."],
 	"shake": ["Scuotimento dello schermo", "La telecamera trema quando colpisci o vieni colpito. Spegnilo se ti dà fastidio agli occhi."],
 	"hitstop": ["Pausa sui colpi", "Il gioco si ferma per un istante quando un colpo va a segno: dà peso ai colpi. Spegnila se preferisci un'azione sempre fluida."],
 	"autoaim": ["Mira automatica (telefono)", "Sul telefono, quando sei fermo, l'arma e l'Occhio mirano da soli al nemico più vicino. Quando ti muovi colpisci sempre nella direzione in cui vai, con un piccolo aiuto se c'è un nemico più o meno davanti. Spegnila se preferisci mirare sempre con il movimento."],

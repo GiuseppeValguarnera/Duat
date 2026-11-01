@@ -380,6 +380,8 @@ func start_room(reward: Dictionary) -> void:
 	var horde := 1.0 + 0.25 * Weights.rank("orde")
 	if Run.region == 2:
 		horde *= 1.3                              # Sokar: più nemici per ondata, non una terza ondata
+	if Meta.feather:
+		horde *= 0.75                             # Piuma di Ma'at: un quarto di nemici in meno
 	var soft := 1 if r <= 2 else 0                # le prime due stanze sono un po' più leggere
 	waves = [_make_wave(roundi((4 + r * 2 - soft) * horde), r >= 3), _make_wave(roundi((3 + r * 2 - soft) * horde), r >= 3)]
 	_spawn_wave(waves.pop_front(), 1.0)
@@ -1462,6 +1464,8 @@ func _on_player_died() -> void:
 	Meta.last_end = "ammit" if Run.room > Run.ROOMS_PER_RUN else "room"   # "ammit" = morto contro il boss della regione (nome storico nel salvataggio)
 	if Meta.feather:
 		Meta.feather_deaths += 1
+	# tre morti di fila entro la stanza 4: Anubi offre la Piuma (una volta sola, dialogue.gd "piuma3")
+	Meta.early_streak = Meta.early_streak + 1 if Run.region == 1 and Run.room <= 4 else 0
 	Meta.last_room = Run.room
 	var killer: String = Lang.t(KILLER_NAMES.get(Run.last_hit, ""))
 	var summary := _end_run_summary()

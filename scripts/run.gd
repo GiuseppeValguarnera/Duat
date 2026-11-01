@@ -425,11 +425,21 @@ func damage_taken_mult() -> float:
 	return m
 
 
-## Piuma di Ma'at: 10% di danni in meno, +2% a ogni morte, fino al 50%.
+## Piuma di Ma'at: 10% di danni in meno, +2% a ogni morte, fino al 30%.
 func feather_guard() -> float:
 	if not Meta.feather:
 		return 0.0
-	return minf(0.5, 0.1 + 0.02 * Meta.feather_deaths)
+	return minf(0.3, 0.1 + 0.02 * Meta.feather_deaths)
+
+
+## Piuma di Ma'at: le ricompense della discesa (tranne il Ka, che vale il 40% a casa) a metà,
+## arrotondate per difetto: lapislazzuli, cuori, premi del serdab, Lacrime delle sfide.
+func feather_half(n: int) -> int:
+	return floori(n / 2.0) if Meta.feather else n
+
+
+func feather_halff(x: float) -> float:
+	return floorf(x / 2.0) if Meta.feather else x
 
 
 ## Vita dei nemici: +6% per ogni stanza dopo la prima, più l'eventuale prezzo di Anubi.

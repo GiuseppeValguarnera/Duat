@@ -78,6 +78,7 @@ static func buy(id: String) -> bool:
 
 ## Lapislazzuli trovati: restano subito, anche se poi muori.
 static func gain(n: int, at: Vector2) -> void:
+	n = Run.feather_half(n)                # Piuma di Ma'at: a metà
 	if n <= 0:
 		return
 	Meta.lapis += n
