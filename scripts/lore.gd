@@ -220,10 +220,44 @@ static func _entries(god: String) -> Array:
 
 
 ## Cosa dice il dio adesso: la prima storia non ancora ascoltata, oppure una frase breve.
+## La prima volta che un dio ti vede con l'Arco di Satet in mano, lo commenta (dopo la sua presentazione).
+static func bow_line(god: String) -> String:
+	match god:
+		"ra":
+			return Lang.t("Un arco, piccolo scriba? Anche i miei raggi colpiscono da lontano. Le tue frecce porteranno un poco del mio fuoco.")
+		"sekhmet":
+			return Lang.t("Ti nascondi dietro una corda tesa? Io caccio con le zanne. Ma una freccia nel cuore della preda... sì, anche questa è caccia.")
+		"thoth":
+			return Lang.t("L'arco di Satet. Ne annoto il peso e la tensione: una freccia è un pensiero che vola dritto. Che il tuo non esiti.")
+		"bastet":
+			return Lang.t("Colpire da lontano, senza farsi toccare. Questo è un modo di combattere che un gatto capisce benissimo.")
+		"sobek":
+			return Lang.t("Nelle paludi i cacciatori mi temono, e tirano dalle barche. Tu tiri dall'asciutto. Le mie acque renderanno lente le tue prede.")
+		"iside":
+			return Lang.t("Satet custodiva la piena che dà la vita. Il suo arco è in buone mani, se ricordi che ogni freccia scoccata è anche una preghiera.")
+		"horus":
+			return Lang.t("Il falco vede la preda da lontanissimo e non la manca mai. Impugni l'arma giusta per uno che ha il mio Occhio.")
+		"anubi":
+			return Lang.t("Ora tieni la morte a distanza, Scriba. È prudente. Ma la bilancia pesa anche ciò che colpisci da lontano.")
+		"nefti":
+			return Lang.t("Una freccia è un lamento che vola. Lascia che le mie lacrime viaggino con le tue, e chi cade ti ristorerà.")
+		"shu":
+			return Lang.t("Una freccia vive dentro di me, Scriba: io sono l'aria in cui vola. Tendi la corda, e il mio vento farà il resto.")
+		"set":
+			return Lang.t("Un arco! Il deserto è pieno di arcieri morti di sete. Ma tu sei divertente. Facciamo un patto.")
+	return ""
+
+
 static func speech(god: String) -> String:
 	if not GODS.has(god):
 		return ""
 	var entries := _entries(god)
+	if Run.weapon == "arco" and Meta.dialogue_seen.has("%s_0" % god) and not Meta.dialogue_seen.has("arco_" + god):
+		var bl := bow_line(god)
+		if bl != "":
+			Meta.dialogue_seen.append("arco_" + god)
+			Meta.save()
+			return bl
 	for i in range(entries.size()):
 		var id := "%s_%d" % [god, i]
 		if not Meta.dialogue_seen.has(id):

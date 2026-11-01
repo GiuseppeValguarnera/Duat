@@ -60,6 +60,17 @@ const ALL_IT := {
 	"bastet_point": {"god": "bastet", "weapon": "lancia", "name": "Punta Felina", "desc": "L'attacco in scatto della lancia (l'affondo in corsa) ha il %d%% di probabilità di essere un colpo critico.", "values": [35, 50, 65]},
 	"bastet_dance": {"god": "bastet", "weapon": "khopesh", "name": "Danza delle Lame", "desc": "Il khopesh colpisce il %d%% più rapidamente.", "values": [10, 15, 20]},
 	"ra_edge": {"god": "ra", "weapon": "khopesh", "name": "Filo del Sole", "desc": "I fendenti del khopesh arrivano il %d%% più lontano e sono più ampi.", "values": [12, 18, 25]},
+	# l'Arco di Satet: doni solo per l'arco (frecce = i colpi rapidi; tiro carico = tenendo premuto)
+	"arco_ra": {"god": "ra", "weapon": "arco", "name": "Frecce del Sole", "desc": "Le frecce incendiano i nemici: %d danni ogni mezzo secondo per 2 secondi.", "values": [4, 5, 6]},
+	"arco_sekhmet": {"god": "sekhmet", "weapon": "arco", "name": "Tiro della Leonessa", "desc": "Il tiro carico fa il %d%% di danni in più.", "values": [30, 45, 60]},
+	"arco_thoth": {"god": "thoth", "weapon": "arco", "name": "Freccia Sapiente", "desc": "Le frecce trapassano un nemico e colpiscono quello dietro con il %d%% dei danni.", "values": [60, 80, 100]},
+	"arco_bastet": {"god": "bastet", "weapon": "arco", "name": "Occhio della Gatta", "desc": "Il tiro carico ha il %d%% di probabilità di essere un colpo critico.", "values": [35, 50, 65]},
+	"arco_sobek": {"god": "sobek", "weapon": "arco", "name": "Frecce della Palude", "desc": "Le frecce rallentano i nemici del %d%% per 2 secondi.", "values": [20, 28, 36]},
+	"arco_iside": {"god": "iside", "weapon": "arco", "name": "Respiro di Iside", "desc": "Quando l'arco è teso a pieno ricevi uno scudo che assorbe %d danni (non si somma).", "values": [5, 7, 9]},
+	"arco_horus": {"god": "horus", "weapon": "arco", "name": "Frecce del Falco", "desc": "Le frecce curvano da sole verso il nemico più vicino e fanno il %d%% di danni in più.", "values": [10, 15, 20]},
+	"arco_anubi": {"god": "anubi", "weapon": "arco", "balanced": true, "name": "Faretra dello Sciacallo", "desc": "Ogni colpo scocca %d frecce a ventaglio.", "values": [2], "cost": "Ogni freccia fa il 35% di danni in meno."},
+	"arco_nefti": {"god": "nefti", "weapon": "arco", "name": "Freccia del Lutto", "desc": "Il tiro carico marchia col Lutto chi trapassa; i marchiati che muoiono ti curano di %d.", "values": [2, 3, 4]},
+	"arco_shu": {"god": "shu", "weapon": "arco", "name": "Freccia del Vento", "desc": "Il tiro carico spinge via i nemici che trapassa; lo schianto contro muri, colonne o altri nemici fa %d danni.", "values": [8, 12, 16]},
 	# Iside: protezione, cure, magia
 	"iside_wings": {"god": "iside", "name": "Ali di Iside", "desc": "All'inizio di ogni stanza hai uno scudo che assorbe %d danni.", "values": [10, 15, 20]},
 	"iside_tears": {"god": "iside", "name": "Lacrime di Iside", "desc": "Tutte le cure ti curano il %d%% in più.", "values": [20, 30, 40]},
@@ -188,24 +199,37 @@ static func available_now(id: String) -> bool:
 
 ## Doni che funzionano solo insieme ad altri: compaiono soltanto se ne possiedi almeno uno.
 const REQUIRES := {
-	"sobek_river": ["sobek_bite", "sobek_tide"],
-	"duo_ra_sekhmet": ["ra_burn", "ra_dawn", "ra_eye", "ra_heavy"],
-	"duo_sekhmet_bastet": ["bastet_claws", "bastet_heavy", "bastet_point"],
+	"sobek_river": ["sobek_bite", "sobek_tide", "arco_sobek"],
+	"duo_ra_sekhmet": ["ra_burn", "ra_dawn", "ra_eye", "ra_heavy", "arco_ra"],
+	"duo_sekhmet_bastet": ["bastet_claws", "bastet_heavy", "bastet_point", "arco_bastet"],
 	"duo_thoth_bastet": ["bastet_eyes", "bastet_heavy"],
 	"duo_sobek_iside": ["iside_wings"],
 	# il dono di Anubi c'è quasi sempre (lo dà all'inizio): serve uno di quelli che riguardano i colpi
-	"duo_anubi_sekhmet": ["anubi_jackal", "anubi_guardian", "anubi_scale", "anubi_guide"],
+	"duo_anubi_sekhmet": ["anubi_jackal", "anubi_guardian", "anubi_scale", "anubi_guide", "arco_anubi"],
 	# i doni di Nefti che vivono del marchio del Lutto
-	"nefti_kite": ["nefti_veil"],
-	"nefti_lament": ["nefti_veil"],
-	"duo_nefti_iside": ["nefti_veil"],
+	"nefti_kite": ["nefti_veil", "arco_nefti"],
+	"nefti_lament": ["nefti_veil", "arco_nefti"],
+	"duo_nefti_iside": ["nefti_veil", "arco_nefti"],
 	"duo_nefti_anubi": ["anubi_guide"],
 	# i doni di Shu che vivono delle spinte
-	"shu_divide": ["shu_breath", "shu_column", "shu_north", "shu_wings"],
-	"shu_above": ["shu_breath", "shu_column", "shu_north", "shu_wings"],
-	"duo_shu_ra": ["shu_breath", "shu_column", "shu_north", "shu_wings"],
+	"shu_divide": ["shu_breath", "shu_column", "shu_north", "shu_wings", "arco_shu"],
+	"shu_above": ["shu_breath", "shu_column", "shu_north", "shu_wings", "arco_shu"],
+	"duo_shu_ra": ["shu_breath", "shu_column", "shu_north", "shu_wings", "arco_shu"],
 	"duo_shu_horus": ["shu_north"],
 }
+
+
+## Doni che non hanno senso con un'arma: l'arco non ha la combinazione di tre colpi, e il suo
+## dono di Ra (Frecce del Sole) prende il posto del Colpo Solare.
+const NOT_FOR := {
+	"arco": ["sekhmet_roar", "sobek_bite", "anubi_guardian", "shu_breath", "ra_burn"],
+}
+
+
+static func fits_weapon(id: String) -> bool:
+	if ALL[id].has("weapon") and ALL[id]["weapon"] != Run.weapon:
+		return false
+	return not (NOT_FOR.get(Run.weapon, []) as Array).has(id)
 
 
 static func requirements_met(id: String, owned: Dictionary) -> bool:
@@ -226,7 +250,7 @@ static func offers(god: String, owned: Dictionary) -> Array:
 			continue
 		if not owned.has(id) and not requirements_met(id, owned):
 			continue
-		if ALL[id].has("weapon") and ALL[id]["weapon"] != Run.weapon:
+		if not fits_weapon(id):
 			continue
 		if is_heavy(id) or is_rare(id):
 			if not owned.has(id):
@@ -299,7 +323,7 @@ static func duos_for(god: String, owned: Dictionary) -> Array:
 	for id in ALL:
 		if not is_duo(id) or owned.has(id) or not requirements_met(id, owned):
 			continue
-		if ALL[id].has("weapon") and ALL[id]["weapon"] != Run.weapon:
+		if not fits_weapon(id):
 			continue
 		var gods: Array = ALL[id]["gods"]
 		if not gods.has(god):
@@ -334,6 +358,16 @@ const SHORT_IT := {
 	"duo_shu_ra": ["Schianti che incendiano", ""],
 	"duo_shu_horus": ["L'Occhio torna", ""],
 	"ra_burn": ["Arma: fuoco %d ogni 0,5 s", ""],
+	"arco_ra": ["Frecce: fuoco %d ogni 0,5 s", ""],
+	"arco_sekhmet": ["Tiro carico +%d%% danni", ""],
+	"arco_thoth": ["Trapassa 1 · dietro %d%%", ""],
+	"arco_bastet": ["Tiro carico %d%% critico", ""],
+	"arco_sobek": ["Frecce: -%d%% velocità 2 s", ""],
+	"arco_iside": ["Arco teso: scudo %d", ""],
+	"arco_horus": ["Frecce inseguono · +%d%%", ""],
+	"arco_anubi": ["%d frecce per colpo", "-35% danni a freccia"],
+	"arco_nefti": ["Tiro carico marchia · +%d", ""],
+	"arco_shu": ["Tiro carico spinge · schianto %d", ""],
 	"ra_disc": ["Occhio esplode: %d danni", ""],
 	"ra_dawn": ["Scatto ferisce: %d danni", "Scatto -40% più lento"],
 	"ra_eye": ["Occhio +%d%% danni e incendia", ""],

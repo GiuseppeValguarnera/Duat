@@ -376,6 +376,8 @@ func _neith_has_news() -> bool:
 ## I pezzi di storia di Neith: [id, condizione, battute].
 func _neith_beats() -> Array:
 	return [
+		["arco_preso", Meta.weapons_unlocked.has("arco"), [Lang.t("L'arco di Satet ha scelto la tua mano. Tienilo basso, respira, e non inseguire la preda: lascia che sia la freccia a farlo."), Lang.t("Tieni la corda tesa, e il tiro trapasserà un'intera fila. Ma mentre tendi sei lento, e il Duat lo sa.")]],
+		["arco_amheh", Meta.first_kills.has("amheh|arco|0"), [Lang.t("Am-heh è caduto sotto le frecce di Satet. Lontano dalle sue fauci, vicino alla vittoria: così cacciano le dee.")]],
 		["lancia_amheh", Meta.first_kills.has("amheh|lancia|0"), [Lang.t("La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba.")]],
 		["khopesh_amheh", Meta.first_kills.has("amheh|khopesh|0"), [Lang.t("Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.")]],
 		["aspetto", Meta.aspect_levels.size() > 0, [Lang.t("Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.")]],

@@ -72,6 +72,16 @@ const KHOPESH_SPIN := {"range": 58.0, "mult": 3.0, "knock": 260.0}
 ## Lancia: il lancio in linea che trapassa tutti e torna (scripts/thrown_spear.gd).
 const SPEAR_THROW := {"mult": 2.4, "back_mult": 1.2, "speed": 430.0, "dist": 210.0, "knock": 150.0}
 const ThrownSpear := preload("res://scripts/thrown_spear.gd")
+## L'Arco di Satet: frecce rapide (circa 3 al secondo) al 60% di un fendente del khopesh, che si
+## fermano sul primo nemico; il tiro carico (4 frecce di danni) trapassa la fila; alla fine dello
+## scatto un ventaglio di 3 frecce corte. Carica più lunga da ricaricare, e ci si muove meno piano.
+const BOW_SHOT := {"cd": 0.33, "mult": 0.6, "speed": 440.0, "dist": 250.0, "knock": 35.0}
+const BOW_CHARGED := {"mult": 2.4, "speed": 620.0, "dist": 360.0, "knock": 130.0}
+const BOW_FAN := {"mult": 0.6, "spread": 18.0, "speed": 420.0, "dist": 120.0, "knock": 70.0}
+const BOW_CHARGE_CD := 3.0
+const BOW_CHARGE_SLOW := 0.65
+const BOW_AIM_RANGE := 320.0
+const ArrowScript := preload("res://scripts/arrow.gd")
 
 var hp := 0.0
 var was_wet := false					# per lo schizzo quando entri in acqua
@@ -198,7 +208,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		var s := speed * Run.move_mult() * (attack_slowdown if atk_t > 0.0 else 1.0)
 		if charging:
-			s *= CHARGE_SLOW                # mentre carichi ti muovi più lento
+			s *= BOW_CHARGE_SLOW if Run.weapon == "arco" else CHARGE_SLOW     # mentre carichi ti muovi più lento
 		if Run.shu_gust:
 			s *= 1.2                        # la raffica di Shu
 		if Run.in_deep(global_position):
@@ -246,6 +256,8 @@ func _attack_input(delta: float) -> void:
 		if charge_k >= 1.0 and not charge_full:
 			charge_full = true
 			charge_flash_t = 0.25
+			if Run.weapon == "arco" and Run.has("arco_iside"):
+				shield = maxf(shield, Run.val("arco_iside"))     # Respiro di Iside: l'arco teso protegge
 			Sfx.play("crit", 0.05)
 			Fx.burst(global_position + Vector2(0, -30), Color(1.0, 0.85, 0.4), 14, 80.0)
 	elif charging and not holding:
@@ -264,15 +276,20 @@ func _release_charge() -> void:
 	if not charge_full:
 		return                              # rilasciato prima del pieno: annullato
 	charge_full = false
-	charge_cd = CHARGE_CD
+	charge_cd = _charge_cd_max()
 	_charged_attack()
+
+
+func _charge_cd_max() -> float:
+	return BOW_CHARGE_CD if Run.weapon == "arco" else CHARGE_CD
 
 
 ## L'attacco caricato, nella direzione del momento del rilascio (con la mira automatica se attiva).
 func _charged_attack() -> void:
 	var spear := Run.weapon == "lancia"
-	var dir := _assisted(aim, 140.0 if spear else 70.0)
-	var base: float = attack_damage * Run.khopesh_mult() * (1.0 + Run.aspect_val("faraone") / 100.0 + Run.aspect_val("neith") / 100.0)
+	var bow := Run.weapon == "arco"
+	var dir := _bow_aim() if bow else _assisted(aim, 140.0 if spear else 70.0)
+	var base: float = attack_damage * Run.khopesh_mult() * _aspect_damage()
 	if divine_t > 0.0:
 		base *= divine_damage_mult
 	swing_dir = dir
@@ -281,7 +298,21 @@ func _charged_attack() -> void:
 		# Colonna d'Aria: un vortice che risucchia i nemici vicini (dove finisce il lancio, o attorno a te)
 		var v := ShuVortex.new()
 		get_parent().add_child(v)
-		v.global_position = global_position + (dir * 150.0 if spear else Vector2.ZERO)
+		v.global_position = global_position + (dir * 150.0 if spear or bow else Vector2.ZERO)
+	if bow:
+		# il tiro carico: una freccia grande che trapassa tutta la fila
+		var dmg: float = base * BOW_CHARGED["mult"] * (1.0 + Run.val("arco_sekhmet") / 100.0)
+		var crit_chance := Run.khopesh_crit_chance() + Run.val("arco_bastet") / 100.0
+		_spawn_arrow(dir, dmg, BOW_CHARGED["speed"], BOW_CHARGED["dist"], BOW_CHARGED["knock"], -1, crit_chance, true)
+		atk_t = 0.18
+		atk_cd = 0.3
+		swing_index = 2
+		spin_swing = false
+		Sfx.play("crit", 0.05)
+		Sfx.play("swing", 0.0)
+		Fx.burst(global_position + Vector2(0, -10) + dir * 14.0, Color(1.0, 0.86, 0.45), 18, 120.0)
+		knock = -dir * 60.0
+		return
 	if spear:
 		var sp := ThrownSpear.new()
 		sp.dir = dir
@@ -495,7 +526,93 @@ func _dash_damage() -> void:
 			e.burn_t = maxf(e.burn_t, 1.0)
 
 
+## Il danno in più dell'aspetto scelto, per le armi che ne hanno uno "+% danni".
+func _aspect_damage() -> float:
+	return 1.0 + Run.aspect_val("faraone") / 100.0 + Run.aspect_val("neith") / 100.0 + Run.aspect_val("satet") / 100.0
+
+
+## La mira dell'arco: punta da sola il nemico più vicino. La levetta destra decide lei (con l'aiuto
+## alla mira); col mouse, se punti un nemico vale quello, altrimenti il più vicino.
+func _bow_aim() -> Vector2:
+	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
+	if stick.length() > 0.3:
+		return _assisted(stick.normalized(), BOW_AIM_RANGE)
+	if Fx.device == "mouse":
+		var pointed := _assisted(aim, BOW_AIM_RANGE)
+		if pointed != aim:
+			return pointed
+	var best = null
+	var best_d := BOW_AIM_RANGE
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if e.dead:
+			continue
+		var d: float = global_position.distance_to(e.global_position)
+		if d < best_d:
+			best_d = d
+			best = e
+	if best == null:
+		return aim
+	return (best.global_position + Vector2(0, -6) - (global_position + Vector2(0, -8))).normalized()
+
+
+func _spawn_arrow(dir: Vector2, dmg: float, spd: float, dist: float, kb: float, pierce: int, crit_chance: float, charged: bool) -> void:
+	var ar := ArrowScript.new()
+	ar.player = self
+	ar.dir = dir
+	ar.dmg = dmg
+	ar.speed = spd
+	ar.max_dist = dist
+	ar.knock = kb
+	ar.pierce = pierce
+	ar.crit_chance = crit_chance
+	ar.charged = charged
+	ar.big = 1.6 if charged else 1.0
+	if Run.has("arco_horus"):
+		ar.homing = true
+		ar.dmg *= 1.0 + Run.val("arco_horus") / 100.0
+	if pierce == 0 and Run.has("arco_thoth"):
+		ar.pierce = 1
+		ar.pierce_mult = Run.val("arco_thoth") / 100.0
+	get_parent().add_child(ar)
+	ar.global_position = global_position + Vector2(0, -8) + dir * 10.0
+
+
+## Un colpo dell'arco: una freccia (o il ventaglio di Anubi); dopo lo scatto, tre frecce corte.
+func _bow_shot() -> void:
+	var dash_atk := after_dash_t > 0.0
+	after_dash_t = 0.0
+	leap_ready = false
+	atk_t = 0.1
+	atk_cd = BOW_SHOT["cd"] * Run.attack_speed_mult()
+	swing_index = 3 if dash_atk else 0
+	spin_swing = false
+	swing_range = 0.0
+	var dir := _bow_aim()
+	swing_dir = dir
+	var base: float = attack_damage * Run.khopesh_mult() * _aspect_damage()
+	if divine_t > 0.0:
+		base *= divine_damage_mult
+	var crit_chance := Run.khopesh_crit_chance()
+	if dash_atk:
+		# il ventaglio dopo lo scatto (il Balzo della Leonessa lo potenzia)
+		var fan: float = base * BOW_FAN["mult"] * (1.0 + Run.val("sekhmet_leap") / 100.0)
+		for k in [-1.0, 0.0, 1.0]:
+			_spawn_arrow(dir.rotated(deg_to_rad(BOW_FAN["spread"]) * k), fan, BOW_FAN["speed"], BOW_FAN["dist"], BOW_FAN["knock"], 0, crit_chance, false)
+		Fx.burst(global_position + Vector2(0, -8) + dir * 14.0, Color(0.98, 0.86, 0.45), 8, 70.0)
+	else:
+		var n := int(Run.val("arco_anubi")) if Run.has("arco_anubi") else 1
+		var dmg: float = base * BOW_SHOT["mult"] * (0.65 if n > 1 else 1.0)
+		for i in range(n):
+			var off := 0.0 if n == 1 else deg_to_rad(10.0) * (i - (n - 1) / 2.0)
+			_spawn_arrow(dir.rotated(off), dmg, BOW_SHOT["speed"], BOW_SHOT["dist"], BOW_SHOT["knock"], 0, crit_chance, false)
+	Sfx.play("swing", 0.25)
+	knock = -dir * 8.0
+
+
 func _swing() -> void:
+	if Run.weapon == "arco":
+		_bow_shot()
+		return
 	if combo_window <= 0.0:
 		combo = 0
 	var spear := Run.weapon == "lancia"
@@ -518,7 +635,7 @@ func _swing() -> void:
 	swing_range = c["range"]
 	swing_arc = deg_to_rad(c["arc"])
 	var lunge: float = c["lunge"]
-	var aspect_mult := 1.0 + Run.aspect_val("faraone") / 100.0 + Run.aspect_val("neith") / 100.0
+	var aspect_mult := _aspect_damage()
 	if swing_index == 2 and Run.aspect == "montu":
 		aspect_mult *= 1.0 + Run.aspect_val("montu") / 100.0
 		swing_range += 8.0
@@ -977,7 +1094,7 @@ func _draw_charge() -> void:
 		if charge_flash_t > 0.0:
 			draw_circle(c, r + 8.0 * (1.0 - charge_flash_t / 0.25), Color(1, 1, 0.8, charge_flash_t * 2.0))
 	elif charge_cd > 0.0:
-		var k := 1.0 - charge_cd / CHARGE_CD
+		var k := 1.0 - charge_cd / _charge_cd_max()
 		draw_circle(c, r + 1.5, Color(0, 0, 0, 0.35))
 		draw_arc(c, r, -PI / 2.0, -PI / 2.0 + TAU * k, 24, Color(0.6, 0.6, 0.65, 0.8), 2.0)
 
@@ -1014,12 +1131,17 @@ func _draw() -> void:
 	var wdir := aim
 	if swing_k >= 0.0:
 		wdir = swing_dir
-		if Run.weapon != "lancia" or (swing_index == 2 and not spin_swing):
+		if Run.weapon == "khopesh" or (Run.weapon == "lancia" and swing_index == 2 and not spin_swing):
 			var side_sign := -1.0 if swing_index % 2 == 0 else 1.0
 			var half := minf(swing_arc, PI * 1.2) * 0.5
 			wdir = swing_dir.rotated(side_sign * lerpf(-half, half, ease(swing_k, 0.4)))
 	var hand := Vector2(0, -11 + bob) + wdir * 5.0
-	if Run.weapon == "lancia" and spear_thrown != null and is_instance_valid(spear_thrown):
+	if Run.weapon == "arco":
+		# l'arco teso verso la mira: la corda si tira mentre carichi, scatta dopo il tiro
+		var bdir := swing_dir if atk_t > 0.0 else aim
+		var pull := charge_k if charging else 0.0
+		ArrowArt.draw_bow(self, Vector2(0, -11 + bob) + bdir * 9.0, bdir.angle(), 0.8, pull)
+	elif Run.weapon == "lancia" and spear_thrown != null and is_instance_valid(spear_thrown):
 		pass                                # la lancia è in volo: mano vuota
 	elif Run.weapon == "lancia":
 		var reach := 26.0
@@ -1040,8 +1162,8 @@ func _draw() -> void:
 		var k := 1.0 - atk_t / 0.2
 		draw_arc(Vector2(0, -4), swing_range * (0.55 + 0.45 * k), 0.0, TAU, 40, Color(1.0, 0.85, 0.4, 0.9 * (1.0 - k)), 4.0)
 		draw_arc(Vector2(0, -4), swing_range * (0.4 + 0.45 * k), 0.0, TAU, 40, Color(1.0, 0.97, 0.8, 0.6 * (1.0 - k)), 2.0)
-	# fendente: la zona disegnata è esattamente quella che colpisce
-	if atk_t > 0.0:
+	# fendente: la zona disegnata è esattamente quella che colpisce (l'arco non ha fendenti)
+	if atk_t > 0.0 and Run.weapon != "arco":
 		var pts := PackedVector2Array()
 		var steps := 14
 		var base := swing_dir.angle()

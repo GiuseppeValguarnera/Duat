@@ -92,6 +92,8 @@ func aspect_val(id: String) -> float:
 
 func new_run() -> void:
 	weapon = Meta.weapon if Weapons.is_unlocked(Meta.weapon) else "khopesh"
+	if Weapons.ALL.has(OS.get_environment("DUAT_WEAPON")):
+		weapon = OS.get_environment("DUAT_WEAPON")       # prove: un'arma qualsiasi, anche non sbloccata
 	aspect = Weapons.chosen_aspect(weapon)
 	aspect_level = Weapons.aspect_level(weapon, aspect)
 	max_hp = 60.0
@@ -382,7 +384,7 @@ func eye_rays() -> int:
 
 
 func khopesh_burns() -> bool:
-	return has("ra_burn") or has("ra_heavy")
+	return has("ra_burn") or has("ra_heavy") or has("arco_ra")
 
 
 func eye_burns() -> bool:
@@ -390,7 +392,7 @@ func eye_burns() -> bool:
 
 
 func burn_tick_damage() -> float:
-	var b := val("ra_burn") if has("ra_burn") else 5.0
+	var b := maxf(val("ra_burn"), val("arco_ra")) if (has("ra_burn") or has("arco_ra")) else 5.0
 	return b * (1.6 if has("ra_heavy") else 1.0)
 
 
@@ -497,7 +499,8 @@ func jackal_mult(hp_ratio: float) -> float:
 ## Shu: lo schianto di un nemico spinto contro un muro, una colonna o un altro nemico. Il Soffio di
 ## Shu lo porta a 8/12/16; senza, le spinte di Shu fanno uno schianto da 6.
 func shu_slam_damage() -> float:
-	return (val("shu_breath") if has("shu_breath") else 6.0) * all_damage_mult()
+	var base := maxf(val("shu_breath"), val("arco_shu"))      # Soffio di Shu o Freccia del Vento
+	return (base if base > 0.0 else 6.0) * all_damage_mult()
 
 
 ## Shu, Signore delle Tempeste: la raffica è attiva (la aggiorna player.gd ogni fotogramma).
@@ -603,8 +606,8 @@ func nefti_on_kill(e: Node) -> void:
 	if p == null or p.dead:
 		return
 	var marked: bool = e.mourn_t > 0.0
-	if marked and has("nefti_veil"):
-		var h := val("nefti_veil")
+	if marked and (has("nefti_veil") or has("arco_nefti")):
+		var h := maxf(val("nefti_veil"), val("arco_nefti"))      # Velo del Lutto o Freccia del Lutto
 		if has("duo_nefti_iside") and p.hp < p.max_hp / 3.0:
 			h *= 2.0                          # Le Due Sorelle
 		nefti_heal(h)

@@ -179,6 +179,9 @@ static func story() -> Array:
 			Lang.t("Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere."),
 			Lang.t("Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro."),
 			Lang.t("Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.")]},
+		{"id": "arco1", "if": Meta.weapons_unlocked.has("arco"), "lines": [
+			Lang.t("Neith è venuta fin qui, nella mia sala, per darti l'arco di Satet. Non lascia il suo cortile per chiunque."),
+			Lang.t("Un arco tiene i nemici lontani. Ma nel Duat, Scriba, ciò che è lontano ha l'abitudine di avvicinarsi in fretta.")]},
 		{"id": "lacrime1", "if": Meta.tears > 0, "lines": [
 			Lang.t("Porti con te una Lacrima di Iside. Quando pianse Osiride, le sue lacrime gonfiarono il Fiume, e il Fiume ricoprì la Terra Nera."),
 			Lang.t("Ogni lacrima vale più di mille Ka. Neith sa cosa farne: nel suo cortile le armi si risvegliano solo con il pianto di una dea.")]},

@@ -72,6 +72,9 @@ Misura la distanza. Poi accorciala.,Misura la distanza. Poi accorciala.,Measure 
 Un'arma che non conosci ti tradirà nel momento peggiore.,Un'arma che non conosci ti tradirà nel momento peggiore.,A weapon you do not know will betray you at the worst moment.
 Torna quando avrai qualcosa da mostrarmi.,Torna quando avrai qualcosa da mostrarmi.,Come back when you have something to show me.
 "Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.","Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.","Strike the figures. They do not complain. I do, when you strike badly."
+"L'arco di Satet ha scelto la tua mano. Tienilo basso, respira, e non inseguire la preda: lascia che sia la freccia a farlo.","L'arco di Satet ha scelto la tua mano. Tienilo basso, respira, e non inseguire la preda: lascia che sia la freccia a farlo.","Satet's bow has chosen your hand. Hold it low, breathe, and do not chase the prey: let the arrow do that."
+"Tieni la corda tesa, e il tiro trapasserà un'intera fila. Ma mentre tendi sei lento, e il Duat lo sa.","Tieni la corda tesa, e il tiro trapasserà un'intera fila. Ma mentre tendi sei lento, e il Duat lo sa.","Keep the string drawn, and the shot will pierce a whole line. But while you draw you are slow, and the Duat knows it."
+"Am-heh è caduto sotto le frecce di Satet. Lontano dalle sue fauci, vicino alla vittoria: così cacciano le dee.","Am-heh è caduto sotto le frecce di Satet. Lontano dalle sue fauci, vicino alla vittoria: così cacciano le dee.","Am-heh has fallen beneath the arrows of Satet. Far from his jaws, close to victory: that is how goddesses hunt."
 "La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba.","La mia lancia ha spento il fuoco di Am-heh. La impugni come se l'avessi sempre fatto. Strano, per uno scriba.","My spear has quenched the fire of Am-heh. You wield it as if you always had. Strange, for a scribe."
 "Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","Il khopesh dei re ha vinto il Divoratore di Milioni. Ma vincere ancora con la stessa lama non ti insegna niente di nuovo, e non ti porta altre Lacrime.","The khopesh of kings has defeated the Devourer of Millions. But winning again with the same blade teaches you nothing new, and brings you no more Tears."
 "Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.","Hai risvegliato un volto nuovo della tua arma. Dietro ogni volto c'è un dio: impara il suo nome, e saprai come colpire.","You have awakened a new face of your weapon. Behind every face there is a god: learn its name, and you will know how to strike."
@@ -99,6 +102,8 @@ Via tutti i nemici,Via tutti i nemici,Remove all enemies
 colpo,colpo,hit
 combo,combo,combo
 al sec.,al sec.,per sec.
+CRITICO,CRITICO,CRITICAL
+GIUDIZIO,GIUDIZIO,JUDGEMENT
 Ra,Ra,Ra
 Sekhmet,Sekhmet,Sekhmet
 Thoth,Thoth,Thoth
@@ -162,6 +167,27 @@ Danza delle Lame,Danza delle Lame,Dance of Blades
 Il khopesh colpisce il %d%% più rapidamente.,Il khopesh colpisce il %d%% più rapidamente.,The khopesh strikes %d%% faster.
 Filo del Sole,Filo del Sole,Edge of the Sun
 I fendenti del khopesh arrivano il %d%% più lontano e sono più ampi.,I fendenti del khopesh arrivano il %d%% più lontano e sono più ampi.,The khopesh's slashes reach %d%% farther and are wider.
+Frecce del Sole,Frecce del Sole,Arrows of the Sun
+Le frecce incendiano i nemici: %d danni ogni mezzo secondo per 2 secondi.,Le frecce incendiano i nemici: %d danni ogni mezzo secondo per 2 secondi.,Arrows set enemies ablaze: %d damage every half second for 2 seconds.
+Tiro della Leonessa,Tiro della Leonessa,Shot of the Lioness
+Il tiro carico fa il %d%% di danni in più.,Il tiro carico fa il %d%% di danni in più.,The charged shot deals %d%% more damage.
+Freccia Sapiente,Freccia Sapiente,Wise Arrow
+Le frecce trapassano un nemico e colpiscono quello dietro con il %d%% dei danni.,Le frecce trapassano un nemico e colpiscono quello dietro con il %d%% dei danni.,Arrows pierce one enemy and hit the one behind for %d%% of the damage.
+Occhio della Gatta,Occhio della Gatta,Eye of the She-Cat
+Il tiro carico ha il %d%% di probabilità di essere un colpo critico.,Il tiro carico ha il %d%% di probabilità di essere un colpo critico.,The charged shot has a %d%% chance to be a critical hit.
+Frecce della Palude,Frecce della Palude,Arrows of the Marsh
+Le frecce rallentano i nemici del %d%% per 2 secondi.,Le frecce rallentano i nemici del %d%% per 2 secondi.,Arrows slow enemies by %d%% for 2 seconds.
+Respiro di Iside,Respiro di Iside,Breath of Isis
+Quando l'arco è teso a pieno ricevi uno scudo che assorbe %d danni (non si somma).,Quando l'arco è teso a pieno ricevi uno scudo che assorbe %d danni (non si somma).,When the bow is fully drawn you gain a shield that absorbs %d damage (it does not stack).
+Frecce del Falco,Frecce del Falco,Arrows of the Falcon
+Le frecce curvano da sole verso il nemico più vicino e fanno il %d%% di danni in più.,Le frecce curvano da sole verso il nemico più vicino e fanno il %d%% di danni in più.,Arrows curve by themselves toward the nearest enemy and deal %d%% more damage.
+Faretra dello Sciacallo,Faretra dello Sciacallo,Quiver of the Jackal
+Ogni colpo scocca %d frecce a ventaglio.,Ogni colpo scocca %d frecce a ventaglio.,Each shot looses %d arrows in a fan.
+Ogni freccia fa il 35% di danni in meno.,Ogni freccia fa il 35% di danni in meno.,Each arrow deals 35% less damage.
+Freccia del Lutto,Freccia del Lutto,Arrow of Mourning
+Il tiro carico marchia col Lutto chi trapassa; i marchiati che muoiono ti curano di %d.,Il tiro carico marchia col Lutto chi trapassa; i marchiati che muoiono ti curano di %d.,The charged shot marks with Mourning those it pierces; marked enemies that die heal you for %d.
+Freccia del Vento,Freccia del Vento,Arrow of the Wind
+"Il tiro carico spinge via i nemici che trapassa; lo schianto contro muri, colonne o altri nemici fa %d danni.","Il tiro carico spinge via i nemici che trapassa; lo schianto contro muri, colonne o altri nemici fa %d danni.","The charged shot pushes away the enemies it pierces; slamming into walls, pillars or other enemies deals %d damage."
 Ali di Iside,Ali di Iside,Wings of Isis
 All'inizio di ogni stanza hai uno scudo che assorbe %d danni.,All'inizio di ogni stanza hai uno scudo che assorbe %d danni.,At the start of every chamber you gain a shield that absorbs %d damage.
 Lacrime di Iside,Lacrime di Iside,Tears of Isis
@@ -317,6 +343,17 @@ Spinti nei pericoli: morte,Spinti nei pericoli: morte,Pushed into hazards: death
 Schianti che incendiano,Schianti che incendiano,Slams that burn
 L'Occhio torna,L'Occhio torna,The Eye returns
 "Arma: fuoco %d ogni 0,5 s","Arma: fuoco %d ogni 0,5 s",Weapon: fire %d every 0.5 s
+"Frecce: fuoco %d ogni 0,5 s","Frecce: fuoco %d ogni 0,5 s",Arrows: fire %d every 0.5 s
+Tiro carico +%d%% danni,Tiro carico +%d%% danni,Charged shot +%d%% damage
+Trapassa 1 · dietro %d%%,Trapassa 1 · dietro %d%%,Pierces 1 · behind %d%%
+Tiro carico %d%% critico,Tiro carico %d%% critico,Charged shot %d%% critical
+Frecce: -%d%% velocità 2 s,Frecce: -%d%% velocità 2 s,Arrows: -%d%% speed 2 s
+Arco teso: scudo %d,Arco teso: scudo %d,Bow drawn: shield %d
+Frecce inseguono · +%d%%,Frecce inseguono · +%d%%,Arrows home · +%d%%
+%d frecce per colpo,%d frecce per colpo,%d arrows per shot
+-35% danni a freccia,-35% danni a freccia,-35% damage per arrow
+Tiro carico marchia · +%d,Tiro carico marchia · +%d,Charged shot marks · +%d
+Tiro carico spinge · schianto %d,Tiro carico spinge · schianto %d,Charged shot pushes · slam %d
 Occhio esplode: %d danni,Occhio esplode: %d danni,Eye explodes: %d damage
 Scatto ferisce: %d danni,Scatto ferisce: %d danni,Dash wounds: %d damage
 Scatto -40% più lento,Scatto -40% più lento,Dash 40% slower
@@ -580,6 +617,8 @@ Il Libro dei Morti ora ti concede un capitolo in più. E Am-heh ti ha lasciato i
 "Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Now that you have felled the Devourer of Millions, the scales recognise you. You may lay weights upon them, before you descend."
 "Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.","Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.","Every weight makes the path harder. But the Duat rewards those who choose to suffer: the heavier your heart, the more Ka you will bring back."
 Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.,Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.,There is no shame in a light heart. There is glory in the heart that is heavy and passes all the same.
+"Neith è venuta fin qui, nella mia sala, per darti l'arco di Satet. Non lascia il suo cortile per chiunque.","Neith è venuta fin qui, nella mia sala, per darti l'arco di Satet. Non lascia il suo cortile per chiunque.","Neith came all the way here, into my hall, to give you the bow of Satet. She does not leave her courtyard for just anyone."
+"Un arco tiene i nemici lontani. Ma nel Duat, Scriba, ciò che è lontano ha l'abitudine di avvicinarsi in fretta.","Un arco tiene i nemici lontani. Ma nel Duat, Scriba, ciò che è lontano ha l'abitudine di avvicinarsi in fretta.","A bow keeps enemies far away. But in the Duat, Scribe, what is far has a habit of drawing near quickly."
 "Porti con te una Lacrima di Iside. Quando pianse Osiride, le sue lacrime gonfiarono il Fiume, e il Fiume ricoprì la Terra Nera.","Porti con te una Lacrima di Iside. Quando pianse Osiride, le sue lacrime gonfiarono il Fiume, e il Fiume ricoprì la Terra Nera.","You carry a Tear of Isis. When she wept for Osiris, her tears swelled the River, and the River covered the Black Land."
 Ogni lacrima vale più di mille Ka. Neith sa cosa farne: nel suo cortile le armi si risvegliano solo con il pianto di una dea.,Ogni lacrima vale più di mille Ka. Neith sa cosa farne: nel suo cortile le armi si risvegliano solo con il pianto di una dea.,Every tear is worth more than a thousand Ka. Neith knows what to do with them: in her courtyard weapons awaken only with the weeping of a goddess.
 "Hai ripassato la stessa formula due volte. Bene. Gli scribi copiavano lo stesso capitolo per anni, finché la mano non lo sapeva da sola.","Hai ripassato la stessa formula due volte. Bene. Gli scribi copiavano lo stesso capitolo per anni, finché la mano non lo sapeva da sola.","You have copied the same spell twice. Good. Scribes copied the same chapter for years, until the hand knew it by itself."
@@ -641,7 +680,6 @@ Solo l'Occhio,Solo l'Occhio,Eye only
 SOPRA LA TERRA,SOPRA LA TERRA,ABOVE THE EARTH
 SCHIANTO,SCHIANTO,SLAM
 +%d Ka,+%d Ka,+%d Ka
-CRITICO,CRITICO,CRITICAL
 Occhio pronto,Occhio pronto,Eye ready
 «Ogni sponda ha il suo prezzo. Anche questa.»,«Ogni sponda ha il suo prezzo. Anche questa.»,«Every shore has its price. This one too.»
 «Conosci il nome di ogni parte della mia barca? No? Allora paga.»,«Conosci il nome di ogni parte della mia barca? No? Allora paga.»,«Do you know the name of every part of my boat? No? Then pay.»
@@ -1361,6 +1399,17 @@ III · La casa dell'eternità,III · La casa dell'eternità,III · The house of 
 "Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»","Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»","The king began digging his tomb in the first year of his reign, like every king. But he went down into it every night. A single lamp, and hours before the walls still white, where the painters would paint the weighing of the heart. One night he called me and asked me to read him chapter one hundred and twenty-five. I read it twice. The second time, my hand... his hand gripped the scroll until its edge broke. He said only: «I do not want to be weighed.»"
 IV · Il nome nascosto,IV · Il nome nascosto,IV · The Hidden Name
 "Nel nono anno il re andò a Iunu, la città del sole, e non volle nessuno con sé. Nemmeno me. Lo scrissi lo stesso: il re visitò il tempio di Ra e offrì mille pani. È quello che si scrive. Ma io so che entrò nella sala dove nessun uomo entra, quella dove i sacerdoti custodiscono la storia di Iside e del nome segreto. So che il buio là dentro odora di cedro e di cera. So che le parole si dicono a bassa voce, perché anche il muro ascolta. Le dico... le disse. Uscì all'alba. Quel giorno il sole sorse, come sempre. Il sole sorse ogni giorno, finché il re visse.","Nel nono anno il re andò a Iunu, la città del sole, e non volle nessuno con sé. Nemmeno me. Lo scrissi lo stesso: il re visitò il tempio di Ra e offrì mille pani. È quello che si scrive. Ma io so che entrò nella sala dove nessun uomo entra, quella dove i sacerdoti custodiscono la storia di Iside e del nome segreto. So che il buio là dentro odora di cedro e di cera. So che le parole si dicono a bassa voce, perché anche il muro ascolta. Le dico... le disse. Uscì all'alba. Quel giorno il sole sorse, come sempre. Il sole sorse ogni giorno, finché il re visse.","In the ninth year the king went to Iunu, the city of the sun, and would have no one with him. Not even me. I wrote it all the same: the king visited the temple of Ra and offered a thousand loaves. That is what one writes. But I know he entered the hall no man enters, the one where the priests keep the story of Isis and the secret name. I know the dark in there smells of cedar and wax. I know the words are spoken softly, because even the wall listens. I speak them... he spoke them. He came out at dawn. That day the sun rose, as always. The sun rose every day, for as long as the king lived."
+"Un arco, piccolo scriba? Anche i miei raggi colpiscono da lontano. Le tue frecce porteranno un poco del mio fuoco.","Un arco, piccolo scriba? Anche i miei raggi colpiscono da lontano. Le tue frecce porteranno un poco del mio fuoco.","A bow, little scribe? My rays strike from afar too. Your arrows will carry a little of my fire."
+"Ti nascondi dietro una corda tesa? Io caccio con le zanne. Ma una freccia nel cuore della preda... sì, anche questa è caccia.","Ti nascondi dietro una corda tesa? Io caccio con le zanne. Ma una freccia nel cuore della preda... sì, anche questa è caccia.","You hide behind a drawn string? I hunt with fangs. But an arrow in the heart of the prey... yes, that is hunting too."
+L'arco di Satet. Ne annoto il peso e la tensione: una freccia è un pensiero che vola dritto. Che il tuo non esiti.,L'arco di Satet. Ne annoto il peso e la tensione: una freccia è un pensiero che vola dritto. Che il tuo non esiti.,The bow of Satet. I record its weight and its tension: an arrow is a thought that flies straight. May yours not falter.
+"Colpire da lontano, senza farsi toccare. Questo è un modo di combattere che un gatto capisce benissimo.","Colpire da lontano, senza farsi toccare. Questo è un modo di combattere che un gatto capisce benissimo.","Striking from afar, without being touched. That is a way of fighting a cat understands perfectly."
+"Nelle paludi i cacciatori mi temono, e tirano dalle barche. Tu tiri dall'asciutto. Le mie acque renderanno lente le tue prede.","Nelle paludi i cacciatori mi temono, e tirano dalle barche. Tu tiri dall'asciutto. Le mie acque renderanno lente le tue prede.","In the marshes hunters fear me, and shoot from their boats. You shoot from dry land. My waters will make your prey slow."
+"Satet custodiva la piena che dà la vita. Il suo arco è in buone mani, se ricordi che ogni freccia scoccata è anche una preghiera.","Satet custodiva la piena che dà la vita. Il suo arco è in buone mani, se ricordi che ogni freccia scoccata è anche una preghiera.","Satet guarded the flood that gives life. Her bow is in good hands, if you remember that every arrow loosed is also a prayer."
+Il falco vede la preda da lontanissimo e non la manca mai. Impugni l'arma giusta per uno che ha il mio Occhio.,Il falco vede la preda da lontanissimo e non la manca mai. Impugni l'arma giusta per uno che ha il mio Occhio.,The falcon sees its prey from very far away and never misses. You wield the right weapon for one who bears my Eye.
+"Ora tieni la morte a distanza, Scriba. È prudente. Ma la bilancia pesa anche ciò che colpisci da lontano.","Ora tieni la morte a distanza, Scriba. È prudente. Ma la bilancia pesa anche ciò che colpisci da lontano.","Now you keep death at a distance, Scribe. It is prudent. But the scale also weighs what you strike from afar."
+"Una freccia è un lamento che vola. Lascia che le mie lacrime viaggino con le tue, e chi cade ti ristorerà.","Una freccia è un lamento che vola. Lascia che le mie lacrime viaggino con le tue, e chi cade ti ristorerà.","An arrow is a lament that flies. Let my tears travel with yours, and those who fall will restore you."
+"Una freccia vive dentro di me, Scriba: io sono l'aria in cui vola. Tendi la corda, e il mio vento farà il resto.","Una freccia vive dentro di me, Scriba: io sono l'aria in cui vola. Tendi la corda, e il mio vento farà il resto.","An arrow lives inside me, Scribe: I am the air it flies through. Draw the string, and my wind will do the rest."
+Un arco! Il deserto è pieno di arcieri morti di sete. Ma tu sei divertente. Facciamo un patto.,Un arco! Il deserto è pieno di arcieri morti di sete. Ma tu sei divertente. Facciamo un patto.,A bow! The desert is full of archers dead of thirst. But you are amusing. Let us make a pact.
 Questo ricordo è ancora sepolto. Riaffiora quando cade un signore della notte.,Questo ricordo è ancora sepolto. Riaffiora quando cade un signore della notte.,This memory is still buried. It resurfaces when a lord of the night falls.
 Ricordi dello scriba,Ricordi dello scriba,Memories of the scribe
 Il giudizio,Il giudizio,The judgement
@@ -1373,7 +1422,6 @@ prima volta con quest'arma,prima volta con quest'arma,first time with this weapo
 «Chi cammina verso l'orizzonte porta con sé la propria alba. Custodiscila: qui nessuno potrà dartene un'altra.»,«Chi cammina verso l'orizzonte porta con sé la propria alba. Custodiscila: qui nessuno potrà dartene un'altra.»,«Whoever walks toward the horizon carries their own dawn. Guard it: here no one can give you another.»
 "«Le acque ti hanno ricordato. La sabbia ti metterà alla prova. Quale delle due sia più clemente, lo dirà la fine del viaggio.»","«Le acque ti hanno ricordato. La sabbia ti metterà alla prova. Quale delle due sia più clemente, lo dirà la fine del viaggio.»","«The waters remembered you. The sand will test you. Which of the two is more merciful, the end of the journey will tell.»"
 Occhio di Horus,Occhio di Horus,Eye of Horus
-GIUDIZIO,GIUDIZIO,JUDGEMENT
 Il nodo di Iside ti protegge,Il nodo di Iside ti protegge,The knot of Isis protects you
 Scudo -%d,Scudo -%d,Shield -%d
 Il cuore non testimonia,Il cuore non testimonia,The heart does not testify
@@ -1944,3 +1992,4 @@ un sacerdote di Sokar,un sacerdote di Sokar,a priest of Sokar
 uno scarabeo di Khepri,uno scarabeo di Khepri,a scarab of Khepri
 la sfera di Khepri,la sfera di Khepri,the sphere of Khepri
 il Miraggio,il Miraggio,the Mirage
+l'arco,l'arco,the bow
