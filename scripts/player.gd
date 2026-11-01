@@ -74,11 +74,10 @@ const SPEAR_THROW := {"mult": 2.4, "back_mult": 1.2, "speed": 430.0, "dist": 210
 const ThrownSpear := preload("res://scripts/thrown_spear.gd")
 ## L'Arco di Satet: frecce rapide (circa 3 al secondo) al 60% di un fendente del khopesh, che si
 ## fermano sul primo nemico; il tiro carico (4 frecce di danni) trapassa la fila; alla fine dello
-## scatto un ventaglio di 3 frecce corte. Carica più lunga da ricaricare, e ci si muove meno piano.
+## scatto un ventaglio di 3 frecce corte. Mentre tende l'arco ci si muove meno piano che con le altre armi.
 const BOW_SHOT := {"cd": 0.33, "mult": 0.6, "speed": 440.0, "dist": 250.0, "knock": 35.0}
 const BOW_CHARGED := {"mult": 2.4, "speed": 620.0, "dist": 360.0, "knock": 130.0}
 const BOW_FAN := {"mult": 0.6, "spread": 18.0, "speed": 420.0, "dist": 120.0, "knock": 70.0}
-const BOW_CHARGE_CD := 3.0
 const BOW_CHARGE_SLOW := 0.65
 const BOW_AIM_RANGE := 320.0
 const ArrowScript := preload("res://scripts/arrow.gd")
@@ -280,8 +279,9 @@ func _release_charge() -> void:
 	_charged_attack()
 
 
+## La ricarica dell'attacco caricato: uguale per tutte le armi (2 s).
 func _charge_cd_max() -> float:
-	return BOW_CHARGE_CD if Run.weapon == "arco" else CHARGE_CD
+	return CHARGE_CD
 
 
 ## L'attacco caricato, nella direzione del momento del rilascio (con la mira automatica se attiva).

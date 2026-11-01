@@ -161,7 +161,7 @@ Flagello di Osiride: piedistallo "chiuso" con il testo del requisito futuro (pri
 35 lapis: campo `req` in `Weapons.FUTURE_IT`, ancora da fare). Arco (`player.gd` `_bow_shot`, `_bow_aim`,
 `_spawn_arrow`; frecce in `scripts/arrow.gd`, disegno in `scripts/arrow_art.gd`): freccia ogni 0,33 s al 60% di un
 fendente (12×0,6), si ferma al primo nemico, muri e colonne la fermano (raggio sullo strato 1); tiro carico ×2,4 (=4
-frecce) che trapassa tutto, carica 1 s, movimento ×0,65, ricarica 3 s (`_charge_cd_max`); ventaglio di 3 frecce corte
+frecce) che trapassa tutto, carica 1 s, movimento ×0,65, ricarica 2 s come ogni arma (`_charge_cd_max`, prima 3 s); ventaglio di 3 frecce corte
 (±18°, 120 px) alla fine dello scatto; mira: il nemico più vicino entro 320 (levetta destra decide lei; col mouse vale
 il nemico puntato, se no il più vicino), sempre, anche con la mira automatica spenta. Unico aspetto: Satet (+5/10/15%).
 Doni `arco_*` (campo `weapon`): Ra fuoco (sostituisce `ra_burn`), Sekhmet tiro carico +30/45/60%, Thoth trapassa 1 (dietro
