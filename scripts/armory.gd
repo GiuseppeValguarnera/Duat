@@ -85,7 +85,8 @@ func _ready() -> void:
 		if i < ids.size():
 			pedestals.append({"id": ids[i], "name": Weapons.ALL[ids[i]]["name"], "pos": pos})
 		else:
-			pedestals.append({"id": "", "name": Weapons.FUTURE[i - ids.size()]["name"], "pos": pos})
+			var fut: Dictionary = Weapons.FUTURE[i - ids.size()]
+			pedestals.append({"id": "", "name": fut["name"], "pos": pos, "req": fut.get("req", "")})
 	_build()
 	Fx.scale_labels($UI)
 	talk_box.visible = false
@@ -235,9 +236,17 @@ func _process(delta: float) -> void:
 		_:
 			var p: Dictionary = pedestals[int(near.substr(3))]
 			if p["id"] == "":
-				prompt.text = Lang.t("%s · arma non ancora forgiata") % p["name"]
+				if p.get("req", "") != "":
+					prompt.text = Lang.t("%s · chiuso · %s") % [p["name"], p["req"]]
+				else:
+					prompt.text = Lang.t("%s · arma non ancora forgiata") % p["name"]
 			elif not Weapons.is_unlocked(p["id"]):
-				prompt.text = Lang.t("%s · parla con Neith") % p["name"]
+				if Weapons.unlock_cost(p["id"]) == 0:
+					prompt.text = Lang.t("%s · parla con Neith") % p["name"]
+				elif not Weapons.requirement_met(p["id"]):
+					prompt.text = Lang.t("%s · chiuso · %s · %d lapislazzuli") % [p["name"], Weapons.requirement_text(p["id"]), Weapons.unlock_cost(p["id"])]
+				else:
+					prompt.text = Lang.t("%s · Risveglia: %s (%d lapislazzuli, ne hai %d)") % [key, p["name"], Weapons.unlock_cost(p["id"]), Meta.lapis]
 			elif Run.weapon == p["id"]:
 				prompt.text = Lang.t("%s · è l'arma che impugni") % p["name"]
 			else:
@@ -305,6 +314,9 @@ func _leave() -> void:
 
 func _take_weapon(i: int) -> void:
 	var p: Dictionary = pedestals[i]
+	if p["id"] != "" and not Weapons.is_unlocked(p["id"]) and Weapons.unlock_cost(p["id"]) > 0 and Weapons.requirement_met(p["id"]):
+		_buy_weapon(i)
+		return
 	if p["id"] == "" or not Weapons.is_unlocked(p["id"]) or Run.weapon == p["id"]:
 		Fx.shake(1.5)
 		return
@@ -313,6 +325,22 @@ func _take_weapon(i: int) -> void:
 	Sfx.play("boon", 0.0)
 	Fx.burst(player.global_position + Vector2(0, -12), NEITH_COLOR, 24, 110.0)
 	Fx.float_text(player.global_position + Vector2(0, -30), p["name"], GOLD)
+
+
+## Il piedistallo di un'arma che si compra (oggi l'arco): togli il telo con i lapislazzuli.
+func _buy_weapon(i: int) -> void:
+	var p: Dictionary = pedestals[i]
+	var id: String = p["id"]
+	if not Weapons.buy(id):
+		Fx.shake(1.5)
+		Fx.float_text(p["pos"] + Vector2(0, -34), Lang.t("Servono %d lapislazzuli") % Weapons.unlock_cost(id), Restorations.LAPIS_COLOR.lightened(0.35))
+		return
+	Sfx.play("boon", 0.0)
+	Fx.burst(p["pos"] + Vector2(0, -16), NEITH_COLOR, 30, 120.0)
+	Fx.burst(p["pos"] + Vector2(0, -16), Restorations.LAPIS_COLOR, 16, 90.0)
+	Fx.float_text(p["pos"] + Vector2(0, -34), p["name"], GOLD)
+	Weapons.choose(id)
+	Run.new_run()
 
 
 # ---------------------------------------------------------------- Neith
@@ -593,6 +621,9 @@ func _draw_pedestal(p: Dictionary) -> void:
 	draw_rect(Rect2(pos.x - 14, pos.y + 6, 28, 3), stone.darkened(0.3))
 	var bob := sin(t * 1.8 + pos.x) * 1.2
 	var id: String = p["id"]
+	if id != "" and not Weapons.is_unlocked(id) and Weapons.unlock_cost(id) > 0 and Weapons.requirement_met(id):
+		# si può già comprare: la gemma di lapislazzuli pulsa sopra il telo
+		Restorations.draw_gem(self, Vector2(pos.x, pos.y - 40 + bob), 1.0 + 0.1 * sin(t * 4.0))
 	if id == "" or not Weapons.is_unlocked(id):
 		# arma coperta dal telo di lino, con il suo segno
 		draw_colored_polygon(PackedVector2Array([Vector2(pos.x - 9, pos.y - 4), Vector2(pos.x + 9, pos.y - 4), Vector2(pos.x + 5, pos.y - 26), Vector2(pos.x, pos.y - 30), Vector2(pos.x - 5, pos.y - 26)]), Color(0.85, 0.8, 0.68))
@@ -603,7 +634,9 @@ func _draw_pedestal(p: Dictionary) -> void:
 	if chosen:
 		draw_circle(Vector2(pos.x, pos.y - 18), 15.0 + 2.0 * sin(t * 3.0), Color(GOLD, 0.15))
 	var c := Vector2(pos.x, pos.y - 18 + bob)
-	if id == "lancia":
+	if id == "arco":
+		ArrowArt.draw_bow(self, c + Vector2(0, -4), 0.0, 1.0, 0.0)
+	elif id == "lancia":
 		draw_line(c + Vector2(0, 14), c + Vector2(0, -14), Color(0.55, 0.38, 0.2), 2.0)
 		draw_colored_polygon(PackedVector2Array([c + Vector2(0, -22), c + Vector2(3, -14), c + Vector2(-3, -14)]), Color(0.85, 0.85, 0.9))
 		draw_line(c + Vector2(-3, -12), c + Vector2(3, -12), GOLD, 1.5)
@@ -661,60 +694,9 @@ func _draw_stele(p: Vector2) -> void:
 		draw_string(font, Vector2(p.x - 19, yy), lines[i][1], HORIZONTAL_ALIGNMENT_RIGHT, 38, fs + 1, GOLD)
 
 
-## Neith: la dea guerriera con la corona rossa del Basso Egitto, l'arco nella mano
-## e le frecce incrociate sulla veste. Ti segue con lo sguardo e gesticola quando parla.
+## Neith: la dea guerriera (disegno in neith_art.gd). Ti segue con lo sguardo e gesticola quando parla.
 func _draw_neith(p: Vector2) -> void:
-	var skin := Color(0.72, 0.47, 0.28)
-	var linen := Color(0.93, 0.9, 0.82)
-	var red := Color(0.72, 0.16, 0.14)
-	var green := Color(0.18, 0.5, 0.36)
-	var talking: bool = talk_box.visible
 	var face := 1.0
 	if player != null and is_instance_valid(player) and player.global_position.x < p.x - 6.0:
 		face = -1.0
-	var bob := sin(t * 1.5) * 0.6
-	var pulse := 0.5 + 0.5 * sin(t * (5.0 if talking else 1.4))
-	draw_circle(p + Vector2(0, -30), 28.0 + 2.0 * pulse, Color(NEITH_COLOR, 0.05 + (0.08 if talking else 0.03) * pulse))
-	draw_set_transform(p + Vector2(0, 2), 0.0, Vector2(1.0, 0.35))
-	draw_circle(Vector2.ZERO, 20.0, Color(0, 0, 0, 0.4))
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	draw_rect(Rect2(p.x - 16, p.y - 4, 32, 6), Color(0.3, 0.22, 0.18))
-	draw_rect(Rect2(p.x - 16, p.y - 4, 32, 1.5), GOLD)
-	draw_set_transform(p, 0.0, Vector2(face, 1.0))
-	var o := Vector2(0, -4)
-	# arco nella mano dietro
-	draw_arc(o + Vector2(-12, -30 + bob), 16.0, -PI * 0.42, PI * 0.42, 16, Color(0.5, 0.33, 0.16), 2.0)
-	draw_line(o + Vector2(-12 + 16 * cos(-PI * 0.42), -30 + bob + 16 * sin(-PI * 0.42)), o + Vector2(-12 + 16 * cos(PI * 0.42), -30 + bob + 16 * sin(PI * 0.42)), Color(0.9, 0.85, 0.7, 0.8), 0.7)
-	# veste lunga e aderente, con la rete a rombi
-	var sh := -42.0 + bob
-	draw_colored_polygon(PackedVector2Array([o + Vector2(-7, sh + 6), o + Vector2(7, sh + 6), o + Vector2(6, -14), o + Vector2(7, 0), o + Vector2(-6, 0), o + Vector2(-5, -14)]), linen)
-	for i in range(4):
-		draw_line(o + Vector2(-5, sh + 12 + i * 8), o + Vector2(5, sh + 18 + i * 8), green.darkened(0.1), 0.7)
-		draw_line(o + Vector2(5, sh + 12 + i * 8), o + Vector2(-5, sh + 18 + i * 8), green.darkened(0.1), 0.7)
-	draw_rect(Rect2(o.x - 6, o.y + sh + 5, 12, 2), red)
-	# spalle, braccia, collare
-	draw_colored_polygon(PackedVector2Array([o + Vector2(-8, sh), o + Vector2(8, sh), o + Vector2(7, sh + 7), o + Vector2(-7, sh + 7)]), skin)
-	for rr in range(3):
-		draw_arc(o + Vector2(0, sh - 1), 4.0 + rr * 2.2, 0.08 * PI, 0.92 * PI, 14, [GOLD, green, red][rr], 2.0)
-	draw_line(o + Vector2(-7, sh + 2), o + Vector2(-11, -28 + bob), skin, 2.8)
-	var lift := (0.6 + 0.25 * sin(t * 3.0)) if talking else 0.0
-	var shoulder := o + Vector2(7, sh + 2)
-	var hand := shoulder + Vector2(3 + 9 * lift, 16 - 20 * lift)
-	draw_line(shoulder, hand, skin, 2.8)
-	# due frecce incrociate nella mano davanti
-	draw_line(hand + Vector2(-3, 6), hand + Vector2(5, -8), Color(0.55, 0.38, 0.2), 1.2)
-	draw_line(hand + Vector2(3, 6), hand + Vector2(-3, -8), Color(0.55, 0.38, 0.2), 1.2)
-	# testa: parrucca nera, occhio con il kohl, corona rossa con il ricciolo
-	var hy := sh - 8.0
-	draw_colored_polygon(PackedVector2Array([o + Vector2(-6, hy - 4), o + Vector2(3, hy - 6), o + Vector2(2, sh + 4), o + Vector2(-7, sh + 5)]), Color(0.08, 0.07, 0.1))
-	draw_circle(o + Vector2(1, hy), 5.0, skin)
-	draw_colored_polygon(PackedVector2Array([o + Vector2(4, hy - 2), o + Vector2(8, hy + 1), o + Vector2(5, hy + 2)]), skin)
-	var eye := o + Vector2(3.5, hy - 1)
-	draw_circle(eye, 2.5 + pulse, Color(1, 0.5, 0.4, (0.25 if talking else 0.08) * pulse))
-	draw_colored_polygon(PackedVector2Array([eye + Vector2(-1.8, 0), eye + Vector2(0, -1), eye + Vector2(2, 0), eye + Vector2(0, 0.8)]), Color(0.98, 0.95, 0.88))
-	draw_circle(eye + Vector2(0.4, 0), 0.7, Color(0.05, 0.04, 0.06))
-	draw_line(eye + Vector2(-1.8, 0), eye + Vector2(-4.5, 0.5), Color(0.05, 0.04, 0.06), 0.8)
-	# corona rossa (deshret): bassa davanti, alta dietro, con il ricciolo d'oro
-	draw_colored_polygon(PackedVector2Array([o + Vector2(-6, hy - 3), o + Vector2(-6, hy - 17), o + Vector2(-2, hy - 17), o + Vector2(-2, hy - 8), o + Vector2(6, hy - 8), o + Vector2(6, hy - 3)]), red)
-	draw_arc(o + Vector2(3, hy - 12), 3.0, PI * 0.5, PI * 1.9, 10, GOLD, 1.0)
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	NeithArt.draw(self, p, t, talk_box.visible, face)

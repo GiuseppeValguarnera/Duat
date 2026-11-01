@@ -14,7 +14,7 @@ CSV_PATH = os.path.join(ROOT, "i18n", "duat_translations.csv")
 # stringhe GDScript tra doppi apici (con escape)
 STR_RE = re.compile(r'"((?:[^"\\\n]|\\.)*)"')
 # chiavi di dizionario che contengono testo visibile
-VISIBLE_KEYS = {"name", "desc", "cost", "title", "text", "lore", "lines", "short", "the"}
+VISIBLE_KEYS = {"name", "desc", "cost", "title", "text", "lore", "lines", "short", "the", "req"}
 # parole che indicano un identificatore e non un testo
 SKIP_EXACT = set()
 # parole singole minuscole che però si vedono a schermo (non riconoscibili in automatico)

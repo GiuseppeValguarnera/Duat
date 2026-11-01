@@ -32,12 +32,24 @@ const ALL_IT := {
 				"lore": "Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta."},
 		},
 	},
+	"arco": {
+		"name": "Arco di Satet", "short": "ARCO", "the": "l'arco",
+		"desc": "Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La mira punta da sola il nemico più vicino.",
+		"lore": "Satet, la dea arciera di Elefantina, scagliava le sue frecce sulla prima cataratta: ogni anno, si diceva, era la sua freccia ad aprire la piena del Nilo. Neith, la più antica delle arciere, ne custodisce l'arco.",
+		"aspects": {
+			"satet": {"name": "Aspetto di Satet", "desc": "L'arco della signora della cataratta. +{v}% di danni.", "values": [5, 10, 15], "cost": [0, 1, 2],
+				"lore": "Il nome di Satet viene forse da 'scagliare': la sua corona bianca è ornata da corna di antilope, e nei templi di Elefantina era la padrona dell'acqua fresca che scende dal sud."},
+		},
+	},
 }
+
+## Le armi che si comprano nel Cortile con i lapislazzuli, quando la condizione è soddisfatta.
+## Il khopesh è tuo da subito, la lancia te la regala Neith alla prima visita.
+const UNLOCK_COST := {"arco": 20}
 
 ## Armi ancora da forgiare: solo il nome, coperte nel cortile.
 const FUTURE_IT := [
-	{"name": "Arco di Satet", "glyph": "freccia"},
-	{"name": "Flagello di Osiride", "glyph": "flagello"},
+	{"name": "Flagello di Osiride", "glyph": "flagello", "req": "Si sveglierà dopo la prima vittoria su Am-heh o dopo 15 discese · 35 lapislazzuli"},
 	{"name": "Scettro was", "glyph": "was"},
 	{"name": "Artigli di Bastet", "glyph": "artigli"},
 ]
@@ -49,6 +61,40 @@ static func is_unlocked(w: String) -> bool:
 	if w == "khopesh":
 		return true
 	return Meta.weapons_unlocked.has(w)
+
+
+## La condizione per comprare l'arma è soddisfatta? (lancia e khopesh non si comprano)
+static func requirement_met(w: String) -> bool:
+	match w:
+		"arco":
+			return Meta.serpent_wins >= 3
+	return true
+
+
+## Il testo della condizione (per il piedistallo coperto e per Neith nella Sala).
+static func requirement_text(w: String) -> String:
+	match w:
+		"arco":
+			return Lang.t("Batti il Serpente della Porta tre volte (%d/3)") % mini(Meta.serpent_wins, 3)
+	return ""
+
+
+static func unlock_cost(w: String) -> int:
+	return int(UNLOCK_COST.get(w, 0))
+
+
+static func can_buy(w: String) -> bool:
+	return UNLOCK_COST.has(w) and not is_unlocked(w) and requirement_met(w) and Meta.lapis >= unlock_cost(w)
+
+
+## Compra l'arma con i lapislazzuli: da quel momento è tua per sempre.
+static func buy(w: String) -> bool:
+	if not can_buy(w):
+		return false
+	Meta.lapis -= unlock_cost(w)
+	Meta.weapons_unlocked.append(w)
+	Meta.save()
+	return true
 
 
 static func aspect_level(w: String, a: String) -> int:
@@ -119,6 +165,11 @@ static func choose(w: String, a: String = "") -> void:
 static func adapt(s: String) -> String:
 	if Run.weapon == "khopesh" or Run.weapon == "":
 		return s
+	if Run.weapon == "arco":
+		if Lang.is_en():
+			return s.replace("Khopesh", "Bow").replace("khopesh", "bow")
+		return s.replace("Il khopesh", "L'arco").replace("il khopesh", "l'arco").replace("del khopesh", "dell'arco") \
+			.replace("dal khopesh", "dall'arco").replace("al khopesh", "all'arco").replace("Khopesh", "Arco").replace("khopesh", "arco")
 	if Lang.is_en():
 		return s.replace("Khopesh", "Spear").replace("khopesh", "spear")
 	return s.replace("Il khopesh", "La lancia").replace("il khopesh", "la lancia").replace("del khopesh", "della lancia") \

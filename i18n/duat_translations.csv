@@ -50,14 +50,18 @@ AZIONE,AZIONE,ACTION
 %s · La porta delle prove,%s · La porta delle prove,%s · The gate of trials
 %s · La porta delle prove (nemici in campo: %d),%s · La porta delle prove (nemici in campo: %d),%s · The gate of trials (enemies on the field: %d)
 La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove,La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove,The stele measures your blows on the ushabti and on the trial enemies
+%s · chiuso · %s,%s · chiuso · %s,%s · locked · %s
 %s · arma non ancora forgiata,%s · arma non ancora forgiata,%s · weapon not yet forged
 %s · parla con Neith,%s · parla con Neith,%s · talk to Neith
+%s · chiuso · %s · %d lapislazzuli,%s · chiuso · %s · %d lapislazzuli,%s · locked · %s · %d lapis lazuli
+"%s · Risveglia: %s (%d lapislazzuli, ne hai %d)","%s · Risveglia: %s (%d lapislazzuli, ne hai %d)","%s · Awaken: %s (%d lapis lazuli, you have %d)"
 %s · è l'arma che impugni,%s · è l'arma che impugni,%s · it is the weapon you wield
 %s · Prendi: %s,%s · Prendi: %s,%s · Take: %s
 Pausa,Pausa,Pause
 Riprendi,Riprendi,Resume
 Opzioni,Opzioni,Options
 Torna nella Sala del Giudizio,Torna nella Sala del Giudizio,Back to the Hall of Judgement
+Servono %d lapislazzuli,Servono %d lapislazzuli,You need %d lapis lazuli
 "Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.","Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.","Halt, mortal. This is my courtyard, and whoever enters is measured."
 Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,I am Neith of Sais. I was already ancient when Ra opened his eyes for the first time.
 Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,You felled the guardian of the gate with a curved sword. It is not enough. Whoever crosses the night must know more than one blade.
@@ -903,11 +907,18 @@ Il cancello del Duat è a nord,Il cancello del Duat è a nord,The gate of the Du
 Aggiornamento del gioco,Aggiornamento del gioco,Game update
 Lascia un commento,Lascia un commento,Leave a comment
 Esci dal gioco,Esci dal gioco,Quit the game
-Servono %d lapislazzuli,Servono %d lapislazzuli,You need %d lapis lazuli
 La piuma di Ma'at,La piuma di Ma'at,The Feather of Ma'at
 "Un quarto di nemici in meno, più lenti del 10%, e il 10% di danni in meno (un altro 2% a ogni morte, fino al 30%). In cambio custodisci il 40% del Ka, e lapislazzuli, cuori, serdab e Lacrime valgono la metà. Il Peso del Cuore non conta. La storia va avanti comunque. Puoi toglierla quando vuoi dalle Opzioni.","Un quarto di nemici in meno, più lenti del 10%, e il 10% di danni in meno (un altro 2% a ogni morte, fino al 30%). In cambio custodisci il 40% del Ka, e lapislazzuli, cuori, serdab e Lacrime valgono la metà. Il Peso del Cuore non conta. La storia va avanti comunque. Puoi toglierla quando vuoi dalle Opzioni.","A quarter fewer enemies, 10% slower, and 10% less damage taken (another 2% with each death, up to 30%). In exchange you keep 40% of the Ka, and lapis lazuli, hearts, serdab and Tears are worth half. The Weight of the Heart does not count. The story still moves on. You can remove it whenever you like from the Options."
 Accetto la piuma,Accetto la piuma,I accept the feather
 "No, ci riprovo così","No, ci riprovo così","No, I'll try again as I am"
+"Scriba. Tre volte il Serpente della Porta è caduto sotto la tua mano, e le sue spire ne portano ancora il segno.","Scriba. Tre volte il Serpente della Porta è caduto sotto la tua mano, e le sue spire ne portano ancora il segno.","Scribe. Three times the Serpent of the Gate has fallen beneath your hand, and its coils still bear the mark."
+"Ho lasciato il mio cortile per dirtelo qui, davanti al giudice dei morti: ora sei degno di un'arma che colpisce da lontano.","Ho lasciato il mio cortile per dirtelo qui, davanti al giudice dei morti: ora sei degno di un'arma che colpisce da lontano.","I have left my courtyard to tell you here, before the judge of the dead: you are now worthy of a weapon that strikes from afar."
+"Questo è l'arco di Satet, signora della cataratta. Le sue frecce aprono ogni anno la piena del fiume. Nella notte apriranno la tua strada.","Questo è l'arco di Satet, signora della cataratta. Le sue frecce aprono ogni anno la piena del fiume. Nella notte apriranno la tua strada.","This is the bow of Satet, lady of the cataract. Each year her arrows open the flood of the river. In the night they will open your way."
+"Ma il legno di Satet non si dona: chiede pietra del cielo. Posa ai miei piedi %d lapislazzuli, e la corda sarà tua per sempre.","Ma il legno di Satet non si dona: chiede pietra del cielo. Posa ai miei piedi %d lapislazzuli, e la corda sarà tua per sempre.","But Satet's wood is not given: it asks for stone of the sky. Lay %d lapis lazuli at my feet, and the string will be yours forever."
+"L'arco di Satet ti attende ancora. %d lapislazzuli, e la corda risponderà alla tua mano.","L'arco di Satet ti attende ancora. %d lapislazzuli, e la corda risponderà alla tua mano.","Satet's bow still awaits you. %d lapis lazuli, and the string will answer your hand."
+"Costa %d lapislazzuli · ne hai %d. Potrai prenderlo anche al suo piedistallo, nel Cortile di Neith.","Costa %d lapislazzuli · ne hai %d. Potrai prenderlo anche al suo piedistallo, nel Cortile di Neith.","It costs %d lapis lazuli · you have %d. You can also take it at its pedestal, in Neith's Courtyard."
+Prendo l'arco (%d lapislazzuli),Prendo l'arco (%d lapislazzuli),I take the bow (%d lapis lazuli)
+Più tardi,Più tardi,Later
 "Tocca una voce per leggerla, toccala di nuovo per sceglierla · × per chiudere","Tocca una voce per leggerla, toccala di nuovo per sceglierla · × per chiudere","Tap an entry to read it, tap it again to choose it · × to close"
 E / Esc / B per chiudere,E / Esc / B per chiudere,E / Esc / B to close
 Ka custodito: %d    ·    Capitoli attivi: %d di %d,Ka custodito: %d    ·    Capitoli attivi: %d di %d,Stored Ka: %d    ·    Active chapters: %d of %d
@@ -1507,16 +1518,27 @@ Aspetto di Khonsu,Aspetto di Khonsu,Aspect of Khonsu
 La spazzata stordisce i nemici per {v} secondi.,La spazzata stordisce i nemici per {v} secondi.,The sweep stuns enemies for {v} seconds.
 "Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta.","Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta.","Khonsu, the moon, 'he who travels' through the night. One of his statues, it was told, was sent as far as Asia to heal a possessed princess."
 Arco di Satet,Arco di Satet,Bow of Satet
+ARCO,ARCO,BOW
+"Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La mira punta da sola il nemico più vicino.","Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La mira punta da sola il nemico più vicino.","Swift arrows from afar, stopping on the first enemy. Hold to draw the bow (you move slower): the charged shot pierces the whole line. At the end of a dash you loose a fan of three arrows. Aim locks onto the nearest enemy by itself."
+"Satet, la dea arciera di Elefantina, scagliava le sue frecce sulla prima cataratta: ogni anno, si diceva, era la sua freccia ad aprire la piena del Nilo. Neith, la più antica delle arciere, ne custodisce l'arco.","Satet, la dea arciera di Elefantina, scagliava le sue frecce sulla prima cataratta: ogni anno, si diceva, era la sua freccia ad aprire la piena del Nilo. Neith, la più antica delle arciere, ne custodisce l'arco.","Satet, the archer goddess of Elephantine, shot her arrows over the first cataract: every year, it was said, her arrow opened the Nile flood. Neith, the most ancient of archers, keeps her bow."
+Aspetto di Satet,Aspetto di Satet,Aspect of Satet
+L'arco della signora della cataratta. +{v}% di danni.,L'arco della signora della cataratta. +{v}% di danni.,The bow of the lady of the cataract. +{v}% damage.
+"Il nome di Satet viene forse da 'scagliare': la sua corona bianca è ornata da corna di antilope, e nei templi di Elefantina era la padrona dell'acqua fresca che scende dal sud.","Il nome di Satet viene forse da 'scagliare': la sua corona bianca è ornata da corna di antilope, e nei templi di Elefantina era la padrona dell'acqua fresca che scende dal sud.","Satet's name perhaps comes from 'to shoot': her white crown is adorned with antelope horns, and in the temples of Elephantine she was mistress of the fresh water coming from the south."
 Flagello di Osiride,Flagello di Osiride,Flail of Osiris
+Si sveglierà dopo la prima vittoria su Am-heh o dopo 15 discese · 35 lapislazzuli,Si sveglierà dopo la prima vittoria su Am-heh o dopo 15 discese · 35 lapislazzuli,It will awaken after your first victory over Am-heh or after 15 descents · 35 lapis lazuli
 Scettro was,Scettro was,Was sceptre
 Artigli di Bastet,Artigli di Bastet,Claws of Bastet
+Batti il Serpente della Porta tre volte (%d/3),Batti il Serpente della Porta tre volte (%d/3),Defeat the Serpent of the Gate three times (%d/3)
+Bow,Bow,Bow
+L'arco,L'arco,The bow
+del khopesh,del khopesh,of the khopesh
+dal khopesh,dal khopesh,from the khopesh
+al khopesh,al khopesh,to the khopesh
+Arco,Arco,Bow
 Spear,Spear,Spear
 La lancia,La lancia,The spear
-del khopesh,del khopesh,of the khopesh
 della lancia,della lancia,of the spear
-dal khopesh,dal khopesh,from the khopesh
 dalla lancia,dalla lancia,from the spear
-al khopesh,al khopesh,to the khopesh
 alla lancia,alla lancia,to the spear
 Lancia,Lancia,Spear
 Piume di piombo,Piume di piombo,Leaden feathers

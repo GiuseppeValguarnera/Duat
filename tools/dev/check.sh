@@ -16,7 +16,7 @@ trap 'exit 143' TERM INT
 cp "$DEV/override.cfg" .
 HOME="$HOMEDIR" timeout 120 "$G" --headless --path . --import > "$OUT/import.txt" 2>&1
 : > "$OUT/run.txt"
-for scene in res://scenes/hub.tscn res://scenes/game.tscn; do
+for scene in res://scenes/hub.tscn res://scenes/armory.tscn res://scenes/game.tscn; do
   DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 60 "$G" --headless --path . --quit-after 600 "$scene" >> "$OUT/run.txt" 2>&1
 done
 # Sokar: stanze 1, 4 e 8 (terreno, trappole, nemici del deserto)

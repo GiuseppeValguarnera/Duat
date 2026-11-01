@@ -19,6 +19,7 @@ var spots := {}                       # nome -> posizione dei punti con cui inte
 var near := ""
 var talk_lines: Array = []
 var commented := false
+var talk_who := "anubi"                  ## chi sta parlando: "anubi" o "neith" (quando viene a offrirti l'arco)
 var _news := [false, false, false, false, false]   ## Anubi, Libro, Papiri, cassa: c'è qualcosa di nuovo? (_draw_markers)
 var bastet_cat: Node2D = null           ## il gatto di Bastet (restauro)
 var _news_t := 0.0
@@ -81,6 +82,7 @@ func _ready() -> void:
 		"cancello": Vector2(cx, TOP + 4.0),
 		"papiri": Vector2(cx + 150.0, 322.0),
 		"cassa": Vector2(cx - 150.0, 322.0),       # la cassa dello scalpellino: i restauri
+		"neith": Vector2(WALL + 56.0, ARMORY_Y + 44.0),   # Neith, accanto alla porta del Cortile, quando porta l'arco
 	}
 	_build()
 	Fx.scale_labels($UI)
@@ -336,6 +338,8 @@ func _process(delta: float) -> void:
 			near = k
 	if bastet_cat != null and is_instance_valid(bastet_cat) and near == "" and player.global_position.distance_to(bastet_cat.position) < 26.0:
 		near = "gatto"
+	if _neith_here() and player.global_position.distance_to(spots["neith"]) < 34.0:
+		near = "neith"
 	var key := "Y" if Fx.device == "pad" else "E"
 	match near:
 		"anubi":
@@ -356,6 +360,8 @@ func _process(delta: float) -> void:
 			prompt.text = Lang.t("%s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d)") % [key, Meta.lapis]
 		"gatto":
 			prompt.text = Lang.t("%s · Accarezza il gatto") % key
+		"neith":
+			prompt.text = Lang.t("%s · Parla con Neith") % key
 		"casa":
 			if Meta.casa:
 				prompt.text = Lang.t("La Casa della Vita · amuleti e sfide · entra dalla porta")
@@ -394,6 +400,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			_open_book("restauri")
 		elif near == "gatto":
 			bastet_cat.pet()
+		elif near == "neith":
+			_start_neith()
 		elif near == "casa" and not Meta.casa:
 			_open_casa()
 		elif near == "bilancia" and Weights.unlocked():
@@ -506,6 +514,7 @@ func _start_run() -> void:
 # ---------------------------------------------------------------- dialoghi
 
 func _start_talk() -> void:
+	_talk_as("anubi")
 	talk_lines = Dialogue.next_lines(not commented)
 	commented = true
 	Meta.last_end = ""
@@ -519,13 +528,103 @@ func _advance_talk() -> void:
 	if talk_lines.is_empty():
 		talk_box.visible = false
 		player.set_physics_process(true)
+		if talk_who == "neith":
+			_offer_bow.call_deferred()
+			return
 		if Dialogue.offer_feather:
 			Dialogue.offer_feather = false
 			_offer_feather.call_deferred()
 		return
 	Sfx.play("ui", 0.0)
-	talk_name.text = Lang.t("Anubi")
+	talk_name.text = Lang.t("Neith") if talk_who == "neith" else Lang.t("Anubi")
 	talk_text.text = UiStyle.next_talk_page(talk_lines)
+
+
+func _talk_as(who: String) -> void:
+	talk_who = who
+	UiStyle.talk_style(talk_box, talk_name, talk_text, NeithArt.NEITH_COLOR if who == "neith" else Boons.god_color("anubi"))
+
+
+# ---------------------------------------------------------------- Neith e l'Arco di Satet
+
+## Neith lascia il suo cortile e viene nella Sala dopo la terza vittoria sul Serpente, finché
+## non prendi l'arco (si compra anche al suo piedistallo nel Cortile).
+func _neith_here() -> bool:
+	return Weapons.requirement_met("arco") and not Weapons.is_unlocked("arco")
+
+
+func _start_neith() -> void:
+	_talk_as("neith")
+	var cost := Weapons.unlock_cost("arco")
+	if not Meta.neith_seen.has("arco_sala"):
+		Meta.neith_seen.append("arco_sala")
+		Meta.save()
+		talk_lines = [
+			Lang.t("Scriba. Tre volte il Serpente della Porta è caduto sotto la tua mano, e le sue spire ne portano ancora il segno."),
+			Lang.t("Ho lasciato il mio cortile per dirtelo qui, davanti al giudice dei morti: ora sei degno di un'arma che colpisce da lontano."),
+			Lang.t("Questo è l'arco di Satet, signora della cataratta. Le sue frecce aprono ogni anno la piena del fiume. Nella notte apriranno la tua strada."),
+			Lang.t("Ma il legno di Satet non si dona: chiede pietra del cielo. Posa ai miei piedi %d lapislazzuli, e la corda sarà tua per sempre.") % cost,
+		]
+	else:
+		talk_lines = [Lang.t("L'arco di Satet ti attende ancora. %d lapislazzuli, e la corda risponderà alla tua mano.") % cost]
+	player.set_physics_process(false)
+	talk_box.visible = true
+	_advance_talk()
+
+
+## La finestra di Neith: prendi l'arco ora (con i lapislazzuli) o più tardi, anche nel Cortile.
+func _offer_bow() -> void:
+	_talk_as("anubi")
+	player.set_physics_process(false)
+	var cost := Weapons.unlock_cost("arco")
+	var layer := CanvasLayer.new()
+	layer.layer = 20
+	add_child(layer)
+	var dim := ColorRect.new()
+	dim.color = Color(0.03, 0.03, 0.06, 0.8)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(dim)
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(center)
+	var pap := PanelContainer.new()
+	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(NeithArt.NEITH_COLOR.darkened(0.3)))
+	center.add_child(pap)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", int(5 * Fx.ui))
+	col.custom_minimum_size = Vector2(minf(420.0 * Fx.ui, get_viewport().get_visible_rect().size.x - 40.0), 0)
+	pap.add_child(col)
+	var h := UiStyle.label(Weapons.ALL["arco"]["name"], 13, NeithArt.NEITH_COLOR.darkened(0.25), true)
+	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(h)
+	col.add_child(UiStyle.label(Weapons.ALL["arco"]["desc"], 8, UiStyle.INK_SOFT, false, col.custom_minimum_size.x))
+	var price := UiStyle.label(Lang.t("Costa %d lapislazzuli · ne hai %d. Potrai prenderlo anche al suo piedistallo, nel Cortile di Neith.") % [cost, Meta.lapis], 8, UiStyle.INK, false, col.custom_minimum_size.x)
+	col.add_child(price)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", int(10 * Fx.ui))
+	col.add_child(row)
+	var close := func(take: bool) -> void:
+		if take and Weapons.buy("arco"):
+			Weapons.choose("arco")
+			Sfx.play("boon", 0.0)
+			Fx.burst(spots["neith"] + Vector2(0, -20), NeithArt.NEITH_COLOR, 30, 120.0)
+			Fx.burst(player.global_position + Vector2(0, -14), Restorations.LAPIS_COLOR, 18, 90.0)
+			Fx.float_text(player.global_position + Vector2(0, -34), Weapons.ALL["arco"]["name"], NeithArt.GOLD)
+		layer.queue_free()
+		player.set_physics_process(true)
+	var can := Meta.lapis >= cost
+	for opt in [[Lang.t("Prendo l'arco (%d lapislazzuli)") % cost, true], [Lang.t("Più tardi"), false]]:
+		var b := Button.new()
+		b.text = opt[0]
+		UiStyle.papyrus_button(b, NeithArt.NEITH_COLOR)
+		b.add_theme_font_size_override("font_size", Fx.fs(9))
+		b.add_theme_color_override("font_disabled_color", Color(UiStyle.INK, 0.4))
+		b.disabled = opt[1] and not can
+		b.pressed.connect(close.bind(opt[1]))
+		row.add_child(b)
+		if opt[1] == can:
+			b.grab_focus.call_deferred()
 
 
 # ---------------------------------------------------------------- finestre (Libro dei Morti e Papiri di Thoth)
@@ -1320,6 +1419,10 @@ func _draw() -> void:
 	_draw_crate(spots["cassa"])
 	_draw_book(spots["libro"])
 	_draw_papiri(spots["papiri"])
+	if _neith_here():
+		var np: Vector2 = spots["neith"]
+		var face := -1.0 if player != null and player.global_position.x < np.x - 6.0 else 1.0
+		NeithArt.draw(self, np, t, talk_box.visible and talk_who == "neith", face)
 	_draw_markers()
 
 
@@ -1358,6 +1461,10 @@ func _draw_markers() -> void:
 		UiStyle.exclaim(self, cs + Vector2(0, -36), t)
 	if _news[4]:
 		UiStyle.exclaim(self, Vector2(ROOM.size.x - WALL - 12.0, CASA_Y - 66.0), t)
+	if _neith_here():
+		UiStyle.sparkle(self, spots["neith"] + Vector2(0, -40), 18.0, t, near == "neith", 7.3)
+		if not Meta.neith_seen.has("arco_sala"):
+			UiStyle.exclaim(self, spots["neith"] + Vector2(0, -80), t)
 
 
 ## Il cartiglio del faraone Akhet, sopra il cancello. Ogni boss di regione restituisce un segno del
