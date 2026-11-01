@@ -471,11 +471,15 @@ WASD muovi · Spazio scatto · E interagisci · Esc esci,WASD muovi · Spazio sc
 "Thoth, il signore della scrittura, guarda gli scribi al lavoro","Thoth, il signore della scrittura, guarda gli scribi al lavoro","Thoth, lord of writing, watches the scribes at work"
 %s · Parla con Imhotep,%s · Parla con Imhotep,%s · Talk to Imhotep
 Imhotep,Imhotep,Imhotep
+"Porti due amuleti al collo, uno per sigillo.","Porti due amuleti al collo, uno per sigillo.","You wear two amulets, one per seal."
+Porti un solo amuleto per volta.,Porti un solo amuleto per volta.,You wear one amulet at a time.
 Il banco dell'orafo,Il banco dell'orafo,The goldsmith's bench
-"Porti un solo amuleto per volta. Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.","Porti un solo amuleto per volta. Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.","You wear one amulet at a time. You earn them with the challenges on the wall of Thoth, then forge them with lapis lazuli (you have %d). They grow with use: level 2 after 20 chambers worn, level 3 after 50."
+"Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.","Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.","You earn them with the challenges on the wall of Thoth, then forge them with lapis lazuli (you have %d). They grow with use: level 2 after 20 chambers worn, level 3 after 50."
+Falla forgiare · %d lapislazzuli,Falla forgiare · %d lapislazzuli,Have it forged · %d lapis lazuli
   ·  livello %d,  ·  livello %d,  ·  level %d
   ·  AL COLLO,  ·  AL COLLO,  ·  WORN
 "   (al livello %d: %s, dopo %d stanze; ne hai fatte %d)","   (al livello %d: %s, dopo %d stanze; ne hai fatte %d)","   (level %d: %s, after %d chambers; you have done %d)"
+Mettilo al posto di %s,Mettilo al posto di %s,Wear it instead of %s
 Mettilo al collo,Mettilo al collo,Wear it
 Toglilo,Toglilo,Take it off
 Forgialo · gratis,Forgialo · gratis,Forge it · free
@@ -692,6 +696,7 @@ Il Ka che non spendi torna qui con te. Quello che spendi ti tiene in vita. Scegl
 Ka,Ka,Ka
 Lapislazzuli,Lapislazzuli,Lapis lazuli
 Cura,Cura,Healing
+Aker,Aker,Aker
 Am-heh,Am-heh,Am-heh
 Guardiano,Guardiano,Guardian
 Sokar,Sokar,Sokar
@@ -703,9 +708,12 @@ Dono di %s: scegli uno dei suoi poteri,Dono di %s: scegli uno dei suoi poteri,Bo
 "L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa","L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa","The altar of Set: a detour, you lose neither this chamber nor the other doors. Entering costs 8 health. A curse for 2 chambers, then a power for the whole descent"
 Tesoro di Ka: +25 Ka,Tesoro di Ka: +25 Ka,Ka Treasure: +25 Ka
 Lapislazzuli: pietre preziose per i restauri (restano anche se cadi),Lapislazzuli: pietre preziose per i restauri (restano anche se cadi),Lapis lazuli: precious stones for restorations (you keep them even if you fall)
+Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Aker,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Aker,Water of the Nile: recover %d%% of your health. Last chamber before Aker
 Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Water of the Nile: you recover %d%% of your health. Last chamber before Am-heh
 Acqua del Nilo: recuperi il %d%% della vita,Acqua del Nilo: recuperi il %d%% della vita,Water of the Nile: you recover %d%% of your health
+"La porta dell'orizzonte: Aker, il leone dalle due teste, custodisce il passaggio del sole","La porta dell'orizzonte: Aker, il leone dalle due teste, custodisce il passaggio del sole","The gate of the horizon: Aker, the two-headed lion, guards the passage of the sun"
 "Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Gate of the First Hour: Am-heh, the Devourer of Millions, awaits you in its lake of fire"
+Il tempio di Serket: la dea scorpione custodisce il deserto. Battila per un dono di livello superiore,Il tempio di Serket: la dea scorpione custodisce il deserto. Battila per un dono di livello superiore,The temple of Serket: the scorpion goddess guards the desert. Defeat her for a higher-level boon
 La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,The Middle Gate: the Serpent that guards it. Defeat it for a boon of a higher level
 "La porta della quarta ora: oltre, la terra di Sokar","La porta della quarta ora: oltre, la terra di Sokar","The gate of the fourth hour: beyond it, the land of Sokar"
 Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),The Ferryman: spend this descent's Ka (what you spend does not come home with you)
@@ -719,6 +727,27 @@ SOPRA LA TERRA,SOPRA LA TERRA,ABOVE THE EARTH
 SCHIANTO,SCHIANTO,SLAM
 +%d Ka,+%d Ka,+%d Ka
 Occhio pronto,Occhio pronto,Eye ready
+Voce degli Dèi,Voce degli Dèi,Voice of the Gods
+Una volta per discesa puoi chiedere a un dio altre tre scelte per il suo dono.,Una volta per discesa puoi chiedere a un dio altre tre scelte per il suo dono.,Once per descent you can ask a god for three new choices for their boon.
+"Gli Egizi parlavano agli dèi attraverso le statue dei templi: il sacerdote poneva la domanda, e il dio rispondeva muovendo la barca sacra in avanti o indietro.","Gli Egizi parlavano agli dèi attraverso le statue dei templi: il sacerdote poneva la domanda, e il dio rispondeva muovendo la barca sacra in avanti o indietro.","The Egyptians spoke to the gods through the statues of the temples: the priest asked the question, and the god answered by moving the sacred barque forward or back."
+"Ora la tua voce arriva fino agli dèi, Scriba. Non tutti amano essere interrogati due volte: chiedi con rispetto, e chiedi una volta sola.","Ora la tua voce arriva fino agli dèi, Scriba. Non tutti amano essere interrogati due volte: chiedi con rispetto, e chiedi una volta sola.","Now your voice reaches the gods, Scribe. Not all of them like being asked twice: ask with respect, and ask only once."
+Voce degli Dèi · seconda eco,Voce degli Dèi · seconda eco,Voice of the Gods · second echo
+La Voce degli Dèi si può usare due volte per discesa.,La Voce degli Dèi si può usare due volte per discesa.,The Voice of the Gods can be used twice per descent.
+"Nelle grandi feste di Tebe la statua di Amon usciva dal tempio e rispondeva a chiunque le parlasse lungo la strada: la sua voce arrivava due volte, all'andata e al ritorno.","Nelle grandi feste di Tebe la statua di Amon usciva dal tempio e rispondeva a chiunque le parlasse lungo la strada: la sua voce arrivava due volte, all'andata e al ritorno.","At the great feasts of Thebes the statue of Amun left the temple and answered anyone who spoke to it along the road: its voice came twice, going and returning."
+La tua voce ha trovato un'eco. Gli dèi ti ascolteranno due volte. Ricorda però che anche il silenzio è una risposta.,La tua voce ha trovato un'eco. Gli dèi ti ascolteranno due volte. Ricorda però che anche il silenzio è una risposta.,Your voice has found an echo. The gods will listen to you twice. But remember that silence is also an answer.
+La Seconda Barca,La Seconda Barca,The Second Barque
+"Nell'Oasi della quarta ora una seconda barca ti aspetta sull'acqua: puoi scambiare un dono già preso con un altro dello stesso dio, allo stesso livello.","Nell'Oasi della quarta ora una seconda barca ti aspetta sull'acqua: puoi scambiare un dono già preso con un altro dello stesso dio, allo stesso livello.","In the Oasis of the fourth hour a second barque waits for you on the water: you can trade a boon you already have for another from the same god, at the same level."
+"Ra attraversava il cielo su due barche: la Mandjet del giorno e la Mesektet della notte. Al tramonto passava dall'una all'altra, e il carico restava lo stesso.","Ra attraversava il cielo su due barche: la Mandjet del giorno e la Mesektet della notte. Al tramonto passava dall'una all'altra, e il carico restava lo stesso.","Ra crossed the sky on two barques: the Mandjet of the day and the Mesektet of the night. At sunset he passed from one to the other, and the cargo stayed the same."
+"Ra cambia barca al tramonto, Scriba, e nessuno lo chiama incostante. Nell'Oasi troverai la tua seconda barca: lascia sulla riva un dono, e un altro dello stesso dio salirà con te.","Ra cambia barca al tramonto, Scriba, e nessuno lo chiama incostante. Nell'Oasi troverai la tua seconda barca: lascia sulla riva un dono, e un altro dello stesso dio salirà con te.","Ra changes barque at sunset, Scribe, and no one calls him fickle. In the Oasis you will find your second barque: leave a boon on the shore, and another from the same god will come aboard with you."
+Il Sigillo di Thoth,Il Sigillo di Thoth,The Seal of Thoth
+I doni rari e i doni doppi compaiono più spesso.,I doni rari e i doni doppi compaiono più spesso.,Rare boons and duo boons appear more often.
+Thoth teneva il registro degli dèi e conosceva le parole che legano. Gli scribi gli dedicavano una goccia d'inchiostro prima di ogni lavoro.,Thoth teneva il registro degli dèi e conosceva le parole che legano. Gli scribi gli dedicavano una goccia d'inchiostro prima di ogni lavoro.,Thoth kept the register of the gods and knew the words that bind. Scribes offered him a drop of ink before every task.
+"Ho posato il mio sigillo sul tuo nome. Ora i patti tra gli dèi ti trovano più facilmente, e le cose rare ti vengono incontro. Non sprecarle: le ho contate.","Ho posato il mio sigillo sul tuo nome. Ora i patti tra gli dèi ti trovano più facilmente, e le cose rare ti vengono incontro. Non sprecarle: le ho contate.","I have set my seal upon your name. Now the pacts between the gods find you more easily, and rare things come to meet you. Do not waste them: I have counted them."
+La Collana a due sigilli,La Collana a due sigilli,The Necklace of Two Seals
+Porti due amuleti al collo invece di uno.,Porti due amuleti al collo invece di uno.,You wear two amulets instead of one.
+"Le mummie dei re erano coperte di amuleti, a decine, tra una benda e l'altra: ognuno con il suo capitolo del Libro dei Morti e il suo posto sul corpo.","Le mummie dei re erano coperte di amuleti, a decine, tra una benda e l'altra: ognuno con il suo capitolo del Libro dei Morti e il suo posto sul corpo.","The mummies of kings were covered in amulets, dozens of them, between one bandage and the next: each with its own chapter of the Book of the Dead and its own place on the body."
+"Due sigilli d'oro sulla stessa catena. Ai miei tempi solo il faraone ne portava più d'uno, e lo pesavano ogni mattina perché non si stancasse.","Due sigilli d'oro sulla stessa catena. Ai miei tempi solo il faraone ne portava più d'uno, e lo pesavano ogni mattina perché non si stancasse.","Two golden seals on the same chain. In my day only the pharaoh wore more than one, and they weighed him every morning so he would not grow tired."
+"Ma tu non sei un faraone, giovane scriba. O forse sì. Portali bene: un amuleto è un pensiero, e due pensieri insieme sono già un dialogo.","Ma tu non sei un faraone, giovane scriba. O forse sì. Portali bene: un amuleto è un pensiero, e due pensieri insieme sono già un dialogo.","But you are not a pharaoh, young scribe. Or perhaps you are. Wear them well: an amulet is a thought, and two thoughts together are already a dialogue."
 «Ogni sponda ha il suo prezzo. Anche questa.»,«Ogni sponda ha il suo prezzo. Anche questa.»,«Every shore has its price. This one too.»
 «Conosci il nome di ogni parte della mia barca? No? Allora paga.»,«Conosci il nome di ogni parte della mia barca? No? Allora paga.»,«Do you know the name of every part of my boat? No? Then pay.»
 "«I costruttori di tombe muravano stanze senza porta, per il Ka dei re. Chi guarda bene le crepe, a volte trova chi gli risponde.»","«I costruttori di tombe muravano stanze senza porta, per il Ka dei re. Chi guarda bene le crepe, a volte trova chi gli risponde.»","«The tomb builders walled up rooms without doors, for the Ka of kings. Whoever looks closely at the cracks sometimes finds someone who answers.»"
@@ -781,6 +810,7 @@ Scegli una porta: la ricompensa è scritta sopra,Scegli una porta: la ricompensa
 La quarta ora,La quarta ora,The fourth hour
 La terra di Sokar,La terra di Sokar,The land of Sokar
 I tuoi doni (%d)%s,I tuoi doni (%d)%s,Your boons (%d)%s
+Voce degli Dèi: chiedi altre scelte (%d),Voce degli Dèi: chiedi altre scelte (%d),Voice of the Gods: ask for new choices (%d)
 Nuovo,Nuovo,New
 Livello %d,Livello %d,Level %d
 Nuovo · subito livello %d,Nuovo · subito livello %d,New · straight to level %d
@@ -873,14 +903,23 @@ recuperi il 25% della vita (una volta sola),recuperi il 25% della vita (una volt
 L'altare di Imhotep,L'altare di Imhotep,Imhotep's altar
 cambia l'amuleto che porti (una volta sola),cambia l'amuleto che porti (una volta sola),change the amulet you wear (once only)
 La statua di Sokar,La statua di Sokar,The statue of Sokar
+scambia un dono con un altro dello stesso dio (una volta sola),scambia un dono con un altro dello stesso dio (una volta sola),trade a boon for another from the same god (once only)
 L'Oasi della quarta ora,L'Oasi della quarta ora,The Oasis of the fourth hour
-"Qui la notte è breve. Riposa, scegli, poi entra nella sabbia","Qui la notte è breve. Riposa, scegli, poi entra nella sabbia","Here the night is brief. Rest, choose, then step into the sand"
+"Qui la notte è breve. Riposa, poi Mahaf ti porterà nella sabbia","Qui la notte è breve. Riposa, poi Mahaf ti porterà nella sabbia","Here the night is short. Rest, then Mahaf will carry you into the sand"
 L'acqua ricorda il Nilo: ti rende un poco di ciò che hai perduto,L'acqua ricorda il Nilo: ti rende un poco di ciò che hai perduto,The water remembers the Nile: it gives back a little of what you lost
+Nessuno dei tuoi doni può essere scambiato,Nessuno dei tuoi doni può essere scambiato,None of your boons can be traded
+"Quale dono lasci sulla riva? Un altro dello stesso dio salirà con te, allo stesso livello.","Quale dono lasci sulla riva? Un altro dello stesso dio salirà con te, allo stesso livello.","Which boon do you leave on the shore? Another from the same god will come aboard with you, at the same level."
+Non scambio nulla,Non scambio nulla,I trade nothing
+Al posto di %s,Al posto di %s,Instead of %s
+Resta com'è,Resta com'è,Keep as it is
+%s ti offre un altro dei suoi doni,%s ti offre un altro dei suoi doni,%s offers you another of their boons
+%s al posto di %s,%s al posto di %s,%s instead of %s
 "Non hai altri amuleti da portare. Se ne forgiano alla Casa della Vita, coi lapislazzuli","Non hai altri amuleti da portare. Se ne forgiano alla Casa della Vita, coi lapislazzuli","You have no other amulets to wear. More are forged at the House of Life, with lapis lazuli"
 Amuleto,Amuleto,Amulet
 Nessun amuleto,Nessun amuleto,No amulet
-Resta com'è,Resta com'è,Keep as it is
 "Un solo amuleto al collo. Scegli ciò che porti, e lascia ciò che non ti serve","Un solo amuleto al collo. Scegli ciò che porti, e lascia ciò che non ti serve","One amulet at your neck. Choose what you carry, and leave what you do not need"
+Il nuovo amuleto prende il posto del primo sigillo; il secondo resta dov'è,Il nuovo amuleto prende il posto del primo sigillo; il secondo resta dov'è,The new amulet takes the place of the first seal; the second stays where it is
+Il secondo sigillo della collana è libero: il nuovo amuleto si aggiunge al tuo,Il secondo sigillo della collana è libero: il nuovo amuleto si aggiunge al tuo,The necklace's second seal is free: the new amulet joins yours
 "Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto.","Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto.","An amulet is a thought made of stone, scribe. Wear only one: wisdom lies in leaving the rest."
 Porti %s,Porti %s,You wear %s
 Non hai abbastanza Ka,Non hai abbastanza Ka,You don't have enough Ka
@@ -942,7 +981,6 @@ pronto,pronto,ready
 PRONTO (Q / LT),PRONTO (Q / LT),READY (Q / LT)
 FORMA DIVINA %.1fs,FORMA DIVINA %.1fs,DIVINE FORM %.1fs
 Ammit · colonne: %d,Ammit · colonne: %d,Ammit · pillars: %d
-Aker,Aker,Aker
 Stanza %d/%d,Stanza %d/%d,Chamber %d/%d
 Addestramento,Addestramento,Training
 Piuma di Ma'at: -%d%% danni,Piuma di Ma'at: -%d%% danni,Feather of Ma'at: -%d%% damage
@@ -953,6 +991,7 @@ Doni: %d (Tab per vederli),Doni: %d (Tab per vederli),Boons: %d (Tab to view)
 Tempo %d:%02d,Tempo %d:%02d,Time %d:%02d
   ·  record %d:%02d,  ·  record %d:%02d,  ·  record %d:%02d
 "%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, you have %d)"
+%s · Sali sulla barca di Mahaf: verso la terra di Sokar,%s · Sali sulla barca di Mahaf: verso la terra di Sokar,%s · Board Mahaf's barque: toward the land of Sokar
 %s · Parla con Mahaf,%s · Parla con Mahaf,%s · Talk to Mahaf
 Entra · %s,Entra · %s,Enter · %s
 Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Left stick move · right aim · RB attack · RT Eye · LB/A dash · LT Divine Form · Select boons · Start pause
@@ -973,7 +1012,7 @@ WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD muovi · Spazio
  · un ricordo nuovo, · un ricordo nuovo, · a new memory
 "%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)","%s · Il Peso del Cuore (peso attuale %d, Ka +%d%%)","%s · The Weight of the Heart (current weight %d, Ka +%d%%)"
 La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,The scales of Ma'at · Defeat Am-heh to lay down your weights
-%s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d),%s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d),%s · The stonemason's chest: restore the Hall (lapis lazuli: %d)
+%s · La cassa dello scalpellino: restauri e grazie degli dèi (lapislazzuli: %d),%s · La cassa dello scalpellino: restauri e grazie degli dèi (lapislazzuli: %d),%s · The stonecutter's chest: restorations and graces of the gods (lapis lazuli: %d)
 %s · Accarezza il gatto,%s · Accarezza il gatto,%s · Pet the cat
 La Casa della Vita · amuleti e sfide · entra dalla porta,La Casa della Vita · amuleti e sfide · entra dalla porta,The House of Life · amulets and challenges · walk through the door
 "%s · Apri la Casa della Vita: amuleti e sfide (%d lapislazzuli, ne hai %d)","%s · Apri la Casa della Vita: amuleti e sfide (%d lapislazzuli, ne hai %d)","%s · Open the House of Life: amulets and challenges (%d lapis lazuli, you have %d)"
@@ -1024,6 +1063,10 @@ It costs %d Ka: you have %d."
 Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.,Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Libri dei Morti di decine di metri: quello di Ani supera i ventitré.,A longer papyrus for more spells. The richest had Books of the Dead painted tens of metres long: Ani's is over twenty-three.
 I restauri della Sala,I restauri della Sala,Restoring the Hall
 Lapislazzuli: %d    ·    Restauri fatti: %d di %d,Lapislazzuli: %d    ·    Restauri fatti: %d di %d,Lapis lazuli: %d    ·    Restorations done: %d of %d
+— Grazie degli dèi —,— Grazie degli dèi —,— Graces of the gods —
+Già tua.,Già tua.,Already yours.
+Premi per prenderla: %d lapislazzuli.,Premi per prenderla: %d lapislazzuli.,Press to take it: %d lapis lazuli.
+Costa %d lapislazzuli: te ne mancano %d.,Costa %d lapislazzuli: te ne mancano %d.,It costs %d lapis lazuli: you are %d short.
 Già restaurato.,Già restaurato.,Already restored.
 Premi per restaurarlo: %d lapislazzuli.,Premi per restaurarlo: %d lapislazzuli.,Press to restore it: %d lapis lazuli.
 "Costa %d lapislazzuli: te ne mancano %d. Li lasciano il Serpente della Porta, Am-heh e le stanze segrete.","Costa %d lapislazzuli: te ne mancano %d. Li lasciano il Serpente della Porta, Am-heh e le stanze segrete.","It costs %d lapis lazuli: you need %d more. The Serpent of the Gate, Am-heh and the secret chambers leave them behind."
@@ -1472,6 +1515,12 @@ prima volta con quest'arma,prima volta con quest'arma,first time with this weapo
 "«Hai varcato l'acqua, ora varchi la terra. Dopo la terra non resta che il cielo.»","«Hai varcato l'acqua, ora varchi la terra. Dopo la terra non resta che il cielo.»","«You have crossed the water; now you cross the earth. After the earth, only the sky remains.»"
 «Chi cammina verso l'orizzonte porta con sé la propria alba. Custodiscila: qui nessuno potrà dartene un'altra.»,«Chi cammina verso l'orizzonte porta con sé la propria alba. Custodiscila: qui nessuno potrà dartene un'altra.»,«Whoever walks toward the horizon carries their own dawn. Guard it: here no one can give you another.»
 "«Le acque ti hanno ricordato. La sabbia ti metterà alla prova. Quale delle due sia più clemente, lo dirà la fine del viaggio.»","«Le acque ti hanno ricordato. La sabbia ti metterà alla prova. Quale delle due sia più clemente, lo dirà la fine del viaggio.»","«The waters remembered you. The sand will test you. Which of the two is more merciful, the end of the journey will tell.»"
+"«Qui la mia barca si ferma. Non per stanchezza: anche il Fiume, a quest'ora, trattiene il respiro prima della sabbia.»","«Qui la mia barca si ferma. Non per stanchezza: anche il Fiume, a quest'ora, trattiene il respiro prima della sabbia.»","«Here my barque stops. Not from weariness: even the River, at this hour, holds its breath before the sand.»"
+"«Oltre quella duna l'acqua finisce. La barca la trascineranno, come trascinarono quella di Ra quando il dio era vecchio. Sali quando sei pronto.»","«Oltre quella duna l'acqua finisce. La barca la trascineranno, come trascinarono quella di Ra quando il dio era vecchio. Sali quando sei pronto.»","«Beyond that dune the water ends. They will drag the barque, as they dragged Ra's when the god was old. Board when you are ready.»"
+"«Ho portato re e ladri, scribi e sacerdoti. Ognuno credeva che il viaggio finisse all'altra riva. Nessuno ha mai chiesto dove finisce il Fiume.»","«Ho portato re e ladri, scribi e sacerdoti. Ognuno credeva che il viaggio finisse all'altra riva. Nessuno ha mai chiesto dove finisce il Fiume.»","«I have carried kings and thieves, scribes and priests. Each believed the journey ended at the other shore. No one ever asked where the River ends.»"
+"«La quarta ora non ha luce, scriba. Ha solo strade. Io conosco quella che passa sopra la sabbia senza annegarvi.»","«La quarta ora non ha luce, scriba. Ha solo strade. Io conosco quella che passa sopra la sabbia senza annegarvi.»","«The fourth hour has no light, scribe. It has only roads. I know the one that passes over the sand without drowning in it.»"
+"«Bevi alla fonte, se vuoi. Ma non guardarti troppo a lungo nell'acqua: qui riflette quello che eri, non quello che sei.»","«Bevi alla fonte, se vuoi. Ma non guardarti troppo a lungo nell'acqua: qui riflette quello che eri, non quello che sei.»","«Drink at the spring, if you like. But do not look at yourself too long in the water: here it reflects what you were, not what you are.»"
+"«Ricorda: io guardo sempre indietro. Tu guarda avanti. Così, in due, non perderemo la strada.»","«Ricorda: io guardo sempre indietro. Tu guarda avanti. Così, in due, non perderemo la strada.»","«Remember: I always look back. You look ahead. That way, the two of us will not lose the road.»"
 Occhio di Horus,Occhio di Horus,Eye of Horus
 Il nodo di Iside ti protegge,Il nodo di Iside ti protegge,The knot of Isis protects you
 Scudo -%d,Scudo -%d,Shield -%d
@@ -1493,12 +1542,12 @@ Il trono di Anubi,Il trono di Anubi,The throne of Anubis
 "Alle spalle di Anubi torna il suo trono dorato, con lo schienale dipinto e le zampe di leone.","Alle spalle di Anubi torna il suo trono dorato, con lo schienale dipinto e le zampe di leone.","Behind Anubis his golden throne returns, with a painted back and lion's paws."
 Il trono era il segno del potere: il nome di Iside si scrive proprio con il geroglifico di un seggio.,Il trono era il segno del potere: il nome di Iside si scrive proprio con il geroglifico di un seggio.,The throne was the sign of power: Isis's name is written with the hieroglyph of a seat.
 La clessidra di Thoth,La clessidra di Thoth,The water clock of Thoth
-Comodità. Durante la discesa vedi in alto il tempo trascorso e il tuo record contro Am-heh.,Comodità. Durante la discesa vedi in alto il tempo trascorso e il tuo record contro Am-heh.,Convenience. During the descent you see the time elapsed and your record against Am-heh.
+Durante la discesa vedi in alto il tempo trascorso e il tuo record contro Am-heh.,Durante la discesa vedi in alto il tempo trascorso e il tuo record contro Am-heh.,During the descent you see the elapsed time at the top and your record against Am-heh.
 "Gli Egizi misuravano le ore della notte con le clessidre ad acqua: un vaso forato, con le tacche dipinte all'interno.","Gli Egizi misuravano le ore della notte con le clessidre ad acqua: un vaso forato, con le tacche dipinte all'interno.",The Egyptians measured the hours of the night with water clocks: a pierced vessel with marks painted inside.
-"Comodità. Nei Papiri di Thoth compare una pagina con le tue imprese: discese, vittorie, chi ti ha fermato più spesso, gli dèi che hai scelto.","Comodità. Nei Papiri di Thoth compare una pagina con le tue imprese: discese, vittorie, chi ti ha fermato più spesso, gli dèi che hai scelto.","Convenience. A page with your deeds appears in the Scrolls of Thoth: descents, victories, what stopped you most often, the gods you chose."
+"Nei Papiri di Thoth compare una pagina con le tue imprese: discese, vittorie, chi ti ha fermato più spesso, gli dèi che hai scelto.","Nei Papiri di Thoth compare una pagina con le tue imprese: discese, vittorie, chi ti ha fermato più spesso, gli dèi che hai scelto.","A page with your deeds appears in the Papyri of Thoth: descents, victories, who stopped you most often, the gods you chose."
 "Gli scribi tenevano registri di tutto: il grano, il bestiame, i lavoratori. Anche le imprese dei re finivano su un papiro.","Gli scribi tenevano registri di tutto: il grano, il bestiame, i lavoratori. Anche le imprese dei re finivano su un papiro.","Scribes kept records of everything: grain, cattle, workers. Even the deeds of kings ended up on papyrus."
 Il gatto di Bastet,Il gatto di Bastet,The cat of Bastet
-"Comodità. Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.","Comodità. Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.","Convenience. A cat lives in the Hall: it follows you, lets you pet it, and now and then brings you a little Ka before the gate."
+"Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.","Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.","A cat lives in the Hall: it follows you, lets you pet it, and now and then brings you a little Ka in front of the gate."
 "I gatti erano sacri a Bastet. Chi ne uccideva uno, anche per sbaglio, rischiava la vita; quando un gatto moriva, la famiglia si radeva le sopracciglia in segno di lutto.","I gatti erano sacri a Bastet. Chi ne uccideva uno, anche per sbaglio, rischiava la vita; quando un gatto moriva, la famiglia si radeva le sopracciglia in segno di lutto.","Cats were sacred to Bastet. Killing one, even by accident, could cost you your life; when a cat died, the family shaved their eyebrows in mourning."
 +%d Lapislazzuli,+%d Lapislazzuli,+%d Lapis lazuli
 Wernes,Wernes,Wernes
@@ -1671,6 +1720,12 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce.","Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce.","Yesterday and Tomorrow do not die alone: if you don't finish the second lion within 8 seconds, the first rises again."
+"Porti un solo amuleto per volta. Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.","Porti un solo amuleto per volta. Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.","You wear one amulet at a time. You earn them with the challenges on the wall of Thoth, then forge them with lapis lazuli (you have %d). They grow with use: level 2 after 20 chambers worn, level 3 after 50."
+"Qui la notte è breve. Riposa, scegli, poi entra nella sabbia","Qui la notte è breve. Riposa, scegli, poi entra nella sabbia","Here the night is brief. Rest, choose, then step into the sand"
+%s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d),%s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d),%s · The stonemason's chest: restore the Hall (lapis lazuli: %d)
+Comodità. Durante la discesa vedi in alto il tempo trascorso e il tuo record contro Am-heh.,Comodità. Durante la discesa vedi in alto il tempo trascorso e il tuo record contro Am-heh.,Convenience. During the descent you see the time elapsed and your record against Am-heh.
+"Comodità. Nei Papiri di Thoth compare una pagina con le tue imprese: discese, vittorie, chi ti ha fermato più spesso, gli dèi che hai scelto.","Comodità. Nei Papiri di Thoth compare una pagina con le tue imprese: discese, vittorie, chi ti ha fermato più spesso, gli dèi che hai scelto.","Convenience. A page with your deeds appears in the Scrolls of Thoth: descents, victories, what stopped you most often, the gods you chose."
+"Comodità. Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.","Comodità. Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.","Convenience. A cat lives in the Hall: it follows you, lets you pet it, and now and then brings you a little Ka before the gate."
 Si sveglierà dopo la prima vittoria su Am-heh o dopo 15 discese · 35 lapislazzuli,Si sveglierà dopo la prima vittoria su Am-heh o dopo 15 discese · 35 lapislazzuli,It will awaken after your first victory over Am-heh or after 15 descents · 35 lapis lazuli
 "Così presto, Scriba. Il Duat non concede nulla a chi corre senza guardare.","Così presto, Scriba. Il Duat non concede nulla a chi corre senza guardare.","So soon, Scribe. The Duat grants nothing to those who run without looking."
 Sei tornato prima che la sabbia della clessidra si posasse. Rialzati.,Sei tornato prima che la sabbia della clessidra si posasse. Rialzati.,You returned before the sand in the hourglass had settled. Rise.
@@ -2054,3 +2109,5 @@ uno scarabeo di Khepri,uno scarabeo di Khepri,a scarab of Khepri
 la sfera di Khepri,la sfera di Khepri,the sphere of Khepri
 il Miraggio,il Miraggio,the Mirage
 l'arco,l'arco,the bow
+presa,presa,taken
+restaurato,restaurato,restored

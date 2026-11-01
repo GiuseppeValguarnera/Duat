@@ -110,6 +110,8 @@ func _process(delta: float) -> void:
 	if player == null:
 		return
 	var am := Lang.t("nessuno") if Meta.amulet == "" else String(Amulets.data()[Meta.amulet]["name"])
+	if Favors.has("collana") and Meta.amulet2 != "":
+		am += " · " + String(Amulets.data()[Meta.amulet2]["name"])
 	hud.text = Lang.t("Casa della Vita    Lapislazzuli: %d    Amuleto: %s") % [Meta.lapis, am]
 	if Fx.device == "touch":
 		help.text = ""
@@ -178,8 +180,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_open_pause()
 
 
-func _start_talk() -> void:
-	talk_lines = Imhotep.next_lines()
+func _start_talk(lines: Array = []) -> void:
+	talk_lines = lines if not lines.is_empty() else Imhotep.next_lines()
 	player.set_physics_process(false)
 	talk_box.visible = true
 	_advance_talk()
@@ -328,13 +330,34 @@ func _close_menu() -> void:
 
 ## Il banco dell'orafo: ogni amuleto con il suo potere, il livello e cosa serve per averlo.
 func _open_forge(focus: String = "") -> void:
-	var col := _window(Lang.t("Il banco dell'orafo"), Lang.t("Porti un solo amuleto per volta. Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.") % Meta.lapis)
+	var how := Lang.t("Porti due amuleti al collo, uno per sigillo.") if Favors.has("collana") else Lang.t("Porti un solo amuleto per volta.")
+	var col := _window(Lang.t("Il banco dell'orafo"), how + " " + Lang.t("Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.") % Meta.lapis)
 	var inner: float = col.custom_minimum_size.x
 	var first: Button = null
+	# la Collana a due sigilli (una grazia degli dèi, favors.gd): si compra qui, una volta sola
+	if not Favors.has("collana"):
+		var fd: Dictionary = Favors.data()["collana"]
+		var fbox := _entry(col)
+		fbox.add_child(UiStyle.label(fd["name"], 10, UiStyle.INK, true, inner))
+		fbox.add_child(UiStyle.label(fd["desc"], 8, UiStyle.INK_SOFT, false, inner))
+		fbox.add_child(UiStyle.label(fd["lore"], 7, Color(0.3, 0.38, 0.42), false, inner))
+		var frow := HBoxContainer.new()
+		fbox.add_child(frow)
+		var fb := _button(frow, Lang.t("Falla forgiare · %d lapislazzuli") % int(fd["cost"]), Favors.can_buy("collana"), func() -> void:
+			if Favors.buy("collana"):
+				Sfx.play("boon", 0.0)
+				Fx.shake(3.0)
+				Fx.burst(spots["orafo"] + Vector2(0, -20), GOLD, 30, 120.0)
+				_close_menu()
+				_start_talk((Favors.data()["collana"]["lines"] as Array).duplicate())
+			else:
+				_open_forge())
+		if not fb.disabled:
+			first = fb
 	for id in Amulets.ALL_IT:
 		var d: Dictionary = Amulets.data()[id]
 		var own := Amulets.owned(id)
-		var worn: bool = Meta.amulet == id
+		var worn: bool = Amulets.worn(id)
 		var box := _entry(col)
 		var lvl := Amulets.level(id)
 		var title: String = d["name"]
@@ -351,7 +374,11 @@ func _open_forge(focus: String = "") -> void:
 		row.add_theme_constant_override("separation", int(6 * Fx.ui))
 		box.add_child(row)
 		if own and not worn:
-			var b := _button(row, Lang.t("Mettilo al collo"), true, func() -> void:
+			var full: bool = Meta.amulet != "" and (not Favors.has("collana") or Meta.amulet2 != "")
+			var swap_name := ""
+			if full:
+				swap_name = String(Amulets.data()[Meta.amulet2 if Favors.has("collana") else Meta.amulet]["name"])
+			var b := _button(row, Lang.t("Mettilo al posto di %s") % swap_name if full else Lang.t("Mettilo al collo"), true, func() -> void:
 				Amulets.equip(id)
 				Sfx.play("boon", 0.0)
 				_open_forge(id))
@@ -359,7 +386,7 @@ func _open_forge(focus: String = "") -> void:
 				first = b
 		elif own and worn:
 			_button(row, Lang.t("Toglilo"), true, func() -> void:
-				Amulets.equip("")
+				Amulets.unequip(id)
 				_open_forge(id))
 		elif Amulets.unlocked(id):
 			var cost := int(d["cost"])

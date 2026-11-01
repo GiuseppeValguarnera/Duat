@@ -78,9 +78,31 @@ static func forge(id: String) -> bool:
 	return true
 
 
+## Al collo: nel primo sigillo libero; con la Collana, se sono pieni tutti e due, prende il posto
+## del secondo. `unequip` toglie quello indicato.
 static func equip(id: String) -> void:
-	Meta.amulet = id if owned(id) else ""
+	if not owned(id) or Meta.amulet == id or Meta.amulet2 == id:
+		return
+	if Meta.amulet == "":
+		Meta.amulet = id
+	elif Favors.has("collana"):
+		Meta.amulet2 = id
+	else:
+		Meta.amulet = id
 	Meta.save()
+
+
+static func unequip(id: String) -> void:
+	if Meta.amulet == id:
+		Meta.amulet = Meta.amulet2
+		Meta.amulet2 = ""
+	elif Meta.amulet2 == id:
+		Meta.amulet2 = ""
+	Meta.save()
+
+
+static func worn(id: String) -> bool:
+	return id != "" and (Meta.amulet == id or Meta.amulet2 == id)
 
 
 static func rooms(id: String) -> int:
@@ -137,10 +159,15 @@ static func val() -> float:
 	return value(Run.amulet, Run.amulet_level) if Run.amulet != "" else 0.0
 
 
+## Il valore dell'amuleto `id` se lo porti (al primo o al secondo sigillo), altrimenti 0.
+static func val_of(id: String) -> float:
+	return value(id, Run.amulet_lvl(id)) if Run.wears(id) else 0.0
+
+
 ## Anello Shen: sceglie `n` dèi diversi, dando più peso a quelli da cui hai già un dono.
 static func pick_gods(gods: Array, n: int) -> Array:
 	var pool := gods.duplicate()
-	if Run.amulet != "shen":
+	if not Run.wears("shen"):
 		pool.shuffle()
 		return pool.slice(0, n)
 	var mine := {}
@@ -150,10 +177,10 @@ static func pick_gods(gods: Array, n: int) -> Array:
 	while out.size() < n and not pool.is_empty():
 		var total := 0.0
 		for g in pool:
-			total += val() if mine.has(g) else 1.0
+			total += val_of("shen") if mine.has(g) else 1.0
 		var r := randf() * total
 		for g in pool:
-			r -= val() if mine.has(g) else 1.0
+			r -= val_of("shen") if mine.has(g) else 1.0
 			if r <= 0.0:
 				out.append(g)
 				pool.erase(g)

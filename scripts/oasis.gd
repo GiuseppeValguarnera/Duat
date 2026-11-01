@@ -2,8 +2,9 @@ class_name Oasis
 extends RefCounted
 ## L'Oasi della quarta ora: la sosta tra Wernes e il deserto di Sokar. Una sola stanza, di notte,
 ## senza nemici. Qui la discesa si ferma un momento: la fonte guarisce un poco (una volta sola),
-## l'altare di Imhotep permette di cambiare amuleto, Mahaf ha la sua barca arenata sulla sabbia
-## e la statua di Sokar parla. La porta si apre subito: nessuno è obbligato a fermarsi.
+## l'altare di Imhotep permette di cambiare amuleto, la statua di Sokar parla e Mahaf, che qui non
+## vende nulla, parla del viaggio ed è lui a portarti con la barca nella terra di Sokar. Con la
+## Seconda Barca (grazia degli dèi, favors.gd) sull'acqua ne aspetta un'altra: scambia un dono.
 
 const STARS := Color(0.85, 0.92, 1.0)
 
@@ -13,6 +14,18 @@ const SOKAR_LINES := [
 	"«Hai varcato l'acqua, ora varchi la terra. Dopo la terra non resta che il cielo.»",
 	"«Chi cammina verso l'orizzonte porta con sé la propria alba. Custodiscila: qui nessuno potrà dartene un'altra.»",
 	"«Le acque ti hanno ricordato. La sabbia ti metterà alla prova. Quale delle due sia più clemente, lo dirà la fine del viaggio.»",
+]
+
+
+## Mahaf nell'Oasi: non vende, racconta il viaggio. Le prime le dice in ordine, una per discesa
+## finché non le ha dette tutte, poi a caso.
+const MAHAF_LINES := [
+	"«Qui la mia barca si ferma. Non per stanchezza: anche il Fiume, a quest'ora, trattiene il respiro prima della sabbia.»",
+	"«Oltre quella duna l'acqua finisce. La barca la trascineranno, come trascinarono quella di Ra quando il dio era vecchio. Sali quando sei pronto.»",
+	"«Ho portato re e ladri, scribi e sacerdoti. Ognuno credeva che il viaggio finisse all'altra riva. Nessuno ha mai chiesto dove finisce il Fiume.»",
+	"«La quarta ora non ha luce, scriba. Ha solo strade. Io conosco quella che passa sopra la sabbia senza annegarvi.»",
+	"«Bevi alla fonte, se vuoi. Ma non guardarti troppo a lungo nell'acqua: qui riflette quello che eri, non quello che sei.»",
+	"«Ricorda: io guardo sempre indietro. Tu guarda avanti. Così, in due, non perderemo la strada.»",
 ]
 
 
@@ -197,6 +210,44 @@ class Spring extends Node2D:
 		for i in range(3):
 			var ph := fmod(t * 0.4 + i * 0.33, 1.0)
 			draw_circle(Vector2(sin(i * 2.4 + t) * 10.0, -ph * 40.0), 1.4 * (1.0 - ph), Color(0.8, 0.95, 1.0, 0.8 * (1.0 - ph)))
+
+
+## La Seconda Barca: una piccola barca di papiro ormeggiata alla riva dello specchio d'acqua.
+## Si usa una volta sola: scambia un dono con un altro dello stesso dio (game.gd, _open_swap).
+class Barque extends Node2D:
+	var reach := 40.0
+	var used := false
+	var t := 0.0
+	var title := ""
+	var desc := ""
+
+	func _process(delta: float) -> void:
+		t += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		var bob := sin(t * 1.6) * 1.0
+		var hull := PackedVector2Array()
+		for i in range(13):
+			var u := -1.0 + i / 6.0
+			hull.append(Vector2(u * 20.0, bob - 2.0 + u * u * -7.0))
+		var bottom := hull.duplicate()
+		bottom.reverse()
+		for i in range(bottom.size()):
+			bottom[i] = Vector2(bottom[i].x * 0.85, bob + 3.0)
+		var shape := hull + bottom
+		draw_colored_polygon(shape, Color(0.12, 0.09, 0.05))
+		draw_polyline(hull, Color(0.66, 0.6, 0.34), 3.0)
+		for i in range(5):
+			var x := -12.0 + i * 6.0
+			draw_line(Vector2(x, bob - 3.0), Vector2(x, bob + 2.5), Color(0.4, 0.34, 0.16), 1.0)
+		# la cabina a baldacchino e una piccola lanterna d'oro
+		draw_rect(Rect2(-5, bob - 12.0, 10, 8), Color(0.82, 0.74, 0.5, 0.9))
+		draw_line(Vector2(-5, bob - 12.0), Vector2(5, bob - 12.0), Color(0.94, 0.72, 0.3), 1.2)
+		draw_circle(Vector2(8, bob - 10.0), 1.6, Color(1.0, 0.8, 0.4, 0.9))
+		draw_arc(Vector2(0, bob + 4.0), 24.0, 0.2, PI - 0.2, 16, Color(0.6, 0.85, 1.0, 0.25), 1.0)
+		if not used:
+			UiStyle.sparkle(self, Vector2(0, bob - 20.0), 18.0, t, false, position.x * 0.05)
 
 
 ## L'altare di Imhotep: un blocco di pietra con gli amuleti. Si usa una volta sola.

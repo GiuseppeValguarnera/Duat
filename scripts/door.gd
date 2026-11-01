@@ -87,7 +87,7 @@ func reward_label() -> String:
 		"heal":
 			return Lang.t("Cura")
 		"boss":
-			return Lang.t("Am-heh")
+			return Lang.t("Aker") if Run.region == 2 else Lang.t("Am-heh")
 		"guardian":
 			return Lang.t("Guardiano")
 		"region":
@@ -115,11 +115,17 @@ func reward_description() -> String:
 			return Lang.t("Lapislazzuli: pietre preziose per i restauri (restano anche se cadi)")
 		"heal":
 			if Run.room + 1 == Run.ROOMS_PER_RUN:
+				if Run.region == 2:
+					return Lang.t("Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Aker") % roundi(Run.nile_heal() * 100.0)
 				return Lang.t("Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh") % roundi(Run.nile_heal() * 100.0)
 			return Lang.t("Acqua del Nilo: recuperi il %d%% della vita") % roundi(Run.nile_heal() * 100.0)
 		"boss":
+			if Run.region == 2:
+				return Lang.t("La porta dell'orizzonte: Aker, il leone dalle due teste, custodisce il passaggio del sole")
 			return Lang.t("Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco")
 		"guardian":
+			if Run.region == 2:
+				return Lang.t("Il tempio di Serket: la dea scorpione custodisce il deserto. Battila per un dono di livello superiore")
 			return Lang.t("La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore")
 		"region":
 			return Lang.t("La porta della quarta ora: oltre, la terra di Sokar")

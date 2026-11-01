@@ -357,7 +357,7 @@ func _process(delta: float) -> void:
 			else:
 				prompt.text = Lang.t("La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi")
 		"cassa":
-			prompt.text = Lang.t("%s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d)") % [key, Meta.lapis]
+			prompt.text = Lang.t("%s · La cassa dello scalpellino: restauri e grazie degli dèi (lapislazzuli: %d)") % [key, Meta.lapis]
 		"gatto":
 			prompt.text = Lang.t("%s · Accarezza il gatto") % key
 		"neith":
@@ -536,13 +536,18 @@ func _advance_talk() -> void:
 			_offer_feather.call_deferred()
 		return
 	Sfx.play("ui", 0.0)
-	talk_name.text = Lang.t("Neith") if talk_who == "neith" else Lang.t("Anubi")
+	talk_name.text = Lang.t("Neith") if talk_who == "neith" else (Lang.t("Thoth") if talk_who == "thoth" else Lang.t("Anubi"))
 	talk_text.text = UiStyle.next_talk_page(talk_lines)
 
 
 func _talk_as(who: String) -> void:
 	talk_who = who
-	UiStyle.talk_style(talk_box, talk_name, talk_text, NeithArt.NEITH_COLOR if who == "neith" else Boons.god_color("anubi"))
+	var col := Boons.god_color("anubi")
+	if who == "neith":
+		col = NeithArt.NEITH_COLOR
+	elif who == "thoth":
+		col = Boons.god_color("thoth")
+	UiStyle.talk_style(talk_box, talk_name, talk_text, col)
 
 
 # ---------------------------------------------------------------- Neith e l'Arco di Satet
@@ -837,6 +842,8 @@ func _fill_book(focus_id: String = "") -> void:
 	if Meta.amulet != "" and Amulets.owned(Meta.amulet):
 		# tutto l'"equipaggiamento" in un posto solo: anche l'amuleto che porterai giù
 		sub += Lang.t("    ·    Amuleto: %s (livello %d)") % [Amulets.data()[Meta.amulet]["name"], Amulets.level(Meta.amulet)]
+		if Favors.has("collana") and Meta.amulet2 != "" and Amulets.owned(Meta.amulet2):
+			sub += " + %s (%d)" % [Amulets.data()[Meta.amulet2]["name"], Amulets.level(Meta.amulet2)]
 	var left := _frame(Lang.t("Il Libro dei Morti"), sub, 260)
 	var first: Button = null
 	for id in Chapters.ALL:
@@ -950,7 +957,60 @@ func _fill_restorations(focus_id: String = "") -> void:
 		b.mouse_entered.connect(_show_restoration.bind(id))
 		if first == null or id == focus_id:
 			first = b
+	# le grazie degli dèi: più scelta nella discesa, nessuna potenza (favors.gd)
+	var head := Label.new()
+	head.text = Lang.t("— Grazie degli dèi —")
+	head.add_theme_font_size_override("font_size", Fx.fs(9))
+	head.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
+	left.add_child(head)
+	var fdata := Favors.data()
+	for id in Favors.SHOP:
+		if not Favors.visible(id):
+			continue
+		var f: Dictionary = fdata[id]
+		var state := Lang.t("presa") if Favors.has(id) else Lang.t("%d lapislazzuli") % int(f["cost"])
+		var col := Color(0.62, 0.95, 0.7) if Favors.has(id) else (Color(0.95, 0.9, 0.78) if Favors.can_buy(id) else Color(0.6, 0.55, 0.48))
+		var b := _list_button(left, "%s   [%s]" % [f["name"], state], col)
+		_tap(b, _on_favor_pressed.bind(id))
+		b.focus_entered.connect(_show_favor.bind(id))
+		b.mouse_entered.connect(_show_favor.bind(id))
+		if id == focus_id:
+			first = b
 	first.grab_focus.call_deferred()
+
+
+func _show_favor(id: String) -> void:
+	var f: Dictionary = Favors.data()[id]
+	page_title.text = f["name"]
+	var action := ""
+	if Favors.has(id):
+		action = Lang.t("Già tua.")
+	elif Favors.can_buy(id):
+		action = Lang.t("Premi per prenderla: %d lapislazzuli.") % int(f["cost"])
+	else:
+		action = Lang.t("Costa %d lapislazzuli: te ne mancano %d.") % [int(f["cost"]), int(f["cost"]) - Meta.lapis]
+	page_body.text = f["desc"] + "\n\n" + action
+	page_lore.text = f["lore"]
+	page_action.visible = false
+
+
+## Una grazia presa: chi la consegna (Anubi o Thoth dai Papiri) dice la sua battuta.
+func _on_favor_pressed(id: String) -> void:
+	if not Favors.buy(id):
+		Fx.shake(2.0)
+		_fill_restorations(id)
+		return
+	Sfx.play("boon", 0.0)
+	_close_book()
+	Fx.burst(spots["cassa"] + Vector2(0, -14), Restorations.LAPIS_COLOR, 30, 140.0)
+	var who: String = Favors.ALL_IT[id]["speaker"]
+	_talk_as(who)
+	if who == "thoth":
+		Fx.burst(spots["papiri"] + Vector2(0, -16), Boons.god_color("thoth"), 26, 110.0)
+	talk_lines = (Favors.data()[id]["lines"] as Array).duplicate()
+	player.set_physics_process(false)
+	talk_box.visible = true
+	_advance_talk()
 
 
 func _show_restoration(id: String) -> void:
@@ -1447,7 +1507,7 @@ func _draw_markers() -> void:
 	# le novità si ricontrollano due volte al secondo, non a ogni fotogramma (la storia è lunga)
 	if t >= _news_t:
 		_news_t = t + 0.5
-		_news = [Dialogue.has_news(not commented), Chapters.something_affordable(), Lore.unread_ricordi() > 0, Restorations.something_affordable(),
+		_news = [Dialogue.has_news(not commented), Chapters.something_affordable(), Lore.unread_ricordi() > 0, Restorations.something_affordable() or Favors.something_affordable(),
 			(Meta.casa and (Challenges.to_claim() > 0 or Amulets.something_to_forge())) or (not Meta.casa and Meta.lapis >= CASA_COST)]
 	if _news[0]:
 		UiStyle.exclaim(self, a + Vector2(0, -82), t)

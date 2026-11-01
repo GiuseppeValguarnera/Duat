@@ -264,7 +264,8 @@ static func offers(god: String, owned: Dictionary) -> Array:
 		if not fits_weapon(id):
 			continue
 		if is_heavy(id) or is_rare(id):
-			if not owned.has(id):
+			# col Sigillo di Thoth il dono raro ha la precedenza sul pesante
+			if not owned.has(id) and not (Favors.has("sigillo") and heavy != "" and is_rare(heavy)):
 				heavy = id
 		elif not owned.has(id):
 			fresh.append(id)
@@ -275,7 +276,8 @@ static func offers(god: String, owned: Dictionary) -> Array:
 	var out := fresh + ups
 	out = out.slice(0, 3)
 	# se non resta altro, il dono pesante compare sempre (altrimenti il menu sarebbe vuoto)
-	if heavy != "" and (out.is_empty() or randf() < HEAVY_CHANCE):
+	var chance := SEAL_RARE_CHANCE if heavy != "" and is_rare(heavy) and Favors.has("sigillo") else HEAVY_CHANCE
+	if heavy != "" and (out.is_empty() or randf() < chance):
 		if out.size() >= 3:
 			out[2] = heavy
 		else:
@@ -315,6 +317,13 @@ static func set_offers(taken_blessings: Array) -> Array:
 
 ## Probabilità che un Dono Doppio prenda il posto di una delle tre scelte, quando è disponibile.
 const DUO_CHANCE := 0.45
+## Sigillo di Thoth (grazia comprata con i lapislazzuli): doppi e rari più spesso.
+const SEAL_DUO_CHANCE := 0.7
+const SEAL_RARE_CHANCE := 0.65
+
+
+static func duo_chance() -> float:
+	return SEAL_DUO_CHANCE if Favors.has("sigillo") else DUO_CHANCE
 
 
 static func is_duo(id: String) -> bool:

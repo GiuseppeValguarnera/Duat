@@ -193,7 +193,7 @@ func _draw() -> void:
 func _draw_crack(off: Vector2) -> void:
 	var c := Color(0.16, 0.11, 0.07)
 	# Occhio Udjat: la crepa brilla d'oro, si vede da lontano
-	if Run.amulet == "udjat":
+	if Run.wears("udjat"):
 		var pulse := 0.5 + 0.5 * sin(t * 3.0)
 		draw_circle(Vector2(0, -12) + off, 18.0 + pulse * 4.0, Color(1.0, 0.82, 0.4, 0.12 + 0.1 * pulse))
 		UiStyle.star4(self, Vector2(6, -24) + off, 3.0 + pulse * 2.0, Color(1.0, 0.9, 0.5, 0.8))

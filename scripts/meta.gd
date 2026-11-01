@@ -52,6 +52,8 @@ var casa := false                     ## la Casa della Vita è aperta (30 lapisl
 var amulets: Array = []               ## amuleti forgiati (amulets.gd)
 var amulet_recipes: Array = []        ## amuleti che si possono forgiare (premi delle sfide)
 var amulet := ""                      ## l'amuleto al collo
+var amulet2 := ""                     ## il secondo, con la Collana a due sigilli (favors.gd)
+var favors: Array = []                ## le grazie degli dèi comprate con i lapislazzuli (favors.gd)
 var amulet_rooms := {}                ## amuleto -> stanze portate al collo (i livelli)
 var challenges := {}                  ## sfida -> 1 compiuta, 2 premio riscosso (challenges.gd)
 var stats := {}                       ## contatori delle sfide
@@ -112,6 +114,8 @@ func _ready() -> void:
 		amulets = cfg.get_value("casa", "amuleti", [])
 		amulet_recipes = cfg.get_value("casa", "ricette", [])
 		amulet = cfg.get_value("casa", "al_collo", "")
+		amulet2 = cfg.get_value("casa", "al_collo2", "")
+		favors = cfg.get_value("grazie", "prese", [])
 		amulet_rooms = cfg.get_value("casa", "stanze", {})
 		challenges = cfg.get_value("casa", "sfide", {})
 		stats = cfg.get_value("casa", "contatori", {})
@@ -173,6 +177,8 @@ func save() -> void:
 	cfg.set_value("casa", "amuleti", amulets)
 	cfg.set_value("casa", "ricette", amulet_recipes)
 	cfg.set_value("casa", "al_collo", amulet)
+	cfg.set_value("casa", "al_collo2", amulet2)
+	cfg.set_value("grazie", "prese", favors)
 	cfg.set_value("casa", "stanze", amulet_rooms)
 	cfg.set_value("casa", "sfide", challenges)
 	cfg.set_value("casa", "contatori", stats)

@@ -139,6 +139,8 @@ var shop_items: Array = []
 const DOOR_REACH := 46.0                ## da quanto vicino si entra in una porta (anche touch_controls.gd)
 var oasis_nodes: Array = []             ## fonte, altare e statua dell'Oasi (oasis.gd)
 var ferry: Node2D                       ## la barca del Traghettatore, se la stanza è la sua
+var oasis_mahaf_talked := false         ## nell'Oasi: dopo avergli parlato, Mahaf ti fa salire in barca
+var boarding := false
 var doors_after_boon := true
 var ammit_tears := 0                  # Lacrime arrivate battendo il boss della regione in questa discesa
 var boss_group: Array = []            # i boss vivi della stanza: uno, o Ieri e Domani (Aker diviso)
@@ -340,8 +342,8 @@ func start_room(reward: Dictionary) -> void:
 	Run.room_hit = false
 	Run.room_dashed = false
 	# Ankh: ogni stanza nuova (non la deviazione di Set) un po' di vita
-	if Run.amulet == "ankh" and Run.room > 1 and kind != "set" and kind != "tutorial":
-		player.heal(Amulets.val())
+	if Run.wears("ankh") and Run.room > 1 and kind != "set" and kind != "tutorial":
+		player.heal(Amulets.val_of("ankh"))
 	if kind == "guardian" and Run.region == 1:
 		Challenges.on_guardian_room()          # la sfida "Due mani" conta le armi portate al Serpente
 	var cam: Camera2D = player.get_node("Camera")
@@ -658,7 +660,7 @@ func _maybe_serdab() -> void:
 		return
 	if Run.room < 2 or Run.room >= Run.ROOMS_PER_RUN:
 		return
-	var chance := SERDAB_CHANCE * (1.0 + (Amulets.val() / 100.0 if Run.amulet == "udjat" else 0.0))
+	var chance := SERDAB_CHANCE * (1.0 + Amulets.val_of("udjat") / 100.0)
 	if not always and randf() >= chance:
 		return
 	serdab_found = true
@@ -973,7 +975,7 @@ func _reveal(token: int) -> void:
 ## sotto 1-3 carte di papiro. Ogni carta: etichetta, nome, descrizione, prezzo e, in fondo,
 ## il riassunto breve (▲ vantaggio, ▼ prezzo) per scegliere senza rileggere tutto.
 ## `cards` = [{"tag", "name", "body", "cost", "gain", "loss", "color", "heavy", "on_pick"}].
-func _open_choice(title_text: String, title_color: Color, subtitle: String, cards: Array, speech: String = "", god: String = "") -> void:
+func _open_choice(title_text: String, title_color: Color, subtitle: String, cards: Array, speech: String = "", god: String = "", reroll: Callable = Callable()) -> void:
 	get_tree().paused = true
 	menu = CanvasLayer.new()
 	menu.layer = 20
@@ -1091,6 +1093,19 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 		i += 1
 		if first_button == null:
 			first_button = btn
+	# Voce degli Dèi (grazia comprata con i lapislazzuli): chiedi al dio altre tre scelte
+	if reroll.is_valid() and Run.voices_left > 0:
+		var again := Button.new()
+		again.text = Lang.t("Voce degli Dèi: chiedi altre scelte (%d)") % Run.voices_left
+		UiStyle.papyrus_button(again, title_color)
+		again.add_theme_font_size_override("font_size", Fx.fs(8))
+		again.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		again.pressed.connect(func() -> void:
+			Run.voices_left -= 1
+			Sfx.play("boon", 0.0)
+			_close_choice()
+			reroll.call())
+		box.add_child(again)
 	first_button.grab_focus()
 
 
@@ -1131,7 +1146,7 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 	if Weights.rank("silenzio") > 0 and options.size() > 2:
 		options.resize(2)
 	var duos := Boons.duos_for(from_god, Run.boons)
-	if not duos.is_empty() and randf() < Boons.DUO_CHANCE:
+	if not duos.is_empty() and randf() < Boons.duo_chance():
 		var slots := 2 if Weights.rank("silenzio") > 0 else 3
 		if options.size() >= slots:
 			options[slots - 1] = duos.pick_random()
@@ -1161,7 +1176,7 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 			"heavy": Boons.is_heavy(id),
 			"on_pick": _choose_boon.bind(id),
 		})
-	_open_choice(Lang.t("%s ti offre un dono") % Boons.god_name(from_god), Boons.god_color(from_god), "", cards, Lore.speech(from_god), from_god)
+	_open_choice(Lang.t("%s ti offre un dono") % Boons.god_name(from_god), Boons.god_color(from_god), "", cards, Lore.speech(from_god), from_god, _show_boon_menu.bind(from_god, then_doors))
 
 
 ## All'inizio di ogni run Anubi offre uno dei suoi doni.
@@ -1808,13 +1823,14 @@ func _start_shop(oasis := false) -> void:
 	rooms.solid(Rect2(boat.position + Vector2(-46, -6), Vector2(92, 16)))
 	if player != null and is_instance_valid(player):
 		world.move_child(boat, player.get_index())
-	if not oasis:
-		_banner(Lang.t("Il Traghettatore"), Lang.t("Mahaf: ") + FerrymanScript.greeting(), Color(0.6, 0.85, 0.95))
+	if oasis:
+		return                             # nell'Oasi Mahaf non vende: racconta e porta in barca a Sokar
+	_banner(Lang.t("Il Traghettatore"), Lang.t("Mahaf: ") + FerrymanScript.greeting(), Color(0.6, 0.85, 0.95))
 	var items := SHOP_ITEMS.duplicate()
 	if _upgradable().is_empty():
 		items = items.filter(func(it: Dictionary) -> bool: return it["kind"] != "upgrade")
 	# Collana di Hathor: un'offerta agli dèi in più, scontata con il livello
-	if Run.amulet == "hathor":
+	if Run.wears("hathor"):
 		items.append({"kind": "boon", "title": "Dono di Hathor", "desc": "Un dio a caso ti offre un dono", "price": 40, "hathor": true})
 	for i in range(items.size()):
 		var it: Dictionary = items[i]
@@ -1824,13 +1840,11 @@ func _start_shop(oasis := false) -> void:
 		node.desc = Lang.t(it["desc"])
 		var off := Chapters.value("c94") / 100.0
 		if it.get("hathor", false):
-			off = maxf(off, Amulets.val() / 100.0)     # lo sconto di Hathor non si somma a Calamaio e tavolozza: vale il più alto
+			off = maxf(off, Amulets.val_of("hathor") / 100.0)     # lo sconto di Hathor non si somma a Calamaio e tavolozza: vale il più alto
 		node.price = roundi(it["price"] * (1.0 - off) * FerrymanScript.trust_discount())
 		node.position = Vector2(cx + (i - (items.size() - 1) / 2.0) * (80.0 if oasis else 90.0), mid_y + 50.0)
 		world.add_child(node)
 		shop_items.append(node)
-	if oasis:
-		return
 	_open_doors()
 
 
@@ -1867,9 +1881,16 @@ func _start_oasis() -> void:
 	rooms.solid(Rect2(statue.position + Vector2(-17, -4), Vector2(34, 14)))
 	Atmos.add_light(statue, Vector2(0, -40), 80.0, Color(0.94, 0.72, 0.3), 0.8, false)
 	oasis_nodes.append(statue)
+	if Favors.has("barca"):
+		var barque := Oasis.Barque.new()
+		barque.position = pc + Vector2(Oasis.POOL_RADII.x + 26.0, 26.0)
+		barque.title = Lang.t("La Seconda Barca")
+		barque.desc = Lang.t("scambia un dono con un altro dello stesso dio (una volta sola)")
+		world.add_child(barque)
+		oasis_nodes.append(barque)
 	_start_shop(true)
-	_add_door("n", {"kind": "desert"})
-	_banner(Lang.t("L'Oasi della quarta ora"), Lang.t("Qui la notte è breve. Riposa, scegli, poi entra nella sabbia"), Color(0.7, 0.85, 1.0), 3.0)
+	oasis_mahaf_talked = false
+	_banner(Lang.t("L'Oasi della quarta ora"), Lang.t("Qui la notte è breve. Riposa, poi Mahaf ti porterà nella sabbia"), Color(0.7, 0.85, 1.0), 3.0)
 
 
 func _use_oasis(o: Node2D) -> void:
@@ -1882,15 +1903,173 @@ func _use_oasis(o: Node2D) -> void:
 		_banner(Lang.t("La fonte della quarta ora"), Lang.t("L'acqua ricorda il Nilo: ti rende un poco di ciò che hai perduto"), Color(0.6, 0.85, 0.95))
 	elif o is Oasis.Altar:
 		_show_amulet_altar(o)
+	elif o is Oasis.Barque:
+		_open_swap(o)
 	else:
 		_banner(Lang.t("Sokar"), Lang.t(Oasis.SOKAR_LINES.pick_random()), Color(0.94, 0.72, 0.3), 4.5)
+
+
+## Mahaf nell'Oasi: la prima battuta sul viaggio che non hai ancora sentito, poi a caso.
+func _oasis_mahaf_line() -> String:
+	for i in range(Oasis.MAHAF_LINES.size()):
+		var id := "mahaf_oasi_%d" % i
+		if not Meta.dialogue_seen.has(id):
+			Meta.dialogue_seen.append(id)
+			Meta.save()
+			return Lang.t(Oasis.MAHAF_LINES[i])
+	return Lang.t(Oasis.MAHAF_LINES.pick_random())
+
+
+## Si sale sulla barca di Mahaf: l'eroe scompare a bordo, la barca scivola verso nord e si entra
+## nella prima stanza di Sokar (come faceva la porta del deserto).
+func _board_mahaf() -> void:
+	boarding = true
+	Sfx.play("door")
+	player.set_physics_process(false)
+	var tw := create_tween()
+	tw.tween_property(player, "global_position", ferry.global_position + Vector2(0, -4), 0.35)
+	tw.tween_callback(func() -> void: player.visible = false)
+	tw.tween_property(ferry, "position", ferry.position + Vector2(0, -70), 1.0).set_trans(Tween.TRANS_SINE)
+	tw.parallel().tween_property(ferry, "modulate:a", 0.0, 1.0)
+	tw.tween_callback(func() -> void:
+		boarding = false
+		_fade_to_room({"kind": "none"}))
+
+
+## La Seconda Barca: quale dono lasci sulla riva? (poi `_swap_choices` mostra quelli dello stesso dio)
+func _open_swap(barque: Node2D) -> void:
+	var list := []
+	for id in Run.boons:
+		var g: String = Boons.ALL[id]["god"]
+		if g in ["anubi", "duo", "set"] or Boons.is_heavy(id) or Boons.is_rare(id):
+			continue
+		if _swap_candidates(id).is_empty() or _needed_by_other(id):
+			continue
+		list.append(id)
+	if list.is_empty():
+		_banner(Lang.t("La Seconda Barca"), Lang.t("Nessuno dei tuoi doni può essere scambiato"), Color(0.6, 0.85, 0.95), 3.0)
+		return
+	get_tree().paused = true
+	menu = CanvasLayer.new()
+	menu.layer = 20
+	menu.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(menu)
+	var dim := ColorRect.new()
+	dim.color = Color(0.02, 0.03, 0.08, 0.86)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	menu.add_child(dim)
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	menu.add_child(center)
+	var pap := PanelContainer.new()
+	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(Color(0.3, 0.55, 0.7)))
+	center.add_child(pap)
+	var vs := get_viewport().get_visible_rect().size
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	pap.add_child(scroll)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", int(3 * Fx.ui))
+	col.custom_minimum_size = Vector2(minf(380.0 * Fx.ui, vs.x - 40.0), 0)
+	scroll.add_child(col)
+	var h := UiStyle.label(Lang.t("La Seconda Barca"), 13, UiStyle.INK, true)
+	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(h)
+	var sub := UiStyle.label(Lang.t("Quale dono lasci sulla riva? Un altro dello stesso dio salirà con te, allo stesso livello."), 8, UiStyle.INK_SOFT, false, col.custom_minimum_size.x)
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(sub)
+	var first: Button = null
+	for id in list:
+		var g: String = Boons.ALL[id]["god"]
+		var b := Button.new()
+		b.text = "%s · %s (%s)" % [Boons.god_name(g), Boons.ALL[id]["name"], Lang.t("liv. %d") % Run.level(id)]
+		UiStyle.papyrus_button(b, Boons.god_color(g))
+		b.add_theme_font_size_override("font_size", Fx.fs(8))
+		b.pressed.connect(func() -> void:
+			_close_choice()
+			_swap_choices(id, barque))
+		col.add_child(b)
+		if first == null:
+			first = b
+	var back := Button.new()
+	back.text = Lang.t("Non scambio nulla")
+	UiStyle.papyrus_button(back, Color(0.6, 0.6, 0.65))
+	back.add_theme_font_size_override("font_size", Fx.fs(8))
+	back.pressed.connect(_close_choice)
+	col.add_child(back)
+	var fit := func() -> void:
+		if is_instance_valid(scroll) and is_instance_valid(col):
+			scroll.custom_minimum_size = Vector2(col.custom_minimum_size.x + 4.0, minf(col.get_combined_minimum_size().y, vs.y - 44.0))
+	fit.call_deferred()
+	first.grab_focus.call_deferred()
+
+
+## I doni dello stesso dio che potrebbero prendere il posto di `old`.
+func _swap_candidates(old: String) -> Array:
+	var g: String = Boons.ALL[old]["god"]
+	var owned := Run.boons.duplicate()
+	owned.erase(old)
+	var out := []
+	for id in Boons.ALL:
+		if id == old or owned.has(id) or Boons.ALL[id]["god"] != g:
+			continue
+		if Boons.is_heavy(id) or Boons.is_rare(id) or not Boons.available_now(id) or not Boons.fits_weapon(id):
+			continue
+		if not Boons.requirements_met(id, owned):
+			continue
+		out.append(id)
+	return out
+
+
+## Un altro dono che hai vive solo grazie a questo? (allora non si scambia)
+func _needed_by_other(old: String) -> bool:
+	for id in Run.boons:
+		if not Boons.REQUIRES.has(id):
+			continue
+		var reqs: Array = Boons.REQUIRES[id]
+		if not reqs.has(old):
+			continue
+		var other := false
+		for r in reqs:
+			if r != old and Run.boons.has(r):
+				other = true
+		if not other:
+			return true
+	return false
+
+
+func _swap_choices(old: String, barque: Node2D) -> void:
+	var g: String = Boons.ALL[old]["god"]
+	var lvl := Run.level(old)
+	var pool := _swap_candidates(old)
+	pool.shuffle()
+	var cards := []
+	for id in pool.slice(0, 3):
+		var l := mini(lvl, _max_level(id))
+		var sh := Boons.short(id, l)
+		cards.append({"tag": Lang.t("Al posto di %s") % Boons.ALL[old]["name"], "name": Boons.ALL[id]["name"], "body": Boons.text(id, l),
+			"cost": "", "gain": sh[0], "loss": sh[1], "color": Boons.god_color(g), "heavy": false,
+			"on_pick": _do_swap.bind(old, id, l, barque)})
+	cards.append({"tag": Lang.t("Resta com'è"), "name": Boons.ALL[old]["name"], "body": Boons.text(old, lvl), "color": Color(0.7, 0.7, 0.75), "on_pick": _close_choice})
+	_open_choice(Lang.t("La Seconda Barca"), Boons.god_color(g), Lang.t("%s ti offre un altro dei suoi doni") % Boons.god_name(g), cards)
+
+
+func _do_swap(old: String, id: String, lvl: int, barque: Node2D) -> void:
+	Run.boons.erase(old)
+	Run.boons[id] = lvl
+	barque.used = true
+	_close_choice()
+	Sfx.play("boon", 0.0)
+	Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color(Boons.ALL[id]["god"]), 30, 130.0)
+	_banner(Lang.t("La Seconda Barca"), Lang.t("%s al posto di %s") % [Boons.ALL[id]["name"], Boons.ALL[old]["name"]], Color(0.6, 0.85, 0.95))
 
 
 ## L'altare di Imhotep: fino a due amuleti tra quelli che hai forgiato, oppure tieni il tuo.
 func _show_amulet_altar(altar: Node2D) -> void:
 	var others := []
 	for id in Amulets.ALL_IT:
-		if Amulets.owned(id) and id != Run.amulet:
+		if Amulets.owned(id) and not Run.wears(id):
 			others.append(id)
 	if others.is_empty():
 		_banner(Lang.t("L'altare di Imhotep"), Lang.t("Non hai altri amuleti da portare. Se ne forgiano alla Casa della Vita, coi lapislazzuli"), Color(0.94, 0.72, 0.3), 3.5)
@@ -1901,19 +2080,31 @@ func _show_amulet_altar(altar: Node2D) -> void:
 		var d: Dictionary = Amulets.data()[id]
 		cards.append({"tag": Lang.t("Amuleto"), "name": d["name"], "body": Amulets.text(id, Amulets.level(id)), "color": Amulets.COLOR, "on_pick": _wear_amulet.bind(id, altar)})
 	var cur := Lang.t("Nessun amuleto") if Run.amulet == "" else String(Amulets.data()[Run.amulet]["name"])
+	if Run.amulet2 != "":
+		cur += " · " + String(Amulets.data()[Run.amulet2]["name"])
 	cards.append({"tag": Lang.t("Resta com'è"), "name": cur, "body": "" if Run.amulet == "" else Amulets.text(Run.amulet, Run.amulet_level), "color": Color(0.7, 0.7, 0.75), "on_pick": _close_choice})
-	_open_choice(Lang.t("L'altare di Imhotep"), Amulets.COLOR, Lang.t("Un solo amuleto al collo. Scegli ciò che porti, e lascia ciò che non ti serve"), cards, Lang.t("Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto."))
+	var sub := Lang.t("Un solo amuleto al collo. Scegli ciò che porti, e lascia ciò che non ti serve")
+	if Run.amulet2 != "":
+		sub = Lang.t("Il nuovo amuleto prende il posto del primo sigillo; il secondo resta dov'è")
+	elif Favors.has("collana") and Run.amulet != "":
+		sub = Lang.t("Il secondo sigillo della collana è libero: il nuovo amuleto si aggiunge al tuo")
+	_open_choice(Lang.t("L'altare di Imhotep"), Amulets.COLOR, sub, cards, Lang.t("Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto."))
 
 
 func _wear_amulet(id: String, altar: Node2D) -> void:
-	Run.amulet = id
-	Run.amulet_level = Amulets.level(id)
-	Run.kheper_left = int(Amulets.value("kheper", Run.amulet_level)) if id == "kheper" else 0
+	if Favors.has("collana") and Run.amulet != "" and Run.amulet2 == "":
+		Run.amulet2 = id                   # il secondo sigillo della collana era libero
+		Run.amulet2_level = Amulets.level(id)
+	else:
+		Run.amulet = id
+		Run.amulet_level = Amulets.level(id)
+	if id == "kheper":
+		Run.kheper_left = int(Amulets.value("kheper", Amulets.level(id)))
 	altar.used = true
 	_close_choice()
 	Sfx.play("boon", 0.0)
 	Fx.burst(player.global_position + Vector2(0, -10), Amulets.COLOR, 30, 130.0)
-	_banner(Lang.t("Porti %s") % Amulets.data()[id]["name"], Amulets.short(id, Run.amulet_level), Amulets.COLOR)
+	_banner(Lang.t("Porti %s") % Amulets.data()[id]["name"], Amulets.short(id, Amulets.level(id)), Amulets.COLOR)
 
 
 ## Doni che possono ancora salire di livello (per l'Inchiostro di Thoth).
@@ -2301,8 +2492,8 @@ func _process(_delta: float) -> void:
 	for c in Run.curses:
 		line2 += Lang.t("    Maledizione: %s (ancora %d stanze)") % [Boons.SET_CURSES[c["curse"]]["desc"], c["rooms"]]
 	# Scettro Was: quante stanze pulite ha già contato (il bonus non si perde prendendo danni)
-	if Run.amulet == "was" and not Run.training:
-		var was_bonus := roundi(Run.was_stacks * Amulets.value("was", Run.amulet_level))
+	if Run.wears("was") and not Run.training:
+		var was_bonus := roundi(Run.was_stacks * Amulets.val_of("was"))
 		line2 += Lang.t("    Was %d/5 (+%d%% danni)") % [Run.was_stacks, was_bonus]
 	if line2 != "":
 		hud.text += ("\n" if hud.text != "" else "") + line2.strip_edges()
@@ -2340,11 +2531,17 @@ func _process(_delta: float) -> void:
 		ferry.z_index = 1 if player.global_position.y < ferry.global_position.y + 6.0 else 0
 		var by_boat: bool = shop_near == null and oasis_near == null and player.global_position.distance_to(ferry.global_position + Vector2(0, 12)) < 56.0
 		ferry.near = by_boat
-		if by_boat:
+		var in_oasis: bool = current_reward.get("kind", "") == "oasis"
+		if by_boat and in_oasis and oasis_mahaf_talked:
+			near = Lang.t("%s · Sali sulla barca di Mahaf: verso la terra di Sokar") % ("Y" if Fx.device == "pad" else "E")
+			if Input.is_action_just_pressed("interact") and menu == null and not boarding:
+				_board_mahaf()
+		elif by_boat:
 			near = Lang.t("%s · Parla con Mahaf") % ("Y" if Fx.device == "pad" else "E")
 			if Input.is_action_just_pressed("interact") and menu == null:
 				Sfx.play("ui", 0.0)
-				ferry.say(FerrymanScript.talk_line())
+				ferry.say(_oasis_mahaf_line() if in_oasis else FerrymanScript.talk_line())
+				oasis_mahaf_talked = true
 	# le porte: da vicino si legge cosa c'è dietro; accanto si entra con "interagisci"
 	for d in doors:
 		if not is_instance_valid(d) or not d.open or d._used:

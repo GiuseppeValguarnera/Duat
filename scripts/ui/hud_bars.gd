@@ -104,15 +104,21 @@ func _draw() -> void:
 	_text(title, Vector2(rx, ky), game.hud_room, _fs(8), Color(0.95, 0.88, 0.72))
 	# l'amuleto al collo, accanto al riquadro: icona, livello (pallini) e, per lo Scettro
 	# Was, le stanze pulite contate. Se non lo vedi, ti dimentichi di averlo.
-	if Run.amulet != "" and not Run.training:
-		var ac := o + Vector2(pw + 14.0 * u, 13.0 * u)
+	# Con la Collana a due sigilli i due amuleti stanno uno accanto all'altro.
+	var slot := 0
+	for am in [Run.amulet, Run.amulet2]:
+		if am == "" or Run.training:
+			continue
+		var lv := Run.amulet_lvl(am)
+		var ac := o + Vector2(pw + (14.0 + 22.0 * slot) * u, 13.0 * u)
 		draw_circle(ac, 9.5 * u, Color(0.05, 0.04, 0.09, 0.85))
 		draw_arc(ac, 9.5 * u, 0, TAU, 24, GOLD, 1.3 * u)
-		Amulets.draw_icon(self, Run.amulet, ac + Vector2(0, 1) * u, 0.75 * u)
-		for i in range(Run.amulet_level):
-			draw_circle(ac + Vector2((i - (Run.amulet_level - 1) / 2.0) * 4.0, 12.5) * u, 1.4 * u, GOLD)
-		if Run.amulet == "was" and Run.was_stacks > 0:
-			_text(title, ac + Vector2(-9, 25) * u, "+%d%%" % int(Run.was_stacks * Amulets.val()), _fs(8), GOLD)
+		Amulets.draw_icon(self, am, ac + Vector2(0, 1) * u, 0.75 * u)
+		for i in range(lv):
+			draw_circle(ac + Vector2((i - (lv - 1) / 2.0) * 4.0, 12.5) * u, 1.4 * u, GOLD)
+		if am == "was" and Run.was_stacks > 0:
+			_text(title, ac + Vector2(-9, 25) * u, "+%d%%" % int(Run.was_stacks * Amulets.val_of("was")), _fs(8), GOLD)
+		slot += 1
 	# Occhio di Horus
 	if touch:
 		return

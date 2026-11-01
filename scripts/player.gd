@@ -506,9 +506,9 @@ func _start_dash(move: Vector2) -> void:
 	shu_dash_hit.clear()
 	Run.room_dashed = true
 	# Pilastro Djed: al posto tuo resta una statua che attira i nemici (una sola alla volta)
-	if Run.amulet == "djed" and not Run.training and Run.decoy_t <= 0.0:
+	if Run.wears("djed") and not Run.training and Run.decoy_t <= 0.0:
 		var decoy := Amulets.Decoy.new()
-		decoy.life = Amulets.val()
+		decoy.life = Amulets.val_of("djed")
 		decoy.position = position
 		get_parent().add_child(decoy)
 		get_parent().move_child(decoy, get_index())
@@ -1076,8 +1076,8 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 		return false
 	amount *= Run.damage_taken_mult()
 	# Nodo di Iside: le trappole fanno meno male (spuntoni, grate, olio, statue dell'ureo)
-	if Run.amulet == "iside" and attacker == null and kind in ["", "grata", "ureo", "olio"]:
-		amount *= 1.0 - Amulets.val() / 100.0
+	if Run.wears("iside") and attacker == null and kind in ["", "grata", "ureo", "olio"]:
+		amount *= 1.0 - Amulets.val_of("iside") / 100.0
 		if amount <= 0.05:
 			invuln_t = 0.3
 			Fx.float_text(global_position + Vector2(0, -14), Lang.t("Il nodo di Iside ti protegge"), Color(0.86, 0.32, 0.26))

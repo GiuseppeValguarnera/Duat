@@ -29,13 +29,13 @@ const ALL_IT := {
 		"desc": "Alle spalle di Anubi torna il suo trono dorato, con lo schienale dipinto e le zampe di leone.",
 		"lore": "Il trono era il segno del potere: il nome di Iside si scrive proprio con il geroglifico di un seggio."},
 	"clessidra": {"name": "La clessidra di Thoth", "cost": 8, "comfort": true,
-		"desc": "Comodità. Durante la discesa vedi in alto il tempo trascorso e il tuo record contro Am-heh.",
+		"desc": "Durante la discesa vedi in alto il tempo trascorso e il tuo record contro Am-heh.",
 		"lore": "Gli Egizi misuravano le ore della notte con le clessidre ad acqua: un vaso forato, con le tacche dipinte all'interno."},
 	"registro": {"name": "Il registro dello scriba", "cost": 12, "comfort": true,
-		"desc": "Comodità. Nei Papiri di Thoth compare una pagina con le tue imprese: discese, vittorie, chi ti ha fermato più spesso, gli dèi che hai scelto.",
+		"desc": "Nei Papiri di Thoth compare una pagina con le tue imprese: discese, vittorie, chi ti ha fermato più spesso, gli dèi che hai scelto.",
 		"lore": "Gli scribi tenevano registri di tutto: il grano, il bestiame, i lavoratori. Anche le imprese dei re finivano su un papiro."},
 	"gatto": {"name": "Il gatto di Bastet", "cost": 15, "comfort": true,
-		"desc": "Comodità. Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.",
+		"desc": "Un gatto vive nella Sala: ti segue, si lascia accarezzare e ogni tanto ti porta un po' di Ka davanti al cancello.",
 		"lore": "I gatti erano sacri a Bastet. Chi ne uccideva uno, anche per sbaglio, rischiava la vita; quando un gatto moriva, la famiglia si radeva le sopracciglia in segno di lutto."},
 }
 static var ALL := {}

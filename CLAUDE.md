@@ -193,6 +193,22 @@ aggancio critico sicuro +20/35/50%, Sobek rallenta 15/22/30% (`Enemy.slow_t`, ri
 l'agganciato è marchiato (cura 2/3/4), Shu schianto del lanciato 12/18/24 (`Enemy.hook_slam`). Battute: ogni dio la prima
 volta (`Lore.flail_line`, id `flagello_<dio>`), Anubi `flagello1`, Imhotep `imh_flagello`, Neith `flagello_preso`.
 
+**Blocco 7 (1/11/2026) – grazie degli dèi e Mahaf**. `scripts/favors.gd` (`Meta.favors`, sezione "grazie"): acquisti coi
+lapis che **non danno potenza**. Alla cassa dello scalpellino, sezione "Grazie degli dèi" sotto i restauri (tolta la
+parola "Comodità"): **Voce degli Dèi** 15 (`voce`; pulsante nel menu dei doni, `_open_choice(..., reroll)`,
+`Run.voices_left`, salvato nella discesa), seconda eco 30 (`voce2`, due volte), **Seconda Barca** 25 (`barca`;
+`Oasis.Barque` sull'acqua dell'Oasi, `_open_swap` → `_swap_choices` → `_do_swap`: un dono di un dio normale, non pesante né
+raro né di Anubi, scambiato con un altro dello stesso dio allo stesso livello; non si scambia un dono da cui dipende un
+altro, `_needed_by_other`), **Sigillo di Thoth** 22 (`sigillo`; `Boons.duo_chance()` 0,45→0,7, raro al posto del pesante
+e 35%→65%). Al banco dell'orafo: **Collana a due sigilli** 40 (`collana`; `Meta.amulet2`, `Run.amulet2`,
+`Run.wears(id)`, `Run.amulet_lvl(id)`, `Amulets.val_of(id)`, `equip/unequip/worn`; due icone nell'HUD; l'altare
+dell'Oasi riempie il secondo sigillo se è libero, altrimenti sostituisce il primo). Battute all'acquisto (`lines`,
+`speaker`): Anubi (Voce, Barca), Thoth (Sigillo, `talk_who` "thoth" nella Sala), Imhotep (Collana).
+**Mahaf nell'Oasi** non vende più: parla (`Oasis.MAHAF_LINES`, id `mahaf_oasi_N`) e, dopo, "Sali sulla barca di Mahaf"
+(`_board_mahaf`: l'eroe sale, la barca scivola a nord, prima stanza di Sokar; niente più porta "desert"). In Sokar il
+Traghettatore col negozio c'era già nelle stanze prima di Serket e di Aker (`_open_doors`, stessa regola di Wernes); le
+porte di Sokar ora nominano Serket e Aker. Prova: `tools/dev/favorsmoke.gd` (nel controllo d'avvio).
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima

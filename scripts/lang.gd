@@ -57,6 +57,7 @@ static func refresh_data() -> void:
 	Restorations.refresh_lang()
 	Amulets.refresh_lang()
 	Challenges.refresh_lang()
+	Favors.refresh_lang()
 
 
 ## Applica la scelta delle Opzioni: "auto" segue la lingua del telefono o del computer

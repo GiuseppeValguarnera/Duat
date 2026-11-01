@@ -27,6 +27,8 @@ done
 for w in arco flagello; do
   DUAT_NOTUT=1 DUAT_START_ROOM=2 DUAT_WEAPON=$w HOME="$HOMEDIR" timeout 90 "$G" --headless --path . --script res://tools/dev/weaponsmoke.gd >> "$OUT/run.txt" 2>&1
 done
+# grazie degli dèi e Oasi: Voce degli Dèi, Collana, Seconda Barca, la barca di Mahaf (tools/dev/favorsmoke.gd)
+DUAT_NOTUT=1 DUAT_START_ROOM=2 HOME="$HOMEDIR" timeout 90 "$G" --headless --path . --script res://tools/dev/favorsmoke.gd >> "$OUT/run.txt" 2>&1
 ERR=$(cat "$OUT/import.txt" "$OUT/run.txt" | grep -E "SCRIPT ERROR|Parse Error|Compile Error|Failed to load script" -A1 | grep -v "^--$" | sort | uniq -c)
 if [ -n "$ERR" ]; then
   echo "$ERR" | head -20

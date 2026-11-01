@@ -66,6 +66,9 @@ var aspect_level := 1
 # l'amuleto della Casa della Vita (amulets.gd) e ciò che serve alle sfide (challenges.gd)
 var amulet := ""
 var amulet_level := 1
+var amulet2 := ""                      ## il secondo amuleto (Collana a due sigilli)
+var amulet2_level := 1
+var voices_left := 0                   ## Voce degli Dèi: cambi delle scelte rimasti in questa discesa
 var room_hit := false                  ## in questa stanza hai perso vita
 var room_dashed := false               ## in questa stanza hai scattato
 var ka_spent := 0                      ## Ka spesi dal Traghettatore in questa discesa
@@ -123,11 +126,14 @@ func new_run() -> void:
 	if OS.get_environment("DUAT_AMULET") != "":       # per le prove: un amuleto al livello 3
 		amulet = OS.get_environment("DUAT_AMULET")
 		amulet_level = 3
+	amulet2 = Meta.amulet2 if Favors.has("collana") and Amulets.owned(Meta.amulet2) and Meta.amulet2 != amulet else ""
+	amulet2_level = Amulets.level(amulet2) if amulet2 != "" else 1
+	voices_left = Favors.voices()
 	room_hit = false
 	room_dashed = false
 	ka_spent = 0
 	was_stacks = 0
-	kheper_left = int(Amulets.value("kheper", amulet_level)) if amulet == "kheper" else 0
+	kheper_left = int(Amulets.value("kheper", amulet_lvl("kheper"))) if wears("kheper") else 0
 	decoy_t = 0.0
 	deep_radii = Vector2.ZERO
 	Challenges.on_run_start()
@@ -149,6 +155,7 @@ func save_descent(reward: Dictionary, extra: Dictionary) -> void:
 		"revived": revived, "blood_kills": blood_kills, "kills": kills, "damage_dealt": damage_dealt,
 		"elapsed": Time.get_ticks_msec() - start_msec, "heart_used": heart_used, "reward": reward,
 		"ka_spent": ka_spent, "was": was_stacks, "kheper": kheper_left, "region": region,
+		"amulet": amulet, "amulet2": amulet2, "voices": voices_left,
 	}
 	d.merge(extra)
 	var cfg := ConfigFile.new()
@@ -191,6 +198,22 @@ func apply_descent(d: Dictionary) -> void:
 	region = d.get("region", 1)
 	was_stacks = d.get("was", 0)
 	kheper_left = d.get("kheper", 0)
+	voices_left = d.get("voices", voices_left)
+	if d.has("amulet"):
+		amulet = d["amulet"]
+		amulet_level = Amulets.level(amulet) if amulet != "" else 1
+		amulet2 = d.get("amulet2", "")
+		amulet2_level = Amulets.level(amulet2) if amulet2 != "" else 1
+
+
+## Porti questo amuleto (al primo o al secondo sigillo)?
+func wears(id: String) -> bool:
+	return id != "" and (amulet == id or amulet2 == id)
+
+
+## Il livello dell'amuleto che porti con questo id.
+func amulet_lvl(id: String) -> int:
+	return amulet2_level if amulet2 == id and amulet != id else amulet_level
 
 
 func level(id: String) -> int:
@@ -262,10 +285,11 @@ func room_done() -> void:
 	if training:
 		return
 	Challenges.on_room_done(room_hit, room_dashed)
-	if amulet == "was" and not room_hit:
+	if wears("was") and not room_hit:
 		was_stacks = mini(5, was_stacks + 1)
-	if amulet != "":
-		Meta.amulet_rooms[amulet] = Amulets.rooms(amulet) + 1
+	for a in [amulet, amulet2]:
+		if a != "":
+			Meta.amulet_rooms[a] = Amulets.rooms(a) + 1
 	room_hit = false
 	room_dashed = false
 
@@ -319,8 +343,8 @@ func chap(id: String) -> bool:
 
 func all_damage_mult() -> float:
 	var m := 1.25 if has("set_might") else 1.0
-	if amulet == "was":
-		m *= 1.0 + was_stacks * Amulets.val() / 100.0     # Scettro Was: le stanze pulite
+	if wears("was"):
+		m *= 1.0 + was_stacks * Amulets.val_of("was") / 100.0     # Scettro Was: le stanze pulite
 	if has("anubi_stone"):
 		m *= 0.95                # Cuore di Pietra: più vita, colpi un po' più deboli
 	if chap("c125") and hp > max_hp * 0.8:
