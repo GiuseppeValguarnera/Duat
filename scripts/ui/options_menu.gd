@@ -47,6 +47,10 @@ func _items() -> Array:
 		["shake", Lang.t("Scossa dello schermo"), Lang.t("La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.")],
 		["hitstop", Lang.t("Pausa d'impatto"), Lang.t("Il gioco si ferma per un istante quando un colpo va a segno.")],
 	]
+	# l'ultimo crash registrato nella versione web (scripts/diag.gd): premendo si cancella
+	var problem := Diag.last_problem()
+	if problem != "":
+		out.append(["problema", Lang.t("Ultimo problema"), problem + "\n" + Lang.t("Premi per cancellarlo.")])
 	for i in range(extra.size()):
 		out.append(["extra%d" % i, extra[i][0], ""])
 	return out
@@ -75,6 +79,8 @@ func _value(id: String) -> String:
 			return _onoff(Meta.options.get("shake", true))
 		"hitstop":
 			return _onoff(Meta.options.get("hitstop", true))
+		"problema":
+			return Diag.last_problem_short()
 	return ""
 
 
@@ -108,6 +114,9 @@ func _change(id: String, dir: int) -> void:
 			Meta.tutorial_done = not Meta.tutorial_done
 		"feather":
 			Meta.feather = not Meta.feather
+		"problema":
+			Diag.clear()
+			rebuild = true
 		_:
 			if id.begins_with("extra"):
 				var i := int(id.substr(5))

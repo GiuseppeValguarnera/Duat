@@ -41,6 +41,7 @@ var talk_lines: Array = []
 
 
 func _ready() -> void:
+	Diag.record.call_deferred("Casa della Vita")
 	Engine.time_scale = 1.0
 	get_tree().paused = false
 	Run.in_hub = false

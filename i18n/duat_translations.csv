@@ -40,6 +40,7 @@ Un sacerdote,Un sacerdote,A priest
 Scorpioni di Serket,Scorpioni di Serket,Scorpions of Serket
 Un cobra,Un cobra,A cobra
 Tutti insieme,Tutti insieme,All together
+Cortile,Cortile,Courtyard
 Eccomi!,Eccomi!,Here I am!
 Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d,Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d,Courtyard of Neith    Weapon: %s · %s    Tears of Isis: %d
 Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi,Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi,Stick move · X attack · LB/A dash · Y interact · B close
@@ -174,22 +175,22 @@ Le frecce incendiano i nemici: %d danni ogni mezzo secondo per 2 secondi.,Le fre
 Tiro della Leonessa,Tiro della Leonessa,Shot of the Lioness
 Il tiro carico fa il %d%% di danni in più.,Il tiro carico fa il %d%% di danni in più.,The charged shot deals %d%% more damage.
 Freccia Sapiente,Freccia Sapiente,Wise Arrow
-Le frecce trapassano un nemico e colpiscono quello dietro con il %d%% dei danni.,Le frecce trapassano un nemico e colpiscono quello dietro con il %d%% dei danni.,Arrows pierce one enemy and hit the one behind for %d%% of the damage.
+Le frecce trapassano un nemico: quello dietro subisce il %d%% dei danni.,Le frecce trapassano un nemico: quello dietro subisce il %d%% dei danni.,Arrows pierce one enemy: the one behind takes %d%% of the damage.
 Occhio della Gatta,Occhio della Gatta,Eye of the She-Cat
 Il tiro carico ha il %d%% di probabilità di essere un colpo critico.,Il tiro carico ha il %d%% di probabilità di essere un colpo critico.,The charged shot has a %d%% chance to be a critical hit.
 Frecce della Palude,Frecce della Palude,Arrows of the Marsh
 Le frecce rallentano i nemici del %d%% per 2 secondi.,Le frecce rallentano i nemici del %d%% per 2 secondi.,Arrows slow enemies by %d%% for 2 seconds.
 Respiro di Iside,Respiro di Iside,Breath of Isis
-Quando l'arco è teso a pieno ricevi uno scudo che assorbe %d danni (non si somma).,Quando l'arco è teso a pieno ricevi uno scudo che assorbe %d danni (non si somma).,When the bow is fully drawn you gain a shield that absorbs %d damage (it does not stack).
+Con l'arco teso a pieno ricevi uno scudo di %d (non si somma).,Con l'arco teso a pieno ricevi uno scudo di %d (non si somma).,With the bow fully drawn you gain a shield of %d (it does not stack).
 Frecce del Falco,Frecce del Falco,Arrows of the Falcon
-Le frecce curvano da sole verso il nemico più vicino e fanno il %d%% di danni in più.,Le frecce curvano da sole verso il nemico più vicino e fanno il %d%% di danni in più.,Arrows curve by themselves toward the nearest enemy and deal %d%% more damage.
+Le frecce curvano verso il nemico più vicino e fanno il %d%% di danni in più.,Le frecce curvano verso il nemico più vicino e fanno il %d%% di danni in più.,Arrows curve toward the nearest enemy and deal %d%% more damage.
 Faretra dello Sciacallo,Faretra dello Sciacallo,Quiver of the Jackal
 Ogni colpo scocca %d frecce a ventaglio.,Ogni colpo scocca %d frecce a ventaglio.,Each shot looses %d arrows in a fan.
 Ogni freccia fa il 35% di danni in meno.,Ogni freccia fa il 35% di danni in meno.,Each arrow deals 35% less damage.
 Freccia del Lutto,Freccia del Lutto,Arrow of Mourning
-Il tiro carico marchia col Lutto chi trapassa; i marchiati che muoiono ti curano di %d.,Il tiro carico marchia col Lutto chi trapassa; i marchiati che muoiono ti curano di %d.,The charged shot marks with Mourning those it pierces; marked enemies that die heal you for %d.
+Il tiro carico marchia col Lutto: chi muore marchiato ti cura di %d.,Il tiro carico marchia col Lutto: chi muore marchiato ti cura di %d.,The charged shot marks with Mourning: whoever dies marked heals you for %d.
 Freccia del Vento,Freccia del Vento,Arrow of the Wind
-"Il tiro carico spinge via i nemici che trapassa; lo schianto contro muri, colonne o altri nemici fa %d danni.","Il tiro carico spinge via i nemici che trapassa; lo schianto contro muri, colonne o altri nemici fa %d danni.","The charged shot pushes away the enemies it pierces; slamming into walls, pillars or other enemies deals %d damage."
+"Il tiro carico spinge via chi trapassa: se sbatte, schianto da %d danni.","Il tiro carico spinge via chi trapassa: se sbatte, schianto da %d danni.","The charged shot pushes away those it pierces: if they hit something, a %d damage slam."
 Frusta del Sole,Frusta del Sole,Whip of the Sun
 La terza frustata incendia i nemici: %d danni ogni mezzo secondo per 2 secondi.,La terza frustata incendia i nemici: %d danni ogni mezzo secondo per 2 secondi.,The third lash sets enemies ablaze: %d damage every half second for 2 seconds.
 Morso della Punta,Morso della Punta,Bite of the Tip
@@ -197,20 +198,20 @@ I colpi di punta del flagello fanno il %d%% di danni in più.,I colpi di punta d
 Frusta Sapiente,Frusta Sapiente,Wise Whip
 Le frustate arrivano il %d%% più lontano.,Le frustate arrivano il %d%% più lontano.,Lashes reach %d%% farther.
 Presa della Gatta,Presa della Gatta,Grip of the She-Cat
-"Il nemico agganciato dal pastorale subisce sempre un colpo critico, e l'aggancio fa il %d%% di danni in più.","Il nemico agganciato dal pastorale subisce sempre un colpo critico, e l'aggancio fa il %d%% di danni in più.","The enemy hooked by the crook always takes a critical hit, and the hook deals %d%% more damage."
+L'aggancio del pastorale è sempre critico e fa il %d%% di danni in più.,L'aggancio del pastorale è sempre critico e fa il %d%% di danni in più.,The crook's hook is always critical and deals %d%% more damage.
 Frusta della Palude,Frusta della Palude,Whip of the Marsh
 Le frustate rallentano i nemici del %d%% per 2 secondi.,Le frustate rallentano i nemici del %d%% per 2 secondi.,Lashes slow enemies by %d%% for 2 seconds.
 Pastorale di Iside,Pastorale di Iside,Crook of Isis
-Agganciare un nemico ti dà uno scudo che assorbe %d danni (non si somma).,Agganciare un nemico ti dà uno scudo che assorbe %d danni (non si somma).,Hooking an enemy gives you a shield that absorbs %d damage (it does not stack).
+Ogni aggancio ti dà uno scudo di %d (non si somma).,Ogni aggancio ti dà uno scudo di %d (non si somma).,Every hook gives you a shield of %d (it does not stack).
 Pastorale del Falco,Pastorale del Falco,Crook of the Falcon
 Agganciare un nemico ricarica subito l'Occhio di Horus.,Agganciare un nemico ricarica subito l'Occhio di Horus.,Hooking an enemy instantly recharges the Eye of Horus.
 Ritmo dello Sciacallo,Ritmo dello Sciacallo,Rhythm of the Jackal
 Le frustate sono il %d%% più rapide.,Le frustate sono il %d%% più rapide.,Lashes are %d%% faster.
 La frusta arriva il 20% meno lontano.,La frusta arriva il 20% meno lontano.,The whip reaches 20% less far.
 Pastorale del Lutto,Pastorale del Lutto,Crook of Mourning
-Il nemico agganciato viene marchiato col Lutto; i marchiati che muoiono ti curano di %d.,Il nemico agganciato viene marchiato col Lutto; i marchiati che muoiono ti curano di %d.,The hooked enemy is marked with Mourning; marked enemies that die heal you for %d.
+Chi agganci è marchiato col Lutto: se muore ti cura di %d.,Chi agganci è marchiato col Lutto: se muore ti cura di %d.,"Whoever you hook is marked with Mourning: if they die, they heal you for %d."
 Lancio del Vento,Lancio del Vento,Throw of the Wind
-"Il nemico lanciato dal pastorale si schianta contro muri, colonne o altri nemici con %d danni.","Il nemico lanciato dal pastorale si schianta contro muri, colonne o altri nemici con %d danni.","The enemy thrown by the crook slams into walls, pillars or other enemies for %d damage."
+"Chi lanci col pastorale, se sbatte, subisce uno schianto da %d danni.","Chi lanci col pastorale, se sbatte, subisce uno schianto da %d danni.",Whoever you throw with the crook takes a %d damage slam if they hit something.
 Ali di Iside,Ali di Iside,Wings of Isis
 All'inizio di ogni stanza hai uno scudo che assorbe %d danni.,All'inizio di ogni stanza hai uno scudo che assorbe %d danni.,At the start of every chamber you gain a shield that absorbs %d damage.
 Lacrime di Iside,Lacrime di Iside,Tears of Isis
@@ -270,33 +271,33 @@ Occhio Risanato,Occhio Risanato,Healed Eye
 Figlio di Iside,Figlio di Iside,Son of Isis
 Ogni lancio dell'Occhio di Horus che colpisce almeno un nemico ti cura di 2 punti vita.,Ogni lancio dell'Occhio di Horus che colpisce almeno un nemico ti cura di 2 punti vita.,Every throw of the Eye of Horus that hits at least one enemy heals you for 2 health.
 Velo del Lutto,Velo del Lutto,Veil of Mourning
-I tuoi attacchi marchiano i nemici col Lutto; chi muore marchiato ti cura di %d.,I tuoi attacchi marchiano i nemici col Lutto; chi muore marchiato ti cura di %d.,Your attacks mark enemies with Mourning; whoever dies marked heals you for %d.
+I tuoi colpi marchiano col Lutto: chi muore marchiato ti cura di %d.,I tuoi colpi marchiano col Lutto: chi muore marchiato ti cura di %d.,Your hits mark with Mourning: whoever dies marked heals you for %d.
 Veglia Funebre,Veglia Funebre,Funeral Vigil
 "Sotto un terzo della vita, ogni 4 colpi a segno ti curano di %d.","Sotto un terzo della vita, ogni 4 colpi a segno ti curano di %d.","Below a third of your health, every 4 hits that land heal you for %d."
 Banchetto dei Defunti,Banchetto dei Defunti,Feast of the Dead
 Abbattere un nemico élite ti cura di %d.,Abbattere un nemico élite ti cura di %d.,Felling an elite enemy heals you for %d.
 Signora della Casa,Signora della Casa,Lady of the House
-"Le cure di Nefti che vanno oltre la vita piena diventano uno scudo, fino a %d.","Le cure di Nefti che vanno oltre la vita piena diventano uno scudo, fino a %d.","Nephthys' healing beyond full health becomes a shield, up to %d."
+"Le cure di Nefti oltre la vita piena diventano scudo, fino a %d.","Le cure di Nefti oltre la vita piena diventano scudo, fino a %d.","Nephthys's healing beyond full health becomes a shield, up to %d."
 Ala del Nibbio,Ala del Nibbio,Wing of the Kite
 Abbattere un nemico marchiato col Lutto ti ricarica subito lo scatto.,Abbattere un nemico marchiato col Lutto ti ricarica subito lo scatto.,Felling an enemy marked with Mourning instantly recharges your dash.
 Lamento,Lamento,Lament
 I nemici marchiati col Lutto subiscono il %d%% di danni in più.,I nemici marchiati col Lutto subiscono il %d%% di danni in più.,Enemies marked with Mourning take %d%% more damage.
 Soffio di Shu,Soffio di Shu,Breath of Shu
-"Il colpo finale della combo spinge forte i nemici; lo schianto contro muri, colonne o altri nemici fa %d danni.","Il colpo finale della combo spinge forte i nemici; lo schianto contro muri, colonne o altri nemici fa %d danni.","The final blow of the combo pushes enemies hard; slamming into walls, columns or other enemies deals %d damage."
+"Il colpo finale della combo spinge via i nemici: se sbattono, schianto da %d danni.","Il colpo finale della combo spinge via i nemici: se sbattono, schianto da %d danni.","The combo's final hit pushes enemies away: if they hit something, a %d damage slam."
 Colonna d'Aria,Colonna d'Aria,Pillar of Air
 "L'attacco caricato crea un vortice che risucchia i nemici vicini per 1,5 secondi.","L'attacco caricato crea un vortice che risucchia i nemici vicini per 1,5 secondi.",The charged attack creates a vortex that pulls in nearby enemies for 1.5 seconds.
 Vento del Nord,Vento del Nord,North Wind
 L'Occhio di Horus spinge i nemici lungo la sua traiettoria.,L'Occhio di Horus spinge i nemici lungo la sua traiettoria.,The Eye of Horus pushes enemies along its path.
 Ali del Cielo,Ali del Cielo,Wings of the Sky
-"Lo scatto è più lungo del %d%%, e i nemici che sfiori vengono spinti via.","Lo scatto è più lungo del %d%%, e i nemici che sfiori vengono spinti via.","Your dash is %d%% longer, and enemies you brush past are pushed away."
+Scatto più lungo del %d%%: i nemici che sfiori vengono spinti via.,Scatto più lungo del %d%%: i nemici che sfiori vengono spinti via.,Dash %d%% longer: enemies you brush past are pushed away.
 Muro di Vento,Muro di Vento,Wall of Wind
-Ogni %s secondi un proiettile nemico che ti raggiunge viene deviato e torna indietro.,Ogni %s secondi un proiettile nemico che ti raggiunge viene deviato e torna indietro.,Every %s seconds an enemy projectile that reaches you is deflected and sent back.
+Ogni %s s un proiettile che ti raggiunge torna indietro.,Ogni %s s un proiettile che ti raggiunge torna indietro.,Every %s s a projectile that reaches you flies back.
 Separatore del Cielo,Separatore del Cielo,Divider of the Sky
 "I nemici appena spinti subiscono il %d%% di danni in più, per 2 secondi.","I nemici appena spinti subiscono il %d%% di danni in più, per 2 secondi.","Enemies you have just pushed take %d%% more damage, for 2 seconds."
 Signore delle Tempeste,Signore delle Tempeste,Lord of Storms
-"Ogni %d secondi una raffica di 3 secondi: ti muovi il 20%% più veloce, i nemici vicini il 30%% più lenti, i proiettili vengono deviati. Nelle tempeste di sabbia di Sokar la raffica non si ferma.","Ogni %d secondi una raffica di 3 secondi: ti muovi il 20%% più veloce, i nemici vicini il 30%% più lenti, i proiettili vengono deviati. Nelle tempeste di sabbia di Sokar la raffica non si ferma.","Every %d seconds a 3-second gust: you move 20%% faster, nearby enemies 30%% slower, projectiles are deflected. In the sandstorms of Sokar the gust never stops."
+"Ogni %d s una raffica di 3 s: corri più veloce, i nemici vicini rallentano, i proiettili deviano. Nelle tempeste di sabbia di Sokar dura sempre.","Ogni %d s una raffica di 3 s: corri più veloce, i nemici vicini rallentano, i proiettili deviano. Nelle tempeste di sabbia di Sokar dura sempre.","Every %d s a 3 s gust: you run faster, nearby enemies slow down, projectiles are deflected. In Sokar's sandstorms it never stops."
 Sopra la Terra,Sopra la Terra,Above the Earth
-I nemici normali spinti nella sabbia nera o in una buca muoiono all'istante (non gli élite né i boss).,I nemici normali spinti nella sabbia nera o in una buca muoiono all'istante (non gli élite né i boss).,Normal enemies pushed into black sand or a pit die instantly (not elites or bosses).
+I nemici normali spinti nella sabbia nera o in una buca muoiono subito (non élite e boss).,I nemici normali spinti nella sabbia nera o in una buca muoiono subito (non élite e boss).,Normal enemies pushed into the black sand or a pit die at once (not elites and bosses).
 Vento Ardente,Vento Ardente,Burning Wind
 Gli schianti incendiano i nemici.,Gli schianti incendiano i nemici.,Slams set enemies on fire.
 Ali del Falco,Ali del Falco,Wings of the Falcon
@@ -462,6 +463,7 @@ Occhio: ricarica ×2,Occhio: ricarica ×2,Eye: recharge ×2
 Khopesh -35%,Khopesh -35%,Khopesh -35%
 "Occhio ×2, trapassa tutti","Occhio ×2, trapassa tutti","Eye ×2, pierces all"
 Khopesh -40%,Khopesh -40%,Khopesh -40%
+Casa della Vita,Casa della Vita,House of Life
 nessuno,nessuno,none
 Casa della Vita    Lapislazzuli: %d    Amuleto: %s,Casa della Vita    Lapislazzuli: %d    Amuleto: %s,House of Life    Lapis lazuli: %d    Amulet: %s
 Levetta muovi · LB/A scatto · Y interagisci · B chiudi,Levetta muovi · LB/A scatto · Y interagisci · B chiudi,Stick move · LB/A dash · Y interact · B close
@@ -565,6 +567,16 @@ I nemici abbattuti lasciano il loro Ka più spesso: il {v}% delle volte invece d
 Le porte aperte,Le porte aperte,The Open Gates
 Dopo ogni stanza si aprono sempre tre porte.,Dopo ogni stanza si aprono sempre tre porte.,After every chamber three doors always open.
 "'Uscire al giorno e aprire la tomba': con il capitolo 72 il morto conosce i nomi dei guardiani delle porte, e chi conosce il nome di un guardiano può passare.","'Uscire al giorno e aprire la tomba': con il capitolo 72 il morto conosce i nomi dei guardiani delle porte, e chi conosce il nome di un guardiano può passare.","'Going forth by day and opening the tomb': with chapter 72 the dead knows the names of the gatekeepers, and whoever knows a gatekeeper's name may pass."
+%s | r%d s%d %s | mem %.0f MB · ogg %d · nodi %d · orfani %d,%s | r%d s%d %s | mem %.0f MB · ogg %d · nodi %d · orfani %d,%s | r%d s%d %s | mem %.0f MB · ogg %d · nodi %d · orfani %d
+"try { localStorage.setItem('duat_diag_live', %s); } catch (e) {}","try { localStorage.setItem('duat_diag_live', %s); } catch (e) {}","try { localStorage.setItem('duat_diag_live', %s); } catch (e) {}"
+(function(){ try { return localStorage.getItem('duat_diag_last') || ''; } catch (e) { return ''; } })(),(function(){ try { return localStorage.getItem('duat_diag_last') || ''; } catch (e) { return ''; } })(),(function(){ try { return localStorage.getItem('duat_diag_last') || ''; } catch (e) { return ''; } })()
+Il %s (versione %s) il gioco si è chiuso da solo.,Il %s (versione %s) il gioco si è chiuso da solo.,On %s (version %s) the game closed by itself.
+T,T,T
+Errore: %s,Errore: %s,Error: %s
+Ultimo momento: %s,Ultimo momento: %s,Last moment: %s
+| r,| r,| r
+sì,sì,yes
+try { localStorage.removeItem('duat_diag_last'); } catch (e) {},try { localStorage.removeItem('duat_diag_last'); } catch (e) {},try { localStorage.removeItem('duat_diag_last'); } catch (e) {}
 "Così presto, Scriba. La sabbia della clessidra non si è ancora posata.","Così presto, Scriba. La sabbia della clessidra non si è ancora posata.","So soon, Scribe. The sand in the hourglass has not yet settled."
 "Il tuo cuore è caduto sulla soglia. Rialzati: anche il sole cade, ogni sera.","Il tuo cuore è caduto sulla soglia. Rialzati: anche il sole cade, ogni sera.","Your heart fell on the threshold. Rise: even the sun falls, every evening."
 Il Duat non concede nulla a chi corre senza guardare.,Il Duat non concede nulla a chi corre senza guardare.,The Duat grants nothing to those who run without looking.
@@ -796,6 +808,7 @@ Colei che fa respirare la gola,Colei che fa respirare la gola,She Who Lets the T
 "Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare","Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare","Follow the furrow in the sand: where it ends, the tail strikes. On the stone she cannot dig"
 Discesa ripresa,Discesa ripresa,Descent resumed
 Stanza %d di %d,Stanza %d di %d,Chamber %d of %d
+stanza %s,stanza %s,chamber %s
 Set mantiene la promessa,Set mantiene la promessa,Set keeps his promise
 di fila,di fila,in a row
 Il cuore di Sokar è aperto,Il cuore di Sokar è aperto,The heart of Sokar lies open
@@ -810,7 +823,8 @@ Scegli una porta: la ricompensa è scritta sopra,Scegli una porta: la ricompensa
 La quarta ora,La quarta ora,The fourth hour
 La terra di Sokar,La terra di Sokar,The land of Sokar
 I tuoi doni (%d)%s,I tuoi doni (%d)%s,Your boons (%d)%s
-Voce degli Dèi: chiedi altre scelte (%d),Voce degli Dèi: chiedi altre scelte (%d),Voice of the Gods: ask for new choices (%d)
+Scegli,Scegli,Choose
+Voce degli Dèi: altre scelte (%d),Voce degli Dèi: altre scelte (%d),Voice of the Gods: new choices (%d)
 Nuovo,Nuovo,New
 Livello %d,Livello %d,Level %d
 Nuovo · subito livello %d,Nuovo · subito livello %d,New · straight to level %d
@@ -997,6 +1011,7 @@ Entra · %s,Entra · %s,Enter · %s
 Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Left stick move · right aim · RB attack · RT Eye · LB/A dash · LT Divine Form · Select boons · Start pause
 WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD move · mouse aim · left click attack · Space dash · right click Eye · Q Divine Form (after the first boss) · Tab boons · Esc pause · F1 hitbox
 Ureo!,Ureo!,Uraeus!
+Sala,Sala,Hall
 "Nuova versione, aggiorna!","Nuova versione, aggiorna!","New version, update!"
 Nuova versione: ricarica la pagina!,Nuova versione: ricarica la pagina!,New version: reload the page!
 "Sala del Giudizio
@@ -1094,7 +1109,6 @@ Chiude il gioco. I progressi della Sala sono già salvati.,Chiude il gioco. I pr
 Esc / Start / B per tornare alla Sala,Esc / Start / B per tornare alla Sala,Esc / Start / B to return to the Hall
 ATTIVA,ATTIVA,ON
 spenta,spenta,off
-sì,sì,yes
 no,no,no
 "sì, alla prossima","sì, alla prossima","yes, next time"
 Italiano,Italiano,Italiano
@@ -1611,6 +1625,7 @@ Le porte,Le porte,The Doors
 %s: %s","
 %s: %s"
 Prezzo: ,Prezzo: ,Price: 
+ScrollContainer,ScrollContainer,ScrollContainer
 Normale,Normale,Normal
 Grande,Grande,Large
 Molto grande,Molto grande,Very large
@@ -1632,6 +1647,8 @@ Scossa dello schermo,Scossa dello schermo,Screen shake
 La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.,La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.,The camera shakes on heavy hits. Turn it off if it bothers you.
 Pausa d'impatto,Pausa d'impatto,Hit stop
 Il gioco si ferma per un istante quando un colpo va a segno.,Il gioco si ferma per un istante quando un colpo va a segno.,The game freezes for an instant when a blow lands.
+Ultimo problema,Ultimo problema,Last problem
+Premi per cancellarlo.,Premi per cancellarlo.,Press to clear it.
 English,English,English
 ATTIVA  (-%d%% danni),ATTIVA  (-%d%% danni),ACTIVE  (-%d%% damage)
 Tocca le frecce per cambiare · tocca fuori per chiudere,Tocca le frecce per cambiare · tocca fuori per chiudere,Tap the arrows to change · tap outside to close
@@ -1720,6 +1737,23 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce.","Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce.","Yesterday and Tomorrow do not die alone: if you don't finish the second lion within 8 seconds, the first rises again."
+Le frecce trapassano un nemico e colpiscono quello dietro con il %d%% dei danni.,Le frecce trapassano un nemico e colpiscono quello dietro con il %d%% dei danni.,Arrows pierce one enemy and hit the one behind for %d%% of the damage.
+Quando l'arco è teso a pieno ricevi uno scudo che assorbe %d danni (non si somma).,Quando l'arco è teso a pieno ricevi uno scudo che assorbe %d danni (non si somma).,When the bow is fully drawn you gain a shield that absorbs %d damage (it does not stack).
+Le frecce curvano da sole verso il nemico più vicino e fanno il %d%% di danni in più.,Le frecce curvano da sole verso il nemico più vicino e fanno il %d%% di danni in più.,Arrows curve by themselves toward the nearest enemy and deal %d%% more damage.
+Il tiro carico marchia col Lutto chi trapassa; i marchiati che muoiono ti curano di %d.,Il tiro carico marchia col Lutto chi trapassa; i marchiati che muoiono ti curano di %d.,The charged shot marks with Mourning those it pierces; marked enemies that die heal you for %d.
+"Il tiro carico spinge via i nemici che trapassa; lo schianto contro muri, colonne o altri nemici fa %d danni.","Il tiro carico spinge via i nemici che trapassa; lo schianto contro muri, colonne o altri nemici fa %d danni.","The charged shot pushes away the enemies it pierces; slamming into walls, pillars or other enemies deals %d damage."
+"Il nemico agganciato dal pastorale subisce sempre un colpo critico, e l'aggancio fa il %d%% di danni in più.","Il nemico agganciato dal pastorale subisce sempre un colpo critico, e l'aggancio fa il %d%% di danni in più.","The enemy hooked by the crook always takes a critical hit, and the hook deals %d%% more damage."
+Agganciare un nemico ti dà uno scudo che assorbe %d danni (non si somma).,Agganciare un nemico ti dà uno scudo che assorbe %d danni (non si somma).,Hooking an enemy gives you a shield that absorbs %d damage (it does not stack).
+Il nemico agganciato viene marchiato col Lutto; i marchiati che muoiono ti curano di %d.,Il nemico agganciato viene marchiato col Lutto; i marchiati che muoiono ti curano di %d.,The hooked enemy is marked with Mourning; marked enemies that die heal you for %d.
+"Il nemico lanciato dal pastorale si schianta contro muri, colonne o altri nemici con %d danni.","Il nemico lanciato dal pastorale si schianta contro muri, colonne o altri nemici con %d danni.","The enemy thrown by the crook slams into walls, pillars or other enemies for %d damage."
+I tuoi attacchi marchiano i nemici col Lutto; chi muore marchiato ti cura di %d.,I tuoi attacchi marchiano i nemici col Lutto; chi muore marchiato ti cura di %d.,Your attacks mark enemies with Mourning; whoever dies marked heals you for %d.
+"Le cure di Nefti che vanno oltre la vita piena diventano uno scudo, fino a %d.","Le cure di Nefti che vanno oltre la vita piena diventano uno scudo, fino a %d.","Nephthys' healing beyond full health becomes a shield, up to %d."
+"Il colpo finale della combo spinge forte i nemici; lo schianto contro muri, colonne o altri nemici fa %d danni.","Il colpo finale della combo spinge forte i nemici; lo schianto contro muri, colonne o altri nemici fa %d danni.","The final blow of the combo pushes enemies hard; slamming into walls, columns or other enemies deals %d damage."
+"Lo scatto è più lungo del %d%%, e i nemici che sfiori vengono spinti via.","Lo scatto è più lungo del %d%%, e i nemici che sfiori vengono spinti via.","Your dash is %d%% longer, and enemies you brush past are pushed away."
+Ogni %s secondi un proiettile nemico che ti raggiunge viene deviato e torna indietro.,Ogni %s secondi un proiettile nemico che ti raggiunge viene deviato e torna indietro.,Every %s seconds an enemy projectile that reaches you is deflected and sent back.
+"Ogni %d secondi una raffica di 3 secondi: ti muovi il 20%% più veloce, i nemici vicini il 30%% più lenti, i proiettili vengono deviati. Nelle tempeste di sabbia di Sokar la raffica non si ferma.","Ogni %d secondi una raffica di 3 secondi: ti muovi il 20%% più veloce, i nemici vicini il 30%% più lenti, i proiettili vengono deviati. Nelle tempeste di sabbia di Sokar la raffica non si ferma.","Every %d seconds a 3-second gust: you move 20%% faster, nearby enemies 30%% slower, projectiles are deflected. In the sandstorms of Sokar the gust never stops."
+I nemici normali spinti nella sabbia nera o in una buca muoiono all'istante (non gli élite né i boss).,I nemici normali spinti nella sabbia nera o in una buca muoiono all'istante (non gli élite né i boss).,Normal enemies pushed into black sand or a pit die instantly (not elites or bosses).
+Voce degli Dèi: chiedi altre scelte (%d),Voce degli Dèi: chiedi altre scelte (%d),Voice of the Gods: ask for new choices (%d)
 "Porti un solo amuleto per volta. Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.","Porti un solo amuleto per volta. Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.","You wear one amulet at a time. You earn them with the challenges on the wall of Thoth, then forge them with lapis lazuli (you have %d). They grow with use: level 2 after 20 chambers worn, level 3 after 50."
 "Qui la notte è breve. Riposa, scegli, poi entra nella sabbia","Qui la notte è breve. Riposa, scegli, poi entra nella sabbia","Here the night is brief. Rest, choose, then step into the sand"
 %s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d),%s · La cassa dello scalpellino: i restauri della Sala (lapislazzuli: %d),%s · The stonemason's chest: restore the Hall (lapis lazuli: %d)

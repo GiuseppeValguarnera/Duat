@@ -25,7 +25,8 @@ body {
 	-webkit-tap-highlight-color: transparent;
 	font-family: -apple-system, 'Segoe UI', sans-serif;
 }
-#canvas { display: block; }
+#canvas { display: block; touch-action: none; -ms-touch-action: none; }
+html { touch-action: none; }
 #canvas:focus { outline: none; }
 #status, #status-splash, #status-progress { position: absolute; left: 0; right: 0; }
 #status, #status-splash { top: 0; bottom: 0; }
@@ -106,9 +107,52 @@ const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 		window.visualViewport.addEventListener('resize', () => setTimeout(refit, 50));
 	}
 	window.addEventListener('load', () => { setTimeout(refit, 300); setTimeout(refit, 1200); });
-	// niente zoom con il doppio tocco o con due dita
+	// niente zoom con il doppio tocco o con due dita (le carte si scelgono con due tocchi)
 	document.addEventListener('gesturestart', (e) => e.preventDefault());
 	document.addEventListener('dblclick', (e) => e.preventDefault());
+	let lastTouchEnd = 0;
+	document.addEventListener('touchend', (e) => {
+		const now = Date.now();
+		if (now - lastTouchEnd < 350 && e.target === document.body) {
+			e.preventDefault();
+		}
+		lastTouchEnd = now;
+	}, { passive: false });
+	// il vecchio service worker (versioni di prima) teneva il gioco in cache: via, e via le cache
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister())).catch(() => {});
+	}
+	if (window.caches) {
+		caches.keys().then((keys) => keys.forEach((k) => caches.delete(k))).catch(() => {});
+	}
+}());
+
+// --- Diagnosi dei crash ------------------------------------------------------------------
+// Il gioco scrive in localStorage 'duat_diag_live' gli ultimi eventi (scripts/diag.gd). Qui si
+// segna se la pagina è aperta e visibile: se all'avvio risulta ancora aperta, l'ultima volta è
+// morta senza chiudersi (crash, scheda chiusa dal sistema). Quel registro diventa 'duat_diag_last',
+// che il gioco mostra nelle Opzioni come "Ultimo problema". Tutto dentro try/catch.
+(function () {
+	const get = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+	const put = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+	try {
+		if (get('duat_alive') === '1') {
+			const live = get('duat_diag_live');
+			if (live) {
+				let d = {};
+				try { d = JSON.parse(live); } catch (e) {}
+				d.err = get('duat_diag_err') || '';
+				put('duat_diag_last', JSON.stringify(d));
+			}
+		}
+		put('duat_diag_err', '');
+		put('duat_alive', '1');
+		document.addEventListener('visibilitychange', () => put('duat_alive', document.visibilityState === 'visible' ? '1' : '0'));
+		window.addEventListener('pagehide', () => put('duat_alive', '0'));
+		window.addEventListener('error', (e) => put('duat_diag_err', String(e.message || 'errore').slice(0, 160)));
+		window.addEventListener('unhandledrejection', (e) => put('duat_diag_err', String((e.reason && e.reason.message) || e.reason || 'errore').slice(0, 160)));
+		document.getElementById('canvas').addEventListener('webglcontextlost', () => put('duat_diag_err', 'contesto WebGL perso'));
+	} catch (e) {}
 }());
 
 // --- Aggiornamenti ---------------------------------------------------------------------
@@ -160,6 +204,18 @@ window.duatDoUpdate = async function () {
 };
 window.duatCheckUpdate();
 setInterval(window.duatCheckUpdate, 5 * 60 * 1000);
+
+// Risoluzione di disegno: sugli iPhone il rapporto dei pixel è 3, e il gioco disegnava ogni
+// fotogramma a piena risoluzione (circa 2500×1200). Il gioco è pensato a 640×360: due pixel per
+// pixel bastano e restano nitidi, con meno della metà del lavoro per la scheda grafica.
+(function () {
+	try {
+		const real = window.devicePixelRatio || 1;
+		if (real > 2) {
+			Object.defineProperty(window, 'devicePixelRatio', { get: () => 2, configurable: true });
+		}
+	} catch (e) {}
+}());
 
 const engine = new Engine(GODOT_CONFIG);
 

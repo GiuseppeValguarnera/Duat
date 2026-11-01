@@ -25,6 +25,11 @@
   un dono), Seconda Barca (nell'Oasi scambi un dono), Sigillo di Thoth (rari e doppi più spesso),
   Collana a due sigilli (due amuleti al collo); nessuna dà potenza
 - nell'Oasi Mahaf non vende più: racconta il viaggio e ti porta lui con la barca nella terra di Sokar
+- telefono: le carte di scelta stanno nello schermo, la frase del dio va a pagine, si sceglie con
+  due tocchi; le liste scorrono trascinando col dito; "Aggiorna gioco" scarica davvero la versione
+  nuova; meno lavoro per la grafica (colonne e porte molto più leggere, risoluzione limitata);
+  nelle Opzioni compare l'"ultimo problema" se il gioco si è chiuso da solo
+- Neith nella Sala ora si vede bene; descrizioni dei doni più corte
 - l'attacco caricato ha le stesse regole per tutte le armi: 1 secondo di carica, 2 di ricarica
 - dialoghi più aulici e simbolici, già dalla prima discesa
 - correzioni: colonne e profondità, coccodrilli sotto il pavimento, mira automatica sul telefono,

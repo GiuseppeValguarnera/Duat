@@ -760,16 +760,70 @@ class Flames extends Node2D:
 ## un cartiglio dipinto, le fasce colorate sotto il capitello a boccio di papiro e l'abaco in cima.
 ## Sono un nodo a parte, sopra l'arredamento del pavimento: Ammit le fa crollare, e quando una
 ## crolla si ridisegna solo questo.
+## Le colonne sono ferme: si disegnano una volta in una texture (`bake`) e poi si disegna solo
+## quella. Disegnate a mano costavano più di cento chiamate di disegno a ogni fotogramma (ogni cerchio
+## e ogni poligono è una chiamata a sé): sul telefono era la voce più cara della stanza.
 class Pillars extends Node2D:
 	var list: Array = []                  # lo stesso Array delle colonne della stanza (game.gd)
 	var in_water := false                 ## nell'arena allagata della Porta: escono dall'acqua
+	var painter := false                  ## la copia che disegna dentro la texture
+	var baked: Texture2D = null
+	var _area := Rect2()
+	var _vp: SubViewport = null
 	const OUTL := Color(0.12, 0.08, 0.05)
 	const STONE := Color(0.8, 0.64, 0.42)
 	const STONE_D := Color(0.55, 0.4, 0.24)
 
+	func _ready() -> void:
+		if not painter:
+			bake.call_deferred()
+
 	func _draw() -> void:
+		if baked != null and not painter:
+			draw_texture_rect(baked, _area, false)
+			return
 		for p in list:
 			_column(p)
+
+	## Rifà la texture (una colonna è crollata): la vecchia resta finché la nuova non è pronta.
+	func bake() -> void:
+		if painter or not is_inside_tree():
+			return
+		if list.is_empty():
+			baked = null
+			queue_redraw()
+			return
+		var lo := Vector2(INF, INF)
+		var hi := Vector2(-INF, -INF)
+		for p in list:
+			lo = Vector2(minf(lo.x, p.x), minf(lo.y, p.y))
+			hi = Vector2(maxf(hi.x, p.x), maxf(hi.y, p.y))
+		_area = Rect2(lo - Vector2(30, 70), hi - lo + Vector2(64, 92))
+		var sc := 2.0
+		var vp := SubViewport.new()
+		vp.size = Vector2i(ceili(_area.size.x * sc), ceili(_area.size.y * sc))
+		vp.transparent_bg = true
+		vp.disable_3d = true
+		vp.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR
+		vp.render_target_update_mode = SubViewport.UPDATE_ONCE
+		var pn: Node2D = get_script().new()
+		pn.painter = true
+		pn.list = list.duplicate()
+		pn.in_water = in_water
+		pn.scale = Vector2(sc, sc)
+		pn.position = -_area.position * sc
+		vp.add_child(pn)
+		add_child(vp)
+		await RenderingServer.frame_post_draw
+		if not is_instance_valid(vp):
+			return
+		if _vp != null and is_instance_valid(_vp):
+			_vp.queue_free()
+		_vp = vp
+		baked = vp.get_texture()
+		texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		material = Atmos.premult_mat()
+		queue_redraw()
 
 	func _op(pts: PackedVector2Array, fill: Color, w: float = 1.0) -> void:
 		draw_colored_polygon(pts, fill)

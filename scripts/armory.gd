@@ -60,6 +60,7 @@ var trial_enemies: Array = []
 
 
 func _ready() -> void:
+	Diag.record.call_deferred("Cortile")
 	# niente bordi scuri: il Cortile è a cielo aperto e si fanno le prove, bisogna vedere bene
 	Engine.time_scale = 1.0
 	get_tree().paused = false

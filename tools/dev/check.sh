@@ -29,6 +29,8 @@ for w in arco flagello; do
 done
 # grazie degli dèi e Oasi: Voce degli Dèi, Collana, Seconda Barca, la barca di Mahaf (tools/dev/favorsmoke.gd)
 DUAT_NOTUT=1 DUAT_START_ROOM=2 HOME="$HOMEDIR" timeout 90 "$G" --headless --path . --script res://tools/dev/favorsmoke.gd >> "$OUT/run.txt" 2>&1
+# finestra a carte: frase a pagine, carte nello schermo, doppio tocco (tools/dev/choicesmoke.gd)
+DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 60 "$G" --headless --path . --script res://tools/dev/choicesmoke.gd -- --mobile >> "$OUT/run.txt" 2>&1
 ERR=$(cat "$OUT/import.txt" "$OUT/run.txt" | grep -E "SCRIPT ERROR|Parse Error|Compile Error|Failed to load script" -A1 | grep -v "^--$" | sort | uniq -c)
 if [ -n "$ERR" ]; then
   echo "$ERR" | head -20

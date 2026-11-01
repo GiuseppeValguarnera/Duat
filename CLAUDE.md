@@ -209,6 +209,39 @@ dell'Oasi riempie il secondo sigillo se è libero, altrimenti sostituisce il pri
 Traghettatore col negozio c'era già nelle stanze prima di Serket e di Aker (`_open_doors`, stessa regola di Wernes); le
 porte di Sokar ora nominano Serket e Aker. Prova: `tools/dev/favorsmoke.gd` (nel controllo d'avvio).
 
+**Blocco 8 (2/11/2026) – telefono: crash, prestazioni, schermate, aggiornamento**.
+- *Memoria (crash su iPhone)*: `tools/dev/memsoak.gd` (Sala → Casa → Cortile → 10 stanze di Wernes + Am-heh → 10 di
+  Sokar + Aker → Sala, 6 giri): memoria statica 76 MB piatta, oggetti +1 a giro, nodi orfani 0 prima di ogni cambio
+  stanza (i ~100 "orfani" subito dopo `start_room` sono la stanza vecchia in `queue_free`). I bot (ogni stanza registra
+  mem/obj/nodes/orphans/res in `rooms`) danno lo stesso: 72→75 MB in 16 stanze. **Nessuna perdita trovata nella logica.**
+  Asset leggeri (8 MB, musiche in streaming, suoni in pool). **Ancora sospetto** (non misurabile qui): memoria della
+  scheda grafica su iPhone (texture cotte di stanza e colonne, SubViewport) e la risoluzione di disegno: ora il
+  `devicePixelRatio` è limitato a 2 in `web/shell.html` (prima ~2500×1200 sugli iPhone a 3×).
+  *Registro*: `scripts/diag.gd` (`Diag.record` a ogni stanza, boss, guardiano, Sala, Casa, Cortile) scrive
+  `localStorage.duat_diag_live`; `web/shell.html` segna `duat_alive` (visibile/aperta), errori JS e `webglcontextlost`;
+  se all'avvio la pagina risultava ancora aperta → `duat_diag_last` → Opzioni "Ultimo problema" (si cancella premendo).
+- *Prestazioni* (xvfb + opengl3, `tools/dev/perfprobe.gd`, `tools/dev/perfsplit.gd` che nasconde un gruppo di nodi alla
+  volta): chiamate di disegno Sokar stanza 8 721 → 422, Wernes 638 → 472 (con più nemici). Le colonne costavano ~117
+  chiamate: ora `Pillars.bake()` le disegna una volta in una texture (anche dopo un crollo); le porte ~44 l'una: ora
+  rettangoli e `draw_primitive` (≈3 l'una) e si ridisegnano solo da aperte. `Fx.burst`: tetto di 28 esplosioni, niente
+  fuori schermo, 60% delle particelle sul telefono. Logica (senza grafica): ~4 ms + fisica ~5 ms nella stanza piena.
+  Restano care: i nemici disegnati a mano (20-40 chiamate l'uno: cerchi e poligoni), Am-heh e i suoi babbuini.
+- *Schermate a carte* (`_open_choice`, `scripts/ui/choice_card.gd`): frase del dio a pagine con il triangolo, le carte
+  dopo l'ultima pagina (`choice_advance`, anche per il bot); carte adattate a larghezza e altezza (testo fino a 7, titolo
+  fino a 10, poi la parte centrale scorre con ▲ ▼); sul telefono primo tocco = selezione, secondo o "Scegli" = conferma;
+  pad/tastiera: sinistra/destra selezione, azione conferma, su/giù scorrono (`ChoiceCard.Keys` → `_choice_input`).
+  Dietro la finestra niente banner né HUD. Prova `tools/dev/choicesmoke.gd`.
+- *Trascinamento col dito*: autoload `DragScroll` (`scripts/ui/drag_scroll.gd`) per tutti gli ScrollContainer: soglia
+  7 px, il rilascio dopo un trascinamento non preme il pulsante.
+- *Aggiorna gioco*: la causa era il service worker della PWA di Godot (cache-first di index.js/wasm/pck). Ora
+  `tools/deploy_web.sh` mette la versione nei nomi dei file (`index-<build>.wasm/.pck/.js`), toglie il service worker
+  dalla configurazione e pubblica `web/service_worker_reset.js` al posto del vecchio (svuota le cache, si cancella,
+  ricarica). La pagina all'avvio cancella service worker e cache rimasti.
+- Neith nella Sala tra la porta del Cortile e Anubi (`spots["neith"]` x 148, y 236, rivolta al centro). Descrizioni dei
+  doni nuovi accorciate. Bot: `DUAT_SKIP=sokar` (12 doni e +10 vita, discesa intera di Sokar), arco e flagello a distanza,
+  nell'Oasi salgono sulla barca di Mahaf.
+- *Test armi × regioni* (bot, 64 + 32 partite, nessun valore cambiato): vedi "Dati dei test".
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima
@@ -250,5 +283,11 @@ Aker 8/30; per i bravi il raggio dell'alba è la prima fonte di danni.
 Difficoltà massima (tutti i Pesi, peso 14): 40 partite intere e prova di carico (`stressshot`), zero crash.
 Prestazioni (logica+fisica, server): stanza normale ~5 ms, boss 2-3 ms; ~0,1 ms per corpo nel motore; disegno su
 telefono non misurabile qui (stanza piena ~800 chiamate di disegno). Caccia agli stalli (`DUAT_STALL=150`): 0 da nemici.
+
+Armi × regioni (2/11/2026, bot senza meta-progressione, salvataggio vuoto): Wernes veterani (12 a testa) oltre il
+Serpente: khopesh 6, lancia 2, arco 12, flagello 9; Am-heh battuto: arco 2, flagello 2, gli altri 0. Danni/s: arco 22,9,
+gli altri ~17. Sokar con 12 doni (8 a testa): nessuno arriva ad Aker; stanza media khopesh 3,4, lancia 3,6, arco 6,6,
+flagello 4,4. Attacco caricato del khopesh quasi mai usato dai bot (2-4 a partita). I bot giocano meglio a distanza:
+parte del vantaggio dell'arco è dei bot.
 
 Documenti: `README.md` (panoramica e sistemi), `docs/storia.md` (storia e personaggi), `CHANGELOG.md`.

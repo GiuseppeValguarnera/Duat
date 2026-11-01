@@ -281,10 +281,12 @@ func _process(delta: float) -> void:
 			n = 9                  # a Serket si arriva dopo tutta la Prima Ora e Am-heh: molti più doni
 		if skip == "ammit" and Run.region == 2:
 			n = 12                 # ad Aker si arriva in fondo a Sokar: la discesa più ricca
+		if skip == "sokar":
+			n = 12                 # discesa intera di Sokar con i doni di chi arriva dopo Am-heh
 		var pool := []
 		for id in Boons.ALL:
 			var gd: String = Boons.ALL[id].get("god", "")
-			if gd in ["ra", "sekhmet", "thoth", "bastet", "sobek", "iside"] and not Boons.is_heavy(id):
+			if gd in ["ra", "sekhmet", "thoth", "bastet", "sobek", "iside"] and not Boons.is_heavy(id) and Boons.fits_weapon(id) and not Boons.REQUIRES.has(id):
 				pool.append(id)
 		pool.shuffle()
 		for i in range(n):
@@ -298,6 +300,12 @@ func _process(delta: float) -> void:
 					break
 			if not Run.has(extra):
 				Run.add_boon(extra)
+		if skip == "sokar":
+			Run.max_hp += 10.0          # dopo Am-heh: un cuore e qualche cura in più
+			Run.hp = Run.max_hp
+			g.player.max_hp = Run.max_hp
+			g.player.hp = Run.hp
+			return
 		Run.room = 4 if skip == "guardian" else 10
 		g.start_room({"kind": "guardian"} if skip == "guardian" else {"kind": "none"})
 		start_room_n = Run.room
@@ -371,6 +379,11 @@ func _decide(g, p) -> void:
 		var dist := to.length()
 		aim_dir = to.normalized().rotated(deg_to_rad(randf_range(-cfg["aim_err"], cfg["aim_err"])))
 		var want_range: float = cfg["range"]
+		# armi a distanza: l'arco tiene lontano, il flagello sta alla punta della frusta
+		if Run.weapon == "arco":
+			want_range = maxf(want_range, 130.0)
+		elif Run.weapon == "flagello":
+			want_range = maxf(want_range, 60.0)
 		var skill: float = cfg["skill"]
 		var crowd := 0
 		for e in enemies:
@@ -380,6 +393,10 @@ func _decide(g, p) -> void:
 			# con Ammit e con il Serpente: addosso solo quando è stordita o si sta riprendendo, altrimenti a distanza
 			var open_window: bool = target.state in ["stunned", "recover", "intro", "furia", "dive", "exhausted"]
 			want_range = 34.0 if (open_window or randf() > skill) else 125.0
+			if Run.weapon == "arco":
+				want_range = 150.0 if not open_window else 110.0
+			elif Run.weapon == "flagello" and open_window:
+				want_range = 64.0
 		# Am-heh: quando ulula si cerca una pozza (anche se si sta combattendo altro); dal fiato ci si sposta di lato
 		var amh = g.boss if g.boss != null and is_instance_valid(g.boss) and "leap_to" in g.boss else null
 		if amh != null and amh.state == "howl" and randf() < 0.35 + 0.65 * skill:
@@ -447,7 +464,12 @@ func _decide(g, p) -> void:
 			var near_trap: bool = pos.distance_to(tc) < 26.0
 			if near_trap and (randf() < skill or (trap.phase() != "idle" and randf() < cfg["dodge"])):
 				move_dir = (move_dir + (pos - tc).normalized() * 1.5).normalized()
-		if dist < 46.0 and (not (target.is_boss or target.miniboss) or want_range < 100.0):
+		var reach := 46.0
+		if Run.weapon == "arco":
+			reach = 280.0
+		elif Run.weapon == "flagello":
+			reach = 84.0
+		if dist < reach and (not (target.is_boss or target.miniboss) or want_range < 100.0 or Run.weapon == "arco"):
 			want_attack = true
 		# attacco caricato: il khopesh quando ha attorno tre nemici o un boss vicino, la lancia quando
 		# ne ha almeno due in fila davanti; solo se non c'è nessuno addosso (mentre carichi sei lento)
@@ -464,6 +486,10 @@ func _decide(g, p) -> void:
 				if d < 200.0 and absf(aim_dir.angle_to(e.global_position - pos)) < 0.25:
 					line += 1
 			var good: bool = (close >= 3 or (target.is_boss and dist < 55.0)) if Run.weapon != "lancia" else line >= 2
+			if Run.weapon == "arco":
+				good = line >= 2 or (target.is_boss and dist < 260.0)
+			elif Run.weapon == "flagello":
+				good = dist > 70.0 and p._hook_target(aim_dir) != null
 			if good and not touching:
 				charge_hold = 1.35
 				charges_used += 1
@@ -482,6 +508,15 @@ func _decide(g, p) -> void:
 				shop_buys.append("fonte")
 			move_dir = (spot - pos).normalized()
 			return
+	# l'Oasi: niente porta del deserto, si parla con Mahaf e si sale sulla sua barca
+	if g.current_reward.get("kind", "") == "oasis" and is_instance_valid(g.ferry) and not g.boarding:
+		var bspot: Vector2 = g.ferry.global_position + Vector2(0, 40)
+		if pos.distance_to(g.ferry.global_position + Vector2(0, 12)) < 48.0:
+			if not interact_release:
+				Input.action_press("interact")
+				interact_release = true
+		move_dir = (bspot - pos).normalized() if pos.distance_to(bspot) > 6.0 else Vector2.ZERO
+		return
 	if not g.shop_items.is_empty():
 		var want = null
 		for it in g.shop_items:
@@ -666,6 +701,8 @@ func _pick_door(g):
 func _menu(g) -> void:
 	var btns: Array = g.menu.find_children("*", "Button", true, false).filter(func(b): return b.has_meta("text"))
 	if btns.is_empty():
+		if g.has_method("choice_advance"):
+			g.choice_advance()             # la frase del dio, una pagina alla volta, poi le carte
 		return
 	var best = btns[0]
 	var best_score := -1e9
@@ -838,7 +875,10 @@ func _metrics(g, _p) -> void:
 	last_hp = Run.hp
 	if Run.room != last_room:
 		if last_room > 0:
-			rooms.append({"room": last_room, "time": snappedf(gt - room_start, 0.1), "hp_end": int(Run.hp), "next": str(g.current_reward.get("kind", "")) + ":" + str(g.current_reward.get("god", ""))})
+			rooms.append({"room": last_room, "time": snappedf(gt - room_start, 0.1), "hp_end": int(Run.hp), "next": str(g.current_reward.get("kind", "")) + ":" + str(g.current_reward.get("god", "")),
+				"mem": snappedf(OS.get_static_memory_usage() / 1048576.0, 0.1), "obj": int(Performance.get_monitor(Performance.OBJECT_COUNT)),
+				"nodes": int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)), "orphans": int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)),
+				"res": int(Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT)), "region": Run.region})
 		last_room = Run.room
 		room_start = gt
 	if Run.room > Run.ROOMS_PER_RUN:

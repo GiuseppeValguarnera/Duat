@@ -56,6 +56,7 @@ var t := 0.0
 
 
 func _ready() -> void:
+	Diag.record.call_deferred("Sala")
 	Engine.time_scale = 1.0
 	get_tree().paused = false
 	# una discesa rimasta a metà (gioco chiuso, telefono che chiude la pagina): si riprende da lì
@@ -82,7 +83,9 @@ func _ready() -> void:
 		"cancello": Vector2(cx, TOP + 4.0),
 		"papiri": Vector2(cx + 150.0, 322.0),
 		"cassa": Vector2(cx - 150.0, 322.0),       # la cassa dello scalpellino: i restauri
-		"neith": Vector2(WALL + 56.0, ARMORY_Y + 44.0),   # Neith, accanto alla porta del Cortile, quando porta l'arco
+		# Neith, quando porta l'arco: nello spazio libero tra la porta del Cortile e Anubi, lontana
+		# dalle colonne (x 100) e dal tappeto che porta al cancello
+		"neith": Vector2(cx - 172.0, 236.0),
 	}
 	_build()
 	Fx.scale_labels($UI)
@@ -1481,8 +1484,7 @@ func _draw() -> void:
 	_draw_papiri(spots["papiri"])
 	if _neith_here():
 		var np: Vector2 = spots["neith"]
-		var face := -1.0 if player != null and player.global_position.x < np.x - 6.0 else 1.0
-		NeithArt.draw(self, np, t, talk_box.visible and talk_who == "neith", face)
+		NeithArt.draw(self, np, t, talk_box.visible and talk_who == "neith", 1.0)    # rivolta verso il centro della Sala
 	_draw_markers()
 
 

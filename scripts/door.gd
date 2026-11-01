@@ -30,7 +30,9 @@ func _process(delta: float) -> void:
 	t += delta
 	if open and open_k < 1.0:
 		open_k = minf(1.0, open_k + delta / 0.45)
-	queue_redraw()
+	# chiusa la porta è ferma: si ridisegna solo da aperta (la luce che pulsa, la ricompensa che ondeggia)
+	if open:
+		queue_redraw()
 
 
 ## I battenti si aprono (la stanza è ripulita): da qui si può entrare.
@@ -38,6 +40,7 @@ func open_door() -> void:
 	if open:
 		return
 	open = true
+	queue_redraw()
 	Sfx.play_at("door", global_position, 0.05)
 
 
@@ -143,7 +146,9 @@ func _draw() -> void:
 	# una porta egizia: stipiti di pietra, architrave con la gola a foglie di palma e il disco
 	# solare alato al centro; chiusa ha i battenti di legno con le borchie, aperta mostra il
 	# buio con la luce della ricompensa che sale dal fondo. Disegnata per la parete nord e poi
-	# girata per le altre.
+	# girata per le altre. Quasi tutto è fatto di rettangoli e di quadrilateri "primitivi", che la
+	# scheda grafica disegna insieme in poche chiamate: cerchi e poligoni costano una chiamata
+	# ciascuno, e una porta ne usava una quarantina (tre porte per stanza, sul telefono si sentiva).
 	var gold := Color(0.94, 0.72, 0.3)
 	var outl := Color(0.12, 0.08, 0.05)
 	var stone := Color(0.72, 0.56, 0.36)
@@ -156,21 +161,21 @@ func _draw() -> void:
 		var glow := reward_color()
 		var pulse := 0.5 + 0.5 * sin(t * 3.0)
 		var a := (0.55 + 0.25 * pulse) * open_k
-		draw_polygon(PackedVector2Array([opening.position, Vector2(opening.end.x, opening.position.y), opening.end, Vector2(opening.position.x, opening.end.y)]),
-			PackedColorArray([Color(glow, 0.0), Color(glow, 0.0), Color(glow, a), Color(glow, a)]))
+		draw_primitive(PackedVector2Array([opening.position, Vector2(opening.end.x, opening.position.y), opening.end, Vector2(opening.position.x, opening.end.y)]),
+			PackedColorArray([Color(glow, 0.0), Color(glow, 0.0), Color(glow, a), Color(glow, a)]), PackedVector2Array())
 	# i due battenti di legno: chiusi si toccano al centro, aprendosi rientrano verso gli stipiti
 	var leaf_w := 18.0 * (1.0 - open_k)
 	if leaf_w > 0.3:
 		var wood := Color(0.36, 0.24, 0.12) if not open else Color(0.36, 0.24, 0.12).lightened(0.08)
 		for sx in [-1.0, 1.0]:
 			var lr := Rect2(-18.0 if sx < 0.0 else 18.0 - leaf_w, -7, leaf_w, 14)
-			draw_rect(lr, wood)
-			draw_rect(lr, outl, false, 0.8)
+			draw_rect(lr, outl)
+			draw_rect(lr.grow(-0.8), wood)
 			draw_rect(Rect2(lr.position.x, -1, lr.size.x, 1.5), Color(gold, 0.7))
 			if leaf_w > 6.0:
 				for by in [-3.5, 3.0]:
-					draw_circle(Vector2(lr.position.x + lr.size.x * 0.3, by), 0.9, gold)
-					draw_circle(Vector2(lr.position.x + lr.size.x * 0.75, by), 0.9, gold)
+					draw_rect(Rect2(lr.position.x + lr.size.x * 0.3 - 0.9, by - 0.9, 1.8, 1.8), gold)
+					draw_rect(Rect2(lr.position.x + lr.size.x * 0.75 - 0.9, by - 0.9, 1.8, 1.8), gold)
 	# stipiti
 	for sx in [-1.0, 1.0]:
 		var j := Rect2(Vector2(18.0 if sx > 0.0 else -23.0, -8), Vector2(5, 16))
@@ -185,14 +190,17 @@ func _draw() -> void:
 	for k in range(13):
 		var x := -26.0 + k * 4.0
 		draw_rect(Rect2(x, -17, 4, 5), leaf[k % 3])
-		draw_line(Vector2(x, -17), Vector2(x, -12), outl, 0.4)
+	for k in range(13):
+		draw_rect(Rect2(-26.2 + k * 4.0, -17, 0.4, 5), outl)
 	draw_rect(Rect2(-26, -17, 52, 1.2), gold)
 	# il disco solare alato
+	for sx in [-1.0, 1.0]:
+		draw_primitive(PackedVector2Array([Vector2(2.6 * sx, -11.2), Vector2(14 * sx, -11.6), Vector2(11 * sx, -9.4), Vector2(2.6 * sx, -8.8)]),
+			PackedColorArray([gold, gold, gold, gold]), PackedVector2Array())
+		draw_primitive(PackedVector2Array([Vector2(4 * sx, -10.7), Vector2(12 * sx, -10.9), Vector2(12 * sx, -10.3), Vector2(4 * sx, -10.1)]),
+			PackedColorArray([Color(0.16, 0.3, 0.68), Color(0.16, 0.3, 0.68), Color(0.16, 0.3, 0.68), Color(0.16, 0.3, 0.68)]), PackedVector2Array())
 	draw_circle(Vector2(0, -10), 2.6, outl)
 	draw_circle(Vector2(0, -10), 2.0, Color(0.85, 0.25, 0.12))
-	for sx in [-1.0, 1.0]:
-		draw_colored_polygon(PackedVector2Array([Vector2(2.6 * sx, -11.2), Vector2(14 * sx, -11.6), Vector2(11 * sx, -9.4), Vector2(2.6 * sx, -8.8)]), gold)
-		draw_line(Vector2(4 * sx, -10.4), Vector2(12 * sx, -10.6), Color(0.16, 0.3, 0.68), 0.6)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	if open and open_k >= 1.0 and not reward.is_empty():
 		var off := Vector2(0, 26) if side == "n" else (Vector2(0, -26) if side == "s" else (Vector2(26, 0) if side == "w" else Vector2(-26, 0)))

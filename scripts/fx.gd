@@ -161,10 +161,27 @@ func float_text(pos: Vector2, text: String, color: Color = Color(1, 0.95, 0.8), 
 	tw.tween_callback(l.queue_free)
 
 
+## Scintille: un tetto alle esplosioni attive (BURST_CAP), niente scintille fuori dallo schermo,
+## e sul telefono il 60% delle particelle. Nei momenti pieni (boss, ondate) erano decine di nodi.
+const BURST_CAP := 28
+var _bursts := 0
+
+
 func burst(pos: Vector2, color: Color, amount: int = 16, speed: float = 120.0) -> void:
 	if world == null or not is_instance_valid(world):
 		return
+	if _bursts >= BURST_CAP:
+		return
+	var cam := world.get_viewport().get_camera_2d()
+	if cam != null:
+		var half := world.get_viewport().get_visible_rect().size / (2.0 * cam.zoom)
+		if absf(pos.x - cam.get_screen_center_position().x) > half.x + 40.0 or absf(pos.y - cam.get_screen_center_position().y) > half.y + 40.0:
+			return
+	if mobile:
+		amount = maxi(3, ceili(amount * 0.6))
 	var p := CPUParticles2D.new()
+	_bursts += 1
+	p.tree_exited.connect(func() -> void: _bursts -= 1)
 	p.one_shot = true
 	p.emitting = false
 	p.amount = amount

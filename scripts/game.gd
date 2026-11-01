@@ -130,6 +130,7 @@ var boss_bar: ColorRect
 var boss_fill: ColorRect
 var boss_name: Label
 var menu: CanvasLayer                 # scelta dei doni
+var choice_state := {}                  ## la finestra a carte aperta: selezione, pagine della frase (_open_choice)
 var panel: CanvasLayer
 var pause_menu: CanvasLayer           # menu di pausa (Esc / Start)
 var guardian_down := false            # il guardiano della stanza è caduto (i suoi rinforzi non escono più)
@@ -225,6 +226,7 @@ func _notification(what: int) -> void:
 # ---------------------------------------------------------------- stanze
 
 func start_room(reward: Dictionary) -> void:
+	Diag.record.call_deferred("stanza %s" % reward.get("kind", ""))
 	if reward.get("kind", "") == "tutorial_end":
 		tut.finish()
 		return
@@ -975,88 +977,41 @@ func _reveal(token: int) -> void:
 ## sotto 1-3 carte di papiro. Ogni carta: etichetta, nome, descrizione, prezzo e, in fondo,
 ## il riassunto breve (▲ vantaggio, ▼ prezzo) per scegliere senza rileggere tutto.
 ## `cards` = [{"tag", "name", "body", "cost", "gain", "loss", "color", "heavy", "on_pick"}].
+## Le finestre di scelta a carte (doni, Anubi, patti di Set, altare dell'Oasi, Seconda Barca).
+## 1) La frase del dio, a pagine (UiStyle.next_talk_page) con il triangolo "tocca per continuare":
+##    un tocco (o azione) passa alla pagina dopo; le carte compaiono dopo l'ultima.
+## 2) Le carte si adattano allo schermo (ChoiceCard.make con l'altezza disponibile); se il testo non
+##    ci sta, scorre con le freccette ▲ ▼.
+## 3) Sul telefono il primo tocco SELEZIONA la carta (cornice accesa), il secondo, o "Scegli",
+##    conferma. Con mouse, tastiera e pad la selezione segue il puntatore o il cursore: un clic o
+##    azione conferma; su e giù scorrono il testo della carta selezionata.
 func _open_choice(title_text: String, title_color: Color, subtitle: String, cards: Array, speech: String = "", god: String = "", reroll: Callable = Callable()) -> void:
 	get_tree().paused = true
+	# dietro la finestra non devono restare scritte (titolo della stanza, "Doni: N" dell'HUD)
+	if _banner_tw != null and _banner_tw.is_valid():
+		_banner_tw.kill()
+	banner.visible = false
+	hud.visible = false
 	menu = CanvasLayer.new()
 	menu.layer = 20
 	menu.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(menu)
-	var vw := get_viewport().get_visible_rect().size.x
-
+	var vs := get_viewport().get_visible_rect().size
+	var vw := vs.x
 	var dim := ColorRect.new()
-	dim.color = Color(0.02, 0.03, 0.08, 0.86)
+	dim.color = Color(0.02, 0.03, 0.08, 0.93)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	menu.add_child(dim)
-
 	var box := VBoxContainer.new()
 	box.set_anchors_preset(Control.PRESET_FULL_RECT)
+	box.offset_left = 8.0
+	box.offset_right = -8.0
+	box.offset_top = 6.0
+	box.offset_bottom = -6.0
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", int(6 * Fx.ui))
+	box.add_theme_constant_override("separation", int(5 * Fx.ui))
 	menu.add_child(box)
-
-	# il dio che parla
-	var head := HBoxContainer.new()
-	head.alignment = BoxContainer.ALIGNMENT_CENTER
-	head.add_theme_constant_override("separation", int(10 * Fx.ui))
-	box.add_child(head)
-	if god != "":
-		var portrait := GodPortrait.new()
-		portrait.god = god
-		portrait.custom_minimum_size = Vector2(66, 66) if Fx.mobile else Vector2(84, 84) * Fx.ui
-		portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		head.add_child(portrait)
-		var stop := get_tree().create_timer(maxf(1.2, speech.length() * 0.025), true, false, true)
-		var ref: WeakRef = weakref(portrait)
-		stop.timeout.connect(func() -> void:
-			var pp = ref.get_ref()
-			if pp != null:
-				pp.talking = false)
-	var words := VBoxContainer.new()
-	words.add_theme_constant_override("separation", int(2 * Fx.ui))
-	words.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	head.add_child(words)
-	var title := UiStyle.heading(title_text, 15, title_color)
-	words.add_child(title)
-	if speech != "":
-		var said := UiStyle.label("«%s»" % speech, 8 if Fx.mobile else 10, title_color.lerp(Color(0.97, 0.93, 0.85), 0.65), false, vw - (66.0 if Fx.mobile else 84.0 * Fx.ui) - 70.0 - (100.0 if not Run.boons.is_empty() or not Run.blessings.is_empty() else 0.0))
-		said.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-		said.add_theme_constant_override("outline_size", 3)
-		said.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
-		said.visible_ratio = 0.0
-		words.add_child(said)
-		var tw := said.create_tween()
-		tw.tween_property(said, "visible_ratio", 1.0, clampf(speech.length() * 0.012, 0.4, 1.6))
-	var sub: Label = null
-	if subtitle != "":
-		sub = UiStyle.label(subtitle, 9, Color(0.9, 0.8, 0.6))
-		sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		box.add_child(sub)
-	# sul telefono il menu può non entrare nello schermo: prima si accorcia il discorso del dio
-	# (resta per intero nei Papiri di Thoth), poi sparisce la riga di spiegazione
-	var said_lbl: Label = words.get_child(words.get_child_count() - 1) if speech != "" else null
-	# riferimenti deboli: se il menu si chiude prima dei 0,05 secondi i nodi non ci sono più
-	var box_ref: WeakRef = weakref(box)
-	var said_ref: WeakRef = weakref(said_lbl) if said_lbl != null else null
-	var sub_ref: WeakRef = weakref(sub) if sub != null else null
-	var shrink := func() -> void:
-		var bx: Control = box_ref.get_ref()
-		if bx == null or not is_inside_tree():
-			return
-		var vh := get_viewport().get_visible_rect().size.y
-		var sl: Label = said_ref.get_ref() if said_ref != null else null
-		var sb: Label = sub_ref.get_ref() if sub_ref != null else null
-		if bx.get_combined_minimum_size().y > vh - 8.0 and sl != null:
-			sl.max_lines_visible = 2
-			sl.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		if bx.get_combined_minimum_size().y > vh - 8.0 and sb != null:
-			sb.visible = false
-	get_tree().create_timer(0.05, true, false, true).timeout.connect(shrink)
-
-	var row := HBoxContainer.new()
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", int(8 * Fx.ui))
-	box.add_child(row)
-
+	var mine_w := 0.0
 	# i doni che hai già, per vedere le combinazioni (Tab / Select, o questo pulsante)
 	if not Run.boons.is_empty() or not Run.blessings.is_empty():
 		var mine := Button.new()
@@ -1067,52 +1022,228 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 		mine.pressed.connect(_toggle_boons_panel)
 		menu.add_child(mine)
 		mine.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-		mine.position = Vector2(vw - mine.get_combined_minimum_size().x - 6.0, 6.0)
-	var card_w := minf(250.0, (vw - 40.0) / 3.0)
-	var first_button: Button = null
-	var i := 0
-	for c in cards:
-		var btn := ChoiceCard.make(c, card_w)
-		row.add_child(btn)
-		btn.pressed.connect(c["on_pick"])
-		btn.focus_entered.connect(Sfx.play.bind("ui", 0.0))
-		# la carta scelta si solleva un poco; le altre tornano giù
-		btn.focus_entered.connect(func() -> void:
-			btn.pivot_offset = btn.size / 2.0
-			btn.create_tween().tween_property(btn, "scale", Vector2(1.04, 1.04), 0.12))
-		btn.focus_exited.connect(func() -> void:
-			btn.create_tween().tween_property(btn, "scale", Vector2.ONE, 0.12))
-		btn.mouse_entered.connect(btn.grab_focus)
-		# le carte si srotolano una dopo l'altra
-		btn.modulate.a = 0.0
-		btn.scale = Vector2(1.0, 0.85)
-		var tw2 := btn.create_tween()
-		tw2.tween_interval(0.08 * i)
-		tw2.tween_property(btn, "modulate:a", 1.0, 0.18)
-		tw2.parallel().tween_property(btn, "scale", Vector2.ONE, 0.18)
-		i += 1
-		if first_button == null:
-			first_button = btn
+		mine_w = mine.get_combined_minimum_size().x
+		mine.position = Vector2(vw - mine_w - 6.0, 6.0)
+	# il dio che parla
+	var head := HBoxContainer.new()
+	head.alignment = BoxContainer.ALIGNMENT_CENTER
+	head.add_theme_constant_override("separation", int(10 * Fx.ui))
+	box.add_child(head)
+	var portrait_w := 0.0
+	var portrait: Control = null
+	if god != "":
+		portrait = GodPortrait.new()
+		portrait.god = god
+		portrait.custom_minimum_size = Vector2(56, 56) if Fx.mobile else Vector2(84, 84) * Fx.ui
+		portrait_w = portrait.custom_minimum_size.x
+		portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		head.add_child(portrait)
+	var words := VBoxContainer.new()
+	words.add_theme_constant_override("separation", int(2 * Fx.ui))
+	words.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	head.add_child(words)
+	var words_w := vw - portrait_w - 40.0 - mine_w
+	var title := UiStyle.heading(title_text, 15, title_color)
+	# il titolo va a capo (al massimo due righe) invece di uscire dallo schermo
+	if UiStyle.deco_font().get_string_size(title_text, HORIZONTAL_ALIGNMENT_LEFT, -1, Fx.fs(15)).x > words_w:
+		title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		title.custom_minimum_size.x = words_w
+		title.max_lines_visible = 2
+	words.add_child(title)
+	var said: Label = null
+	var said_box: Control = null
+	if speech != "":
+		said_box = VBoxContainer.new()
+		words.add_child(said_box)
+		said = UiStyle.label("", 8 if Fx.mobile else 10, title_color.lerp(Color(0.97, 0.93, 0.85), 0.65), false, words_w)
+		said.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+		said.add_theme_constant_override("outline_size", 3)
+		said.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
+		said_box.add_child(said)
+		var mark := UiStyle.ContinueMark.new()
+		mark.color = title_color.lerp(Color.WHITE, 0.3)
+		mark.custom_minimum_size = Vector2(words_w, 9.0 * Fx.ui)
+		said_box.add_child(mark)
+	var sub: Label = null
+	if subtitle != "":
+		sub = UiStyle.label(subtitle, 9, Color(0.9, 0.8, 0.6), false, vw - 40.0)
+		sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		sub.visible = speech == ""
+		box.add_child(sub)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", int(8 * Fx.ui))
+	box.add_child(row)
+	var actions := HBoxContainer.new()
+	actions.alignment = BoxContainer.ALIGNMENT_CENTER
+	actions.add_theme_constant_override("separation", int(10 * Fx.ui))
+	actions.visible = false
+	box.add_child(actions)
+	var choose := Button.new()
+	choose.text = Lang.t("Scegli")
+	UiStyle.papyrus_button(choose, title_color)
+	choose.add_theme_font_size_override("font_size", Fx.fs(9))
+	choose.disabled = true
+	choose.visible = Fx.device == "touch"
+	actions.add_child(choose)
+	var again: Button = null
 	# Voce degli Dèi (grazia comprata con i lapislazzuli): chiedi al dio altre tre scelte
 	if reroll.is_valid() and Run.voices_left > 0:
-		var again := Button.new()
-		again.text = Lang.t("Voce degli Dèi: chiedi altre scelte (%d)") % Run.voices_left
+		again = Button.new()
+		again.text = Lang.t("Voce degli Dèi: altre scelte (%d)") % Run.voices_left
 		UiStyle.papyrus_button(again, title_color)
 		again.add_theme_font_size_override("font_size", Fx.fs(8))
-		again.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		again.pressed.connect(func() -> void:
 			Run.voices_left -= 1
 			Sfx.play("boon", 0.0)
 			_close_choice()
 			reroll.call())
-		box.add_child(again)
-	first_button.grab_focus()
+		actions.add_child(again)
+	var state := {"sel": null, "lines": [speech] if speech != "" else [], "typing": null, "cards": false}
+	choice_state = state
+	var keys := ChoiceCard.Keys.new()
+	keys.game = self
+	menu.add_child(keys)
+	var select := func(btn: Button) -> void:
+		if state["sel"] == btn:
+			return
+		if state["sel"] != null and is_instance_valid(state["sel"]):
+			ChoiceCard.set_selected(state["sel"], state["sel"].get_meta("accent"), false)
+		state["sel"] = btn
+		ChoiceCard.set_selected(btn, btn.get_meta("accent"), true)
+		choose.disabled = false
+	var confirm := func(btn: Button) -> void:
+		(btn.get_meta("on_pick") as Callable).call()
+	choose.pressed.connect(func() -> void:
+		if state["sel"] != null and is_instance_valid(state["sel"]):
+			confirm.call(state["sel"]))
+	# le carte: costruite quando la frase è finita, con lo spazio che resta
+	var build_cards := func() -> void:
+		if not is_instance_valid(row):
+			return
+		state["cards"] = true
+		if said_box != null and Fx.mobile:
+			said_box.visible = false           # sul telefono lo spazio serve alle carte
+		elif said_box != null:
+			said_box.get_child(1).visible = false
+		if sub != null:
+			sub.visible = true
+		actions.visible = choose.visible or again != null
+		await get_tree().process_frame
+		if not is_instance_valid(row):
+			return
+		var used := box.get_combined_minimum_size().y
+		var avail_h := vs.y - used - 12.0 - 2.0 * float(box.get_theme_constant("separation"))
+		var n := maxi(1, cards.size())
+		var gap := 8.0 * Fx.ui
+		var card_w := minf(250.0, (vw - 24.0 - gap * (n - 1)) / n)
+		var first_button: Button = null
+		var i := 0
+		for c in cards:
+			var btn := ChoiceCard.make(c, card_w, maxf(80.0, avail_h))
+			btn.set_meta("accent", c["color"])
+			btn.set_meta("on_pick", c["on_pick"])
+			row.add_child(btn)
+			btn.focus_neighbor_top = btn.get_path()
+			btn.pressed.connect(func() -> void:
+				if Fx.device == "touch" and state["sel"] != btn:
+					select.call(btn)
+					Sfx.play("ui", 0.0)
+					return
+				confirm.call(btn))
+			btn.focus_entered.connect(func() -> void:
+				Sfx.play("ui", 0.0)
+				if Fx.device != "touch":
+					select.call(btn))
+			btn.mouse_entered.connect(func() -> void:
+				if Fx.device == "mouse":
+					btn.grab_focus())
+			# le carte si srotolano una dopo l'altra
+			btn.modulate.a = 0.0
+			var tw2 := btn.create_tween()
+			tw2.tween_interval(0.06 * i)
+			tw2.tween_property(btn, "modulate:a", 1.0, 0.16)
+			i += 1
+			if first_button == null:
+				first_button = btn
+		if first_button != null:
+			if Fx.device != "touch":
+				first_button.grab_focus()
+			else:
+				first_button.grab_focus.call_deferred()
+	state["build"] = build_cards
+	# la frase, una pagina alla volta
+	var next_page := func() -> void:
+		var lines: Array = state["lines"]
+		if lines.is_empty():
+			if not state["cards"]:
+				build_cards.call()
+			return
+		said.text = "«%s»" % UiStyle.next_talk_page(lines)
+		said.visible_ratio = 0.0
+		var tw := said.create_tween()
+		tw.tween_property(said, "visible_ratio", 1.0, clampf(said.text.length() * 0.012, 0.3, 1.4))
+		state["typing"] = tw
+	state["next"] = next_page
+	if portrait != null:
+		var stop := get_tree().create_timer(maxf(1.2, speech.length() * 0.025), true, false, true)
+		var ref: WeakRef = weakref(portrait)
+		stop.timeout.connect(func() -> void:
+			var pp = ref.get_ref()
+			if pp != null:
+				pp.talking = false)
+	if speech != "":
+		next_page.call()
+	else:
+		build_cards.call()
+
+
+## Un tocco o "azione" mentre il dio parla: finisce di scrivere la pagina, poi passa alla
+## successiva; dopo l'ultima compaiono le carte. (La chiamano _input e il bot di playtest.)
+func choice_advance() -> void:
+	if menu == null or choice_state.is_empty() or choice_state.get("cards", true):
+		return
+	var tw = choice_state.get("typing")
+	if tw != null and tw.is_valid() and tw.is_running():
+		tw.custom_step(10.0)
+		return
+	(choice_state["next"] as Callable).call()
+
+
+func _choice_input(event: InputEvent) -> void:
+	if menu == null or choice_state.is_empty() or panel != null or pause_menu != null:
+		return
+	if not choice_state.get("cards", true):
+		var tap: bool = event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT
+		if tap or event.is_action_pressed("ui_accept") or event.is_action_pressed("attack") or event.is_action_pressed("interact"):
+			choice_advance()
+			get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("ui_down") and _choice_scroll(1):
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("ui_up") and _choice_scroll(-1):
+		get_viewport().set_input_as_handled()
+
+
+## Su e giù scorrono il testo della carta selezionata (se scorre); altrimenti il cursore va ai
+## pulsanti sotto le carte.
+func _choice_scroll(dir: int) -> bool:
+	var btn = choice_state.get("sel")
+	if btn == null or not is_instance_valid(btn) or not btn.has_meta("scroll"):
+		return false
+	var sc: ScrollContainer = btn.get_meta("scroll")
+	var bar := sc.get_v_scroll_bar()
+	var before := sc.scroll_vertical
+	sc.scroll_vertical += int(dir * 24.0 * Fx.ui)
+	return sc.scroll_vertical != before or (dir < 0 and bar.value > 0.5)
 
 
 func _close_choice() -> void:
 	if menu != null:
 		menu.queue_free()
 		menu = null
+	choice_state = {}
+	hud.visible = true
 	get_tree().paused = false
 
 
@@ -1708,6 +1839,7 @@ func _death_panel(layer: CanvasLayer, where: String, killer: String, summary: St
 # ---------------------------------------------------------------- boss
 
 func _start_boss() -> void:
+	Diag.record("boss")
 	# silenzio finché il boss non si presenta: la musica parte con lui (_boss_intro)
 	Music.stop()
 	boss_fill.color = Color(0.85, 0.2, 0.15)
@@ -1769,6 +1901,7 @@ func _build_arena(arena: String, pool_spots: Array) -> void:
 
 ## Stanza 5: il Serpente della Porta.
 func _start_guardian() -> void:
+	Diag.record("guardiano")
 	Music.stop()
 	if Run.region == 2:
 		# Sokar: Serket nel suo tempio (niente statue del cobra: la complicazione sono i suoi scorpioni)
@@ -2207,7 +2340,7 @@ func _on_pillar_broken(body: StaticBody2D) -> void:
 	body.queue_free()
 	queue_redraw()
 	if is_instance_valid(pillar_art):
-		pillar_art.queue_redraw()
+		pillar_art.bake()                  # la colonna crollata sparisce dalla texture
 
 
 func _boss_defeated() -> void:
