@@ -17,8 +17,8 @@ var bob := 0.0
 
 func _ready() -> void:
 	super._ready()
-	collision_layer = 0                    # un'anima: niente muri, niente colonne
-	collision_mask = 0
+	collision_layer = 0                    # un'anima: passa tra gli altri nemici...
+	collision_mask = 1                     # ...ma non attraverso muri e colonne (solo gli avvoltoi volano)
 	bob = randf() * TAU
 
 

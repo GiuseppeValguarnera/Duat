@@ -38,6 +38,7 @@ func _physics_process(delta: float) -> void:
 			var eye: Area2D = EyeScript.new()
 			eye.direction = (best.global_position + Vector2(0, -6) - global_position).normalized()
 			eye.damage = damage
+			eye.from_player = false
 			eye.speed = 260.0
 			get_parent().add_child(eye)
 			eye.global_position = global_position + Vector2(0, -6)

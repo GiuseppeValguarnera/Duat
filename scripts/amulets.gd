@@ -23,7 +23,7 @@ const ALL_IT := {
 		"desc": "Lo scatto lascia dietro di te una statua di pietra che attira i nemici per %s secondi.",
 		"lore": "La spina dorsale di Osiride, il segno della stabilità. Nella festa di Sokar il re in persona rialzava un grande pilastro djed con le corde."},
 	"was": {"name": "Scettro Was", "cost": 8, "values": [2, 3, 4],
-		"desc": "Ogni stanza finita senza perdere vita ti dà +%d%% di danni fino alla fine della discesa (al massimo 5 volte).",
+		"desc": "Ogni stanza finita senza subire danni ti dà +%d%% di danni, fino a 5 volte. Il bonus resta fino alla fine della discesa: i colpi presi dopo non lo tolgono, solo non lo fanno crescere.",
 		"lore": "Lo scettro con la testa di animale e la base a forcella: il potere e il dominio. Lo reggono gli dèi in quasi ogni pittura."},
 	"shen": {"name": "Anello Shen", "cost": 8, "values": [2, 3, 4],
 		"desc": "Gli dèi da cui hai già un dono compaiono alle porte %d volte più spesso.",

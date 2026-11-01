@@ -37,6 +37,8 @@ var sekhem := 0.0
 var divine := false                   # true durante la Forma Divina
 var revived := false                  # Protezione di Bastet già usata in questa run
 var blood_kills := 0
+var spirit_kills := 0                 # statistiche (bot): nemici finiti dagli spiriti di Anubi
+var last_kill_depth := 0              # statistiche (bot): l'ultimo abbattuto, da te (0) o da uno spirito (n)
 var kills := 0                        # statistiche per il riepilogo di fine run
 var damage_dealt := 0.0
 var start_msec := 0
@@ -50,6 +52,7 @@ var from_casa := false                # si torna nella Sala dalla porta della Ca
 var rebirth := ""                     # "death" o "win": nella Sala l'eroe riemerge dal disco solare (rebirth.gd)
 var last_hit := ""                    # chi ti ha colpito per ultimo (per i commenti di Anubi)
 var resume := {}                      # discesa salvata da riprendere (la imposta la Sala all'avvio)
+var hold_descent := false             # web: "Esci" torna alla Sala; la discesa salvata riprende dal cancello
 
 const DESCENT_PATH := "user://duat_discesa.cfg"   ## salvataggio a metà discesa
 
@@ -102,6 +105,8 @@ func new_run() -> void:
 	blood_kills = 0
 	ka = 0
 	kills = 0
+	spirit_kills = 0
+	last_kill_depth = 0
 	damage_dealt = 0.0
 	start_msec = Time.get_ticks_msec()
 	heart_used = false

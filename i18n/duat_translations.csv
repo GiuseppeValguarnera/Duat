@@ -20,7 +20,7 @@ Pilastro Djed,Pilastro Djed,Djed Pillar
 Lo scatto lascia dietro di te una statua di pietra che attira i nemici per %s secondi.,Lo scatto lascia dietro di te una statua di pietra che attira i nemici per %s secondi.,Your dash leaves behind a stone statue that draws enemies to it for %s seconds.
 "La spina dorsale di Osiride, il segno della stabilità. Nella festa di Sokar il re in persona rialzava un grande pilastro djed con le corde.","La spina dorsale di Osiride, il segno della stabilità. Nella festa di Sokar il re in persona rialzava un grande pilastro djed con le corde.","The backbone of Osiris, the sign of stability. At the feast of Sokar the king himself raised a great djed pillar with ropes."
 Scettro Was,Scettro Was,Was Sceptre
-Ogni stanza finita senza perdere vita ti dà +%d%% di danni fino alla fine della discesa (al massimo 5 volte).,Ogni stanza finita senza perdere vita ti dà +%d%% di danni fino alla fine della discesa (al massimo 5 volte).,Every chamber you clear without losing health gives you +%d%% damage until the end of the descent (up to 5 times).
+"Ogni stanza finita senza subire danni ti dà +%d%% di danni, fino a 5 volte. Il bonus resta fino alla fine della discesa: i colpi presi dopo non lo tolgono, solo non lo fanno crescere.","Ogni stanza finita senza subire danni ti dà +%d%% di danni, fino a 5 volte. Il bonus resta fino alla fine della discesa: i colpi presi dopo non lo tolgono, solo non lo fanno crescere.","Each room cleared without taking damage gives you +%d%% damage, up to 5 times. The bonus lasts until the end of the descent: hits taken later do not remove it, they only stop it from growing."
 Lo scettro con la testa di animale e la base a forcella: il potere e il dominio. Lo reggono gli dèi in quasi ogni pittura.,Lo scettro con la testa di animale e la base a forcella: il potere e il dominio. Lo reggono gli dèi in quasi ogni pittura.,The sceptre with an animal head and a forked base: power and dominion. The gods hold it in almost every painting.
 Anello Shen,Anello Shen,Shen Ring
 Gli dèi da cui hai già un dono compaiono alle porte %d volte più spesso.,Gli dèi da cui hai già un dono compaiono alle porte %d volte più spesso.,Gods you already have a boon from appear at the doors %d times as often.
@@ -652,6 +652,7 @@ Maledizione di Set: %d stanze,Maledizione di Set: %d stanze,Curse of Set: %d cha
 Volume,Volume,Volume
 Ricomincia la run,Ricomincia la run,Restart the run
 Torna alla Sala (abbandona),Torna alla Sala (abbandona),Back to the Hall (abandon)
+Esci alla Sala (la discesa resta salvata),Esci alla Sala (la discesa resta salvata),Exit to the Hall (the descent stays saved)
 Esci (la discesa resta salvata),Esci (la discesa resta salvata),Quit (the descent stays saved)
 Esc / Start per riprendere,Esc / Start per riprendere,Esc / Start to resume
 Indietro,Indietro,Back
@@ -796,6 +797,7 @@ Piuma di Ma'at: -%d%% danni,Piuma di Ma'at: -%d%% danni,Feather of Ma'at: -%d%% 
 Doni: %d,Doni: %d,Boons: %d
 Doni: %d (Tab per vederli),Doni: %d (Tab per vederli),Boons: %d (Tab to view)
     Maledizione: %s (ancora %d stanze),    Maledizione: %s (ancora %d stanze),    Curse: %s (%d chambers left)
+    Was %d/5 (+%d%% danni),    Was %d/5 (+%d%% danni),    Was %d/5 (+%d%% damage)
 Tempo %d:%02d,Tempo %d:%02d,Time %d:%02d
   ·  record %d:%02d,  ·  record %d:%02d,  ·  record %d:%02d
 "%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, you have %d)"
@@ -809,6 +811,7 @@ Nuova versione: ricarica la pagina!,Nuova versione: ricarica la pagina!,New vers
 Ka custodito %d · Lapislazzuli %d · Discese %d · Vittorie %d","Sala del Giudizio
 Ka custodito %d · Lapislazzuli %d · Discese %d · Vittorie %d","Hall of Judgement
 Stored Ka %d · Lapis lazuli %d · Descents %d · Victories %d"
+La tua discesa ti aspetta oltre il cancello,La tua discesa ti aspetta oltre il cancello,Your descent awaits beyond the gate
 Levetta muovi · LB/A scatto · Y interagisci · Start opzioni,Levetta muovi · LB/A scatto · Y interagisci · Start opzioni,Stick move · LB/A dash · Y interact · Start options
 WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD muovi · Spazio scatto · E interagisci · Esc opzioni,WASD move · Space dash · E interact · Esc options
 %s · Parla con Anubi,%s · Parla con Anubi,%s · Speak with Anubis
@@ -1289,6 +1292,7 @@ Il gatto di Bastet,Il gatto di Bastet,The cat of Bastet
 "I gatti erano sacri a Bastet. Chi ne uccideva uno, anche per sbaglio, rischiava la vita; quando un gatto moriva, la famiglia si radeva le sopracciglia in segno di lutto.","I gatti erano sacri a Bastet. Chi ne uccideva uno, anche per sbaglio, rischiava la vita; quando un gatto moriva, la famiglia si radeva le sopracciglia in segno di lutto.","Cats were sacred to Bastet. Killing one, even by accident, could cost you your life; when a cat died, the family shaved their eyebrows in mourning."
 +%d Lapislazzuli,+%d Lapislazzuli,+%d Lapis lazuli
 Wernes,Wernes,Wernes
+Esci,Esci,Exit
 Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,An offering that the king gives: a thousand loaves and a thousand jars of beer for the Ka of the lord of this house.
 "O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O you who pass before this statue, say «bread and beer» for the Ka of the king."
 "Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","The king is a falcon of gold. The king flies toward the sky, and the sky welcomes him."
@@ -1314,6 +1318,9 @@ KHOPESH,KHOPESH,KHOPESH
 OCCHIO,OCCHIO,EYE
 SEKHEM,SEKHEM,SEKHEM
 COMPRA,COMPRA,BUY
+ASCOLTA,ASCOLTA,LISTEN
+USA,USA,USE
+PARLA,PARLA,TALK
 Ruota il telefono in orizzontale,Ruota il telefono in orizzontale,Turn your phone sideways
 la levetta sinistra,la levetta sinistra,the left stick
 la levetta a sinistra,la levetta a sinistra,the stick on the left
@@ -1408,6 +1415,7 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce.","Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce.","Yesterday and Tomorrow do not die alone: if you don't finish the second lion within 8 seconds, the first rises again."
+Ogni stanza finita senza perdere vita ti dà +%d%% di danni fino alla fine della discesa (al massimo 5 volte).,Ogni stanza finita senza perdere vita ti dà +%d%% di danni fino alla fine della discesa (al massimo 5 volte).,Every chamber you clear without losing health gives you +%d%% damage until the end of the descent (up to 5 times).
 "Un altro segno è tornato nel cartiglio del tuo re: dopo l'ibis, un cerchio segnato da linee. Due geroglifici.","Un altro segno è tornato nel cartiglio del tuo re: dopo l'ibis, un cerchio segnato da linee. Due geroglifici.","Another sign has returned to your king's cartouche: after the ibis, a circle marked with lines. Two hieroglyphs."
 "Thoth dice che potrebbero essere l'inizio di cento nomi diversi. Thoth dice sempre così, quando non sa.","Thoth dice che potrebbero essere l'inizio di cento nomi diversi. Thoth dice sempre così, quando non sa.",Thoth says they could be the beginning of a hundred different names. Thoth always says so when he does not know.
 "Hai sconfitto Am-heh!

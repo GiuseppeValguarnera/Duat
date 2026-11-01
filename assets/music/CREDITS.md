@@ -4,8 +4,8 @@
 | --- | --- | --- | --- | --- |
 | hub.ogg | Desert Mystic (versione 2) | PolygonDan | CC0 | Sala del Giudizio |
 | room.ogg | Desert Loop | iamoneabe | CC0 | Stanze |
-| elite.ogg | Frozen Desert | Dizzy Crow | CC0 | Stanze con nemici élite |
-| boss.ogg | Arabesque | brainiac256 | **CC-BY 3.0** (citazione obbligatoria) | Ammit |
+| elite.ogg | Frozen Desert | Dizzy Crow | CC0 | Non più usato in battaglia (troppo calmo: sembrava la musica della Sala) |
+| boss.ogg | Arabesque | brainiac256 | **CC-BY 3.0** (citazione obbligatoria) | Boss e guardiani (Am-heh, Aker, Serpente, Serket) |
 
 Fonti:
 - https://opengameart.org/content/desertmystic-dynastic-egyptian-theme-cc0

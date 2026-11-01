@@ -16,6 +16,7 @@ var returning := false
 var _hit := {}
 var _done := false
 var _healed := false                ## Figlio di Iside: questo lancio ha già curato
+var from_player := true               ## false per gli occhi dell'Ushabti: niente doni doppi dell'Occhio
 
 
 func _ready() -> void:
@@ -98,6 +99,8 @@ func _duo_effects(body: Node) -> void:
 	var player = get_tree().get_first_node_in_group("player")
 	if player == null:
 		return
+	if not from_player:
+		return                           # gli occhi dell'Ushabti non curano e non ricaricano il tuo Occhio
 	if Run.has("duo_horus_thoth") and body.dead:
 		player.eye_cd = 0.0              # al prossimo istante torna una carica
 		Fx.float_text(player.global_position + Vector2(0, -26), Lang.t("Occhio pronto"), Boons.god_color("duo"))

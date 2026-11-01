@@ -58,7 +58,8 @@ func _ready() -> void:
 	Engine.time_scale = 1.0
 	get_tree().paused = false
 	# una discesa rimasta a metà (gioco chiuso, telefono che chiude la pagina): si riprende da lì
-	if Run.has_saved_descent():
+	# (sul web "Esci" porta qui: allora la discesa aspetta al cancello, vedi _start_run)
+	if Run.has_saved_descent() and not Run.hold_descent:
 		var d := Run.load_descent()
 		if not d.is_empty():
 			Run.resume = d
@@ -294,6 +295,8 @@ func _process(delta: float) -> void:
 			_fill_options(keep)
 			_show_option(keep)
 	hud.text = Lang.t("Sala del Giudizio\nKa custodito %d · Lapislazzuli %d · Discese %d · Vittorie %d") % [Meta.ka_bank, Meta.lapis, Meta.runs, Meta.ammit_wins]
+	if Run.hold_descent:
+		hud.text += "\n" + Lang.t("La tua discesa ti aspetta oltre il cancello")
 	_update_update_tag()
 	if Fx.device == "touch":
 		help.text = ""
@@ -468,6 +471,10 @@ func _offer_feather() -> void:
 
 
 func _start_run() -> void:
+	if Run.hold_descent:
+		Run.hold_descent = false
+		if Run.has_saved_descent():
+			Run.resume = Run.load_descent()
 	Meta.last_end = ""
 	Meta.save()
 	Sfx.play("door")
@@ -895,7 +902,8 @@ func _fill_options(focus_id: String = "") -> void:
 		ids.append("update")		  # solo nella versione web: l'app installata non si aggiorna da sola
 	if FEEDBACK_URL != "":
 		ids.append("feedback")
-	ids.append("quit")
+	if not OS.has_feature("web"):
+		ids.append("quit")            # nel browser il gioco non può chiudere la pagina: si bloccava
 	for id in ids:
 		var label: String = Lang.t(OPTION_TEXT[id][0])
 		match id:

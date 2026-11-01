@@ -99,6 +99,17 @@ Prime prove della Sokar più dura (bot, pochi): Serket 650 veterani 8/8 casual 0
 da Am-heh a Sokar (8 veterani con 13 doni): 4 battono Am-heh, poi 1 vince Sokar e 3 muoiono nelle stanze 6-7 (prima 15/18).
 Bot: il campo `result` vale "win"/"cleared"/"death" (attenzione: non esiste "won").
 
+**Blocco 1 (1/11/2026)**: guardiani con la musica del boss (siti di musica gratuita bloccati dal container: per un brano
+nuovo serve che il proprietario lo alleghi); stanze con élite senza cambio di musica ("Frozen Desert" era calmo come la
+Sala); colonne a `z_index` 1 e `_pillar_depth()` (chi passa dietro è coperto, avvoltoi z 3), ba dannato bloccato da muri e
+colonne; coccodrillo immerso fuori dall'acqua esce a terra (`_inside_home`, `_relocate` lo rimette in acqua); mira
+automatica sul telefono anche camminando (raggio 180, fermo 260); tasto d'azione del telefono con etichetta del contesto
+(`_interact_label`); sul web "Esci" torna alla Sala (`Run.hold_descent`, la discesa riprende dal cancello) e l'opzione
+"Esci dal gioco" non c'è; occhi dell'Ushabti senza doni doppi dell'Occhio (`eye.from_player`); Scettro Was: contatore
+nell'HUD; Guida delle Anime 15; scarabei 90,25. Prove: `crocfloor`, `pillardepth`, `autoaimshot`, `shopbtn`, `blocco1shot`
+(con `DUAT_WEBQUIT=1`). Bot: `music_odd` (stanze con nemici senza musica da battaglia), `spirit` (catene di Anubi),
+`DUAT_ANUBI=Guida_delle_Anime`, `DUAT_GUIDE22=1` (valore vecchio, per confronto).
+
 Dialoghi (Anubi, Imhotep, Neith): `UiStyle.next_talk_page` divide le battute lunghe in pagine a fine frase (≈3 righe sul
 telefono), il riquadro cresce verso l'alto, e un triangolo che pulsa (`UiStyle.ContinueMark`) dice "tocca per continuare".
 Prova: `tools/dev/shot.sh talkshot 1300 600 "" mobile`.

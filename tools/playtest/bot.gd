@@ -95,6 +95,8 @@ func _ready() -> void:
 	if sm != "":
 		serpent_mod = JSON.parse_string(sm)
 	force_god = OS.get_environment("DUAT_GOD")
+	if OS.get_environment("DUAT_GUIDE22") != "":      # confronto: la Guida delle Anime com'era (22 danni)
+		Boons.ALL["anubi_guide"]["values"] = [22]
 	var s := OS.get_environment("DUAT_SEED")
 	seed(int(s) if s != "" else 1)
 	var wpn := OS.get_environment("DUAT_WEAPON")
@@ -204,6 +206,12 @@ func _hub_shopping() -> void:
 	brain["last_bought"] = bought
 
 
+var sp_prev_alive := 0                  # Guida delle Anime: stanze finite dalla catena degli spiriti
+var sp_scarab := false
+var sp_rooms := 0
+var sp_chain_end := 0
+var sp_chain_end_scarab := 0
+var music_odd := {}                     # stanze con nemici vivi ma senza musica da battaglia
 var perf_max := 0.0                    # il fotogramma più pesante (logica + fisica), in ms
 var perf_slow := 0                      # fotogrammi oltre 16 ms
 var perf_frames := 0
@@ -236,6 +244,22 @@ func _process(delta: float) -> void:
 	var p = g.player
 	Fx.device = "pad"
 	_metrics(g, p)
+	if g.alive > 0 and not sp_scarab:
+		for e in get_tree().get_nodes_in_group("enemies"):
+			if String(e.scene_file_path).contains("scarab"):
+				sp_scarab = true
+				break
+	if sp_prev_alive > 0 and g.alive == 0 and g.waves.is_empty() and g.spawning <= 0 and Run.room <= Run.ROOMS_PER_RUN:
+		sp_rooms += 1
+		if Run.last_kill_depth >= 2:
+			sp_chain_end += 1
+			if sp_scarab:
+				sp_chain_end_scarab += 1
+		sp_scarab = false
+	sp_prev_alive = g.alive
+	if g.alive > 0 and not p.dead and not get_tree().paused and not (Music.current in ["room", "elite", "boss"]):
+		var mk := "r%d s%d %s: %s" % [Run.region, Run.room, g.current_reward.get("kind", "?"), Music.current]
+		music_odd[mk] = int(music_odd.get(mk, 0)) + 1
 	# stallo: troppo tempo nella stessa stanza normale (non i boss): si chiude e si registra il perché
 	if not g.finished and Run.room <= Run.ROOMS_PER_RUN and gt - room_start > float(OS.get_environment("DUAT_STALL") if OS.get_environment("DUAT_STALL") != "" else "1e9"):
 		_finish(g, "stallo")
@@ -795,7 +819,7 @@ func _finish(g, forced: String = "") -> void:
 		boss_hp = snappedf(g.boss.hp / g.boss.max_hp, 0.01)
 	var data := {
 		"persona": persona, "exp": OS.get_environment("DUAT_EXP"), "tester": OS.get_environment("DUAT_TESTER"), "run_n": OS.get_environment("DUAT_RUN"), "seed": OS.get_environment("DUAT_SEED"), "result": result, "room": Run.room,
-		"region": Run.region, "time": snappedf(gt, 0.1), "boss_time": snappedf(boss_time, 0.1), "boss_hp_left": boss_hp,
+		"music_odd": music_odd, "spirit": {"dmg": Run.val("anubi_guide") if Run.has("anubi_guide") else 0.0, "kills": Run.spirit_kills, "rooms": sp_rooms, "chain_end": sp_chain_end, "chain_end_scarab": sp_chain_end_scarab}, "region": Run.region, "time": snappedf(gt, 0.1), "boss_time": snappedf(boss_time, 0.1), "boss_hp_left": boss_hp,
 		"max_hp": Run.max_hp, "hp": Run.hp, "dmg_taken": dmg, "healed": snappedf(heals, 1),
 		"kills": Run.kills, "dmg_dealt": int(Run.damage_dealt), "ka": Run.ka,
 		"boons": Run.boons, "blessings": Run.blessings, "curses_left": Run.curses, "choices": choices,

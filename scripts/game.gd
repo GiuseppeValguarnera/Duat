@@ -57,9 +57,9 @@ const BossIntro := preload("res://scripts/ui/boss_intro.gd")
 const BOSS_INTROS := {
 	"amheh": ["AM-HEH", "Il guardiano del Lago di Fuoco", "Per il giusto il lago è acqua, per il dannato è fuoco. Resta nell'acqua", "boss", Color(1, 0.55, 0.2)],
 	"ammit": ["AMMIT", "La Divoratrice", "Divora i cuori che non superano il giudizio", "boss", Color(0.9, 0.35, 0.25)],
-	"serpent": ["IL SERPENTE DELLA PORTA", "Guardiano della quinta porta", "Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra", "elite", Color(0.5, 0.95, 0.45)],
+	"serpent": ["IL SERPENTE DELLA PORTA", "Guardiano della quinta porta", "Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra", "boss", Color(0.5, 0.95, 0.45)],
 	"aker": ["AKER", "Il leone dell'orizzonte", "Non ha un dietro: colpiscilo sui fianchi. Dietro le pietre il raggio non passa", "boss", Color(1.0, 0.7, 0.3)],
-	"serket": ["SERKET", "Colei che fa respirare la gola", "Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare", "elite", Color(0.4, 0.9, 0.82)],
+	"serket": ["SERKET", "Colei che fa respirare la gola", "Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare", "boss", Color(0.4, 0.9, 0.82)],
 }
 const DecorScript := preload("res://scripts/room_decor.gd")
 const UshabtiScript := preload("res://scripts/ushabti.gd")
@@ -310,6 +310,7 @@ func start_room(reward: Dictionary) -> void:
 	pillar_art = DecorScript.Pillars.new()
 	pillar_art.list = pillars
 	pillar_art.in_water = arena == "gate"
+	pillar_art.z_index = 1                 # sopra chi passa dietro, sotto chi sta davanti (_pillar_depth)
 	world.add_child(pillar_art)
 	_cover_until_baked(decor)
 	for r in obstacles:
@@ -488,7 +489,8 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 	var elite_from := 3 if Run.region == 1 else 2
 	if Run.room >= elite_from - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind in elite_kinds and randf() < minf(0.2, 0.06 + 0.02 * Run.room + (0.08 if Run.region == 2 else 0.0)) * (1 + elite_w):
 		e.elite = true
-		Music.play("elite")           # una stanza con nemici élite cambia musica fino alla prossima
+		# niente più cambio di musica per le élite: "Frozen Desert" era calmo quasi come la Sala e
+		# in battaglia sembrava la musica dell'hub. Le élite si riconoscono dal bordo d'oro.
 	world.add_child(e)
 	alive += 1
 	e.killed.connect(_on_enemy_killed)
@@ -1228,7 +1230,7 @@ func _toggle_pause() -> void:
 	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
 	box.add_child(title)
 	var first: Button = null
-	for entry in [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Volume"), _show_audio_menu], [Lang.t("Ricomincia la run"), _restart_run], [Lang.t("Torna alla Sala (abbandona)"), _abandon_run], [Lang.t("Esci (la discesa resta salvata)"), _quit_game]]:
+	for entry in [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Volume"), _show_audio_menu], [Lang.t("Ricomincia la run"), _restart_run], [Lang.t("Torna alla Sala (abbandona)"), _abandon_run], [Lang.t("Esci alla Sala (la discesa resta salvata)") if OS.has_feature("web") else Lang.t("Esci (la discesa resta salvata)"), _quit_game]]:
 		var b := Button.new()
 		b.text = entry[0]
 		b.custom_minimum_size = Vector2(160, 26) * Fx.ui
@@ -1354,8 +1356,17 @@ func _restart_run() -> void:
 
 
 ## Uscire a metà discesa non la perde: è salvata all'inizio della stanza e riprende al prossimo avvio.
+## Nel browser il gioco non può chiudere la pagina (si fermava e sembrava bloccato): si torna alla
+## Sala, e la discesa salvata riprende passando dal cancello.
 func _quit_game() -> void:
 	Meta.save()
+	if OS.has_feature("web") or OS.get_environment("DUAT_WEBQUIT") != "":
+		Run.hold_descent = true
+		get_tree().paused = false
+		Engine.time_scale = 1.0
+		get_viewport().set_input_as_handled()
+		get_tree().change_scene_to_file("res://scenes/hub.tscn")
+		return
 	get_tree().quit()
 
 
@@ -2083,7 +2094,30 @@ func _fit_message() -> void:
 
 # ---------------------------------------------------------------- ogni frame
 
+## Le colonne sono alte, ma solida è solo la base: chi passa DIETRO una colonna (più in alto sullo
+## schermo) deve essere coperto dal fusto, chi sta DAVANTI deve coprirlo. Prima i personaggi erano
+## sempre disegnati sopra e chi passava dietro sembrava attraversare la pietra. Gli avvoltoi volano
+## e restano sopra (z 3, vulture.gd).
+func _pillar_depth() -> void:
+	if pillars.is_empty():
+		return
+	var who: Array = get_tree().get_nodes_in_group("enemies")
+	if player != null and is_instance_valid(player):
+		who.append(player)
+	for c in who:
+		if c.z_index > 2:
+			continue
+		var front := false
+		for p in pillars:
+			var d: Vector2 = c.global_position - p
+			if absf(d.x) < 30.0 and d.y >= -2.0 and d.y < 48.0:
+				front = true
+				break
+		c.z_index = 2 if front else 0
+
+
 func _process(_delta: float) -> void:
+	_pillar_depth()
 	if Input.is_action_just_pressed("debug_hitbox"):
 		Fx.set_hitboxes(not Fx.show_hitboxes)
 	if Input.is_action_just_pressed("restart") and (finished or player.dead) and can_leave:
@@ -2125,6 +2159,10 @@ func _process(_delta: float) -> void:
 		line2 = (Lang.t("Doni: %d") % n) if Fx.device == "touch" else Lang.t("Doni: %d (Tab per vederli)") % n
 	for c in Run.curses:
 		line2 += Lang.t("    Maledizione: %s (ancora %d stanze)") % [Boons.SET_CURSES[c["curse"]]["desc"], c["rooms"]]
+	# Scettro Was: quante stanze pulite ha già contato (il bonus non si perde prendendo danni)
+	if Run.amulet == "was" and not Run.training:
+		var was_bonus := roundi(Run.was_stacks * Amulets.value("was", Run.amulet_level))
+		line2 += Lang.t("    Was %d/5 (+%d%% danni)") % [Run.was_stacks, was_bonus]
 	if line2 != "":
 		hud.text += ("\n" if hud.text != "" else "") + line2.strip_edges()
 	# la clessidra di Thoth (restauro della Sala): il tempo della discesa e il record

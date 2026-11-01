@@ -227,14 +227,15 @@ func _update_aim(moving: bool = false) -> void:
 	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
 	if stick.length() > 0.3:
 		aim = stick.normalized()
-	elif Fx.device == "touch" and (moving or not Meta.options.get("autoaim", true)):
-		# sul telefono, mentre ti muovi colpisci dove vai (con l'aiuto alla mira, più largo che
-		# su PC): così il bersaglio lo scegli camminandogli incontro
+	elif Fx.device == "touch" and not Meta.options.get("autoaim", true):
 		aim = facing
 	elif Fx.device == "touch":
-		# da fermo la mira va da sola sul nemico più vicino (si può spegnere nelle Opzioni)
+		# mira automatica (si spegne nelle Opzioni): il colpo va al nemico più vicino, anche mentre
+		# cammini. Prima, camminando, si colpiva dove si andava: arretrando con i nemici davanti
+		# si attaccava alle proprie spalle. Mentre ti muovi il raggio è più corto: se non c'è
+		# nessuno vicino, colpisci dove vai.
 		var best = null
-		var best_d := 260.0
+		var best_d := 180.0 if moving else 260.0
 		for e in get_tree().get_nodes_in_group("enemies"):
 			if e.dead:
 				continue

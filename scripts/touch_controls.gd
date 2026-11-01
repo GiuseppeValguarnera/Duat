@@ -52,11 +52,28 @@ func _layout() -> Array:
 	out.append({"action": "special", "pos": Vector2(r - 108, b - 122), "r": 24.0, "label": Lang.t("OCCHIO")})
 	if Run.sekhem_unlocked():
 		out.append({"action": "super", "pos": Vector2(r - 170, b - 100), "r": 20.0, "label": Lang.t("SEKHEM")})
-	if shop:
-		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": Lang.t("COMPRA")})
+	if shop or (scene != null and "oasis_nodes" in scene and not scene.oasis_nodes.is_empty()):
+		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": _interact_label(scene)})
 	elif scene != null and "is_armory" in scene:
 		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": Lang.t("AZIONE")})
 	return out
+
+
+## Cosa fa il tasto d'azione qui: la stessa scelta di game.gd (_process), con le stesse distanze.
+## Prima diceva sempre "COMPRA", anche accanto alla barca, dove serve a parlare con Mahaf.
+func _interact_label(scene) -> String:
+	var pl = scene.player if "player" in scene else null
+	if pl == null or not is_instance_valid(pl):
+		return Lang.t("AZIONE")
+	for it in scene.shop_items:
+		if is_instance_valid(it) and not it.sold and pl.global_position.distance_to(it.global_position) < 26.0:
+			return Lang.t("COMPRA")
+	for o in scene.oasis_nodes:
+		if is_instance_valid(o) and not o.used and pl.global_position.distance_to(o.global_position) < o.reach:
+			return Lang.t("ASCOLTA") if o is Oasis.Statue else Lang.t("USA")
+	if "ferry" in scene and is_instance_valid(scene.ferry) and pl.global_position.distance_to(scene.ferry.global_position + Vector2(0, 12)) < 56.0:
+		return Lang.t("PARLA")
+	return Lang.t("AZIONE")
 
 
 func _input(event: InputEvent) -> void:

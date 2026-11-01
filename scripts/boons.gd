@@ -78,7 +78,7 @@ const ALL_IT := {
 	"anubi_linen": {"god": "anubi", "balanced": true, "name": "Bende di Lino", "desc": "Subisci il %d%% di danni in meno.", "values": [15], "cost": "Ti muovi il 5% più lento."},
 	"anubi_guardian": {"god": "anubi", "balanced": true, "name": "Custode della Necropoli", "desc": "Il terzo colpo della combo fa il %d%% di danni in più.", "values": [50], "cost": "I primi due colpi della combo fanno il 10% di danni in meno."},
 	"anubi_tribute": {"god": "anubi", "balanced": true, "name": "Offerte ai Defunti", "desc": "Ottieni il %d%% di Ka in più.", "values": [40], "cost": "-5 vita massima."},
-	"anubi_guide": {"god": "anubi", "balanced": true, "name": "Guida delle Anime", "desc": "Ogni nemico abbattuto libera uno spirito che colpisce il nemico più vicino: %d danni.", "values": [22], "cost": "I nemici hanno il 5% di vita in più."},
+	"anubi_guide": {"god": "anubi", "balanced": true, "name": "Guida delle Anime", "desc": "Ogni nemico abbattuto libera uno spirito che colpisce il nemico più vicino: %d danni.", "values": [15], "cost": "I nemici hanno il 5% di vita in più."},
 	# Doni Doppi: compaiono quando hai già doni di entrambi gli dèi
 	"duo_ra_thoth": {"god": "duo", "gods": ["ra", "thoth"], "name": "Occhio del Sole", "desc": "L'Occhio di Horus incendia sempre ed esplode quando si ferma (almeno 12 danni)."},
 	"duo_ra_sekhmet": {"god": "duo", "gods": ["ra", "sekhmet"], "name": "Sole Furente", "desc": "I nemici in fiamme subiscono il 25% di danni in più dal khopesh."},

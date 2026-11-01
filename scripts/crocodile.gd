@@ -64,6 +64,28 @@ func _water_point(p: Vector2) -> Vector2:
 	return c + d * radii
 
 
+## È dentro la sua acqua? (`margin` in pixel verso l'interno)
+func _inside_home(p: Vector2, margin: float = 0.0) -> bool:
+	if home == null or not is_instance_valid(home):
+		return false
+	var d := p - home.global_position
+	if home.rect != Vector2.ZERO:
+		var h: Vector2 = home.rect / 2.0 - Vector2(margin, margin)
+		return absf(d.x) <= h.x and absf(d.y) <= h.y
+	var r: Vector2 = home.radii - Vector2(margin, margin)
+	return (d / r).length() <= 1.0
+
+
+## La rete di sicurezza dei nemici incastrati: un coccodrillo immerso torna nella sua acqua, non
+## sul pavimento (lì restava "sott'acqua" sotto le piastrelle).
+func _relocate(g) -> void:
+	if (state == "submerged" or state == "warn") and home != null and is_instance_valid(home):
+		Fx.burst(global_position, Color(0.6, 0.85, 1.0), 10, 60.0)
+		global_position = _water_point(home.global_position + Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)) * home.radii)
+		return
+	super._relocate(g)
+
+
 func _set_submerged(on: bool) -> void:
 	state = "submerged" if on else state
 	collision_layer = 0 if on else 4
@@ -92,6 +114,13 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		_set_submerged(false)
 		state = "land"
 		st = 99.0
+	# immerso ma fuori dall'acqua (spinto, spostato, uscito dal bordo): esce allo scoperto, sulla
+	# terra. Prima scivolava sotto il pavimento fino alla pozza.
+	if home_ok and (state == "submerged" or state == "warn") and not _inside_home(global_position, -4.0):
+		_set_submerged(false)
+		state = "land"
+		st = land_time
+		Fx.burst(global_position, Color(0.75, 0.65, 0.45), 10, 60.0)
 	if to != Vector2.ZERO and state != "lunge":
 		aim = aim.lerp(to.normalized(), 0.15 if state == "land" else 0.4).normalized()
 	match state:
@@ -150,10 +179,16 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			return _steer(to.normalized() * speed * 0.45, delta)
 		"return":
 			var back := _water_point(global_position) - global_position
-			if back.length() < 8.0 or st <= 0.0:
+			# si immerge solo dentro l'acqua: se il tempo scade fuori (un ostacolo in mezzo), resta a
+			# terra un altro po' e ci riprova
+			if back.length() < 8.0 and _inside_home(global_position):
 				Fx.burst(global_position, Color(0.6, 0.85, 1.0), 14, 80.0)
 				_set_submerged(true)
 				st = 1.2                    # prima di riattaccare, qualche istante sott'acqua
+				return Vector2.ZERO
+			if st <= 0.0:
+				state = "land"
+				st = land_time
 				return Vector2.ZERO
 			return _steer(back.normalized() * speed, delta)
 	return Vector2.ZERO

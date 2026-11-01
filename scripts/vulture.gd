@@ -27,6 +27,7 @@ func _ready() -> void:
 	super._ready()
 	collision_layer = 0                    # vola: niente collisioni con muri, colonne, nemici
 	collision_mask = 0
+	z_index = 3                            # vola: sempre sopra le colonne (game.gd, _pillar_depth)
 	ang = randf() * TAU
 	st = randf_range(2.0, 3.5)
 	var g := get_tree().current_scene as Game

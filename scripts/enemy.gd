@@ -23,6 +23,7 @@ var seed_offset := 0.0
 var contact: Area2D
 var is_boss := false
 var miniboss := false                 ## guardiano a metà discesa: barra in alto invece che sopra la testa
+var spirit_depth := 0                 ## Guida delle Anime: 0 = ucciso da te, n = dall'n-esimo spirito della catena
 var elite := false                     ## versione dorata: più grossa, più resistente, lascia più Ka
 const HeartScript := preload("res://scripts/heart_drop.gd")
 const KA_DROP_CHANCE := 0.4             ## quante volte un nemico lascia il suo Ka (vedi die())
@@ -353,6 +354,9 @@ func die() -> void:
 		heart.amount = Chapters.heart_heal()
 		get_parent().add_child.call_deferred(heart)
 		heart.position = global_position
+	Run.last_kill_depth = spirit_depth          # statistiche (bot): la catena degli spiriti
+	if spirit_depth > 0:
+		Run.spirit_kills += 1
 	if Run.has("anubi_guide"):
 		_release_spirit()
 	killed.emit(self)
@@ -378,14 +382,17 @@ func _release_spirit() -> void:
 	Fx.burst(from + Vector2(0, -8), Boons.god_color("anubi"), 10, 60.0)
 	# la funzione è statica: il nemico che libera lo spirito sparisce subito, e una funzione
 	# legata a lui (una lambda) dopo 0,2 secondi trovava i suoi dati già liberati
-	get_tree().create_timer(0.2).timeout.connect(Enemy._spirit_strike.bind(ref, from, dmg))
+	get_tree().create_timer(0.2).timeout.connect(Enemy._spirit_strike.bind(ref, from, dmg, spirit_depth + 1))
 
 
-static func _spirit_strike(ref: WeakRef, from: Vector2, dmg: float) -> void:
+static func _spirit_strike(ref: WeakRef, from: Vector2, dmg: float, depth: int) -> void:
 	var target = ref.get_ref()
 	if target != null and not target.dead:
 		Fx.burst(target.global_position + Vector2(0, -8), Boons.god_color("anubi"), 12, 80.0)
+		target.spirit_depth = depth
 		target.take_hit(dmg, (target.global_position - from).normalized(), 60.0)
+		if is_instance_valid(target) and not target.dead:
+			target.spirit_depth = 0
 
 
 func _draw() -> void:
