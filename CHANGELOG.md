@@ -14,6 +14,11 @@
 - Nefti, signora della casa e del lutto: una dea nuova che cura chi colpisce
 - Shu, il dio dell'aria: spinge i nemici contro muri, colonne e pericoli (lo "schianto"), vortici,
   raffiche e proiettili rimandati indietro
+- l'Arco di Satet, terza arma: frecce rapide, tiro carico che trapassa la fila, ventaglio dopo lo
+  scatto, mira automatica; Neith lo offre nella Sala dopo la terza vittoria sul Serpente (20
+  lapislazzuli), con dieci doni dedicati e le battute degli dèi
+- le armi si risvegliano con i lapislazzuli nel Cortile; il Flagello di Osiride è già sul suo
+  piedistallo, ancora chiuso
 - dialoghi più aulici e simbolici, già dalla prima discesa
 - correzioni: colonne e profondità, coccodrilli sotto il pavimento, mira automatica sul telefono,
   "Esci" sul web, musica dei guardiani, Scettro Was più chiaro
