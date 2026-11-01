@@ -55,6 +55,9 @@ func _hit(done: Dictionary, dmg: float) -> void:
 			continue
 		if global_position.distance_to(e.global_position + Vector2(0, -6)) < e.radius + 9.0:
 			done[e] = true
+			if Run.has("nefti_veil"):
+				e.mourn_t = 4.0                # Velo del Lutto: anche la lancia lanciata marchia
+			Run.nefti_on_hit()
 			e.take_hit(dmg, dir, knock * (0.5 if back else 1.0))
 			Fx.impact(e.global_position + Vector2(0, -e.radius), dir, true)
 	for j in get_tree().get_nodes_in_group("breakables"):

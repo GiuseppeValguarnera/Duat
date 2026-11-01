@@ -142,6 +142,13 @@ func dash_cd_max() -> float:
 	return maxf(Run.MIN_DASH_CD, dash_cooldown * Run.dash_cooldown_mult())
 
 
+## Ala del Nibbio (Nefti): lo scatto torna subito pronto.
+func refill_dash() -> void:
+	dash_charges = DASH_CHARGES
+	dash_cd = 0.0
+	_dash_ready_fx()
+
+
 func can_dash() -> bool:
 	return dash_charges > 0 and dash_t <= 0.0 and dash_gap_t <= 0.0
 
@@ -298,6 +305,9 @@ func _charged_attack() -> void:
 		if to.length() > swing_range + e.radius:
 			continue
 		var crit := Run.roll_crit(Run.khopesh_crit_chance())
+		if Run.has("nefti_veil"):
+			e.mourn_t = 4.0
+		Run.nefti_on_hit()
 		e.take_hit(base * KHOPESH_SPIN["mult"] * crit, to.normalized(), KHOPESH_SPIN["knock"] * Run.knock_mult(), Run.khopesh_burns())
 		Fx.impact(e.global_position + Vector2(0, -e.radius) - to.normalized() * e.radius * 0.6, to.normalized(), true)
 		hit_any = true
@@ -549,6 +559,9 @@ func _swing() -> void:
 				if Run.has("duo_sekhmet_bastet"):
 					_shockwave.call_deferred(40.0, 12.0 * Run.all_damage_mult(), 150.0, Boons.god_color("duo"))
 			var kb: float = c["knock"] * Run.knock_mult() * (2.0 if sweep and Run.has("sobek_tail") else 1.0)
+			if Run.has("nefti_veil"):
+				e.mourn_t = 4.0                  # Velo del Lutto
+			Run.nefti_on_hit()
 			e.take_hit(hit_dmg, to.normalized(), kb, Run.khopesh_burns())
 			# scintilla dove la lama tocca: sul bordo del nemico rivolto verso di te
 			var heavy_hit := swing_index >= 2 or crit > 1.0

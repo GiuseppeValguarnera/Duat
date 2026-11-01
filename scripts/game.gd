@@ -229,6 +229,7 @@ func start_room(reward: Dictionary) -> void:
 	# l'altare di Set è una deviazione: la discesa non avanza
 	if reward.get("kind", "") not in ["set", "oasis"]:
 		Run.room += 1
+	Run.nefti_room_heal = 0.0              # il tetto delle cure di Nefti vale per stanza
 	room_gen += 1
 	boss = null
 	Fx.look = Vector2.ZERO
@@ -1107,6 +1108,9 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 		if not others.is_empty():
 			from_god = others.pick_random()
 			options = Boons.offers(from_god, Run.boons)
+	if from_god == "nefti" and not Meta.nefti_met:
+		Meta.nefti_met = true             # da ora Nefti compare anche nelle acque di Wernes
+		Meta.save()
 	if options.is_empty():
 		# tutti i doni sono già al massimo: al posto del dono arriva un tesoro di Ka
 		var bonus := roundi(25 * Run.ka_mult())

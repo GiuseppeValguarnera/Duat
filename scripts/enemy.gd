@@ -29,6 +29,7 @@ var elite := false                     ## versione dorata: più grossa, più res
 const HeartScript := preload("res://scripts/heart_drop.gd")
 const KA_DROP_CHANCE := 0.4             ## quante volte un nemico lascia il suo Ka (vedi die())
 var stagger_t := 0.0
+var mourn_t := 0.0                    ## il marchio del Lutto di Nefti (secondi)
 var mark_t := 0.0                     ## Sguardo del Falco: secondi in cui il khopesh fa più danni
 var sobek_stun_t := 0.0                ## stordito dal Morso di Sobek (per la Forza del Fiume)                   ## dopo un colpo il nemico barcolla: non si muove e non ferisce
 
@@ -70,6 +71,7 @@ func _physics_process(delta: float) -> void:
 
 	sobek_stun_t = maxf(0.0, sobek_stun_t - delta)
 	mark_t = maxf(0.0, mark_t - delta)
+	mourn_t = maxf(0.0, mourn_t - delta)
 	if stagger_t > 0.0:
 		stagger_t -= delta
 		velocity = knock
@@ -293,6 +295,8 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 	dmg *= Run.jackal_mult(hp / max_hp) * _damage_mult()
 	if Run.has("sobek_river") and (sobek_stun_t > 0.0 or _in_tide()):
 		dmg *= 1.0 + Run.val("sobek_river") / 100.0
+	if mourn_t > 0.0 and Run.has("nefti_lament"):
+		dmg *= 1.0 + Run.val("nefti_lament") / 100.0      # Lamento: i marchiati soffrono di più
 	if sand_shield > 0.0:
 		# lo scudo di sabbia del Sacerdote di Sokar prende il colpo per primo
 		var absorbed := minf(sand_shield, dmg)
@@ -368,6 +372,7 @@ func die() -> void:
 		heart.amount = Run.feather_halff(Chapters.heart_heal())
 		get_parent().add_child.call_deferred(heart)
 		heart.position = global_position
+	Run.nefti_on_kill(self)                     # Nefti: il Lutto, il Banchetto, l'Ala del Nibbio
 	Run.last_kill_depth = spirit_depth          # statistiche (bot): la catena degli spiriti
 	if spirit_depth > 0:
 		Run.spirit_kills += 1
@@ -404,6 +409,8 @@ static func _spirit_strike(ref: WeakRef, from: Vector2, dmg: float, depth: int) 
 	if target != null and not target.dead:
 		Fx.burst(target.global_position + Vector2(0, -8), Boons.god_color("anubi"), 12, 80.0)
 		target.spirit_depth = depth
+		if Run.has("duo_nefti_anubi"):
+			target.mourn_t = 4.0              # Corteo delle Anime: lo spirito marchia col Lutto
 		target.take_hit(dmg, (target.global_position - from).normalized(), 60.0)
 		if is_instance_valid(target) and not target.dead:
 			target.spirit_depth = 0
@@ -427,6 +434,12 @@ func _draw() -> void:
 		for i in range(6):
 			var a := t * 2.5 + i * TAU / 6.0
 			draw_circle(Vector2(0, -radius) + Vector2.from_angle(a) * (radius + 5.0), 1.2, Color(0.95, 0.82, 0.55))
+	if mourn_t > 0.0:
+		# il Lutto di Nefti: una lacrima d'argento sopra il nemico
+		var lp := Vector2(-6, -radius * 2.6 - 6.0)
+		draw_circle(lp + Vector2(0, 1.5), 2.2, Boons.god_color("nefti"))
+		draw_colored_polygon(PackedVector2Array([lp + Vector2(-2.0, 1.0), lp + Vector2(2.0, 1.0), lp + Vector2(0, -3.5)]), Boons.god_color("nefti"))
+		draw_circle(lp + Vector2(0.6, 1.4), 0.8, Color(0.12, 0.16, 0.36))
 	if mark_t > 0.0:
 		# il segno del falco sopra il nemico
 		var mp := Vector2(0, -radius * 2.6 - 6.0)

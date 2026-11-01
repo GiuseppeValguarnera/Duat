@@ -37,6 +37,8 @@ var sekhem := 0.0
 var divine := false                   # true durante la Forma Divina
 var revived := false                  # Protezione di Bastet già usata in questa run
 var blood_kills := 0
+var nefti_room_heal := 0.0             # Nefti: quanto ha già curato in questa stanza (c'è un tetto)
+var nefti_hits := 0                    # Veglia Funebre: colpi a segno contati sotto un terzo della vita
 var spirit_kills := 0                 # statistiche (bot): nemici finiti dagli spiriti di Anubi
 var last_kill_depth := 0              # statistiche (bot): l'ultimo abbattuto, da te (0) o da uno spirito (n)
 var kills := 0                        # statistiche per il riepilogo di fine run
@@ -105,6 +107,8 @@ func new_run() -> void:
 	blood_kills = 0
 	ka = 0
 	kills = 0
+	nefti_room_heal = 0.0
+	nefti_hits = 0
 	spirit_kills = 0
 	last_kill_depth = 0
 	damage_dealt = 0.0
@@ -537,6 +541,67 @@ func low_hp_guard() -> float:
 	if has("iside_knot") and hp < max_hp / 3.0:
 		return 1.0 - val("iside_knot") / 100.0
 	return 1.0
+
+
+# --- Nefti: le cure che vengono dai nemici che cadono ----------------------------------
+
+## Tetto delle cure di Nefti in una stanza: 12, e 3 in più per ogni livello oltre il primo del suo
+## dono più alto (12 / 15 / 18).
+func nefti_cap() -> float:
+	var lvl := 0
+	for id in boons:
+		if id.begins_with("nefti_"):
+			lvl = maxi(lvl, level(id))
+	return 12.0 + 3.0 * maxi(0, lvl - 1)
+
+
+## Una cura di Nefti: entro il tetto della stanza; quello che va oltre la vita piena diventa scudo
+## con la Signora della Casa.
+func nefti_heal(amount: float) -> void:
+	var p = get_tree().get_first_node_in_group("player")
+	if p == null or p.dead or amount <= 0.0:
+		return
+	var left := nefti_cap() - nefti_room_heal
+	if left <= 0.0:
+		return
+	amount = minf(amount, left)
+	nefti_room_heal += amount
+	var missing: float = p.max_hp - p.hp
+	var excess: float = amount * heal_mult() - missing
+	p.heal(amount)
+	if excess > 0.0 and has("nefti_house"):
+		p.shield = maxf(p.shield, minf(p.shield + excess, val("nefti_house")))
+	Fx.burst(p.global_position + Vector2(0, -12), Boons.god_color("nefti"), 8, 50.0)
+
+
+## Un nemico è caduto (enemy.gd, die): il Lutto, il Banchetto, l'Ala del Nibbio.
+func nefti_on_kill(e: Node) -> void:
+	var p = get_tree().get_first_node_in_group("player")
+	if p == null or p.dead:
+		return
+	var marked: bool = e.mourn_t > 0.0
+	if marked and has("nefti_veil"):
+		var h := val("nefti_veil")
+		if has("duo_nefti_iside") and p.hp < p.max_hp / 3.0:
+			h *= 2.0                          # Le Due Sorelle
+		nefti_heal(h)
+	if e.elite and has("nefti_feast"):
+		nefti_heal(val("nefti_feast"))
+	if marked and has("nefti_kite"):
+		p.refill_dash()
+
+
+## Un colpo d'attacco a segno (player.gd): la Veglia Funebre conta i colpi sotto un terzo della vita.
+func nefti_on_hit() -> void:
+	if not has("nefti_vigil"):
+		return
+	var p = get_tree().get_first_node_in_group("player")
+	if p == null or p.hp >= p.max_hp / 3.0:
+		return
+	nefti_hits += 1
+	if nefti_hits >= 4:
+		nefti_hits = 0
+		nefti_heal(val("nefti_vigil"))
 
 
 func heal_mult() -> float:

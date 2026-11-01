@@ -24,6 +24,7 @@ const GODS_IT := {
 	"horus": {"name": "Horus", "color": Color(0.36, 0.55, 1.0)},
 	"set": {"name": "Set", "color": Color(0.78, 0.25, 0.2)},
 	"anubi": {"name": "Anubi", "color": Color(0.62, 0.56, 0.92)},
+	"nefti": {"name": "Nefti", "color": Color(0.78, 0.84, 0.96)},          # argento e blu notte
 	"duo": {"name": "Doppio", "color": Color(1.0, 0.86, 0.45)},
 }
 
@@ -89,6 +90,17 @@ const ALL_IT := {
 	"duo_horus_thoth": {"god": "duo", "gods": ["horus", "thoth"], "name": "Occhio Risanato", "desc": "Quando l'Occhio di Horus abbatte un nemico, si ricarica all'istante."},
 	# Iside, madre di Horus, curò il figlio nelle paludi del Delta
 	"duo_iside_horus": {"god": "duo", "gods": ["iside", "horus"], "name": "Figlio di Iside", "desc": "Ogni lancio dell'Occhio di Horus che colpisce almeno un nemico ti cura di 2 punti vita."},
+	# Nefti, signora della casa e del lutto: le sue cure vengono dai nemici che cadono (tetto per stanza)
+	"nefti_veil": {"god": "nefti", "name": "Velo del Lutto", "desc": "I tuoi attacchi marchiano i nemici col Lutto; chi muore marchiato ti cura di %d.", "values": [1, 2, 3]},
+	"nefti_vigil": {"god": "nefti", "name": "Veglia Funebre", "desc": "Sotto un terzo della vita, ogni 4 colpi a segno ti curano di %d.", "values": [1, 2, 3]},
+	"nefti_feast": {"god": "nefti", "name": "Banchetto dei Defunti", "desc": "Abbattere un nemico élite ti cura di %d.", "values": [6, 9, 12]},
+	"nefti_house": {"god": "nefti", "name": "Signora della Casa", "desc": "Le cure di Nefti che vanno oltre la vita piena diventano uno scudo, fino a %d.", "values": [10, 15, 20]},
+	"nefti_kite": {"god": "nefti", "name": "Ala del Nibbio", "desc": "Abbattere un nemico marchiato col Lutto ti ricarica subito lo scatto."},
+	"nefti_lament": {"god": "nefti", "name": "Lamento", "desc": "I nemici marchiati col Lutto subiscono il %d%% di danni in più.", "values": [15, 22, 30]},
+	# Iside e Nefti piansero insieme Osiride: le due sorelle, le due nibbie
+	"duo_nefti_iside": {"god": "duo", "gods": ["nefti", "iside"], "name": "Le Due Sorelle", "desc": "Sotto un terzo della vita, le cure del Velo del Lutto raddoppiano."},
+	# Nefti fu madre di Anubi: il figlio guida le anime, la madre le piange
+	"duo_nefti_anubi": {"god": "duo", "gods": ["nefti", "anubi"], "name": "Corteo delle Anime", "desc": "Gli spiriti della Guida delle Anime marchiano col Lutto i nemici che colpiscono."},
 	"duo_anubi_sekhmet": {"god": "duo", "gods": ["anubi", "sekhmet"], "name": "Giudizio della Leonessa", "desc": "Il khopesh abbatte all'istante i nemici sotto il 15% della vita (non i guardiani e i boss)."},
 	"duo_sobek_horus": {"god": "duo", "gods": ["sobek", "horus"], "weapon": "lancia", "name": "Arpione del Coccodrillo", "desc": "Gli affondi della lancia stordiscono per 0,6 secondi i nemici colpiti con la punta (meno i guardiani e i boss)."},
 	"ra_heavy": {"god": "ra", "heavy": true, "name": "Ira del Sole", "desc": "Tutti i tuoi colpi incendiano, e le fiamme fanno il 60% di danni in più.", "cost": "L'Occhio di Horus si ricarica il 50% più lentamente."},
@@ -164,6 +176,11 @@ const REQUIRES := {
 	"duo_sobek_iside": ["iside_wings"],
 	# il dono di Anubi c'è quasi sempre (lo dà all'inizio): serve uno di quelli che riguardano i colpi
 	"duo_anubi_sekhmet": ["anubi_jackal", "anubi_guardian", "anubi_scale", "anubi_guide"],
+	# i doni di Nefti che vivono del marchio del Lutto
+	"nefti_kite": ["nefti_veil"],
+	"nefti_lament": ["nefti_veil"],
+	"duo_nefti_iside": ["nefti_veil"],
+	"duo_nefti_anubi": ["anubi_guide"],
 }
 
 
@@ -213,6 +230,8 @@ static func gods_with_boons(owned: Dictionary, for_room: int = 99) -> Array:
 	for g in GODS:
 		if MIN_ROOM.get(g, 1) > for_room:
 			continue
+		if g == "nefti" and Run.region < 2 and not Meta.nefti_met:
+			continue                      # Nefti si mostra la prima volta nel deserto di Sokar
 		if g != "set" and g != "anubi" and g != "duo" and not offers(g, owned).is_empty():
 			out.append(g)
 	return out
@@ -270,6 +289,14 @@ static func duos_for(god: String, owned: Dictionary) -> Array:
 ## Riassunto breve di ogni dono, mostrato in fondo alla carta: [vantaggio, prezzo].
 ## Il %d prende il valore del livello, come nella descrizione.
 const SHORT_IT := {
+	"nefti_veil": ["Marchiati: +%d vita alla morte", ""],
+	"nefti_vigil": ["Sotto 1/3: +%d ogni 4 colpi", ""],
+	"nefti_feast": ["Élite abbattuto: +%d vita", ""],
+	"nefti_house": ["Cura in più: scudo fino a %d", ""],
+	"nefti_kite": ["Marchiato abbattuto: scatto pronto", ""],
+	"nefti_lament": ["Marchiati: +%d%% danni", ""],
+	"duo_nefti_iside": ["Sotto 1/3: cure del Lutto x2", ""],
+	"duo_nefti_anubi": ["Gli spiriti marchiano", ""],
 	"ra_burn": ["Arma: fuoco %d ogni 0,5 s", ""],
 	"ra_disc": ["Occhio esplode: %d danni", ""],
 	"ra_dawn": ["Scatto ferisce: %d danni", "Scatto -40% più lento"],

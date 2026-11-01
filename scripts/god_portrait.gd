@@ -99,11 +99,29 @@ func _draw_simple() -> void:
 			_croc(bob, eye)
 		"iside":
 			_woman(bob, eye)
+		"nefti":
+			_nefti(bob, eye)
 		"set":
 			_set_animal(bob, eye)
 		_:
 			_jackal(bob, eye)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+## Nefti: una donna con la parrucca blu notte e, sul capo, il suo segno in argento (la casa con il
+## cesto sopra: il suo nome, "Signora della Casa").
+func _nefti(bob: float, eye: Color) -> void:
+	var night := Color(0.12, 0.16, 0.36)
+	_wig(bob, night)
+	draw_circle(Vector2(52, 42 + bob), 12, _skin())
+	draw_colored_polygon(PackedVector2Array([Vector2(62, 42 + bob), Vector2(66, 47 + bob), Vector2(61, 48 + bob)]), _skin())
+	var silver := Color(0.82, 0.86, 0.95)
+	draw_rect(Rect2(40, 26 + bob, 24, 3), silver)
+	_eye_at(Vector2(56, 40 + bob), eye)
+	draw_rect(Rect2(40, 8 + bob, 20, 10), silver)
+	draw_rect(Rect2(40, 8 + bob, 20, 10), Color(0.2, 0.22, 0.3), false, 1.5)
+	draw_colored_polygon(PackedVector2Array([Vector2(42, 8 + bob), Vector2(58, 8 + bob), Vector2(54, 2 + bob), Vector2(46, 2 + bob)]), silver)
+	draw_line(Vector2(46, 2 + bob), Vector2(54, 2 + bob), Color(0.2, 0.22, 0.3), 1.5)
 
 
 func _skin() -> Color:

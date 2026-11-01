@@ -97,6 +97,17 @@ const GODS_IT := {
 		],
 		"idle": ["Ti proteggo io. Tu pensa a vivere.", "Ogni ferita si richiude, prima o poi.", "Ho ricomposto un dio. Posso ricomporre te.", "Non sei solo, Scriba. Non lo sei mai stato.", "Le mie ali coprono anche chi non le vede.", "Torna da me intero. Ho già ricucito abbastanza."],
 	},
+	"nefti": {
+		"name": "Nefti, Signora della Casa",
+		"intro": {"title": "Chi è Nefti", "text": "Solo nella quarta ora mi lascio vedere, Scriba, dove la sabbia seppellisce anche la luce. Io sono Nefti, la Signora della Casa, colei che piange i morti. Ciò che cade davanti a te non è perduto: lo raccolgo, e te lo rendo. D'ora in poi veglierò su di te anche sulle acque di Wernes."},
+		"stories": [
+			{"title": "Le due nibbie", "text": "Quando Osiride fu ucciso, io e mia sorella Iside diventammo due nibbie. Volammo sopra il Fiume, gridando il suo nome, finché non trovammo ogni pezzo del suo corpo. Il nostro pianto è il primo canto funebre che il mondo abbia udito."},
+			{"title": "La sposa di Set", "text": "Mi diedero in sposa a Set, il signore del deserto. Ma il mio cuore stava con chi Set aveva ucciso. Il lutto non sceglie da che parte stare: si posa su tutti, come la notte."},
+			{"title": "Mio figlio", "text": "Anubi è mio figlio. Io lo lasciai nelle paludi, e Iside lo crebbe. Ora lui guida le anime e io le piango. Quando le sue guide colpiscono, il mio velo le segue."},
+			{"title": "Ai piedi della bara", "text": "Sui sarcofagi mi vedrai inginocchiata ai piedi del morto, con le ali aperte. Iside sta alla testa. Fra le due sorelle, nessun morto resta solo nella notte."},
+		],
+		"idle": ["Ogni caduto ti rende qualcosa.", "Il lutto è un dono, se sai riceverlo.", "Raccolgo ciò che cade. Non temere.", "La notte è lunga. Io la conosco tutta.", "Piango per loro, perché tu possa restare in piedi."],
+	},
 	"horus": {
 		"name": "Horus, il Falco",
 		"intro": {"title": "Chi è Horus", "text": "Io sono Horus, il Falco, figlio di Iside e di Osiride. Il mio occhio destro è il sole, il sinistro è la luna. Tu porti in battaglia il mio Occhio, Scriba: lascia che ti insegni a farlo volare."},
@@ -248,7 +259,7 @@ static func codex() -> Array:
 	for i in range(JUDGEMENT.size()):
 		judgement.append(_entry(JUDGEMENT[i], Meta.dialogue_seen.has("giudizio_%d" % i)))
 	out.append({"title": Lang.t("Il giudizio"), "entries": judgement})
-	for god in ["anubi", "ra", "sekhmet", "thoth", "bastet", "sobek", "iside", "horus", "set"]:
+	for god in ["anubi", "ra", "sekhmet", "thoth", "bastet", "sobek", "iside", "horus", "set", "nefti"]:
 		var list := []
 		var entries := _entries(god)
 		for i in range(entries.size()):

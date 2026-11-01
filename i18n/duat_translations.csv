@@ -104,6 +104,7 @@ Iside,Iside,Isis
 Horus,Horus,Horus
 Set,Set,Set
 Anubi,Anubi,Anubis
+Nefti,Nefti,Nephthys
 Doppio,Doppio,Duo
 Colpo Solare,Colpo Solare,Solar Strike
 Il khopesh incendia i nemici: %d danni ogni mezzo secondo per 2 secondi.,Il khopesh incendia i nemici: %d danni ogni mezzo secondo per 2 secondi.,Your khopesh sets enemies ablaze: %d damage every half second for 2 seconds.
@@ -214,6 +215,22 @@ Occhio Risanato,Occhio Risanato,Healed Eye
 "Quando l'Occhio di Horus abbatte un nemico, si ricarica all'istante.","Quando l'Occhio di Horus abbatte un nemico, si ricarica all'istante.","When the Eye of Horus kills an enemy, it recharges instantly."
 Figlio di Iside,Figlio di Iside,Son of Isis
 Ogni lancio dell'Occhio di Horus che colpisce almeno un nemico ti cura di 2 punti vita.,Ogni lancio dell'Occhio di Horus che colpisce almeno un nemico ti cura di 2 punti vita.,Every throw of the Eye of Horus that hits at least one enemy heals you for 2 health.
+Velo del Lutto,Velo del Lutto,Veil of Mourning
+I tuoi attacchi marchiano i nemici col Lutto; chi muore marchiato ti cura di %d.,I tuoi attacchi marchiano i nemici col Lutto; chi muore marchiato ti cura di %d.,Your attacks mark enemies with Mourning; whoever dies marked heals you for %d.
+Veglia Funebre,Veglia Funebre,Funeral Vigil
+"Sotto un terzo della vita, ogni 4 colpi a segno ti curano di %d.","Sotto un terzo della vita, ogni 4 colpi a segno ti curano di %d.","Below a third of your health, every 4 hits that land heal you for %d."
+Banchetto dei Defunti,Banchetto dei Defunti,Feast of the Dead
+Abbattere un nemico élite ti cura di %d.,Abbattere un nemico élite ti cura di %d.,Felling an elite enemy heals you for %d.
+Signora della Casa,Signora della Casa,Lady of the House
+"Le cure di Nefti che vanno oltre la vita piena diventano uno scudo, fino a %d.","Le cure di Nefti che vanno oltre la vita piena diventano uno scudo, fino a %d.","Nephthys' healing beyond full health becomes a shield, up to %d."
+Ala del Nibbio,Ala del Nibbio,Wing of the Kite
+Abbattere un nemico marchiato col Lutto ti ricarica subito lo scatto.,Abbattere un nemico marchiato col Lutto ti ricarica subito lo scatto.,Felling an enemy marked with Mourning instantly recharges your dash.
+Lamento,Lamento,Lament
+I nemici marchiati col Lutto subiscono il %d%% di danni in più.,I nemici marchiati col Lutto subiscono il %d%% di danni in più.,Enemies marked with Mourning take %d%% more damage.
+Le Due Sorelle,Le Due Sorelle,The Two Sisters
+"Sotto un terzo della vita, le cure del Velo del Lutto raddoppiano.","Sotto un terzo della vita, le cure del Velo del Lutto raddoppiano.","Below a third of your health, the healing of the Veil of Mourning doubles."
+Corteo delle Anime,Corteo delle Anime,Procession of Souls
+Gli spiriti della Guida delle Anime marchiano col Lutto i nemici che colpiscono.,Gli spiriti della Guida delle Anime marchiano col Lutto i nemici che colpiscono.,The spirits of the Guide of Souls mark the enemies they strike with Mourning.
 Giudizio della Leonessa,Giudizio della Leonessa,Judgement of the Lioness
 Il khopesh abbatte all'istante i nemici sotto il 15% della vita (non i guardiani e i boss).,Il khopesh abbatte all'istante i nemici sotto il 15% della vita (non i guardiani e i boss).,The khopesh instantly fells enemies below 15% health (not guardians and bosses).
 Arpione del Coccodrillo,Arpione del Coccodrillo,Harpoon of the Crocodile
@@ -256,6 +273,14 @@ Tributo,Tributo,Tribute
 +50% di Ka,+50% di Ka,+50% Ka
 Ira del Deserto,Ira del Deserto,Wrath of the Desert
 Attacchi con il khopesh il 20% più rapidamente,Attacchi con il khopesh il 20% più rapidamente,You attack with the khopesh 20% faster
+Marchiati: +%d vita alla morte,Marchiati: +%d vita alla morte,Marked: +%d health on death
+Sotto 1/3: +%d ogni 4 colpi,Sotto 1/3: +%d ogni 4 colpi,Below 1/3: +%d every 4 hits
+Élite abbattuto: +%d vita,Élite abbattuto: +%d vita,Elite felled: +%d health
+Cura in più: scudo fino a %d,Cura in più: scudo fino a %d,Extra healing: shield up to %d
+Marchiato abbattuto: scatto pronto,Marchiato abbattuto: scatto pronto,Marked felled: dash ready
+Marchiati: +%d%% danni,Marchiati: +%d%% danni,Marked: +%d%% damage
+Sotto 1/3: cure del Lutto x2,Sotto 1/3: cure del Lutto x2,Below 1/3: Mourning heals x2
+Gli spiriti marchiano,Gli spiriti marchiano,Spirits mark
 "Arma: fuoco %d ogni 0,5 s","Arma: fuoco %d ogni 0,5 s",Weapon: fire %d every 0.5 s
 Occhio esplode: %d danni,Occhio esplode: %d danni,Eye explodes: %d damage
 Scatto ferisce: %d danni,Scatto ferisce: %d danni,Dash wounds: %d damage
@@ -1192,6 +1217,22 @@ Ho ricomposto un dio. Posso ricomporre te.,Ho ricomposto un dio. Posso ricomporr
 "Non sei solo, Scriba. Non lo sei mai stato.","Non sei solo, Scriba. Non lo sei mai stato.","You are not alone, Scribe. You never were."
 Le mie ali coprono anche chi non le vede.,Le mie ali coprono anche chi non le vede.,My wings cover even those who cannot see them.
 Torna da me intero. Ho già ricucito abbastanza.,Torna da me intero. Ho già ricucito abbastanza.,Come back to me whole. I have stitched enough already.
+"Nefti, Signora della Casa","Nefti, Signora della Casa","Nephthys, Lady of the House"
+Chi è Nefti,Chi è Nefti,Who is Nephthys
+"Solo nella quarta ora mi lascio vedere, Scriba, dove la sabbia seppellisce anche la luce. Io sono Nefti, la Signora della Casa, colei che piange i morti. Ciò che cade davanti a te non è perduto: lo raccolgo, e te lo rendo. D'ora in poi veglierò su di te anche sulle acque di Wernes.","Solo nella quarta ora mi lascio vedere, Scriba, dove la sabbia seppellisce anche la luce. Io sono Nefti, la Signora della Casa, colei che piange i morti. Ciò che cade davanti a te non è perduto: lo raccolgo, e te lo rendo. D'ora in poi veglierò su di te anche sulle acque di Wernes.","Only in the fourth hour do I let myself be seen, Scribe, where the sand buries even the light. I am Nephthys, Lady of the House, she who mourns the dead. What falls before you is not lost: I gather it, and give it back to you. From now on I will watch over you on the waters of Wernes as well."
+Le due nibbie,Le due nibbie,The two kites
+"Quando Osiride fu ucciso, io e mia sorella Iside diventammo due nibbie. Volammo sopra il Fiume, gridando il suo nome, finché non trovammo ogni pezzo del suo corpo. Il nostro pianto è il primo canto funebre che il mondo abbia udito.","Quando Osiride fu ucciso, io e mia sorella Iside diventammo due nibbie. Volammo sopra il Fiume, gridando il suo nome, finché non trovammo ogni pezzo del suo corpo. Il nostro pianto è il primo canto funebre che il mondo abbia udito.","When Osiris was slain, my sister Isis and I became two kites. We flew above the River, crying his name, until we found every piece of his body. Our lament is the first funeral song the world ever heard."
+La sposa di Set,La sposa di Set,The bride of Set
+"Mi diedero in sposa a Set, il signore del deserto. Ma il mio cuore stava con chi Set aveva ucciso. Il lutto non sceglie da che parte stare: si posa su tutti, come la notte.","Mi diedero in sposa a Set, il signore del deserto. Ma il mio cuore stava con chi Set aveva ucciso. Il lutto non sceglie da che parte stare: si posa su tutti, come la notte.","They gave me as bride to Set, lord of the desert. But my heart was with the one Set had slain. Mourning does not choose a side: it settles on all, like the night."
+Mio figlio,Mio figlio,My son
+"Anubi è mio figlio. Io lo lasciai nelle paludi, e Iside lo crebbe. Ora lui guida le anime e io le piango. Quando le sue guide colpiscono, il mio velo le segue.","Anubi è mio figlio. Io lo lasciai nelle paludi, e Iside lo crebbe. Ora lui guida le anime e io le piango. Quando le sue guide colpiscono, il mio velo le segue.","Anubis is my son. I left him in the marshes, and Isis raised him. Now he guides the souls and I mourn them. When his guides strike, my veil follows them."
+Ai piedi della bara,Ai piedi della bara,At the foot of the coffin
+"Sui sarcofagi mi vedrai inginocchiata ai piedi del morto, con le ali aperte. Iside sta alla testa. Fra le due sorelle, nessun morto resta solo nella notte.","Sui sarcofagi mi vedrai inginocchiata ai piedi del morto, con le ali aperte. Iside sta alla testa. Fra le due sorelle, nessun morto resta solo nella notte.","On the sarcophagi you will see me kneeling at the feet of the dead, wings open. Isis stands at the head. Between the two sisters, no dead one remains alone in the night."
+Ogni caduto ti rende qualcosa.,Ogni caduto ti rende qualcosa.,Every fallen one gives you something back.
+"Il lutto è un dono, se sai riceverlo.","Il lutto è un dono, se sai riceverlo.","Mourning is a gift, if you know how to receive it."
+Raccolgo ciò che cade. Non temere.,Raccolgo ciò che cade. Non temere.,I gather what falls. Do not fear.
+La notte è lunga. Io la conosco tutta.,La notte è lunga. Io la conosco tutta.,The night is long. I know all of it.
+"Piango per loro, perché tu possa restare in piedi.","Piango per loro, perché tu possa restare in piedi.","I weep for them, so that you may stay standing."
 "Horus, il Falco","Horus, il Falco","Horus, the Falcon"
 Chi è Horus,Chi è Horus,Who is Horus
 "Io sono Horus, il Falco, figlio di Iside e di Osiride. Il mio occhio destro è il sole, il sinistro è la luna. Tu porti in battaglia il mio Occhio, Scriba: lascia che ti insegni a farlo volare.","Io sono Horus, il Falco, figlio di Iside e di Osiride. Il mio occhio destro è il sole, il sinistro è la luna. Tu porti in battaglia il mio Occhio, Scriba: lascia che ti insegni a farlo volare.","I am Horus, the Falcon, son of Isis and Osiris. My right eye is the sun, my left is the moon. You carry my Eye into battle, Scribe: let me teach you to make it fly."

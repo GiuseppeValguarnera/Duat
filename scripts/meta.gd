@@ -23,6 +23,7 @@ var serpent_wins := 0                 ## volte che hai battuto il Serpente della
 var sokar_seen := false               ## sei arrivato almeno una volta nella terra di Sokar
 var aker_wins := 0                    ## volte che hai battuto Aker (boss di Sokar)
 var serket_wins := 0                  ## volte che hai battuto Serket (guardiana di Sokar)
+var nefti_met := false                ## Nefti si è già mostrata (la prima volta in Sokar, poi anche in Wernes)
 var early_streak := 0                 ## morti di fila entro la stanza 4 (Anubi offre la Piuma di Ma'at)
 var serpent_streak := 0               ## sconfitte di fila contro il Serpente (Anubi offre la Piuma di Ma'at)
 var neith_seen: Array = []            ## battute di Neith già ascoltate
@@ -77,6 +78,7 @@ func _ready() -> void:
 		serpent_wins = cfg.get_value("boss", "serpente", 0)
 		serpent_streak = cfg.get_value("boss", "serpente_di_fila", 0)
 		early_streak = cfg.get_value("piuma", "morti_presto_di_fila", 0)
+		nefti_met = cfg.get_value("storia", "nefti", false)
 		serket_wins = cfg.get_value("boss", "serket", 0)
 		aker_wins = cfg.get_value("boss", "aker", 0)
 		sokar_seen = cfg.get_value("storia", "sokar", false)
@@ -138,6 +140,7 @@ func save() -> void:
 	cfg.set_value("boss", "serpente", serpent_wins)
 	cfg.set_value("boss", "serpente_di_fila", serpent_streak)
 	cfg.set_value("piuma", "morti_presto_di_fila", early_streak)
+	cfg.set_value("storia", "nefti", nefti_met)
 	cfg.set_value("boss", "serket", serket_wins)
 	cfg.set_value("boss", "aker", aker_wins)
 	cfg.set_value("storia", "sokar", sokar_seen)
