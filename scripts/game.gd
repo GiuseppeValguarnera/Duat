@@ -393,11 +393,79 @@ func start_room(reward: Dictionary) -> void:
 	if Meta.feather:
 		horde *= 0.75                             # Piuma di Ma'at: un quarto di nemici in meno
 	var soft := 1 if r <= 2 else 0                # le prime due stanze sono un po' più leggere
+	if Run.region == 2:
+		sokar_types = _sokar_room_types()
 	waves = [_make_wave(roundi((4 + r * 2 - soft) * horde), r >= 3), _make_wave(roundi((3 + r * 2 - soft) * horde), r >= 3)]
 	_spawn_wave(waves.pop_front(), 1.0)
 
 
+## Sokar: i nemici del deserto. Corpo a corpo: sciacalli (in branco), scorpioni (a coppie), guardiani
+## di Sokar, Ba dannati, avvoltoi. A distanza o di supporto: lanciatori di giavellotti, sacerdoti di
+## Sokar, scarabei di Khepri, il Miraggio. [costo, unità, a distanza?, massimo per ondata]
+const SOKAR_KINDS := {
+	"jackal": [4, ["jackal", "jackal", "jackal"], false, 1],
+	"scorpion": [3, ["scorpion", "scorpion"], false, 3],
+	"sokar_guard": [3, ["sokar_guard"], false, 2],
+	"damned_ba": [2, ["damned_ba", "damned_ba"], false, 2],
+	"vulture": [2, ["vulture"], false, 2],
+	"javelin": [2, ["javelin"], true, 2],
+	"sokar_priest": [3, ["sokar_priest"], true, 1],
+	"khepri": [3, ["khepri"], true, 1],
+	"mirage": [3, ["mirage"], true, 1],
+}
+var sokar_types: Array = []              ## i tipi di nemici di questa stanza di Sokar
+
+
+## I tipi di una stanza di Sokar: 2-3 nelle prime due stanze (almeno uno da corpo a corpo), tutti
+## dalla terza.
+func _sokar_room_types() -> Array:
+	var all := SOKAR_KINDS.keys()
+	if Run.room >= 3:
+		return all
+	var melee := all.filter(func(k) -> bool: return not SOKAR_KINDS[k][2])
+	var out := [melee.pick_random()]
+	var rest := all.filter(func(k) -> bool: return k != out[0])
+	rest.shuffle()
+	for i in range(randi_range(1, 2)):
+		out.append(rest[i])
+	return out
+
+
+## Un'ondata di Sokar: composizione casuale tra i tipi della stanza, con i limiti per ondata (1
+## sacerdote, 1 miraggio, 2 giavellotti, un branco di sciacalli...) e almeno metà dei nemici da
+## corpo a corpo.
+func _make_sokar_wave(budget: int) -> Array:
+	var out := []
+	var cnt := {}
+	var melee_n := 0
+	var ranged_n := 0
+	var tries := 0
+	while budget > 0 and tries < 60:
+		tries += 1
+		var k: String = sokar_types.pick_random()
+		var d: Array = SOKAR_KINDS[k]
+		var cost: int = d[0]
+		var units: Array = d[1]
+		var ranged: bool = d[2]
+		if int(cnt.get(k, 0)) >= int(d[3]) or cost > budget + 1:
+			continue
+		if ranged and ranged_n + units.size() > melee_n:
+			continue                       # prima un po' di corpo a corpo
+		cnt[k] = int(cnt.get(k, 0)) + 1
+		out.append_array(units)
+		budget -= cost
+		if ranged:
+			ranged_n += units.size()
+		else:
+			melee_n += units.size()
+	if out.is_empty():
+		out = ["scorpion", "scorpion"]
+	return out
+
+
 func _make_wave(budget: int, allow_priest: bool) -> Array:
+	if Run.region == 2 and not sokar_types.is_empty():
+		return _make_sokar_wave(budget)
 	var out := []
 	var late := Run.room > Run.GUARDIAN_ROOM    # dopo il guardiano arrivano i cobra
 	# i coccodrilli vivono nelle acque di Wernes: solo nelle stanze con una pozza o un canale
