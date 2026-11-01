@@ -20,6 +20,10 @@ var decide_t := 0.0
 var move_dir := Vector2.ZERO
 var aim_dir := Vector2.RIGHT
 var want_attack := false
+var atk_flip := false                   # la combo si fa a colpetti (premi, rilascia): tenere premuto carica
+var charge_hold := 0.0                  # attacco caricato: per quanto tenere ancora premuto
+var charges_used := 0
+var dash_attacks := 0
 var dash_now := false
 var dash_release := false
 var tap_special := false
@@ -445,6 +449,24 @@ func _decide(g, p) -> void:
 				move_dir = (move_dir + (pos - tc).normalized() * 1.5).normalized()
 		if dist < 46.0 and (not (target.is_boss or target.miniboss) or want_range < 100.0):
 			want_attack = true
+		# attacco caricato: il khopesh quando ha attorno tre nemici o un boss vicino, la lancia quando
+		# ne ha almeno due in fila davanti; solo se non c'è nessuno addosso (mentre carichi sei lento)
+		if charge_hold <= 0.0 and p.charge_cd <= 0.0 and not p.charging and p.spear_thrown == null and randf() < 0.5 * skill + 0.1:
+			var close := 0
+			var line := 0
+			var touching := false
+			for e in enemies:
+				var d: float = pos.distance_to(e.global_position)
+				if d < 60.0:
+					close += 1
+				if d < 22.0:
+					touching = true
+				if d < 200.0 and absf(aim_dir.angle_to(e.global_position - pos)) < 0.25:
+					line += 1
+			var good: bool = (close >= 3 or (target.is_boss and dist < 55.0)) if Run.weapon != "lancia" else line >= 2
+			if good and not touching:
+				charge_hold = 1.35
+				charges_used += 1
 		if dist < 300.0 and randf() < cfg["eye"]:
 			tap_special = true
 		if Run.sekhem_ready() and (enemies.size() >= 3 or target.is_boss):
@@ -744,8 +766,20 @@ func _apply(p, real: float) -> void:
 	_axis("move_up", "move_down", dir.y)
 	_axis("aim_left", "aim_right", aim_dir.x)
 	_axis("aim_up", "aim_down", aim_dir.y)
-	if want_attack:
-		Input.action_press("attack")
+	if charge_hold > 0.0:
+		charge_hold -= real
+		Input.action_press("attack")          # tiene premuto: carica (rilascia a carica piena)
+		if p.charge_full or charge_hold <= 0.0:
+			charge_hold = 0.0
+			Input.action_release("attack")
+	elif want_attack:
+		atk_flip = not atk_flip               # colpetti: la combo, senza caricare
+		if atk_flip:
+			if p.after_dash_t > 0.0 or p.dash_t > 0.0:
+				dash_attacks += 1
+			Input.action_press("attack")
+		else:
+			Input.action_release("attack")
 	else:
 		Input.action_release("attack")
 	if dash_now:
@@ -823,7 +857,7 @@ func _finish(g, forced: String = "") -> void:
 		boss_hp = snappedf(g.boss.hp / g.boss.max_hp, 0.01)
 	var data := {
 		"persona": persona, "exp": OS.get_environment("DUAT_EXP"), "tester": OS.get_environment("DUAT_TESTER"), "run_n": OS.get_environment("DUAT_RUN"), "seed": OS.get_environment("DUAT_SEED"), "result": result, "room": Run.room,
-		"music_odd": music_odd, "spirit": {"dmg": Run.val("anubi_guide") if Run.has("anubi_guide") else 0.0, "kills": Run.spirit_kills, "rooms": sp_rooms, "chain_end": sp_chain_end, "chain_end_scarab": sp_chain_end_scarab}, "region": Run.region, "time": snappedf(gt, 0.1), "boss_time": snappedf(boss_time, 0.1), "boss_hp_left": boss_hp,
+		"music_odd": music_odd, "charged": charges_used, "dash_atk": dash_attacks, "spirit": {"dmg": Run.val("anubi_guide") if Run.has("anubi_guide") else 0.0, "kills": Run.spirit_kills, "rooms": sp_rooms, "chain_end": sp_chain_end, "chain_end_scarab": sp_chain_end_scarab}, "region": Run.region, "time": snappedf(gt, 0.1), "boss_time": snappedf(boss_time, 0.1), "boss_hp_left": boss_hp,
 		"max_hp": Run.max_hp, "hp": Run.hp, "dmg_taken": dmg, "healed": snappedf(heals, 1),
 		"kills": Run.kills, "dmg_dealt": int(Run.damage_dealt), "ka": Run.ka,
 		"boons": Run.boons, "blessings": Run.blessings, "curses_left": Run.curses, "choices": choices,

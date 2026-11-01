@@ -8,20 +8,20 @@ class_name Weapons
 const ALL_IT := {
 	"khopesh": {
 		"name": "Khopesh", "short": "KHOPESH", "the": "il khopesh",
-		"desc": "La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.",
+		"desc": "La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte. Attaccando durante lo scatto il fendente è più largo e più lungo; tenendo premuto, un colpo a giro attorno a te.",
 		"lore": "Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.",
 		"aspects": {
 			"faraone": {"name": "Aspetto del Faraone", "desc": "La lama dei re, equilibrata in ogni colpo. +{v}% di danni.", "values": [5, 10, 15], "cost": [0, 1, 2],
 				"lore": "Ramses II la impugna nei rilievi della battaglia di Qadesh, scolpiti sulle pareti di mezzo Egitto."},
 			"montu": {"name": "Aspetto di Montu", "desc": "Il terzo colpo affonda più lontano e fa il {v}% di danni in più.", "values": [35, 50, 70], "cost": [1, 1, 2],
 				"lore": "Montu, il dio falco della guerra di Tebe. I faraoni guerrieri del Medio Regno portavano il suo nome: Mentuhotep, 'Montu è soddisfatto'."},
-			"wepwawet": {"name": "Aspetto di Wepwawet", "desc": "Il primo colpo dopo uno scatto è un fendente circolare che fa il {v}% di danni in più.", "values": [40, 60, 85], "cost": [2, 1, 2],
+			"wepwawet": {"name": "Aspetto di Wepwawet", "desc": "L'attacco in scatto diventa un fendente circolare e fa il {v}% di danni in più.", "values": [40, 60, 85], "cost": [2, 1, 2],
 				"lore": "Wepwawet, lo sciacallo 'che apre le vie'. Il suo stendardo apriva le processioni del re e la strada dei morti verso l'Occidente."},
 		},
 	},
 	"lancia": {
 		"name": "Lancia di Neith", "short": "LANCIA", "the": "la lancia",
-		"desc": "Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Se attacchi subito dopo uno scatto, la lancia affonda il doppio più lontano.",
+		"desc": "Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Attaccando durante lo scatto affondi in corsa e trapassi la fila; tenendo premuto la lanci: trapassa tutti e torna, ma finché non torna sei disarmato.",
 		"lore": "Neith di Sais è tra le dee più antiche: il suo segno, uno scudo con due frecce incrociate, compare già prima dei faraoni. I Greci la confusero con Atena.",
 		"aspects": {
 			"neith": {"name": "Aspetto di Neith", "desc": "La lancia della dea guerriera, come la forgiò. +{v}% di danni.", "values": [5, 10, 15], "cost": [0, 1, 2],

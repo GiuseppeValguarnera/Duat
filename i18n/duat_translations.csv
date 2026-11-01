@@ -56,11 +56,12 @@ La stele misura i tuoi colpi sugli ushabti e sui nemici delle prove,La stele mis
 %s · Prendi: %s,%s · Prendi: %s,%s · Take: %s
 Pausa,Pausa,Pause
 Riprendi,Riprendi,Resume
+Opzioni,Opzioni,Options
 Torna nella Sala del Giudizio,Torna nella Sala del Giudizio,Back to the Hall of Judgement
 "Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.","Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato.","Halt, mortal. This is my courtyard, and whoever enters is measured."
 Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta.,I am Neith of Sais. I was already ancient when Ra opened his eyes for the first time.
 Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama.,You felled the guardian of the gate with a curved sword. It is not enough. Whoever crosses the night must know more than one blade.
-"Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.","Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.","Take this spear. I forged it myself. It strikes from afar, and it does not forgive those who hold it badly. If you attack right after a dash, it thrusts twice as far."
+"Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi mentre scatti, affonda in corsa. E se la tieni stretta e poi la lasci andare, vola e torna da te.","Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi mentre scatti, affonda in corsa. E se la tieni stretta e poi la lasci andare, vola e torna da te.","Take this spear. I forged it myself. It strikes far, and it does not forgive a careless grip. Attack while you dash and it lunges on the run. And if you hold it tight, then let it go, it flies and comes back to you."
 "Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare.","The weapons here are sleeping. The Tears of Isis awaken them: Isis weeps only for the great lords of the night, like Am-heh, when they fall to a weapon that has never touched them. Bring them to my altar."
 "I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.","I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova.","The clay figures are ushabti: they answer for you. Strike them as much as you like. The gate over there lets out the creatures of the Duat, if you want to put yourself to the test."
 Misura la distanza. Poi accorciala.,Misura la distanza. Poi accorciala.,Measure the distance. Then shorten it.
@@ -120,7 +121,7 @@ Ogni 5 nemici abbattuti ti curi di %d punti vita.,Ogni 5 nemici abbattuti ti cur
 Ruggito,Ruggito,Roar
 Il terzo colpo della combo libera un'onda d'urto attorno a te: %d danni.,Il terzo colpo della combo libera un'onda d'urto attorno a te: %d danni.,The third strike of your combo unleashes a shockwave around you: %d damage.
 Balzo della Leonessa,Balzo della Leonessa,Leap of the Lioness
-Il primo colpo dopo uno scatto fa il %d%% di danni in più.,Il primo colpo dopo uno scatto fa il %d%% di danni in più.,Your first strike after a dash deals %d%% more damage.
+L'attacco in scatto (un colpo durante lo scatto o subito dopo) fa il %d%% di danni in più.,L'attacco in scatto (un colpo durante lo scatto o subito dopo) fa il %d%% di danni in più.,The dash attack (a blow during the dash or right after) deals %d%% more damage.
 Sguardo di Thoth,Sguardo di Thoth,Gaze of Thoth
 L'Occhio di Horus trapassa fino a %d nemici.,L'Occhio di Horus trapassa fino a %d nemici.,The Eye of Horus pierces up to %d enemies.
 Calcolo di Thoth,Calcolo di Thoth,Reckoning of Thoth
@@ -150,7 +151,7 @@ La spazzata della lancia fa il %d%% di danni in più e scaglia i nemici il doppi
 Zanna Ricurva,Zanna Ricurva,Curved Fang
 I primi due fendenti del khopesh fanno il %d%% di danni in più.,I primi due fendenti del khopesh fanno il %d%% di danni in più.,The first two slashes of the khopesh deal %d%% more damage.
 Punta Felina,Punta Felina,Feline Point
-L'affondo della lancia dopo uno scatto ha il %d%% di probabilità di essere un colpo critico.,L'affondo della lancia dopo uno scatto ha il %d%% di probabilità di essere un colpo critico.,The spear's thrust after a dash has a %d%% chance to be a critical hit.
+L'attacco in scatto della lancia (l'affondo in corsa) ha il %d%% di probabilità di essere un colpo critico.,L'attacco in scatto della lancia (l'affondo in corsa) ha il %d%% di probabilità di essere un colpo critico.,The spear's dash attack (the running lunge) has a %d%% chance to be a critical hit.
 Danza delle Lame,Danza delle Lame,Dance of Blades
 Il khopesh colpisce il %d%% più rapidamente.,Il khopesh colpisce il %d%% più rapidamente.,The khopesh strikes %d%% faster.
 Filo del Sole,Filo del Sole,Edge of the Sun
@@ -263,7 +264,7 @@ Occhio +%d%% danni e incendia,Occhio +%d%% danni e incendia,Eye +%d%% damage and
 Khopesh +%d%% danni,Khopesh +%d%% danni,Khopesh +%d%% damage
 +%d vita ogni 5 uccisioni,+%d vita ogni 5 uccisioni,+%d health every 5 kills
 3° colpo: onda di %d danni,3° colpo: onda di %d danni,3rd strike: %d damage wave
-Dopo lo scatto +%d%% danni,Dopo lo scatto +%d%% danni,After a dash +%d%% damage
+Attacco in scatto +%d%% danni,Attacco in scatto +%d%% danni,Dash attack +%d%% damage
 Occhio trapassa %d nemici,Occhio trapassa %d nemici,Eye pierces %d enemies
 Occhio ricarica -%d%%,Occhio ricarica -%d%%,Eye recharge -%d%%
 Occhio: %d raggi a ventaglio,Occhio: %d raggi a ventaglio,Eye: %d rays in a fan
@@ -474,7 +475,9 @@ Iside ti ha posato le mani sul capo. Lei conosce il dolore di raccogliere ciò c
 Il Serpente della Porta ti ha fermato ancora. Tre volte di fila.,Il Serpente della Porta ti ha fermato ancora. Tre volte di fila.,The Serpent of the Gate stopped you again. Three times in a row.
 "Ma'at non chiede a tutti di camminare allo stesso passo. A chi inciampa, presta una sua piuma: i colpi pesano meno sul tuo cuore. In cambio, il Duat ti restituisce meno Ka.","Ma'at non chiede a tutti di camminare allo stesso passo. A chi inciampa, presta una sua piuma: i colpi pesano meno sul tuo cuore. In cambio, il Duat ti restituisce meno Ka.","Ma'at does not ask everyone to walk at the same pace. To those who stumble, she lends one of her feathers: blows weigh less on your heart. In exchange, the Duat gives you back less Ka."
 Non è una vergogna accettarla. È una vergogna non provare. Vuoi la piuma?,Non è una vergogna accettarla. È una vergogna non provare. Vuoi la piuma?,There is no shame in accepting it. The shame is in not trying. Do you want the feather?
-"Sei volte, Scriba. La piuma di Ma'at è ancora qui, se la vuoi. Puoi anche lasciarla quando vuoi, dalle Opzioni.","Sei volte, Scriba. La piuma di Ma'at è ancora qui, se la vuoi. Puoi anche lasciarla quando vuoi, dalle Opzioni.","Six times, Scribe. Ma'at's feather is still here, if you want it. You can also set it down whenever you like, from the Options."
+"Tre volte sei tornato a me prima ancora di vedere la Porta, Scriba.","Tre volte sei tornato a me prima ancora di vedere la Porta, Scriba.","Three times you have returned to me before even seeing the Gate, Scribe."
+"Il Duat non è un sentiero per i soli forti. Ma'at può prestarti una sua piuma: meno nemici ti cercheranno, e più lenti; i loro colpi peseranno meno sul tuo cuore. In cambio le ricompense della notte saranno più povere.","Il Duat non è un sentiero per i soli forti. Ma'at può prestarti una sua piuma: meno nemici ti cercheranno, e più lenti; i loro colpi peseranno meno sul tuo cuore. In cambio le ricompense della notte saranno più povere.","The Duat is not a path for the strong alone. Ma'at can lend you one of her feathers: fewer enemies will seek you, and slower; their blows will weigh less on your heart. In exchange, the night's rewards will be poorer."
+"La piuma si posa e si toglie quando vuoi, dalle Opzioni. Vuoi accoglierla?","La piuma si posa e si toglie quando vuoi, dalle Opzioni. Vuoi accoglierla?","The feather can be laid down and taken up whenever you wish, from the Options. Will you accept it?"
 "Apri gli occhi, Scriba.","Apri gli occhi, Scriba.","Open your eyes, Scribe."
 "Sei morto. Lo sai già, credo. Lo si sente nelle ossa.","Sei morto. Lo sai già, credo. Lo si sente nelle ossa.","You are dead. You know it already, I think. One feels it in the bones."
 "Io sono Anubi, Signore della Terra Sacra, custode della bilancia. Ogni notte peso il cuore dei morti contro la piuma di Ma'at. Il tuo non posso pesarlo.","Io sono Anubi, Signore della Terra Sacra, custode della bilancia. Ogni notte peso il cuore dei morti contro la piuma di Ma'at. Il tuo non posso pesarlo.","I am Anubis, Lord of the Sacred Land, keeper of the scale. Every night I weigh the hearts of the dead against the feather of Ma'at. Yours I cannot weigh."
@@ -649,12 +652,12 @@ Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arriva
 Set ti propone un patto,Set ti propone un patto,Set offers you a pact
 Maledizione di Set: %d stanze,Maledizione di Set: %d stanze,Curse of Set: %d chambers
 %s. Poi: %s,%s. Poi: %s,%s. Then: %s
-Volume,Volume,Volume
 Ricomincia la run,Ricomincia la run,Restart the run
 Torna alla Sala (abbandona),Torna alla Sala (abbandona),Back to the Hall (abandon)
 Esci alla Sala (la discesa resta salvata),Esci alla Sala (la discesa resta salvata),Exit to the Hall (the descent stays saved)
 Esci (la discesa resta salvata),Esci (la discesa resta salvata),Quit (the descent stays saved)
 Esc / Start per riprendere,Esc / Start per riprendere,Esc / Start to resume
+Volume,Volume,Volume
 Indietro,Indietro,Back
 "[center][b][color=#f0b94c]I tuoi doni[/color][/b]   [color=#a89878](%s)[/color][/center]
 
@@ -802,6 +805,7 @@ Tempo %d:%02d,Tempo %d:%02d,Time %d:%02d
   ·  record %d:%02d,  ·  record %d:%02d,  ·  record %d:%02d
 "%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, you have %d)"
 %s · Parla con Mahaf,%s · Parla con Mahaf,%s · Talk to Mahaf
+Entra · %s,Entra · %s,Enter · %s
 Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Left stick move · right aim · RB attack · RT Eye · LB/A dash · LT Divine Form · Select boons · Start pause
 WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD move · mouse aim · left click attack · Space dash · right click Eye · Q Divine Form (after the first boss) · Tab boons · Esc pause · F1 hitbox
 Ureo!,Ureo!,Uraeus!
@@ -827,9 +831,12 @@ La Casa della Vita · amuleti e sfide · entra dalla porta,La Casa della Vita ·
 Il Cortile di Neith · le armi · entra dalla porta,Il Cortile di Neith · le armi · entra dalla porta,The Courtyard of Neith · the weapons · enter through the door
 Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,The Courtyard of Neith · it will open when you have defeated the Serpent of the Gate
 Il cancello del Duat è a nord,Il cancello del Duat è a nord,The gate of the Duat lies to the north
+Aggiornamento del gioco,Aggiornamento del gioco,Game update
+Lascia un commento,Lascia un commento,Leave a comment
+Esci dal gioco,Esci dal gioco,Quit the game
 Servono %d lapislazzuli,Servono %d lapislazzuli,You need %d lapis lazuli
 La piuma di Ma'at,La piuma di Ma'at,The Feather of Ma'at
-"Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka, e il Peso del Cuore non conta. Puoi toglierla quando vuoi dalle Opzioni.","Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka, e il Peso del Cuore non conta. Puoi toglierla quando vuoi dalle Opzioni.","You take 10% less damage, and another 2% less with each death, up to 50%. In exchange you keep only 40% of your Ka, and the Weight of the Heart does not count. You can remove it whenever you like from the Options."
+"Un quarto di nemici in meno, più lenti del 10%, e il 10% di danni in meno (un altro 2% a ogni morte, fino al 30%). In cambio custodisci il 40% del Ka, e lapislazzuli, cuori, serdab e Lacrime valgono la metà. Il Peso del Cuore non conta. La storia va avanti comunque. Puoi toglierla quando vuoi dalle Opzioni.","Un quarto di nemici in meno, più lenti del 10%, e il 10% di danni in meno (un altro 2% a ogni morte, fino al 30%). In cambio custodisci il 40% del Ka, e lapislazzuli, cuori, serdab e Lacrime valgono la metà. Il Peso del Cuore non conta. La storia va avanti comunque. Puoi toglierla quando vuoi dalle Opzioni.","A quarter fewer enemies, 10% slower, and 10% less damage taken (another 2% with each death, up to 30%). In exchange you keep 40% of the Ka, and lapis lazuli, hearts, serdab and Tears are worth half. The Weight of the Heart does not count. The story still moves on. You can remove it whenever you like from the Options."
 Accetto la piuma,Accetto la piuma,I accept the feather
 "No, ci riprovo così","No, ci riprovo così","No, I'll try again as I am"
 "Tocca una voce per leggerla, toccala di nuovo per sceglierla · × per chiudere","Tocca una voce per leggerla, toccala di nuovo per sceglierla · × per chiudere","Tap an entry to read it, tap it again to choose it · × to close"
@@ -865,7 +872,7 @@ Già restaurato.,Già restaurato.,Already restored.
 Premi per restaurarlo: %d lapislazzuli.,Premi per restaurarlo: %d lapislazzuli.,Press to restore it: %d lapis lazuli.
 "Costa %d lapislazzuli: te ne mancano %d. Li lasciano il Serpente della Porta, Am-heh e le stanze segrete.","Costa %d lapislazzuli: te ne mancano %d. Li lasciano il Serpente della Porta, Am-heh e le stanze segrete.","It costs %d lapis lazuli: you need %d more. The Serpent of the Gate, Am-heh and the secret chambers leave them behind."
 Piuma di Ma'at,Piuma di Ma'at,Feather of Ma'at
-"Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva.","Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva.","A mode for those who want help. You take 10% less damage, and another 2% less after each death, up to 50%. In return you store only 40% of your Ka at the end of a descent, and the Weight of the Heart does not count while it is on."
+"Una modalità per chi vuole un aiuto. Un quarto di nemici in meno nelle ondate, nemici più lenti del 10%, e subisci il 10% di danni in meno, un altro 2% a ogni morte, fino al 30%. In cambio custodisci il 40% del Ka, e lapislazzuli, cuori, premi del serdab e Lacrime valgono la metà; niente Lacrime per la prima vittoria con un'arma. Il Peso del Cuore non conta finché è attiva. La storia va avanti comunque.","Una modalità per chi vuole un aiuto. Un quarto di nemici in meno nelle ondate, nemici più lenti del 10%, e subisci il 10% di danni in meno, un altro 2% a ogni morte, fino al 30%. In cambio custodisci il 40% del Ka, e lapislazzuli, cuori, premi del serdab e Lacrime valgono la metà; niente Lacrime per la prima vittoria con un'arma. Il Peso del Cuore non conta finché è attiva. La storia va avanti comunque.","A mode for those who want help. A quarter fewer enemies in the waves, enemies 10% slower, and you take 10% less damage, another 2% with each death, up to 30%. In exchange you keep 40% of the Ka, and lapis lazuli, hearts, serdab rewards and Tears are worth half; no Tears for the first victory with a weapon. The Weight of the Heart does not count while it is active. The story still moves on."
 Scuotimento dello schermo,Scuotimento dello schermo,Screen shake
 La telecamera trema quando colpisci o vieni colpito. Spegnilo se ti dà fastidio agli occhi.,La telecamera trema quando colpisci o vieni colpito. Spegnilo se ti dà fastidio agli occhi.,The camera shakes when you hit or get hit. Turn it off if it bothers your eyes.
 Pausa sui colpi,Pausa sui colpi,Hit pause
@@ -884,9 +891,7 @@ Aggiorna il gioco,Aggiorna il gioco,Update the game
 Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,Scarica l'ultima versione del gioco e la riapre. I tuoi progressi restano: non serve cancellare l'app dalla schermata Home.,Downloads the latest version of the game and reopens it. Your progress stays: there is no need to delete the app from the Home screen.
 Lascia un'opinione,Lascia un'opinione,Leave feedback
 "Cinque domande veloci su cosa ti è piaciuto, cosa ti ha frustrato e dove sei caduto. Ogni risposta finisce davvero nel gioco: si apre una pagina nel browser.","Cinque domande veloci su cosa ti è piaciuto, cosa ti ha frustrato e dove sei caduto. Ogni risposta finisce davvero nel gioco: si apre una pagina nel browser.","Five quick questions on what you liked, what frustrated you and where you fell. Every answer really ends up in the game: it opens a page in your browser."
-Esci dal gioco,Esci dal gioco,Quit the game
 Chiude il gioco. I progressi della Sala sono già salvati.,Chiude il gioco. I progressi della Sala sono già salvati.,Closes the game. Your progress in the Hall is already saved.
-Opzioni,Opzioni,Options
 Esc / Start / B per tornare alla Sala,Esc / Start / B per tornare alla Sala,Esc / Start / B to return to the Hall
 ATTIVA,ATTIVA,ON
 spenta,spenta,off
@@ -1256,6 +1261,7 @@ Ricordi dello scriba,Ricordi dello scriba,Memories of the scribe
 Il giudizio,Il giudizio,The judgement
 Capitolo %d · %s,Capitolo %d · %s,Chapter %d · %s
 Questo papiro è ancora sigillato.,Questo papiro è ancora sigillato.,This scroll is still sealed.
+prima volta con quest'arma,prima volta con quest'arma,first time with this weapon
 "«Io dimoro nel sepolto. Ciò che discende fin qui non si perde: muta forma, come il seme sotto la sabbia.»","«Io dimoro nel sepolto. Ciò che discende fin qui non si perde: muta forma, come il seme sotto la sabbia.»","«I dwell in what is buried. What descends this far is not lost: it changes form, like the seed beneath the sand.»"
 "«Nella quarta ora il sole attraversa il mio corpo e non vi porta luce. Anche la luce, per rinascere, ha bisogno del buio.»","«Nella quarta ora il sole attraversa il mio corpo e non vi porta luce. Anche la luce, per rinascere, ha bisogno del buio.»","«In the fourth hour the sun passes through my body and brings no light. Even light, to be reborn, has need of darkness.»"
 "«Hai varcato l'acqua, ora varchi la terra. Dopo la terra non resta che il cielo.»","«Hai varcato l'acqua, ora varchi la terra. Dopo la terra non resta che il cielo.»","«You have crossed the water; now you cross the earth. After the earth, only the sky remains.»"
@@ -1320,6 +1326,7 @@ SEKHEM,SEKHEM,SEKHEM
 COMPRA,COMPRA,BUY
 ASCOLTA,ASCOLTA,LISTEN
 USA,USA,USE
+ENTRA,ENTRA,ENTER
 PARLA,PARLA,TALK
 Ruota il telefono in orizzontale,Ruota il telefono in orizzontale,Turn your phone sideways
 la levetta sinistra,la levetta sinistra,the left stick
@@ -1345,18 +1352,43 @@ I fantocci azzurri si rompono solo con l'Occhio: %s. Si ricarica da solo (il cer
 Il Ka,Il Ka,Ka
 "Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.","Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.","Pick up the golden light: it is Ka, your life force. It stays yours even if you die: in the Hall you spend it in the Book of the Dead for permanent powers."
 Le porte,Le porte,The Doors
-Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.,Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.,Above every door is its reward. The arrows on the edge point to doors off screen. Go in: the descent begins.
+"Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Avvicinati e premi E (Y sul pad, ENTRA sul telefono): comincia la discesa.","Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Avvicinati e premi E (Y sul pad, ENTRA sul telefono): comincia la discesa.","Above each door is its reward. The arrows at the edge point to doors off screen. Step close and press E (Y on the pad, ENTER on the phone): the descent begins."
 "
 %s: %s","
 %s: %s","
 %s: %s"
 Prezzo: ,Prezzo: ,Price: 
+Normale,Normale,Normal
+Grande,Grande,Large
+Molto grande,Molto grande,Very large
+Volume della musica,Volume della musica,Music volume
+Quanto è forte la musica.,Quanto è forte la musica.,How loud the music is.
+Volume degli effetti,Volume degli effetti,Effects volume
+"Colpi, passi, nemici, ricompense: tutti i suoni tranne la musica.","Colpi, passi, nemici, ricompense: tutti i suoni tranne la musica.","Hits, steps, enemies, rewards: every sound except the music."
+Mira automatica,Mira automatica,Auto-aim
+Con il telefono e con il pad i colpi vanno da soli verso il nemico più vicino. Con il mouse non agisce: si colpisce dove punta il mouse.,Con il telefono e con il pad i colpi vanno da soli verso il nemico più vicino. Con il mouse non agisce: si colpisce dove punta il mouse.,"With the phone and the pad, your blows go by themselves toward the nearest enemy. With the mouse it does nothing: you strike where the mouse points."
+Vibrazione,Vibrazione,Vibration
+Il telefono o il pad vibrano quando vieni colpito e nei colpi più forti.,Il telefono o il pad vibrano quando vieni colpito e nei colpi più forti.,The phone or the pad vibrates when you are hit and on the strongest blows.
+Grandezza del testo,Grandezza del testo,Text size
+"Ingrandisce le scritte delle finestre e dell'interfaccia. Le finestre già aperte cambiano subito, il resto alla prossima stanza.","Ingrandisce le scritte delle finestre e dell'interfaccia. Le finestre già aperte cambiano subito, il resto alla prossima stanza.","Enlarges the text of windows and interface. Windows already open change at once, the rest from the next room."
+Lingua,Lingua,Language
+Italiano o inglese.,Italiano o inglese.,Italian or English.
+Suggerimenti del tutorial,Suggerimenti del tutorial,Tutorial tips
+"I consigli che compaiono le prime volte, in una pergamena a lato dello schermo.","I consigli che compaiono le prime volte, in una pergamena a lato dello schermo.","The advice that appears the first few times, on a scroll at the side of the screen."
+Scossa dello schermo,Scossa dello schermo,Screen shake
+La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.,La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.,The camera shakes on heavy hits. Turn it off if it bothers you.
+Pausa d'impatto,Pausa d'impatto,Hit stop
+Il gioco si ferma per un istante quando un colpo va a segno.,Il gioco si ferma per un istante quando un colpo va a segno.,The game freezes for an instant when a blow lands.
+English,English,English
+ATTIVA  (-%d%% danni),ATTIVA  (-%d%% danni),ACTIVE  (-%d%% damage)
+Tocca le frecce per cambiare · tocca fuori per chiudere,Tocca le frecce per cambiare · tocca fuori per chiudere,Tap the arrows to change · tap outside to close
+Su e giù per scegliere · sinistra e destra per cambiare · Esc / B per chiudere,Su e giù per scegliere · sinistra e destra per cambiare · Esc / B per chiudere,Up and down to choose · left and right to change · Esc / B to close
 ContinueMark,ContinueMark,ContinueMark
 %s · sviluppo,%s · sviluppo,%s · development
 %s/%s ore %s:%s,%s/%s ore %s:%s,%s/%s at %s:%s
 Khopesh,Khopesh,Khopesh
 il khopesh,il khopesh,the khopesh
-La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,The curved sword of the pharaohs. Wide slashes at close range: the third blow of the combo is the strongest.
+"La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte. Attaccando durante lo scatto il fendente è più largo e più lungo; tenendo premuto, un colpo a giro attorno a te.","La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte. Attaccando durante lo scatto il fendente è più largo e più lungo; tenendo premuto, un colpo a giro attorno a te.","The curved sword of the pharaohs. Wide slashes at close range: the third blow of the combo is the strongest. Attack during the dash for a wider, longer slash; hold the button for a blow that sweeps all around you."
 "Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.","Il khopesh nasce da un'ascia da battaglia e prende il nome dalla zampa anteriore di un animale, a cui somiglia. Nelle pitture dei templi il faraone lo riceve dalle mani degli dèi prima della battaglia.","The khopesh comes from a battle axe and takes its name from the foreleg of an animal, which it resembles. In temple paintings the pharaoh receives it from the hands of the gods before battle."
 Aspetto del Faraone,Aspetto del Faraone,Aspect of the Pharaoh
 "La lama dei re, equilibrata in ogni colpo. +{v}% di danni.","La lama dei re, equilibrata in ogni colpo. +{v}% di danni.","The blade of kings, balanced in every blow. +{v}% damage."
@@ -1365,11 +1397,11 @@ Aspetto di Montu,Aspetto di Montu,Aspect of Montu
 Il terzo colpo affonda più lontano e fa il {v}% di danni in più.,Il terzo colpo affonda più lontano e fa il {v}% di danni in più.,The third blow reaches farther and deals {v}% more damage.
 "Montu, il dio falco della guerra di Tebe. I faraoni guerrieri del Medio Regno portavano il suo nome: Mentuhotep, 'Montu è soddisfatto'.","Montu, il dio falco della guerra di Tebe. I faraoni guerrieri del Medio Regno portavano il suo nome: Mentuhotep, 'Montu è soddisfatto'.","Montu, the falcon god of war of Thebes. The warrior pharaohs of the Middle Kingdom bore his name: Mentuhotep, 'Montu is satisfied'."
 Aspetto di Wepwawet,Aspetto di Wepwawet,Aspect of Wepwawet
-Il primo colpo dopo uno scatto è un fendente circolare che fa il {v}% di danni in più.,Il primo colpo dopo uno scatto è un fendente circolare che fa il {v}% di danni in più.,The first blow after a dash is a circular slash that deals {v}% more damage.
+L'attacco in scatto diventa un fendente circolare e fa il {v}% di danni in più.,L'attacco in scatto diventa un fendente circolare e fa il {v}% di danni in più.,The dash attack becomes a circular slash and deals {v}% more damage.
 "Wepwawet, lo sciacallo 'che apre le vie'. Il suo stendardo apriva le processioni del re e la strada dei morti verso l'Occidente.","Wepwawet, lo sciacallo 'che apre le vie'. Il suo stendardo apriva le processioni del re e la strada dei morti verso l'Occidente.","Wepwawet, the jackal 'who opens the ways'. His standard led the king's processions and the road of the dead toward the West."
 LANCIA,LANCIA,SPEAR
 la lancia,la lancia,the spear
-"Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Se attacchi subito dopo uno scatto, la lancia affonda il doppio più lontano.","Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Se attacchi subito dopo uno scatto, la lancia affonda il doppio più lontano.","Long, narrow thrusts to strike from afar; the third blow is a wide sweep. If you attack right after a dash, the spear thrusts twice as far."
+"Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Attaccando durante lo scatto affondi in corsa e trapassi la fila; tenendo premuto la lanci: trapassa tutti e torna, ma finché non torna sei disarmato.","Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Attaccando durante lo scatto affondi in corsa e trapassi la fila; tenendo premuto la lanci: trapassa tutti e torna, ma finché non torna sei disarmato.","Long, narrow thrusts to strike from afar; the third blow is a wide sweep. Attack during the dash to lunge on the run through the whole line; hold the button to throw it: it pierces everything and returns, but until it does you are unarmed."
 "Neith di Sais è tra le dee più antiche: il suo segno, uno scudo con due frecce incrociate, compare già prima dei faraoni. I Greci la confusero con Atena.","Neith di Sais è tra le dee più antiche: il suo segno, uno scudo con due frecce incrociate, compare già prima dei faraoni. I Greci la confusero con Atena.","Neith of Sais is among the most ancient goddesses: her sign, a shield with two crossed arrows, appears even before the pharaohs. The Greeks confused her with Athena."
 Aspetto di Neith,Aspetto di Neith,Aspect of Neith
 "La lancia della dea guerriera, come la forgiò. +{v}% di danni.","La lancia della dea guerriera, come la forgiò. +{v}% di danni.","The spear of the warrior goddess, as she forged it. +{v}% damage."
@@ -1415,6 +1447,17 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce.","Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce.","Yesterday and Tomorrow do not die alone: if you don't finish the second lion within 8 seconds, the first rises again."
+"Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.","Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano.","Take this spear. I forged it myself. It strikes from afar, and it does not forgive those who hold it badly. If you attack right after a dash, it thrusts twice as far."
+Il primo colpo dopo uno scatto fa il %d%% di danni in più.,Il primo colpo dopo uno scatto fa il %d%% di danni in più.,Your first strike after a dash deals %d%% more damage.
+L'affondo della lancia dopo uno scatto ha il %d%% di probabilità di essere un colpo critico.,L'affondo della lancia dopo uno scatto ha il %d%% di probabilità di essere un colpo critico.,The spear's thrust after a dash has a %d%% chance to be a critical hit.
+Dopo lo scatto +%d%% danni,Dopo lo scatto +%d%% danni,After a dash +%d%% damage
+"Sei volte, Scriba. La piuma di Ma'at è ancora qui, se la vuoi. Puoi anche lasciarla quando vuoi, dalle Opzioni.","Sei volte, Scriba. La piuma di Ma'at è ancora qui, se la vuoi. Puoi anche lasciarla quando vuoi, dalle Opzioni.","Six times, Scribe. Ma'at's feather is still here, if you want it. You can also set it down whenever you like, from the Options."
+"Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka, e il Peso del Cuore non conta. Puoi toglierla quando vuoi dalle Opzioni.","Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka, e il Peso del Cuore non conta. Puoi toglierla quando vuoi dalle Opzioni.","You take 10% less damage, and another 2% less with each death, up to 50%. In exchange you keep only 40% of your Ka, and the Weight of the Heart does not count. You can remove it whenever you like from the Options."
+"Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva.","Una modalità per chi vuole un aiuto. Subisci il 10% di danni in meno, e un altro 2% in meno a ogni morte, fino al 50%. In cambio custodisci solo il 40% del Ka a fine discesa, e il Peso del Cuore non conta finché è attiva.","A mode for those who want help. You take 10% less damage, and another 2% less after each death, up to 50%. In return you store only 40% of your Ka at the end of a descent, and the Weight of the Heart does not count while it is on."
+Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.,Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Entra: comincia la discesa.,Above every door is its reward. The arrows on the edge point to doors off screen. Go in: the descent begins.
+La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,La spada ricurva dei faraoni. Fendenti ampi a distanza ravvicinata: il terzo colpo della combinazione è il più forte.,The curved sword of the pharaohs. Wide slashes at close range: the third blow of the combo is the strongest.
+Il primo colpo dopo uno scatto è un fendente circolare che fa il {v}% di danni in più.,Il primo colpo dopo uno scatto è un fendente circolare che fa il {v}% di danni in più.,The first blow after a dash is a circular slash that deals {v}% more damage.
+"Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Se attacchi subito dopo uno scatto, la lancia affonda il doppio più lontano.","Affondi lunghi e stretti per colpire da lontano; il terzo colpo è un'ampia spazzata. Se attacchi subito dopo uno scatto, la lancia affonda il doppio più lontano.","Long, narrow thrusts to strike from afar; the third blow is a wide sweep. If you attack right after a dash, the spear thrusts twice as far."
 Ogni stanza finita senza perdere vita ti dà +%d%% di danni fino alla fine della discesa (al massimo 5 volte).,Ogni stanza finita senza perdere vita ti dà +%d%% di danni fino alla fine della discesa (al massimo 5 volte).,Every chamber you clear without losing health gives you +%d%% damage until the end of the descent (up to 5 times).
 "Un altro segno è tornato nel cartiglio del tuo re: dopo l'ibis, un cerchio segnato da linee. Due geroglifici.","Un altro segno è tornato nel cartiglio del tuo re: dopo l'ibis, un cerchio segnato da linee. Due geroglifici.","Another sign has returned to your king's cartouche: after the ibis, a circle marked with lines. Two hieroglyphs."
 "Thoth dice che potrebbero essere l'inizio di cento nomi diversi. Thoth dice sempre così, quando non sa.","Thoth dice che potrebbero essere l'inizio di cento nomi diversi. Thoth dice sempre così, quando non sa.",Thoth says they could be the beginning of a hundred different names. Thoth always says so when he does not know.

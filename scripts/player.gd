@@ -56,12 +56,34 @@ const SPEAR := [
 	{"range": 52.0, "arc": 34.0, "mult": 1.0, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
 	{"range": 42.0, "arc": 200.0, "mult": 1.6, "cd": 0.46, "lunge": 18.0, "knock": 210.0},
 ]
-## Affondo dopo lo scatto (solo la lancia): lunghissimo e stretto.
+## Attacco in scatto (un colpo durante lo scatto o subito dopo). Lancia: affondo in corsa,
+## lunghissimo e stretto, che trapassa la fila. Khopesh: fendente più largo e più lungo.
 const SPEAR_LUNGE := {"range": 78.0, "arc": 24.0, "mult": 1.5, "cd": 0.32, "lunge": 70.0, "knock": 160.0}
+const KHOPESH_DASH := {"range": 50.0, "arc": 210.0, "mult": 1.5, "cd": 0.3, "lunge": 45.0, "knock": 190.0}
+
+## Attacco caricato: si tiene premuto oltre CHARGE_DELAY, si carica per CHARGE_TIME (camminando
+## più lento), si rilascia a carica piena. Poi CHARGE_CD secondi di ricarica (lo stesso cerchio).
+const CHARGE_DELAY := 0.25
+const CHARGE_TIME := 1.0
+const CHARGE_CD := 2.0
+const CHARGE_SLOW := 0.5
+## Khopesh: il fendente a giro attorno all'eroe.
+const KHOPESH_SPIN := {"range": 58.0, "mult": 3.0, "knock": 260.0}
+## Lancia: il lancio in linea che trapassa tutti e torna (scripts/thrown_spear.gd).
+const SPEAR_THROW := {"mult": 2.4, "back_mult": 1.2, "speed": 430.0, "dist": 210.0, "knock": 150.0}
+const ThrownSpear := preload("res://scripts/thrown_spear.gd")
 
 var hp := 0.0
 var was_wet := false					# per lo schizzo quando entri in acqua
-var after_dash_t := 0.0                 # subito dopo uno scatto: affondo della lancia o fendente di Wepwawet
+var after_dash_t := 0.0                 # subito dopo uno scatto: l'attacco in scatto
+var hold_t := 0.0                       # da quanto tieni premuto "attacca"
+var swing_queued := false               # un tocco arrivato durante la pausa tra due colpi: parte appena può
+var charging := false                   # attacco caricato: stai caricando
+var charge_k := 0.0                     # 0..1
+var charge_full := false
+var charge_cd := 0.0                    # ricarica dopo l'attacco caricato
+var charge_flash_t := 0.0
+var spear_thrown: Node2D = null         # la lancia lanciata: finché non torna sei disarmato
 var spin_swing := false                 # l'ultimo colpo è stato il fendente circolare
 var dead := false
 var facing := Vector2.RIGHT
@@ -152,8 +174,7 @@ func _physics_process(delta: float) -> void:
 
 	if Input.is_action_just_pressed("dash") and can_dash():
 		_start_dash(move)
-	if Input.is_action_pressed("attack") and atk_cd <= 0.0 and dash_t <= 0.0 and not Run.in_hub:
-		_swing()
+	_attack_input(delta)
 	if Input.is_action_just_pressed("special") and eye_ready() and not Run.in_hub:
 		_fire_eye()
 	if Input.is_action_just_pressed("super") and Run.sekhem_ready() and divine_t <= 0.0:
@@ -164,6 +185,8 @@ func _physics_process(delta: float) -> void:
 		_dash_damage()
 	else:
 		var s := speed * Run.move_mult() * (attack_slowdown if atk_t > 0.0 else 1.0)
+		if charging:
+			s *= CHARGE_SLOW                # mentre carichi ti muovi più lento
 		if Run.in_deep(global_position):
 			s *= 0.75                       # l'acqua alta della Porta: si cammina a fatica (lo scatto no)
 		for q in get_tree().get_nodes_in_group("quicksand"):
@@ -187,8 +210,105 @@ func _physics_process(delta: float) -> void:
 	queue_redraw()
 
 
+## "Attacca": un tocco è la combo; tenendo premuto oltre CHARGE_DELAY si carica l'attacco caricato
+## (se non è in ricarica), che parte al rilascio solo a carica piena. Mentre è in ricarica, tenendo
+## premuto la combo si ripete come prima. Con la lancia lanciata sei disarmato.
+func _attack_input(delta: float) -> void:
+	if Run.in_hub:
+		return
+	var armed := spear_thrown == null or not is_instance_valid(spear_thrown)
+	var holding := Input.is_action_pressed("attack")
+	if Input.is_action_just_pressed("attack"):
+		hold_t = 0.0
+		swing_queued = armed
+	if holding:
+		hold_t += delta
+	if holding and armed and charge_cd <= 0.0 and dash_t <= 0.0 and hold_t >= CHARGE_DELAY:
+		if not charging:
+			charging = true
+			charge_k = 0.0
+			swing_queued = false
+		charge_k = minf(1.0, charge_k + delta / CHARGE_TIME)
+		if charge_k >= 1.0 and not charge_full:
+			charge_full = true
+			charge_flash_t = 0.25
+			Sfx.play("crit", 0.05)
+			Fx.burst(global_position + Vector2(0, -30), Color(1.0, 0.85, 0.4), 14, 80.0)
+	elif charging and not holding:
+		_release_charge()
+	elif not charging and armed and atk_cd <= 0.0 and dash_t <= 0.0:
+		if swing_queued or (holding and charge_cd > 0.0):
+			swing_queued = false
+			_swing()
+	if not holding:
+		hold_t = 0.0
+
+
+func _release_charge() -> void:
+	charging = false
+	charge_k = 0.0
+	if not charge_full:
+		return                              # rilasciato prima del pieno: annullato
+	charge_full = false
+	charge_cd = CHARGE_CD
+	_charged_attack()
+
+
+## L'attacco caricato, nella direzione del momento del rilascio (con la mira automatica se attiva).
+func _charged_attack() -> void:
+	var spear := Run.weapon == "lancia"
+	var dir := _assisted(aim, 140.0 if spear else 70.0)
+	var base: float = attack_damage * Run.khopesh_mult() * (1.0 + Run.aspect_val("faraone") / 100.0 + Run.aspect_val("neith") / 100.0)
+	if divine_t > 0.0:
+		base *= divine_damage_mult
+	swing_dir = dir
+	Fx.shake(7.0)
+	if spear:
+		var sp := ThrownSpear.new()
+		sp.dir = dir
+		sp.player = self
+		sp.dmg_out = base * SPEAR_THROW["mult"]
+		sp.dmg_back = base * SPEAR_THROW["back_mult"]
+		sp.speed = SPEAR_THROW["speed"]
+		sp.max_dist = SPEAR_THROW["dist"]
+		sp.knock = SPEAR_THROW["knock"] * Run.knock_mult()
+		get_parent().add_child(sp)
+		sp.global_position = global_position + Vector2(0, -8) + dir * 10.0
+		spear_thrown = sp
+		Sfx.play("swing", 0.0)
+		knock = -dir * 40.0
+		return
+	# khopesh: il fendente a giro
+	atk_t = 0.2
+	atk_cd = 0.3
+	swing_range = KHOPESH_SPIN["range"]
+	swing_arc = TAU
+	swing_index = 2
+	spin_swing = true
+	Sfx.play("swing", 0.0)
+	Fx.burst(global_position + Vector2(0, -8), Color(1.0, 0.88, 0.5), 30, 160.0)
+	var hit_any := false
+	for j in get_tree().get_nodes_in_group("breakables"):
+		if not j.broken and global_position.distance_to(j.global_position) < swing_range + 8.0:
+			j.smash()
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if e.dead:
+			continue
+		var to: Vector2 = e.global_position - global_position
+		if to.length() > swing_range + e.radius:
+			continue
+		var crit := Run.roll_crit(Run.khopesh_crit_chance())
+		e.take_hit(base * KHOPESH_SPIN["mult"] * crit, to.normalized(), KHOPESH_SPIN["knock"] * Run.knock_mult(), Run.khopesh_burns())
+		Fx.impact(e.global_position + Vector2(0, -e.radius) - to.normalized() * e.radius * 0.6, to.normalized(), true)
+		hit_any = true
+	if hit_any:
+		Fx.hitstop(0.1)
+
+
 func _tick(delta: float) -> void:
 	after_dash_t = maxf(0.0, after_dash_t - delta)
+	charge_cd = maxf(0.0, charge_cd - delta)
+	charge_flash_t = maxf(0.0, charge_flash_t - delta)
 	var dash_ending := dash_t > 0.0 and dash_t <= delta
 	dash_t = maxf(0.0, dash_t - delta)
 	if dash_ending:
@@ -277,6 +397,9 @@ func _start_dash(move: Vector2) -> void:
 	dash_dir = move.normalized() if move.length() > 0.15 else facing
 	dash_t = dash_time
 	dash_charges -= 1
+	charging = false                 # lo scatto interrompe il caricamento
+	charge_k = 0.0
+	charge_full = false
 	dash_gap_t = dash_time + DASH_GAP
 	dash_cd = dash_cd_max()          # la pausa riparte da ogni scatto: conta dall'ultimo
 	invuln_t = maxf(invuln_t, dash_time + 0.05)
@@ -328,11 +451,15 @@ func _swing() -> void:
 	var c: Dictionary = table[combo]
 	swing_index = combo
 	spin_swing = false
-	# subito dopo uno scatto: la lancia affonda lontanissimo, il khopesh di Wepwawet gira su se stesso
-	var lunging := after_dash_t > 0.0 and spear
-	if lunging:
-		c = SPEAR_LUNGE
-	combo = (combo + 1) % table.size()
+	# l'attacco in scatto (durante lo scatto o subito dopo): la lancia affonda in corsa e trapassa la
+	# fila, il khopesh fa un fendente più largo e più lungo. Non fa avanzare la combo.
+	var dash_atk := after_dash_t > 0.0
+	var lunging := dash_atk and spear
+	if dash_atk:
+		c = SPEAR_LUNGE if spear else KHOPESH_DASH
+		swing_index = 3
+	else:
+		combo = (combo + 1) % table.size()
 	combo_window = 0.55
 	atk_t = 0.14
 	atk_cd = c["cd"] * Run.attack_speed_mult()
@@ -358,14 +485,22 @@ func _swing() -> void:
 			atk_cd /= 1.0 + Run.val("bastet_dance") / 100.0
 	elif sweep and Run.has("sobek_tail"):
 		aspect_mult *= 1.0 + Run.val("sobek_tail") / 100.0
-	if after_dash_t > 0.0 and Run.aspect == "wepwawet":
+	# Aspetto di Wepwawet: l'attacco in scatto del khopesh diventa un fendente circolare, più forte
+	if dash_atk and not spear and Run.aspect == "wepwawet":
 		swing_arc = TAU
-		swing_range = 42.0
 		aspect_mult *= 1.0 + Run.aspect_val("wepwawet") / 100.0
 		spin_swing = true
 		Fx.burst(global_position + Vector2(0, -8), Color(0.62, 0.56, 0.92), 14, 90.0)
+	elif dash_atk and not spear:
+		Fx.burst(global_position + Vector2(0, -8) + aim * 16.0, Color(0.98, 0.86, 0.45), 8, 70.0)
 	after_dash_t = 0.0
-	swing_dir = _assisted(aim, swing_range + 24.0)
+	# l'attacco in scatto va nella direzione dello scatto (con la mira automatica il nemico più
+	# vicino può essere già alle tue spalle: lo scatto attraversa i nemici); mouse e levetta destra
+	# decidono loro
+	var base_dir := aim
+	if dash_atk and Fx.device != "mouse" and Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() <= 0.3 and dash_dir != Vector2.ZERO:
+		base_dir = dash_dir
+	swing_dir = _assisted(base_dir, swing_range + 24.0)
 	Sfx.play("swing", 0.15)
 	if lunging:
 		# l'affondo dopo lo scatto si deve vedere: scia dorata lungo la lancia
@@ -376,9 +511,10 @@ func _swing() -> void:
 	var dmg: float = attack_damage * Run.khopesh_mult() * c["mult"] * Run.combo_mult(swing_index) * aspect_mult
 	if divine_t > 0.0:
 		dmg *= divine_damage_mult
-	if leap_ready:
+	# Balzo della Leonessa: potenzia l'attacco in scatto
+	if dash_atk and Run.has("sekhmet_leap"):
 		dmg *= 1.0 + Run.val("sekhmet_leap") / 100.0
-		leap_ready = false
+	leap_ready = false
 
 	var hit_any := false
 	# giare d'olio a portata di lama
@@ -415,7 +551,7 @@ func _swing() -> void:
 			var kb: float = c["knock"] * Run.knock_mult() * (2.0 if sweep and Run.has("sobek_tail") else 1.0)
 			e.take_hit(hit_dmg, to.normalized(), kb, Run.khopesh_burns())
 			# scintilla dove la lama tocca: sul bordo del nemico rivolto verso di te
-			var heavy_hit := swing_index == 2 or lunging or crit > 1.0
+			var heavy_hit := swing_index >= 2 or crit > 1.0
 			Fx.impact(e.global_position + Vector2(0, -e.radius) - to.normalized() * e.radius * 0.6, to.normalized(), heavy_hit)
 			if spear and swing_index == 2 and Run.aspect == "khonsu" and not e.dead:
 				e.stagger_t = maxf(e.stagger_t, Run.aspect_val("khonsu") * (0.3 if (e.is_boss or e.miniboss) else 1.0))
@@ -435,7 +571,7 @@ func _swing() -> void:
 	if swing_index == 2 and Run.has("sekhmet_roar"):
 		_shockwave(46.0, Run.val("sekhmet_roar") * Run.all_damage_mult(), 200.0, Boons.god_color("sekhmet"))
 	if hit_any:
-		var heavy := swing_index == 2 or lunging
+		var heavy := swing_index >= 2
 		Fx.shake(3.0 if not heavy else 6.0)
 		Fx.hitstop(0.045 if not heavy else 0.08)
 		Fx.punch(swing_dir, 2.5 if not heavy else 5.0)
@@ -766,6 +902,26 @@ func _draw_dash_pips() -> void:
 		draw_arc(Vector2(0, 7.5), 9.0 - dash_ready_t * 16.0, 0.0, TAU, 16, Color(1, 0.9, 0.6, dash_ready_t * 3.0), 1.2)
 
 
+## Il cerchio sopra la testa: si riempie mentre carichi l'attacco caricato, lampeggia quando è
+## pieno, e dopo l'uso mostra la ricarica (grigio che torna d'oro).
+func _draw_charge() -> void:
+	var c := Vector2(0, -36)
+	var r := 6.0
+	if charging and hold_t >= CHARGE_DELAY:
+		draw_circle(c, r + 1.5, Color(0, 0, 0, 0.45))
+		draw_arc(c, r, -PI / 2.0, -PI / 2.0 + TAU * charge_k, 24, Color(1.0, 0.85, 0.4, 0.95), 2.5)
+		if charge_full:
+			var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 60.0)
+			draw_circle(c, r - 1.5, Color(1.0, 0.92, 0.6, 0.5 + 0.4 * pulse))
+			draw_arc(c, r + 2.5 + pulse * 1.5, 0.0, TAU, 24, Color(1.0, 0.9, 0.5, 0.7), 1.2)
+		if charge_flash_t > 0.0:
+			draw_circle(c, r + 8.0 * (1.0 - charge_flash_t / 0.25), Color(1, 1, 0.8, charge_flash_t * 2.0))
+	elif charge_cd > 0.0:
+		var k := 1.0 - charge_cd / CHARGE_CD
+		draw_circle(c, r + 1.5, Color(0, 0, 0, 0.35))
+		draw_arc(c, r, -PI / 2.0, -PI / 2.0 + TAU * k, 24, Color(0.6, 0.6, 0.65, 0.8), 2.0)
+
+
 func _draw() -> void:
 	if dead:
 		return
@@ -778,6 +934,7 @@ func _draw() -> void:
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 	_draw_dash_pips()
+	_draw_charge()
 	if shield > 0.0:
 		draw_arc(Vector2(0, -12), 15.0, 0.0, TAU, 28, Color(Boons.god_color("iside"), 0.7), 1.5)
 	if divine_t > 0.0:
@@ -802,7 +959,9 @@ func _draw() -> void:
 			var half := minf(swing_arc, PI * 1.2) * 0.5
 			wdir = swing_dir.rotated(side_sign * lerpf(-half, half, ease(swing_k, 0.4)))
 	var hand := Vector2(0, -11 + bob) + wdir * 5.0
-	if Run.weapon == "lancia":
+	if Run.weapon == "lancia" and spear_thrown != null and is_instance_valid(spear_thrown):
+		pass                                # la lancia è in volo: mano vuota
+	elif Run.weapon == "lancia":
 		var reach := 26.0
 		if swing_k >= 0.0:
 			reach = 26.0 + sin(swing_k * PI) * (swing_range - 26.0) * 0.6
@@ -816,6 +975,11 @@ func _draw() -> void:
 	var side := aim.orthogonal() * 4.0
 	draw_colored_polygon(PackedVector2Array([tip + aim * 5.0, tip + side, tip - side]), Color(0.94, 0.72, 0.3, 0.8))
 
+	# il colpo a giro dell'attacco caricato: un'onda d'oro che si allarga fino alla portata
+	if atk_t > 0.0 and spin_swing and swing_arc >= TAU - 0.01:
+		var k := 1.0 - atk_t / 0.2
+		draw_arc(Vector2(0, -4), swing_range * (0.55 + 0.45 * k), 0.0, TAU, 40, Color(1.0, 0.85, 0.4, 0.9 * (1.0 - k)), 4.0)
+		draw_arc(Vector2(0, -4), swing_range * (0.4 + 0.45 * k), 0.0, TAU, 40, Color(1.0, 0.97, 0.8, 0.6 * (1.0 - k)), 2.0)
 	# fendente: la zona disegnata è esattamente quella che colpisce
 	if atk_t > 0.0:
 		var pts := PackedVector2Array()

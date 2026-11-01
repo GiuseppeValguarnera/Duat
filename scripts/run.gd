@@ -508,6 +508,8 @@ func ka_mult() -> float:
 func combo_mult(index: int) -> float:
 	if not has("anubi_guardian"):
 		return 1.0
+	if index == 3:
+		return 1.0                 # l'attacco in scatto non è un colpo della combo
 	return 1.0 + val("anubi_guardian") / 100.0 if index == 2 else 0.9
 
 

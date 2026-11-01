@@ -37,7 +37,7 @@ const ALL_IT := {
 	"sekhmet_fury": {"god": "sekhmet", "name": "Furia della Leonessa", "desc": "+%d%% ai danni del khopesh.", "values": [20, 30, 40]},
 	"sekhmet_blood": {"god": "sekhmet", "name": "Sete di Sangue", "desc": "Ogni 5 nemici abbattuti ti curi di %d punti vita.", "values": [3, 4, 5]},
 	"sekhmet_roar": {"god": "sekhmet", "name": "Ruggito", "desc": "Il terzo colpo della combo libera un'onda d'urto attorno a te: %d danni.", "values": [10, 14, 18]},
-	"sekhmet_leap": {"god": "sekhmet", "name": "Balzo della Leonessa", "desc": "Il primo colpo dopo uno scatto fa il %d%% di danni in più.", "values": [50, 75, 100]},
+	"sekhmet_leap": {"god": "sekhmet", "name": "Balzo della Leonessa", "desc": "L'attacco in scatto (un colpo durante lo scatto o subito dopo) fa il %d%% di danni in più.", "values": [50, 75, 100]},
 	"thoth_pierce": {"god": "thoth", "name": "Sguardo di Thoth", "desc": "L'Occhio di Horus trapassa fino a %d nemici.", "values": [2, 3, 4]},
 	"thoth_calc": {"god": "thoth", "name": "Calcolo di Thoth", "desc": "L'Occhio di Horus si ricarica il %d%% più in fretta.", "values": [25, 35, 45]},
 	"thoth_tri": {"god": "thoth", "name": "Occhio Moltiplicato", "desc": "L'Occhio di Horus scaglia %d raggi a ventaglio, ognuno con il 60%% dei danni.", "values": [3, 4, 5]},
@@ -55,7 +55,7 @@ const ALL_IT := {
 	# doni che esistono solo per un'arma: compaiono soltanto se la impugni
 	"sobek_tail": {"god": "sobek", "weapon": "lancia", "name": "Colpo di Coda", "desc": "La spazzata della lancia fa il %d%% di danni in più e scaglia i nemici il doppio più lontano.", "values": [25, 35, 45]},
 	"sekhmet_crescent": {"god": "sekhmet", "weapon": "khopesh", "name": "Zanna Ricurva", "desc": "I primi due fendenti del khopesh fanno il %d%% di danni in più.", "values": [20, 30, 40]},
-	"bastet_point": {"god": "bastet", "weapon": "lancia", "name": "Punta Felina", "desc": "L'affondo della lancia dopo uno scatto ha il %d%% di probabilità di essere un colpo critico.", "values": [35, 50, 65]},
+	"bastet_point": {"god": "bastet", "weapon": "lancia", "name": "Punta Felina", "desc": "L'attacco in scatto della lancia (l'affondo in corsa) ha il %d%% di probabilità di essere un colpo critico.", "values": [35, 50, 65]},
 	"bastet_dance": {"god": "bastet", "weapon": "khopesh", "name": "Danza delle Lame", "desc": "Il khopesh colpisce il %d%% più rapidamente.", "values": [10, 15, 20]},
 	"ra_edge": {"god": "ra", "weapon": "khopesh", "name": "Filo del Sole", "desc": "I fendenti del khopesh arrivano il %d%% più lontano e sono più ampi.", "values": [12, 18, 25]},
 	# Iside: protezione, cure, magia
@@ -277,7 +277,7 @@ const SHORT_IT := {
 	"sekhmet_fury": ["Khopesh +%d%% danni", ""],
 	"sekhmet_blood": ["+%d vita ogni 5 uccisioni", ""],
 	"sekhmet_roar": ["3° colpo: onda di %d danni", ""],
-	"sekhmet_leap": ["Dopo lo scatto +%d%% danni", ""],
+	"sekhmet_leap": ["Attacco in scatto +%d%% danni", ""],
 	"thoth_pierce": ["Occhio trapassa %d nemici", ""],
 	"thoth_calc": ["Occhio ricarica -%d%%", ""],
 	"thoth_tri": ["Occhio: %d raggi a ventaglio", ""],

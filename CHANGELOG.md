@@ -1,3 +1,17 @@
+## In sviluppo · novembre 2026
+
+- attacco caricato (tieni premuto): il khopesh colpisce tutto attorno, la lancia vola, trapassa e torna
+- attacco in scatto per ogni arma: fendente più largo con il khopesh, affondo in corsa con la lancia
+- porte vere: chiuse finché la stanza non è ripulita, si entra con il tasto d'azione
+- menu Opzioni nuovo, raggiungibile dalla pausa ovunque (anche durante la discesa): volumi, mira
+  automatica, vibrazione, grandezza del testo, lingua, tutorial, Piuma di Ma'at
+- Piuma di Ma'at rivista: meno nemici e più lenti, ricompense a metà; Anubi la offre anche a chi
+  cade presto
+- il tutorial in una pergamena piccola a lato dello schermo
+- l'Oasi della quarta ora tra la prima e la seconda regione (seconda regione ancora nascosta)
+- correzioni: colonne e profondità, coccodrilli sotto il pavimento, mira automatica sul telefono,
+  "Esci" sul web, musica dei guardiani, Scettro Was più chiaro
+
 ## 0.1.0 · 26/10/2026
 
 - Prima versione di prova pubblica

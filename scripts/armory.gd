@@ -323,7 +323,7 @@ func _neith_lines() -> Array:
 			Lang.t("Fermati, mortale. Questo è il mio cortile, e chi entra viene misurato."),
 			Lang.t("Io sono Neith di Sais. Ero già antica quando Ra aprì gli occhi per la prima volta."),
 			Lang.t("Hai abbattuto il guardiano della porta con una spada ricurva. Non basta. Chi attraversa la notte deve conoscere più di una lama."),
-			Lang.t("Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi appena dopo uno scatto, affonda il doppio più lontano."),
+			Lang.t("Prendi questa lancia. L'ho forgiata io. Colpisce lontano, e non perdona chi la impugna male. Se attacchi mentre scatti, affonda in corsa. E se la tieni stretta e poi la lasci andare, vola e torna da te."),
 			Lang.t("Le armi qui dormono. Le Lacrime di Iside le risvegliano: Iside piange solo sui grandi signori della notte, come Am-heh, quando cadono sotto un'arma che non li ha mai toccati. Portamele all'altare."),
 			Lang.t("I fantocci d'argilla sono ushabti: rispondono per te. Colpiscili quanto vuoi. La porta laggiù fa uscire le creature del Duat, se vuoi metterti alla prova."),
 		]
