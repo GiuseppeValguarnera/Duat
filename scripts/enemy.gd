@@ -23,6 +23,7 @@ var seed_offset := 0.0
 var contact: Area2D
 var is_boss := false
 var miniboss := false                 ## guardiano a metà discesa: barra in alto invece che sopra la testa
+var sand_shield := 0.0                ## scudo di sabbia del Sacerdote di Sokar: assorbe i colpi prima della vita
 var spirit_depth := 0                 ## Guida delle Anime: 0 = ucciso da te, n = dall'n-esimo spirito della catena
 var elite := false                     ## versione dorata: più grossa, più resistente, lascia più Ka
 const HeartScript := preload("res://scripts/heart_drop.gd")
@@ -292,6 +293,17 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 	dmg *= Run.jackal_mult(hp / max_hp) * _damage_mult()
 	if Run.has("sobek_river") and (sobek_stun_t > 0.0 or _in_tide()):
 		dmg *= 1.0 + Run.val("sobek_river") / 100.0
+	if sand_shield > 0.0:
+		# lo scudo di sabbia del Sacerdote di Sokar prende il colpo per primo
+		var absorbed := minf(sand_shield, dmg)
+		sand_shield -= absorbed
+		dmg -= absorbed
+		Fx.burst(global_position + Vector2(0, -radius), Color(0.85, 0.7, 0.45), 8, 60.0)
+		if sand_shield <= 0.0:
+			Sfx.play_at("orb_pop", global_position, 0.1)
+		if dmg <= 0.0:
+			flash_t = 0.06
+			return
 	hp -= dmg
 	Run.damage_dealt += dmg
 	flash_t = 0.1
@@ -409,6 +421,12 @@ func _draw() -> void:
 		UiStyle.star4(self, sp, 2.0 * (1.0 - k) + 0.6, Color(1.0, 0.9, 0.5, 0.9 * (1.0 - k)))
 	if burn_t > 0.0:
 		draw_circle(Vector2(0, -radius), radius + 3.0, Color(1, 0.5, 0.1, 0.25))
+	if sand_shield > 0.0:
+		# lo scudo di sabbia: granelli che girano attorno al nemico
+		draw_arc(Vector2(0, -radius), radius + 5.0, 0.0, TAU, 20, Color(0.9, 0.75, 0.45, 0.55), 1.6)
+		for i in range(6):
+			var a := t * 2.5 + i * TAU / 6.0
+			draw_circle(Vector2(0, -radius) + Vector2.from_angle(a) * (radius + 5.0), 1.2, Color(0.95, 0.82, 0.55))
 	if mark_t > 0.0:
 		# il segno del falco sopra il nemico
 		var mp := Vector2(0, -radius * 2.6 - 6.0)

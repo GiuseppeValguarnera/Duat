@@ -41,7 +41,7 @@ func _on_area_entered(area: Area2D) -> void:
 func _on_body_entered(body: Node) -> void:
 	if body is StaticBody2D:
 		Fx.burst(global_position, Color(0.85, 0.4, 1.0), 6, 60.0)
-		if style != "dart":
+		if style != "dart" and style != "javelin":
 			Sfx.play_at("orb_pop", global_position, 0.2)
 		_land()
 		queue_free()
@@ -57,6 +57,20 @@ func _land() -> void:
 
 
 func _draw() -> void:
+	if style == "javelin":
+		# il giavellotto del deserto: asta lunga, punta di bronzo, piume rosse in coda
+		var tail := -direction * 18.0
+		draw_line(tail, direction * 2.0, Color(0.12, 0.08, 0.05), 2.6)
+		draw_line(tail, direction * 2.0, Color(0.62, 0.44, 0.24), 1.6)
+		draw_colored_polygon(PackedVector2Array([direction * 8.0, direction * 1.0 + direction.orthogonal() * 2.5, direction * 1.0 - direction.orthogonal() * 2.5]), Color(0.8, 0.55, 0.25))
+		draw_line(tail, tail + direction * 3.0 + direction.orthogonal() * 3.0, Color(0.85, 0.25, 0.15), 1.5)
+		draw_line(tail, tail + direction * 3.0 - direction.orthogonal() * 3.0, Color(0.85, 0.25, 0.15), 1.5)
+		return
+	if style == "sand":
+		draw_circle(Vector2.ZERO, 6.0, Color(0.95, 0.8, 0.5, 0.3))
+		draw_circle(Vector2.ZERO, 3.5, Color(0.9, 0.72, 0.42))
+		draw_circle(Vector2.ZERO, 1.5, Color(1, 0.97, 0.85))
+		return
 	if style == "dart":
 		var back := -direction * 12.0
 		draw_line(back, Vector2.ZERO, Color(0.55, 0.4, 0.22), 2.0)

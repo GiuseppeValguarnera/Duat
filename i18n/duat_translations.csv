@@ -1059,6 +1059,7 @@ La prima piramide. Sei gradoni. Mia. L'ho già detto? Vale la pena ripeterlo.,La
 Un amuleto non combatte al posto tuo. Ti ricorda solo come combattere meglio.,Un amuleto non combatte al posto tuo. Ti ricorda solo come combattere meglio.,An amulet does not fight in your place. It only reminds you how to fight better.
 Hai visto lo scalpellino nella Sala? Bravo artigiano. Un po' lento. Io in quel tempo avrei alzato un tempio.,Hai visto lo scalpellino nella Sala? Bravo artigiano. Un po' lento. Io in quel tempo avrei alzato un tempio.,Have you seen the stonecutter in the Hall? A good craftsman. A little slow. In that time I would have raised a temple.
 "Thoth ha inciso qualcosa di nuovo sulla parete. Una tua impresa, credo. Va' a riscuotere: lasciare un premio sul muro è da maleducati.","Thoth ha inciso qualcosa di nuovo sulla parete. Una tua impresa, credo. Va' a riscuotere: lasciare un premio sul muro è da maleducati.","Thoth has carved something new on the wall. One of your deeds, I believe. Go and collect it: leaving a reward on the wall is rude."
+ROOM,ROOM,ROOM
 "Anubi, il Guardiano","Anubi, il Guardiano","Anubis, the Guardian"
 La bilancia,La bilancia,The scale
 "Prima che tu discenda, Scriba, io ti peso. Ogni mio dono è un piatto della bilancia: ciò che prendi da un lato, lo lasci sull'altro. Così è il giudizio. Così sarà sempre.","Prima che tu discenda, Scriba, io ti peso. Ogni mio dono è un piatto della bilancia: ciò che prendi da un lato, lo lasci sull'altro. Così è il giudizio. Così sarà sempre.","Before you descend, Scribe, I weigh you. Each of my boons is a pan of the scale: what you take on one side, you leave on the other. So is the judgement. So it shall always be."
@@ -1477,7 +1478,6 @@ The First Hour is over. The other hours of the night await you.%s
 %s
 
 Press R (or Start, or tap the screen) to return to the Hall of Judgement"
-ROOM,ROOM,
 Il Divoratore di Milioni,Il Divoratore di Milioni,The Devourer of Millions
 Vive in un lago di fuoco. Il fuoco non entra nell'acqua,Vive in un lago di fuoco. Il fuoco non entra nell'acqua,It lives in a lake of fire. Fire does not enter water
 "Sala del Giudizio
@@ -1764,3 +1764,8 @@ un leone di Aker,un leone di Aker,one of Aker's lions
 la sabbia nera,la sabbia nera,the black sand
 una buca nella sabbia,una buca nella sabbia,a pit in the sand
 il soffio del falco di Sokar,il soffio del falco di Sokar,the breath of the falcon of Sokar
+un lanciatore di giavellotti,un lanciatore di giavellotti,a javelin thrower
+un sacerdote di Sokar,un sacerdote di Sokar,a priest of Sokar
+uno scarabeo di Khepri,uno scarabeo di Khepri,a scarab of Khepri
+la sfera di Khepri,la sfera di Khepri,the sphere of Khepri
+il Miraggio,il Miraggio,the Mirage
