@@ -109,6 +109,9 @@ automatica sul telefono anche camminando (raggio 180, fermo 260); tasto d'azione
 nell'HUD; Guida delle Anime 15; scarabei 90,25. Prove: `crocfloor`, `pillardepth`, `autoaimshot`, `shopbtn`, `blocco1shot`
 (con `DUAT_WEBQUIT=1`). Bot: `music_odd` (stanze con nemici senza musica da battaglia), `spirit` (catene di Anubi),
 `DUAT_ANUBI=Guida_delle_Anime`, `DUAT_GUIDE22=1` (valore vecchio, per confronto).
+Guida delle Anime, 24 partite per versione (stessi semi): a 15 la catena chiude da sola il 10,6% delle stanze (10/94,
+tutte con scarabei) e gli spiriti fanno il 43% delle uccisioni; a 22 l'11,0% e il 44%. Il danno conta poco: gli scarabei
+(12 vita) muoiono comunque e la catena continua. Musica: 0 stanze con nemici senza musica da battaglia in 24 partite.
 
 Dialoghi (Anubi, Imhotep, Neith): `UiStyle.next_talk_page` divide le battute lunghe in pagine a fine frase (≈3 righe sul
 telefono), il riquadro cresce verso l'alto, e un triangolo che pulsa (`UiStyle.ContinueMark`) dice "tocca per continuare".
