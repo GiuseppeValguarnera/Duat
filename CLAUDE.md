@@ -9,14 +9,16 @@ Proprietario: Skizzo (Giuseppe), alle prime armi con il game dev.
 - **Prima di ogni modifica** (sua o tua) discutine e dai considerazioni da esperto; **dalle di nuovo dopo**.
 - È un **brainstorming**: non essere sempre d'accordo. Dì SEMPRE cosa ti convince e cosa no, e proponi alternative. "Sei tu l'esperto, io sono alle prime armi."
 - Solo asset **gratuiti**. Deve funzionare su **PC e telefono** (touch + pad + tastiera).
-- Fix piccoli → piccoli test con i bot. Test grandi (centinaia di partite) **solo di notte**.
+- Bot e screenshot solo se il proprietario li chiede (test grandi, se richiesti, **solo di notte**).
 - Sicurezza: la chiave API di itch.io **non va mai** scritta nel codice o nel progetto.
-- Dopo ogni modifica: test severo → commit → push → deploy web → resoconto in italiano con considerazioni.
+- Dopo ogni modifica: controllo che il progetto si avvii senza errori → commit → push → deploy. Niente screenshot né bot,
+  salvo richiesta esplicita del proprietario: le prove le fa lui giocando. Poi resoconto in italiano con considerazioni.
 
 ## Ambiente (container nuovo)
 ```bash
 bash tools/dev/setup.sh                       # scarica Godot 4.7.2 + modelli Web (in tools/dev/.godot_bin, ignorato da git)
 G=tools/dev/.godot_bin/Godot_v4.7.2-stable_linux.x86_64
+bash tools/dev/check.sh                       # controllo d'avvio dopo ogni modifica: "OK" o gli errori di script
 bash tools/deploy_web.sh $G                   # pubblica la versione web (ramo gh-pages)
 ```
 - Commit con le righe di attribuzione richieste dalla sessione. Push su `main`.
@@ -62,8 +64,10 @@ Coccodrillo: imboscata dall'acqua, riemerge spazientito dopo 6 s (2 s se è l'ul
   iside, ankh, djed (statua esca), was, shen, hathor (sconto 10/25/40%), udjat, kheper. Vedi `scripts/amulets.gd`.
 - **Pesi del Cuore**: due nuovi pesi danno 2 attacchi extra a Serpente e Am-heh.
 - **Rinascita** (`scripts/rebirth.gd`): ba che sale, scarabeo che spinge il sole (saltabile dopo la prima volta), emersione nella Sala.
-- **Piuma di Ma'at** (modalità aiuto, nelle Opzioni): -10% danni +2% a morte fino a 50%, ma solo 40% del Ka e Peso del Cuore spento.
-  Anubi la **offre** dopo 3 sconfitte di fila contro il Serpente (di nuovo a 6) — `Meta.serpent_streak`, beat `piuma1/piuma2`, popup in hub.gd `_offer_feather`.
+- **Piuma di Ma'at** (modalità aiuto, nelle Opzioni): ondate -25%, nemici -10% velocità, -10% danni +2% a morte fino al 30%;
+  Ka al 40%, lapis/cuori/serdab/Lacrime a metà, niente Lacrime "prima volta con l'arma", Peso del Cuore spento.
+  Anubi la **offre** una volta dopo 3 sconfitte di fila col Serpente (`piuma1`) e una dopo 3 morti di fila entro la stanza 4
+  (`piuma3`, `Meta.early_streak`); popup in hub.gd `_offer_feather`.
 
 **Regione 2 – Sokar** (in costruzione, nascosta: `const SOKAR_READY := false` in `scripts/run.gd`).
 Dopo Am-heh la partita continua (porta "regione"). Fatti: passaggio con titolo e barca-serpente, pavimento di sabbia,
@@ -112,6 +116,28 @@ nell'HUD; Guida delle Anime 15; scarabei 90,25. Prove: `crocfloor`, `pillardepth
 Guida delle Anime, 24 partite per versione (stessi semi): a 15 la catena chiude da sola il 10,6% delle stanze (10/94,
 tutte con scarabei) e gli spiriti fanno il 43% delle uccisioni; a 22 l'11,0% e il 44%. Il danno conta poco: gli scarabei
 (12 vita) muoiono comunque e la catena continua. Musica: 0 stanze con nemici senza musica da battaglia in 24 partite.
+
+**Blocco 2 (1/11/2026)**:
+- *Piuma di Ma'at*: ondate ×0,75, nemici normali −10% velocità, sconto danni 10% +2%/morte fino al 30%, Ka 40%,
+  `Run.feather_half()` dimezza per difetto lapis (`Restorations.gain`), cuori, serdab, Lacrime delle sfide; `claim_boss`
+  non dà Lacrime con la Piuma. Offerte di Anubi: `piuma1` (3 sconfitte col Serpente), `piuma3` (`Meta.early_streak`,
+  3 morti di fila entro la stanza 4); tolta `piuma2`. Prova `feathershot`.
+- *Opzioni*: `scripts/ui/options_menu.gd` (OptionsMenu), dalla pausa della partita, da Esc nella Sala (con voci extra),
+  dalla pausa di Casa e Armeria. Volume musica / effetti (`Sfx` ha il cursore "effetti" per tutto tranne la musica),
+  mira automatica (telefono e pad, mai col mouse), vibrazione (`Fx.vibrate`), grandezza del testo (`Fx.apply_text_scale`,
+  `Fx.base_ui`), lingua, tutorial, Piuma, scossa, pausa d'impatto. Prova `optionsshot`.
+- *Porte*: `_seal_doors()` mette 3 porte chiuse in ogni stanza di combattimento; `_add_door` apre quella del lato (o ne
+  crea una) con `open_door()` (battenti animati, `open_k`); si entra solo con interagisci (`door.enter()`,
+  `DOOR_REACH` 46, pulsante ENTRA sul telefono). Prova `doorpush`.
+- *Tutorial*: pergamena a sinistra sotto la barra della vita, 72% di opacità, 5% dello schermo (9% sul telefono). `tutshot`.
+- *Attacchi*: `_attack_input()` in player.gd: tocco = combo (con buffer), tenere premuto oltre 0,25 s carica 1 s
+  (velocità ×0,5, cerchio sopra la testa), rilascio a pieno = attacco caricato, poi 2 s di ricarica. Khopesh: giro
+  (58, ×3); lancia: `scripts/thrown_spear.gd` (×2,4 andata, ×1,2 ritorno, disarmato finché non torna). Attacco in scatto
+  (`after_dash_t`, `swing_index` 3, direzione dello scatto senza levetta/mouse): khopesh 210°/50/×1,5, lancia affondo
+  in corsa. Wepwawet e Balzo della Leonessa potenziano l'attacco in scatto. Bot: combo a colpetti (`atk_flip`), carica
+  con `charge_hold`; risultati `charged`, `dash_atk`. Prova `chargeshot`.
+- `shot.sh` pulisce con un trap anche se interrotto. Nelle prove dei bot dare nomi diversi a righe con stessa persona
+  e seme (condividono cartella e log).
 
 Dialoghi (Anubi, Imhotep, Neith): `UiStyle.next_talk_page` divide le battute lunghe in pagine a fine frase (≈3 righe sul
 telefono), il riquadro cresce verso l'alto, e un triangolo che pulsa (`UiStyle.ContinueMark`) dice "tocca per continuare".
