@@ -13,26 +13,118 @@ static func _pick(lines: Array) -> String:
 	return lines.pick_random()
 
 
+## Le battute di Anubi sulla morte, regione per regione e fascia di stanze. Per aggiungere una
+## regione basta una voce in più: "bands" = [prima stanza, ultima stanza, frasi], più "guardian"
+## (morte contro il guardiano), "boss" (contro il boss), "hazard" (uccisi dal terreno della regione),
+## "win" (il boss della regione battuto). "{piano}" diventa la profondità totale (Run.depth).
+## Le frasi sono dentro una funzione (non una costante) perché Lang.t le traduca.
+const HAZARD_KILLERS := ["fiume", "buca", "falco"]
+
+
+static func death_table() -> Dictionary:
+	return {
+		1: {
+			"bands": [
+				[1, 2, [
+					Lang.t("Così presto, Scriba. La sabbia della clessidra non si è ancora posata."),
+					Lang.t("Il tuo cuore è caduto sulla soglia. Rialzati: anche il sole cade, ogni sera."),
+					Lang.t("Il Duat non concede nulla a chi corre senza guardare."),
+				]],
+				[3, 10, [
+					Lang.t("Piano {piano}. Più lontano di quanto credessi, meno di quanto serva."),
+					Lang.t("Piano {piano}. Il Duat comincia a riconoscere il tuo passo."),
+					Lang.t("Piano {piano}. Le acque di Wernes sono lente, ma non dimenticano chi le attraversa."),
+				]],
+			],
+			"guardian": [
+				Lang.t("Il Serpente della Porta ti ha fermato a metà strada. Ogni porta si apre a chi torna."),
+				Lang.t("Piano {piano}. La Porta di mezzo è stretta come una gola. Respira, e riprova."),
+				Lang.t("Il guardiano della Porta ti ha respinto. Il fiume della notte è lungo, Scriba: non sei il primo."),
+			],
+			"boss": [
+				Lang.t("Hai visto Am-heh in volto. Il Divoratore di Milioni ha contato anche te, stanotte."),
+				Lang.t("Il lago di fuoco ti ha restituito. Am-heh non restituisce mai nulla due volte."),
+				Lang.t("Piano {piano}. Il Divoratore ti ha sentito arrivare dall'acqua. La prossima volta arriverai più leggero."),
+			],
+			"boss_tip": Lang.t("Il fuoco non entra nell'acqua. Quando ulula, cerca una pozza. E quando si ferma a riprendere fiato, colpisci."),
+		},
+		2: {
+			"bands": [
+				[1, 3, [
+					Lang.t("Piano {piano}. Hai appena lasciato le acque, e il deserto ti ha già bevuto."),
+					Lang.t("Le acque di Wernes erano ancora sui tuoi piedi quando la sabbia ti ha preso. Il cammino è lungo, Scriba."),
+					Lang.t("Piano {piano}. La sabbia di Sokar non aspetta che tu impari i suoi passi."),
+				]],
+				[4, 6, [
+					Lang.t("Piano {piano}. Nel cuore del deserto il sole non perdona chi si ferma."),
+					Lang.t("Sei caduto dove la sabbia è più alta. Lì anche le ombre hanno sete."),
+					Lang.t("Piano {piano}. Sokar ti ha guardato a metà del suo regno. I giorni passano: ogni discesa è un passo."),
+				]],
+				[7, 10, [
+					Lang.t("Piano {piano}. L'orizzonte era vicino. La sete, più vicina ancora."),
+					Lang.t("Così vicino alla porta del sole. Nel deserto uccide la stanchezza, Scriba, non la sabbia."),
+					Lang.t("Piano {piano}. Le notti si allungano, i giorni passano. Hai visto l'orizzonte: tornerai a vederlo."),
+				]],
+			],
+			"guardian": [
+				Lang.t("Serket ti ha punto, Scriba. Nella sua mano anche il veleno è una preghiera rovesciata."),
+				Lang.t("Il tempio della dea scorpione ti ha trattenuto. Guarda la sabbia, non lei: è la sabbia che parla."),
+				Lang.t("Piano {piano}. Serket custodisce il mezzo del deserto, e il mezzo è sempre la parte più lunga."),
+			],
+			"boss": [
+				Lang.t("Aker ti ha guardato con entrambi i volti. Ieri ti ha visto cadere; Domani ti vedrà tornare."),
+				Lang.t("Il leone dell'orizzonte non ha fretta. Il sole aspetta da mille anni: può aspettare un'altra notte."),
+				Lang.t("Piano {piano}. Sei arrivato alla porta del sole. Il cammino è lungo, ma ora sai dove finisce."),
+			],
+			"boss_tip": Lang.t("Aker non ha un dietro, ma ha dei fianchi. E dopo ogni grande assalto riprende fiato: è lì che si colpisce."),
+			"hazard": [
+				Lang.t("Non un nemico, Scriba: la terra stessa. In Sokar anche il suolo ha fame."),
+				Lang.t("Ti ha preso il deserto, non una lama. La sabbia nera non odia: inghiotte."),
+				Lang.t("Piano {piano}. Le statue del falco vegliano, la sabbia cede, il fiume nero scorre. Il deserto combatte senza mani."),
+			],
+			"win": [
+				Lang.t("Aker è caduto, e il sole ha tremato. Non è ancora sorto, ma ha ricordato la strada."),
+				Lang.t("Hai attraversato la terra di Sokar. I giorni passano, Scriba, e tu sei ancora in cammino."),
+			],
+		},
+	}
+
+
+## La frase con il piano al posto di {piano}.
+static func _with_depth(line: String, reg: int, rm: int) -> String:
+	return line.replace("{piano}", str(Run.depth(reg, mini(rm, Run.ROOMS_PER_RUN + 1))))
+
+
+## La battuta di morte per regione, stanza e chi ti ha fermato.
+static func death_line(reg: int, rm: int, killer: String, boss: bool) -> Array:
+	var table := death_table()
+	var t: Dictionary = table.get(reg, table[table.keys().max()])
+	if boss:
+		var out := [_with_depth(_pick(t["boss"]), reg, rm)]
+		if t.has("boss_tip"):
+			out.append(t["boss_tip"])
+		return out
+	if killer in HAZARD_KILLERS and t.has("hazard"):
+		return [_with_depth(_pick(t["hazard"]), reg, rm)]
+	if rm == Run.GUARDIAN_ROOM and (killer.begins_with("serpent") or killer in ["serket", "scorpion"]):
+		return [_with_depth(_pick(t["guardian"]), reg, rm)]
+	for band in t["bands"]:
+		if rm >= int(band[0]) and rm <= int(band[1]):
+			return [_with_depth(_pick(band[2]), reg, rm)]
+	return [_with_depth(_pick(t["bands"][-1][2]), reg, rm)]
+
+
 ## 1. Commento su com'è finita l'ultima discesa.
 static func _ending() -> Array:
 	match Meta.last_end:
 		"room":
-			if Meta.last_room <= 2:
-				return [_pick([
-					Lang.t("Così presto, Scriba. La sabbia della clessidra non si è ancora posata."),
-					Lang.t("Il tuo cuore è caduto sulla soglia. Rialzati: anche il sole cade, ogni sera."),
-					Lang.t("Il Duat non concede nulla a chi corre senza guardare."),
-				])]
-			return [_pick([
-				Lang.t("Stanza %d. Più lontano di quanto credessi, meno di quanto serva.") % Meta.last_room,
-				Lang.t("Stanza %d. Il Duat comincia a riconoscere il tuo passo.") % Meta.last_room,
-			])]
+			return death_line(Meta.last_region, Meta.last_room, Meta.last_killer, false)
 		"ammit":
-			return [_pick([
-				Lang.t("Hai visto Am-heh in volto. Il Divoratore di Milioni ha contato anche te, stanotte."),
-				Lang.t("Il lago di fuoco ti ha restituito. Am-heh non restituisce mai nulla due volte."),
-			]), Lang.t("Il fuoco non entra nell'acqua. Quando ulula, cerca una pozza. E quando si ferma a riprendere fiato, colpisci.")]
+			return death_line(Meta.last_region, Meta.last_room, Meta.last_killer, true)
 		"win":
+			var t: Dictionary = death_table().get(Meta.last_region, {})
+			if Meta.last_region >= 2 and t.has("win"):
+				return [_pick(t["win"])]
 			if Meta.ammit_wins <= 1:
 				return [Lang.t("Am-heh è caduto. Il Divoratore di Milioni ha contato i dannati per mille anni, e stanotte ha perso il conto."), Lang.t("Il suo Sekhem ora scorre in te. Quando sarà colmo, lascia che ti trasformi."), Lang.t("Ma la Prima Ora è solo l'inizio. Ammit, la vera Divoratrice, ti aspetta in fondo alla notte, accanto alla mia bilancia.")]
 			return [_pick([

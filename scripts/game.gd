@@ -1618,6 +1618,7 @@ func _abandon_run() -> void:
 	Run.clear_descent()
 	Meta.last_end = "abandon"
 	Meta.last_room = Run.room
+	Meta.last_region = Run.region
 	Run.rebirth = "death"
 	_end_run_summary()
 	get_tree().paused = false
@@ -1731,7 +1732,7 @@ func _on_player_died() -> void:
 	finished = true
 	can_leave = false
 	Run.clear_descent()
-	var where := (Lang.t("Aker, il leone dell'orizzonte") if Run.region == 2 else Lang.t("Am-heh, il Divoratore di Milioni")) if Run.room > Run.ROOMS_PER_RUN else Lang.t("stanza %d di %d") % [Run.room, Run.ROOMS_PER_RUN]
+	var where := (Lang.t("Aker, il leone dell'orizzonte") if Run.region == 2 else Lang.t("Am-heh, il Divoratore di Milioni")) if Run.room > Run.ROOMS_PER_RUN else Lang.t("stanza %d di %d, piano %d") % [Run.room, Run.ROOMS_PER_RUN, Run.depth()]
 	if current_reward.get("kind", "") == "guardian":
 		where = Lang.t("il Serpente della Porta") if Run.region == 1 else Lang.t("Serket, la dea scorpione")
 		if Run.region == 1:
@@ -1742,6 +1743,7 @@ func _on_player_died() -> void:
 	# tre morti di fila entro la stanza 4: Anubi offre la Piuma (una volta sola, dialogue.gd "piuma3")
 	Meta.early_streak = Meta.early_streak + 1 if Run.region == 1 and Run.room <= 4 else 0
 	Meta.last_room = Run.room
+	Meta.last_region = Run.region
 	var killer: String = Lang.t(KILLER_NAMES.get(Run.last_hit, ""))
 	var summary := _end_run_summary()
 	boss_bar.visible = false
@@ -2500,7 +2502,7 @@ func _end_run_summary() -> String:
 	if not finished and Run.last_hit != "":
 		Meta.killers[Run.last_hit] = int(Meta.killers.get(Run.last_hit, 0)) + 1
 	Meta.total_kills += Run.kills
-	Meta.best_room = maxi(Meta.best_room, Run.room)
+	Meta.best_room = maxi(Meta.best_room, Run.depth(Run.region, mini(Run.room, Run.ROOMS_PER_RUN)))
 	Meta.runs += 1
 	Meta.save()
 	var secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
@@ -2529,6 +2531,7 @@ func _victory() -> void:
 	else:
 		extra += (Lang.t("\nCon %s hai già le Lacrime di Aker: prova un'altra arma, o un Peso del Cuore più alto") if Run.region == 2 else Lang.t("\nCon %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto")) % Weapons.ALL[Run.weapon]["the"]
 	Meta.last_end = "win"
+	Meta.last_region = Run.region
 	var head := Lang.t("Hai sconfitto Am-heh!\nLa Prima Ora è superata. Le altre ore della notte ti attendono.")
 	if Run.region == 2:
 		head = Lang.t("Hai sconfitto Aker!\nIeri e Domani sono caduti, ma il sole non è sorto. La notte continua.")

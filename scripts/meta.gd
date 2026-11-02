@@ -32,6 +32,7 @@ var chapters_equipped: Array = []     ## capitoli attivi (limitati da Chapters.s
 var dialogue_seen: Array = []         ## battute di Anubi già ascoltate
 var last_end := ""                    ## com'è finita l'ultima discesa: "room", "ammit", "win"
 var last_room := 0
+var last_region := 1                  ## la regione dell'ultima discesa (con last_room dà il piano: Run.depth)
 var last_killer := ""                 ## chi ti ha ucciso l'ultima volta: "mummy", "scarab", "priest", "ammit", "trappola"
 var last_god := ""                    ## il dio da cui hai preso più doni nell'ultima discesa
 var last_pacts := 0                   ## quanti patti di Set hai stretto nell'ultima discesa
@@ -46,7 +47,7 @@ var restorations: Array = []          ## restauri della Sala già fatti
 var killers := {}                     ## chi ti ha fermato e quante volte (registro dello scriba)
 var god_picks := {}                   ## doni presi da ogni dio, in tutte le discese
 var total_kills := 0
-var best_room := 0                    ## la stanza più lontana raggiunta
+var best_room := 0                    ## il piano più profondo raggiunto (Run.depth: Sokar stanza 4 = 14)
 var best_time := -1                   ## la vittoria più rapida su Am-heh, in secondi
 var casa := false                     ## la Casa della Vita è aperta (30 lapislazzuli, vedi casa.gd)
 var amulets: Array = []               ## amuleti forgiati (amulets.gd)
@@ -92,6 +93,7 @@ func _ready() -> void:
 		dialogue_seen = cfg.get_value("storia", "battute", [])
 		last_end = cfg.get_value("storia", "ultima_fine", "")
 		last_room = cfg.get_value("storia", "ultima_stanza", 0)
+		last_region = cfg.get_value("storia", "ultima_regione", 1)
 		last_killer = cfg.get_value("storia", "ucciso_da", "")
 		last_god = cfg.get_value("storia", "dio_preferito", "")
 		last_pacts = cfg.get_value("storia", "patti", 0)
@@ -157,6 +159,7 @@ func save() -> void:
 	cfg.set_value("storia", "battute", dialogue_seen)
 	cfg.set_value("storia", "ultima_fine", last_end)
 	cfg.set_value("storia", "ultima_stanza", last_room)
+	cfg.set_value("storia", "ultima_regione", last_region)
 	cfg.set_value("storia", "ucciso_da", last_killer)
 	cfg.set_value("storia", "dio_preferito", last_god)
 	cfg.set_value("storia", "patti", last_pacts)

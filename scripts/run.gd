@@ -17,6 +17,16 @@ const SOKAR_READY := true
 var region := 1
 
 
+## La profondità totale della discesa, in piani: (regione - 1) × 10 + stanza. Sokar stanza 4 = 14.
+## La usano Anubi (dialogue.gd), il registro nella Sala e il riepilogo di fine discesa.
+func depth(reg: int = -1, rm: int = -1) -> int:
+	if reg < 0:
+		reg = region
+	if rm < 0:
+		rm = room
+	return (reg - 1) * ROOMS_PER_RUN + rm
+
+
 func max_region() -> int:
 	return 2 if SOKAR_READY or OS.get_environment("DUAT_REGION2") != "" else 1
 

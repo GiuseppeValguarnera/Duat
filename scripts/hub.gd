@@ -1345,7 +1345,7 @@ func _registro() -> Dictionary:
 		"cobra": Lang.t("i cobra"), "serpent": Lang.t("il Serpente della Porta"), "serket": Lang.t("Serket"), "aker": Lang.t("Aker"), "aker_lion": Lang.t("i leoni di Aker"), "aker_pietra": Lang.t("le pietre di Aker"), "aker_raggio": Lang.t("il raggio dell'alba"), "amheh": Lang.t("Am-heh"), "ammit": Lang.t("Ammit"),
 		"trappola": Lang.t("le trappole"), "grata": Lang.t("le grate di fuoco"), "olio": Lang.t("l'olio in fiamme"), "ureo": Lang.t("le statue dell'ureo")}
 	var time_txt := Lang.t("nessuna vittoria ancora") if Meta.best_time < 0 else "%d:%02d" % [floori(Meta.best_time / 60.0), Meta.best_time % 60]
-	var descents := Lang.t("Discese: %d\nVittorie su Am-heh: %d\nSerpenti della Porta battuti: %d\nLa stanza più lontana: %d\nLa vittoria più rapida: %s") % [Meta.runs, Meta.ammit_wins, Meta.serpent_wins, Meta.best_room, time_txt]
+	var descents := Lang.t("Discese: %d\nVittorie su Am-heh: %d\nSerpenti della Porta battuti: %d\nIl piano più profondo: %d\nLa vittoria più rapida: %s") % [Meta.runs, Meta.ammit_wins, Meta.serpent_wins, Meta.best_room, time_txt]
 	var ks := Meta.killers.keys()
 	ks.sort_custom(func(x: Variant, y: Variant) -> bool: return int(Meta.killers[x]) > int(Meta.killers[y]))
 	var killers_txt := ""
