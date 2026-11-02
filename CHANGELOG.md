@@ -1,5 +1,14 @@
 ## In sviluppo · novembre 2026
 
+- alla morte si vede chi ti ha ferito negli ultimi 10 secondi (le prime tre fonti); i danni dal terreno (sabbia nera,
+  veleno, fuoco) colorano i bordi dello schermo e mostrano un'icona accanto alla vita
+- il fiume di sabbia nera ha un bordo chiaro e si esce camminando contro corrente
+- mira assistita della mischia: da fermo colpisci il nemico più vicino, camminando quello davanti a te
+- arco: frecce un po' più forti ma più corte; Horus ora fa rimbalzare le frecce (Ricochet del Falco)
+- l'Occhio di Horus è tutto di Horus (Occhio Moltiplicato, Occhio Penetrante); Thoth rifatto: Prima Parola,
+  Clessidra, Geroglifo Scritto, Lezione dello Scriba, Giudizio di Thoth, Tempo Rubato e due doni doppi nuovi
+- doni pesanti nuovi: Fame dei Defunti (Nefti) e Il Cielo Cade (Shu)
+
 - Aker rifatto da zero: ti dà la caccia, morso in tre colpi, carica che rimbalza, soffio doppio, balzo con onda
   d'urto, raggio dell'alba mentre cammina; a metà si divide in Ieri e Domani che attaccano insieme, con la tenaglia,
   e il sopravvissuto si infuria. L'ira di Aker (Peso del Cuore) ora rende più furiosi i leoni invece di farli rinascere

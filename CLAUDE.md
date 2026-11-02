@@ -165,15 +165,17 @@ del Cortile (come prima, i salvataggi la tengono); **arco** dopo `Meta.serpent_w
 (`Weapons.UNLOCK_COST`, `requirement_met`, `buy`): si compra al piedistallo (gemma che pulsa) o da **Neith nella Sala**
 (`hub.gd` `_neith_here`, `_start_neith`, `_offer_bow`; disegno condiviso in `scripts/neith_art.gd`, `talk_who`).
 Arco (`player.gd` `_bow_shot`, `_bow_aim`,
-`_spawn_arrow`; frecce in `scripts/arrow.gd`, disegno in `scripts/arrow_art.gd`): freccia ogni 0,5 s al 38% di un
-fendente (blocco 9), si ferma al primo nemico, muri e colonne la fermano (raggio sullo strato 1); tiro carico ×1,14 (=3
-frecce) che trapassa tutto, carica 1 s, movimento ×0,65, ricarica **5 s** (eccezione alla regola delle armi); mentre tiri
+`_spawn_arrow`; frecce in `scripts/arrow.gd`, disegno in `scripts/arrow_art.gd`): freccia ogni 0,5 s al 45% di un
+fendente (`BOW_ARROW`, blocco 10), gittata 212 px, si ferma al primo nemico, muri e colonne la fermano (raggio sullo
+strato 1); tiro carico ×3 una freccia, gittata 306, che trapassa tutto, carica 1 s, movimento ×0,65, ricarica **5 s** (eccezione alla regola delle armi); mentre tiri
 ×0,8 (`BOW_FIRE_SLOW`); ventaglio di 3 frecce corte (±18°, 120 px, 38%) alla fine dello scatto; mira: mira assistita
 a 12° (vedi blocco 9). Effetti dei doni al massimo una volta ogni 0,5 s per nemico (`arrow.gd` `FX_GAP`, meta
 `arrow_fx`); lo scudo del guardiano di Sokar para le frecce (`blocks(dir)`, "PARATO"). Unico aspetto: Satet (+5/10/15%).
 Doni `arco_*` (campo `weapon`): Ra fuoco (sostituisce `ra_burn`), Sekhmet tiro carico +30/45/60%, Thoth trapassa 1 (dietro
 60/80/100%), Bastet critico del tiro carico 35/50/65%, Sobek rallenta 20/28/36% per 2 s (`Enemy.slow_t`, conta per
-la Forza del Fiume), Iside scudo 5/7/9 a carica piena (non si somma), Horus frecce che curvano +10/15/20%, Anubi
+la Forza del Fiume), Iside scudo 5/7/9 a carica piena (non si somma), Horus **Ricochet del Falco** (`arco_ricochet`, `RICOCHET` in player.gd:
+1 rimbalzo al 60% / 1 all'80% / 2 all'80%, sul più vicino non colpito entro ¼ dello schermo con visuale libera; con la
+Freccia Sapiente parte quando la freccia si ferma; niente sul tiro carico), Anubi
 (bilancia) 2 frecce a ventaglio −35% ciascuna, Nefti il tiro carico marchia col Lutto (cura 2/3/4), Shu il tiro carico
 spinge (schianto 8/12/16). `Boons.NOT_FOR["arco"]`: niente doni della combo (Ruggito, Morso di Sobek, Custode, Soffio di
 Shu) né Colpo Solare. Battute: ogni dio commenta l'arco la prima volta (`Lore.bow_line`, id `arco_<dio>`), Anubi
@@ -251,15 +253,45 @@ porte di Sokar ora nominano Serket e Aker. Prova: `tools/dev/favorsmoke.gd` (nel
 - *Test armi × regioni* (bot, 64 + 32 partite, nessun valore cambiato): vedi "Dati dei test".
 
 **Blocco 9 (2/11/2026) – Aker, arco, mira assistita, Anubi**. Aker: vedi sopra (Regione 2). Arco: vedi blocco 5.
-*Mira assistita* (`player.gd` `_update_aim`, `_assisted`, `_target_ok`): col mouse spenta; altrimenti corregge solo la
-direzione verso un nemico in un cono davanti a dove guardi o ti muovi (`ASSIST_MELEE` 25°, `ASSIST_BOW` 12°), entro 420
-px e il 70% dello schermo (`ASSIST_SCREEN`), visibile, senza muri/colonne in mezzo (raggio sullo strato 1), mai dietro;
-bersaglio "appiccicoso" finché resta valido (cono ×1,25). Niente previsione né inseguimento. Opzione "Mira assistita".
+*Mira assistita* (rivista nel blocco 10, vedi sotto): arco e Occhio `_assisted` (cono `ASSIST_BOW` 12°, entro il 70%
+dello schermo, visibile, senza muri/colonne in mezzo, mai dietro, bersaglio appiccicoso); mischia `_melee_aim`.
 *Anubi*: profondità `Run.depth(regione, stanza)` = (regione−1)×10 + stanza, usata nelle battute, nel record della Sala
 ("Il piano più profondo", `Meta.best_room` ora è la profondità, `Meta.last_region`) e nel riepilogo ("piano %d").
 Battute di morte in tabella: `dialogue.gd` `death_table()` per regione e fascia (Sokar 1-3, 4-6, 7-9, guardiano, boss,
 consiglio del boss, pericoli `HAZARD_KILLERS` fiume/buca/falco, vittoria), almeno 3 varianti; `death_line(reg, rm,
 killer, boss)`. Per una regione nuova basta aggiungere righe alla tabella.
+
+**Blocco 10 (2/11/2026) – danni in Sokar, mira, arco, Occhio, Thoth, pesanti di Nefti e Shu**.
+- *Registro dei danni* (player.gd `log_damage`, `top_damage`, `LOG_WINDOW` 10 s su `log_clock`): ogni danno con la sua
+  fonte (`Run.last_hit`, veleno con `poison_key`: `scorpion_veleno`, `serket_aura`, `serket_nube`, `serpent_veleno`);
+  alla morte le prime tre fonti (`game.gd` `_damage_sources`, nomi da `KILLER_NAMES`). Anello di fuoco di Am-heh ora
+  `amheh_anello`. *Danno da terreno* (`TERRAIN_KINDS`: fiume, fuoco di Am-heh, olio; e i tick del veleno):
+  `terrain_signal` → bordi colorati e icona al posto dell'ankh (hud_bars.gd `_terrain_edges`, `_terrain_icon`), suono
+  "hurt" basso; niente scossa né pausa d'impatto. Fiume: bordo chiaro che pulsa (`RIM`), contro corrente il
+  trascinamento cala fino al 60% (`RIVER_AGAINST`), all'arrivo di uno scatto niente tick immediato. Valori di danno
+  invariati: fiume 2 ogni 0,5 s (×1,25 = 5/s), veleno 2 ogni 0,6 s (3,3/s, non uccide, continua fuori e nello scatto).
+- *Mira della mischia* (`_melee_aim`, `_melee_pick`, `_attack_base`): da fermo il nemico più vicino a 360° entro portata
+  ×1,3 (`MELEE_ASSIST_REACH`), a pari distanza (±15%) quello verso cui guardi; in movimento/levetta destra/dopo lo scatto
+  cono di 45° (`MELEE_ASSIST_CONE`); visuale libera; bersaglio stabile. Vale per fendenti, frustate, attacco caricato e
+  pastorale (`_hook_target`). Col mouse spenta; opzione "Mira assistita" attiva di base.
+- *Origine dei colpi* (`Boons.ORIGINS`, `Boons.acts_on(id, origine)`, `Run.hit_has`): origini khopesh, lancia, flagello,
+  occhio, freccia; i doni con `weapon` valgono per la loro arma; le frecce (`arrow.gd`, `O := "freccia"`) ricevono solo i
+  doni dell'arco e quelli generali. Occhio Moltiplicato `horus_multi` e Occhio Penetrante `horus_pierce` sono di Horus;
+  tolti Calcolo di Thoth e Parola dello Scriba; doppi `duo_ra_horus`, `duo_horus_bastet`. Id vecchi: `Run.BOON_ALIASES`
+  e `Run.clean_boons` (gli sconosciuti cadono senza errori).
+- *Thoth* (turchese): Prima Parola `thoth_first` 40/60/80% (`Run.first_word`, meta `fw`, boss `fw0`/`fw1` per fase),
+  Clessidra `thoth_hourglass` 1,2/1,6/2 s di -60% (`Run.on_player_hurt`, `hourglass_t`; anche se lo scudo para),
+  Geroglifo Scritto `thoth_glyph` ogni 8 colpi 12/18/24 ai tre più vicini, Lezione dello Scriba `thoth_lesson`
+  (`Run.scribe_lesson`, `lesson_regions` salvato nella discesa; stanza 1 di una regione ≥2 e dopo Am-heh/Aker), raro
+  Giudizio `thoth_judgment` (<12%), pesante Tempo Rubato `thoth_stolen` (-20% nemici e proiettili, -20% danni). Doppi
+  Registro dei Morti `duo_thoth_anubi` (`REQUIRES_ALL`) e Nome Vero `duo_thoth_iside` (scudo 4 fino a 12).
+  `Run.thoth_time()` rallenta `enemy_bolt.gd` e la sfera di Khepri; in enemy.gd tutti i rallentamenti insieme non
+  scendono sotto `MIN_ENEMY_SPEED` 0,35. Colpi del giocatore: `Run.player_hit(e, fx)` (moltiplicatore) e
+  `Run.after_player_hit(e, dir, fx)` in tutti i punti di colpo (fendenti, giro, frustate, pastorale, lancia lanciata,
+  frecce, Occhio).
+- *Pesanti*: Nefti **Fame dei Defunti** `nefti_heavy` (+1 vita a colpo, per le frecce col tetto di 0,5 s; tetto di Nefti
+  20; -20 vita massima), Shu **Il Cielo Cade** `shu_heavy` (ogni colpo spinge a 260, schianti ×2; costo semplice -20% a
+  tutti i danni). Raro e pesante di un dio condividono un posto (`Boons.offers`, `specials` a caso; col Sigillo il raro).
 
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla

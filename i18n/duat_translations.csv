@@ -143,14 +143,20 @@ Ruggito,Ruggito,Roar
 Il terzo colpo della combo libera un'onda d'urto attorno a te: %d danni.,Il terzo colpo della combo libera un'onda d'urto attorno a te: %d danni.,The third strike of your combo unleashes a shockwave around you: %d damage.
 Balzo della Leonessa,Balzo della Leonessa,Leap of the Lioness
 L'attacco in scatto (un colpo durante lo scatto o subito dopo) fa il %d%% di danni in più.,L'attacco in scatto (un colpo durante lo scatto o subito dopo) fa il %d%% di danni in più.,The dash attack (a blow during the dash or right after) deals %d%% more damage.
-Sguardo di Thoth,Sguardo di Thoth,Gaze of Thoth
-L'Occhio di Horus trapassa fino a %d nemici.,L'Occhio di Horus trapassa fino a %d nemici.,The Eye of Horus pierces up to %d enemies.
-Calcolo di Thoth,Calcolo di Thoth,Reckoning of Thoth
-L'Occhio di Horus si ricarica il %d%% più in fretta.,L'Occhio di Horus si ricarica il %d%% più in fretta.,The Eye of Horus recharges %d%% faster.
-Occhio Moltiplicato,Occhio Moltiplicato,Manifold Eye
-"L'Occhio di Horus scaglia %d raggi a ventaglio, ognuno con il 60%% dei danni.","L'Occhio di Horus scaglia %d raggi a ventaglio, ognuno con il 60%% dei danni.","The Eye of Horus casts %d rays in a fan, each dealing 60%% of the damage."
-Parola dello Scriba,Parola dello Scriba,Word of the Scribe
-+%d%% ai danni dell'Occhio di Horus.,+%d%% ai danni dell'Occhio di Horus.,+%d%% Eye of Horus damage.
+Prima Parola,Prima Parola,First Word
+"Il primo colpo che dai a ogni nemico fa il %d%% di danni in più (sui boss, una volta per fase).","Il primo colpo che dai a ogni nemico fa il %d%% di danni in più (sui boss, una volta per fase).","The first hit you land on each enemy deals %d%% more damage (on bosses, once per phase)."
+Clessidra di Thoth,Clessidra di Thoth,Hourglass of Thoth
+"La prima volta in ogni stanza che vieni colpito, nemici e proiettili rallentano del 60%% per %.1f secondi; tu no.","La prima volta in ogni stanza che vieni colpito, nemici e proiettili rallentano del 60%% per %.1f secondi; tu no.","The first time you are hit in each room, enemies and projectiles slow down by 60%% for %.1f seconds; you don't."
+Geroglifo Scritto,Geroglifo Scritto,Written Glyph
+Ogni 8 colpi a segno (armi e Occhio) un geroglifo colpisce i tre nemici più vicini: %d danni.,Ogni 8 colpi a segno (armi e Occhio) un geroglifo colpisce i tre nemici più vicini: %d danni.,Every 8 hits (weapons and Eye) a glyph strikes the three nearest enemies: %d damage.
+Lezione dello Scriba,Lezione dello Scriba,Lesson of the Scribe
+"All'inizio di ogni regione e dopo ogni boss, uno dei tuoi doni a caso sale di un livello (al massimo una volta per regione).","All'inizio di ogni regione e dopo ogni boss, uno dei tuoi doni a caso sale di un livello (al massimo una volta per regione).","At the start of each region and after each boss, one of your boons at random rises one level (at most once per region)."
+Giudizio di Thoth,Giudizio di Thoth,Judgment of Thoth
+I nemici normali sotto il 12% della vita muoiono subito (non élite e boss).,I nemici normali sotto il 12% della vita muoiono subito (non élite e boss).,Normal enemies below 12% health die at once (not elites and bosses).
+Registro dei Morti,Registro dei Morti,Register of the Dead
+Gli spiriti della Guida delle Anime applicano anche la Prima Parola.,Gli spiriti della Guida delle Anime applicano anche la Prima Parola.,The spirits of the Guide of Souls also apply the First Word.
+Nome Vero,Nome Vero,True Name
+La Prima Parola ti dà anche uno scudo di 4 (non si somma oltre 12).,La Prima Parola ti dà anche uno scudo di 4 (non si somma oltre 12).,The First Word also gives you a shield of 4 (it does not stack beyond 12).
 Artigli Affilati,Artigli Affilati,Sharpened Claws
 Il khopesh ha il %d%% di probabilità di fare un colpo critico (danni doppi).,Il khopesh ha il %d%% di probabilità di fare un colpo critico (danni doppi).,Your khopesh has a %d%% chance to land a critical hit (double damage).
 Occhi di Gatto,Occhi di Gatto,Cat's Eyes
@@ -189,8 +195,8 @@ Frecce della Palude,Frecce della Palude,Arrows of the Marsh
 Le frecce rallentano i nemici del %d%% per 2 secondi.,Le frecce rallentano i nemici del %d%% per 2 secondi.,Arrows slow enemies by %d%% for 2 seconds.
 Respiro di Iside,Respiro di Iside,Breath of Isis
 Con l'arco teso a pieno ricevi uno scudo di %d (non si somma).,Con l'arco teso a pieno ricevi uno scudo di %d (non si somma).,With the bow fully drawn you gain a shield of %d (it does not stack).
-Frecce del Falco,Frecce del Falco,Arrows of the Falcon
-Le frecce curvano verso il nemico più vicino e fanno il %d%% di danni in più.,Le frecce curvano verso il nemico più vicino e fanno il %d%% di danni in più.,Arrows curve toward the nearest enemy and deal %d%% more damage.
+Ricochet del Falco,Ricochet del Falco,Falcon's Ricochet
+"Dopo un colpo la freccia rimbalza sul nemico più vicino non ancora colpito, con il %d%% dei danni (al livello 3 rimbalza due volte).","Dopo un colpo la freccia rimbalza sul nemico più vicino non ancora colpito, con il %d%% dei danni (al livello 3 rimbalza due volte).","After a hit the arrow bounces to the nearest enemy it hasn't hit yet, with %d%% of the damage (at level 3 it bounces twice)."
 Faretra dello Sciacallo,Faretra dello Sciacallo,Quiver of the Jackal
 Ogni colpo scocca %d frecce a ventaglio.,Ogni colpo scocca %d frecce a ventaglio.,Each shot looses %d arrows in a fan.
 Ogni freccia fa il 35% di danni in meno.,Ogni freccia fa il 35% di danni in meno.,Each arrow deals 35% less damage.
@@ -230,6 +236,10 @@ Ritorno del Falco,Ritorno del Falco,Return of the Falcon
 "L'Occhio di Horus, finito il volo, torna da te e colpisce di nuovo chi incontra: %d%% dei danni.","L'Occhio di Horus, finito il volo, torna da te e colpisce di nuovo chi incontra: %d%% dei danni.","When its flight ends, the Eye of Horus comes back to you and strikes again whatever it meets: %d%% damage."
 Volo del Falco,Volo del Falco,Flight of the Falcon
 L'Occhio di Horus curva da solo verso il nemico più vicino e fa il %d%% di danni in più.,L'Occhio di Horus curva da solo verso il nemico più vicino e fa il %d%% di danni in più.,The Eye of Horus curves on its own toward the nearest enemy and deals %d%% more damage.
+Occhio Moltiplicato,Occhio Moltiplicato,Manifold Eye
+"L'Occhio di Horus scaglia %d raggi a ventaglio, ognuno con il 60%% dei danni.","L'Occhio di Horus scaglia %d raggi a ventaglio, ognuno con il 60%% dei danni.","The Eye of Horus casts %d rays in a fan, each dealing 60%% of the damage."
+Occhio Penetrante,Occhio Penetrante,Piercing Eye
+L'Occhio di Horus trapassa fino a %d nemici.,L'Occhio di Horus trapassa fino a %d nemici.,The Eye of Horus pierces up to %d enemies.
 Il Sole e la Luna,Il Sole e la Luna,The Sun and the Moon
 L'Occhio di Horus ha %d cariche: puoi lanciarlo più volte di fila.,L'Occhio di Horus ha %d cariche: puoi lanciarlo più volte di fila.,The Eye of Horus has %d charges: you can throw it several times in a row.
 Arpione di Horus,Arpione di Horus,Harpoon of Horus
@@ -252,6 +262,7 @@ Vasi Canopi,Vasi Canopi,Canopic Jars
 Ogni stanza ripulita ti cura di %d punti vita.,Ogni stanza ripulita ti cura di %d punti vita.,Every chamber you clear heals you for %d health.
 -10 vita massima.,-10 vita massima.,-10 max health.
 Apertura della Bocca,Apertura della Bocca,Opening of the Mouth
+L'Occhio di Horus si ricarica il %d%% più in fretta.,L'Occhio di Horus si ricarica il %d%% più in fretta.,The Eye of Horus recharges %d%% faster.
 L'Occhio di Horus fa il 10% di danni in meno.,L'Occhio di Horus fa il 10% di danni in meno.,The Eye of Horus deals 10% less damage.
 Bende di Lino,Bende di Lino,Linen Wrappings
 Ti muovi il 5% più lento.,Ti muovi il 5% più lento.,You move 5% slower.
@@ -335,9 +346,15 @@ Il khopesh fa il 25% di danni in meno.,Il khopesh fa il 25% di danni in meno.,Yo
 Occhio del Re,Occhio del Re,Eye of the King
 L'Occhio di Horus fa il doppio dei danni e trapassa tutti i nemici.,L'Occhio di Horus fa il doppio dei danni e trapassa tutti i nemici.,The Eye of Horus deals double damage and pierces every enemy.
 Il khopesh fa il 40% di danni in meno.,Il khopesh fa il 40% di danni in meno.,The khopesh deals 40% less damage.
-Conoscenza Proibita,Conoscenza Proibita,Forbidden Knowledge
-L'Occhio di Horus si ricarica più del doppio più in fretta.,L'Occhio di Horus si ricarica più del doppio più in fretta.,The Eye of Horus recharges more than twice as fast.
-Il khopesh fa il 35% di danni in meno.,Il khopesh fa il 35% di danni in meno.,Your khopesh deals 35% less damage.
+Tempo Rubato,Tempo Rubato,Stolen Time
+"Nemici e proiettili nemici sono il 20% più lenti, sempre.","Nemici e proiettili nemici sono il 20% più lenti, sempre.","Enemies and enemy projectiles are 20% slower, always."
+Fai il 20% di danni in meno.,Fai il 20% di danni in meno.,You deal 20% less damage.
+Fame dei Defunti,Fame dei Defunti,Hunger of the Dead
+"Ogni colpo a segno ti cura di 1 punto vita, e il tetto delle cure di Nefti in una stanza sale a 20.","Ogni colpo a segno ti cura di 1 punto vita, e il tetto delle cure di Nefti in una stanza sale a 20.","Every hit heals you 1 health, and Nephthys's healing limit in a room rises to 20."
+-20 vita massima.,-20 vita massima.,-20 max health.
+Il Cielo Cade,Il Cielo Cade,The Sky Falls
+"Ogni colpo spinge i nemici, non solo l'ultimo della combo, e gli schianti fanno il doppio dei danni.","Ogni colpo spinge i nemici, non solo l'ultimo della combo, e gli schianti fanno il doppio dei danni.","Every hit pushes enemies, not just the last of the combo, and slams deal double damage."
+I tuoi colpi fanno il 20% di danni in meno.,I tuoi colpi fanno il 20% di danni in meno.,Your hits deal 20% less damage.
 I nemici sono più veloci del 20%,I nemici sono più veloci del 20%,Enemies are 20% faster
 Subisci il 30% di danni in più,Subisci il 30% di danni in più,You take 30% more damage
 I nemici hanno il 25% di vita in più,I nemici hanno il 25% di vita in più,Enemies have 25% more health
@@ -391,7 +408,9 @@ Trapassa 1 · dietro %d%%,Trapassa 1 · dietro %d%%,Pierces 1 · behind %d%%
 Tiro carico %d%% critico,Tiro carico %d%% critico,Charged shot %d%% critical
 Frecce: -%d%% velocità 2 s,Frecce: -%d%% velocità 2 s,Arrows: -%d%% speed 2 s
 Arco teso: scudo %d,Arco teso: scudo %d,Bow drawn: shield %d
-Frecce inseguono · +%d%%,Frecce inseguono · +%d%%,Arrows home · +%d%%
+Rimbalzo: %d%% dei danni,Rimbalzo: %d%% dei danni,Ricochet: %d%% of damage
+Occhio: %d raggi a ventaglio,Occhio: %d raggi a ventaglio,Eye: %d rays in a fan
+Occhio trapassa %d nemici,Occhio trapassa %d nemici,Eye pierces %d enemies
 %d frecce per colpo,%d frecce per colpo,%d arrows per shot
 -35% danni a freccia,-35% danni a freccia,-35% damage per arrow
 Tiro carico marchia · +%d,Tiro carico marchia · +%d,Charged shot marks · +%d
@@ -404,10 +423,6 @@ Khopesh +%d%% danni,Khopesh +%d%% danni,Khopesh +%d%% damage
 +%d vita ogni 5 uccisioni,+%d vita ogni 5 uccisioni,+%d health every 5 kills
 3° colpo: onda di %d danni,3° colpo: onda di %d danni,3rd strike: %d damage wave
 Attacco in scatto +%d%% danni,Attacco in scatto +%d%% danni,Dash attack +%d%% damage
-Occhio trapassa %d nemici,Occhio trapassa %d nemici,Eye pierces %d enemies
-Occhio ricarica -%d%%,Occhio ricarica -%d%%,Eye recharge -%d%%
-Occhio: %d raggi a ventaglio,Occhio: %d raggi a ventaglio,Eye: %d rays in a fan
-Occhio +%d%% danni,Occhio +%d%% danni,Eye +%d%% damage
 Khopesh %d%% critico,Khopesh %d%% critico,Khopesh %d%% critical
 Occhio %d%% critico,Occhio %d%% critico,Eye %d%% critical
 Scatto ricarica -%d%%,Scatto ricarica -%d%%,Dash recharge -%d%%
@@ -440,6 +455,7 @@ Rifletti il %d%% dei danni,Rifletti il %d%% dei danni,Reflect %d%% of damage
 -15% Ka,-15% Ka,-15% Ka
 +%d vita a ogni stanza,+%d vita a ogni stanza,+%d health every chamber
 -10 vita massima,-10 vita massima,-10 max health
+Occhio ricarica -%d%%,Occhio ricarica -%d%%,Eye recharge -%d%%
 Occhio -10% danni,Occhio -10% danni,Eye -10% damage
 -5% velocità,-5% velocità,-5% speed
 3° colpo +%d%%,3° colpo +%d%%,3rd strike +%d%%
@@ -466,8 +482,18 @@ Khopesh +40% · spinta doppia,Khopesh +40% · spinta doppia,Khopesh +40% · doub
 -15% velocità,-15% velocità,-15% speed
 +15% vita a ogni stanza,+15% vita a ogni stanza,+15% health every chamber
 Khopesh -25%,Khopesh -25%,Khopesh -25%
-Occhio: ricarica ×2,Occhio: ricarica ×2,Eye: recharge ×2
-Khopesh -35%,Khopesh -35%,Khopesh -35%
+Nemici e proiettili -20% veloci,Nemici e proiettili -20% veloci,Enemies and projectiles -20% speed
+-20% danni,-20% danni,-20% damage
++1 vita a colpo · tetto 20,+1 vita a colpo · tetto 20,+1 health per hit · limit 20
+-20 vita massima,-20 vita massima,-20 max health
+Ogni colpo spinge · schianti ×2,Ogni colpo spinge · schianti ×2,Every hit pushes · slams ×2
+1° colpo: +%d%% danni,1° colpo: +%d%% danni,1st hit: +%d%% damage
+Colpito: nemici -60% veloci,Colpito: nemici -60% veloci,Hit: enemies -60% speed
+Ogni 8 colpi: geroglifo %d,Ogni 8 colpi: geroglifo %d,Every 8 hits: glyph %d
+Un dono sale a ogni regione,Un dono sale a ogni regione,A boon rises each region
+Sotto il 12%: muoiono,Sotto il 12%: muoiono,Below 12%: they die
+Spiriti con la Prima Parola,Spiriti con la Prima Parola,Spirits with the First Word
+Prima Parola: scudo 4,Prima Parola: scudo 4,First Word: shield 4
 "Occhio ×2, trapassa tutti","Occhio ×2, trapassa tutti","Eye ×2, pierces all"
 Khopesh -40%,Khopesh -40%,Khopesh -40%
 Casa della Vita,Casa della Vita,House of Life
@@ -878,6 +904,7 @@ Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arriva
 Set ti propone un patto,Set ti propone un patto,Set offers you a pact
 Maledizione di Set: %d stanze,Maledizione di Set: %d stanze,Curse of Set: %d chambers
 %s. Poi: %s,%s. Poi: %s,%s. Then: %s
+%s sale al livello %d,%s sale al livello %d,%s rises to level %d
 Ricomincia la run,Ricomincia la run,Restart the run
 Torna alla Sala (abbandona),Torna alla Sala (abbandona),Back to the Hall (abandon)
 Esci alla Sala (la discesa resta salvata),Esci alla Sala (la discesa resta salvata),Exit to the Hall (the descent stays saved)
@@ -929,6 +956,8 @@ liv. %d,liv. %d,lv. %d
 "stanza %d di %d, piano %d","stanza %d di %d, piano %d","room %d of %d, floor %d"
 il Serpente della Porta,il Serpente della Porta,the Serpent of the Gate
 "Serket, la dea scorpione","Serket, la dea scorpione","Serket, the scorpion goddess"
+una trappola,una trappola,a trap
+Negli ultimi 10 secondi,Negli ultimi 10 secondi,In the last 10 seconds
 Il tuo cuore è stato pesato,Il tuo cuore è stato pesato,Your heart has been weighed
 Sei caduto: ,Sei caduto: ,You fell: 
 Ti ha ucciso ,Ti ha ucciso ,Killed by 
@@ -970,7 +999,6 @@ Il secondo sigillo della collana è libero: il nuovo amuleto si aggiunge al tuo,
 "Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto.","Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto.","An amulet is a thought made of stone, scribe. Wear only one: wisdom lies in leaving the rest."
 Porti %s,Porti %s,You wear %s
 Non hai abbastanza Ka,Non hai abbastanza Ka,You don't have enough Ka
-%s sale al livello %d,%s sale al livello %d,%s rises to level %d
 La colonna crolla,La colonna crolla,The pillar crumbles
 Am-heh ti cede il suo Sekhem,Am-heh ti cede il suo Sekhem,Am-heh yields its Sekhem to you
 Dalla prossima discesa potrai caricare la Forma Divina,Dalla prossima discesa potrai caricare la Forma Divina,From your next descent you can charge the Divine Form
@@ -1364,7 +1392,7 @@ La pietà appartiene a chi ha già vinto.,La pietà appartiene a chi ha già vin
 Non chiedermi dolcezza. Chiedimi vittoria.,Non chiedermi dolcezza. Chiedimi vittoria.,Do not ask me for gentleness. Ask me for victory.
 "Thoth, lo Scriba degli dèi","Thoth, lo Scriba degli dèi","Thoth, Scribe of the Gods"
 Chi è Thoth,Chi è Thoth,Who is Thoth
-"Io sono Thoth, signore delle parole divine, misuratore del tempo, voce della luna. Quando il cuore viene pesato, è la mia mano a scrivere il verdetto. Anche tu sei uno scriba. Dimostrami che il tuo Occhio è preciso quanto il mio calamo.","Io sono Thoth, signore delle parole divine, misuratore del tempo, voce della luna. Quando il cuore viene pesato, è la mia mano a scrivere il verdetto. Anche tu sei uno scriba. Dimostrami che il tuo Occhio è preciso quanto il mio calamo.","I am Thoth, lord of the divine words, measurer of time, voice of the moon. When the heart is weighed, it is my hand that writes the verdict. You too are a scribe. Prove to me that your Eye is as precise as my reed pen."
+"Io sono Thoth, signore delle parole divine, misuratore del tempo, voce della luna. Quando il cuore viene pesato, è la mia mano a scrivere il verdetto. Anche tu sei uno scriba. Ogni cosa ha un nome, e chi lo pronuncia per primo la ferisce: dimostrami che il tuo primo colpo è preciso quanto la mia prima parola.","Io sono Thoth, signore delle parole divine, misuratore del tempo, voce della luna. Quando il cuore viene pesato, è la mia mano a scrivere il verdetto. Anche tu sei uno scriba. Ogni cosa ha un nome, e chi lo pronuncia per primo la ferisce: dimostrami che il tuo primo colpo è preciso quanto la mia prima parola.","I am Thoth, lord of the divine words, measurer of time, voice of the moon. When the heart is weighed, it is my hand that writes the verdict. You too are a scribe. Every thing has a name, and whoever speaks it first wounds it: show me that your first strike is as precise as my first word."
 Le parole divine,Le parole divine,The divine words
 "Io diedi agli uomini i segni: le parole divine, che i popoli venuti dopo chiameranno geroglifici. Alcuni sono suoni, altri sono idee, tutti sono vivi. Ciò che è scritto esiste per sempre. Ciò che viene cancellato non è mai esistito. Tu lo sai meglio di chiunque.","Io diedi agli uomini i segni: le parole divine, che i popoli venuti dopo chiameranno geroglifici. Alcuni sono suoni, altri sono idee, tutti sono vivi. Ciò che è scritto esiste per sempre. Ciò che viene cancellato non è mai esistito. Tu lo sai meglio di chiunque.","I gave men the signs: the divine words, which the peoples who come after will call hieroglyphs. Some are sounds, others are ideas, all are alive. What is written exists forever. What is erased never existed. You know this better than anyone."
 I cinque giorni,I cinque giorni,The five days
@@ -1380,6 +1408,7 @@ Ogni colpo è un segno sul papiro. Scrivi bene.,Ogni colpo è un segno sul papir
 La luna conta i passi di chi cammina nel buio.,La luna conta i passi di chi cammina nel buio.,The moon counts the steps of those who walk in the dark.
 Ho già scritto come finirà questa stanza.,Ho già scritto come finirà questa stanza.,I have already written how this room will end.
 "Un segno sbagliato nel Libro, e il morto si perde. Così un colpo.","Un segno sbagliato nel Libro, e il morto si perde. Così un colpo.","One wrong sign in the Book, and the dead are lost. So it is with a blow."
+"Il tempo è una clessidra, Scriba. Io so quando girarla.","Il tempo è una clessidra, Scriba. Io so quando girarla.","Time is an hourglass, Scribe. I know when to turn it."
 "Bastet, la Signora di Bubasti","Bastet, la Signora di Bubasti","Bastet, Lady of Bubastis"
 Chi è Bastet,Chi è Bastet,Who is Bastet
 "Io sono Bastet, la Signora di Bubasti. Veglio sulle case, sulle madri, sui bambini che dormono. Per loro ho le fusa. Per chi li minaccia, ho gli artigli. Avvicinati, scriba. Ti presto i miei.","Io sono Bastet, la Signora di Bubasti. Veglio sulle case, sulle madri, sui bambini che dormono. Per loro ho le fusa. Per chi li minaccia, ho gli artigli. Avvicinati, scriba. Ti presto i miei.","I am Bastet, the Lady of Bubastis. I watch over homes, over mothers, over sleeping children. For them I purr. For those who threaten them, I have claws. Come closer, scribe. I lend you mine."
@@ -1599,6 +1628,8 @@ Il gatto di Bastet,Il gatto di Bastet,The cat of Bastet
 +%d Lapislazzuli,+%d Lapislazzuli,+%d Lapis lazuli
 Wernes,Wernes,Wernes
 Esci,Esci,Exit
+Il tempo rallenta,Il tempo rallenta,Time slows down
+PRIMA PAROLA,PRIMA PAROLA,FIRST WORD
 Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,An offering that the king gives: a thousand loaves and a thousand jars of beer for the Ka of the lord of this house.
 "O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O you who pass before this statue, say «bread and beer» for the Ka of the king."
 "Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","The king is a falcon of gold. The king flies toward the sky, and the sky welcomes him."
@@ -1666,7 +1697,7 @@ Quanto è forte la musica.,Quanto è forte la musica.,How loud the music is.
 Volume degli effetti,Volume degli effetti,Effects volume
 "Colpi, passi, nemici, ricompense: tutti i suoni tranne la musica.","Colpi, passi, nemici, ricompense: tutti i suoni tranne la musica.","Hits, steps, enemies, rewards: every sound except the music."
 Mira assistita,Mira assistita,Aim assist
-Con il telefono e con il pad la direzione del colpo si corregge di poco verso un nemico davanti a te (non lo segue e non garantisce il colpo). Con il mouse non agisce: si colpisce dove punta il mouse.,Con il telefono e con il pad la direzione del colpo si corregge di poco verso un nemico davanti a te (non lo segue e non garantisce il colpo). Con il mouse non agisce: si colpisce dove punta il mouse.,With phone and gamepad the attack direction is nudged slightly toward an enemy in front of you (it does not follow it and does not guarantee the hit). With the mouse it does nothing: you strike where the mouse points.
+"Con tastiera, pad e telefono: da fermo il colpo da mischia va al nemico più vicino, camminando a quello davanti a te; l'arco e l'Occhio si correggono di poco verso chi hai davanti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","Con tastiera, pad e telefono: da fermo il colpo da mischia va al nemico più vicino, camminando a quello davanti a te; l'arco e l'Occhio si correggono di poco verso chi hai davanti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","With keyboard, gamepad and phone: standing still, melee attacks go to the nearest enemy, walking to the one in front of you; the bow and the Eye are nudged slightly toward whoever is ahead. It only corrects the direction, it doesn't chase. With the mouse it does nothing."
 Vibrazione,Vibrazione,Vibration
 Il telefono o il pad vibrano quando vieni colpito e nei colpi più forti.,Il telefono o il pad vibrano quando vieni colpito e nei colpi più forti.,The phone or the pad vibrates when you are hit and on the strongest blows.
 Grandezza del testo,Grandezza del testo,Text size
@@ -1769,6 +1800,21 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+Sguardo di Thoth,Sguardo di Thoth,Gaze of Thoth
+Calcolo di Thoth,Calcolo di Thoth,Reckoning of Thoth
+Parola dello Scriba,Parola dello Scriba,Word of the Scribe
++%d%% ai danni dell'Occhio di Horus.,+%d%% ai danni dell'Occhio di Horus.,+%d%% Eye of Horus damage.
+Frecce del Falco,Frecce del Falco,Arrows of the Falcon
+Le frecce curvano verso il nemico più vicino e fanno il %d%% di danni in più.,Le frecce curvano verso il nemico più vicino e fanno il %d%% di danni in più.,Arrows curve toward the nearest enemy and deal %d%% more damage.
+Conoscenza Proibita,Conoscenza Proibita,Forbidden Knowledge
+L'Occhio di Horus si ricarica più del doppio più in fretta.,L'Occhio di Horus si ricarica più del doppio più in fretta.,The Eye of Horus recharges more than twice as fast.
+Il khopesh fa il 35% di danni in meno.,Il khopesh fa il 35% di danni in meno.,Your khopesh deals 35% less damage.
+Frecce inseguono · +%d%%,Frecce inseguono · +%d%%,Arrows home · +%d%%
+Occhio +%d%% danni,Occhio +%d%% danni,Eye +%d%% damage
+Occhio: ricarica ×2,Occhio: ricarica ×2,Eye: recharge ×2
+Khopesh -35%,Khopesh -35%,Khopesh -35%
+"Io sono Thoth, signore delle parole divine, misuratore del tempo, voce della luna. Quando il cuore viene pesato, è la mia mano a scrivere il verdetto. Anche tu sei uno scriba. Dimostrami che il tuo Occhio è preciso quanto il mio calamo.","Io sono Thoth, signore delle parole divine, misuratore del tempo, voce della luna. Quando il cuore viene pesato, è la mia mano a scrivere il verdetto. Anche tu sei uno scriba. Dimostrami che il tuo Occhio è preciso quanto il mio calamo.","I am Thoth, lord of the divine words, measurer of time, voice of the moon. When the heart is weighed, it is my hand that writes the verdict. You too are a scribe. Prove to me that your Eye is as precise as my reed pen."
+Con il telefono e con il pad la direzione del colpo si corregge di poco verso un nemico davanti a te (non lo segue e non garantisce il colpo). Con il mouse non agisce: si colpisce dove punta il mouse.,Con il telefono e con il pad la direzione del colpo si corregge di poco verso un nemico davanti a te (non lo segue e non garantisce il colpo). Con il mouse non agisce: si colpisce dove punta il mouse.,With phone and gamepad the attack direction is nudged slightly toward an enemy in front of you (it does not follow it and does not guarantee the hit). With the mouse it does nothing: you strike where the mouse points.
 RINASCERÀ,RINASCERÀ,IT WILL RISE AGAIN
 "Stanza %d. Più lontano di quanto credessi, meno di quanto serva.","Stanza %d. Più lontano di quanto credessi, meno di quanto serva.","Room %d. Farther than you believed, less than you need."
 Stanza %d. Il Duat comincia a riconoscere il tuo passo.,Stanza %d. Il Duat comincia a riconoscere il tuo passo.,Room %d. The Duat begins to know your step.
@@ -2180,7 +2226,6 @@ Ammit,Ammit,Ammit
 il fuoco di Am-heh,il fuoco di Am-heh,the fire of Am-heh
 la marea di fuoco di Am-heh,la marea di fuoco di Am-heh,Am-heh's tide of fire
 una grata di fuoco,una grata di fuoco,a fire grate
-una trappola,una trappola,a trap
 le statue del cobra,le statue del cobra,the cobra statues
 un avvoltoio,un avvoltoio,a vulture
 un guardiano di Sokar,un guardiano di Sokar,a guardian of Sokar
@@ -2197,3 +2242,15 @@ il Miraggio,il Miraggio,the Mirage
 l'arco,l'arco,the bow
 presa,presa,taken
 restaurato,restaurato,restored
+il fiume di sabbia nera,il fiume di sabbia nera,the river of black sand
+una buca delle sabbie che crollano,una buca delle sabbie che crollano,a pit in the crumbling sands
+una statua-falco,una statua-falco,a falcon statue
+il miraggio,il miraggio,the Mirage
+la nube di veleno,la nube di veleno,the poison cloud
+l'aura di veleno di Serket,l'aura di veleno di Serket,Serket's poison aura
+il veleno dello scorpione,il veleno dello scorpione,the scorpion's venom
+il veleno del Serpente,il veleno del Serpente,the Serpent's venom
+il veleno di Serket,il veleno di Serket,Serket's venom
+la sete di Sekhmet,la sete di Sekhmet,Sekhmet's thirst
+il salasso del Peso del Cuore,il salasso del Peso del Cuore,the bleeding of the Weight of the Heart
+l'anello di fuoco di Am-heh,l'anello di fuoco di Am-heh,Am-heh's ring of fire
