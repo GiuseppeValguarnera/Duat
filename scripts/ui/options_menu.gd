@@ -38,7 +38,7 @@ func _items() -> Array:
 	var out := [
 		["musica", Lang.t("Volume della musica"), Lang.t("Quanto è forte la musica.")],
 		["effetti", Lang.t("Volume degli effetti"), Lang.t("Colpi, passi, nemici, ricompense: tutti i suoni tranne la musica.")],
-		["autoaim", Lang.t("Mira assistita"), Lang.t("Con il telefono e con il pad la direzione del colpo si corregge di poco verso un nemico davanti a te (non lo segue e non garantisce il colpo). Con il mouse non agisce: si colpisce dove punta il mouse.")],
+		["autoaim", Lang.t("Mira assistita"), Lang.t("Con tastiera, pad e telefono: da fermo il colpo da mischia va al nemico più vicino, camminando a quello davanti a te; l'arco e l'Occhio si correggono di poco verso chi hai davanti. Corregge solo la direzione, non insegue. Con il mouse non agisce.")],
 		["vibration", Lang.t("Vibrazione"), Lang.t("Il telefono o il pad vibrano quando vieni colpito e nei colpi più forti.")],
 		["text", Lang.t("Grandezza del testo"), Lang.t("Ingrandisce le scritte delle finestre e dell'interfaccia. Le finestre già aperte cambiano subito, il resto alla prossima stanza.")],
 		["lang", Lang.t("Lingua"), Lang.t("Italiano o inglese.")],

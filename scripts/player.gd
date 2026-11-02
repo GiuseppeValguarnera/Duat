@@ -330,7 +330,8 @@ func _charge_cd_max() -> float:
 func _charged_attack() -> void:
 	var spear := Run.weapon == "lancia"
 	var bow := Run.weapon == "arco"
-	var dir := _bow_aim() if bow else _assisted(aim, 140.0 if spear else 70.0)
+	var from_dash := after_dash_t > 0.0
+	var dir := _bow_aim() if bow else _melee_aim(_attack_base(from_dash), 140.0 if spear else 70.0, from_dash)
 	var base: float = attack_damage * Run.khopesh_mult() * _aspect_damage()
 	if divine_t > 0.0:
 		base *= divine_damage_mult
@@ -463,8 +464,10 @@ func _tick(delta: float) -> void:
 
 
 ## Mira: la direzione la decidi tu (levetta destra, mouse, oppure dove guardi o ti muovi).
-## Sul telefono e col pad la mira assistita la corregge di poco verso un nemico davanti (`_assisted`).
-func _update_aim(_moving: bool = false) -> void:
+## Sul telefono e col pad la mira assistita la corregge di poco verso un nemico davanti (`_assisted`,
+## cono stretto: vale per l'arco e per l'Occhio); i colpi da mischia hanno la loro regola (`_melee_aim`).
+func _update_aim(moving: bool = false) -> void:
+	moving_input = moving
 	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
 	if Fx.device == "mouse" and stick.length() <= 0.3:
 		var to := get_global_mouse_position() - (global_position + Vector2(0, -8))
@@ -475,16 +478,80 @@ func _update_aim(_moving: bool = false) -> void:
 	aim = _assisted(base, ASSIST_RANGE)
 
 
-## Mira assistita: corregge SOLO la direzione verso un nemico nel cono davanti a `dir` (25° per le
-## armi da mischia, 12° per l'arco); non prevede il movimento e non insegue (quello è il dono di
-## Horus). Solo nemici visibili, nel 70% centrale dello schermo e senza muri o colonne in mezzo; mai
-## alle spalle. Il bersaglio resta lo stesso finché è valido (niente tremolio). Col mouse è spenta, e
-## si spegne anche nelle Opzioni.
-const ASSIST_MELEE := 25.0
+## Mira assistita dei colpi a distanza (arco, Occhio): corregge SOLO la direzione verso un nemico nel
+## cono di 12° davanti a `dir`; non prevede il movimento e non insegue (quello è il dono di Horus).
+## Solo nemici visibili, nel 70% centrale dello schermo e senza muri o colonne in mezzo; mai alle
+## spalle. Il bersaglio resta lo stesso finché è valido (niente tremolio). Col mouse è spenta, e si
+## spegne anche nelle Opzioni.
 const ASSIST_BOW := 12.0
 const ASSIST_RANGE := 420.0
 const ASSIST_SCREEN := 0.7
 var _aim_target = null
+
+## Mira assistita della mischia (khopesh, lancia, flagello; blocco 10):
+##  - da fermo il colpo va al nemico più vicino entro la portata dell'arma +30%, in tutte le
+##    direzioni, con la visuale libera; a distanza quasi uguale vince quello più vicino alla
+##    direzione in cui guardi;
+##  - in movimento (o con la levetta destra, o dopo lo scatto) il colpo va dove ti muovi, e si
+##    orienta su un nemico entro 45° da quella direzione ed entro portata +30%.
+## Il bersaglio resta finché è valido; corregge solo la direzione (niente previsione, niente inseguimento).
+const MELEE_ASSIST_REACH := 1.3
+const MELEE_ASSIST_CONE := 45.0
+const MELEE_TIE := 0.15              ## distanze entro il 15%: conta la direzione in cui guardi
+var _melee_target = null
+var moving_input := false
+
+
+func _melee_aim(base_dir: Vector2, reach: float, from_dash: bool = false) -> Vector2:
+	var t = _melee_pick(base_dir, reach, from_dash)
+	if t == null:
+		return base_dir
+	return (t.global_position - global_position).normalized()
+
+
+func _melee_pick(base_dir: Vector2, reach: float, from_dash: bool = false):
+	if not _assist_on() or base_dir == Vector2.ZERO:
+		return null
+	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
+	var directed := from_dash or moving_input or stick.length() > 0.3
+	var lim := reach * MELEE_ASSIST_REACH
+	var cone := deg_to_rad(MELEE_ASSIST_CONE) if directed else TAU
+	if _melee_ok(_melee_target, base_dir, cone * 1.25, lim * 1.1):
+		return _melee_target
+	_melee_target = null
+	var best_d := INF
+	var best_a := INF
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if not _melee_ok(e, base_dir, cone, lim):
+			continue
+		var to: Vector2 = e.global_position - global_position
+		var d := to.length() - float(e.radius)
+		var a := absf(base_dir.angle_to(to))
+		if _melee_target == null or d < best_d * (1.0 - MELEE_TIE) or (d <= best_d * (1.0 + MELEE_TIE) and a < best_a):
+			best_d = maxf(d, 1.0)
+			best_a = a
+			_melee_target = e
+	return _melee_target
+
+
+func _melee_ok(e, dir: Vector2, cone: float, lim: float) -> bool:
+	if e == null or not is_instance_valid(e) or e.dead or not e.is_visible_in_tree():
+		return false
+	var to: Vector2 = e.global_position - global_position
+	if to.length() - float(e.radius) > lim:
+		return false
+	if cone < PI and absf(dir.angle_to(to)) > cone:
+		return false
+	var q := PhysicsRayQueryParameters2D.create(global_position + Vector2(0, -6), e.global_position + Vector2(0, -6), 1, [get_rid()])
+	return get_world_2d().direct_space_state.intersect_ray(q).is_empty()
+
+
+## Da dove parte la mira di un colpo: dopo lo scatto la direzione dello scatto (se mouse e levetta
+## destra non decidono loro), altrimenti dove miri o guardi.
+func _attack_base(dash_atk: bool) -> Vector2:
+	if dash_atk and Fx.device != "mouse" and Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() <= 0.3 and dash_dir != Vector2.ZERO:
+		return dash_dir
+	return aim
 
 
 func _assist_on() -> bool:
@@ -494,7 +561,7 @@ func _assist_on() -> bool:
 func _assisted(dir: Vector2, max_dist: float) -> Vector2:
 	if not _assist_on() or dir == Vector2.ZERO:
 		return dir
-	var cone := deg_to_rad(ASSIST_BOW if Run.weapon == "arco" else ASSIST_MELEE)
+	var cone := deg_to_rad(ASSIST_BOW)
 	# il bersaglio di prima resta finché è valido (con un po' di margine sul cono)
 	if _target_ok(_aim_target, dir, cone * 1.25, ASSIST_RANGE):
 		var to_t: Vector2 = _aim_target.global_position - global_position
@@ -675,6 +742,8 @@ func _hook_pulling() -> bool:
 
 ## Il nemico che il pastorale aggancerebbe guardando verso `dir` (null se nessuno).
 func _hook_target(dir: Vector2):
+	if _assist_on():
+		return _melee_pick(dir, HOOK["range"])       # stessa regola della mischia (360° da fermo, 45° in movimento)
 	var best = null
 	var best_score := INF
 	var cone := deg_to_rad(HOOK["cone"] * (1.4 if Fx.device == "touch" else 1.0))
@@ -771,10 +840,7 @@ func _flail_swing() -> void:
 		reach *= 0.8
 	atk_cd = cd
 	after_dash_t = 0.0
-	var base_dir := aim
-	if dash_atk and Fx.device != "mouse" and Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() <= 0.3 and dash_dir != Vector2.ZERO:
-		base_dir = dash_dir
-	swing_dir = _assisted(base_dir, reach + 24.0)
+	swing_dir = _melee_aim(_attack_base(dash_atk), reach, dash_atk)
 	swing_range = reach
 	swing_arc = deg_to_rad(c["arc"])
 	lash_width = c["width"]
@@ -914,10 +980,7 @@ func _swing() -> void:
 	# l'attacco in scatto va nella direzione dello scatto (con la mira automatica il nemico più
 	# vicino può essere già alle tue spalle: lo scatto attraversa i nemici); mouse e levetta destra
 	# decidono loro
-	var base_dir := aim
-	if dash_atk and Fx.device != "mouse" and Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() <= 0.3 and dash_dir != Vector2.ZERO:
-		base_dir = dash_dir
-	swing_dir = _assisted(base_dir, swing_range + 24.0)
+	swing_dir = _melee_aim(_attack_base(dash_atk), swing_range, dash_atk)
 	Sfx.play("swing", 0.15)
 	if lunging:
 		# l'affondo dopo lo scatto si deve vedere: scia dorata lungo la lancia
