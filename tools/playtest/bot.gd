@@ -600,6 +600,13 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 		if "sting_dir" in e and e.state == "windup" and d < 48.0 and e.st < 0.25:
 			threat_kind = "scorpion"
 			return rel.normalized()
+		if e.has_method("bot_escape"):
+			# Aker (fase 1) e i suoi leoni: la direzione di fuga la dice lui
+			threat_kind = "aker"
+			var esc: Vector2 = e.bot_escape(pos)
+			if esc != Vector2.ZERO:
+				return esc
+			continue
 		if "swapped" in e and "breath_range" in e:
 			# Aker, il leone doppio: esce dal cono del soffio (il raggio e le pietre sono sotto)
 			threat_kind = "aker"

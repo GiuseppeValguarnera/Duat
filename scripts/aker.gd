@@ -1,52 +1,108 @@
 extends Enemy
-## Aker, il dio dell'orizzonte: il boss di Sokar. Nei templi è dipinto come due leoni sdraiati
-## schiena contro schiena, Ieri che guarda a ovest e Domani che guarda a est; la barca del sole
-## di notte passa dentro il suo corpo. Qui porta sulla schiena il disco del sole spento.
+## Aker, il dio dell'orizzonte: il boss di Sokar (riscritto nel blocco 9). Nei templi è dipinto
+## come due leoni schiena contro schiena, Ieri che guarda a ovest e Domani che guarda a est.
 ##
-## Fase 1, il leone doppio: due teste, una per lato. Non ha un "dietro": il punto debole sono i
-## FIANCHI (sopra e sotto il corpo), dove i colpi fanno più male; sulle teste meno. Lui si sposta
-## per avere sempre una testa davanti a te.
-## - Testa di sabbia (Ieri): soffio a cono che ti spinge via e lascia sabbie mobili per poco.
-## - Testa di fuoco (Domani): il raggio dell'alba (Hazards.DawnRay), una linea di fuoco che ruota.
-## - Si gira: mezzo giro, le teste si scambiano. Il pericolo cambia lato.
-## - Ruggito: dalle montagne cadono pietre (Hazards.FallingStone). Restano come riparo e FERMANO
-##   il raggio dell'alba: la mossa che ti minaccia ti dà anche il riparo dalla prossima.
-## A metà vita trema (1,8 s, non lo si può ferire, cadono pietre) e si divide in due: Ieri e Domani
-## (aker_lion.gd), ognuno con metà della vita rimasta. La barra della vita resta una sola.
+## FASE 1 — il Leone dell'Orizzonte: un corpo, due teste (sabbia e fuoco), una barra di vita.
+## Ti dà la caccia: cammina verso di te e ruota lentamente il corpo per tenerti davanti a una testa.
+## Sui FIANCHI i colpi fanno ×1,35, sulle teste ×0,8: girargli intorno è il modo di colpirlo.
+## Mosse (avviso 0,5-0,7 s): morso e artigliate (tre colpi che ti seguono), carica dell'orizzonte
+## (in linea, scia di sabbie mobili, rimbalza sul muro e ricarica verso di te), soffio doppio
+## (sabbia da una testa, fuoco dall'altra, il corpo ruota e i coni spazzano l'arena), balzo (ombra
+## a terra, atterraggio e onda d'urto), raggio dell'alba (ruota mentre lui continua a camminare;
+## prima il ruggito fa cadere al massimo due pietre, che fermano il raggio e si sgretolano dopo tre
+## passaggi). Dalla metà della fase le mosse si legano due a due (pausa 0,5 s); dopo una mossa
+## grande c'è la finestra per punirlo (1,2 s).
+## Finita la vita della fase 1 trema (1,8 s, invulnerabile) e si divide: Ieri e Domani
+## (aker_lion.gd), 500 di vita ciascuno, che attaccano INSIEME. La barra resta una sola.
+## Tutti i numeri da tarare sono qui sotto.
 
 @warning_ignore("unused_signal")
 signal summon(kinds: Array)        # il gioco lo collega a ogni boss: Aker non chiama rinforzi
 signal split(lions: Array)          ## si divide: il gioco aggiunge i due leoni (game.gd)
 
 const LionScene := preload("res://scenes/aker_lion.tscn")
-const S := 1.8                        ## scala del disegno
-const HEAD := Vector2(52, -22)        ## dove sono le teste rispetto al centro (x col segno del lato)
-const SAND := Color(0.78, 0.62, 0.38)
 
-@export var breath_windup := 0.65
-@export var breath_time := 0.7
-@export var breath_range := 160.0
-@export var breath_angle := 64.0      ## ampiezza del cono, in gradi
-@export var breath_damage := 8.0
-@export var ray_sweep := 100.0
-@export var ray_damage := 9.0
-@export var roar_stones := 4
-@export var flank_mult := 1.35        ## colpi sui fianchi
-@export var head_mult := 0.8          ## colpi sulle teste
+# ---------------------------------------------------------------- numeri da tarare
+const HP := 1500.0                    ## la vita della fase 1 (nella scena: max_hp)
+const LION_HP := 500.0                ## la vita di Ieri e di Domani (fase 2): in tutto 2500
+const WALK := 78.0                    ## passo di caccia (60% della velocità dell'eroe, 130)
+const TURN_RATE := 70.0               ## gradi al secondo: girargli intorno a piedi è possibile
+const FLANK_MULT := 1.35              ## colpi sui fianchi
+const HEAD_MULT := 0.8                ## colpi sulle teste
+const HEAD_CONE := 35.0               ## entro quanti gradi dall'asse del corpo si colpisce una testa
+const CONTACT := 10.0                 ## toccarlo
+const PUNISH := 1.2                   ## la pausa dopo una mossa grande: la finestra per colpirlo
+const CHAIN_GAP := 0.5                ## la pausa tra due mosse legate (dalla metà della fase 1)
+const CHAIN_FROM := 0.5               ## da quanta vita della fase in giù le mosse si legano
+const BITE_WINDUP := [0.6, 0.45, 0.45] ## morso e artigliate: avviso di ognuno dei tre colpi
+const BITE_DAMAGE := 11.0             ## per colpo (tre colpi: circa il 40% della vita se li prendi tutti)
+const BITE_REACH := 42.0              ## raggio del colpo davanti alla testa
+const BITE_LUNGE := 70.0              ## quanto avanza a ogni colpo
+const CHARGE_WINDUP := 0.65
+const CHARGE_REAIM := 0.5             ## avviso della seconda carica, dopo il rimbalzo
+const CHARGE_SPEED := 340.0
+const CHARGE_MAX := 1.4               ## secondi al massimo per carica
+const CHARGE_DAMAGE := 22.0
+const TRAIL_STEP := 34.0              ## ogni quanti pixel una pozza di sabbie mobili
+const TRAIL_LIFE := 4.0
+const BREATH_WINDUP := 0.6
+const BREATH_TIME := 1.3
+const BREATH_RANGE := 175.0
+const BREATH_HALF := 24.0             ## mezza apertura del cono, in gradi
+const BREATH_SWEEP := 80.0            ## quanto ruota il corpo mentre soffia
+const BREATH_SAND := 8.0              ## la sabbia spinge e fa poco male
+const BREATH_FIRE := 16.0             ## il fuoco fa male
+const BREATH_PUSH := 220.0
+const LEAP_WINDUP := 0.6
+const LEAP_LOCK := 0.25               ## negli ultimi 0,25 s l'ombra non ti segue più
+const LEAP_TIME := 0.55
+const LEAP_RADIUS := 46.0
+const LEAP_DAMAGE := 24.0
+const WAVE_SPEED := 260.0             ## l'onda d'urto dopo l'atterraggio
+const WAVE_MAX := 140.0
+const WAVE_DAMAGE := 10.0
+const ROAR_TIME := 0.6
+const MAX_STONES := 2
+const RAY_WARN := 0.6
+const RAY_TIME := 1.8
+const RAY_SWEEP := 110.0
+const RAY_DAMAGE := 10.0              ## a ogni colpo del raggio (uno ogni 0,6 s)
+const RAY_WALK := 0.5                 ## mentre il raggio gira cammina a metà passo
+const RAY_COOLDOWN := 8.0
+const TREMBLE := 1.8
+
+const S := 1.8                        ## scala del disegno
+const HEAD_DIST := 52.0               ## distanza delle teste dal centro, lungo l'asse
+const SAND := Color(0.78, 0.62, 0.38)
+const FIRE := Color(1.0, 0.55, 0.2)
 
 var state := "intro"
 var st := 1.6
-var swapped := false                  # false: sabbia a ovest (sinistra), fuoco a est
-var side := -1.0                      # la testa che ti guarda (-1 ovest, +1 est)
-var aim := Vector2.LEFT
-var roar_cd := 5.0
-var same_side := 0
-var breath_hit := false
-var ray: Node2D = null
-var split_done := false
-var turned := false
-## Il pavimento dell'arena (game.gd, prima che entri in scena): dove possono cadere le pietre.
+var fire_dir := Vector2.RIGHT          ## l'asse del corpo: la testa di fuoco è qui, quella di sabbia dall'altra parte
+var bar_extra := LION_HP * 2.0         ## la vita dei due leoni che verranno (per la barra unica, game.gd)
 var floor_rect := Rect2(32, 64, 736, 384)
+var split_done := false
+var last_move := ""
+var chain_left := 0                    ## mosse ancora da legare in questa sequenza
+var ray_cd := 4.0
+var hit_done := false
+# morso
+var bite_n := 0
+var bite_dir := Vector2.RIGHT
+# carica
+var charge_dir := Vector2.RIGHT
+var charges := 0
+var trail_last := Vector2.ZERO
+# soffio
+var breath_spin := 1.0
+var sand_hit := false
+var fire_hit := false
+# balzo e onda
+var jump_from := Vector2.ZERO
+var jump_to := Vector2.ZERO
+var wave_r := -1.0
+var wave_hit := false
+var ray: Node2D = null
 
 
 func _ready() -> void:
@@ -54,161 +110,290 @@ func _ready() -> void:
 	super._ready()
 
 
-func head_kind(sd: float) -> String:
-	return "sand" if (sd < 0.0) != swapped else "fire"
+func _player():
+	var p = get_tree().get_first_node_in_group("player")
+	return p if p != null and not p.dead else null
 
 
-func head_pos(sd: float) -> Vector2:
-	return global_position + Vector2(HEAD.x * sd, HEAD.y)
+func _hurt(amount: float, from: Vector2) -> bool:
+	var p = _player()
+	return p != null and p.take_damage(amount, from, self)
+
+
+## La testa verso cui guardi: +1 quella di fuoco, -1 quella di sabbia.
+func facing_sign(to: Vector2) -> float:
+	return 1.0 if to.dot(fire_dir) >= 0.0 else -1.0
+
+
+func head_pos(sign_: float) -> Vector2:
+	return global_position + fire_dir * HEAD_DIST * sign_ + Vector2(0, -20)
 
 
 func busy() -> bool:
-	return state != "stalk"
+	return state not in ["hunt", "recover"]
+
+
+## Ruota l'asse verso `to` (o il suo opposto, quello più vicino) al massimo di TURN_RATE.
+func _turn(to: Vector2, delta: float, rate: float = TURN_RATE) -> void:
+	if to == Vector2.ZERO:
+		return
+	var want := to.normalized() * facing_sign(to)
+	var a := fire_dir.angle_to(want)
+	var step := deg_to_rad(rate) * delta
+	fire_dir = fire_dir.rotated(clampf(a, -step, step))
 
 
 func _behave(delta: float, to: Vector2) -> Vector2:
 	st -= delta
-	roar_cd -= delta
-	if not split_done and state != "tremble" and hp <= max_hp * 0.5:
-		_start_tremble()
-	if to != Vector2.ZERO and state in ["stalk", "recover"]:
-		side = -1.0 if to.x < 0.0 else 1.0
+	ray_cd -= delta
+	_sync_shapes()
+	if ray != null and is_instance_valid(ray):
+		ray.global_position = head_pos(1.0)            # il raggio esce sempre dalla testa di fuoco
+	_update_wave(delta)
 	match state:
 		"intro":
 			if st <= 0.0:
-				_next(0.5)
+				_hunt(0.4)
 			return Vector2.ZERO
-		"stalk":
-			if st <= 0.0:
+		"hunt":
+			_turn(to, delta)
+			if st <= 0.0 and to != Vector2.ZERO:
 				_choose(to)
 				return Vector2.ZERO
-			# si allinea con te (una testa davanti) e tiene la distanza giusta
-			var v := Vector2.ZERO
-			if absf(to.y) > 10.0:
-				v.y = signf(to.y)
-			if absf(to.x) < 100.0:
-				v.x = -signf(to.x) if to.x != 0.0 else 1.0
-			elif absf(to.x) > 210.0:
-				v.x = signf(to.x)
-			return _steer(v.normalized() * speed, delta) if v != Vector2.ZERO else Vector2.ZERO
-		"breath_windup":
-			if st > breath_windup * 0.5:
-				_aim_breath(to)
+			return _steer(to.normalized() * WALK, delta) if to.length() > 40.0 else Vector2.ZERO
+		"recover":
+			_turn(to, delta, TURN_RATE * 0.5)
 			if st <= 0.0:
-				state = "breath"
-				st = breath_time
-				breath_hit = false
-				Sfx.play_at("fire_whoosh", global_position, 0.2)
-				for k in [0.4, 0.75]:
-					var q := Hazards.Quicksand.new()
-					q.radii = Vector2(26, 15)
-					q.life = 4.0
-					q.position = head_pos(side) + aim * breath_range * float(k) + Vector2(0, 22)
-					get_parent().add_child(q)
+				_after_move(to)
 			return Vector2.ZERO
-		"breath":
-			_blast(delta)
+		"bite_windup":
+			_turn(to, delta, TURN_RATE * 1.5)            # ti segue mentre prepara il colpo
+			if to != Vector2.ZERO:
+				bite_dir = to.normalized()
 			if st <= 0.0:
-				state = "recover"
-				st = 0.7
+				state = "bite"
+				st = 0.15
+				hit_done = false
+				Sfx.play_at("swing", global_position, 0.1)
 			return Vector2.ZERO
-		"ray":
+		"bite":
+			if not hit_done:
+				var p = _player()
+				if p != null:
+					var hp_ := head_pos(facing_sign(bite_dir))
+					if (p.global_position + Vector2(0, -6)).distance_to(hp_ + bite_dir * 12.0) < BITE_REACH:
+						hit_done = _hurt(BITE_DAMAGE, hp_)
 			if st <= 0.0:
-				state = "recover"
-				st = 0.6
-			return Vector2.ZERO
-		"turn":
-			if st <= 0.35 and not turned:
-				turned = true
-				swapped = not swapped
-			if st <= 0.0:
-				turned = false
-				state = "recover"
-				st = 0.4
-			return Vector2.ZERO
+				bite_n += 1
+				if bite_n >= BITE_WINDUP.size():
+					_end_move(true)
+				else:
+					state = "bite_windup"
+					st = BITE_WINDUP[bite_n]
+				return Vector2.ZERO
+			return bite_dir * BITE_LUNGE / 0.15
 		"roar":
 			if st <= 0.0:
-				_drop_stones(roar_stones + (2 if hp < max_hp * 0.75 else 0))
-				state = "recover"
-				st = 0.8
+				_drop_stones(MAX_STONES)
+				_fire_ray(to)
 			return Vector2.ZERO
+		"ray":
+			_turn(to, delta, TURN_RATE * 0.6)
+			if st <= 0.0:
+				_end_move(true)
+				return Vector2.ZERO
+			return _steer(to.normalized() * WALK * RAY_WALK, delta) if to.length() > 50.0 else Vector2.ZERO
+		"charge_windup":
+			if st > 0.25 and to != Vector2.ZERO:
+				charge_dir = to.normalized()
+				fire_dir = charge_dir * facing_sign(charge_dir)
+			if st <= 0.0:
+				state = "charge"
+				st = CHARGE_MAX
+				hit_done = false
+				trail_last = global_position
+				Sfx.play_at("charge", global_position, 0.05)
+			return Vector2.ZERO
+		"charge":
+			if not hit_done:
+				var p = _player()
+				if p != null and p.global_position.distance_to(global_position) < 34.0:
+					hit_done = _hurt(CHARGE_DAMAGE, global_position)
+			if global_position.distance_to(trail_last) > TRAIL_STEP:
+				trail_last = global_position
+				var q := Hazards.Quicksand.new()
+				q.radii = Vector2(24, 13)
+				q.life = TRAIL_LIFE
+				q.position = global_position
+				get_parent().add_child(q)
+			# contro il muro (o finito il tempo): rimbalza e carica di nuovo, una volta
+			var blocked := get_slide_collision_count() > 0 and st < CHARGE_MAX - 0.15
+			if blocked or st <= 0.0:
+				charges += 1
+				if charges < 2:
+					Fx.shake(5.0)
+					Sfx.play_at("amheh_land", global_position, 0.1)
+					state = "charge_windup"
+					st = CHARGE_REAIM
+				else:
+					_end_move(true)
+				return Vector2.ZERO
+			return charge_dir * CHARGE_SPEED
+		"breath_windup":
+			_turn(to, delta, TURN_RATE * 1.2)
+			if st <= 0.0:
+				state = "breath"
+				st = BREATH_TIME
+				sand_hit = false
+				fire_hit = false
+				# il corpo ruota verso il lato dove sei, così i coni ti vengono addosso
+				breath_spin = signf(fire_dir.angle_to(to.normalized() * facing_sign(to))) if to != Vector2.ZERO else 1.0
+				if breath_spin == 0.0:
+					breath_spin = 1.0
+				Sfx.play_at("fire_whoosh", global_position, 0.2)
+			return Vector2.ZERO
+		"breath":
+			fire_dir = fire_dir.rotated(deg_to_rad(BREATH_SWEEP) / BREATH_TIME * breath_spin * delta)
+			_breath_hits(delta)
+			if st <= 0.0:
+				_end_move(true)
+			return Vector2.ZERO
+		"leap_windup":
+			if st > LEAP_LOCK and to != Vector2.ZERO:
+				jump_to = _clamp_floor(global_position + to)
+			if st <= 0.0:
+				state = "leap"
+				st = LEAP_TIME
+				jump_from = global_position
+				Sfx.play_at("amheh_growl", global_position, 0.1)
+			return Vector2.ZERO
+		"leap":
+			if st <= 0.0:
+				_land()
+				_end_move(true)
+				return Vector2.ZERO
+			return (jump_to - jump_from) / LEAP_TIME
 		"tremble":
 			if st <= 0.0:
 				_split()
 			return Vector2(sin(t * 60.0) * 30.0, 0.0)
-		"recover":
-			if st <= 0.0:
-				_next(0.6 + randf() * 0.6)
-			return Vector2.ZERO
 	return Vector2.ZERO
 
 
-func _next(time: float) -> void:
-	state = "stalk"
+## Il corpo per gli urti e il contatto ruotano con il leone (come il disegno).
+func _sync_shapes() -> void:
+	var a := fire_dir.angle()
+	var rot := a - PI * signf(a) if absf(a) > PI * 0.5 else a
+	for n in [get_node_or_null("Body"), get_node_or_null("ContactArea")]:
+		if n != null:
+			n.rotation = rot
+
+
+func _clamp_floor(p: Vector2) -> Vector2:
+	var r := floor_rect.grow(-36.0)
+	return Vector2(clampf(p.x, r.position.x, r.end.x), clampf(p.y, r.position.y, r.end.y))
+
+
+func _hunt(time: float) -> void:
+	state = "hunt"
 	st = time
 
 
+## La mossa è finita: se la sequenza ha un'altra mossa legata, parte dopo una pausa breve;
+## altrimenti la pausa lunga (la finestra per punirlo).
+func _end_move(big: bool) -> void:
+	state = "recover"
+	if chain_left > 0:
+		st = CHAIN_GAP
+	else:
+		st = PUNISH if big else 0.6
+
+
+func _after_move(to: Vector2) -> void:
+	if chain_left > 0 and to != Vector2.ZERO:
+		chain_left -= 1
+		_start(_chain_next(last_move, to.length()), to)
+		return
+	_hunt(0.35 + randf() * 0.3)
+
+
+## Le coppie legate: ruggito → carica, balzo → soffio, morso → balzo, carica → morso, soffio → carica.
+func _chain_next(prev: String, d: float) -> String:
+	match prev:
+		"ray":
+			return "charge"
+		"leap":
+			return "breath"
+		"bite":
+			return "leap"
+		"charge":
+			return "bite" if d < 120.0 else "leap"
+		"breath":
+			return "charge"
+	return "bite"
+
+
 func _choose(to: Vector2) -> void:
-	if roar_cd <= 0.0:
-		state = "roar"
-		st = 0.9
-		roar_cd = randf_range(8.0, 10.0)
-		Sfx.play_at("roar", global_position, 0.05)
-		Fx.shake(5.0)
-		return
-	if same_side >= 2 and randf() < 0.55:
-		state = "turn"
-		st = 0.7
-		same_side = 0
-		Sfx.play_at("amheh_growl", global_position, 0.1)
-		return
-	same_side += 1
-	if head_kind(side) == "sand":
-		if absf(to.x) < breath_range + 30.0 and absf(to.y) < 90.0:
-			state = "breath_windup"
-			st = breath_windup
-			_aim_breath(to)
+	var d := to.length()
+	var opts := []
+	if d < 80.0:
+		opts = ["bite", "bite", "breath", "leap"]
+	elif d < 200.0:
+		opts = ["charge", "leap", "breath", "bite"]
+	else:
+		opts = ["charge", "charge", "leap"]
+	if ray_cd <= 0.0:
+		opts.append("ray")
+		opts.append("ray")
+	opts.erase(last_move)
+	if opts.is_empty():
+		opts = ["charge"]
+	chain_left = 1 if hp <= max_hp * CHAIN_FROM else 0
+	_start(opts.pick_random(), to)
+
+
+func _start(move: String, to: Vector2) -> void:
+	last_move = move
+	match move:
+		"bite":
+			state = "bite_windup"
+			bite_n = 0
+			st = BITE_WINDUP[0]
+			bite_dir = to.normalized() if to != Vector2.ZERO else fire_dir
 			Sfx.play_at("amheh_growl", global_position, 0.1)
-		else:
-			_next(0.5)
-		return
-	_fire_ray(to, ray_sweep, ray_damage)
+		"charge":
+			state = "charge_windup"
+			st = CHARGE_WINDUP
+			charges = 0
+			charge_dir = to.normalized() if to != Vector2.ZERO else fire_dir
+			Sfx.play_at("amheh_growl", global_position, 0.1)
+		"breath":
+			state = "breath_windup"
+			st = BREATH_WINDUP
+			Sfx.play_at("amheh_growl", global_position, 0.1)
+		"leap":
+			state = "leap_windup"
+			st = LEAP_WINDUP
+			jump_to = _clamp_floor(global_position + to)
+		"ray":
+			state = "roar"
+			st = ROAR_TIME
+			ray_cd = RAY_COOLDOWN
+			Sfx.play_at("roar", global_position, 0.05)
+			Fx.shake(5.0)
 
 
-## Il cono del soffio esce dalla testa, verso di te ma mai all'indietro.
-func _aim_breath(to: Vector2) -> void:
-	var from := head_pos(side) - global_position
-	var d := to - from
-	if d == Vector2.ZERO or signf(d.x) != side:
-		d = Vector2(side, 0.0)
-	aim = d.normalized()
-	if absf(aim.angle_to(Vector2(side, 0.0))) > deg_to_rad(55.0):
-		aim = Vector2(side, 0.0).rotated(deg_to_rad(55.0) * signf(Vector2(side, 0.0).angle_to(aim)))
-
-
-func _blast(delta: float) -> void:
-	var p = get_tree().get_first_node_in_group("player")
-	if p == null or p.dead or p.dash_t > 0.0:
-		return
-	var o := head_pos(side)
-	var rel: Vector2 = p.global_position + Vector2(0, -6) - o
-	if rel.length() < breath_range and absf(aim.angle_to(rel)) < deg_to_rad(breath_angle) * 0.5:
-		p.move_and_collide(rel.normalized() * 190.0 * delta)
-		if not breath_hit and p.take_damage(breath_damage, o, self):
-			breath_hit = true
-		if randf() < 0.4:
-			Fx.burst(p.global_position, SAND, 2, 40.0)
-
-
-func _fire_ray(to: Vector2, sweep_deg: float, dmg: float) -> void:
+func _fire_ray(to: Vector2) -> void:
 	state = "ray"
 	var r := Hazards.DawnRay.new()
-	var o := head_pos(side)
+	var o := head_pos(1.0)
 	var tp := global_position + to + Vector2(0, -6)
-	var sw := deg_to_rad(sweep_deg) * (1.0 if randf() < 0.5 else -1.0)
+	var sw := deg_to_rad(RAY_SWEEP) * (1.0 if randf() < 0.5 else -1.0)
 	r.angle = (tp - o).angle() - sw * 0.5
 	r.sweep = sw
-	r.damage = dmg
+	r.warn = RAY_WARN
+	r.dur = RAY_TIME
+	r.damage = RAY_DAMAGE
 	r.src = self
 	r.position = o
 	get_parent().add_child(r)
@@ -216,63 +401,125 @@ func _fire_ray(to: Vector2, sweep_deg: float, dmg: float) -> void:
 	st = r.warn + r.dur + 0.1
 
 
-## Il ruggito: le pietre cadono dalle montagne. Una sempre dove sei tu, le altre sparse.
+## I due coni del soffio: lungo l'asse, uno per testa. Fuori dai coni (sui fianchi) si è al sicuro.
+func _breath_hits(delta: float) -> void:
+	var p = _player()
+	if p == null or p.dash_t > 0.0:
+		return
+	for sg in [1.0, -1.0]:
+		var o := head_pos(sg)
+		var axis: Vector2 = fire_dir * sg
+		var rel: Vector2 = p.global_position + Vector2(0, -6) - o
+		if rel.length() > BREATH_RANGE or absf(axis.angle_to(rel)) > deg_to_rad(BREATH_HALF):
+			continue
+		if sg > 0.0:
+			if not fire_hit:
+				fire_hit = _hurt(BREATH_FIRE, o)
+		else:
+			p.move_and_collide(rel.normalized() * BREATH_PUSH * delta)     # la sabbia ti spinge verso l'angolo
+			if not sand_hit:
+				sand_hit = _hurt(BREATH_SAND, o)
+
+
+func _land() -> void:
+	Fx.shake(7.0)
+	Fx.burst(global_position, SAND, 26, 150.0)
+	Sfx.play_at("amheh_land", global_position, 0.05)
+	var p = _player()
+	if p != null:
+		var dd: Vector2 = p.global_position - global_position
+		if Vector2(dd.x, dd.y / 0.6).length() < LEAP_RADIUS:
+			_hurt(LEAP_DAMAGE, global_position)
+	wave_r = LEAP_RADIUS * 0.6
+	wave_hit = false
+
+
+## L'onda d'urto dopo il balzo: un anello che si allarga; si salta con lo scatto.
+func _update_wave(delta: float) -> void:
+	if wave_r < 0.0:
+		return
+	wave_r += WAVE_SPEED * delta
+	if wave_r > WAVE_MAX:
+		wave_r = -1.0
+		return
+	var p = _player()
+	if p == null or wave_hit or p.dash_t > 0.0:
+		return
+	var dd: Vector2 = p.global_position - global_position
+	var dist := Vector2(dd.x, dd.y / 0.6).length()
+	if absf(dist - wave_r) < 8.0:
+		wave_hit = _hurt(WAVE_DAMAGE, global_position)
+
+
+## Il ruggito: al massimo MAX_STONES pietre in campo. Una cade sempre vicino a te.
 func _drop_stones(n: int) -> void:
-	var p = get_tree().get_first_node_in_group("player")
+	var cur := 0
+	for c in get_parent().get_children():
+		if c is Hazards.FallingStone:
+			cur += 1
+	n = mini(n, MAX_STONES - cur)
+	if n <= 0:
+		return
+	var p = _player()
 	var spots: Array[Vector2] = []
-	if p != null and not p.dead:
-		spots.append(p.global_position + Vector2(randf_range(-10, 10), randf_range(-6, 6)))
+	if p != null:
+		spots.append(p.global_position + Vector2(randf_range(-30, 30), randf_range(-20, 20)))
 	var area := floor_rect.grow(-30.0)
 	var tries := 0
-	while spots.size() < n and tries < 80:
+	while spots.size() < n and tries < 60:
 		tries += 1
 		var c := Vector2(randf_range(area.position.x, area.end.x), randf_range(area.position.y, area.end.y))
 		if c.distance_to(global_position) < 70.0:
 			continue
 		var ok := true
 		for o in spots:
-			if o.distance_to(c) < 40.0:
+			if o.distance_to(c) < 60.0:
 				ok = false
-				break
 		if ok:
 			spots.append(c)
 	for i in range(spots.size()):
 		var stone := Hazards.FallingStone.new()
 		stone.position = spots[i]
-		stone.warn = 0.9 + i * 0.08
+		stone.warn = 0.9 + i * 0.1
 		get_parent().add_child(stone)
 
 
 func _start_tremble() -> void:
 	state = "tremble"
-	st = 1.8
+	st = TREMBLE
+	chain_left = 0
+	hp = 1.0
 	if ray != null and is_instance_valid(ray):
 		ray.queue_free()
-	hp = max_hp * 0.5
+	wave_r = -1.0
 	Fx.shake(10.0)
 	Fx.float_text(global_position + Vector2(0, -60), Lang.t("AKER TREMA"), Color(1, 0.85, 0.5))
 	Sfx.play_at("roar", global_position, 0.0)
-	_drop_stones(6)
 
 
-## Si divide: Ieri (sabbia) dalla testa di ovest... o di est, se si è girato; Domani dall'altra.
+## Si divide: Ieri (sabbia) dalla testa di sabbia, Domani (fuoco) da quella di fuoco.
 func _split() -> void:
 	split_done = true
+	bar_extra = 0.0
 	var ieri: Enemy = LionScene.instantiate()
 	var domani: Enemy = LionScene.instantiate()
 	ieri.set("kind", "ieri")
 	domani.set("kind", "domani")
-	var sand_side := -1.0 if not swapped else 1.0
-	ieri.position = global_position + Vector2(sand_side * 30.0, 4.0)
-	domani.position = global_position + Vector2(-sand_side * 30.0, 4.0)
+	ieri.position = _clamp_floor(global_position - fire_dir * 34.0 + Vector2(0, 4))
+	domani.position = _clamp_floor(global_position + fire_dir * 34.0 + Vector2(0, 4))
+	for l in [ieri, domani]:
+		l.max_hp = LION_HP
+		l.set("floor_rect", floor_rect)
 	ieri.set("partner", domani)
 	domani.set("partner", ieri)
-	ieri.set("floor_rect", floor_rect)
-	domani.set("floor_rect", floor_rect)
 	Fx.shake(12.0)
 	Fx.burst(global_position + Vector2(0, -30), Color(0.6, 0.6, 0.62), 30, 160.0)      # il disco spento si spezza
 	Fx.burst(global_position, SAND, 40, 200.0)
 	Sfx.play_at("serpent_erupt", global_position, 0.0)
+	Music.play("elite")                    # la seconda fase ha un'altra musica: si sente che è cambiato tutto
+	var g = get_tree().current_scene
+	if g != null and g.has_method("_banner"):
+		g._banner(Lang.t("Ieri e Domani"), Lang.t("«Io sono Ieri: ciò che è stato non torna.» «Io sono Domani: ciò che verrà non si ferma.»"), Color(1.0, 0.78, 0.4), 3.2)
 	split.emit([ieri, domani])
 	dead = true
 	remove_from_group("enemies")
@@ -286,14 +533,27 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 	if state == "tremble" or split_done:
 		Fx.burst(global_position + Vector2(0, -20), Color(1, 0.9, 0.6), 4, 40.0)
 		return
-	var m := 1.0
-	var p = get_tree().get_first_node_in_group("player")
+	var m := FLANK_MULT
+	var p = _player()
 	if p != null:
 		var rel: Vector2 = p.global_position - global_position
-		m = flank_mult if absf(rel.y) > absf(rel.x) * 0.55 else head_mult
+		var a := rad_to_deg(absf(fire_dir.angle_to(rel)))
+		if a < HEAD_CONE or a > 180.0 - HEAD_CONE:
+			m = HEAD_MULT
 	super.take_hit(dmg * m, dir, kb, can_burn)
-	if not dead and hp < max_hp * 0.5:
-		hp = max_hp * 0.5              # il colpo che porta a metà vita non va oltre: tocca ai due leoni
+	if not dead and hp <= 1.0:
+		_start_tremble()
+
+
+## La fase 1 non "muore": finita la vita trema e si divide.
+func die() -> void:
+	if split_done:
+		super.die()
+		return
+	dead = false
+	hp = 1.0
+	if state != "tremble":
+		_start_tremble()
 
 
 func _stagger_time() -> float:
@@ -304,67 +564,127 @@ func _on_hit(_dmg: float) -> void:
 	knock = Vector2.ZERO
 
 
+func _contact_damage() -> float:
+	return CONTACT
+
+
+## Per i bot delle prove: da che parte scappare adesso (Vector2.ZERO = niente da schivare).
+func bot_escape(pos: Vector2) -> Vector2:
+	var rel := pos - global_position
+	match state:
+		"charge_windup":
+			var side := charge_dir.orthogonal()
+			if absf(rel.dot(side)) < 40.0 and rel.dot(charge_dir) > -20.0:
+				return side * (1.0 if rel.dot(side) >= 0.0 else -1.0)
+		"breath_windup", "breath":
+			var side2 := fire_dir.orthogonal()
+			return side2 * (1.0 if rel.dot(side2) >= 0.0 else -1.0)
+		"leap_windup":
+			if pos.distance_to(jump_to) < LEAP_RADIUS + 16.0:
+				return (pos - jump_to).normalized() if pos != jump_to else Vector2.RIGHT
+		"bite_windup":
+			if rel.length() < BITE_REACH + HEAD_DIST + 10.0:
+				return rel.normalized()
+	return Vector2.ZERO
+
+
 # ---------------------------------------------------------------- disegno
 
 func _draw() -> void:
-	# l'ombra larga dei due corpi (quella della base è tonda)
-	draw_set_transform(Vector2(0, 2), 0.0, Vector2(1.0, 0.22))
+	_draw_warnings_under()
+	draw_set_transform(Vector2(0, 2), fire_dir.angle(), Vector2(1.0, 0.3))
 	draw_circle(Vector2.ZERO, 62.0, Color(0, 0, 0, 0.35))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	_draw_body(flash_t > 0.0)
-	_draw_warnings()
+	_draw_warnings_over()
 
 
+## Il corpo ruotato lungo l'asse. Se l'asse guarda a sinistra il disegno si capovolge e le teste si
+## scambiano posto, così i leoni non stanno mai a testa in giù.
 func _draw_body(flash: bool) -> void:
-	var fx := 1.0
-	if state == "turn":
-		fx = absf(cos((1.0 - st / 0.7) * PI))
+	var a := fire_dir.angle()
+	var flip := absf(a) > PI * 0.5
+	var rot := a - PI * signf(a) if flip else a
 	var shake := Vector2(sin(t * 70.0) * 2.0, 0.0) if state == "tremble" else Vector2.ZERO
-	draw_set_transform(shake, 0.0, Vector2(maxf(fx, 0.05), 1.0))
-	var west: Dictionary = AkerArt.IERI if not swapped else AkerArt.DOMANI
-	var east: Dictionary = AkerArt.DOMANI if not swapped else AkerArt.IERI
-	var mouth_w := 0.0
-	var mouth_e := 0.0
-	var k := 0.0
-	if state in ["breath_windup", "breath", "ray"]:
-		k = 1.0 if state != "breath_windup" else 1.0 - st / breath_windup
-		if side < 0.0:
-			mouth_w = k
+	var lift := 0.0
+	if state == "leap":
+		lift = -sin((1.0 - st / LEAP_TIME) * PI) * 34.0
+	draw_set_transform(shake + Vector2(0, lift), rot, Vector2.ONE)
+	var west: Dictionary = AkerArt.IERI if not flip else AkerArt.DOMANI
+	var east: Dictionary = AkerArt.DOMANI if not flip else AkerArt.IERI
+	var mouth_fire := 0.0
+	var mouth_sand := 0.0
+	if state in ["bite_windup", "bite", "charge_windup", "charge"]:
+		var fs := facing_sign(bite_dir if state.begins_with("bite") else charge_dir)
+		if fs > 0.0:
+			mouth_fire = 1.0
 		else:
-			mouth_e = k
-	elif state in ["roar", "tremble"]:
-		mouth_w = 1.0
-		mouth_e = 1.0
-	var fire_glow := 0.4 + (0.6 if state == "ray" else 0.0)
-	AkerArt.lion(self, Vector2(-22, 0), -1.0, S, west, "lying", t, mouth_w, fire_glow if west == AkerArt.DOMANI else 0.0, flash, false)
-	AkerArt.lion(self, Vector2(22, 0), 1.0, S, east, "lying", t, mouth_e, fire_glow if east == AkerArt.DOMANI else 0.0, flash, false)
+			mouth_sand = 1.0
+	elif state in ["breath_windup", "breath", "roar", "tremble"]:
+		mouth_fire = 1.0
+		mouth_sand = 1.0
+	elif state == "ray":
+		mouth_fire = 1.0
+	var glow := 0.4 + (0.6 if state in ["ray", "breath"] else 0.0)
+	var mw := mouth_sand if west == AkerArt.IERI else mouth_fire
+	var me := mouth_fire if east == AkerArt.DOMANI else mouth_sand
+	AkerArt.lion(self, Vector2(-22, 0), -1.0, S, west, "lying", t, mw, glow if west == AkerArt.DOMANI else 0.0, flash, false)
+	AkerArt.lion(self, Vector2(22, 0), 1.0, S, east, "lying", t, me, glow if east == AkerArt.DOMANI else 0.0, flash, false)
 	# il disco del sole spento portato sulla schiena, tra i due leoni
 	var dc := Vector2(0, -38)
 	draw_circle(dc, 11.0, OUT)
 	draw_circle(dc, 10.0, Color(0.4, 0.4, 0.44) if not flash else Color.WHITE)
 	draw_circle(dc + Vector2(-2, -2), 6.0, Color(0.5, 0.5, 0.54) if not flash else Color.WHITE)
 	if state == "tremble":
-		var kk := 1.0 - st / 1.8
+		var kk := 1.0 - st / TREMBLE
 		for i in range(5):
-			var a := i * 1.3
-			draw_line(dc, dc + Vector2.from_angle(a) * 10.0 * kk, Color(1, 0.85, 0.5), 1.2)
+			draw_line(dc, dc + Vector2.from_angle(i * 1.3) * 10.0 * kk, Color(1, 0.85, 0.5), 1.2)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
-func _draw_warnings() -> void:
-	if state == "breath_windup" or state == "breath":
-		var o := head_pos(side) - global_position
-		var half := deg_to_rad(breath_angle) * 0.5
-		var k := 1.0 if state == "breath" else 1.0 - st / breath_windup
-		var pts := PackedVector2Array([o])
-		for i in range(13):
-			pts.append(o + aim.rotated(-half + half * 2.0 * i / 12.0) * breath_range)
-		var col := Color(0.95, 0.75, 0.4, 0.12 + 0.2 * k) if state == "breath_windup" else Color(0.85, 0.68, 0.4, 0.4)
-		draw_colored_polygon(pts, col)
-		var edge := pts.slice(1)
-		draw_polyline(edge, Color(1, 0.35, 0.15, 0.5 + 0.4 * k), 2.0)
-		if state == "breath":
-			for i in range(8):
-				var f := fmod(t * 3.0 + i * 0.125, 1.0)
-				var dd := aim.rotated((i - 3.5) * half / 4.0) * breath_range * f
-				draw_circle(o + dd, 2.0 + 3.0 * f, Color(0.9, 0.75, 0.48, 0.7 * (1.0 - f)))
+## Gli avvisi a terra (sotto il leone): la linea della carica, l'ombra del balzo, l'onda.
+func _draw_warnings_under() -> void:
+	if state == "charge_windup":
+		var k := 1.0 - st / (CHARGE_WINDUP if charges == 0 else CHARGE_REAIM)
+		var ln := 520.0
+		var side := charge_dir.orthogonal() * 22.0
+		draw_colored_polygon(PackedVector2Array([side, charge_dir * ln + side, charge_dir * ln - side, -side]), Color(1, 0.2, 0.15, 0.1 + 0.2 * k))
+		draw_line(Vector2.ZERO, charge_dir * ln, Color(1, 0.25, 0.15, 0.5 + 0.4 * k), 2.0)
+	if state in ["leap_windup", "leap"]:
+		var c := jump_to - global_position
+		var k2 := 1.0 if state == "leap" else 1.0 - st / LEAP_WINDUP
+		draw_set_transform(c, 0.0, Vector2(1.0, 0.6))
+		draw_circle(Vector2.ZERO, LEAP_RADIUS * (0.4 + 0.6 * k2), Color(0, 0, 0, 0.2 + 0.25 * k2))
+		draw_arc(Vector2.ZERO, LEAP_RADIUS, 0.0, TAU, 32, Color(1, 0.3, 0.15, 0.6 + 0.3 * k2), 2.0)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	if wave_r > 0.0:
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, 0.6))
+		var fade := 1.0 - wave_r / WAVE_MAX
+		draw_arc(Vector2.ZERO, wave_r, 0.0, TAU, 40, Color(0.95, 0.8, 0.5, 0.8 * fade), 6.0)
+		draw_arc(Vector2.ZERO, wave_r, 0.0, TAU, 40, Color(1, 1, 0.9, 0.9 * fade), 2.0)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+## Gli avvisi sopra: i due coni del soffio e la zona del morso.
+func _draw_warnings_over() -> void:
+	if state in ["breath_windup", "breath"]:
+		var k := 1.0 if state == "breath" else 1.0 - st / BREATH_WINDUP
+		var half := deg_to_rad(BREATH_HALF)
+		for sg in [1.0, -1.0]:
+			var o := head_pos(sg) - global_position
+			var axis: Vector2 = fire_dir * sg
+			var pts := PackedVector2Array([o])
+			for i in range(11):
+				pts.append(o + axis.rotated(-half + half * 2.0 * i / 10.0) * BREATH_RANGE)
+			var col := FIRE if sg > 0.0 else SAND
+			draw_colored_polygon(pts, Color(col, (0.12 + 0.2 * k) if state == "breath_windup" else 0.42))
+			draw_polyline(pts.slice(1), Color(1, 0.35, 0.15, 0.5 + 0.4 * k), 2.0)
+			if state == "breath":
+				for i in range(6):
+					var f := fmod(t * 3.0 + i * 0.17, 1.0)
+					draw_circle(o + axis.rotated((i - 2.5) * half / 3.0) * BREATH_RANGE * f, 2.0 + 3.0 * f, Color(col, 0.7 * (1.0 - f)))
+	if state == "bite_windup":
+		var k3 := 1.0 - st / float(BITE_WINDUP[bite_n])
+		var c := head_pos(facing_sign(bite_dir)) - global_position + bite_dir * (12.0 + BITE_LUNGE * 0.5)
+		draw_circle(c, BITE_REACH, Color(1, 0.25, 0.15, 0.08 + 0.18 * k3))
+		draw_arc(c, BITE_REACH, 0.0, TAU, 28, Color(1, 0.3, 0.15, 0.5 + 0.4 * k3), 2.0)

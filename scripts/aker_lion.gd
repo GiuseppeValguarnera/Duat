@@ -1,188 +1,226 @@
 extends Enemy
-## Ieri e Domani: i due leoni di Aker, separati a metà dello scontro (aker.gd).
-## - Ieri (ovest, la sabbia, il tramonto): lento e pesante. Carica in linea lasciando una scia di
-##   sabbie mobili; onda di sabbia a cono che ti spinge via.
-## - Domani (est, il fuoco, l'alba): agile. Balzo con il cerchio rosso dove atterra; raggio dell'alba.
-## REGOLA: non fanno mai una mossa grande nello stesso momento. Mentre uno attacca, l'altro ti gira
-## intorno e a volte ruggisce (cadono pietre). Due boss insieme, sul telefono, sarebbero caos.
-## Quando uno cade, l'altro ruggisce e PRENDE la mossa forte del compagno: Ieri il raggio dell'alba,
-## Domani la carica di sabbia. È più veloce.
-## Peso del Cuore "L'ira di Aker": se non finisci il secondo entro 8 secondi, il compagno caduto
-## rinasce dalla sua sabbia o dal suo fuoco con metà della vita. Ieri e Domani non muoiono da soli.
+## Ieri e Domani: i due leoni di Aker, separati quando finisce la fase 1 (aker.gd). Attaccano
+## INSIEME (non più a turno) e ti danno la caccia.
+## - Ieri (ovest, la sabbia, il tramonto): carica in linea con scia di sabbie mobili; onda di sabbia a
+##   cono che ti spinge.
+## - Domani (est, il fuoco, l'alba): balzo con l'ombra dove atterra; raggio dell'alba.
+## - Tenaglia: i due si mettono ai lati opposti e caricano insieme attraverso di te: si esce di lato.
+## Quando uno cade, l'altro si infuria: prende la mossa del compagno ed è il 25% più veloce e più
+## forte fino alla fine. Peso del Cuore "L'ira di Aker": la furia vale il doppio (+50%) e i due
+## cominciano già un po' infuriati (+10%).
+## Tutti i numeri da tarare sono qui sotto.
 
 @warning_ignore("unused_signal")
 signal summon(kinds: Array)        # rinforzi: il gioco lo collega a ogni boss
-signal split(lions: Array)         ## l'ira di Aker: il compagno che rinasce (game.gd lo aggiunge)
+@warning_ignore("unused_signal")
+signal split(lions: Array)         # il gioco lo collega (Aker diviso); i leoni non si dividono più
 
-const LionScene := preload("res://scenes/aker_lion.tscn")
+# ---------------------------------------------------------------- numeri da tarare
+const PROWL_SPEED := {"ieri": 72.0, "domani": 92.0}
+const PROWL_DIST := {"ieri": 80.0, "domani": 130.0}
+const RECOVER := 1.0                  ## la pausa dopo una mossa grande
+const FURY := 0.25                    ## il sopravvissuto: +25% velocità e danni, avvisi più corti
+const IRA_FURY := 0.5                 ## con il Peso del Cuore "L'ira di Aker"
+const IRA_START := 0.1                ## con l'ira cominciano già infuriati del 10%
+const CHARGE_WINDUP := 0.65
+const CHARGE_TIME := 0.6
+const CHARGE_SPEED := 430.0
+const CHARGE_DAMAGE := 20.0
+const WAVE_WINDUP := 0.55
+const WAVE_TIME := 0.6
+const WAVE_RANGE := 150.0
+const WAVE_HALF := 30.0
+const WAVE_DAMAGE := 12.0
+const WAVE_PUSH := 200.0
+const POUNCE_WINDUP := 0.55
+const POUNCE_TIME := 0.45
+const POUNCE_RADIUS := 34.0
+const POUNCE_DAMAGE := 20.0
+const RAY_WARN := 0.6
+const RAY_TIME := 1.5
+const RAY_SWEEP := 90.0
+const RAY_DAMAGE := 10.0
+const PINCER_COOLDOWN := 11.0         ## la tenaglia, ogni tanto
+const PINCER_OFFSET := 170.0          ## quanto lontano da te si mettono prima di caricare
+const PINCER_MOVE := 1.0              ## tempo massimo per mettersi in posizione
+const PINCER_WINDUP := 0.7
+const MIN_WINDUP := 0.45              ## anche infuriati, mai avvisi più corti di così
+const CONTACT := 9.0
 const S := 1.6
 const SAND := Color(0.78, 0.62, 0.38)
-const REVIVE_TIME := 8.0
 
 @export var kind := "ieri"           ## "ieri" (sabbia) o "domani" (fuoco)
 
-var partner: Enemy = null
-var partner_pos := Vector2.ZERO
+var partner = null                   # l'altro leone
 var floor_rect := Rect2(32, 64, 736, 384)
 var state := "intro"
 var st := 0.9
 var aim := Vector2.RIGHT
 var sx := 1.0                        # verso dove guarda (disegno)
 var alone := false                   # il compagno è caduto: ha preso la sua mossa
-var ira := false
-var revive_t := -1.0
-var revive_pos := Vector2.ZERO
-var roar_cd := 4.0
+var fury := 0.0                      # quanto è infuriato (0 = normale)
 var circle_dir := 1.0
 var hit_once := false
-var leap_from := Vector2.ZERO
-var leap_to := Vector2.ZERO
+var jump_from := Vector2.ZERO
+var jump_to := Vector2.ZERO
 var trail_last := Vector2.ZERO
 var ray: Node2D = null
-
-@export var charge_windup := 0.75
-@export var charge_time := 0.55
-@export var charge_speed := 470.0
-@export var charge_damage := 16.0
-@export var wave_windup := 0.6
-@export var wave_time := 0.6
-@export var wave_range := 150.0
-@export var wave_damage := 8.0
-@export var pounce_windup := 0.6
-@export var pounce_time := 0.4
-@export var pounce_radius := 30.0
-@export var pounce_damage := 15.0
+var pincer_cd := 6.0
+var pincer_spot := Vector2.ZERO
+var windup_len := 0.6
+var paired := false                  # aveva un compagno (un oggetto liberato vale null: serve ricordarlo)
 
 
 func _ready() -> void:
 	is_boss = true
-	speed = 44.0 if kind == "ieri" else 72.0
-	ira = Weights.rank("ira_aker") > 0
+	speed = PROWL_SPEED.get(kind, 80.0)
+	if Weights.rank("ira_aker") > 0:
+		fury = IRA_START
 	circle_dir = 1.0 if kind == "ieri" else -1.0
+	paired = partner != null
 	super._ready()
 
 
 func busy() -> bool:
-	return state in ["charge_windup", "charge", "wave_windup", "wave", "pounce_windup", "pounce", "ray"]
-
-
-func _fast() -> float:
-	return 0.85 if alone else 1.0         # da solo, gli avvisi sono un po' più corti
+	return state not in ["prowl", "recover", "intro"]
 
 
 func _partner_alive() -> bool:
 	return partner != null and is_instance_valid(partner) and not partner.dead
 
 
+func _player():
+	var p = get_tree().get_first_node_in_group("player")
+	return p if p != null and not p.dead else null
+
+
+func _hurt(amount: float, from: Vector2) -> bool:
+	var p = _player()
+	return p != null and p.take_damage(amount * (1.0 + fury), from, self)
+
+
+## L'avviso, accorciato dalla furia ma mai sotto MIN_WINDUP.
+func _wu(base: float) -> float:
+	windup_len = maxf(MIN_WINDUP, base / (1.0 + fury))
+	return windup_len
+
+
 func head_pos() -> Vector2:
 	return global_position + Vector2(sx * 26.0, -31.0)
 
 
+func _clamp_floor(p: Vector2) -> Vector2:
+	var r := floor_rect.grow(-30.0)
+	return Vector2(clampf(p.x, r.position.x, r.end.x), clampf(p.y, r.position.y, r.end.y))
+
+
 func _behave(delta: float, to: Vector2) -> Vector2:
 	st -= delta
-	roar_cd -= delta
-	if _partner_alive():
-		partner_pos = partner.global_position
-	elif not alone:
+	pincer_cd -= delta
+	if not alone and paired and not _partner_alive():
 		_partner_fell()
-	if revive_t > 0.0:
-		revive_t -= delta
-		if revive_t <= 0.0:
-			_revive_partner()
+	if ray != null and is_instance_valid(ray):
+		ray.global_position = head_pos()
 	if to != Vector2.ZERO and not busy():
 		sx = -1.0 if to.x < 0.0 else 1.0
 	var d := to.length() if to != Vector2.ZERO else 999.0
+	var spd := speed * (1.0 + fury)
 	match state:
 		"intro":
 			# Ieri esce verso ovest, Domani verso est: l'arena ti dice chi è chi
 			if st <= 0.0:
-				_next(0.4)
-			return Vector2(-1.0 if kind == "ieri" else 1.0, 0.0) * speed * 2.0
+				_next(0.3)
+			return Vector2(-1.0 if kind == "ieri" else 1.0, 0.0) * spd * 2.0
 		"prowl":
 			if st <= 0.0:
 				_choose(to, d)
 				return Vector2.ZERO
 			if to == Vector2.ZERO:
 				return Vector2.ZERO
-			# ti gira intorno alla sua distanza: Ieri più vicino, Domani più largo
-			var want := 110.0 if kind == "ieri" else 150.0
+			# ti dà la caccia: si avvicina alla sua distanza girandoti intorno
+			var want: float = PROWL_DIST.get(kind, 100.0)
 			var u := to / d
-			var radial := u * clampf((d - want) / 40.0, -1.0, 1.0)
-			return _steer((radial + u.orthogonal() * circle_dir * 0.8).normalized() * speed, delta)
-		"roar":
+			var radial := u * clampf((d - want) / 30.0, -1.0, 1.0)
+			return _steer((radial * 1.4 + u.orthogonal() * circle_dir * 0.6).normalized() * spd, delta)
+		"recover":
 			if st <= 0.0:
-				_drop_stones(3)
-				_next(0.6)
+				_next(0.25 + randf() * 0.35)
 			return Vector2.ZERO
+		"pincer_move":
+			var go := pincer_spot - global_position
+			if go.length() < 10.0 or st <= 0.0:
+				_begin_charge(to, PINCER_WINDUP)
+				return Vector2.ZERO
+			return go.normalized() * 230.0
 		"charge_windup":
-			if st > charge_windup * _fast() * 0.4 and to != Vector2.ZERO:
+			if st > windup_len * 0.4 and to != Vector2.ZERO:
 				aim = to / d
 				sx = -1.0 if aim.x < 0.0 else 1.0
 			if st <= 0.0:
 				state = "charge"
-				st = charge_time
+				st = CHARGE_TIME
 				hit_once = false
 				trail_last = global_position
 				Sfx.play_at("charge", global_position, 0.05)
 			return Vector2.ZERO
 		"charge":
-			_charge_hit()
-			if global_position.distance_to(trail_last) > 38.0:
-				trail_last = global_position
-				var q := Hazards.Quicksand.new()
-				q.radii = Vector2(22, 12)
-				q.life = 3.5
-				q.position = global_position
-				get_parent().add_child(q)
+			if not hit_once:
+				var p = _player()
+				if p != null and p.global_position.distance_to(global_position) < 26.0:
+					hit_once = _hurt(CHARGE_DAMAGE, global_position)
+			if kind == "ieri" or alone:
+				if global_position.distance_to(trail_last) > 36.0:
+					trail_last = global_position
+					var q := Hazards.Quicksand.new()
+					q.radii = Vector2(22, 12)
+					q.life = 3.5
+					q.position = global_position
+					get_parent().add_child(q)
 			if st <= 0.0:
-				state = "recover"
-				st = 0.9
+				_recover()
 				return Vector2.ZERO
-			return aim * charge_speed
+			return aim * CHARGE_SPEED * (1.0 + fury * 0.5)
 		"wave_windup":
-			if st > wave_windup * _fast() * 0.5 and to != Vector2.ZERO:
+			if st > windup_len * 0.5 and to != Vector2.ZERO:
 				aim = to / d
 				sx = -1.0 if aim.x < 0.0 else 1.0
 			if st <= 0.0:
 				state = "wave"
-				st = wave_time
+				st = WAVE_TIME
 				hit_once = false
 				Sfx.play_at("fire_whoosh", global_position, 0.2)
 				var q := Hazards.Quicksand.new()
 				q.radii = Vector2(26, 15)
 				q.life = 4.0
-				q.position = head_pos() + aim * wave_range * 0.6 + Vector2(0, 28)
+				q.position = head_pos() + aim * WAVE_RANGE * 0.6 + Vector2(0, 28)
 				get_parent().add_child(q)
 			return Vector2.ZERO
 		"wave":
 			_wave(delta)
 			if st <= 0.0:
-				state = "recover"
-				st = 0.7
+				_recover()
 			return Vector2.ZERO
 		"pounce_windup":
+			if st > windup_len * 0.4 and to != Vector2.ZERO:
+				jump_to = _clamp_floor(global_position + to)
 			if st <= 0.0:
 				state = "pounce"
-				st = pounce_time
-				leap_from = global_position
+				st = POUNCE_TIME
+				jump_from = global_position
 				Sfx.play_at("amheh_growl", global_position, 0.1)
 			return Vector2.ZERO
 		"pounce":
 			if st <= 0.0:
 				_land()
-				state = "recover"
-				st = 0.7
+				_recover()
 				return Vector2.ZERO
-			return (leap_to - leap_from) / pounce_time
+			return (jump_to - jump_from) / POUNCE_TIME
 		"ray":
 			if st <= 0.0:
-				state = "recover"
-				st = 0.6
-			return Vector2.ZERO
-		"recover":
-			if st <= 0.0:
-				_next(0.5 + randf() * 0.5)
-			return Vector2.ZERO
+				_recover()
+				return Vector2.ZERO
+			# anche mentre il raggio gira continua a cacciarti, piano
+			return _steer(to.normalized() * spd * 0.4, delta) if d > 60.0 else Vector2.ZERO
 	return Vector2.ZERO
 
 
@@ -191,59 +229,90 @@ func _next(time: float) -> void:
 	st = time
 
 
+func _recover() -> void:
+	state = "recover"
+	st = RECOVER / (1.0 + fury * 0.5)
+
+
 func _choose(to: Vector2, d: float) -> void:
-	# a turno: se il compagno sta attaccando, questo gira intorno (e a volte ruggisce)
-	if _partner_alive() and partner.call("busy"):
-		if roar_cd <= 0.0 and partner.get("state") != "roar":
-			state = "roar"
-			st = 0.8
-			roar_cd = randf_range(7.0, 9.0)
-			Sfx.play_at("roar", global_position, 0.1)
-			Fx.shake(4.0)
-			return
-		_next(0.5)
-		return
 	if to == Vector2.ZERO:
-		_next(0.5)
+		_next(0.4)
+		return
+	# insieme, ma mai nello stesso istante: se il compagno ha appena cominciato, un attimo dopo
+	if _partner_alive() and partner.state.ends_with("_windup") and partner.st > 0.35:
+		_next(0.35)
+		return
+	# la tenaglia la decide Ieri, per tutti e due
+	if kind == "ieri" and _partner_alive() and pincer_cd <= 0.0 and not partner.busy():
+		_pincer(to)
 		return
 	var r := randf()
 	if kind == "ieri":
-		if alone and r < 0.3:
+		if alone and r < 0.35:
 			_ray(to)
-		elif d < wave_range + 20.0 and r < 0.6:
+		elif d < WAVE_RANGE and r < 0.55:
 			state = "wave_windup"
-			st = wave_windup * _fast()
+			st = _wu(WAVE_WINDUP)
 			aim = to / d
 			Sfx.play_at("amheh_growl", global_position, 0.1)
 		else:
-			state = "charge_windup"
-			st = charge_windup * _fast()
-			aim = to / d
-			Sfx.play_at("amheh_growl", global_position, 0.1)
+			_begin_charge(to, CHARGE_WINDUP)
 		return
 	# Domani
-	if alone and r < 0.3:
-		state = "charge_windup"
-		st = charge_windup * _fast()
-		aim = to / d
-	elif d < 220.0 and r < 0.6:
+	if alone and r < 0.35:
+		_begin_charge(to, CHARGE_WINDUP)
+	elif d < 230.0 and r < 0.6:
 		state = "pounce_windup"
-		st = pounce_windup * _fast()
-		leap_to = global_position + to
-		leap_to.x = clampf(leap_to.x, floor_rect.position.x + 20.0, floor_rect.end.x - 20.0)
-		leap_to.y = clampf(leap_to.y, floor_rect.position.y + 20.0, floor_rect.end.y - 10.0)
+		st = _wu(POUNCE_WINDUP)
+		jump_to = _clamp_floor(global_position + to)
 	else:
 		_ray(to)
+
+
+func _begin_charge(to: Vector2, windup: float) -> void:
+	state = "charge_windup"
+	st = _wu(windup)
+	if to != Vector2.ZERO:
+		aim = to.normalized()
+		sx = -1.0 if aim.x < 0.0 else 1.0
+	Sfx.play_at("amheh_growl", global_position, 0.1)
+
+
+## La tenaglia: i due si mettono ai lati opposti di te, sulla stessa linea, e caricano insieme.
+## La linea è orizzontale o verticale: si esce di lato, lontano dalle due cariche.
+func _pincer(to: Vector2) -> void:
+	pincer_cd = PINCER_COOLDOWN
+	partner.pincer_cd = PINCER_COOLDOWN
+	var center: Vector2 = global_position + to
+	var axis := Vector2.RIGHT if randf() < 0.6 else Vector2.DOWN
+	var off := PINCER_OFFSET if axis == Vector2.RIGHT else PINCER_OFFSET * 0.7
+	var a := _clamp_floor(center - axis * off)
+	var b := _clamp_floor(center + axis * off)
+	# ognuno va dal lato più vicino a dove si trova
+	if global_position.distance_to(b) < global_position.distance_to(a):
+		var tmp := a
+		a = b
+		b = tmp
+	state = "pincer_move"
+	st = PINCER_MOVE
+	pincer_spot = a
+	partner.state = "pincer_move"
+	partner.st = PINCER_MOVE
+	partner.pincer_spot = b
+	Sfx.play_at("roar", global_position, 0.05)
+	Fx.float_text(center + Vector2(0, -40), Lang.t("TENAGLIA"), Color(1, 0.5, 0.3))
 
 
 func _ray(to: Vector2) -> void:
 	state = "ray"
 	var r := Hazards.DawnRay.new()
 	var o := head_pos()
-	var sw := deg_to_rad(90.0) * (1.0 if randf() < 0.5 else -1.0)
+	var sw := deg_to_rad(RAY_SWEEP) * (1.0 if randf() < 0.5 else -1.0)
 	r.angle = (global_position + to + Vector2(0, -6) - o).angle() - sw * 0.5
 	r.sweep = sw
-	r.warn = 0.7 * _fast()
+	r.warn = maxf(MIN_WINDUP, RAY_WARN / (1.0 + fury))
+	r.dur = RAY_TIME
+	r.damage = RAY_DAMAGE * (1.0 + fury)
 	r.src = self
 	r.position = o
 	get_parent().add_child(r)
@@ -251,99 +320,41 @@ func _ray(to: Vector2) -> void:
 	st = r.warn + r.dur + 0.1
 
 
-## Distanza di un punto dalla linea della carica (per i bot delle prove).
-func _charge_line_dist(p: Vector2) -> float:
-	var a := global_position
-	var ab := aim * charge_speed * charge_time
-	var k := clampf((p - a).dot(ab) / maxf(ab.length_squared(), 0.01), 0.0, 1.0)
-	return p.distance_to(a + ab * k)
-
-
-func _charge_hit() -> void:
-	if hit_once:
-		return
-	var p = get_tree().get_first_node_in_group("player")
-	if p != null and not p.dead and p.global_position.distance_to(global_position) < 24.0:
-		if p.take_damage(charge_damage, global_position, self):
-			hit_once = true
-
-
 func _wave(delta: float) -> void:
-	var p = get_tree().get_first_node_in_group("player")
-	if p == null or p.dead or p.dash_t > 0.0:
+	var p = _player()
+	if p == null or p.dash_t > 0.0:
 		return
 	var o := head_pos()
 	var rel: Vector2 = p.global_position + Vector2(0, -6) - o
-	if rel.length() < wave_range and absf(aim.angle_to(rel)) < deg_to_rad(30.0):
-		p.move_and_collide(rel.normalized() * 180.0 * delta)
-		if not hit_once and p.take_damage(wave_damage, o, self):
-			hit_once = true
+	if rel.length() < WAVE_RANGE and absf(aim.angle_to(rel)) < deg_to_rad(WAVE_HALF):
+		p.move_and_collide(rel.normalized() * WAVE_PUSH * delta)
+		if not hit_once:
+			hit_once = _hurt(WAVE_DAMAGE, o)
 
 
 func _land() -> void:
 	Fx.shake(5.0)
 	Fx.burst(global_position, Color(1.0, 0.6, 0.2), 24, 140.0)
 	Sfx.play_at("amheh_land", global_position, 0.05)
-	var p = get_tree().get_first_node_in_group("player")
-	if p != null and not p.dead:
+	var p = _player()
+	if p != null:
 		var dd: Vector2 = p.global_position - global_position
-		if Vector2(dd.x, dd.y / 0.6).length() < pounce_radius + 4.0:
-			p.take_damage(pounce_damage, global_position, self)
+		if Vector2(dd.x, dd.y / 0.6).length() < POUNCE_RADIUS + 4.0:
+			_hurt(POUNCE_DAMAGE, global_position)
 
 
-func _drop_stones(n: int) -> void:
-	var p = get_tree().get_first_node_in_group("player")
-	var spots: Array[Vector2] = []
-	if p != null and not p.dead:
-		spots.append(p.global_position + Vector2(randf_range(-10, 10), randf_range(-6, 6)))
-	var area := floor_rect.grow(-30.0)
-	var tries := 0
-	while spots.size() < n and tries < 60:
-		tries += 1
-		var c := Vector2(randf_range(area.position.x, area.end.x), randf_range(area.position.y, area.end.y))
-		var ok := c.distance_to(global_position) > 50.0
-		for o in spots:
-			if o.distance_to(c) < 40.0:
-				ok = false
-		if ok:
-			spots.append(c)
-	for i in range(spots.size()):
-		var stone := Hazards.FallingStone.new()
-		stone.position = spots[i]
-		stone.warn = 0.9 + i * 0.1
-		get_parent().add_child(stone)
-
-
-## Il compagno è caduto: ruggisce e prende la sua mossa forte. Con l'ira di Aker parte il conto
-## alla rovescia: se non lo finisci in tempo, il compagno rinasce.
+## Il compagno è caduto: ruggisce, prende la sua mossa e si infuria fino alla fine.
 func _partner_fell() -> void:
 	alone = true
-	speed *= 1.2
-	Fx.shake(7.0)
+	fury += IRA_FURY if Weights.rank("ira_aker") > 0 else FURY
+	Fx.shake(8.0)
 	Sfx.play_at("roar", global_position, 0.0)
+	var g = get_tree().current_scene
+	var line := Lang.t("«Domani è caduto? Allora Ieri non avrà più fine.»") if kind == "ieri" else Lang.t("«Ieri è sepolto. Ora ogni cosa è Domani.»")
+	if g != null and g.has_method("_banner"):
+		g._banner(Lang.t("Ieri") if kind == "ieri" else Lang.t("Domani"), line, Color(1.0, 0.6, 0.3), 2.6)
 	var txt := Lang.t("IERI PRENDE IL FUOCO DI DOMANI") if kind == "ieri" else Lang.t("DOMANI PRENDE LA SABBIA DI IERI")
 	Fx.float_text(global_position + Vector2(0, -50), txt, Color(1, 0.85, 0.5))
-	if ira:
-		revive_t = REVIVE_TIME
-		revive_pos = partner_pos
-		Fx.float_text(revive_pos + Vector2(0, -30), Lang.t("RINASCERÀ"), Color(1, 0.5, 0.3))
-
-
-func _revive_partner() -> void:
-	revive_t = -1.0
-	var other: Enemy = LionScene.instantiate()
-	other.set("kind", "domani" if kind == "ieri" else "ieri")
-	other.position = revive_pos
-	other.set("partner", self)
-	other.set("floor_rect", floor_rect)
-	other.max_hp = 210.0
-	partner = other
-	alone = false
-	speed /= 1.2
-	Fx.shake(8.0)
-	Fx.burst(revive_pos, Color(1.0, 0.7, 0.3) if kind == "ieri" else SAND, 40, 160.0)
-	Sfx.play_at("roar", revive_pos, 0.0)
-	split.emit([other])
 
 
 func _stagger_time() -> float:
@@ -352,6 +363,27 @@ func _stagger_time() -> float:
 
 func _on_hit(_dmg: float) -> void:
 	knock *= 0.15
+
+
+func _contact_damage() -> float:
+	return CONTACT * (1.0 + fury)
+
+
+## Per i bot delle prove: da che parte scappare adesso (Vector2.ZERO = niente da schivare).
+func bot_escape(pos: Vector2) -> Vector2:
+	var rel := pos - global_position
+	match state:
+		"charge_windup":
+			var side := aim.orthogonal()
+			if absf(rel.dot(side)) < 30.0 and rel.dot(aim) > -20.0:
+				return side * (1.0 if rel.dot(side) >= 0.0 else -1.0)
+		"wave_windup":
+			if rel.length() < WAVE_RANGE + 16.0:
+				return rel.normalized() if rel != Vector2.ZERO else Vector2.RIGHT
+		"pounce_windup":
+			if pos.distance_to(jump_to) < POUNCE_RADIUS + 14.0:
+				return (pos - jump_to).normalized() if pos != jump_to else Vector2.RIGHT
+	return Vector2.ZERO
 
 
 # ---------------------------------------------------------------- disegno
@@ -373,15 +405,18 @@ func _draw_body(flash: bool) -> void:
 		pose = "walk"
 	var lift := Vector2.ZERO
 	if state == "pounce":
-		lift = Vector2(0, -sin((1.0 - st / pounce_time) * PI) * 26.0)
+		lift = Vector2(0, -sin((1.0 - st / POUNCE_TIME) * PI) * 26.0)
 	var mouth := 0.0
-	if state in ["charge_windup", "wave_windup", "pounce_windup"]:
-		mouth = 1.0 - st / maxf(0.05, (charge_windup if state == "charge_windup" else (wave_windup if state == "wave_windup" else pounce_windup)) * _fast())
-	elif state in ["roar", "wave", "ray"]:
+	if state.ends_with("_windup"):
+		mouth = 1.0 - st / maxf(0.05, windup_len)
+	elif state in ["wave", "ray", "pincer_move"]:
 		mouth = 1.0
 	var glow := 0.0
 	if kind == "domani" or alone:
 		glow = 0.35 + (0.65 if state in ["ray", "pounce"] else 0.0)
+	if fury > 0.0:
+		# la furia: un alone rosso che pulsa
+		draw_circle(lift + Vector2(0, -16), 26.0 + 3.0 * sin(t * 8.0), Color(1.0, 0.25, 0.1, 0.12 + fury * 0.3))
 	AkerArt.lion(self, lift + Vector2(-2, 0), sx, S, pal, pose, t, mouth, glow, flash)
 	if alone and kind == "ieri":
 		# Ieri ha preso il fuoco: braci che salgono dalla criniera
@@ -391,34 +426,26 @@ func _draw_body(flash: bool) -> void:
 
 
 func _draw_warnings() -> void:
-	if state == "charge_windup":
-		var k := 1.0 - st / (charge_windup * _fast())
-		var ln := charge_speed * charge_time
+	if state == "charge_windup" or state == "pincer_move":
+		var k := 1.0 - st / windup_len if state == "charge_windup" else 0.3
+		var ln := CHARGE_SPEED * CHARGE_TIME * (1.0 + fury * 0.5)
 		var side := aim.orthogonal() * 14.0
-		draw_colored_polygon(PackedVector2Array([side, aim * ln + side, aim * ln - side, -side]), Color(1, 0.2, 0.15, 0.1 + 0.2 * k))
-		draw_line(Vector2.ZERO, aim * ln, Color(1, 0.25, 0.15, 0.5 + 0.4 * k), 2.0)
+		if state == "charge_windup":
+			draw_colored_polygon(PackedVector2Array([side, aim * ln + side, aim * ln - side, -side]), Color(1, 0.2, 0.15, 0.1 + 0.2 * k))
+			draw_line(Vector2.ZERO, aim * ln, Color(1, 0.25, 0.15, 0.5 + 0.4 * k), 2.0)
 	elif state == "wave_windup" or state == "wave":
 		var o := head_pos() - global_position
-		var half := deg_to_rad(30.0)
-		var k := 1.0 if state == "wave" else 1.0 - st / (wave_windup * _fast())
+		var half := deg_to_rad(WAVE_HALF)
+		var k2 := 1.0 if state == "wave" else 1.0 - st / windup_len
 		var pts := PackedVector2Array([o])
 		for i in range(11):
-			pts.append(o + aim.rotated(-half + half * 2.0 * i / 10.0) * wave_range)
-		draw_colored_polygon(pts, Color(0.95, 0.75, 0.4, 0.12 + 0.25 * k))
-		draw_polyline(pts.slice(1), Color(1, 0.35, 0.15, 0.5 + 0.4 * k), 2.0)
+			pts.append(o + aim.rotated(-half + half * 2.0 * i / 10.0) * WAVE_RANGE)
+		draw_colored_polygon(pts, Color(0.95, 0.75, 0.4, 0.12 + 0.25 * k2))
+		draw_polyline(pts.slice(1), Color(1, 0.35, 0.15, 0.5 + 0.4 * k2), 2.0)
 	elif state == "pounce_windup" or state == "pounce":
-		var c := leap_to - global_position
-		var k := 1.0 if state == "pounce" else 1.0 - st / (pounce_windup * _fast())
+		var c := jump_to - global_position
+		var k3 := 1.0 if state == "pounce" else 1.0 - st / windup_len
 		draw_set_transform(c, 0.0, Vector2(1.0, 0.6))
-		draw_arc(Vector2.ZERO, pounce_radius, 0.0, TAU, 32, Color(1, 0.3, 0.15, 0.6 + 0.3 * k), 2.0)
-		draw_circle(Vector2.ZERO, pounce_radius * k, Color(1, 0.35, 0.15, 0.2))
-		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	if revive_t > 0.0:
-		# dove è caduto il compagno: il mucchio di sabbia (o di braci) e l'anello che si chiude
-		var c := revive_pos - global_position
-		var k := revive_t / REVIVE_TIME
-		var col := Color(1.0, 0.55, 0.2) if kind == "ieri" else Color(0.85, 0.7, 0.45)
-		draw_set_transform(c, 0.0, Vector2(1.0, 0.6))
-		draw_circle(Vector2.ZERO, 12.0, Color(col, 0.5))
-		draw_arc(Vector2.ZERO, 26.0, -PI * 0.5, -PI * 0.5 + TAU * k, 40, col, 3.0)
+		draw_circle(Vector2.ZERO, POUNCE_RADIUS * (0.4 + 0.6 * k3), Color(0, 0, 0, 0.2 + 0.2 * k3))
+		draw_arc(Vector2.ZERO, POUNCE_RADIUS, 0.0, TAU, 32, Color(1, 0.3, 0.15, 0.6 + 0.3 * k3), 2.0)
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

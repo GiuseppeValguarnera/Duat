@@ -947,8 +947,10 @@ class Sandstorm extends Node2D:
 ## frantuma (non ti imprigiona mai).
 class FallingStone extends StaticBody2D:
 	const R := 11.0
+	const PASSES := 3                     ## dopo tre passaggi del raggio dell'alba la pietra si sgretola
 	var warn := 0.9
-	var life := 6.0
+	var life := 8.0
+	var passes := 0
 	var damage := 12.0
 	var t := 0.0
 	var landed := false
@@ -987,6 +989,13 @@ class FallingStone extends StaticBody2D:
 		shape.shape = c
 		add_child(shape)
 		add_to_group("aker_stones")
+
+	## Un raggio dell'alba ci si è fermato contro: alla terza volta la pietra si sgretola.
+	func ray_pass() -> void:
+		passes += 1
+		Fx.burst(global_position + Vector2(0, -8), Color(0.75, 0.6, 0.45), 6, 50.0)
+		if passes >= PASSES:
+			life = minf(life, t - warn + 0.35)
 
 	func _under(p: Vector2, extra: float) -> bool:
 		var d := p - global_position
@@ -1054,6 +1063,7 @@ class DawnRay extends Node2D:
 	var cool := 0.0
 	var cut := 1.0                ## fin dove arriva (frazione), fermato dalle pietre
 	var src: Node = null
+	var _passed := {}             ## le pietre che questo raggio ha già colpito (ognuna conta una volta)
 
 	func _ready() -> void:
 		z_index = 2
@@ -1079,10 +1089,15 @@ class DawnRay extends Node2D:
 		var b := global_position + Vector2.from_angle(cur_angle()) * length
 		cut = 1.0
 		if active():
+			var blocker = null
 			for st in get_tree().get_nodes_in_group("aker_stones"):
 				var k: float = st.ray_hit(a, b)
 				if k >= 0.0 and k < cut:
 					cut = k
+					blocker = st
+			if blocker != null and not _passed.has(blocker):
+				_passed[blocker] = true
+				blocker.ray_pass()
 			var p = get_tree().get_first_node_in_group("player")
 			if p != null and not p.dead and cool <= 0.0:
 				var e := a + (b - a) * cut

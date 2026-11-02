@@ -587,7 +587,7 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 	if e.is_boss:
 		boss = e
 		boss_group = [e]
-		boss_full = e.max_hp
+		boss_full = e.max_hp + float(e.get("bar_extra") if "bar_extra" in e else 0.0)    # Aker: anche i due leoni che verranno
 		e.summon.connect(_on_boss_summon)
 		if e.has_signal("pillar_broken"):
 			e.pillar_broken.connect(_on_pillar_broken)
@@ -2617,7 +2617,7 @@ func _process(_delta: float) -> void:
 		var sum := 0.0
 		for b in boss_group:
 			if is_instance_valid(b) and not b.dead:
-				sum += b.hp
+				sum += b.hp + float(b.get("bar_extra") if "bar_extra" in b else 0.0)
 		boss_fill.size.x = boss_bar.size.x * clampf(sum / boss_full, 0.0, 1.0)
 	elif boss != null and is_instance_valid(boss) and not boss.dead:
 		boss_fill.size.x = boss_bar.size.x * clampf(boss.hp / boss.max_hp, 0.0, 1.0)
