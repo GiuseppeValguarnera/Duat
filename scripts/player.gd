@@ -29,7 +29,6 @@ const DASH_GAP := 0.08                  ## tra uno scatto e l'altro della stessa
 
 @export_group("Khopesh")
 @export var attack_damage := 12.0
-@export var aim_assist_degrees := 25.0
 
 @export_group("Occhio di Horus")
 @export var eye_damage := 24.0
@@ -440,55 +439,74 @@ func _tick(delta: float) -> void:
 		Run.divine = divine_t > 0.0
 
 
-## Mira: levetta destra se la usi; con il mouse dove punta; altrimenti (telefono, pad) la mira
-## automatica sul nemico più vicino, se è attiva nelle Opzioni, o la direzione di movimento.
-func _update_aim(moving: bool = false) -> void:
+## Mira: la direzione la decidi tu (levetta destra, mouse, oppure dove guardi o ti muovi).
+## Sul telefono e col pad la mira assistita la corregge di poco verso un nemico davanti (`_assisted`).
+func _update_aim(_moving: bool = false) -> void:
 	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
-	if stick.length() > 0.3:
-		aim = stick.normalized()
-	elif Fx.device != "mouse" and not Meta.options.get("autoaim", true):
-		aim = facing
-	elif Fx.device != "mouse":
-		# telefono e pad (levetta destra ferma): stessa mira automatica
-		# mira automatica (si spegne nelle Opzioni): il colpo va al nemico più vicino, anche mentre
-		# cammini. Prima, camminando, si colpiva dove si andava: arretrando con i nemici davanti
-		# si attaccava alle proprie spalle. Mentre ti muovi il raggio è più corto: se non c'è
-		# nessuno vicino, colpisci dove vai.
-		var best = null
-		var best_d := 180.0 if moving else 260.0
-		for e in get_tree().get_nodes_in_group("enemies"):
-			if e.dead:
-				continue
-			var d: float = global_position.distance_to(e.global_position)
-			if d < best_d:
-				best_d = d
-				best = e
-		aim = (best.global_position - global_position).normalized() if best != null else facing
-	elif Fx.device == "mouse":
+	if Fx.device == "mouse" and stick.length() <= 0.3:
 		var to := get_global_mouse_position() - (global_position + Vector2(0, -8))
 		if to.length() > 4.0:
 			aim = to.normalized()
-	else:
-		aim = facing
+		return
+	var base := stick.normalized() if stick.length() > 0.3 else facing
+	aim = _assisted(base, ASSIST_RANGE)
 
 
-## Aiuto alla mira: se un nemico è entro pochi gradi, il colpo si orienta su di lui.
+## Mira assistita: corregge SOLO la direzione verso un nemico nel cono davanti a `dir` (25° per le
+## armi da mischia, 12° per l'arco); non prevede il movimento e non insegue (quello è il dono di
+## Horus). Solo nemici visibili, nel 70% centrale dello schermo e senza muri o colonne in mezzo; mai
+## alle spalle. Il bersaglio resta lo stesso finché è valido (niente tremolio). Col mouse è spenta, e
+## si spegne anche nelle Opzioni.
+const ASSIST_MELEE := 25.0
+const ASSIST_BOW := 12.0
+const ASSIST_RANGE := 420.0
+const ASSIST_SCREEN := 0.7
+var _aim_target = null
+
+
+func _assist_on() -> bool:
+	return Fx.device != "mouse" and Meta.options.get("autoaim", true)
+
+
 func _assisted(dir: Vector2, max_dist: float) -> Vector2:
-	var best = null
-	var best_angle := deg_to_rad(aim_assist_degrees * (1.6 if Fx.device == "touch" else 1.0))
-	for e in get_tree().get_nodes_in_group("enemies"):
-		if e.dead:
-			continue
-		var to: Vector2 = e.global_position - global_position
-		if to.length() > max_dist:
-			continue
-		var a := absf(dir.angle_to(to))
-		if a < best_angle:
-			best_angle = a
-			best = to
-	if best == null:
+	if not _assist_on() or dir == Vector2.ZERO:
 		return dir
-	return (best as Vector2).normalized()
+	var cone := deg_to_rad(ASSIST_BOW if Run.weapon == "arco" else ASSIST_MELEE)
+	# il bersaglio di prima resta finché è valido (con un po' di margine sul cono)
+	if _target_ok(_aim_target, dir, cone * 1.25, ASSIST_RANGE):
+		var to_t: Vector2 = _aim_target.global_position - global_position
+		return to_t.normalized() if to_t.length() <= max_dist else dir
+	_aim_target = null
+	var best_a := INF
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if not _target_ok(e, dir, cone, max_dist):
+			continue
+		var a := absf(dir.angle_to(e.global_position - global_position))
+		if a < best_a:
+			best_a = a
+			_aim_target = e
+	if _aim_target == null:
+		return dir
+	return (_aim_target.global_position - global_position).normalized()
+
+
+func _target_ok(e, dir: Vector2, cone: float, max_dist: float) -> bool:
+	if e == null or not is_instance_valid(e) or e.dead or not e.is_visible_in_tree():
+		return false
+	var to: Vector2 = e.global_position - global_position
+	var d := to.length()
+	if d < 1.0 or d > max_dist or absf(dir.angle_to(to)) > cone:
+		return false
+	# nel 70% centrale dello schermo
+	var cam := get_viewport().get_camera_2d()
+	if cam != null:
+		var half := get_viewport().get_visible_rect().size / (2.0 * cam.zoom) * ASSIST_SCREEN
+		var rel: Vector2 = e.global_position - cam.get_screen_center_position()
+		if absf(rel.x) > half.x or absf(rel.y) > half.y:
+			return false
+	# niente muri o colonne in mezzo (lo strato 1 è il mondo)
+	var q := PhysicsRayQueryParameters2D.create(global_position + Vector2(0, -6), e.global_position + Vector2(0, -6), 1, [get_rid()])
+	return get_world_2d().direct_space_state.intersect_ray(q).is_empty()
 
 
 func _start_dash(move: Vector2) -> void:
@@ -559,28 +577,9 @@ func _aspect_damage() -> float:
 	return 1.0 + Run.aspect_val("faraone") / 100.0 + Run.aspect_val("neith") / 100.0 + Run.aspect_val("satet") / 100.0
 
 
-## La mira dell'arco: punta da sola il nemico più vicino. La levetta destra decide lei (con l'aiuto
-## alla mira); col mouse, se punti un nemico vale quello, altrimenti il più vicino.
+## La mira dell'arco: la stessa mira (assistita con un cono stretto, 12°), fino a BOW_AIM_RANGE.
 func _bow_aim() -> Vector2:
-	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
-	if stick.length() > 0.3:
-		return _assisted(stick.normalized(), BOW_AIM_RANGE)
-	if Fx.device == "mouse":
-		var pointed := _assisted(aim, BOW_AIM_RANGE)
-		if pointed != aim:
-			return pointed
-	var best = null
-	var best_d := BOW_AIM_RANGE
-	for e in get_tree().get_nodes_in_group("enemies"):
-		if e.dead:
-			continue
-		var d: float = global_position.distance_to(e.global_position)
-		if d < best_d:
-			best_d = d
-			best = e
-	if best == null:
-		return aim
-	return (best.global_position + Vector2(0, -6) - (global_position + Vector2(0, -8))).normalized()
+	return _assisted(aim, BOW_AIM_RANGE)
 
 
 func _spawn_arrow(dir: Vector2, dmg: float, spd: float, dist: float, kb: float, pierce: int, crit_chance: float, charged: bool) -> void:
