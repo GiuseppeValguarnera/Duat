@@ -1,5 +1,14 @@
 ## In sviluppo · novembre 2026
 
+- Aker rifatto da zero: ti dà la caccia, morso in tre colpi, carica che rimbalza, soffio doppio, balzo con onda
+  d'urto, raggio dell'alba mentre cammina; a metà si divide in Ieri e Domani che attaccano insieme, con la tenaglia,
+  e il sopravvissuto si infuria. L'ira di Aker (Peso del Cuore) ora rende più furiosi i leoni invece di farli rinascere
+- mira assistita più onesta: corregge solo un poco la direzione, solo verso nemici davanti e visibili, mai col mouse
+- Arco di Satet più debole: frecce più lente e leggere, tiro carico con ricarica di 5 secondi, effetti dei doni non a
+  ogni freccia; lo scudo del guardiano di Sokar para le frecce
+- Anubi sa a che piano sei davvero (Sokar, stanza 4 = piano 14) e ha battute nuove per ogni parte del deserto,
+  per Serket, Aker e i pericoli di Sokar
+
 - attacco caricato (tieni premuto): il khopesh colpisce tutto attorno, la lancia vola, trapassa e torna
 - attacco in scatto per ogni arma: fendente più largo con il khopesh, affondo in corsa con la lancia
 - porte vere: chiuse finché la stanza non è ripulita, si entra con il tasto d'azione

@@ -1,8 +1,14 @@
 keys,it,en
 AKER TREMA,AKER TREMA,AKER TREMBLES
+Ieri e Domani,Ieri e Domani,Yesterday and Tomorrow
+«Io sono Ieri: ciò che è stato non torna.» «Io sono Domani: ciò che verrà non si ferma.»,«Io sono Ieri: ciò che è stato non torna.» «Io sono Domani: ciò che verrà non si ferma.»,«I am Yesterday: what has been does not return.» «I am Tomorrow: what is to come does not stop.»
+TENAGLIA,TENAGLIA,PINCER
+«Domani è caduto? Allora Ieri non avrà più fine.»,«Domani è caduto? Allora Ieri non avrà più fine.»,«Tomorrow has fallen? Then Yesterday shall never end.»
+«Ieri è sepolto. Ora ogni cosa è Domani.»,«Ieri è sepolto. Ora ogni cosa è Domani.»,«Yesterday is buried. Now all things are Tomorrow.»
+Ieri,Ieri,Yesterday
+Domani,Domani,Tomorrow
 IERI PRENDE IL FUOCO DI DOMANI,IERI PRENDE IL FUOCO DI DOMANI,YESTERDAY TAKES TOMORROW'S FIRE
 DOMANI PRENDE LA SABBIA DI IERI,DOMANI PRENDE LA SABBIA DI IERI,TOMORROW TAKES YESTERDAY'S SAND
-RINASCERÀ,RINASCERÀ,IT WILL RISE AGAIN
 Fiato di fuoco,Fiato di fuoco,Fire breath
 Marea di fuoco,Marea di fuoco,Tide of fire
 ESAUSTO,ESAUSTO,EXHAUSTED
@@ -105,6 +111,7 @@ Via tutti i nemici,Via tutti i nemici,Remove all enemies
 colpo,colpo,hit
 combo,combo,combo
 al sec.,al sec.,per sec.
+PARATO,PARATO,BLOCKED
 CRITICO,CRITICO,CRITICAL
 GIUDIZIO,GIUDIZIO,JUDGEMENT
 Ra,Ra,Ra
@@ -580,11 +587,37 @@ try { localStorage.removeItem('duat_diag_last'); } catch (e) {},try { localStora
 "Così presto, Scriba. La sabbia della clessidra non si è ancora posata.","Così presto, Scriba. La sabbia della clessidra non si è ancora posata.","So soon, Scribe. The sand in the hourglass has not yet settled."
 "Il tuo cuore è caduto sulla soglia. Rialzati: anche il sole cade, ogni sera.","Il tuo cuore è caduto sulla soglia. Rialzati: anche il sole cade, ogni sera.","Your heart fell on the threshold. Rise: even the sun falls, every evening."
 Il Duat non concede nulla a chi corre senza guardare.,Il Duat non concede nulla a chi corre senza guardare.,The Duat grants nothing to those who run without looking.
-"Stanza %d. Più lontano di quanto credessi, meno di quanto serva.","Stanza %d. Più lontano di quanto credessi, meno di quanto serva.","Room %d. Farther than you believed, less than you need."
-Stanza %d. Il Duat comincia a riconoscere il tuo passo.,Stanza %d. Il Duat comincia a riconoscere il tuo passo.,Room %d. The Duat begins to know your step.
+"Piano {piano}. Più lontano di quanto credessi, meno di quanto serva.","Piano {piano}. Più lontano di quanto credessi, meno di quanto serva.","Floor {piano}. Farther than you believed, not as far as you need."
+Piano {piano}. Il Duat comincia a riconoscere il tuo passo.,Piano {piano}. Il Duat comincia a riconoscere il tuo passo.,Floor {piano}. The Duat begins to know your step.
+"Piano {piano}. Le acque di Wernes sono lente, ma non dimenticano chi le attraversa.","Piano {piano}. Le acque di Wernes sono lente, ma non dimenticano chi le attraversa.","Floor {piano}. The waters of Wernes are slow, but they do not forget who crosses them."
+Il Serpente della Porta ti ha fermato a metà strada. Ogni porta si apre a chi torna.,Il Serpente della Porta ti ha fermato a metà strada. Ogni porta si apre a chi torna.,The Serpent of the Gate stopped you halfway. Every gate opens to the one who returns.
+"Piano {piano}. La Porta di mezzo è stretta come una gola. Respira, e riprova.","Piano {piano}. La Porta di mezzo è stretta come una gola. Respira, e riprova.","Floor {piano}. The middle Gate is narrow as a throat. Breathe, and try again."
+"Il guardiano della Porta ti ha respinto. Il fiume della notte è lungo, Scriba: non sei il primo.","Il guardiano della Porta ti ha respinto. Il fiume della notte è lungo, Scriba: non sei il primo.","The guardian of the Gate drove you back. The river of night is long, Scribe: you are not the first."
 "Hai visto Am-heh in volto. Il Divoratore di Milioni ha contato anche te, stanotte.","Hai visto Am-heh in volto. Il Divoratore di Milioni ha contato anche te, stanotte.","You have seen Am-heh's face. The Devourer of Millions has counted you too, tonight."
 Il lago di fuoco ti ha restituito. Am-heh non restituisce mai nulla due volte.,Il lago di fuoco ti ha restituito. Am-heh non restituisce mai nulla due volte.,The lake of fire gave you back. Am-heh never gives anything back twice.
+Piano {piano}. Il Divoratore ti ha sentito arrivare dall'acqua. La prossima volta arriverai più leggero.,Piano {piano}. Il Divoratore ti ha sentito arrivare dall'acqua. La prossima volta arriverai più leggero.,Floor {piano}. The Devourer heard you coming from the water. Next time you will come lighter.
 "Il fuoco non entra nell'acqua. Quando ulula, cerca una pozza. E quando si ferma a riprendere fiato, colpisci.","Il fuoco non entra nell'acqua. Quando ulula, cerca una pozza. E quando si ferma a riprendere fiato, colpisci.","Fire does not enter water. When it howls, look for a pool. And when it stops to catch its breath, strike."
+"Piano {piano}. Hai appena lasciato le acque, e il deserto ti ha già bevuto.","Piano {piano}. Hai appena lasciato le acque, e il deserto ti ha già bevuto.","Floor {piano}. You had barely left the waters, and the desert has already drunk you."
+"Le acque di Wernes erano ancora sui tuoi piedi quando la sabbia ti ha preso. Il cammino è lungo, Scriba.","Le acque di Wernes erano ancora sui tuoi piedi quando la sabbia ti ha preso. Il cammino è lungo, Scriba.","The waters of Wernes were still on your feet when the sand took you. The road is long, Scribe."
+Piano {piano}. La sabbia di Sokar non aspetta che tu impari i suoi passi.,Piano {piano}. La sabbia di Sokar non aspetta che tu impari i suoi passi.,Floor {piano}. The sand of Sokar does not wait for you to learn its steps.
+Piano {piano}. Nel cuore del deserto il sole non perdona chi si ferma.,Piano {piano}. Nel cuore del deserto il sole non perdona chi si ferma.,Floor {piano}. In the heart of the desert the sun does not forgive those who stop.
+Sei caduto dove la sabbia è più alta. Lì anche le ombre hanno sete.,Sei caduto dove la sabbia è più alta. Lì anche le ombre hanno sete.,You fell where the sand is deepest. There even the shadows thirst.
+Piano {piano}. Sokar ti ha guardato a metà del suo regno. I giorni passano: ogni discesa è un passo.,Piano {piano}. Sokar ti ha guardato a metà del suo regno. I giorni passano: ogni discesa è un passo.,Floor {piano}. Sokar watched you halfway through his realm. The days go by: every descent is a step.
+"Piano {piano}. L'orizzonte era vicino. La sete, più vicina ancora.","Piano {piano}. L'orizzonte era vicino. La sete, più vicina ancora.","Floor {piano}. The horizon was near. Thirst, nearer still."
+"Così vicino alla porta del sole. Nel deserto uccide la stanchezza, Scriba, non la sabbia.","Così vicino alla porta del sole. Nel deserto uccide la stanchezza, Scriba, non la sabbia.","So close to the gate of the sun. In the desert it is weariness that kills, Scribe, not the sand."
+"Piano {piano}. Le notti si allungano, i giorni passano. Hai visto l'orizzonte: tornerai a vederlo.","Piano {piano}. Le notti si allungano, i giorni passano. Hai visto l'orizzonte: tornerai a vederlo.","Floor {piano}. The nights grow long, the days go by. You have seen the horizon: you will see it again."
+"Serket ti ha punto, Scriba. Nella sua mano anche il veleno è una preghiera rovesciata.","Serket ti ha punto, Scriba. Nella sua mano anche il veleno è una preghiera rovesciata.","Serket has stung you, Scribe. In her hand even venom is a prayer turned upside down."
+"Il tempio della dea scorpione ti ha trattenuto. Guarda la sabbia, non lei: è la sabbia che parla.","Il tempio della dea scorpione ti ha trattenuto. Guarda la sabbia, non lei: è la sabbia che parla.","The temple of the scorpion goddess held you. Watch the sand, not her: it is the sand that speaks."
+"Piano {piano}. Serket custodisce il mezzo del deserto, e il mezzo è sempre la parte più lunga.","Piano {piano}. Serket custodisce il mezzo del deserto, e il mezzo è sempre la parte più lunga.","Floor {piano}. Serket guards the middle of the desert, and the middle is always the longest part."
+Aker ti ha guardato con entrambi i volti. Ieri ti ha visto cadere; Domani ti vedrà tornare.,Aker ti ha guardato con entrambi i volti. Ieri ti ha visto cadere; Domani ti vedrà tornare.,Aker looked at you with both faces. Yesterday saw you fall; Tomorrow will see you return.
+Il leone dell'orizzonte non ha fretta. Il sole aspetta da mille anni: può aspettare un'altra notte.,Il leone dell'orizzonte non ha fretta. Il sole aspetta da mille anni: può aspettare un'altra notte.,The lion of the horizon is in no hurry. The sun has waited a thousand years: it can wait one more night.
+"Piano {piano}. Sei arrivato alla porta del sole. Il cammino è lungo, ma ora sai dove finisce.","Piano {piano}. Sei arrivato alla porta del sole. Il cammino è lungo, ma ora sai dove finisce.","Floor {piano}. You reached the gate of the sun. The road is long, but now you know where it ends."
+"Aker non ha un dietro, ma ha dei fianchi. E dopo ogni grande assalto riprende fiato: è lì che si colpisce.","Aker non ha un dietro, ma ha dei fianchi. E dopo ogni grande assalto riprende fiato: è lì che si colpisce.","Aker has no back, but he has flanks. And after every great assault he catches his breath: that is where you strike."
+"Non un nemico, Scriba: la terra stessa. In Sokar anche il suolo ha fame.","Non un nemico, Scriba: la terra stessa. In Sokar anche il suolo ha fame.","Not an enemy, Scribe: the earth itself. In Sokar even the ground is hungry."
+"Ti ha preso il deserto, non una lama. La sabbia nera non odia: inghiotte.","Ti ha preso il deserto, non una lama. La sabbia nera non odia: inghiotte.","The desert took you, not a blade. The black sand does not hate: it swallows."
+"Piano {piano}. Le statue del falco vegliano, la sabbia cede, il fiume nero scorre. Il deserto combatte senza mani.","Piano {piano}. Le statue del falco vegliano, la sabbia cede, il fiume nero scorre. Il deserto combatte senza mani.","Floor {piano}. The falcon statues keep watch, the sand gives way, the black river flows. The desert fights without hands."
+"Aker è caduto, e il sole ha tremato. Non è ancora sorto, ma ha ricordato la strada.","Aker è caduto, e il sole ha tremato. Non è ancora sorto, ma ha ricordato la strada.","Aker has fallen, and the sun trembled. It has not risen yet, but it remembered the way."
+"Hai attraversato la terra di Sokar. I giorni passano, Scriba, e tu sei ancora in cammino.","Hai attraversato la terra di Sokar. I giorni passano, Scriba, e tu sei ancora in cammino.","You have crossed the land of Sokar. The days go by, Scribe, and you are still on the road."
 "Am-heh è caduto. Il Divoratore di Milioni ha contato i dannati per mille anni, e stanotte ha perso il conto.","Am-heh è caduto. Il Divoratore di Milioni ha contato i dannati per mille anni, e stanotte ha perso il conto.","Am-heh has fallen. The Devourer of Millions counted the damned for a thousand years, and tonight it lost count."
 "Il suo Sekhem ora scorre in te. Quando sarà colmo, lascia che ti trasformi.","Il suo Sekhem ora scorre in te. Quando sarà colmo, lascia che ti trasformi.","Her Sekhem now flows in you. When it is full, let it transform you."
 "Ma la Prima Ora è solo l'inizio. Ammit, la vera Divoratrice, ti aspetta in fondo alla notte, accanto alla mia bilancia.","Ma la Prima Ora è solo l'inizio. Ammit, la vera Divoratrice, ti aspetta in fondo alla notte, accanto alla mia bilancia.","But the First Hour is only the beginning. Ammit, the true Devourer, awaits you at the bottom of the night, beside my scales."
@@ -893,7 +926,7 @@ liv. %d,liv. %d,lv. %d
 "
 "Aker, il leone dell'orizzonte","Aker, il leone dell'orizzonte","Aker, the lion of the horizon"
 "Am-heh, il Divoratore di Milioni","Am-heh, il Divoratore di Milioni","Am-heh, the Devourer of Millions"
-stanza %d di %d,stanza %d di %d,chamber %d of %d
+"stanza %d di %d, piano %d","stanza %d di %d, piano %d","room %d of %d, floor %d"
 il Serpente della Porta,il Serpente della Porta,the Serpent of the Gate
 "Serket, la dea scorpione","Serket, la dea scorpione","Serket, the scorpion goddess"
 Il tuo cuore è stato pesato,Il tuo cuore è stato pesato,Your heart has been weighed
@@ -1187,15 +1220,15 @@ nessuna vittoria ancora,nessuna vittoria ancora,no victory yet
 "Discese: %d
 Vittorie su Am-heh: %d
 Serpenti della Porta battuti: %d
-La stanza più lontana: %d
+Il piano più profondo: %d
 La vittoria più rapida: %s","Discese: %d
 Vittorie su Am-heh: %d
 Serpenti della Porta battuti: %d
-La stanza più lontana: %d
+Il piano più profondo: %d
 La vittoria più rapida: %s","Descents: %d
 Victories over Am-heh: %d
 Serpents of the Gate defeated: %d
-Farthest chamber: %d
+Deepest floor: %d
 Fastest victory: %s"
 "%s: %d
 ","%s: %d
@@ -1584,7 +1617,6 @@ Danni subiti,Danni subiti,Damage taken
 Nemici e boss,Nemici e boss,Enemies and bosses
 Trappole,Trappole,Traps
 Ricompense e menu,Ricompense e menu,Rewards and menus
-PARATO,PARATO,BLOCKED
 SCATTO,SCATTO,DASH
 DONI,DONI,BOONS
 KHOPESH,KHOPESH,KHOPESH
@@ -1633,8 +1665,8 @@ Volume della musica,Volume della musica,Music volume
 Quanto è forte la musica.,Quanto è forte la musica.,How loud the music is.
 Volume degli effetti,Volume degli effetti,Effects volume
 "Colpi, passi, nemici, ricompense: tutti i suoni tranne la musica.","Colpi, passi, nemici, ricompense: tutti i suoni tranne la musica.","Hits, steps, enemies, rewards: every sound except the music."
-Mira automatica,Mira automatica,Auto-aim
-Con il telefono e con il pad i colpi vanno da soli verso il nemico più vicino. Con il mouse non agisce: si colpisce dove punta il mouse.,Con il telefono e con il pad i colpi vanno da soli verso il nemico più vicino. Con il mouse non agisce: si colpisce dove punta il mouse.,"With the phone and the pad, your blows go by themselves toward the nearest enemy. With the mouse it does nothing: you strike where the mouse points."
+Mira assistita,Mira assistita,Aim assist
+Con il telefono e con il pad la direzione del colpo si corregge di poco verso un nemico davanti a te (non lo segue e non garantisce il colpo). Con il mouse non agisce: si colpisce dove punta il mouse.,Con il telefono e con il pad la direzione del colpo si corregge di poco verso un nemico davanti a te (non lo segue e non garantisce il colpo). Con il mouse non agisce: si colpisce dove punta il mouse.,With phone and gamepad the attack direction is nudged slightly toward an enemy in front of you (it does not follow it and does not guarantee the hit). With the mouse it does nothing: you strike where the mouse points.
 Vibrazione,Vibrazione,Vibration
 Il telefono o il pad vibrano quando vieni colpito e nei colpi più forti.,Il telefono o il pad vibrano quando vieni colpito e nei colpi più forti.,The phone or the pad vibrates when you are hit and on the strongest blows.
 Grandezza del testo,Grandezza del testo,Text size
@@ -1736,6 +1768,26 @@ Il Serpente della Porta ha due mosse in più: la doppia emersione e la pioggia d
 L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
+"Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+RINASCERÀ,RINASCERÀ,IT WILL RISE AGAIN
+"Stanza %d. Più lontano di quanto credessi, meno di quanto serva.","Stanza %d. Più lontano di quanto credessi, meno di quanto serva.","Room %d. Farther than you believed, less than you need."
+Stanza %d. Il Duat comincia a riconoscere il tuo passo.,Stanza %d. Il Duat comincia a riconoscere il tuo passo.,Room %d. The Duat begins to know your step.
+stanza %d di %d,stanza %d di %d,chamber %d of %d
+"Discese: %d
+Vittorie su Am-heh: %d
+Serpenti della Porta battuti: %d
+La stanza più lontana: %d
+La vittoria più rapida: %s","Discese: %d
+Vittorie su Am-heh: %d
+Serpenti della Porta battuti: %d
+La stanza più lontana: %d
+La vittoria più rapida: %s","Descents: %d
+Victories over Am-heh: %d
+Serpents of the Gate defeated: %d
+Farthest chamber: %d
+Fastest victory: %s"
+Mira automatica,Mira automatica,Auto-aim
+Con il telefono e con il pad i colpi vanno da soli verso il nemico più vicino. Con il mouse non agisce: si colpisce dove punta il mouse.,Con il telefono e con il pad i colpi vanno da soli verso il nemico più vicino. Con il mouse non agisce: si colpisce dove punta il mouse.,"With the phone and the pad, your blows go by themselves toward the nearest enemy. With the mouse it does nothing: you strike where the mouse points."
 "Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce.","Ieri e Domani non muoiono da soli: se non finisci il secondo leone entro 8 secondi, il primo rinasce.","Yesterday and Tomorrow do not die alone: if you don't finish the second lion within 8 seconds, the first rises again."
 Le frecce trapassano un nemico e colpiscono quello dietro con il %d%% dei danni.,Le frecce trapassano un nemico e colpiscono quello dietro con il %d%% dei danni.,Arrows pierce one enemy and hit the one behind for %d%% of the damage.
 Quando l'arco è teso a pieno ricevi uno scudo che assorbe %d danni (non si somma).,Quando l'arco è teso a pieno ricevi uno scudo che assorbe %d danni (non si somma).,When the bow is fully drawn you gain a shield that absorbs %d damage (it does not stack).

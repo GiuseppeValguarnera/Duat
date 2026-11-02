@@ -83,21 +83,28 @@ coda in linea dalla sabbia, riemerge con un balzo in linea. Sotto metà vita: au
 Prova: `DUAT_REGION2=1 tools/dev/shot.sh serketshot 1280 720 res://scenes/game.tscn [mobile]`. Bot: `DUAT_SKIP=guardian
 DUAT_REGION2=1 DUAT_START_REGION=2` (entrano con 9 doni). Prima prova, 8 partite: veterani 6/6 in 26-60 s, casual 0/2.
 
-Boss: **Aker** (`scripts/aker.gd`, disegno in `scripts/aker_art.gd`) alla **porta dell'orizzonte** (`Arenas.paint_horizon`):
-il geroglifico akhet (due montagne, sole spento), la strada del sole da ovest (porta del tramonto, blu) a est (porta dell'alba,
-rossa), rocce negli angoli (arena ovale), NIENTE colonne: il riparo sono le pietre del ruggito. Mito: due leoni schiena contro
-schiena, Ieri (ovest, sabbia) e Domani (est, fuoco). Fase 1, leone doppio (vita 1700 in tutto, una barra sola): fianchi ×1,35,
-teste ×0,8; soffio di sabbia (cono, spinge, sabbie mobili temporanee); **raggio dell'alba** (`Hazards.DawnRay`, ruota, un
-colpo ogni 0,6 s); si gira (scambia le teste); ruggito → `Hazards.FallingStone` (ombra d'avviso, poi riparo solido 6 s che
-**ferma il raggio**; se cade su di te si frantuma). A metà trema 1,8 s (invulnerabile, cadono pietre) e si divide:
-`scripts/aker_lion.gd` Ieri (carica con scia di sabbie mobili, onda) e Domani (balzo, raggio), 425 ciascuno, **a turno**
-(mai due mosse grandi insieme; l'altro gira e ruggisce). Caduto uno, l'altro prende la sua mossa. Peso del Cuore
-`ira_aker`: se non finisci il secondo in 8 s, il primo rinasce con 210 (nascosto nell'hub finché Sokar è chiusa).
+Boss: **Aker** (riscritto nel blocco 9; `scripts/aker.gd`, `scripts/aker_lion.gd`, disegno `scripts/aker_art.gd`; tutte le
+costanti in cima ai file) alla **porta dell'orizzonte** (`Arenas.paint_horizon`: akhet, strada del sole ovest→est, rocce
+negli angoli, NIENTE colonne). Mito: Ieri (ovest, sabbia) e Domani (est, fuoco). **Fase 1**, un corpo e due teste, vita
+1500 (`HP`; barra unica che include i due leoni: `bar_extra`, totale 2500): ti **caccia** a 78 px/s (60% del giocatore) e ruota
+lento (`TURN_RATE` 70°/s) per tenerti davanti a una testa (`fire_dir` = asse, fuoco +, sabbia −); fianchi ×1,35, teste ×0,8
+(cono 35°). Mosse con avviso 0,45-0,65 s: **morso** (3 colpi da 11 che ti seguono), **carica** (340 px/s, 22, scia di sabbie
+mobili, rimbalza sul muro e ricarica verso di te), **soffio doppio** (il corpo ruota di 80°: sabbia 8 e fuoco 16, spinta 220),
+**balzo** (ombra, 24 nel raggio 46, anello d'urto 10), **ruggito → raggio dell'alba** (`Hazards.DawnRay` 1,8 s, 110°, 10 a
+colpo ogni 0,6 s, cammina a metà velocità; ricarica 8 s; max 2 `FallingStone` che si sgretolano al 3° passaggio del raggio,
+`ray_pass`). Dopo una mossa grande 1,2 s fermo (`PUNISH`); sotto metà vita le mosse si legano a due (`_chain_next`, pausa
+0,5 s). A 0 trema 1,8 s (invulnerabile, `die()` sovrascritto) e si divide (`_split`, musica "elite", battute
+«Io sono Ieri…» «Io sono Domani…»): **Ieri** (carica 430 px/s da 20 con scia, onda a cono 12 con spinta) e **Domani**
+(balzo 20, raggio), 500 ciascuno, **insieme** (aspettano solo 0,35 s se l'altro ha appena iniziato un avviso; avviso mai sotto
+0,45 s). **Tenaglia** (ogni 11 s, decide Ieri): si piazzano ai lati opposti di te e caricano insieme (scritta TENAGLIA).
+Caduto uno, l'altro prende la sua mossa e si infuria (+25% velocità e danni, `fury`; battute proprie). Peso del Cuore
+`ira_aker` (la rinascita a 8 s è stata tolta): leoni già a +10% alla divisione, furia del sopravvissuto +50%.
 Vittoria: la telecamera sale (`Fx.look`) e il sole **tremola ma non sorge**. `Meta.aker_wins`, Lacrime come ogni boss,
 10-12 lapis. Boss per regione: `_boss_kind()`; due boss insieme: `boss_group`, `_on_boss_split`, `_bosses_alive()`.
-Prova: `DUAT_REGION2=1 tools/dev/shot.sh akershot 1280 720 res://scenes/game.tscn [mobile]`.
-Bot: `DUAT_SKIP=ammit DUAT_REGION2=1 DUAT_START_REGION=2` (13 doni). Prima prova: veterani 1/6 vinte (5/6 alla seconda
-fase); stesso test con Am-heh: 3/6. Danni più alti dal raggio → tick portato da 0,45 a 0,6 s. Da ritarare di notte.
+Bot: `bot_escape(pos)` su Aker e leoni. Test: `tools/dev/akersmoke.gd` (nel controllo d'avvio, `--fixed-fps 60`,
+`DUAT_REGION2=1`): tutte le mosse, divisione, tenaglia, furia, vittoria. Prova: `DUAT_REGION2=1 tools/dev/shot.sh akershot
+1280 720 res://scenes/game.tscn [mobile]`. Bot: `DUAT_SKIP=ammit DUAT_REGION2=1 DUAT_START_REGION=2` (13 doni).
+**Difficoltà NON ancora verificata** coi bot (obiettivo: 10-15% al primo tentativo con 12-13 doni, ~3 minuti).
 
 Prime prove della Sokar più dura (bot, pochi): Serket 650 veterani 8/8 casual 0/4; Aker 1550 veterani 3/8 casual 0/4;
 da Am-heh a Sokar (8 veterani con 13 doni): 4 battono Am-heh, poi 1 vince Sokar e 3 muoiono nelle stanze 6-7 (prima 15/18).
@@ -158,11 +165,12 @@ del Cortile (come prima, i salvataggi la tengono); **arco** dopo `Meta.serpent_w
 (`Weapons.UNLOCK_COST`, `requirement_met`, `buy`): si compra al piedistallo (gemma che pulsa) o da **Neith nella Sala**
 (`hub.gd` `_neith_here`, `_start_neith`, `_offer_bow`; disegno condiviso in `scripts/neith_art.gd`, `talk_who`).
 Arco (`player.gd` `_bow_shot`, `_bow_aim`,
-`_spawn_arrow`; frecce in `scripts/arrow.gd`, disegno in `scripts/arrow_art.gd`): freccia ogni 0,33 s al 60% di un
-fendente (12×0,6), si ferma al primo nemico, muri e colonne la fermano (raggio sullo strato 1); tiro carico ×2,4 (=4
-frecce) che trapassa tutto, carica 1 s, movimento ×0,65 e ricarica 2 s come ogni arma (`_charge_cd_max`, prima 3 s); ventaglio di 3 frecce corte
-(±18°, 120 px) alla fine dello scatto; mira: il nemico più vicino entro 320 (levetta destra decide lei; col mouse vale
-il nemico puntato, se no il più vicino), sempre, anche con la mira automatica spenta. Unico aspetto: Satet (+5/10/15%).
+`_spawn_arrow`; frecce in `scripts/arrow.gd`, disegno in `scripts/arrow_art.gd`): freccia ogni 0,5 s al 38% di un
+fendente (blocco 9), si ferma al primo nemico, muri e colonne la fermano (raggio sullo strato 1); tiro carico ×1,14 (=3
+frecce) che trapassa tutto, carica 1 s, movimento ×0,65, ricarica **5 s** (eccezione alla regola delle armi); mentre tiri
+×0,8 (`BOW_FIRE_SLOW`); ventaglio di 3 frecce corte (±18°, 120 px, 38%) alla fine dello scatto; mira: mira assistita
+a 12° (vedi blocco 9). Effetti dei doni al massimo una volta ogni 0,5 s per nemico (`arrow.gd` `FX_GAP`, meta
+`arrow_fx`); lo scudo del guardiano di Sokar para le frecce (`blocks(dir)`, "PARATO"). Unico aspetto: Satet (+5/10/15%).
 Doni `arco_*` (campo `weapon`): Ra fuoco (sostituisce `ra_burn`), Sekhmet tiro carico +30/45/60%, Thoth trapassa 1 (dietro
 60/80/100%), Bastet critico del tiro carico 35/50/65%, Sobek rallenta 20/28/36% per 2 s (`Enemy.slow_t`, conta per
 la Forza del Fiume), Iside scudo 5/7/9 a carica piena (non si somma), Horus frecce che curvano +10/15/20%, Anubi
@@ -241,6 +249,17 @@ porte di Sokar ora nominano Serket e Aker. Prova: `tools/dev/favorsmoke.gd` (nel
   doni nuovi accorciate. Bot: `DUAT_SKIP=sokar` (12 doni e +10 vita, discesa intera di Sokar), arco e flagello a distanza,
   nell'Oasi salgono sulla barca di Mahaf.
 - *Test armi × regioni* (bot, 64 + 32 partite, nessun valore cambiato): vedi "Dati dei test".
+
+**Blocco 9 (2/11/2026) – Aker, arco, mira assistita, Anubi**. Aker: vedi sopra (Regione 2). Arco: vedi blocco 5.
+*Mira assistita* (`player.gd` `_update_aim`, `_assisted`, `_target_ok`): col mouse spenta; altrimenti corregge solo la
+direzione verso un nemico in un cono davanti a dove guardi o ti muovi (`ASSIST_MELEE` 25°, `ASSIST_BOW` 12°), entro 420
+px e il 70% dello schermo (`ASSIST_SCREEN`), visibile, senza muri/colonne in mezzo (raggio sullo strato 1), mai dietro;
+bersaglio "appiccicoso" finché resta valido (cono ×1,25). Niente previsione né inseguimento. Opzione "Mira assistita".
+*Anubi*: profondità `Run.depth(regione, stanza)` = (regione−1)×10 + stanza, usata nelle battute, nel record della Sala
+("Il piano più profondo", `Meta.best_room` ora è la profondità, `Meta.last_region`) e nel riepilogo ("piano %d").
+Battute di morte in tabella: `dialogue.gd` `death_table()` per regione e fascia (Sokar 1-3, 4-6, 7-9, guardiano, boss,
+consiglio del boss, pericoli `HAZARD_KILLERS` fiume/buca/falco, vittoria), almeno 3 varianti; `death_line(reg, rm,
+killer, boss)`. Per una regione nuova basta aggiungere righe alla tabella.
 
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
