@@ -74,9 +74,13 @@ const ThrownSpear := preload("res://scripts/thrown_spear.gd")
 ## L'Arco di Satet: frecce rapide (circa 3 al secondo) al 60% di un fendente del khopesh, che si
 ## fermano sul primo nemico; il tiro carico (4 frecce di danni) trapassa la fila; alla fine dello
 ## scatto un ventaglio di 3 frecce corte. Mentre tende l'arco ci si muove meno piano che con le altre armi.
-const BOW_SHOT := {"cd": 0.33, "mult": 0.6, "speed": 440.0, "dist": 250.0, "knock": 35.0}
-const BOW_CHARGED := {"mult": 2.4, "speed": 620.0, "dist": 360.0, "knock": 130.0}
-const BOW_FAN := {"mult": 0.6, "spread": 18.0, "speed": 420.0, "dist": 120.0, "knock": 70.0}
+## Ritarato nel blocco 9 (era troppo forte): freccia al 38% di un fendente, circa 2 al secondo;
+## tiro carico = 3 frecce, ricarica 5 s; tirando ti muovi del 20% più lento (BOW_FIRE_SLOW).
+const BOW_SHOT := {"cd": 0.5, "mult": 0.38, "speed": 440.0, "dist": 250.0, "knock": 35.0}
+const BOW_CHARGED := {"mult": 1.14, "speed": 620.0, "dist": 360.0, "knock": 130.0}
+const BOW_FAN := {"mult": 0.38, "spread": 18.0, "speed": 420.0, "dist": 120.0, "knock": 70.0}
+const BOW_CHARGE_CD := 5.0
+const BOW_FIRE_SLOW := 0.8
 const BOW_AIM_RANGE := 320.0
 const ArrowScript := preload("res://scripts/arrow.gd")
 ## Il Flagello di Osiride: tre frustate che colpiscono tutti i nemici in linea (larghezza `width`),
@@ -105,6 +109,7 @@ var charge_cd := 0.0                    # ricarica dopo l'attacco caricato
 var charge_flash_t := 0.0
 var spear_thrown: Node2D = null         # la lancia lanciata: finché non torna sei disarmato
 var spin_swing := false
+var bow_slow_t := 0.0                   # arco: tirando ti muovi più lento (BOW_FIRE_SLOW)
 var lash_width := 0.0                   # frustata in linea: mezza larghezza (0 = ventaglio)
 var hook_vis_t := 0.0                   # il pastorale disegnato verso il nemico agganciato
 var hook_to := Vector2.ZERO
@@ -227,7 +232,9 @@ func _physics_process(delta: float) -> void:
 		velocity = dash_dir * dash_speed * (1.0 + Run.val("shu_wings") / 100.0 if Run.has("shu_wings") else 1.0)
 		_dash_damage()
 	else:
-		var s := speed * Run.move_mult() * (attack_slowdown if atk_t > 0.0 else 1.0)
+		var s := speed * Run.move_mult() * (attack_slowdown if atk_t > 0.0 and Run.weapon != "arco" else 1.0)
+		if Run.weapon == "arco" and bow_slow_t > 0.0 and not charging:
+			s *= BOW_FIRE_SLOW              # mentre tiri con l'arco
 		if charging:
 			s *= CHARGE_SLOW                # mentre carichi ti muovi più lento
 		if Run.shu_gust:
@@ -301,9 +308,9 @@ func _release_charge() -> void:
 	_charged_attack()
 
 
-## La ricarica dell'attacco caricato: uguale per tutte le armi (2 s).
+## La ricarica dell'attacco caricato: 2 s per tutte le armi, 5 s per il tiro carico dell'arco.
 func _charge_cd_max() -> float:
-	return CHARGE_CD
+	return BOW_CHARGE_CD if Run.weapon == "arco" else CHARGE_CD
 
 
 ## L'attacco caricato, nella direzione del momento del rilascio (con la mira automatica se attiva).
@@ -405,6 +412,7 @@ func _tick(delta: float) -> void:
 	charge_cd = maxf(0.0, charge_cd - delta)
 	charge_flash_t = maxf(0.0, charge_flash_t - delta)
 	hook_vis_t = maxf(0.0, hook_vis_t - delta)
+	bow_slow_t = maxf(0.0, bow_slow_t - delta)
 	hook_pull_t = maxf(0.0, hook_pull_t - delta)
 	var dash_ending := dash_t > 0.0 and dash_t <= delta
 	dash_t = maxf(0.0, dash_t - delta)
@@ -611,6 +619,7 @@ func _bow_shot() -> void:
 	leap_ready = false
 	atk_t = 0.1
 	atk_cd = BOW_SHOT["cd"] * Run.attack_speed_mult()
+	bow_slow_t = BOW_SHOT["cd"] + 0.1
 	swing_index = 3 if dash_atk else 0
 	spin_swing = false
 	swing_range = 0.0

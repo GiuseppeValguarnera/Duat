@@ -77,6 +77,13 @@ func _hit_along(a: Vector2, b: Vector2) -> bool:
 		var c: Vector2 = e.global_position + Vector2(0, -6)
 		if Geometry2D.get_closest_point_to_segment(c, a, b).distance_to(c) > e.radius + 4.0 * big:
 			continue
+		if e.has_method("blocks") and e.blocks(dir):
+			# lo scudo del guardiano di Sokar: la freccia si spezza, niente danni
+			Sfx.play_at("hit", e.global_position, 0.3)
+			Fx.burst(e.global_position + Vector2(0, -12) - dir * 8.0, Color(1.0, 0.85, 0.45), 6, 60.0)
+			Fx.float_text(e.global_position + Vector2(0, -30), Lang.t("PARATO"), Color(0.95, 0.85, 0.55))
+			queue_free()
+			return true
 		_strike(e)
 		if pierce == 0:
 			queue_free()
@@ -86,9 +93,24 @@ func _hit_along(a: Vector2, b: Vector2) -> bool:
 	return false
 
 
+## Gli effetti dei doni (fiamme, rallentamento, Lutto, spinta, ruggito dei critici, cure di Nefti)
+## scattano al massimo una volta ogni FX_GAP secondi per nemico, non a ogni freccia: vale per tutte
+## le frecce insieme, anche quelle della Faretra dello Sciacallo.
+const FX_GAP := 500
+
+
+static func _fx_ready(e) -> bool:
+	var now := Time.get_ticks_msec()
+	if now - int(e.get_meta("arrow_fx", -100000)) < FX_GAP:
+		return false
+	e.set_meta("arrow_fx", now)
+	return true
+
+
 func _strike(e) -> void:
 	var first := hit.is_empty()
 	hit[e] = true
+	var fx := _fx_ready(e)
 	var crit := Run.roll_crit(crit_chance)
 	var d := dmg * crit * (1.0 if first else pierce_mult)
 	if Run.has("duo_ra_sekhmet") and e.burn_t > 0.0:
@@ -100,17 +122,18 @@ func _strike(e) -> void:
 	if crit > 1.0:
 		Fx.float_text(e.global_position + Vector2(0, -20), Lang.t("CRITICO"), Boons.god_color("bastet"))
 		Sfx.play("crit")
-		if Run.has("duo_sekhmet_bastet"):
+		if Run.has("duo_sekhmet_bastet") and fx:
 			# Caccia delle Leonesse: il ruggito parte da dove colpisce la freccia
 			Fx.burst(e.global_position + Vector2(0, -6), Boons.god_color("duo"), 20, 110.0)
 			for o in get_tree().get_nodes_in_group("enemies"):
 				if o != e and not o.dead and o.global_position.distance_to(e.global_position) < 40.0 + o.radius:
 					o.take_hit(12.0 * Run.all_damage_mult(), (o.global_position - e.global_position).normalized(), 150.0)
-	if Run.has("nefti_veil") or (charged and Run.has("arco_nefti")):
+	if fx and (Run.has("nefti_veil") or (charged and Run.has("arco_nefti"))):
 		e.mourn_t = 4.0                    # Velo del Lutto, o la Freccia del Lutto del tiro carico
-	Run.nefti_on_hit()
-	e.take_hit(d, dir, knock * Run.knock_mult(), Run.khopesh_burns())
-	if not e.dead:
+	if fx:
+		Run.nefti_on_hit()
+	e.take_hit(d, dir, knock * Run.knock_mult(), Run.khopesh_burns() and fx)
+	if not e.dead and fx:
 		if Run.has("arco_sobek"):
 			e.slow_t = 2.0           # Frecce della Palude
 		if charged and Run.has("arco_shu"):

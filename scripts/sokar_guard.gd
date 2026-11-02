@@ -62,6 +62,11 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 	return Vector2.ZERO
 
 
+## Lo scudo ferma del tutto le frecce che arrivano da davanti (arrow.gd), anche il tiro carico.
+func blocks(dir: Vector2) -> bool:
+	return not dead and state != "recover" and dir != Vector2.ZERO and facing.dot(-dir.normalized()) > 0.35
+
+
 ## Lo scudo para da davanti, tranne quando è abbassato dopo la carica. `dir` è la direzione del
 ## colpo (dall'eroe verso di lui): se arriva contro la faccia dello scudo, è parato.
 func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> void:
