@@ -175,7 +175,7 @@ static func _reaction() -> Array:
 				options.append(Lang.t("Una grata di fuoco. Nelle acque di Wernes il fuoco di Am-heh corre anche sotto le pietre. Quando le sbarre si arroventano, non aspettare di capire perché."))
 			"olio":
 				options.append(Lang.t("L'olio in fiamme. Nelle tombe le giare custodivano l'olio per le lampade del morto. Tu le usi per altro. Anche il fuoco, però, non sceglie chi bruciare."))
-			"amheh", "amheh_fuoco", "amheh_marea":
+			"amheh", "amheh_fuoco", "amheh_marea", "amheh_anello":
 				options.append(Lang.t("Am-heh. Il Libro lo chiama 'colui che divora milioni', e dice che vive in un lago di fuoco nel Duat. Nessun morto ci si bagna due volte. Tu sì, a quanto pare."))
 			"javelin":
 				options.append(Lang.t("Un lanciatore del deserto. La linea rossa è il suo pensiero prima del gesto: leggila, e il giavellotto non ti troverà."))

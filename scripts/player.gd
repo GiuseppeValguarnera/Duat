@@ -151,6 +151,19 @@ var divine_t := 0.0
 var drain_t := 3.0                     # Sete Insaziabile
 var poison_t := 0.0                   # veleno dello scorpione: secondi rimasti
 var poison_tick := 0.0
+var poison_key := "scorpion_veleno"    # voce del registro dei danni per il veleno in corso
+## Registro dei danni (blocco 10): [secondo, fonte, danno] degli ultimi LOG_WINDOW secondi di gioco,
+## per la schermata di morte ("Fiume di sabbia nera: 28"). `log_clock` corre solo in partita.
+const LOG_WINDOW := 10.0
+var dmg_log: Array = []
+var log_clock := 0.0
+## Segnale del danno da terreno: colore del bordo e icona accanto alla vita (hud_bars.gd).
+const TERRAIN_FLASH := 0.35
+const TERRAIN_COLORS := {"sabbia": Color(0.35, 0.22, 0.12), "veleno": Color(0.45, 0.95, 0.3), "fuoco": Color(1.0, 0.55, 0.15)}
+## Fonti di danno "da terreno": tick leggeri, senza scossa forte né pausa d'impatto.
+const TERRAIN_KINDS := {"fiume": "sabbia", "amheh_fuoco": "fuoco", "olio": "fuoco"}
+var terrain_t := 0.0
+var terrain_kind := "sabbia"
 var shield := 0.0                      # Ali di Iside: scudo che si ricarica a ogni stanza
 var knock := Vector2.ZERO
 var walk := 0.0
@@ -408,6 +421,8 @@ func _shu_tick(delta: float) -> void:
 
 func _tick(delta: float) -> void:
 	_shu_tick(delta)
+	log_clock += delta
+	terrain_t = maxf(0.0, terrain_t - delta)
 	after_dash_t = maxf(0.0, after_dash_t - delta)
 	charge_cd = maxf(0.0, charge_cd - delta)
 	charge_flash_t = maxf(0.0, charge_flash_t - delta)
@@ -1046,6 +1061,7 @@ func _heavy_drain(delta: float) -> void:
 		if hp > 1.0:
 			hp -= 1.0
 			Run.hp = hp
+			log_damage("sekhmet_heavy" if Run.has("sekhmet_heavy") else "salasso", 1.0)
 			Fx.float_text(global_position, "-1", Color(0.9, 0.3, 0.3))
 			health_changed.emit(hp, max_hp)
 
@@ -1054,8 +1070,9 @@ func _heavy_drain(delta: float) -> void:
 ## Le punture si sommano: se sei già avvelenato il veleno dura di più (fino a 7 secondi).
 var poison_src := "scorpion"              ## chi ti ha avvelenato (per i commenti di Anubi)
 
-func poison(seconds: float, src: String = "scorpion") -> void:
+func poison(seconds: float, src: String = "scorpion", key: String = "") -> void:
 	poison_src = src
+	poison_key = key if key != "" else src + "_veleno"
 	if poison_t > 0.0:
 		poison_t = minf(7.0, poison_t + seconds * 0.5)
 	else:
@@ -1070,11 +1087,45 @@ func _poison_update(delta: float) -> void:
 	if poison_tick <= 0.0:
 		poison_tick = 0.6
 		if hp > 1.0:
+			var before := hp
 			hp = maxf(1.0, hp - 2.0)
 			Run.hp = hp
 			Run.last_hit = poison_src
+			log_damage(poison_key, before - hp)
+			terrain_signal("veleno")
 			Fx.float_text(global_position + Vector2(0, -16), "-2", Color(0.5, 1, 0.4))
 			health_changed.emit(hp, max_hp)
+
+
+## Registro dei danni: una riga per colpo, tenute solo quelle degli ultimi LOG_WINDOW secondi.
+func log_damage(src: String, amount: float) -> void:
+	if amount <= 0.0:
+		return
+	dmg_log.append([log_clock, src, amount])
+	while not dmg_log.is_empty() and log_clock - float(dmg_log[0][0]) > LOG_WINDOW:
+		dmg_log.pop_front()
+
+
+## Le prime `n` fonti di danno degli ultimi LOG_WINDOW secondi: [[fonte, totale], ...] dal più alto.
+func top_damage(n: int = 3) -> Array:
+	var tot := {}
+	for r in dmg_log:
+		if log_clock - float(r[0]) <= LOG_WINDOW:
+			tot[r[1]] = float(tot.get(r[1], 0.0)) + float(r[2])
+	var out: Array = []
+	for k in tot:
+		out.append([k, tot[k]])
+	out.sort_custom(func(a: Array, b: Array) -> bool: return float(a[1]) > float(b[1]))
+	return out.slice(0, n)
+
+
+## Un tick di danno dal terreno (sabbia nera, veleno, fuoco): bordi colorati, icona accanto alla
+## vita e un suono breve e leggero. Si vede anche sul telefono e non copre l'azione.
+func terrain_signal(kind: String) -> void:
+	terrain_kind = kind
+	terrain_t = TERRAIN_FLASH
+	Sfx.play("hurt", 0.2, -14.0)
+	Fx.vibrate(0.04, 0.2)
 
 
 ## Restituisce true se il colpo è andato a segno (false se eri invulnerabile).
@@ -1115,16 +1166,23 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 		Run.last_hit = attacker.scene_file_path.get_file().get_basename()
 	if kind != "":
 		Run.last_hit = kind
+	log_damage(Run.last_hit, amount)
+	var light := TERRAIN_KINDS.has(kind)   # tick del terreno: segnale ai bordi, niente scossa forte
+	if light:
+		terrain_signal(TERRAIN_KINDS[kind])
 	if Run.has("anubi_scale") and attacker != null and not attacker.dead:
 		attacker.take_hit(amount * Run.val("anubi_scale") / 100.0, (attacker.global_position - global_position).normalized(), 120.0)
 		Fx.burst(attacker.global_position + Vector2(0, -8), Boons.god_color("anubi"), 12, 80.0)
 	invuln_t = hit_invuln
 	flash_t = 0.15
-	Sfx.play("hurt")
-	Fx.vibrate(0.12 if amount < 12.0 else 0.22, clampf(amount / 20.0, 0.3, 1.0))   # Opzioni: vibrazione
-	Fx.shake(7.0)
-	Fx.hitstop(0.08)
-	Fx.damage_number(global_position, amount, Color(1, 0.4, 0.3))
+	if light:
+		Fx.damage_number(global_position, amount, Color(1, 0.6, 0.4))
+	else:
+		Sfx.play("hurt")
+		Fx.vibrate(0.12 if amount < 12.0 else 0.22, clampf(amount / 20.0, 0.3, 1.0))   # Opzioni: vibrazione
+		Fx.shake(7.0)
+		Fx.hitstop(0.08)
+		Fx.damage_number(global_position, amount, Color(1, 0.4, 0.3))
 	if hp <= 0.0 and Run.chap("c30") and not Run.heart_used:
 		Run.heart_used = true
 		hp = maxf(1.0, roundf(max_hp * Chapters.value("c30") / 100.0))

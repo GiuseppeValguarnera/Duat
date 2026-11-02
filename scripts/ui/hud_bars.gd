@@ -37,6 +37,40 @@ func _process(delta: float) -> void:
 	eye_pop = maxf(0.0, eye_pop - delta * 2.5)
 	queue_redraw()
 
+## Il tremolio colorato ai bordi: quattro strisce sfumate, spesse il 4% dello schermo, che
+## svaniscono in TERRAIN_FLASH secondi. Non arrivano mai al centro: l'azione resta visibile.
+func _terrain_edges(p: Node) -> void:
+	var col: Color = p.TERRAIN_COLORS.get(p.terrain_kind, Color(0.35, 0.22, 0.12))
+	var k: float = p.terrain_t / p.TERRAIN_FLASH
+	var vs := size
+	var th := maxf(vs.x, vs.y) * 0.04
+	for i in range(4):
+		var w := th * (1.0 - i * 0.25)
+		var c := Color(col, 0.22 * k)
+		draw_rect(Rect2(0, 0, vs.x, w), c)
+		draw_rect(Rect2(0, vs.y - w, vs.x, w), c)
+		draw_rect(Rect2(0, 0, w, vs.y), c)
+		draw_rect(Rect2(vs.x - w, 0, w, vs.y), c)
+
+
+## L'icona del danno da terreno accanto alla vita: onde di sabbia, goccia di veleno, fiamma.
+func _terrain_icon(c: Vector2, u: float, p: Node) -> void:
+	var col: Color = p.TERRAIN_COLORS.get(p.terrain_kind, Color(0.35, 0.22, 0.12))
+	var r := 8.0 * u
+	draw_circle(c, r + 1.5 * u, GOLD)
+	draw_circle(c, r, col.darkened(0.2) if p.terrain_kind == "sabbia" else Color(0.08, 0.06, 0.06))
+	match p.terrain_kind:
+		"veleno":
+			draw_colored_polygon(PackedVector2Array([c + Vector2(0, -6) * u, c + Vector2(4, 1) * u, c + Vector2(0, 5) * u, c + Vector2(-4, 1) * u]), col)
+		"fuoco":
+			draw_colored_polygon(PackedVector2Array([c + Vector2(0, -6) * u, c + Vector2(4, 3) * u, c + Vector2(0, 5) * u, c + Vector2(-4, 3) * u]), col)
+			draw_colored_polygon(PackedVector2Array([c + Vector2(0, -1) * u, c + Vector2(2, 3) * u, c + Vector2(-2, 3) * u]), Color(1, 0.9, 0.4))
+		_:
+			for i in range(3):
+				var y := (-3.0 + i * 3.0) * u
+				draw_polyline(PackedVector2Array([c + Vector2(-5 * u, y), c + Vector2(-2 * u, y - 1.5 * u), c + Vector2(1 * u, y), c + Vector2(4 * u, y - 1.5 * u)]), Color(0.95, 0.8, 0.55), 1.2 * u)
+
+
 func _draw() -> void:
 	var p = game.player
 	if p == null or not is_instance_valid(p):
@@ -58,8 +92,13 @@ func _draw() -> void:
 	for i in range(int(pw / (8.0 * u))):
 		var fx := o.x + 4.0 * u + i * 8.0 * u
 		draw_rect(Rect2(fx, o.y + ph - 3.0 * u, 4.0 * u, 2.0 * u), Color(LAPIS if i % 2 == 0 else GOLD, 0.6))
-	# ankh
-	_ankh(o + Vector2(14, 17) * u, u, Color(1, 0.4, 0.3) if p.hp / maxf(1.0, p.max_hp) < 0.33 and int(Time.get_ticks_msec() / 250.0) % 2 == 0 else GOLD)
+	# danno dal terreno (blocco 10): bordi dello schermo colorati e, al posto dell'ankh, l'icona
+	if p.terrain_t > 0.0:
+		_terrain_edges(p)
+		_terrain_icon(o + Vector2(14, 17) * u, u, p)
+	else:
+		# ankh
+		_ankh(o + Vector2(14, 17) * u, u, Color(1, 0.4, 0.3) if p.hp / maxf(1.0, p.max_hp) < 0.33 and int(Time.get_ticks_msec() / 250.0) % 2 == 0 else GOLD)
 	# vita: cartiglio con la barra
 	var bx := o.x + 26.0 * u
 	var by := o.y + 6.0 * u

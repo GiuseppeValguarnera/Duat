@@ -292,7 +292,7 @@ func _aura() -> void:
 	if player == null or player.dead or player.dash_t > 0.0:
 		return
 	if _ground(player.global_position - global_position).length() < aura_radius:
-		player.poison(1.2, "serket")
+		player.poison(1.2, "serket", "serket_aura")
 		aura_cool = 0.5
 
 

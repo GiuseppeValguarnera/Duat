@@ -13,6 +13,8 @@ extends RefCounted
 const RIVER_DMG := 2.0
 const RIVER_TICK := 0.5
 const RIVER_DRAG := 55.0
+const RIVER_AGAINST := 0.6     ## chi cammina contro corrente è trascinato fino al 60% in meno (esce sempre)
+const RIM := Color(0.86, 0.68, 0.42)   ## il bordo chiaro del fiume: si vede sopra la sabbia e sopra il nero
 const SAND_DARK := Color(0.17, 0.12, 0.11)
 const SAND_DARK2 := Color(0.26, 0.19, 0.16)
 const STONE := Color(0.62, 0.56, 0.48)
@@ -63,8 +65,14 @@ class SandRiver extends Node2D:
 				_ticks.erase(b)
 				continue
 			if b == pl and b.dash_t > 0.0:
-				continue                      # lo scatto supera il fiume
-			b.move_and_collide(flow * SokarTerrain.RIVER_DRAG * delta)
+				# lo scatto supera il fiume, e all'arrivo non scatta subito un tick
+				_ticks[b] = maxf(float(_ticks.get(b, 0.0)), SokarTerrain.RIVER_TICK * 0.5)
+				continue
+			var drag := SokarTerrain.RIVER_DRAG
+			if b == pl and b.velocity.length() > 5.0:
+				# contro corrente il trascinamento cala: chi spinge per uscire esce
+				drag *= 1.0 - SokarTerrain.RIVER_AGAINST * clampf(-b.velocity.normalized().dot(flow), 0.0, 1.0)
+			b.move_and_collide(flow * drag * delta)
 			var left: float = _ticks.get(b, SokarTerrain.RIVER_TICK * 0.5) - delta
 			if left <= 0.0:
 				left = SokarTerrain.RIVER_TICK
@@ -79,8 +87,12 @@ class SandRiver extends Node2D:
 
 	func _draw() -> void:
 		# la sabbia nera, con il bordo più scuro e le striature che corrono nel verso del fiume
-		draw_rect(rect.grow(2.0), SokarTerrain.OUTL)
+		draw_rect(rect.grow(3.0), SokarTerrain.OUTL)
 		draw_rect(rect, SokarTerrain.SAND_DARK)
+		# il bordo chiaro che pulsa piano: dove comincia il fiume si legge anche sul telefono
+		var rim_a := 0.55 + 0.25 * sin(t * 3.0)
+		draw_rect(rect.grow(1.0), Color(SokarTerrain.RIM, rim_a), false, 1.5)
+		draw_rect(rect.grow(-2.5), Color(SokarTerrain.SAND_DARK2.lightened(0.15), 0.8), false, 1.0)
 		var along := flow.abs()
 		var length := rect.size.x if along.x > 0.5 else rect.size.y
 		var across := rect.size.y if along.x > 0.5 else rect.size.x

@@ -738,7 +738,7 @@ class VenomCloud extends Node2D:
 		if p != null and not p.dead and cool <= 0.0 and p.dash_t <= 0.0:
 			var d: Vector2 = (p.global_position - global_position) / Vector2(r, r * 0.6)
 			if d.length() < 1.0:
-				p.poison(1.5, "serket")
+				p.poison(1.5, "serket", "serket_nube")
 				cool = 0.5
 		queue_redraw()
 
@@ -822,7 +822,7 @@ class FireRing extends Node2D:
 			var to: Vector2 = p.global_position - global_position
 			var ell := Vector2(to.x, to.y / 0.6)
 			if absf(ell.length() - radius()) < 9.0 and absf(gap_dir.angle_to(ell)) > gap * 0.5:
-				if p.take_damage(damage, global_position, null, "amheh_fuoco"):
+				if p.take_damage(damage, global_position, null, "amheh_anello"):
 					hit = true
 		queue_redraw()
 

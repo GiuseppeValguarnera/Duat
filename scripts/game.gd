@@ -38,7 +38,7 @@ const ENEMIES := {
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra", "fiume": "la sabbia nera", "buca": "una buca nella sabbia", "falco": "il soffio del falco di Sokar", "javelin": "un lanciatore di giavellotti", "sokar_priest": "un sacerdote di Sokar", "khepri": "uno scarabeo di Khepri", "khepri_ball": "la sfera di Khepri", "mirage": "il Miraggio"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "amheh_anello": "l'anello di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra", "fiume": "il fiume di sabbia nera", "buca": "una buca delle sabbie che crollano", "falco": "una statua-falco", "javelin": "un lanciatore di giavellotti", "sokar_priest": "un sacerdote di Sokar", "khepri": "uno scarabeo di Khepri", "khepri_ball": "la sfera di Khepri", "mirage": "il miraggio", "serket_nube": "la nube di veleno", "serket_aura": "l'aura di veleno di Serket", "scorpion_veleno": "il veleno dello scorpione", "serpent_veleno": "il veleno del Serpente", "serket_veleno": "il veleno di Serket", "sekhmet_heavy": "la sete di Sekhmet", "salasso": "il salasso del Peso del Cuore"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -1746,9 +1746,26 @@ func _on_player_died() -> void:
 	Meta.last_region = Run.region
 	var killer: String = Lang.t(KILLER_NAMES.get(Run.last_hit, ""))
 	var summary := _end_run_summary()
+	var top := _damage_sources()
+	if top != "":
+		summary = top + "\n" + summary
 	boss_bar.visible = false
 	Music.play("death")
 	_death_screen(where, killer, summary)
+
+
+## Le prime tre fonti di danno degli ultimi 10 secondi (registro del giocatore), per esempio
+## "Il fiume di sabbia nera: 28 · Uno scorpione di Serket: 16". Vuoto se non c'è nulla.
+func _damage_sources() -> String:
+	if player == null or not is_instance_valid(player):
+		return ""
+	var parts: Array = []
+	for r in player.top_damage(3):
+		var nm: String = Lang.t(KILLER_NAMES.get(r[0], "una trappola"))
+		parts.append("%s: %d" % [nm.substr(0, 1).to_upper() + nm.substr(1), roundi(float(r[1]))])
+	if parts.is_empty():
+		return ""
+	return Lang.t("Negli ultimi 10 secondi") + " — " + " · ".join(parts)
 
 
 ## La morte: tutto rallenta, un lampo rosso, lo schermo si scurisce e compare la bilancia
