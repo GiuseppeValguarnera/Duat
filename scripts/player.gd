@@ -400,7 +400,8 @@ func _charged_attack() -> void:
 		if Run.has("nefti_veil"):
 			e.mourn_t = 4.0
 		Run.nefti_on_hit()
-		e.take_hit(base * KHOPESH_SPIN["mult"] * crit, to.normalized(), KHOPESH_SPIN["knock"] * Run.knock_mult(), Run.khopesh_burns())
+		e.take_hit(base * KHOPESH_SPIN["mult"] * crit * Run.player_hit(e), to.normalized(), KHOPESH_SPIN["knock"] * Run.knock_mult(), Run.khopesh_burns())
+		Run.after_player_hit(e, to)
 		Fx.impact(e.global_position + Vector2(0, -e.radius) - to.normalized() * e.radius * 0.6, to.normalized(), true)
 		hit_any = true
 	if hit_any:
@@ -427,6 +428,7 @@ func _tick(delta: float) -> void:
 	_shu_tick(delta)
 	log_clock += delta
 	terrain_t = maxf(0.0, terrain_t - delta)
+	Run.hourglass_t = maxf(0.0, Run.hourglass_t - delta)
 	after_dash_t = maxf(0.0, after_dash_t - delta)
 	charge_cd = maxf(0.0, charge_cd - delta)
 	charge_flash_t = maxf(0.0, charge_flash_t - delta)
@@ -804,7 +806,7 @@ func _hook(dir: Vector2, base: float) -> void:
 		e.mourn_t = 4.0
 	Run.nefti_on_hit()
 	var to_me: Vector2 = global_position - e.global_position
-	e.take_hit(dmg * crit, to_me.normalized(), 0.0, Run.khopesh_burns())
+	e.take_hit(dmg * crit * Run.player_hit(e), to_me.normalized(), 0.0, Run.khopesh_burns())
 	Fx.impact(e.global_position + Vector2(0, -e.radius), -to_me.normalized(), true)
 	Fx.hitstop(0.06)
 	Fx.shake(4.0)
@@ -891,7 +893,8 @@ func _flail_swing() -> void:
 		Run.nefti_on_hit()
 		# dopo lo scatto la frusta trascina avanti i nemici colpiti, insieme a te
 		var kdir := swing_dir if dash_atk else to.normalized()
-		e.take_hit(hit_dmg, kdir, c["knock"] * Run.knock_mult(), burns)
+		e.take_hit(hit_dmg * Run.player_hit(e), kdir, c["knock"] * Run.knock_mult(), burns)
+		Run.after_player_hit(e, kdir)
 		Fx.impact(e.global_position + Vector2(0, -e.radius) - to.normalized() * e.radius * 0.6, to.normalized(), swing_index >= 2 or crit > 1.0)
 		if not e.dead:
 			if Run.has("flagello_sobek"):
@@ -1036,7 +1039,8 @@ func _swing() -> void:
 			if Run.has("nefti_veil"):
 				e.mourn_t = 4.0                  # Velo del Lutto
 			Run.nefti_on_hit()
-			e.take_hit(hit_dmg, to.normalized(), kb, Run.khopesh_burns())
+			e.take_hit(hit_dmg * Run.player_hit(e), to.normalized(), kb, Run.khopesh_burns())
+			Run.after_player_hit(e, to)
 			# scintilla dove la lama tocca: sul bordo del nemico rivolto verso di te
 			var heavy_hit := swing_index >= 2 or crit > 1.0
 			Fx.impact(e.global_position + Vector2(0, -e.radius) - to.normalized() * e.radius * 0.6, to.normalized(), heavy_hit)
@@ -1213,6 +1217,8 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 	if Run.chap("c151") and not Run.mask_used:
 		Run.mask_used = true                 # la maschera attutisce il primo colpo della stanza
 		amount *= 1.0 - Chapters.value("c151") / 100.0
+	if not TERRAIN_KINDS.has(kind):
+		Run.on_player_hurt()               # Clessidra di Thoth: anche se lo scudo para (i tick del terreno no)
 	if shield > 0.0:
 		var absorbed := minf(shield, amount)
 		shield -= absorbed
@@ -1562,7 +1568,7 @@ func _draw() -> void:
 		draw_arc(Vector2(0, -4), swing_range * (0.55 + 0.45 * k), 0.0, TAU, 40, Color(1.0, 0.85, 0.4, 0.9 * (1.0 - k)), 4.0)
 		draw_arc(Vector2(0, -4), swing_range * (0.4 + 0.45 * k), 0.0, TAU, 40, Color(1.0, 0.97, 0.8, 0.6 * (1.0 - k)), 2.0)
 	# fendente: la zona disegnata è esattamente quella che colpisce (l'arco non ha fendenti)
-	if atk_t > 0.0 and Run.weapon != "arco" and Run.weapon != "flagello":
+	if atk_t > 0.0 and Run.weapon != "arco" and Run.weapon != "flagello" and swing_arc < TAU - 0.01:
 		var pts := PackedVector2Array()
 		var steps := 14
 		var base := swing_dir.angle()

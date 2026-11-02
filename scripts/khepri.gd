@@ -105,7 +105,7 @@ class KhepriBall extends Node2D:
 				if d.length() < R + 13.0:
 					vel = vel.bounce(d.normalized())
 					break
-		global_position += vel * delta
+		global_position += vel * delta * Run.thoth_time()
 		roll += vel.length() * delta / R
 		for k in _cool.keys():
 			_cool[k] -= delta

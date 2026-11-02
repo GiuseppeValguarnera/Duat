@@ -24,7 +24,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	position += direction * speed * delta
+	position += direction * speed * delta * Run.thoth_time()     # Thoth: Clessidra e Tempo Rubato
 	life -= delta
 	if life <= 0.0:
 		_land()

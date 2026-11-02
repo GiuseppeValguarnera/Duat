@@ -12,7 +12,9 @@ func _process(_d: float) -> bool:
 	if frames == 240:
 		p = get_first_node_in_group("player")
 		var run = root.get_node("Run")
-		var ids := ["nefti_veil", "sobek_river", "duo_sekhmet_bastet", "duo_anubi_sekhmet", "shu_column", "shu_divide"]
+		var ids := ["nefti_veil", "sobek_river", "duo_sekhmet_bastet", "duo_anubi_sekhmet", "shu_column", "shu_divide",
+			"thoth_first", "thoth_glyph", "thoth_judgment", "thoth_stolen", "thoth_hourglass", "thoth_lesson", "nefti_heavy",
+			"shu_heavy", "duo_thoth_iside", "duo_thoth_anubi", "anubi_guide", "horus_multi", "horus_pierce", "horus_mark"]
 		for id in load("res://scripts/boons.gd").ALL_IT:
 			if String(id).begins_with(run.weapon + "_"):
 				ids.append(id)
@@ -37,6 +39,14 @@ func _process(_d: float) -> bool:
 		if frames % 70 == 0:
 			p.after_dash_t = 0.2
 			p._swing()
+		if frames % 90 == 0:
+			p.eye_charges = 1
+			p._fire_eye()
+		if frames == 400:
+			p.invuln_t = 0.0
+			p.dash_t = 0.0
+			p.take_damage(5.0, p.position + Vector2(10, 0))
+			print("clessidra=", snappedf(root.get_node("Run").hourglass_t, 0.1), " lezione=", root.get_node("Run").scribe_lesson())
 		p.hp = p.max_hp
 		paused = false
 		if frames == 300:

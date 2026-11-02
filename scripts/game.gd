@@ -243,6 +243,13 @@ func start_room(reward: Dictionary) -> void:
 	guardian_down = false
 	current_reward = reward
 	Run.mask_used = false
+	Run.hourglass_used = false             # Clessidra di Thoth: una volta per stanza
+	Run.hourglass_t = 0.0
+	var lesson := ""
+	if Run.room == 1 and Run.region >= 2:
+		lesson = Run.scribe_lesson()        # Lezione dello Scriba: all'inizio di una regione
+	if lesson != "":
+		_scribe_lesson_fx.call_deferred(lesson)
 	if reward.get("kind", "") != "tutorial":
 		Run.save_descent(reward, {"shops": shops_visited, "bonus": bonus_boon})
 	cleared = false
@@ -1434,6 +1441,15 @@ func _wrap(text: String, width: int) -> String:
 var _banner_tw: Tween
 
 
+## Lezione dello Scriba: il dono salito di livello, con la voce di Thoth.
+func _scribe_lesson_fx(id: String) -> void:
+	if not Boons.ALL.has(id):
+		return
+	_banner(Lang.t("Lezione dello Scriba"), Lang.t("%s sale al livello %d") % [Boons.ALL[id]["name"], Run.level(id)], Boons.god_color("thoth"), 2.5)
+	if player != null and is_instance_valid(player):
+		Fx.burst(player.global_position + Vector2(0, -10), Boons.god_color("thoth"), 26, 120.0)
+
+
 func _banner(title: String, sub: String, color: Color, hold: float = 2.0) -> void:
 	if banner.material == null:
 		banner.add_theme_font_override("font", UiStyle.deco_font())
@@ -2373,6 +2389,9 @@ func _boss_defeated() -> void:
 		return
 	Meta.ammit_wins += 1
 	Challenges.on_amheh_beaten()
+	var lesson := Run.scribe_lesson()      # Lezione dello Scriba: dopo un boss
+	if lesson != "":
+		_scribe_lesson_fx.call_deferred(lesson)
 	Restorations.gain(randi_range(10, 12), player.global_position)
 	var win_secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
 	if Meta.best_time < 0 or win_secs < Meta.best_time:
@@ -2424,6 +2443,9 @@ func _open_lake_bridge() -> void:
 ## di nuovo. Il sole sorge solo nel finale: qui è "il sole che non sorge" (Ricordo IV).
 func _aker_defeated() -> void:
 	Meta.aker_wins += 1
+	var lesson := Run.scribe_lesson()      # Lezione dello Scriba: dopo un boss
+	if lesson != "":
+		_scribe_lesson_fx.call_deferred(lesson)
 	Restorations.gain(randi_range(10, 12), player.global_position)
 	var win_secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
 	if Meta.best_time < 0 or win_secs < Meta.best_time:

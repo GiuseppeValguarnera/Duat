@@ -124,6 +124,10 @@ func new_run() -> void:
 	kills = 0
 	nefti_room_heal = 0.0
 	nefti_hits = 0
+	hourglass_t = 0.0
+	hourglass_used = false
+	glyph_hits = 0
+	lesson_regions.clear()
 	spirit_kills = 0
 	last_kill_depth = 0
 	damage_dealt = 0.0
@@ -165,7 +169,7 @@ func save_descent(reward: Dictionary, extra: Dictionary) -> void:
 		"revived": revived, "blood_kills": blood_kills, "kills": kills, "damage_dealt": damage_dealt,
 		"elapsed": Time.get_ticks_msec() - start_msec, "heart_used": heart_used, "reward": reward,
 		"ka_spent": ka_spent, "was": was_stacks, "kheper": kheper_left, "region": region,
-		"amulet": amulet, "amulet2": amulet2, "voices": voices_left,
+		"amulet": amulet, "amulet2": amulet2, "voices": voices_left, "lesson": lesson_regions.duplicate(),
 	}
 	d.merge(extra)
 	var cfg := ConfigFile.new()
@@ -209,6 +213,7 @@ func apply_descent(d: Dictionary) -> void:
 	was_stacks = d.get("was", 0)
 	kheper_left = d.get("kheper", 0)
 	voices_left = d.get("voices", voices_left)
+	lesson_regions.assign(d.get("lesson", []))
 	if d.has("amulet"):
 		amulet = d["amulet"]
 		amulet_level = Amulets.level(amulet) if amulet != "" else 1
@@ -286,6 +291,9 @@ func add_boon(id: String) -> void:
 		hp = minf(hp, max_hp)
 	if id == "anubi_light":
 		max_hp -= 5.0
+		hp = minf(hp, max_hp)
+	if id == "nefti_heavy":
+		max_hp = maxf(20.0, max_hp - 20.0)      # Fame dei Defunti: il prezzo
 		hp = minf(hp, max_hp)
 
 
@@ -378,6 +386,10 @@ func all_damage_mult() -> float:
 		m *= 1.0 + was_stacks * Amulets.val_of("was") / 100.0     # Scettro Was: le stanze pulite
 	if has("anubi_stone"):
 		m *= 0.95                # Cuore di Pietra: più vita, colpi un po' più deboli
+	if has("thoth_stolen"):
+		m *= 0.8                 # Tempo Rubato: il prezzo
+	if has("shu_heavy"):
+		m *= 0.8                 # Il Cielo Cade: il prezzo
 	if chap("c125") and hp > max_hp * 0.8:
 		m *= 1.0 + Chapters.value("c125") / 100.0
 	return m
@@ -387,8 +399,6 @@ func khopesh_mult() -> float:
 	var m := 1.0 + val("sekhmet_fury") / 100.0
 	if has("sekhmet_heavy"):
 		m *= 1.5
-	if has("thoth_heavy"):
-		m *= 0.65
 	if has("sobek_heavy"):
 		m *= 1.4
 	if has("iside_heavy"):
@@ -558,6 +568,125 @@ func shu_slam_damage() -> float:
 	return (base if base > 0.0 else 6.0) * all_damage_mult()
 
 
+# --- Thoth: tempo, parole e misura (blocco 10) -------------------------------------------
+
+const HOURGLASS_SLOW := 0.6            ## Clessidra: nemici e proiettili -60%
+const STOLEN_SLOW := 0.2               ## Tempo Rubato: -20%, sempre
+const MIN_ENEMY_SPEED := 0.35          ## mai sotto il 35%, con tutte le fonti di rallentamento insieme
+const GLYPH_EVERY := 8                 ## Geroglifo Scritto: ogni quanti colpi a segno
+const JUDGMENT := 0.12                 ## Giudizio di Thoth: sotto questa frazione di vita, i normali muoiono
+const TRUE_NAME_SHIELD := 4.0          ## Nome Vero: scudo della Prima Parola (fino a 12)
+var hourglass_t := 0.0                 ## Clessidra: secondi di rallentamento rimasti
+var hourglass_used := false            ## Clessidra: già scattata in questa stanza
+var glyph_hits := 0
+var lesson_regions: Array = []         ## Lezione dello Scriba: regioni in cui un dono è già salito
+
+
+## Velocità di nemici e proiettili nemici per Thoth (Clessidra, Tempo Rubato), già col minimo.
+func thoth_time() -> float:
+	var k := 1.0
+	if hourglass_t > 0.0:
+		k -= HOURGLASS_SLOW
+	if has("thoth_stolen"):
+		k -= STOLEN_SLOW
+	return maxf(k, MIN_ENEMY_SPEED)
+
+
+## Clessidra di Thoth: la prima volta nella stanza che il giocatore viene colpito (player.gd).
+func on_player_hurt() -> void:
+	if has("thoth_hourglass") and not hourglass_used:
+		hourglass_used = true
+		hourglass_t = val("thoth_hourglass")
+		var p = get_tree().get_first_node_in_group("player")
+		if p != null:
+			Fx.burst(p.global_position + Vector2(0, -10), Boons.god_color("thoth"), 24, 140.0)
+			Fx.float_text(p.global_position + Vector2(0, -26), Lang.t("Il tempo rallenta"), Boons.god_color("thoth"))
+
+
+## Prima Parola: il moltiplicatore del primo colpo a questo nemico (sui boss una volta per fase:
+## sopra e sotto metà vita). Lo usano i colpi del giocatore e, col Registro dei Morti, gli spiriti.
+func first_word(e: Node) -> float:
+	if not has("thoth_first") or e == null or not is_instance_valid(e):
+		return 1.0
+	var key := "fw"
+	if e.is_boss or e.miniboss:
+		key = "fw%d" % (1 if e.hp <= e.max_hp * 0.5 else 0)
+	if e.has_meta(key):
+		return 1.0
+	e.set_meta(key, true)
+	Fx.float_text(e.global_position + Vector2(0, -30), Lang.t("PRIMA PAROLA"), Boons.god_color("thoth"))
+	if has("duo_thoth_iside"):
+		var p = get_tree().get_first_node_in_group("player")
+		if p != null:
+			p.shield = maxf(p.shield, minf(p.shield + TRUE_NAME_SHIELD, 12.0))      # Nome Vero
+	return 1.0 + val("thoth_first") / 100.0
+
+
+## Un colpo del giocatore sta per andare a segno (armi e Occhio): Prima Parola, Geroglifo,
+## Fame dei Defunti. `fx` = gli effetti possono scattare (le frecce: una volta ogni 0,5 s per nemico).
+## Restituisce il moltiplicatore dei danni.
+func player_hit(e: Node, fx: bool = true) -> float:
+	var m := first_word(e)
+	if has("thoth_glyph"):
+		glyph_hits += 1
+		if glyph_hits >= GLYPH_EVERY:
+			glyph_hits = 0
+			_glyph.call_deferred()
+	if fx and has("nefti_heavy"):
+		nefti_heal(1.0)                       # Fame dei Defunti
+	return m
+
+
+## Dopo il colpo (il nemico ha già preso i danni): Il Cielo Cade spinge, il Giudizio di Thoth finisce.
+func after_player_hit(e: Node, dir: Vector2, fx: bool = true) -> void:
+	if e == null or not is_instance_valid(e) or e.dead:
+		return
+	if has("thoth_judgment") and not (e.is_boss or e.miniboss or e.elite) and e.hp < e.max_hp * JUDGMENT:
+		Fx.float_text(e.global_position + Vector2(0, -24), Lang.t("GIUDIZIO"), Boons.god_color("thoth"))
+		e.die()
+		return
+	if fx and has("shu_heavy") and dir != Vector2.ZERO:
+		e.shu_push(dir.normalized(), 260.0)   # Il Cielo Cade: ogni colpo spinge
+
+
+## Geroglifo Scritto: colpisce i tre nemici più vicini al giocatore.
+func _glyph() -> void:
+	var p = get_tree().get_first_node_in_group("player")
+	if p == null or p.dead:
+		return
+	var list: Array = []
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if not e.dead:
+			list.append(e)
+	list.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return a.global_position.distance_squared_to(p.global_position) < b.global_position.distance_squared_to(p.global_position))
+	var dmg := val("thoth_glyph") * all_damage_mult()
+	for e in list.slice(0, 3):
+		Fx.burst(e.global_position + Vector2(0, -14), Boons.god_color("thoth"), 12, 80.0)
+		e.take_hit(dmg, (e.global_position - p.global_position).normalized(), 40.0)
+
+
+## Lezione dello Scriba: un dono a caso sale di un livello, una volta per regione. Restituisce
+## l'id del dono salito ("" se niente).
+func scribe_lesson() -> String:
+	if not has("thoth_lesson") or lesson_regions.has(region):
+		return ""
+	var pool: Array = []
+	for id in boons:
+		var b: Dictionary = Boons.ALL[id]
+		if id == "thoth_lesson" or Boons.is_heavy(id) or not b.has("values") or (b["values"] as Array).size() < 2:
+			continue
+		if b["god"] in ["anubi", "duo", "set"] or level(id) >= Boons.MAX_LEVEL:
+			continue
+		pool.append(id)
+	if pool.is_empty():
+		return ""
+	lesson_regions.append(region)
+	var pick: String = pool[randi() % pool.size()]
+	boons[pick] = level(pick) + 1
+	return pick
+
+
 ## Shu, Signore delle Tempeste: la raffica è attiva (la aggiorna player.gd ogni fotogramma).
 var shu_gust := false
 
@@ -633,6 +762,8 @@ func nefti_cap() -> float:
 	for id in boons:
 		if id.begins_with("nefti_"):
 			lvl = maxi(lvl, level(id))
+	if has("nefti_heavy"):
+		return 20.0                       # Fame dei Defunti: il tetto sale a 20
 	return 12.0 + 3.0 * maxi(0, lvl - 1)
 
 

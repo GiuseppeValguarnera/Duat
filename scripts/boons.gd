@@ -40,6 +40,14 @@ const ALL_IT := {
 	"sekhmet_blood": {"god": "sekhmet", "name": "Sete di Sangue", "desc": "Ogni 5 nemici abbattuti ti curi di %d punti vita.", "values": [3, 4, 5]},
 	"sekhmet_roar": {"god": "sekhmet", "name": "Ruggito", "desc": "Il terzo colpo della combo libera un'onda d'urto attorno a te: %d danni.", "values": [10, 14, 18]},
 	"sekhmet_leap": {"god": "sekhmet", "name": "Balzo della Leonessa", "desc": "L'attacco in scatto (un colpo durante lo scatto o subito dopo) fa il %d%% di danni in più.", "values": [50, 75, 100]},
+	# Thoth: tempo, parole e misura (rifatto nel blocco 10). Il nome di una cosa, detto per primo, la ferisce.
+	"thoth_first": {"god": "thoth", "name": "Prima Parola", "desc": "Il primo colpo che dai a ogni nemico fa il %d%% di danni in più (sui boss, una volta per fase).", "values": [40, 60, 80]},
+	"thoth_hourglass": {"god": "thoth", "name": "Clessidra di Thoth", "desc": "La prima volta in ogni stanza che vieni colpito, nemici e proiettili rallentano del 60%% per %.1f secondi; tu no.", "values": [1.2, 1.6, 2.0]},
+	"thoth_glyph": {"god": "thoth", "name": "Geroglifo Scritto", "desc": "Ogni 8 colpi a segno (armi e Occhio) un geroglifo colpisce i tre nemici più vicini: %d danni.", "values": [12, 18, 24]},
+	"thoth_lesson": {"god": "thoth", "name": "Lezione dello Scriba", "desc": "All'inizio di ogni regione e dopo ogni boss, uno dei tuoi doni a caso sale di un livello (al massimo una volta per regione)."},
+	"thoth_judgment": {"god": "thoth", "rare": true, "name": "Giudizio di Thoth", "desc": "I nemici normali sotto il 12% della vita muoiono subito (non élite e boss)."},
+	"duo_thoth_anubi": {"god": "duo", "gods": ["thoth", "anubi"], "name": "Registro dei Morti", "desc": "Gli spiriti della Guida delle Anime applicano anche la Prima Parola."},
+	"duo_thoth_iside": {"god": "duo", "gods": ["thoth", "iside"], "name": "Nome Vero", "desc": "La Prima Parola ti dà anche uno scudo di 4 (non si somma oltre 12)."},
 	# Bastet: colpi critici e agilità
 	"bastet_claws": {"god": "bastet", "name": "Artigli Affilati", "desc": "Il khopesh ha il %d%% di probabilità di fare un colpo critico (danni doppi).", "values": [15, 22, 30]},
 	"bastet_eyes": {"god": "bastet", "name": "Occhi di Gatto", "desc": "L'Occhio di Horus ha il %d%% di probabilità di fare un colpo critico (danni doppi).", "values": [15, 25, 35]},
@@ -143,7 +151,9 @@ const ALL_IT := {
 	"sobek_heavy": {"god": "sobek", "heavy": true, "name": "Fauci di Sobek", "desc": "+40% ai danni del khopesh e i nemici vengono scagliati il doppio più lontano.", "cost": "Ti muovi il 15% più lento."},
 	"iside_heavy": {"god": "iside", "heavy": true, "name": "Abbraccio di Iside", "desc": "Ogni stanza ripulita ti cura del 15% della vita massima.", "cost": "Il khopesh fa il 25% di danni in meno."},
 	"horus_heavy": {"god": "horus", "heavy": true, "name": "Occhio del Re", "desc": "L'Occhio di Horus fa il doppio dei danni e trapassa tutti i nemici.", "cost": "Il khopesh fa il 40% di danni in meno."},
-	"thoth_heavy": {"god": "thoth", "heavy": true, "name": "Conoscenza Proibita", "desc": "L'Occhio di Horus si ricarica più del doppio più in fretta.", "cost": "Il khopesh fa il 35% di danni in meno."},
+	"thoth_stolen": {"god": "thoth", "heavy": true, "name": "Tempo Rubato", "desc": "Nemici e proiettili nemici sono il 20% più lenti, sempre.", "cost": "Fai il 20% di danni in meno."},
+	"nefti_heavy": {"god": "nefti", "heavy": true, "name": "Fame dei Defunti", "desc": "Ogni colpo a segno ti cura di 1 punto vita, e il tetto delle cure di Nefti in una stanza sale a 20.", "cost": "-20 vita massima."},
+	"shu_heavy": {"god": "shu", "heavy": true, "name": "Il Cielo Cade", "desc": "Ogni colpo spinge i nemici, non solo l'ultimo della combo, e gli schianti fanno il doppio dei danni.", "cost": "I tuoi colpi fanno il 20% di danni in meno."},
 }
 
 ## Maledizioni di Set: durano le prossime stanze (contate quando le ripulisci), poi arriva la benedizione.
@@ -220,6 +230,8 @@ const REQUIRES := {
 	"nefti_lament": ["nefti_veil", "arco_nefti", "flagello_nefti"],
 	"duo_nefti_iside": ["nefti_veil", "arco_nefti", "flagello_nefti"],
 	"duo_nefti_anubi": ["anubi_guide"],
+	"duo_thoth_anubi": ["anubi_guide"],
+	"duo_thoth_iside": ["thoth_first"],
 	# i doni di Shu che vivono delle spinte
 	"shu_divide": ["shu_breath", "shu_column", "shu_north", "shu_wings", "arco_shu", "flagello_shu"],
 	"shu_above": ["shu_breath", "shu_column", "shu_north", "shu_wings", "arco_shu", "flagello_shu"],
@@ -274,7 +286,16 @@ static func fits_weapon(id: String) -> bool:
 	return not (NOT_FOR.get(Run.weapon, []) as Array).has(id)
 
 
+## Doni che chiedono TUTTI i doni elencati (REQUIRES ne chiede almeno uno).
+const REQUIRES_ALL := {
+	"duo_thoth_anubi": ["anubi_guide", "thoth_first"],
+}
+
+
 static func requirements_met(id: String, owned: Dictionary) -> bool:
+	for r in REQUIRES_ALL.get(id, []):
+		if not owned.has(r):
+			return false
 	if not REQUIRES.has(id):
 		return true
 	for r in REQUIRES[id]:
@@ -286,7 +307,7 @@ static func requirements_met(id: String, owned: Dictionary) -> bool:
 static func offers(god: String, owned: Dictionary) -> Array:
 	var fresh := []
 	var ups := []
-	var heavy := ""
+	var specials := []
 	for id in ALL:
 		if ALL[id]["god"] != god or not available_now(id):
 			continue
@@ -295,13 +316,21 @@ static func offers(god: String, owned: Dictionary) -> Array:
 		if not fits_weapon(id):
 			continue
 		if is_heavy(id) or is_rare(id):
-			# col Sigillo di Thoth il dono raro ha la precedenza sul pesante
-			if not owned.has(id) and not (Favors.has("sigillo") and heavy != "" and is_rare(heavy)):
-				heavy = id
+			if not owned.has(id):
+				specials.append(id)
 		elif not owned.has(id):
 			fresh.append(id)
 		elif owned[id] < MAX_LEVEL:
 			ups.append(id)
+	# raro e pesante condividono UN posto: mai tutti e due nella stessa scelta. Uno a caso; col Sigillo
+	# di Thoth il raro ha la precedenza.
+	var heavy := ""
+	if not specials.is_empty():
+		heavy = specials[randi() % specials.size()]
+		if Favors.has("sigillo"):
+			for sp in specials:
+				if is_rare(sp):
+					heavy = sp
 	fresh.shuffle()
 	ups.shuffle()
 	var out := fresh + ups
@@ -484,7 +513,16 @@ const SHORT_IT := {
 	"bastet_heavy": ["Critici ×3 · almeno 10%", "-15 vita massima"],
 	"sobek_heavy": ["Khopesh +40% · spinta doppia", "-15% velocità"],
 	"iside_heavy": ["+15% vita a ogni stanza", "Khopesh -25%"],
-	"thoth_heavy": ["Occhio: ricarica ×2", "Khopesh -35%"],
+	"thoth_stolen": ["Nemici e proiettili -20% veloci", "-20% danni"],
+	"nefti_heavy": ["+1 vita a colpo · tetto 20", "-20 vita massima"],
+	"shu_heavy": ["Ogni colpo spinge · schianti ×2", "-20% danni"],
+	"thoth_first": ["1° colpo: +%d%% danni", ""],
+	"thoth_hourglass": ["Colpito: nemici -60% veloci", ""],
+	"thoth_glyph": ["Ogni 8 colpi: geroglifo %d", ""],
+	"thoth_lesson": ["Un dono sale a ogni regione", ""],
+	"thoth_judgment": ["Sotto il 12%: muoiono", ""],
+	"duo_thoth_anubi": ["Spiriti con la Prima Parola", ""],
+	"duo_thoth_iside": ["Prima Parola: scudo 4", ""],
 	"horus_heavy": ["Occhio ×2, trapassa tutti", "Khopesh -40%"],
 }
 

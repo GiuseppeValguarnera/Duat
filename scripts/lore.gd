@@ -51,7 +51,7 @@ const GODS_IT := {
 	},
 	"thoth": {
 		"name": "Thoth, lo Scriba degli dèi",
-		"intro": {"title": "Chi è Thoth", "text": "Io sono Thoth, signore delle parole divine, misuratore del tempo, voce della luna. Quando il cuore viene pesato, è la mia mano a scrivere il verdetto. Anche tu sei uno scriba. Dimostrami che il tuo Occhio è preciso quanto il mio calamo."},
+		"intro": {"title": "Chi è Thoth", "text": "Io sono Thoth, signore delle parole divine, misuratore del tempo, voce della luna. Quando il cuore viene pesato, è la mia mano a scrivere il verdetto. Anche tu sei uno scriba. Ogni cosa ha un nome, e chi lo pronuncia per primo la ferisce: dimostrami che il tuo primo colpo è preciso quanto la mia prima parola."},
 		"stories": [
 			{"title": "Le parole divine", "text": "Io diedi agli uomini i segni: le parole divine, che i popoli venuti dopo chiameranno geroglifici. Alcuni sono suoni, altri sono idee, tutti sono vivi. Ciò che è scritto esiste per sempre. Ciò che viene cancellato non è mai esistito. Tu lo sai meglio di chiunque."},
 			{"title": "I cinque giorni", "text": "Ra aveva decretato che Nut non avrebbe partorito in alcun giorno dell'anno. Così sfidai la Luna al gioco e le vinsi parte della sua luce: cinque giorni nuovi, fuori dal calendario. In quei giorni nacquero Osiride, Iside, Set e Nefti. Ogni decreto ha una crepa. Io la trovo."},
@@ -59,7 +59,7 @@ const GODS_IT := {
 			{"title": "Al giudizio", "text": "Nella Sala delle Due Verità il cuore giace su un piatto e la piuma di Ma'at sull'altro. Anubi osserva il filo della bilancia. Io scrivo. Senza la scrittura, nemmeno gli dèi saprebbero chi è giusto."},
 			{"title": "Milioni di ibis", "text": "Mi venerano come ibis e come babbuino, che all'alba leva le braccia e grida verso il sole. Per secoli i pellegrini mi offrirono ibis imbalsamati, a milioni, deposti nelle gallerie di Saqqara e di Tuna el-Gebel. Ogni ibis era una preghiera. Le ho lette tutte."},
 		],
-		"idle": ["Misura. Poi colpisci.", "Ogni colpo è un segno sul papiro. Scrivi bene.", "La luna conta i passi di chi cammina nel buio.", "Ho già scritto come finirà questa stanza.", "Un segno sbagliato nel Libro, e il morto si perde. Così un colpo."],
+		"idle": ["Misura. Poi colpisci.", "Ogni colpo è un segno sul papiro. Scrivi bene.", "La luna conta i passi di chi cammina nel buio.", "Ho già scritto come finirà questa stanza.", "Un segno sbagliato nel Libro, e il morto si perde. Così un colpo.", "Il tempo è una clessidra, Scriba. Io so quando girarla."],
 	},
 	"bastet": {
 		"name": "Bastet, la Signora di Bubasti",

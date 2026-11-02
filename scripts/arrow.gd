@@ -157,7 +157,9 @@ func _strike(e) -> void:
 		e.mourn_t = 4.0                    # Velo del Lutto, o la Freccia del Lutto del tiro carico
 	if fx:
 		Run.nefti_on_hit()
+	d *= Run.player_hit(e, fx)
 	e.take_hit(d, dir, knock * Run.knock_mult(), (Run.hit_has("arco_ra", O) or Run.has("ra_heavy")) and fx)
+	Run.after_player_hit(e, dir, fx)
 	if not e.dead and fx:
 		if Run.hit_has("arco_sobek", O):
 			e.slow_t = 2.0           # Frecce della Palude

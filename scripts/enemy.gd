@@ -83,7 +83,9 @@ func _physics_process(delta: float) -> void:
 		velocity = knock
 	else:
 		var gust := 0.7 if Run.shu_gust and player != null and to.length() < 90.0 else 1.0   # raffica di Shu
-		velocity = _behave(delta, to) * Run.enemy_speed_mult() * _puddle_slow() * gust + knock
+		# rallentamenti (pozze, acqua, Sobek, raffica di Shu, Thoth) insieme: mai sotto il 35%
+		var slow := maxf(_puddle_slow() * gust * Run.thoth_time(), Run.MIN_ENEMY_SPEED)
+		velocity = _behave(delta, to) * Run.enemy_speed_mult() * slow + knock
 	var flying := knock
 	knock = knock.move_toward(Vector2.ZERO, 800.0 * delta)
 	var wanted := velocity.length()
@@ -346,6 +348,8 @@ func _shu_flight(delta: float, flying: Vector2) -> void:
 	Fx.shake(3.0)
 	if Run.has("duo_shu_ra"):
 		burn_t = maxf(burn_t, 2.0)        # Vento Ardente: gli schianti incendiano
+	if Run.has("shu_heavy"):
+		dmg *= 2.0                         # Il Cielo Cade: schianti doppi
 	take_hit(dmg, -flying.normalized(), 0.0)
 
 
@@ -474,6 +478,8 @@ static func _spirit_strike(ref: WeakRef, from: Vector2, dmg: float, depth: int) 
 		target.spirit_depth = depth
 		if Run.has("duo_nefti_anubi"):
 			target.mourn_t = 4.0              # Corteo delle Anime: lo spirito marchia col Lutto
+		if Run.has("duo_thoth_anubi"):
+			dmg *= Run.first_word(target)     # Registro dei Morti: anche lo spirito dice la Prima Parola
 		target.take_hit(dmg, (target.global_position - from).normalized(), 60.0)
 		if is_instance_valid(target) and not target.dead:
 			target.spirit_depth = 0
