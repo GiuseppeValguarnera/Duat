@@ -76,12 +76,15 @@ const ThrownSpear := preload("res://scripts/thrown_spear.gd")
 ## scatto un ventaglio di 3 frecce corte. Mentre tende l'arco ci si muove meno piano che con le altre armi.
 ## Ritarato nel blocco 9 (era troppo forte): freccia al 38% di un fendente, circa 2 al secondo;
 ## tiro carico = 3 frecce, ricarica 5 s; tirando ti muovi del 20% più lento (BOW_FIRE_SLOW).
-const BOW_SHOT := {"cd": 0.5, "mult": 0.38, "speed": 440.0, "dist": 250.0, "knock": 35.0}
-const BOW_CHARGED := {"mult": 1.14, "speed": 620.0, "dist": 360.0, "knock": 130.0}
-const BOW_FAN := {"mult": 0.38, "spread": 18.0, "speed": 420.0, "dist": 120.0, "knock": 70.0}
+const BOW_ARROW := 0.45               ## una freccia = 45% di un fendente del khopesh (blocco 10)
+const BOW_SHOT := {"cd": 0.5, "mult": BOW_ARROW, "speed": 440.0, "dist": 212.0, "knock": 35.0}
+const BOW_CHARGED := {"mult": BOW_ARROW * 3.0, "speed": 620.0, "dist": 306.0, "knock": 130.0}
+const BOW_FAN := {"mult": BOW_ARROW, "spread": 18.0, "speed": 420.0, "dist": 120.0, "knock": 70.0}
 const BOW_CHARGE_CD := 5.0
 const BOW_FIRE_SLOW := 0.8
-const BOW_AIM_RANGE := 320.0
+const BOW_AIM_RANGE := 272.0
+## Ricochet del Falco (Horus, arco): [rimbalzi, danni] per livello; raggio = un quarto dello schermo.
+const RICOCHET := [[1, 0.6], [1, 0.8], [2, 0.8]]
 const ArrowScript := preload("res://scripts/arrow.gd")
 ## Il Flagello di Osiride: tre frustate che colpiscono tutti i nemici in linea (larghezza `width`),
 ## la terza più ampia (un ventaglio di `arc` gradi). Danni pieni alla punta, metà addosso al corpo.
@@ -684,9 +687,10 @@ func _spawn_arrow(dir: Vector2, dmg: float, spd: float, dist: float, kb: float, 
 	ar.crit_chance = crit_chance
 	ar.charged = charged
 	ar.big = 1.6 if charged else 1.0
-	if Run.has("arco_horus"):
-		ar.homing = true
-		ar.dmg *= 1.0 + Run.val("arco_horus") / 100.0
+	if Run.has("arco_ricochet") and not charged:
+		var rc: Array = RICOCHET[clampi(Run.level("arco_ricochet"), 1, 3) - 1]
+		ar.bounces = int(rc[0])
+		ar.bounce_k = float(rc[1])
 	if pierce == 0 and Run.has("arco_thoth"):
 		ar.pierce = 1
 		ar.pierce_mult = Run.val("arco_thoth") / 100.0
@@ -1094,8 +1098,8 @@ func _fire_eye() -> void:
 		if Run.has("duo_shu_horus"):
 			eye.return_mult = maxf(eye.return_mult, 0.7)     # Ali del Falco: il vento lo riporta indietro
 		eye.mark = Run.has("horus_mark")
-		eye.burns = Run.eye_burns() or Run.has("duo_ra_thoth")
-		if Run.has("duo_ra_thoth"):
+		eye.burns = Run.eye_burns() or Run.has("duo_ra_horus")
+		if Run.has("duo_ra_horus"):
 			eye.explode_damage = maxf(eye.explode_damage, 12.0 * Run.all_damage_mult())
 		get_parent().add_child(eye)
 		eye.global_position = global_position + Vector2(0, -8) + dir * 10.0

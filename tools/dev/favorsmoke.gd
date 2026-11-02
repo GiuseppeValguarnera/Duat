@@ -18,7 +18,7 @@ func _process(_d: float) -> bool:
 		run.amulet = "ankh"
 		run.amulet2 = "udjat"
 		run.voices_left = 2
-		for id in ["ra_burn", "ra_disc", "sekhmet_fury", "thoth_pierce", "sobek_skin", "iside_wings", "horus_seek"]:
+		for id in ["ra_burn", "ra_disc", "sekhmet_fury", "horus_pierce", "sobek_skin", "iside_wings", "horus_seek"]:
 			run.boons[id] = 2
 		g._show_boon_menu("ra", false)
 	if frames == 70:
@@ -32,9 +32,9 @@ func _process(_d: float) -> bool:
 		print("barque=", barque != null)
 		g._open_swap(barque)
 		g._close_choice()
-		g._swap_choices("thoth_pierce", barque)
+		g._swap_choices("horus_pierce", barque)
 		g._close_choice()
-		g._do_swap("thoth_pierce", g._swap_candidates("thoth_pierce")[0], 2, barque)
+		g._do_swap("horus_pierce", g._swap_candidates("horus_pierce")[0], 2, barque)
 		print("boons=", run.boons.keys())
 		g.oasis_mahaf_talked = true
 		g._board_mahaf()

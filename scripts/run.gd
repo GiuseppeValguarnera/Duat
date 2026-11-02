@@ -194,7 +194,7 @@ func apply_descent(d: Dictionary) -> void:
 	hp = d.get("hp", hp)
 	ka = d.get("ka", 0)
 	room = d.get("room", 1)
-	boons = d.get("boons", {}).duplicate()
+	boons = clean_boons(d.get("boons", {}))
 	blessings.assign(d.get("blessings", []))
 	curses = d.get("curses", []).duplicate(true)
 	sekhem = d.get("sekhem", 0.0)
@@ -232,6 +232,27 @@ func level(id: String) -> int:
 
 func has(id: String) -> bool:
 	return boons.has(id) or blessings.has(id)
+
+
+## Hai il dono E agisce su questo tipo di colpo? (Boons.acts_on: "occhio", "freccia", "khopesh"...)
+func hit_has(id: String, origin: String) -> bool:
+	return has(id) and Boons.acts_on(id, origin)
+
+
+## Doni rinominati o passati a un altro dio (blocco 10): i salvataggi vecchi li ritrovano.
+## Gli id che non esistono più (Calcolo di Thoth, Parola dello Scriba, Conoscenza Proibita…) si
+## lasciano cadere senza errori.
+const BOON_ALIASES := {"thoth_tri": "horus_multi", "thoth_pierce": "horus_pierce", "duo_ra_thoth": "duo_ra_horus",
+	"duo_thoth_bastet": "duo_horus_bastet", "arco_horus": "arco_ricochet"}
+
+
+static func clean_boons(src: Dictionary) -> Dictionary:
+	var out := {}
+	for k in src:
+		var id := String(BOON_ALIASES.get(String(k), String(k)))
+		if Boons.ALL.has(id):
+			out[id] = clampi(int(src[k]), 1, Boons.MAX_LEVEL)
+	return out
 
 
 ## Il numero del dono al livello attuale (0 se non lo hai).
@@ -378,7 +399,7 @@ func khopesh_mult() -> float:
 
 
 func eye_damage_mult() -> float:
-	var m := (1.0 + val("thoth_scribe") / 100.0) * (1.0 + val("ra_eye") / 100.0) * all_damage_mult()
+	var m := (1.0 + val("ra_eye") / 100.0) * all_damage_mult()
 	if has("anubi_mouth"):
 		m *= 0.9
 	m *= 1.0 + val("horus_seek") / 100.0
@@ -394,11 +415,9 @@ func eye_charges() -> int:
 
 
 func eye_cooldown_mult() -> float:
-	var m := 1.0 - val("thoth_calc") / 100.0
+	var m := 1.0
 	if has("ra_heavy"):
 		m *= 1.5
-	if has("thoth_heavy"):
-		m *= 0.45
 	if has("anubi_mouth"):
 		m *= 1.0 - val("anubi_mouth") / 100.0
 	if chap("c89"):
@@ -410,11 +429,11 @@ func eye_cooldown_mult() -> float:
 func eye_pierce() -> int:
 	if has("horus_heavy"):
 		return 99
-	return int(val("thoth_pierce"))
+	return int(val("horus_pierce"))
 
 
 func eye_rays() -> int:
-	return maxi(1, int(val("thoth_tri")))
+	return maxi(1, int(val("horus_multi")))
 
 
 func khopesh_burns() -> bool:

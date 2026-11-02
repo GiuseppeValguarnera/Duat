@@ -40,10 +40,6 @@ const ALL_IT := {
 	"sekhmet_blood": {"god": "sekhmet", "name": "Sete di Sangue", "desc": "Ogni 5 nemici abbattuti ti curi di %d punti vita.", "values": [3, 4, 5]},
 	"sekhmet_roar": {"god": "sekhmet", "name": "Ruggito", "desc": "Il terzo colpo della combo libera un'onda d'urto attorno a te: %d danni.", "values": [10, 14, 18]},
 	"sekhmet_leap": {"god": "sekhmet", "name": "Balzo della Leonessa", "desc": "L'attacco in scatto (un colpo durante lo scatto o subito dopo) fa il %d%% di danni in più.", "values": [50, 75, 100]},
-	"thoth_pierce": {"god": "thoth", "name": "Sguardo di Thoth", "desc": "L'Occhio di Horus trapassa fino a %d nemici.", "values": [2, 3, 4]},
-	"thoth_calc": {"god": "thoth", "name": "Calcolo di Thoth", "desc": "L'Occhio di Horus si ricarica il %d%% più in fretta.", "values": [25, 35, 45]},
-	"thoth_tri": {"god": "thoth", "name": "Occhio Moltiplicato", "desc": "L'Occhio di Horus scaglia %d raggi a ventaglio, ognuno con il 60%% dei danni.", "values": [3, 4, 5]},
-	"thoth_scribe": {"god": "thoth", "name": "Parola dello Scriba", "desc": "+%d%% ai danni dell'Occhio di Horus.", "values": [35, 50, 65]},
 	# Bastet: colpi critici e agilità
 	"bastet_claws": {"god": "bastet", "name": "Artigli Affilati", "desc": "Il khopesh ha il %d%% di probabilità di fare un colpo critico (danni doppi).", "values": [15, 22, 30]},
 	"bastet_eyes": {"god": "bastet", "name": "Occhi di Gatto", "desc": "L'Occhio di Horus ha il %d%% di probabilità di fare un colpo critico (danni doppi).", "values": [15, 25, 35]},
@@ -67,7 +63,7 @@ const ALL_IT := {
 	"arco_bastet": {"god": "bastet", "weapon": "arco", "name": "Occhio della Gatta", "desc": "Il tiro carico ha il %d%% di probabilità di essere un colpo critico.", "values": [35, 50, 65]},
 	"arco_sobek": {"god": "sobek", "weapon": "arco", "name": "Frecce della Palude", "desc": "Le frecce rallentano i nemici del %d%% per 2 secondi.", "values": [20, 28, 36]},
 	"arco_iside": {"god": "iside", "weapon": "arco", "name": "Respiro di Iside", "desc": "Con l'arco teso a pieno ricevi uno scudo di %d (non si somma).", "values": [5, 7, 9]},
-	"arco_horus": {"god": "horus", "weapon": "arco", "name": "Frecce del Falco", "desc": "Le frecce curvano verso il nemico più vicino e fanno il %d%% di danni in più.", "values": [10, 15, 20]},
+	"arco_ricochet": {"god": "horus", "weapon": "arco", "name": "Ricochet del Falco", "desc": "Dopo un colpo la freccia rimbalza sul nemico più vicino non ancora colpito, con il %d%% dei danni (al livello 3 rimbalza due volte).", "values": [60, 80, 80]},
 	"arco_anubi": {"god": "anubi", "weapon": "arco", "balanced": true, "name": "Faretra dello Sciacallo", "desc": "Ogni colpo scocca %d frecce a ventaglio.", "values": [2], "cost": "Ogni freccia fa il 35% di danni in meno."},
 	"arco_nefti": {"god": "nefti", "weapon": "arco", "name": "Freccia del Lutto", "desc": "Il tiro carico marchia col Lutto: chi muore marchiato ti cura di %d.", "values": [2, 3, 4]},
 	"arco_shu": {"god": "shu", "weapon": "arco", "name": "Freccia del Vento", "desc": "Il tiro carico spinge via chi trapassa: se sbatte, schianto da %d danni.", "values": [8, 12, 16]},
@@ -90,6 +86,8 @@ const ALL_IT := {
 	# Anubi pesa ogni cosa: i suoi doni sono bilance, un vantaggio un po' più grande del prezzo.
 	"horus_return": {"god": "horus", "name": "Ritorno del Falco", "desc": "L'Occhio di Horus, finito il volo, torna da te e colpisce di nuovo chi incontra: %d%% dei danni.", "values": [60, 80, 100]},
 	"horus_seek": {"god": "horus", "name": "Volo del Falco", "desc": "L'Occhio di Horus curva da solo verso il nemico più vicino e fa il %d%% di danni in più.", "values": [10, 20, 30]},
+	"horus_multi": {"god": "horus", "name": "Occhio Moltiplicato", "desc": "L'Occhio di Horus scaglia %d raggi a ventaglio, ognuno con il 60%% dei danni.", "values": [3, 4, 5]},
+	"horus_pierce": {"god": "horus", "name": "Occhio Penetrante", "desc": "L'Occhio di Horus trapassa fino a %d nemici.", "values": [2, 3, 4]},
 	"horus_twin": {"god": "horus", "name": "Il Sole e la Luna", "desc": "L'Occhio di Horus ha %d cariche: puoi lanciarlo più volte di fila.", "values": [2, 3, 4]},
 	"horus_harpoon": {"god": "horus", "weapon": "lancia", "name": "Arpione di Horus", "desc": "Gli affondi della lancia fanno il %d%% di danni in più ai nemici lontani, sulla punta.", "values": [25, 40, 55]},
 	"horus_mark": {"god": "horus", "name": "Sguardo del Falco", "desc": "I nemici colpiti dall'Occhio subiscono il %d%% di danni in più dal khopesh per 3 secondi.", "values": [20, 30, 40]},
@@ -104,10 +102,10 @@ const ALL_IT := {
 	"anubi_tribute": {"god": "anubi", "balanced": true, "name": "Offerte ai Defunti", "desc": "Ottieni il %d%% di Ka in più.", "values": [40], "cost": "-5 vita massima."},
 	"anubi_guide": {"god": "anubi", "balanced": true, "name": "Guida delle Anime", "desc": "Ogni nemico abbattuto libera uno spirito che colpisce il nemico più vicino: %d danni.", "values": [15], "cost": "I nemici hanno il 5% di vita in più."},
 	# Doni Doppi: compaiono quando hai già doni di entrambi gli dèi
-	"duo_ra_thoth": {"god": "duo", "gods": ["ra", "thoth"], "name": "Occhio del Sole", "desc": "L'Occhio di Horus incendia sempre ed esplode quando si ferma (almeno 12 danni)."},
+	"duo_ra_horus": {"god": "duo", "gods": ["ra", "horus"], "name": "Occhio del Sole", "desc": "L'Occhio di Horus incendia sempre ed esplode quando si ferma (almeno 12 danni)."},
 	"duo_ra_sekhmet": {"god": "duo", "gods": ["ra", "sekhmet"], "name": "Sole Furente", "desc": "I nemici in fiamme subiscono il 25% di danni in più dal khopesh."},
 	"duo_sekhmet_bastet": {"god": "duo", "gods": ["sekhmet", "bastet"], "name": "Caccia delle Leonesse", "desc": "I colpi critici del khopesh liberano un ruggito che ferisce chi ti sta attorno (12 danni)."},
-	"duo_thoth_bastet": {"god": "duo", "gods": ["thoth", "bastet"], "name": "Sguardo del Gatto Sapiente", "desc": "Un colpo critico dell'Occhio di Horus ne dimezza la ricarica."},
+	"duo_horus_bastet": {"god": "duo", "gods": ["horus", "bastet"], "name": "Sguardo del Gatto Sapiente", "desc": "Un colpo critico dell'Occhio di Horus ne dimezza la ricarica."},
 	"duo_sobek_iside": {"god": "duo", "gods": ["sobek", "iside"], "name": "Piena Sacra", "desc": "Finché hai lo scudo di Iside, il khopesh fa il 25% di danni in più."},
 	# Thoth guarì l'Occhio di Horus strappato da Set: da allora l'Occhio è "sano" (wedjat)
 	"duo_horus_thoth": {"god": "duo", "gods": ["horus", "thoth"], "name": "Occhio Risanato", "desc": "Quando l'Occhio di Horus abbatte un nemico, si ricarica all'istante."},
@@ -213,7 +211,7 @@ const REQUIRES := {
 	"sobek_river": ["sobek_bite", "sobek_tide", "arco_sobek", "flagello_sobek"],
 	"duo_ra_sekhmet": ["ra_burn", "ra_dawn", "ra_eye", "ra_heavy", "arco_ra", "flagello_ra"],
 	"duo_sekhmet_bastet": ["bastet_claws", "bastet_heavy", "bastet_point", "arco_bastet", "flagello_bastet"],
-	"duo_thoth_bastet": ["bastet_eyes", "bastet_heavy"],
+	"duo_horus_bastet": ["bastet_eyes", "bastet_heavy"],
 	"duo_sobek_iside": ["iside_wings"],
 	# il dono di Anubi c'è quasi sempre (lo dà all'inizio): serve uno di quelli che riguardano i colpi
 	"duo_anubi_sekhmet": ["anubi_jackal", "anubi_guardian", "anubi_scale", "anubi_guide", "arco_anubi", "flagello_anubi"],
@@ -235,6 +233,39 @@ const REQUIRES := {
 const NOT_FOR := {
 	"arco": ["sekhmet_roar", "sobek_bite", "anubi_guardian", "shu_breath", "ra_burn"],
 }
+
+
+## Su quali colpi agisce un dono d'attacco (blocco 10). Origini: "khopesh", "lancia", "flagello",
+## "occhio", "freccia". I doni di un'arma (campo `weapon`) valgono solo per i colpi di quell'arma;
+## quelli che non sono qui e non hanno un'arma sono generali (danni %, critici, vita, scatto, cure).
+## Le frecce ricevono SOLO i doni dell'arco e quelli generali: niente doni dell'Occhio.
+const MELEE := ["khopesh", "lancia", "flagello"]
+const WEAPON_HITS := ["khopesh", "lancia", "flagello", "freccia"]
+const EYE := ["occhio"]
+const ORIGINS := {
+	# l'Occhio di Horus (dominio di Horus)
+	"ra_disc": EYE, "ra_eye": EYE, "horus_multi": EYE, "horus_pierce": EYE, "horus_return": EYE,
+	"horus_seek": EYE, "horus_twin": EYE, "bastet_eyes": EYE, "anubi_mouth": EYE, "shu_north": EYE,
+	"duo_ra_horus": EYE, "duo_horus_bastet": EYE, "duo_horus_thoth": EYE, "duo_iside_horus": EYE,
+	"duo_shu_horus": EYE,
+	# la combinazione di tre colpi e il fuoco dell'arma da mischia
+	"sekhmet_roar": MELEE, "sobek_bite": MELEE, "anubi_guardian": MELEE, "shu_breath": MELEE, "ra_burn": MELEE,
+	# il marchio lo mette l'Occhio, ma il bonus va ai colpi dell'arma
+	"horus_mark": WEAPON_HITS,
+	"duo_ra_sekhmet": WEAPON_HITS, "duo_sekhmet_bastet": WEAPON_HITS, "duo_sobek_iside": WEAPON_HITS,
+	"duo_anubi_sekhmet": WEAPON_HITS, "sekhmet_leap": WEAPON_HITS, "bastet_claws": WEAPON_HITS,
+}
+const WEAPON_ORIGIN := {"khopesh": "khopesh", "lancia": "lancia", "flagello": "flagello", "arco": "freccia"}
+
+
+static func acts_on(id: String, origin: String) -> bool:
+	if not ALL.has(id):
+		return false
+	if ALL[id].has("weapon"):
+		return WEAPON_ORIGIN.get(ALL[id]["weapon"], "") == origin
+	if ORIGINS.has(id):
+		return (ORIGINS[id] as Array).has(origin)
+	return true
 
 
 static func fits_weapon(id: String) -> bool:
@@ -394,7 +425,9 @@ const SHORT_IT := {
 	"arco_bastet": ["Tiro carico %d%% critico", ""],
 	"arco_sobek": ["Frecce: -%d%% velocità 2 s", ""],
 	"arco_iside": ["Arco teso: scudo %d", ""],
-	"arco_horus": ["Frecce inseguono · +%d%%", ""],
+	"arco_ricochet": ["Rimbalzo: %d%% dei danni", ""],
+	"horus_multi": ["Occhio: %d raggi a ventaglio", ""],
+	"horus_pierce": ["Occhio trapassa %d nemici", ""],
 	"arco_anubi": ["%d frecce per colpo", "-35% danni a freccia"],
 	"arco_nefti": ["Tiro carico marchia · +%d", ""],
 	"arco_shu": ["Tiro carico spinge · schianto %d", ""],
@@ -405,10 +438,6 @@ const SHORT_IT := {
 	"sekhmet_blood": ["+%d vita ogni 5 uccisioni", ""],
 	"sekhmet_roar": ["3° colpo: onda di %d danni", ""],
 	"sekhmet_leap": ["Attacco in scatto +%d%% danni", ""],
-	"thoth_pierce": ["Occhio trapassa %d nemici", ""],
-	"thoth_calc": ["Occhio ricarica -%d%%", ""],
-	"thoth_tri": ["Occhio: %d raggi a ventaglio", ""],
-	"thoth_scribe": ["Occhio +%d%% danni", ""],
 	"bastet_claws": ["Khopesh %d%% critico", ""],
 	"bastet_eyes": ["Occhio %d%% critico", ""],
 	"bastet_step": ["Scatto ricarica -%d%%", ""],
@@ -441,10 +470,10 @@ const SHORT_IT := {
 	"anubi_guardian": ["3° colpo +%d%%", "1° e 2° colpo -10%"],
 	"anubi_tribute": ["+%d%% Ka", "-5 vita massima"],
 	"anubi_guide": ["Spiriti da %d danni", "Nemici +5% vita"],
-	"duo_ra_thoth": ["Occhio incendia, esplode", ""],
+	"duo_ra_horus": ["Occhio incendia, esplode", ""],
 	"duo_ra_sekhmet": ["+25% sui nemici in fiamme", ""],
 	"duo_sekhmet_bastet": ["Critici: ruggito di 12 danni", ""],
-	"duo_thoth_bastet": ["Critico: ricarica Occhio -50%", ""],
+	"duo_horus_bastet": ["Critico: ricarica Occhio -50%", ""],
 	"duo_sobek_iside": ["Con lo scudo: khopesh +25%", ""],
 	"duo_horus_thoth": ["Occhio uccide: ricarica subito", ""],
 	"duo_iside_horus": ["Occhio a segno: +2 vita", ""],

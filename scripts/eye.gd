@@ -1,6 +1,6 @@
 extends Area2D
 ## Occhio di Horus. Di base si ferma sul primo nemico che colpisce.
-## Con lo Sguardo di Thoth ne trapassa altri; con il Disco di Ra esplode.
+## Con l'Occhio Penetrante (Horus) ne trapassa altri; con il Disco di Ra esplode.
 
 var direction := Vector2.RIGHT
 var damage := 24.0
@@ -73,14 +73,14 @@ func _on_body_entered(body: Node) -> void:
 		var crit := Run.roll_crit(Run.eye_crit_chance())
 		if crit > 1.0:
 			Fx.float_text(body.global_position + Vector2(0, -20), Lang.t("CRITICO"), Boons.god_color("bastet"))
-			if Run.has("duo_thoth_bastet"):
+			if Run.hit_has("duo_horus_bastet", "occhio"):
 				var player = get_tree().get_first_node_in_group("player")
 				if player != null:
 					player.eye_cd *= 0.5
 		if "hit_by_eye" in body:
 			body.hit_by_eye = true
 		body.take_hit(damage * crit, direction, 60.0, burns)
-		if from_player and Run.has("shu_north") and not body.dead:
+		if from_player and Run.hit_has("shu_north", "occhio") and not body.dead:
 			body.shu_push(direction, 260.0)   # Vento del Nord: l'Occhio spinge lungo la sua traiettoria
 		if mark:
 			body.mark_t = 3.0
@@ -103,10 +103,10 @@ func _duo_effects(body: Node) -> void:
 		return
 	if not from_player:
 		return                           # gli occhi dell'Ushabti non curano e non ricaricano il tuo Occhio
-	if Run.has("duo_horus_thoth") and body.dead:
+	if Run.hit_has("duo_horus_thoth", "occhio") and body.dead:
 		player.eye_cd = 0.0              # al prossimo istante torna una carica
 		Fx.float_text(player.global_position + Vector2(0, -26), Lang.t("Occhio pronto"), Boons.god_color("duo"))
-	if Run.has("duo_iside_horus") and not _healed:
+	if Run.hit_has("duo_iside_horus", "occhio") and not _healed:
 		_healed = true                   # una cura per lancio, anche se trapassa più nemici
 		player.heal(2.0)
 
