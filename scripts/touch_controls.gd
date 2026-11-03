@@ -4,15 +4,21 @@ extends CanvasLayer
 ## - Destra: khopesh (tieni premuto), scatto, Occhio di Horus, Forma Divina.
 ## - In alto a destra: pausa e doni.
 ## - Nella Sala del Giudizio e dal Traghettatore il pulsante grande diventa "Interagisci".
-## Sul touch la mira va da sola verso il nemico più vicino (vedi player.gd).
+## Sul touch la mischia mira da sola il nemico più vicino (vedi player.gd); con l'arco il tasto
+## d'attacco diventa una levetta di mira (trascina per tirare, dito fermo 0,25 s per caricare).
 
 const STICK_RADIUS := 42.0
+const AIM_RADIUS := 40.0                ## arco: quanto trascinare il tasto per mirare al massimo
+const AIM_DEAD := 10.0                  ## arco: sotto questi pixel il dito è "fermo" (carica)
 
 var active := false
 var stick_touch := -1
 var stick_origin := Vector2.ZERO
 var stick_pos := Vector2.ZERO
 var held := {}                        # indice del dito -> azione premuta
+var aim_touch := -1                    # arco: il dito che tiene il tasto d'attacco (levetta di mira)
+var aim_origin := Vector2.ZERO
+var aim_pos := Vector2.ZERO
 var buttons: Array = []
 var draw_node: Control
 
@@ -114,6 +120,10 @@ func _input(event: InputEvent) -> void:
 					return
 			for btn in buttons:
 				if event.position.distance_to(btn["pos"]) <= btn["r"] + 8.0:
+					if btn["action"] == "attack" and _bow_stick():
+						aim_touch = event.index
+						aim_origin = event.position
+						aim_pos = event.position
 					held[event.index] = btn["action"]
 					_send(btn["action"], true)
 					get_viewport().set_input_as_handled()
@@ -128,9 +138,17 @@ func _input(event: InputEvent) -> void:
 			if held.has(event.index):
 				_send(held[event.index], false)
 				held.erase(event.index)
+			if event.index == aim_touch:
+				aim_touch = -1
+				_set_aim(Vector2.ZERO)
 			if event.index == stick_touch:
 				stick_touch = -1
 				_set_stick(Vector2.ZERO)
+	elif event is InputEventScreenDrag and event.index == aim_touch:
+		aim_pos = event.position
+		var off: Vector2 = aim_pos - aim_origin
+		_set_aim(Vector2.ZERO if off.length() < AIM_DEAD else (off / AIM_RADIUS).limit_length(1.0).normalized())
+		get_viewport().set_input_as_handled()
 	elif event is InputEventScreenDrag and event.index == stick_touch:
 		stick_pos = event.position
 		var v: Vector2 = (stick_pos - stick_origin) / STICK_RADIUS
@@ -140,6 +158,16 @@ func _input(event: InputEvent) -> void:
 		_set_stick(v)
 		get_viewport().set_input_as_handled()
 	draw_node.queue_redraw()
+
+
+## Con l'arco in mano (fuori dalla Sala) il tasto d'attacco è una levetta di mira.
+func _bow_stick() -> bool:
+	return Run.weapon == "arco" and not Run.in_hub
+
+
+func _set_aim(v: Vector2) -> void:
+	_axis("aim_left", "aim_right", v.x)
+	_axis("aim_up", "aim_down", v.y)
 
 
 func _set_stick(v: Vector2) -> void:
@@ -172,6 +200,9 @@ func _release_all() -> void:
 	if stick_touch != -1:
 		stick_touch = -1
 		_set_stick(Vector2.ZERO)
+	if aim_touch != -1:
+		aim_touch = -1
+		_set_aim(Vector2.ZERO)
 
 
 ## Nascosti durante menu e pause: lì si tocca direttamente lo schermo.
@@ -263,6 +294,13 @@ func _draw_controls() -> void:
 		var fs := Fx.fs(7 if btn["r"] < 20.0 else 8)
 		var w := font.get_string_size(btn["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		draw_node.draw_string(font, btn["pos"] + Vector2(-w / 2.0, fs / 2.0 - 1.0), btn["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 0.95, 0.85, 0.9))
+	# arco: la levetta di mira sul tasto d'attacco
+	if aim_touch != -1:
+		var off := (aim_pos - aim_origin).limit_length(AIM_RADIUS)
+		draw_node.draw_arc(aim_origin, AIM_RADIUS, 0.0, TAU, 32, Color(0.94, 0.72, 0.3, 0.35), 1.5)
+		if off.length() >= AIM_DEAD:
+			draw_node.draw_line(aim_origin, aim_origin + off, Color(1.0, 0.86, 0.45, 0.8), 3.0)
+		draw_node.draw_circle(aim_origin + off, 9.0, Color(1.0, 0.86, 0.45, 0.6))
 
 
 
