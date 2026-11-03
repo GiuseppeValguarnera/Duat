@@ -23,6 +23,8 @@ const ENEMIES := {
 	"serket": preload("res://scenes/serket.tscn"),       # guardiana di Sokar
 	"aker": preload("res://scenes/aker.tscn"),           # boss di Sokar (si divide in Ieri e Domani)
 	"aker_lion": preload("res://scenes/aker_lion.tscn"),
+	"aker_shade": preload("res://scenes/aker_shade.tscn"),     # servitori di Aker (porta del tramonto)
+	"aker_spark": preload("res://scenes/aker_spark.tscn"),     # e porta dell'alba
 	"scorpion": preload("res://scenes/scorpion.tscn"),   # nemici del deserto di Sokar (seconda tappa)
 	"cobra": preload("res://scenes/cobra.tscn"),
 	"crocodile": preload("res://scenes/crocodile.tscn"),
@@ -38,7 +40,7 @@ const ENEMIES := {
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "amheh_anello": "l'anello di fuoco di Am-heh", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra", "fiume": "il fiume di sabbia nera", "buca": "una buca delle sabbie che crollano", "falco": "una statua-falco", "javelin": "un lanciatore di giavellotti", "sokar_priest": "un sacerdote di Sokar", "khepri": "uno scarabeo di Khepri", "khepri_ball": "la sfera di Khepri", "mirage": "il miraggio", "serket_nube": "la nube di veleno", "serket_aura": "l'aura di veleno di Serket", "scorpion_veleno": "il veleno dello scorpione", "serpent_veleno": "il veleno del Serpente", "serket_veleno": "il veleno di Serket", "sekhmet_heavy": "la sete di Sekhmet", "salasso": "il salasso del Peso del Cuore"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "amheh_anello": "l'anello di fuoco di Am-heh", "aker_shade": "un'Ombra di Sabbia", "aker_spark": "una Scintilla dell'Alba", "aker_scintilla": "la fiammata di una Scintilla dell'Alba", "aker_fuoco": "il fuoco delle Scintille", "aker_crepa": "una crepa di fuoco", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra", "fiume": "il fiume di sabbia nera", "buca": "una buca delle sabbie che crollano", "falco": "una statua-falco", "javelin": "un lanciatore di giavellotti", "sokar_priest": "un sacerdote di Sokar", "khepri": "uno scarabeo di Khepri", "khepri_ball": "la sfera di Khepri", "mirage": "il miraggio", "serket_nube": "la nube di veleno", "serket_aura": "l'aura di veleno di Serket", "scorpion_veleno": "il veleno dello scorpione", "serpent_veleno": "il veleno del Serpente", "serket_veleno": "il veleno di Serket", "sekhmet_heavy": "la sete di Sekhmet", "salasso": "il salasso del Peso del Cuore"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -568,6 +570,8 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 		if alive <= 0 and spawning <= 0:
 			_room_cleared.call_deferred()
 		return
+	if kind.begins_with("aker_") and kind != "aker_lion" and _bosses_alive() == 0:
+		return                            # Aker è già caduto: i servitori annunciati non escono
 	var e: Enemy = ENEMIES[kind].instantiate()
 	e.position = pos
 	if kind == "serket":
@@ -1916,6 +1920,27 @@ func _build_arena(arena: String, pool_spots: Array) -> void:
 		var sun := Arenas.HorizonSun.new()
 		world.add_child(sun)
 		horizon_sun = sun
+		# blocco 11: sabbie mobili fisse a ovest, crepe di fuoco a est, quattro stele, le due porte
+		for q in Arenas.horizon_quicksand(ROOM, TOP, WALL):
+			var qs := Hazards.Quicksand.new()
+			qs.radii = Vector2(40, 22)
+			qs.position = q
+			world.add_child(qs)
+		for c in Arenas.horizon_cracks(ROOM, TOP, WALL):
+			var fc := AkerArena.FireCrack.new()
+			fc.position = c
+			fc.t = randf() * 2.0
+			world.add_child(fc)
+		for s in Arenas.horizon_steles(ROOM, TOP, WALL):
+			var st := AkerArena.Stele.new()
+			st.position = s
+			world.add_child(st)
+		var gates := AkerArena.Gates.new()
+		gates.game = self
+		var gy := (TOP + ROOM.size.y - WALL) / 2.0
+		gates.west = Vector2(WALL + 26.0, gy)
+		gates.east = Vector2(ROOM.size.x - WALL - 26.0, gy)
+		world.add_child(gates)
 	elif arena == "temple":
 		var dust := Arenas.TempleDust.new()
 		dust.room = ROOM

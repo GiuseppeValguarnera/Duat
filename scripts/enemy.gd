@@ -35,6 +35,7 @@ var mourn_t := 0.0                    ## il marchio del Lutto di Nefti (secondi)
 var mark_t := 0.0                     ## Sguardo del Falco: secondi in cui il khopesh fa più danni
 var slow_t := 0.0                      ## rallentato dalle Frecce della Palude o dalla Frusta della Palude (Sobek)
 var hook_slam := false                 ## lanciato dal pastorale: lo schianto usa il Lancio del Vento (Shu)
+var no_reward := false                 ## servitori di Aker: niente Ka e niente cuori
 var sobek_stun_t := 0.0                ## stordito dal Morso di Sobek (per la Forza del Fiume)                   ## dopo un colpo il nemico barcolla: non si muove e non ferisce
 
 
@@ -219,6 +220,11 @@ func _puddle_slow() -> float:
 
 
 func _water_tide_slow() -> float:
+	# le sabbie mobili (l'arena di Aker, le scie): rallentano anche i nemici, non i boss e i servitori di Aker
+	if not is_boss and not miniboss and not is_in_group("aker_servants"):
+		for q in get_tree().get_nodes_in_group("quicksand"):
+			if q.contains(global_position):
+				return 0.6
 	if not is_boss and Hazards.in_water(get_tree(), global_position):
 		burn_t = 0.0
 		return Hazards.WATER_SLOW
@@ -415,7 +421,7 @@ func die() -> void:
 	# solo i nemici più grossi lasciano un po' di Ka, e non sempre (il 40% delle volte; di più con
 	# il capitolo 105 del Libro). Il grosso arriva dai tesori: prima si arrivava al Traghettatore
 	# con Ka per comprare tutto, e al boss con doni troppo alti e troppa cura.
-	var ka := roundi(ka_value * Run.ka_mult())
+	var ka := 0 if no_reward else roundi(ka_value * Run.ka_mult())
 	var ka_chance := KA_DROP_CHANCE if not Run.chap("c105") else Chapters.value("c105") / 100.0
 	if not (is_boss or miniboss or elite) and randf() >= ka_chance:
 		ka = 0
@@ -434,7 +440,7 @@ func die() -> void:
 		Fx.soul(global_position + Vector2(0, -radius))
 	# capitolo 26: a volte il nemico lascia un cuore che cura
 	var heart_chance := Chapters.value("c26")
-	if heart_chance > 0.0 and not Run.training and Run.feather_halff(Chapters.heart_heal()) > 0.0 and not is_boss and randf() * 100.0 < heart_chance:
+	if heart_chance > 0.0 and not no_reward and not Run.training and Run.feather_halff(Chapters.heart_heal()) > 0.0 and not is_boss and randf() * 100.0 < heart_chance:
 		var heart := HeartScript.new()
 		heart.amount = Run.feather_halff(Chapters.heart_heal())
 		get_parent().add_child.call_deferred(heart)

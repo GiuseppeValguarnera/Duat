@@ -168,6 +168,11 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				var p = _player()
 				if p != null and p.global_position.distance_to(global_position) < 26.0:
 					hit_once = _hurt(CHARGE_DAMAGE, global_position)
+			if kind == "ieri":
+				# la carica di Ieri spezza una stele dell'orizzonte (blocco 11)
+				for stl in get_tree().get_nodes_in_group("horizon_stele"):
+					if not stl.broken and stl.global_position.distance_to(global_position) < radius + 16.0:
+						stl.smash()
 			if kind == "ieri" or alone:
 				if global_position.distance_to(trail_last) > 36.0:
 					trail_last = global_position

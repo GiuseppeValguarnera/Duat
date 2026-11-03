@@ -396,9 +396,34 @@ class TempleDust extends Node2D:
 
 # ---------------------------------------------------------------- la porta dell'orizzonte (Aker)
 
-## Le rocce negli angoli: l'arena è un ovale, niente angoli dove rintanarsi (contro pietre e
-## raggi l'angolo sarebbe una trappola o un trucco). Frazioni della stanza: x, y, larghezza, altezza.
-const HORIZON_ROCKS := [Rect2(0.0, 0.0, 0.13, 0.18), Rect2(0.87, 0.0, 0.13, 0.18), Rect2(0.0, 0.86, 0.11, 0.14), Rect2(0.89, 0.86, 0.11, 0.14)]
+## Le rocce negli angoli, piccole (blocco 11): l'arena resta un ovale, e davanti a ogni angolo c'è una
+## stele dell'orizzonte (AkerArena.Stele). Frazioni del pavimento: x, y, larghezza, altezza.
+const HORIZON_ROCKS := [Rect2(0.0, 0.0, 0.08, 0.12), Rect2(0.92, 0.0, 0.08, 0.12), Rect2(0.0, 0.88, 0.08, 0.12), Rect2(0.92, 0.88, 0.08, 0.12)]
+## Frazioni del pavimento: le quattro stele, le sabbie mobili fisse (ovest), le crepe di fuoco (est).
+const HORIZON_STELES := [Vector2(0.15, 0.2), Vector2(0.85, 0.2), Vector2(0.15, 0.84), Vector2(0.85, 0.84)]
+const HORIZON_QUICKSAND := [Vector2(0.27, 0.24), Vector2(0.3, 0.78)]
+const HORIZON_CRACKS := [Vector2(0.72, 0.23), Vector2(0.7, 0.78)]
+
+
+static func _horizon_at(fr: Array, room: Rect2, top: float, wall: float) -> Array:
+	var out := []
+	var w := room.size.x - wall * 2.0
+	var h := room.size.y - wall - top
+	for f in fr:
+		out.append(Vector2(wall + (f as Vector2).x * w, top + (f as Vector2).y * h))
+	return out
+
+
+static func horizon_steles(room: Rect2, top: float, wall: float) -> Array:
+	return _horizon_at(HORIZON_STELES, room, top, wall)
+
+
+static func horizon_quicksand(room: Rect2, top: float, wall: float) -> Array:
+	return _horizon_at(HORIZON_QUICKSAND, room, top, wall)
+
+
+static func horizon_cracks(room: Rect2, top: float, wall: float) -> Array:
+	return _horizon_at(HORIZON_CRACKS, room, top, wall)
 const SUN_POS := Vector2(400, 30)          ## il disco del sole spento, tra le due montagne
 
 
@@ -422,11 +447,31 @@ static func paint_horizon(ci: CanvasItem, r: Rect2, top: float, wall: float) -> 
 	var mid_y := floor_r.get_center().y
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 4242
-	# la sabbia della notte, più scura verso i bordi
-	ci.draw_rect(floor_r, Color(0.48, 0.36, 0.23))
-	for i in range(5):
-		var g := floor_r.grow(-i * 26.0)
-		ci.draw_rect(g, Color(0.56, 0.43, 0.27, 0.22))
+	# due metà (blocco 11): a ovest la sabbia di Ieri, a est il terreno spaccato di Domani
+	var west_r := Rect2(floor_r.position, Vector2(floor_r.size.x / 2.0, floor_r.size.y))
+	var east_r := Rect2(Vector2(cx, floor_r.position.y), Vector2(floor_r.size.x / 2.0, floor_r.size.y))
+	ci.draw_rect(west_r, Color(0.6, 0.47, 0.29))
+	ci.draw_rect(east_r, Color(0.36, 0.22, 0.15))
+	for i in range(4):
+		ci.draw_rect(west_r.grow(-i * 22.0), Color(0.66, 0.53, 0.33, 0.18))
+		ci.draw_rect(east_r.grow(-i * 22.0), Color(0.44, 0.27, 0.17, 0.2))
+	# le increspature della sabbia (ovest)
+	for i in range(26):
+		var p0 := Vector2(rng.randf_range(west_r.position.x + 10, west_r.end.x - 30), rng.randf_range(west_r.position.y + 10, west_r.end.y - 10))
+		var dune := PackedVector2Array()
+		for k in range(6):
+			dune.append(p0 + Vector2(k * 5.0, sin(k * 1.1) * 2.0))
+		ci.draw_polyline(dune, Color(0.48, 0.36, 0.21, 0.55), 1.0)
+	# le spaccature del terreno (est), scure con un filo di brace
+	for i in range(18):
+		var c0 := Vector2(rng.randf_range(east_r.position.x + 14, east_r.end.x - 14), rng.randf_range(east_r.position.y + 10, east_r.end.y - 10))
+		var crack := PackedVector2Array([c0])
+		for k in range(4):
+			crack.append(crack[k] + Vector2(rng.randf_range(6, 14), rng.randf_range(-6, 6)).rotated(rng.randf_range(-1.2, 1.2)))
+		ci.draw_polyline(crack, Color(0.12, 0.06, 0.04), 2.0)
+		ci.draw_polyline(crack, Color(0.85, 0.35, 0.12, 0.35), 0.8)
+	# il confine tra le due metà, sotto la strada del sole
+	ci.draw_line(Vector2(cx, floor_r.position.y), Vector2(cx, floor_r.end.y), Color(0.25, 0.16, 0.1, 0.6), 2.0)
 	# la strada del sole: una fascia chiara da ovest a est, con i dischi del sole in cammino
 	ci.draw_rect(Rect2(wall, mid_y - 40.0, floor_r.size.x, 80.0), Color(0.62, 0.49, 0.3, 0.75))
 	ci.draw_line(Vector2(wall, mid_y - 40.0), Vector2(r.size.x - wall, mid_y - 40.0), Color(0.36, 0.27, 0.17), 1.5)

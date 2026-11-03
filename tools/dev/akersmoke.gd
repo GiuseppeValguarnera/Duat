@@ -35,6 +35,9 @@ func _process(_d: float) -> bool:
 		aker._start(moves[mi], g.player.global_position - aker.global_position)
 		print("mossa ", moves[mi])
 		mi += 1
+	if frames == 520 + 240 * moves.size() + 30:
+		var serv := get_nodes_in_group("aker_servants")
+		print("arena: stele=", get_nodes_in_group("horizon_stele").size(), " sabbie=", get_nodes_in_group("quicksand").size(), " servitori=", serv.map(func(e): return e.name))
 	if frames == 520 + 240 * moves.size() + 60 and aker != null and is_instance_valid(aker):
 		aker.chain_left = 1
 		aker.take_hit(99999.0, Vector2.RIGHT, 0.0)

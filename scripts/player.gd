@@ -163,7 +163,7 @@ var log_clock := 0.0
 const TERRAIN_FLASH := 0.35
 const TERRAIN_COLORS := {"sabbia": Color(0.35, 0.22, 0.12), "veleno": Color(0.45, 0.95, 0.3), "fuoco": Color(1.0, 0.55, 0.15)}
 ## Fonti di danno "da terreno": tick leggeri, senza scossa forte né pausa d'impatto.
-const TERRAIN_KINDS := {"fiume": "sabbia", "amheh_fuoco": "fuoco", "olio": "fuoco"}
+const TERRAIN_KINDS := {"fiume": "sabbia", "amheh_fuoco": "fuoco", "olio": "fuoco", "aker_fuoco": "fuoco"}
 var terrain_t := 0.0
 var terrain_kind := "sabbia"
 var shield := 0.0                      # Ali di Iside: scudo che si ricarica a ogni stanza
