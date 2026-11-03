@@ -63,7 +63,8 @@ var training := false                 # nel Cortile di Neith: non si muore
 ## secondi di volo per i proiettili (-1 se non è un proiettile). Resta tra una discesa e l'altra.
 const HIT_LOG_MAX := 15
 var heavy_strike := false               ## un attacco caricato sta colpendo (scudo dei guardiani: danno ×2)
-var last_arrow_dmg := 0.0               ## i danni della freccia che sta per essere parata
+var last_arrow_dmg := 0.0
+var arrow_hit := false                  ## sta colpendo una freccia (gli avvoltoi in volo la prendono)               ## i danni della freccia che sta per essere parata
 var hit_log: Array = []
 
 

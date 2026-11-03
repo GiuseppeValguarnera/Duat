@@ -162,7 +162,9 @@ func _strike(e) -> void:
 	if fx:
 		Run.nefti_on_hit()
 	d *= Run.player_hit(e, fx)
+	Run.arrow_hit = true
 	e.take_hit(d, dir, knock * Run.knock_mult(), (Run.hit_has("arco_ra", O) or Run.has("ra_heavy")) and fx)
+	Run.arrow_hit = false
 	Run.after_player_hit(e, dir, fx)
 	if not e.dead and fx:
 		if Run.hit_has("arco_sobek", O):

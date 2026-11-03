@@ -11,7 +11,9 @@ extends Enemy
 @export var dive_warn := 0.85
 @export var dive_time := 0.28
 @export var dive_damage := 10.0
-@export var rise_time := 1.1
+@export var rise_time := 1.9              ## blocco 12: resta a terra di più dopo la picchiata (era 1,1)
+const SOAR_TIME := Vector2(1.6, 2.6)      ## in volo tra una picchiata e l'altra (era 2,2-3,6)
+const ARROW_AIR := 0.6                    ## le frecce lo colpiscono anche in volo, al 60%
 
 var state := "soar"
 var st := 2.5
@@ -29,7 +31,7 @@ func _ready() -> void:
 	collision_mask = 0
 	z_index = 3                            # vola: sempre sopra le colonne (game.gd, _pillar_depth)
 	ang = randf() * TAU
-	st = randf_range(2.0, 3.5)
+	st = randf_range(SOAR_TIME.x, SOAR_TIME.y)
 	var g := get_tree().current_scene as Game
 	if g != null:
 		room = Rect2(g.WALL, g.TOP, g.ROOM.size.x - g.WALL * 2.0, g.ROOM.size.y - g.WALL - g.TOP)
@@ -68,10 +70,13 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			alt = 1.0 - k
 			if st <= 0.0:
 				alt = 0.0
-				Fx.burst(target, Color(0.78, 0.64, 0.42), 14, 90.0)
-				Fx.shake(2.0)
+				# l'atterraggio si vede e si sente: polvere, colpo a terra
+				Fx.burst(target, Color(0.78, 0.64, 0.42), 26, 120.0)
+				Fx.burst(target + Vector2(0, -4), Color(0.95, 0.85, 0.6), 10, 60.0)
+				Fx.shake(3.0)
+				Sfx.play_at("amheh_land", target, 0.2)
 				var p = get_tree().get_first_node_in_group("player")
-				if p != null and not hit_done and p.global_position.distance_to(target) < 20.0:
+				if p != null and not hit_done and touches(p, -1.0, target):
 					hit_done = true
 					p.take_damage(dive_damage, global_position, self)
 				state = "rise"
@@ -82,7 +87,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			alt = clampf(1.0 - st / rise_time, 0.0, 1.0) * 0.7
 			if st <= 0.0:
 				state = "soar"
-				st = randf_range(2.2, 3.6)
+				st = randf_range(SOAR_TIME.x, SOAR_TIME.y)
 				ang = (global_position - player_pos).angle()
 			return Vector2.ZERO
 	return Vector2.ZERO
@@ -95,6 +100,9 @@ func _clamp(p: Vector2) -> Vector2:
 ## In volo la lama non arriva: il colpo si sente solo se è basso (a terra o risale).
 func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> void:
 	if alt > 0.55 and state != "rise":
+		if Run.arrow_hit:
+			super.take_hit(dmg * ARROW_AIR, dir, kb * 0.3, can_burn)     # la freccia lo prende in volo
+			return
 		# in alto solo i colpi da lontano (l'Occhio, gli spiriti): quelli della lama non ci arrivano
 		var p = get_tree().get_first_node_in_group("player")
 		if p != null and p.global_position.distance_to(global_position) < 60.0:
@@ -124,7 +132,7 @@ func _draw_body(flash: bool) -> void:
 		var k := 1.0 - st / dive_warn
 		sh = (target - global_position) * k
 		sh_r = lerpf(18.0, 9.0, k)
-		draw_arc(target - global_position, 20.0, 0.0, TAU, 24, Color(1, 0.25, 0.15, 0.3 + 0.5 * k), 1.5)
+		Enemy.warn_circle(self, target - global_position, touch_dist(), k)     # la zona vera della picchiata
 	draw_set_transform(sh, 0.0, Vector2(1.0, 0.45))
 	draw_circle(Vector2.ZERO, sh_r, Color(0, 0, 0, 0.35))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
