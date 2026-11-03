@@ -43,6 +43,7 @@ const CHARGE_REAIM := 0.5             ## avviso della seconda carica, dopo il ri
 const CHARGE_SPEED := 340.0
 const CHARGE_MAX := 1.4               ## secondi al massimo per carica
 const CHARGE_DAMAGE := 22.0
+const CHARGE_HALF := 32.0             ## blocco 12: corpo 24 + giocatore 6 + 2 (= la striscia d'avviso)
 const TRAIL_STEP := 34.0              ## ogni quanti pixel una pozza di sabbie mobili
 const TRAIL_LIFE := 4.0
 const BREATH_WINDUP := 0.6
@@ -89,6 +90,7 @@ var hit_done := false
 # morso
 var bite_n := 0
 var bite_dir := Vector2.RIGHT
+var bite_at := Vector2.ZERO              ## blocco 12: il centro vero del morso (lo stesso dell'avviso)
 # carica
 var charge_dir := Vector2.RIGHT
 var charges := 0
@@ -113,6 +115,11 @@ func _ready() -> void:
 func _player():
 	var p = get_tree().get_first_node_in_group("player")
 	return p if p != null and not p.dead else null
+
+
+## Il centro del morso: davanti alla testa, a metà dello slancio (avviso e colpo usano lo stesso punto).
+func _bite_center() -> Vector2:
+	return head_pos(facing_sign(bite_dir)) + bite_dir * (12.0 + BITE_LUNGE * 0.5)
 
 
 func _hurt(amount: float, from: Vector2) -> bool:
@@ -167,22 +174,24 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				_after_move(to)
 			return Vector2.ZERO
 		"bite_windup":
-			_turn(to, delta, TURN_RATE * 1.5)            # ti segue mentre prepara il colpo
-			if to != Vector2.ZERO:
-				bite_dir = to.normalized()
+			# ti segue nella prima metà della preparazione, poi la zona resta ferma (blocco 12)
+			if st > float(BITE_WINDUP[bite_n]) * 0.5:
+				_turn(to, delta, TURN_RATE * 1.5)
+				if to != Vector2.ZERO:
+					bite_dir = to.normalized()
 			if st <= 0.0:
 				state = "bite"
 				st = 0.15
 				hit_done = false
+				bite_at = _bite_center()
 				Sfx.play_at("swing", global_position, 0.1)
 			return Vector2.ZERO
 		"bite":
 			if not hit_done:
 				var p = _player()
 				if p != null:
-					var hp_ := head_pos(facing_sign(bite_dir))
-					if (p.global_position + Vector2(0, -6)).distance_to(hp_ + bite_dir * 12.0) < BITE_REACH:
-						hit_done = _hurt(BITE_DAMAGE, hp_)
+					if p.global_position.distance_to(bite_at) < BITE_REACH:
+						hit_done = _hurt(BITE_DAMAGE, bite_at)
 			if st <= 0.0:
 				bite_n += 1
 				if bite_n >= BITE_WINDUP.size():
@@ -217,7 +226,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		"charge":
 			if not hit_done:
 				var p = _player()
-				if p != null and p.global_position.distance_to(global_position) < 34.0:
+				if p != null and p.global_position.distance_to(global_position) < CHARGE_HALF:
 					hit_done = _hurt(CHARGE_DAMAGE, global_position)
 			if global_position.distance_to(trail_last) > TRAIL_STEP:
 				trail_last = global_position
@@ -646,10 +655,7 @@ func _draw_body(flash: bool) -> void:
 func _draw_warnings_under() -> void:
 	if state == "charge_windup":
 		var k := 1.0 - st / (CHARGE_WINDUP if charges == 0 else CHARGE_REAIM)
-		var ln := 520.0
-		var side := charge_dir.orthogonal() * 22.0
-		draw_colored_polygon(PackedVector2Array([side, charge_dir * ln + side, charge_dir * ln - side, -side]), Color(1, 0.2, 0.15, 0.1 + 0.2 * k))
-		draw_line(Vector2.ZERO, charge_dir * ln, Color(1, 0.25, 0.15, 0.5 + 0.4 * k), 2.0)
+		Enemy.warn_strip(self, Vector2.ZERO, charge_dir, 520.0, CHARGE_HALF, k)
 	if state in ["leap_windup", "leap"]:
 		var c := jump_to - global_position
 		var k2 := 1.0 if state == "leap" else 1.0 - st / LEAP_WINDUP
@@ -660,6 +666,7 @@ func _draw_warnings_under() -> void:
 	if wave_r > 0.0:
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.0, 0.6))
 		var fade := 1.0 - wave_r / WAVE_MAX
+		draw_arc(Vector2.ZERO, wave_r, 0.0, TAU, 40, Color(Enemy.WARN, 0.45 * fade), 16.0)   # la fascia vera (±8)
 		draw_arc(Vector2.ZERO, wave_r, 0.0, TAU, 40, Color(0.95, 0.8, 0.5, 0.8 * fade), 6.0)
 		draw_arc(Vector2.ZERO, wave_r, 0.0, TAU, 40, Color(1, 1, 0.9, 0.9 * fade), 2.0)
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
@@ -685,6 +692,4 @@ func _draw_warnings_over() -> void:
 					draw_circle(o + axis.rotated((i - 2.5) * half / 3.0) * BREATH_RANGE * f, 2.0 + 3.0 * f, Color(col, 0.7 * (1.0 - f)))
 	if state == "bite_windup":
 		var k3 := 1.0 - st / float(BITE_WINDUP[bite_n])
-		var c := head_pos(facing_sign(bite_dir)) - global_position + bite_dir * (12.0 + BITE_LUNGE * 0.5)
-		draw_circle(c, BITE_REACH, Color(1, 0.25, 0.15, 0.08 + 0.18 * k3))
-		draw_arc(c, BITE_REACH, 0.0, TAU, 28, Color(1, 0.3, 0.15, 0.5 + 0.4 * k3), 2.0)
+		Enemy.warn_circle(self, _bite_center() - global_position, BITE_REACH, k3)

@@ -13,6 +13,7 @@ const BoltScript := preload("res://scripts/enemy_bolt.gd")
 @export var cast_time := 0.6
 @export var fire_every := 3.2
 @export var bolt_damage := 10.0
+const MIN_THROW := 72.0                  ## blocco 12: il bacio vola 160 px/s, da più vicino non darebbe 0,45 s per schivarlo
 
 var copy_cd := 1.0
 var casting := 0.0
@@ -38,7 +39,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		copy_cd = copy_every
 		Sfx.play_at("soul", global_position, 0.1)
 		return Vector2.ZERO
-	if fire_cd <= 0.0 and to.length() < 260.0:
+	if fire_cd <= 0.0 and to.length() < 260.0 and to.length() >= MIN_THROW:
 		fire_cd = fire_every + randf() * 0.6
 		_kiss(to.normalized())
 	var d := to.length()

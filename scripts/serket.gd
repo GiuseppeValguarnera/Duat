@@ -36,7 +36,10 @@ signal summon(kinds: Array)        # il gioco lo collega a ogni guardiano: qui e
 @export var breach_time := 0.22
 @export var breach_damage := 17.0
 @export var max_scorpions := 4
-const SUMMON_SLOW := 1.15                ## tra un tuffo (e un'evocazione) e l'altro: +15% (blocco 11)
+const SUMMON_SLOW := 1.15
+const LINE_HALF := 12.0                  ## blocco 12: la mezza larghezza vera della coda in linea (= l'avviso)
+const BREACH_HALF := 16.0                ## e del balzo fuori dalla sabbia
+const SECOND_FAN := 0.63                 ## il secondo ventaglio da adirata: 0,72 × 0,63 ≈ 0,45 s                ## tra un tuffo (e un'evocazione) e l'altro: +15% (blocco 11)
 @export var aura_radius := 48.0
 
 const SQUASH := 0.7                     ## le forme a terra sono ellissi schiacciate (prospettiva)
@@ -110,7 +113,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				_fan()
 				if enraged and not second_fan:
 					second_fan = true
-					st = fan_windup * 0.6
+					st = fan_windup * SECOND_FAN
 					Sfx.play_at("scorpion_windup", global_position, 0.05)
 					return Vector2.ZERO
 				second_fan = false
@@ -261,7 +264,7 @@ func _fan() -> void:
 	if player == null or player.dead:
 		return
 	var rel: Vector2 = _ground(player.global_position - global_position)
-	if rel.length() < fan_radius + 6.0 and (rel.length() < 12.0 or absf(a.angle_to(rel)) < half):
+	if rel.length() < fan_radius and (rel.length() < 12.0 or absf(a.angle_to(rel)) < half):
 		player.take_damage(fan_damage, global_position, self)
 
 
@@ -271,7 +274,7 @@ func _line_strike() -> void:
 	for i in range(8):
 		Fx.burst(global_position + aim * line_len * (i + 0.5) / 8.0, SAND, 4, 70.0)
 	var player = get_tree().get_first_node_in_group("player")
-	if player != null and not player.dead and _seg_dist(player.global_position, global_position, global_position + aim * line_len) < 15.0:
+	if player != null and not player.dead and _seg_dist(player.global_position, global_position, global_position + aim * line_len) < LINE_HALF:
 		player.take_damage(line_damage, global_position, self)
 
 
@@ -280,7 +283,7 @@ func _breach_check() -> void:
 	if breach_hit:
 		return
 	var player = get_tree().get_first_node_in_group("player")
-	if player != null and not player.dead and _seg_dist(player.global_position, breach_from, global_position) < 18.0:
+	if player != null and not player.dead and _seg_dist(player.global_position, breach_from, global_position) < BREACH_HALF:
 		if player.take_damage(breach_damage, global_position, self):
 			breach_hit = true
 
@@ -401,22 +404,17 @@ func _draw_under() -> void:
 		draw_circle(tip, 3.0 + 2.0 * k, Color(0.6, 1.0, 0.4, 0.3 + 0.4 * k))
 		draw_circle(tip, 2.0, Color(0.6, 1.0, 0.4))
 		var length := line_len if state == "line_warn" else breach_len
-		_warn_line(aim, length, k)
+		_warn_line(aim, length, k, LINE_HALF if state == "line_warn" else BREACH_HALF)
 
 
 ## La linea rossa a terra: la stessa lingua del Serpente (chi l'ha imparata la riconosce).
-func _warn_line(dir: Vector2, length: float, k: float) -> void:
-	var a := dir * 4.0
-	var b := dir * length
-	var side := dir.orthogonal() * 9.0
-	draw_colored_polygon(PackedVector2Array([a + side, b + side, b - side, a - side]), Color(1, 0.2, 0.15, 0.12 + 0.18 * k))
-	draw_line(a, b, Color(1, 0.25, 0.15, 0.45 + 0.4 * k), 2.0)
-	draw_line(b + dir.orthogonal() * 6.0, b - dir.orthogonal() * 6.0, Color(1, 0.25, 0.15, 0.7), 2.0)
+func _warn_line(dir: Vector2, length: float, k: float, half: float) -> void:
+	Enemy.warn_strip(self, Vector2.ZERO, dir, length, half, k)
 
 
 func _draw_warnings() -> void:
 	if state == "fan_windup":
-		var k := 1.0 - st / (fan_windup * (0.6 if second_fan else 1.0))
+		var k := 1.0 - st / (fan_windup * (SECOND_FAN if second_fan else 1.0))
 		var half := deg_to_rad(fan_angle) * 0.5
 		var a := _ground(aim).angle()
 		var pts := PackedVector2Array([Vector2.ZERO])
@@ -461,7 +459,7 @@ func _draw_body(flash: bool) -> void:
 	var dir := 1.0 if aim.x >= 0.0 else -1.0
 	var raise := 0.0
 	if state == "fan_windup":
-		raise = 1.0 - st / (fan_windup * (0.6 if second_fan else 1.0))
+		raise = 1.0 - st / (fan_windup * (SECOND_FAN if second_fan else 1.0))
 	elif state == "recover" and st > 0.5:
 		raise = 0.4
 	var S := 2.6

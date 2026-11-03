@@ -7,7 +7,7 @@ extends Enemy
 ## Serket era la dea scorpione che proteggeva dai veleni... e li sapeva usare.
 
 @export var sting_range := 38.0
-@export var sting_windup := 0.38
+@export var sting_windup := 0.45          ## blocco 12: almeno 0,45 s per i colpi che tolgono più del 10%
 @export var sting_damage := 8.0
 @export var poison_time := 3.0
 const STING_CONE := 45.0                 ## la puntura prende solo davanti alla coda (±45°)
@@ -73,6 +73,23 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 	return Vector2.ZERO
 
 
+## Il cono vero della puntura (stessa misura del controllo in `_sting`), che si riempie.
+func _cone(reach: float, half: float, k: float) -> void:
+	var pts := PackedVector2Array([Vector2.ZERO])
+	var inner := PackedVector2Array([Vector2.ZERO])
+	for i in range(9):
+		var v := Vector2.from_angle(sting_dir.angle() - half + 2.0 * half * i / 8.0)
+		pts.append(v * reach)
+		inner.append(v * reach * k)
+	draw_colored_polygon(pts, Color(WARN, 0.1))
+	draw_colored_polygon(inner, Color(WARN, 0.18 + 0.15 * k))
+	draw_polyline(pts + PackedVector2Array([Vector2.ZERO]), Color(WARN, 0.55 + 0.35 * k), 1.5)
+
+
+func _zones() -> void:
+	_cone(sting_range + 8.0, deg_to_rad(STING_CONE), 0.0)
+
+
 func _sting(to: Vector2) -> void:
 	Sfx.play_at("scorpion_sting", global_position, 0.2)
 	# da vicinissimo la puntura prende sempre; più in là solo davanti alla coda
@@ -104,11 +121,7 @@ func _draw_body(flash: bool) -> void:
 		var k := 1.0 - st / sting_windup
 		var half := deg_to_rad(STING_CONE)
 		var reach := sting_range + 8.0
-		var pts := PackedVector2Array([Vector2.ZERO])
-		for i in range(9):
-			pts.append(Vector2.from_angle(sting_dir.angle() - half + 2.0 * half * i / 8.0) * reach * Vector2(1.0, 0.6))
-		draw_colored_polygon(pts, Color(1.0, 0.15, 0.1, 0.12 + 0.18 * k))
-		draw_polyline(pts + PackedVector2Array([Vector2.ZERO]), Color(1.0, 0.25, 0.15, 0.5 + 0.4 * k), 1.0)
+		_cone(reach, half, k)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(dir, 1.0))
 	# otto zampe sottili, a passi alternati
 	for i in range(4):

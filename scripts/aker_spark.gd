@@ -7,7 +7,7 @@ extends Enemy
 const BLAST_REACH := 18.0              ## a questa distanza si accende
 const BLAST_RADIUS := 26.0
 const BLAST_DAMAGE := 10.0
-const BLAST_FUSE := 0.3                ## un attimo di avviso (si gonfia e lampeggia) prima del botto
+const BLAST_FUSE := 0.45               ## un attimo di avviso (si gonfia e lampeggia) prima del botto
 const PATCH_RADIUS := 15.0             ## macchie piccole: la schermata del telefono resta leggibile
 const PATCH_LIFE := 4.0
 const PATCH_DAMAGE := 4.0
@@ -66,7 +66,13 @@ func _blast() -> void:
 	die()
 
 
+func _zones() -> void:
+	draw_arc(Vector2.ZERO, BLAST_RADIUS, 0.0, TAU, 28, Color(1.0, 0.3, 0.2, 0.6), 1.0)
+
+
 func _draw_body(flash: bool) -> void:
+	if fuse >= 0.0:
+		Enemy.warn_circle(self, Vector2.ZERO, BLAST_RADIUS, fuse / BLAST_FUSE)   # la fiammata vera
 	var swell := 1.0 + (fuse / BLAST_FUSE) * 0.6 if fuse >= 0.0 else 1.0
 	var blink := fuse >= 0.0 and int(fuse * 20.0) % 2 == 0
 	var c := Vector2(0, -7.0 + sin(t * 8.0) * 1.0)

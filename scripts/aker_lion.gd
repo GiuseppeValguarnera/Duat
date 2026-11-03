@@ -166,7 +166,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		"charge":
 			if not hit_once:
 				var p = _player()
-				if p != null and p.global_position.distance_to(global_position) < 26.0:
+				if p != null and touches(p):
 					hit_once = _hurt(CHARGE_DAMAGE, global_position)
 			if kind == "ieri":
 				# la carica di Ieri spezza una stele dell'orizzonte (blocco 11)
@@ -330,7 +330,7 @@ func _wave(delta: float) -> void:
 	if p == null or p.dash_t > 0.0:
 		return
 	var o := head_pos()
-	var rel: Vector2 = p.global_position + Vector2(0, -6) - o
+	var rel: Vector2 = p.global_position - o
 	if rel.length() < WAVE_RANGE and absf(aim.angle_to(rel)) < deg_to_rad(WAVE_HALF):
 		p.move_and_collide(rel.normalized() * WAVE_PUSH * delta)
 		if not hit_once:
@@ -344,7 +344,7 @@ func _land() -> void:
 	var p = _player()
 	if p != null:
 		var dd: Vector2 = p.global_position - global_position
-		if Vector2(dd.x, dd.y / 0.6).length() < POUNCE_RADIUS + 4.0:
+		if Vector2(dd.x, dd.y / 0.6).length() < POUNCE_RADIUS:
 			_hurt(POUNCE_DAMAGE, global_position)
 
 
@@ -434,10 +434,8 @@ func _draw_warnings() -> void:
 	if state == "charge_windup" or state == "pincer_move":
 		var k := 1.0 - st / windup_len if state == "charge_windup" else 0.3
 		var ln := CHARGE_SPEED * CHARGE_TIME * (1.0 + fury * 0.5)
-		var side := aim.orthogonal() * 14.0
 		if state == "charge_windup":
-			draw_colored_polygon(PackedVector2Array([side, aim * ln + side, aim * ln - side, -side]), Color(1, 0.2, 0.15, 0.1 + 0.2 * k))
-			draw_line(Vector2.ZERO, aim * ln, Color(1, 0.25, 0.15, 0.5 + 0.4 * k), 2.0)
+			Enemy.warn_strip(self, Vector2.ZERO, aim, ln, touch_dist(), k)
 	elif state == "wave_windup" or state == "wave":
 		var o := head_pos() - global_position
 		var half := deg_to_rad(WAVE_HALF)
@@ -445,7 +443,7 @@ func _draw_warnings() -> void:
 		var pts := PackedVector2Array([o])
 		for i in range(11):
 			pts.append(o + aim.rotated(-half + half * 2.0 * i / 10.0) * WAVE_RANGE)
-		draw_colored_polygon(pts, Color(0.95, 0.75, 0.4, 0.12 + 0.25 * k2))
+		draw_colored_polygon(pts, Color(Enemy.WARN, 0.1 + 0.25 * k2))
 		draw_polyline(pts.slice(1), Color(1, 0.35, 0.15, 0.5 + 0.4 * k2), 2.0)
 	elif state == "pounce_windup" or state == "pounce":
 		var c := jump_to - global_position
