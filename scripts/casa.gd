@@ -335,7 +335,7 @@ func _open_forge(focus: String = "") -> void:
 	var col := _window(Lang.t("Il banco dell'orafo"), how + " " + Lang.t("Si ottengono con le sfide della parete di Thoth, poi si forgiano con i lapislazzuli (ne hai %d). Crescono con l'uso: livello 2 dopo 20 stanze al collo, livello 3 dopo 50.") % Meta.lapis)
 	var inner: float = col.custom_minimum_size.x
 	var first: Button = null
-	# la Collana a due sigilli (una grazia degli dèi, favors.gd): si compra qui, una volta sola
+	# la Collana a due amuleti (una grazia degli dèi, favors.gd): si compra qui, una volta sola
 	if not Favors.has("collana"):
 		var fd: Dictionary = Favors.data()["collana"]
 		var fbox := _entry(col)

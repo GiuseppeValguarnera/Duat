@@ -143,7 +143,7 @@ func _draw() -> void:
 	_text(title, Vector2(rx, ky), game.hud_room, _fs(8), Color(0.95, 0.88, 0.72))
 	# l'amuleto al collo, accanto al riquadro: icona, livello (pallini) e, per lo Scettro
 	# Was, le stanze pulite contate. Se non lo vedi, ti dimentichi di averlo.
-	# Con la Collana a due sigilli i due amuleti stanno uno accanto all'altro.
+	# Con la Collana a due amuleti i due amuleti stanno uno accanto all'altro.
 	var slot := 0
 	for am in [Run.amulet, Run.amulet2]:
 		if am == "" or Run.training:

@@ -992,7 +992,7 @@ func _show_favor(id: String) -> void:
 		action = Lang.t("Premi per prenderla: %d lapislazzuli.") % int(f["cost"])
 	else:
 		action = Lang.t("Costa %d lapislazzuli: te ne mancano %d.") % [int(f["cost"]), int(f["cost"]) - Meta.lapis]
-	page_body.text = f["desc"] + "\n\n" + action
+	page_body.text = ("(" + String(f["sub"]) + ")\n" if f.has("sub") else "") + f["desc"] + "\n\n" + action
 	page_lore.text = f["lore"]
 	page_action.visible = false
 

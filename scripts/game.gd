@@ -1097,7 +1097,7 @@ func _open_choice(title_text: String, title_color: Color, subtitle: String, card
 	# Voce degli Dèi (grazia comprata con i lapislazzuli): chiedi al dio altre tre scelte
 	if reroll.is_valid() and Run.voices_left > 0:
 		again = Button.new()
-		again.text = Lang.t("Voce degli Dèi: altre scelte (%d)") % Run.voices_left
+		again.text = (Lang.t("Altre scelte (%d rimasta)") if Run.voices_left == 1 else Lang.t("Altre scelte (%d rimaste)")) % Run.voices_left
 		UiStyle.papyrus_button(again, title_color)
 		again.add_theme_font_size_override("font_size", Fx.fs(8))
 		again.pressed.connect(func() -> void:

@@ -76,7 +76,7 @@ var aspect_level := 1
 # l'amuleto della Casa della Vita (amulets.gd) e ciò che serve alle sfide (challenges.gd)
 var amulet := ""
 var amulet_level := 1
-var amulet2 := ""                      ## il secondo amuleto (Collana a due sigilli)
+var amulet2 := ""                      ## il secondo amuleto (Collana a due amuleti)
 var amulet2_level := 1
 var voices_left := 0                   ## Voce degli Dèi: cambi delle scelte rimasti in questa discesa
 var room_hit := false                  ## in questa stanza hai perso vita
