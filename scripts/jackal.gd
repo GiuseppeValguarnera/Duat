@@ -7,9 +7,10 @@ extends Enemy
 ## Insegna a non farsi chiudere: colpisci quello davanti e scatta via prima che il cerchio si chiuda.
 ## Da solo (gli altri morti) non aspetta più nessuno: salta appena può.
 
-@export var leap_windup := 0.42
-@export var leap_speed := 290.0
-@export var leap_time := 0.3
+@export var leap_windup := 0.45
+@export var leap_speed := 260.0           ## blocco 12: salto di 60 px (260 × 0,23)...
+@export var leap_time := 0.23
+const LEAP_DANGER := 75.0                 ## ...che col morso fa circa 75 px di pericolo: salta solo da qui dentro
 @export var bite_damage := 8.0
 @export var front_dist := 64.0            ## quanto sta lontano quello che ti fa da esca
 @export var flank_dist := 70.0
@@ -61,7 +62,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 	match state:
 		"chase":
 			aim = u
-			var ready_to_leap := st <= 0.0 and d < 110.0
+			var ready_to_leap := st <= 0.0 and d < LEAP_DANGER
 			if role == 0:
 				# l'esca: resta davanti a te, a distanza, e salta solo quando i fianchi sono pronti
 				if ready_to_leap and _flanks_ready(to):
@@ -71,7 +72,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 					Sfx.play_at("amheh_growl", global_position, 0.25)
 				return _steer((want - global_position).limit_length(1.0) * speed * (1.0 if (want - global_position).length() > 8.0 else 0.0), delta)
 			if role == 2:
-				if ready_to_leap and d < 90.0:
+				if ready_to_leap:
 					return _start_leap()
 				return _steer(u * speed, delta)
 			# i fianchi: un punto a lato del giocatore, poi il salto
@@ -82,8 +83,8 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			var v := spot - global_position
 			return _steer(v.normalized() * speed * 1.15, delta) if v.length() > 4.0 else Vector2.ZERO
 		"windup":
-			if st > leap_windup * 0.4:
-				aim = u
+			if st > leap_windup * 0.5:
+				aim = u                       # a metà preparazione la direzione si blocca
 			if st <= 0.0:
 				state = "leap"
 				st = leap_time
@@ -91,9 +92,9 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				Sfx.play_at("dash", global_position, 0.3)
 			return Vector2.ZERO
 		"leap":
-			if not bit and d < radius + 12.0:
+			var p = get_tree().get_first_node_in_group("player")
+			if not bit and p != null and touches(p):
 				bit = true
-				var p = get_tree().get_first_node_in_group("player")
 				if p != null:
 					p.take_damage(bite_damage, global_position, self)
 			if st <= 0.0:
@@ -139,7 +140,18 @@ func _contact_damage() -> float:
 
 ## Lo sciacallo: magro, color sabbia con il dorso scuro, orecchie grandi a punta, muso lungo, coda
 ## folta. Avviso: si acquatta, abbassa la testa e mostra i denti.
+## La zona vera del salto: il percorso (leap_speed × leap_time) più il morso (le sagome che si toccano).
+func _leap_strip(k: float) -> void:
+	Enemy.warn_strip(self, Vector2.ZERO, aim, leap_speed * leap_time + touch_dist(), touch_dist(), k)
+
+
+func _zones() -> void:
+	_leap_strip(0.0)
+
+
 func _draw_body(flash: bool) -> void:
+	if state == "windup":
+		_leap_strip(1.0 - st / leap_windup)
 	var fur := _f(Color(0.72, 0.52, 0.28), flash)
 	var back := _f(Color(0.28, 0.2, 0.14), flash)
 	var belly := _f(Color(0.88, 0.76, 0.56), flash)

@@ -99,7 +99,11 @@ func _hit_along(a: Vector2, b: Vector2) -> bool:
 		var c: Vector2 = e.global_position + Vector2(0, -6)
 		if Geometry2D.get_closest_point_to_segment(c, a, b).distance_to(c) > e.radius + 4.0 * big:
 			continue
-		if e.has_method("blocks") and e.blocks(dir):
+		Run.last_arrow_dmg = dmg
+		Run.heavy_strike = charged
+		var parried: bool = e.has_method("blocks") and e.blocks(dir)
+		Run.heavy_strike = false
+		if parried:
 			# lo scudo del guardiano di Sokar: la freccia si spezza, niente danni
 			Sfx.play_at("hit", e.global_position, 0.3)
 			Fx.burst(e.global_position + Vector2(0, -12) - dir * 8.0, Color(1.0, 0.85, 0.45), 6, 60.0)

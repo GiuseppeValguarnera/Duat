@@ -7,9 +7,20 @@ extends Enemy
 ## Insegna a girare intorno. L'Occhio di Horus, che arriva da lontano, si para come la lama.
 
 @export var turn_rate := 1.7                ## quanto in fretta si gira verso di te (radianti al secondo)
-@export var charge_windup := 0.7
+@export var charge_windup := 0.9            ## blocco 12: la direzione si blocca a metà, poi restano 0,45 s
 @export var charge_speed := 230.0
-@export var charge_time := 0.5
+@export var charge_time := 0.435           ## carica di 100 px
+const CHARGE_FROM := 110.0                  ## comincia la preparazione solo da qui dentro
+## Lo scudo ha una resistenza (blocco 12): i colpi parati la consumano col loro danno pieno (×2 per
+## l'attacco caricato; la spinta di Shu conta come colpo pesante). A zero si rompe: il guardiano
+## barcolla SHIELD_STAGGER s e resta scoperto SHIELD_DOWN s, poi lo scudo torna intero.
+const SHIELD_FRAC := 0.4
+const SHIELD_DOWN := 6.0
+const SHIELD_STAGGER := 0.8
+const SHIELD_SLAM := 1.0 / 3.0              ## caricando contro una colonna o un nemico lo scudo perde un terzo
+var shield_max := 1.0
+var shield_hp := 1.0
+var shield_down_t := 0.0
 @export var charge_damage := 12.0
 @export var block := 0.85                   ## quanto danno toglie lo scudo
 
@@ -19,18 +30,53 @@ var facing := Vector2.DOWN
 var charged_hit := false
 
 
+func _ready() -> void:
+	super._ready()
+	shield_max = max_hp * SHIELD_FRAC
+	shield_hp = shield_max
+
+
+func _shield_up() -> bool:
+	return state != "recover" and shield_down_t <= 0.0
+
+
+## Lo scudo prende `amount` di resistenza; a zero si rompe.
+func _shield_damage(amount: float) -> void:
+	if shield_down_t > 0.0:
+		return
+	shield_hp -= amount
+	if shield_hp <= 0.0:
+		shield_hp = 0.0
+		shield_down_t = SHIELD_DOWN
+		stagger_t = maxf(stagger_t, SHIELD_STAGGER)
+		Sfx.play_at("jar_break", global_position, 0.1)
+		Fx.burst(global_position + facing * 10.0 + Vector2(0, -14), Color(0.95, 0.7, 0.35), 20, 120.0)
+		Fx.float_text(global_position + Vector2(0, -34), Lang.t("SCUDO ROTTO"), Color(1.0, 0.75, 0.4))
+
+
+func shu_push(dir: Vector2, force: float, hooked: bool = false) -> void:
+	if _shield_up() and dir != Vector2.ZERO and facing.dot(-dir.normalized()) > 0.35:
+		_shield_damage(Run.shu_slam_damage() * 2.0)      # la spinta di Shu: un colpo pesante sullo scudo
+	super.shu_push(dir, force, hooked)
+
+
 func _behave(delta: float, to: Vector2) -> Vector2:
 	st -= delta
+	if shield_down_t > 0.0:
+		shield_down_t -= delta
+		if shield_down_t <= 0.0:
+			shield_hp = shield_max                         # lo scudo torna intero
+			Fx.burst(global_position + Vector2(0, -16), Color(0.95, 0.8, 0.45), 10, 60.0)
 	if to == Vector2.ZERO:
 		return Vector2.ZERO
 	var d := to.length()
 	var u := to / d
-	if state != "charge":
+	if state != "charge" and not (state == "windup" and st < charge_windup * 0.5):
 		var turn := turn_rate * (0.4 if state == "recover" else 1.0) * delta
 		facing = facing.rotated(clampf(facing.angle_to(u), -turn, turn))
 	match state:
 		"walk":
-			if st <= 0.0 and d < 150.0 and absf(facing.angle_to(u)) < 0.5:
+			if st <= 0.0 and d < CHARGE_FROM and absf(facing.angle_to(u)) < 0.5:
 				state = "windup"
 				st = charge_windup
 				Sfx.play_at("mummy_windup", global_position, 0.15)
@@ -44,11 +90,14 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				Sfx.play_at("mummy_lunge", global_position, 0.15)
 			return Vector2.ZERO
 		"charge":
-			if not charged_hit and d < radius + 14.0:
+			var pl = get_tree().get_first_node_in_group("player")
+			if not charged_hit and pl != null and touches(pl):
 				charged_hit = true
-				var p = get_tree().get_first_node_in_group("player")
-				if p != null:
-					p.take_damage(charge_damage, global_position, self)
+				pl.take_damage(charge_damage, global_position, self)
+			if get_slide_collision_count() > 0:
+				var col = get_slide_collision(0).get_collider()
+				if col is Enemy or (col is Node and col.is_in_group("pillars")):
+					_shield_damage(shield_max * SHIELD_SLAM)
 			if st <= 0.0 or get_slide_collision_count() > 0:
 				state = "recover"
 				st = 1.1
@@ -64,7 +113,10 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 
 ## Lo scudo ferma del tutto le frecce che arrivano da davanti (arrow.gd), anche il tiro carico.
 func blocks(dir: Vector2) -> bool:
-	return not dead and state != "recover" and dir != Vector2.ZERO and facing.dot(-dir.normalized()) > 0.35
+	if not dead and _shield_up() and dir != Vector2.ZERO and facing.dot(-dir.normalized()) > 0.35:
+		_shield_damage(Run.last_arrow_dmg * (2.0 if Run.heavy_strike else 1.0))
+		return true
+	return false
 
 
 ## Lo scudo para da davanti, tranne quando è abbassato dopo la carica. `dir` è la direzione del
@@ -72,7 +124,8 @@ func blocks(dir: Vector2) -> bool:
 func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> void:
 	if dead:
 		return
-	if state != "recover" and dir != Vector2.ZERO and facing.dot(-dir.normalized()) > 0.35:
+	if _shield_up() and dir != Vector2.ZERO and facing.dot(-dir.normalized()) > 0.35:
+		_shield_damage(dmg * (2.0 if Run.heavy_strike else 1.0))     # il danno pieno, prima dello scudo
 		Sfx.play_at("hit", global_position, 0.3)
 		Fx.burst(global_position + facing * 10.0 + Vector2(0, -12), Color(1.0, 0.85, 0.45), 8, 70.0)
 		Fx.float_text(global_position + Vector2(0, -30), Lang.t("PARATO"), Color(0.95, 0.85, 0.55))
@@ -127,14 +180,32 @@ func _draw_body(flash: bool) -> void:
 	var sr := 8.0
 	if state == "recover":
 		sc = Vector2(side * 8.0, -8.0)                 # abbassato: scoperto
+	if shield_down_t > 0.0:
+		# rotto: due pezzi a terra, il guardiano è scoperto
+		draw_circle(Vector2(side * 9.0, -2.0), 3.5, bronze.darkened(0.3))
+		draw_circle(Vector2(side * 4.0, -1.0), 2.5, bronze.darkened(0.2))
+		sr = 0.0
 	draw_set_transform(sc, 0.0, Vector2(1.0 if front else 0.55, 1.0))
-	draw_circle(Vector2.ZERO, sr + 0.8, OUT)
-	draw_circle(Vector2.ZERO, sr, bronze)
-	draw_arc(Vector2.ZERO, sr - 1.5, 0, TAU, 20, bronze_l, 1.0)
-	draw_circle(Vector2.ZERO, 2.6, Color(0.86, 0.28, 0.12))
-	if lift > 0.0:
+	if sr > 0.0:
+		draw_circle(Vector2.ZERO, sr + 0.8, OUT)
+		draw_circle(Vector2.ZERO, sr, bronze)
+		draw_arc(Vector2.ZERO, sr - 1.5, 0, TAU, 20, bronze_l, 1.0)
+		draw_circle(Vector2.ZERO, 2.6, Color(0.86, 0.28, 0.12))
+		if shield_hp < shield_max * 0.5:
+			# crepato: le linee spezzate sul bronzo
+			draw_polyline(PackedVector2Array([Vector2(-6, -3), Vector2(-2, 0), Vector2(1, -4), Vector2(5, 1)]), OUT, 1.2)
+			draw_polyline(PackedVector2Array([Vector2(-3, 5), Vector2(0, 1), Vector2(4, 5)]), OUT, 1.0)
+	if lift > 0.0 and sr > 0.0:
 		draw_circle(Vector2.ZERO, sr + 3.0, Color(1.0, 0.8, 0.4, 0.15 + 0.3 * lift))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	if state == "windup":
-		var k2 := 1.0 - st / charge_windup
-		draw_line(Vector2(0, -4), Vector2(0, -4) + facing * charge_speed * charge_time * 0.7, Color(1, 0.25, 0.15, 0.25 + 0.45 * k2), 3.0)
+		_charge_strip(1.0 - st / charge_windup)
+
+
+## La zona vera della carica: 100 px di percorso più il contatto, larga quanto le sagome che si toccano.
+func _charge_strip(k: float) -> void:
+	Enemy.warn_strip(self, Vector2.ZERO, facing, charge_speed * charge_time + touch_dist(), touch_dist(), k)
+
+
+func _zones() -> void:
+	_charge_strip(0.0)

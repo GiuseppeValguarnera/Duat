@@ -384,6 +384,12 @@ func _charge_cd_max() -> float:
 
 ## L'attacco caricato, nella direzione del momento del rilascio (con la mira automatica se attiva).
 func _charged_attack() -> void:
+	Run.heavy_strike = true             # gli scudi dei guardiani prendono il doppio (blocco 12)
+	_charged_attack_do()
+	Run.heavy_strike = false
+
+
+func _charged_attack_do() -> void:
 	var spear := Run.weapon == "lancia"
 	var bow := Run.weapon == "arco"
 	var from_dash := after_dash_t > 0.0
