@@ -76,13 +76,12 @@ const ThrownSpear := preload("res://scripts/thrown_spear.gd")
 ## scatto un ventaglio di 3 frecce corte. Mentre tende l'arco ci si muove meno piano che con le altre armi.
 ## Ritarato nel blocco 9 (era troppo forte): freccia al 38% di un fendente, circa 2 al secondo;
 ## tiro carico = 3 frecce, ricarica 5 s; tirando ti muovi del 20% più lento (BOW_FIRE_SLOW).
-const BOW_ARROW := 0.45               ## una freccia = 45% di un fendente del khopesh (blocco 10)
+const BOW_ARROW := 7.0 / 12.0         ## una freccia = 7 di danno base (≈58% di un fendente del khopesh; blocco 11)
 const BOW_SHOT := {"cd": 0.5, "mult": BOW_ARROW, "speed": 440.0, "dist": 212.0, "knock": 35.0}
 const BOW_CHARGED := {"mult": BOW_ARROW * 3.0, "speed": 620.0, "dist": 306.0, "knock": 130.0}
 const BOW_FAN := {"mult": BOW_ARROW, "spread": 18.0, "speed": 420.0, "dist": 120.0, "knock": 70.0}
 const BOW_CHARGE_CD := 5.0
 const BOW_FIRE_SLOW := 0.8
-const BOW_AIM_RANGE := 272.0
 ## Ricochet del Falco (Horus, arco): [rimbalzi, danni] per livello; raggio = un quarto dello schermo.
 const RICOCHET := [[1, 0.6], [1, 0.8], [2, 0.8]]
 const ArrowScript := preload("res://scripts/arrow.gd")
@@ -281,8 +280,53 @@ func _physics_process(delta: float) -> void:
 ## "Attacca": un tocco è la combo; tenendo premuto oltre CHARGE_DELAY si carica l'attacco caricato
 ## (se non è in ricarica), che parte al rilascio solo a carica piena. Mentre è in ricarica, tenendo
 ## premuto la combo si ripete come prima. Con la lancia lanciata sei disarmato.
+## Telefono con l'arco: il tasto d'attacco è una levetta di mira (touch_controls.gd).
+##  - trascinando subito le frecce partono nella direzione scelta, finché tieni;
+##  - dito fermo per CHARGE_DELAY: parte la carica; poi trascini per mirare e rilasci (a carica
+##    piena il tiro carico, prima niente);
+##  - un tocco rapido senza trascinare: una freccia dove guardi.
+var bow_tap := false
+
+func _touch_bow_input(delta: float) -> void:
+	var holding := Input.is_action_pressed("attack")
+	var dragging := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() > 0.3
+	if Input.is_action_just_pressed("attack"):
+		hold_t = 0.0
+		bow_tap = true
+		swing_queued = false
+	if holding:
+		hold_t += delta
+		if dragging and not charging:
+			bow_tap = false
+			if atk_cd <= 0.0 and dash_t <= 0.0:
+				_swing()
+		elif not dragging and not charging and bow_tap and hold_t >= CHARGE_DELAY and charge_cd <= 0.0 and dash_t <= 0.0:
+			bow_tap = false
+			charging = true
+			charge_k = 0.0
+		if charging:
+			charge_k = minf(1.0, charge_k + delta / CHARGE_TIME)
+			if charge_k >= 1.0 and not charge_full:
+				charge_full = true
+				charge_flash_t = 0.25
+				if Run.has("arco_iside"):
+					shield = maxf(shield, Run.val("arco_iside"))     # Respiro di Iside: l'arco teso protegge
+				Sfx.play("crit", 0.05)
+				Fx.burst(global_position + Vector2(0, -30), Color(1.0, 0.85, 0.4), 14, 80.0)
+		return
+	if charging:
+		_release_charge()
+	elif bow_tap and hold_t > 0.0 and hold_t < CHARGE_DELAY and atk_cd <= 0.0 and dash_t <= 0.0:
+		_swing()                               # tocco rapido: una freccia dove guardi
+	bow_tap = false
+	hold_t = 0.0
+
+
 func _attack_input(delta: float) -> void:
 	if Run.in_hub:
+		return
+	if Run.weapon == "arco" and Fx.device == "touch":
+		_touch_bow_input(delta)
 		return
 	var armed := spear_thrown == null or not is_instance_valid(spear_thrown)
 	var holding := Input.is_action_pressed("attack")
@@ -427,6 +471,7 @@ func _shu_tick(delta: float) -> void:
 func _tick(delta: float) -> void:
 	_shu_tick(delta)
 	log_clock += delta
+	last_stick_t = maxf(0.0, last_stick_t - delta)
 	terrain_t = maxf(0.0, terrain_t - delta)
 	Run.hourglass_t = maxf(0.0, Run.hourglass_t - delta)
 	after_dash_t = maxf(0.0, after_dash_t - delta)
@@ -479,12 +524,20 @@ func _update_aim(moving: bool = false) -> void:
 		if to.length() > 4.0:
 			aim = to.normalized()
 		return
-	var base := stick.normalized() if stick.length() > 0.3 else facing
-	aim = _assisted(base, ASSIST_RANGE)
+	if stick.length() > 0.3:
+		last_stick = stick.normalized()
+		last_stick_t = STICK_GRACE
+	# la direzione della levetta destra resta un attimo dopo il rilascio: sul telefono, alzando il
+	# dito dal tasto dell'arco, la freccia parte dove stavi puntando
+	aim = last_stick if last_stick_t > 0.0 else facing
 
 
-## Mira assistita dei colpi a distanza (arco, Occhio): corregge SOLO la direzione verso un nemico nel
-## cono di 12° davanti a `dir`; non prevede il movimento e non insegue (quello è il dono di Horus).
+const STICK_GRACE := 0.2
+var last_stick := Vector2.RIGHT
+var last_stick_t := 0.0
+
+## Mira assistita dell'Occhio di Horus (l'arco non ne ha: la freccia parte dove punti, blocco 11):
+## corregge SOLO la direzione verso un nemico nel cono di 12° davanti a `dir`; non prevede il movimento e non insegue (quello è il dono di Horus).
 ## Solo nemici visibili, nel 70% centrale dello schermo e senza muri o colonne in mezzo; mai alle
 ## spalle. Il bersaglio resta lo stesso finché è valido (niente tremolio). Col mouse è spenta, e si
 ## spegne anche nelle Opzioni.
@@ -493,15 +546,11 @@ const ASSIST_RANGE := 420.0
 const ASSIST_SCREEN := 0.7
 var _aim_target = null
 
-## Mira assistita della mischia (khopesh, lancia, flagello; blocco 10):
-##  - da fermo il colpo va al nemico più vicino entro la portata dell'arma +30%, in tutte le
-##    direzioni, con la visuale libera; a distanza quasi uguale vince quello più vicino alla
-##    direzione in cui guardi;
-##  - in movimento (o con la levetta destra, o dopo lo scatto) il colpo va dove ti muovi, e si
-##    orienta su un nemico entro 45° da quella direzione ed entro portata +30%.
+## Mira assistita della mischia (khopesh, lancia, flagello; blocco 11): il colpo va SEMPRE al nemico
+## più vicino, in tutte le direzioni, entro la portata dell'arma +50% e con la visuale libera; se non
+## c'è nessuno va dove ti muovi o guardi. Vale anche per l'attacco in scatto e per quello caricato.
 ## Il bersaglio resta finché è valido; corregge solo la direzione (niente previsione, niente inseguimento).
-const MELEE_ASSIST_REACH := 1.3
-const MELEE_ASSIST_CONE := 45.0
+const MELEE_ASSIST_REACH := 1.5
 const MELEE_TIE := 0.15              ## distanze entro il 15%: conta la direzione in cui guardi
 var _melee_target = null
 var moving_input := false
@@ -514,14 +563,14 @@ func _melee_aim(base_dir: Vector2, reach: float, from_dash: bool = false) -> Vec
 	return (t.global_position - global_position).normalized()
 
 
-func _melee_pick(base_dir: Vector2, reach: float, from_dash: bool = false):
+func _melee_pick(base_dir: Vector2, reach: float, _from_dash: bool = false):
 	if not _assist_on() or base_dir == Vector2.ZERO:
 		return null
-	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
-	var directed := from_dash or moving_input or stick.length() > 0.3
+	if Run.weapon == "arco":
+		return null
 	var lim := reach * MELEE_ASSIST_REACH
-	var cone := deg_to_rad(MELEE_ASSIST_CONE) if directed else TAU
-	if _melee_ok(_melee_target, base_dir, cone * 1.25, lim * 1.1):
+	var cone := TAU
+	if _melee_ok(_melee_target, base_dir, cone, lim * 1.1):
 		return _melee_target
 	_melee_target = null
 	var best_d := INF
@@ -672,9 +721,10 @@ func _aspect_damage() -> float:
 	return 1.0 + Run.aspect_val("faraone") / 100.0 + Run.aspect_val("neith") / 100.0 + Run.aspect_val("satet") / 100.0
 
 
-## La mira dell'arco: la stessa mira (assistita con un cono stretto, 12°), fino a BOW_AIM_RANGE.
+## La mira dell'arco: nessuna assistenza, la freccia parte dove punti (mouse, levetta destra, tasto
+## dell'arco trascinato sul telefono; senza puntare, dove guardi).
 func _bow_aim() -> Vector2:
-	return _assisted(aim, BOW_AIM_RANGE)
+	return aim
 
 
 func _spawn_arrow(dir: Vector2, dmg: float, spd: float, dist: float, kb: float, pierce: int, crit_chance: float, charged: bool) -> void:
@@ -749,7 +799,7 @@ func _hook_pulling() -> bool:
 ## Il nemico che il pastorale aggancerebbe guardando verso `dir` (null se nessuno).
 func _hook_target(dir: Vector2):
 	if _assist_on():
-		return _melee_pick(dir, HOOK["range"])       # stessa regola della mischia (360° da fermo, 45° in movimento)
+		return _melee_pick(dir, HOOK["range"] / MELEE_ASSIST_REACH)   # il più vicino a 360°, entro la portata del pastorale
 	var best = null
 	var best_score := INF
 	var cone := deg_to_rad(HOOK["cone"] * (1.4 if Fx.device == "touch" else 1.0))
@@ -1089,7 +1139,7 @@ func _fire_eye() -> void:
 		eye_cd = eye_cd_max()
 	Sfx.play("eye")
 	var rays := Run.eye_rays()
-	var base := aim.angle()
+	var base := _assisted(aim, ASSIST_RANGE).angle()
 	for i in range(rays):
 		var dir := Vector2.from_angle(base + (i - (rays - 1) / 2.0) * 0.22)
 		var eye: Area2D = EyeScript.new()
