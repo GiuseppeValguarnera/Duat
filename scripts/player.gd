@@ -606,6 +606,8 @@ func _melee_pick(base_dir: Vector2, reach: float, _from_dash: bool = false):
 func _melee_ok(e, dir: Vector2, cone: float, lim: float) -> bool:
 	if e == null or not is_instance_valid(e) or e.dead or not e.is_visible_in_tree():
 		return false
+	if "alt" in e and float(e.alt) > 0.55 and String(e.state) != "rise":
+		return false                          # in volo (avvoltoio): la lama non ci arriva, non va mirato
 	var to: Vector2 = e.global_position - global_position
 	if to.length() - float(e.radius) > lim:
 		return false
@@ -627,10 +629,10 @@ func _assist_on() -> bool:
 	return Fx.device != "mouse" and Meta.options.get("autoaim", true)
 
 
-func _assisted(dir: Vector2, max_dist: float) -> Vector2:
+func _assisted(dir: Vector2, max_dist: float, cone_deg: float = ASSIST_BOW) -> Vector2:
 	if not _assist_on() or dir == Vector2.ZERO:
 		return dir
-	var cone := deg_to_rad(ASSIST_BOW)
+	var cone := deg_to_rad(cone_deg)
 	# il bersaglio di prima resta finché è valido (con un po' di margine sul cono)
 	if _target_ok(_aim_target, dir, cone * 1.25, ASSIST_RANGE):
 		var to_t: Vector2 = _aim_target.global_position - global_position
@@ -738,7 +740,14 @@ func _aspect_damage() -> float:
 
 ## La mira dell'arco: nessuna assistenza, la freccia parte dove punti (mouse, levetta destra, tasto
 ## dell'arco trascinato sul telefono; senza puntare, dove guardi).
+## Blocco 12: una piccolissima assistenza (±6°, BOW_ASSIST) solo puntando con la levetta di mira del
+## telefono o con il pad: se un nemico visibile, senza muri in mezzo, è in quel cono, la freccia va
+## su di lui. Niente previsione, niente inseguimento; col mouse e con la tastiera niente.
+const BOW_ASSIST := 6.0
+
 func _bow_aim() -> Vector2:
+	if (Fx.device == "touch" or Fx.device == "pad") and last_stick_t > 0.0:
+		return _assisted(aim, ASSIST_RANGE, BOW_ASSIST)
 	return aim
 
 
@@ -1410,8 +1419,12 @@ func _draw_hero(off: Vector2, a: float, bob: float) -> void:
 	if flash_t > 0.0:
 		skin = Color(1, 1, 1, a); linen = skin; linen_d = skin; gold = skin; blue = skin; cloak = skin
 	var moving := velocity.length() > 10.0
-	var prof := absf(facing.x) > 0.55             # di profilo quando vai di lato
-	var dir := -1.0 if facing.x < -0.05 else 1.0
+	# mentre colpisci il corpo guarda dove va il colpo (anche se cammini all'indietro)
+	var look := facing
+	if atk_t > 0.0 and swing_dir != Vector2.ZERO:
+		look = swing_dir
+	var prof := absf(look.x) > 0.55             # di profilo quando vai di lato
+	var dir := -1.0 if look.x < -0.05 else 1.0
 	var w := sin(walk) if moving else 0.0
 	draw_set_transform(off + Vector2(0, bob * 0.5), 0.0, Vector2(0.8 * dir, 0.8))
 	# gambe (con i sandali): di profilo si alternano davanti e dietro

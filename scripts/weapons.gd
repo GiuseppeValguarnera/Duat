@@ -34,7 +34,7 @@ const ALL_IT := {
 	},
 	"arco": {
 		"name": "Arco di Satet", "short": "ARCO", "the": "l'arco",
-		"desc": "Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La freccia parte dove punti: col mouse, con la levetta destra o, sul telefono, trascinando il tasto dell'arco.",
+		"desc": "Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La freccia parte dove punti: col mouse, con la levetta destra o, sul telefono, trascinando il tasto dell'arco; con la levetta e col pad si corregge appena (6°) verso un nemico che hai proprio davanti.",
 		"lore": "Satet, la dea arciera di Elefantina, scagliava le sue frecce sulla prima cataratta: ogni anno, si diceva, era la sua freccia ad aprire la piena del Nilo. Neith, la più antica delle arciere, ne custodisce l'arco.",
 		"aspects": {
 			"satet": {"name": "Aspetto di Satet", "desc": "L'arco della signora della cataratta. +{v}% di danni.", "values": [5, 10, 15], "cost": [0, 1, 2],
