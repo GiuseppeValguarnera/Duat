@@ -114,6 +114,7 @@ class KhepriBall extends Node2D:
 		var pl = get_tree().get_first_node_in_group("player")
 		if pl != null and not pl.dead and not _cool.has(pl) and pl.global_position.distance_to(global_position) < R + 7.0:
 			_cool[pl] = 0.8
+			pl.hit_age = t
 			pl.take_damage(10.0, global_position, null, "khepri_ball")
 		for e in get_tree().get_nodes_in_group("enemies"):
 			if e == owner_scarab or e.dead or e.is_boss or _cool.has(e):

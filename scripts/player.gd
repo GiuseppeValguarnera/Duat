@@ -165,6 +165,9 @@ const TERRAIN_COLORS := {"sabbia": Color(0.35, 0.22, 0.12), "veleno": Color(0.45
 ## Fonti di danno "da terreno": tick leggeri, senza scossa forte né pausa d'impatto.
 const TERRAIN_KINDS := {"fiume": "sabbia", "amheh_fuoco": "fuoco", "olio": "fuoco", "aker_fuoco": "fuoco"}
 var terrain_t := 0.0
+## Proiettili: prima di ferire dicono da quanti secondi sono in volo (registro dei colpi).
+var hit_age := -1.0
+const BODY_R := 6.0                      ## la sagoma del giocatore (Enemy.PLAYER_R)
 var terrain_kind := "sabbia"
 var shield := 0.0                      # Ali di Iside: scudo che si ricarica a ogni stanza
 var knock := Vector2.ZERO
@@ -1244,6 +1247,19 @@ func _poison_update(delta: float) -> void:
 			health_changed.emit(hp, max_hp)
 
 
+## Registro dei colpi (Opzioni → "Ultimi colpi"): fonte, distanza, stato dell'attacco, volo.
+func _note_hit(src: String, amount: float, from_pos: Vector2, attacker: Node) -> void:
+	var at := from_pos
+	if hit_age < 0.0 and attacker != null and is_instance_valid(attacker) and attacker is Node2D:
+		at = (attacker as Node2D).global_position
+	var st := ""
+	if attacker != null and is_instance_valid(attacker) and "state" in attacker:
+		st = String(attacker.state)
+	Run.log_hit({"src": src, "dmg": amount, "dist": global_position.distance_to(at), "state": st, "age": hit_age,
+		"dash": dash_t > 0.0})
+	hit_age = -1.0
+
+
 ## Registro dei danni: una riga per colpo, tenute solo quelle degli ultimi LOG_WINDOW secondi.
 func log_damage(src: String, amount: float) -> void:
 	if amount <= 0.0:
@@ -1302,6 +1318,7 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 		Fx.float_text(global_position + Vector2(0, -14), Lang.t("Scudo -%d") % int(absorbed), Boons.god_color("iside"))
 		if amount <= 0.0:
 			absorbed_frame = Engine.get_physics_frames()
+			_note_hit(kind if kind != "" else (attacker.scene_file_path.get_file().get_basename() if attacker != null and attacker.scene_file_path != "" else "trappola"), 0.0, from_pos, attacker)
 			invuln_t = 0.4
 			return true
 	if divine_t > 0.0:
@@ -1317,6 +1334,7 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 	if kind != "":
 		Run.last_hit = kind
 	log_damage(Run.last_hit, amount)
+	_note_hit(Run.last_hit, amount, from_pos, attacker)
 	var light := TERRAIN_KINDS.has(kind)   # tick del terreno: segnale ai bordi, niente scossa forte
 	if light:
 		terrain_signal(TERRAIN_KINDS[kind])
@@ -1592,6 +1610,9 @@ func _draw() -> void:
 		for k in [2, 1]:
 			_draw_hero(-dash_dir * 7.0 * k, 0.18 * (3 - k), bob)
 	_draw_hero(Vector2.ZERO, a, bob)
+	if Run.show_zones():
+		# "Mostra aree di danno": la sagoma che i colpi devono toccare
+		draw_arc(Vector2.ZERO, BODY_R, 0.0, TAU, 20, Color(0.3, 1.0, 0.5, 0.9), 1.2)
 
 	# l'arma in mano: la lancia lungo la mira, il khopesh ricurvo accanto alla mano
 	# durante il colpo l'arma si muove: il khopesh attraversa l'arco, la lancia affonda e torna

@@ -491,7 +491,58 @@ static func _spirit_strike(ref: WeakRef, from: Vector2, dmg: float, depth: int) 
 			target.spirit_depth = 0
 
 
+## Regola unica dei colpi (blocco 12): un colpo "di corpo" va a segno solo se le sagome si toccano,
+## cioè se la distanza tra i centri è minore di raggio del nemico + raggio del giocatore + 2 px.
+const PLAYER_R := 6.0
+const TOUCH_PAD := 2.0
+## L'unico colore degli avvisi: rosso semitrasparente che si riempie durante la preparazione.
+const WARN := Color(1.0, 0.2, 0.15)
+
+
+func touch_dist(r: float = -1.0) -> float:
+	return (radius if r < 0.0 else r) + PLAYER_R + TOUCH_PAD
+
+
+func touches(p: Node2D, r: float = -1.0, at: Vector2 = Vector2.INF) -> bool:
+	var c := global_position if at == Vector2.INF else at
+	return p != null and p.global_position.distance_to(c) < touch_dist(r)
+
+
+## Una striscia d'avviso a terra: lunga `length`, larga 2 × `half` (le misure vere del colpo), che si
+## riempie dal nemico verso la punta con `k` (0 → 1 durante la preparazione).
+static func warn_strip(ci: CanvasItem, from: Vector2, dir: Vector2, length: float, half: float, k: float) -> void:
+	var side := dir.orthogonal() * half
+	var a := from
+	var b := from + dir * length
+	ci.draw_colored_polygon(PackedVector2Array([a + side, b + side, b - side, a - side]), Color(WARN, 0.12))
+	var f := a + dir * length * clampf(k, 0.0, 1.0)
+	if k > 0.02:
+		ci.draw_colored_polygon(PackedVector2Array([a + side, f + side, f - side, a - side]), Color(WARN, 0.18 + 0.17 * k))
+	ci.draw_polyline(PackedVector2Array([a + side, b + side, b - side, a - side, a + side]), Color(WARN, 0.55 + 0.35 * k), 1.5)
+
+
+## Un cerchio d'avviso (zona vera), che si riempie dal centro.
+static func warn_circle(ci: CanvasItem, c: Vector2, r: float, k: float) -> void:
+	ci.draw_circle(c, r, Color(WARN, 0.1))
+	ci.draw_circle(c, r * clampf(k, 0.0, 1.0), Color(WARN, 0.16 + 0.15 * k))
+	ci.draw_arc(c, r, 0.0, TAU, 32, Color(WARN, 0.55 + 0.35 * k), 1.5)
+
+
+## "Mostra aree di danno": il corpo (azzurro) e la distanza di contatto (rosso); i nemici con zone
+## speciali (salti, cariche, esplosioni) aggiungono le loro in `_zones()`.
+func _draw_zones() -> void:
+	draw_arc(Vector2.ZERO, radius, 0.0, TAU, 20, Color(0.3, 0.8, 1.0, 0.9), 1.0)
+	draw_arc(Vector2.ZERO, touch_dist(), 0.0, TAU, 28, Color(1.0, 0.3, 0.2, 0.6), 1.0)
+	_zones()
+
+
+func _zones() -> void:
+	pass
+
+
 func _draw() -> void:
+	if Run.show_zones():
+		_draw_zones()
 	draw_set_transform(Vector2(0, 2), 0.0, Vector2(1.0, 0.4))
 	draw_circle(Vector2.ZERO, radius + 3.0, Color(0, 0, 0, 0.35))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

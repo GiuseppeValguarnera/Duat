@@ -46,6 +46,8 @@ func _items() -> Array:
 		["feather", Lang.t("Piuma di Ma'at"), Lang.t("Una modalità per chi vuole un aiuto. Un quarto di nemici in meno nelle ondate, nemici più lenti del 10%, e subisci il 10% di danni in meno, un altro 2% a ogni morte, fino al 30%. In cambio custodisci il 40% del Ka, e lapislazzuli, cuori, premi del serdab e Lacrime valgono la metà; niente Lacrime per la prima vittoria con un'arma. Il Peso del Cuore non conta finché è attiva. La storia va avanti comunque.")],
 		["shake", Lang.t("Scossa dello schermo"), Lang.t("La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.")],
 		["hitstop", Lang.t("Pausa d'impatto"), Lang.t("Il gioco si ferma per un istante quando un colpo va a segno.")],
+		["zones", Lang.t("Mostra aree di danno"), Lang.t("Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.")],
+		["colpi", Lang.t("Ultimi colpi"), Lang.t("Gli ultimi 15 colpi subiti: chi, quanto, da che distanza e in che momento dell'attacco. Premi per leggerli.")],
 	]
 	# l'ultimo crash registrato nella versione web (scripts/diag.gd): premendo si cancella
 	var problem := Diag.last_problem()
@@ -79,6 +81,10 @@ func _value(id: String) -> String:
 			return _onoff(Meta.options.get("shake", true))
 		"hitstop":
 			return _onoff(Meta.options.get("hitstop", true))
+		"zones":
+			return _onoff(Meta.options.get("zones", false))
+		"colpi":
+			return "%d" % Run.hit_log.size()
 		"problema":
 			return Diag.last_problem_short()
 	return ""
@@ -112,6 +118,12 @@ func _change(id: String, dir: int) -> void:
 			rebuild = true
 		"tutorial":
 			Meta.tutorial_done = not Meta.tutorial_done
+		"zones":
+			Meta.options["zones"] = not Meta.options.get("zones", false)
+		"colpi":
+			Sfx.play("ui", 0.0)
+			_show_hits()
+			return
 		"feather":
 			Meta.feather = not Meta.feather
 		"problema":
@@ -287,10 +299,83 @@ func _desc_of(id: String) -> String:
 	return ""
 
 
+## Nomi degli stati d'attacco, per la pagina "Ultimi colpi".
+const STATE_NAMES := {"windup": "preparazione", "leap": "salto", "charge": "carica", "dive": "picchiata",
+	"fuse": "miccia", "strike": "puntura", "bite": "morso", "bite_windup": "preparazione del morso",
+	"charge_windup": "preparazione della carica", "breath": "soffio", "leap_windup": "preparazione del balzo",
+	"pounce": "balzo", "wave": "onda", "ray": "raggio", "chase": "inseguimento", "walk": "cammino",
+	"soar": "volo", "rise": "a terra", "recover": "pausa", "drift": "volo", "under": "sotto la sabbia",
+	"line_warn": "coda dalla sabbia", "breach": "balzo fuori dalla sabbia", "fan_windup": "ventaglio"}
+var hits_page := false
+
+
+## La pagina "Ultimi colpi": testo semplice, uno per riga, dal più recente.
+func _show_hits() -> void:
+	hits_page = true
+	if root != null:
+		root.queue_free()
+	rows.clear()
+	root = Control.new()
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(root)
+	var dim := ColorRect.new()
+	dim.color = Color(0.02, 0.02, 0.05, 0.9)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.add_child(dim)
+	var vs := get_viewport().get_visible_rect().size
+	var w := minf(460.0 * Fx.ui, vs.x - 20.0)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", int(3 * Fx.ui))
+	col.custom_minimum_size = Vector2(w, 0)
+	root.add_child(col)
+	var title := UiStyle.heading(Lang.t("Ultimi colpi"), 14, GOLD)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(title)
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.custom_minimum_size = Vector2(w, vs.y * 0.7)
+	col.add_child(scroll)
+	var lines := VBoxContainer.new()
+	lines.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(lines)
+	if Run.hit_log.is_empty():
+		lines.add_child(UiStyle.label(Lang.t("Nessun colpo subito, per ora."), 9, SOFT, false, w - 10.0))
+	var names: Dictionary = Game.KILLER_NAMES
+	for h in Run.hit_log:
+		var e: Dictionary = h
+		var who: String = Lang.t(names.get(e["src"], e["src"]))
+		var txt := "%s — %s" % [who.substr(0, 1).to_upper() + who.substr(1), Lang.t("%d danni") % roundi(float(e["dmg"])) if float(e["dmg"]) > 0.0 else Lang.t("parato dallo scudo")]
+		txt += "  ·  " + Lang.t("a %d px") % roundi(float(e["dist"]))
+		if String(e["state"]) != "":
+			txt += "  ·  " + Lang.t(STATE_NAMES.get(e["state"], e["state"]))
+		if float(e["age"]) >= 0.0:
+			txt += "  ·  " + Lang.t("in volo da %.1f s") % float(e["age"])
+		lines.add_child(UiStyle.label(txt, 8, Color(0.95, 0.9, 0.8), false, w - 10.0))
+	var hint := UiStyle.label(Lang.t("Tocca o premi Esc / B per tornare"), 7, Color(SOFT, 0.8))
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(hint)
+	dim.gui_input.connect(func(ev: InputEvent) -> void:
+		if (ev is InputEventMouseButton and ev.pressed) or (ev is InputEventScreenTouch and ev.pressed):
+			_back_from_hits())
+	col.reset_size()
+	col.position = (vs - col.get_combined_minimum_size()) / 2.0
+
+
+func _back_from_hits() -> void:
+	hits_page = false
+	focus_id = "colpi"
+	_build()
+
+
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("pause"):
 		get_viewport().set_input_as_handled()
+		if hits_page:
+			_back_from_hits()
+			return
 		_close()
+		return
+	if hits_page:
 		return
 	if focus_id == "" or focus_id.begins_with("extra"):
 		return

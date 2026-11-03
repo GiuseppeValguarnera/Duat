@@ -146,6 +146,8 @@ func _draw_body(flash: bool) -> void:
 
 func _draw() -> void:
 	# niente ombra tonda della classe base: ha la sua (che si sposta nell'avviso)
+	if Run.show_zones():
+		_draw_zones()
 	_draw_body(flash_t > 0.0)
 	if hp < max_hp:
 		var w := 20.0

@@ -8,6 +8,7 @@ var damage := 12.0
 var life := 4.0
 var shooter: Node = null              ## chi l'ha lanciata (per la Bilancia Giusta)
 var deflected := false                ## Shu l'ha rimandato indietro: ora ferisce i nemici
+var age := 0.0                        ## secondi in volo (registro dei colpi)
 var style := "orb"                    ## "orb" = sfera magica, "dart" = dardo di una trappola
 
 
@@ -25,6 +26,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	position += direction * speed * delta * Run.thoth_time()     # Thoth: Clessidra e Tempo Rubato
+	age += delta
 	life -= delta
 	if life <= 0.0:
 		_land()
@@ -46,6 +48,8 @@ func _on_area_entered(area: Area2D) -> void:
 				p.wind_wall_cd = Run.val("shu_wall")
 			_deflect(src)
 			return
+	if p.is_in_group("player"):
+		p.hit_age = age
 	if p.is_in_group("player") and p.take_damage(damage, global_position, src):
 		queue_free()
 
@@ -83,6 +87,8 @@ func _land() -> void:
 
 
 func _draw() -> void:
+	if Run.show_zones():
+		draw_arc(Vector2.ZERO, 4.0, 0.0, TAU, 12, Color(1.0, 0.3, 0.2, 0.9), 1.0)
 	if style == "javelin":
 		# il giavellotto del deserto: asta lunga, punta di bronzo, piume rosse in coda
 		var tail := -direction * 18.0

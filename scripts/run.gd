@@ -58,6 +58,22 @@ var mask_used := false                ## Capitolo 151: il primo colpo della stan
 var heart_used := false               # Capitolo 30 già usato in questa discesa
 var in_hub := false                   # true nella Sala del Giudizio
 var training := false                 # nel Cortile di Neith: non si muore
+## Registro dei colpi (blocco 12, Opzioni → "Ultimi colpi"): gli ultimi HIT_LOG_MAX danni subiti,
+## dal più recente. Ogni voce: fonte, danno, distanza dal centro della fonte, stato dell'attacco,
+## secondi di volo per i proiettili (-1 se non è un proiettile). Resta tra una discesa e l'altra.
+const HIT_LOG_MAX := 15
+var hit_log: Array = []
+
+
+func log_hit(entry: Dictionary) -> void:
+	hit_log.push_front(entry)
+	if hit_log.size() > HIT_LOG_MAX:
+		hit_log.resize(HIT_LOG_MAX)
+
+
+## "Mostra aree di danno" (Opzioni): i nemici disegnano le loro zone vere.
+func show_zones() -> bool:
+	return bool(Meta.options.get("zones", false))
 var from_armory := false              # si torna nella Sala dalla porta del Cortile
 var from_restore := false             # la Sala si è appena rinnovata (restauro): si riappare alla cassa
 var from_casa := false                # si torna nella Sala dalla porta della Casa della Vita
