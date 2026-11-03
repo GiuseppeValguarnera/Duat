@@ -10,7 +10,7 @@ extends Enemy
 ## - Sotto la sabbia: si infila nella sabbia e avanza verso di te lasciando un SOLCO visibile.
 ##   Non sparisce mai del tutto: il solco dice sempre dov'è. Sul piano di pietra al centro del
 ##   tempio non può scavare: se ci sei sopra si ferma sul bordo.
-##   Mentre è sotto, dai cumuli di sabbia escono i suoi scorpioni (al massimo 5 vivi).
+##   Mentre è sotto, dai cumuli di sabbia escono i suoi scorpioni (al massimo 4 vivi).
 ##   A volte, ancora sotto, alza la coda dalla sabbia e colpisce in linea retta (linea rossa).
 ##   Riemerge con un balzo in linea, nella direzione in cui stava andando: si schiva uscendo
 ##   dalla linea, non allontanandosi da un punto.
@@ -35,7 +35,8 @@ signal summon(kinds: Array)        # il gioco lo collega a ogni guardiano: qui e
 @export var breach_len := 140.0
 @export var breach_time := 0.22
 @export var breach_damage := 17.0
-@export var max_scorpions := 5
+@export var max_scorpions := 4
+const SUMMON_SLOW := 1.15                ## tra un tuffo (e un'evocazione) e l'altro: +15% (blocco 11)
 @export var aura_radius := 48.0
 
 const SQUASH := 0.7                     ## le forme a terra sono ellissi schiacciate (prospettiva)
@@ -183,7 +184,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 					get_parent().add_child(cloud)
 				state = "recover"
 				st = 1.0
-				burrow_cd = 5.0 + randf() * 2.0
+				burrow_cd = (5.0 + randf() * 2.0) * SUMMON_SLOW
 				return Vector2.ZERO
 			return aim * breach_len / breach_time
 		"recover":
@@ -222,7 +223,7 @@ func _dive() -> void:
 	Sfx.play_at("serpent_burrow", global_position, 0.1)
 
 
-## Dai cumuli di sabbia escono gli scorpioni (lontano da te, al massimo 5 vivi).
+## Dai cumuli di sabbia escono gli scorpioni (lontano da te, al massimo 4 vivi).
 func _summon_scorpions() -> void:
 	var alive := 0
 	for e in get_tree().get_nodes_in_group("enemies"):

@@ -1137,32 +1137,52 @@ func _heavy_drain(delta: float) -> void:
 			health_changed.emit(hp, max_hp)
 
 
-## Veleno (scorpione di Serket): 2 vita ogni 0,6 secondi. Non può ucciderti.
-## Le punture si sommano: se sei già avvelenato il veleno dura di più (fino a 7 secondi).
-var poison_src := "scorpion"              ## chi ti ha avvelenato (per i commenti di Anubi)
+## Veleno (blocco 11): 2 vita ogni POISON_TICK secondi. Non può ucciderti (resta a 1).
+## Ogni fonte (scorpione, aura di Serket, nube di Serket, pozza del Serpente) ha il suo tempo:
+## la stessa fonte si somma (+50%), e nessun veleno dura più di POISON_MAX secondi. Ogni tick si
+## divide tra le fonti attive, così il riepilogo dei danni alla morte è esatto.
+## Se lo scudo (o la maschera) ha assorbito per intero il colpo che avvelena, niente veleno.
+const POISON_TICK := 0.9
+const POISON_MAX := 5.0
+const POISON_DMG := 2.0
+var poison_src := "scorpion"              ## chi ti ha avvelenato per ultimo (per i commenti di Anubi)
+var poisons := {}                         ## fonte del registro -> secondi rimasti
+var absorbed_frame := -1                  ## fotogramma in cui lo scudo ha preso per intero un colpo
 
 func poison(seconds: float, src: String = "scorpion", key: String = "") -> void:
+	if absorbed_frame == Engine.get_physics_frames():
+		return                                # il colpo è finito tutto sullo scudo: niente veleno
 	poison_src = src
-	poison_key = key if key != "" else src + "_veleno"
-	if poison_t > 0.0:
-		poison_t = minf(7.0, poison_t + seconds * 0.5)
-	else:
-		poison_t = seconds
+	var k := key if key != "" else src + "_veleno"
+	var left: float = poisons.get(k, 0.0)
+	poisons[k] = minf(POISON_MAX, left + seconds * 0.5) if left > 0.0 else minf(POISON_MAX, seconds)
+	if poison_t <= 0.0:
+		poison_tick = POISON_TICK
+	poison_t = 0.0
+	for v in poisons.values():
+		poison_t = maxf(poison_t, v)
 
 
 func _poison_update(delta: float) -> void:
 	if poison_t <= 0.0:
 		return
-	poison_t -= delta
+	poison_t = 0.0
+	for k in poisons.keys():
+		poisons[k] = float(poisons[k]) - delta
+		if poisons[k] <= 0.0:
+			poisons.erase(k)
+		else:
+			poison_t = maxf(poison_t, poisons[k])
 	poison_tick -= delta
-	if poison_tick <= 0.0:
-		poison_tick = 0.6
+	if poison_tick <= 0.0 and not poisons.is_empty():
+		poison_tick = POISON_TICK
 		if hp > 1.0:
 			var before := hp
-			hp = maxf(1.0, hp - 2.0)
+			hp = maxf(1.0, hp - POISON_DMG)
 			Run.hp = hp
 			Run.last_hit = poison_src
-			log_damage(poison_key, before - hp)
+			for k in poisons:
+				log_damage(k, (before - hp) / poisons.size())
 			terrain_signal("veleno")
 			Fx.float_text(global_position + Vector2(0, -16), "-2", Color(0.5, 1, 0.4))
 			health_changed.emit(hp, max_hp)
@@ -1225,6 +1245,7 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 		amount -= absorbed
 		Fx.float_text(global_position + Vector2(0, -14), Lang.t("Scudo -%d") % int(absorbed), Boons.god_color("iside"))
 		if amount <= 0.0:
+			absorbed_frame = Engine.get_physics_frames()
 			invuln_t = 0.4
 			return true
 	if divine_t > 0.0:

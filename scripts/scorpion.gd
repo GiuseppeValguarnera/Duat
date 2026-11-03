@@ -9,7 +9,9 @@ extends Enemy
 @export var sting_range := 38.0
 @export var sting_windup := 0.38
 @export var sting_damage := 8.0
-@export var poison_time := 3.5
+@export var poison_time := 3.0
+const STING_CONE := 45.0                 ## la puntura prende solo davanti alla coda (±45°)
+const STING_CLOSE := 10.0                ## da vicinissimo prende sempre
 @export var strike_speed := 260.0        ## velocità del balzo con cui punge
 @export var strike_time := 0.12
 
@@ -74,7 +76,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 func _sting(to: Vector2) -> void:
 	Sfx.play_at("scorpion_sting", global_position, 0.2)
 	# da vicinissimo la puntura prende sempre; più in là solo davanti alla coda
-	if to.length() > sting_range + 8.0 or (to.length() > 16.0 and absf(sting_dir.angle_to(to)) > deg_to_rad(60.0)):
+	if to.length() > sting_range + 8.0 or (to.length() > STING_CLOSE and absf(sting_dir.angle_to(to)) > deg_to_rad(STING_CONE)):
 		return
 	var player = get_tree().get_first_node_in_group("player")
 	if player != null and not player.dead and player.take_damage(sting_damage, global_position, self):
@@ -97,6 +99,16 @@ func _draw_body(flash: bool) -> void:
 		raise = 1.0 - st / sting_windup
 	elif state == "strike":
 		raise = 1.0
+	# avviso a terra durante la preparazione: un cono rosso sottile dove arriverà la coda
+	if state == "windup":
+		var k := 1.0 - st / sting_windup
+		var half := deg_to_rad(STING_CONE)
+		var reach := sting_range + 8.0
+		var pts := PackedVector2Array([Vector2.ZERO])
+		for i in range(9):
+			pts.append(Vector2.from_angle(sting_dir.angle() - half + 2.0 * half * i / 8.0) * reach * Vector2(1.0, 0.6))
+		draw_colored_polygon(pts, Color(1.0, 0.15, 0.1, 0.12 + 0.18 * k))
+		draw_polyline(pts + PackedVector2Array([Vector2.ZERO]), Color(1.0, 0.25, 0.15, 0.5 + 0.4 * k), 1.0)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(dir, 1.0))
 	# otto zampe sottili, a passi alternati
 	for i in range(4):
