@@ -11,6 +11,7 @@ extends Enemy
 @export var trigger := 40.0
 
 var state := "drift"
+var fuse_left := 0.0                      ## blocco 12: la miccia corre in secondi reali, senza pause
 var st := 0.0
 var bob := 0.0
 
@@ -31,15 +32,51 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			if to.length() < trigger:
 				state = "fuse"
 				st = fuse
+				fuse_left = fuse
 				Sfx.play_at("soul", global_position, 0.2)
 				return Vector2.ZERO
 			var wob := to.normalized().orthogonal() * sin(t * 3.0 + bob) * 0.6
 			return (to.normalized() + wob).normalized() * speed
 		"fuse":
-			if st <= 0.0:
-				_blast()
-			return to.normalized() * speed * 0.25
+			return to.normalized() * speed * 0.25        # la miccia la conta _physics_process
 	return Vector2.ZERO
+
+
+## Durante la miccia niente la ferma né la sposta: né le spinte dei colpi, né Shu, né lo
+## stordimento, né l'anti-incastro, né i rallentamenti (Tempo Rubato, Clessidra). Dura `fuse`
+## secondi reali (anche la pausa d'impatto non la allunga) ed esplode dove si trova.
+func _physics_process(delta: float) -> void:
+	if state == "fuse" and not dead:
+		stagger_t = 0.0
+		knock = Vector2.ZERO
+		shu_t = 0.0
+		fuse_left -= delta / maxf(Engine.time_scale, 0.05)
+		st = fuse_left
+		if fuse_left <= 0.0:
+			_blast()
+			return
+	super._physics_process(delta)
+
+
+func shu_push(dir: Vector2, force: float, hooked: bool = false) -> void:
+	if state == "fuse":
+		return
+	super.shu_push(dir, force, hooked)
+
+
+func _unstick(delta: float, wanted: float) -> void:
+	if state == "fuse":
+		return
+	super._unstick(delta, wanted)
+
+
+func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> void:
+	# mentre brilla resta solo il danno: niente spinta (se muore, si spegne senza esplodere)
+	super.take_hit(dmg, dir, 0.0 if state == "fuse" else kb, can_burn)
+
+
+func _zones() -> void:
+	draw_arc(Vector2.ZERO, blast_radius, 0.0, TAU, 32, Color(1.0, 0.3, 0.2, 0.6), 1.0)
 
 
 func _blast() -> void:
@@ -68,10 +105,9 @@ func _draw_body(flash: bool) -> void:
 	if state == "fuse":
 		k = 1.0 - st / fuse
 		var pulse := 0.5 + 0.5 * sin(t * (10.0 + 30.0 * k))
-		draw_set_transform(Vector2(0, -2), 0.0, Vector2(1.0, 0.5))
-		draw_arc(Vector2.ZERO, blast_radius, 0.0, TAU, 32, Color(0.75, 0.45, 1.0, 0.35 + 0.5 * k), 1.5)
-		draw_circle(Vector2.ZERO, blast_radius * k, Color(0.6, 0.3, 0.95, 0.12 + 0.1 * pulse))
-		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		# il cerchio vero dell'esplosione (lo stesso del controllo), attaccato al Ba
+		Enemy.warn_circle(self, Vector2.ZERO, blast_radius, k)
+		draw_arc(Vector2.ZERO, blast_radius + 2.0, 0.0, TAU, 32, Color(0.75, 0.45, 1.0, 0.25 + 0.3 * pulse), 1.0)
 	var y := -16.0 + sin(t * 4.0 + bob) * 2.0
 	var a := 0.75
 	var body := _f(Color(0.36, 0.2, 0.5, a), flash)
