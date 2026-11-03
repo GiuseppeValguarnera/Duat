@@ -76,7 +76,7 @@ sabbie mobili (×0,6), tempeste di sabbia, giare; nemici: sciacallo (branco: esc
 Guardiana: **Serket** (`scripts/serket.gd`) nel **tempio** (`Arenas.paint_temple`): sabbia, piano di pietra al centro dove NON
 scava (`DAIS_RADII`), 6 cumuli da cui escono gli scorpioni, statue della dea. Mosse: ventaglio di coda (spicchio rosso: si schiva
 uscendone, non di lato); sotto la sabbia con **solco visibile**, scorpioni dai cumuli (max 4 vivi, 2-3 a scavo), a volte colpo di
-coda in linea dalla sabbia, riemerge con un balzo in linea. Sotto metà vita: aura di veleno, ventaglio doppio, nube
+coda in linea dalla sabbia, riemerge con un balzo in linea (blocco 11: max 4 scorpioni vivi, tuffi ed evocazioni +15% più radi, `SUMMON_SLOW`). Sotto metà vita: aura di veleno, ventaglio doppio, nube
 (`Hazards.VenomCloud`) dove riemerge. Vita 560 × curva delle regioni (≈1260 alla stanza 5 di Sokar, tarata per chi arriva con 12-13 doni), niente sconto al primo incontro. Premio: dono +2, 5-6 lapis,
 `Meta.serket_wins`. Il guardiano dipende dalla regione (`_start_guardian`, premio, testo di morte); serie della Piuma e sfida
 "Due mani" restano solo del Serpente. `guardian_down`: caduto il guardiano, i rinforzi annunciati non escono più.
@@ -104,6 +104,17 @@ Vittoria: la telecamera sale (`Fx.look`) e il sole **tremola ma non sorge**. `Me
 Bot: `bot_escape(pos)` su Aker e leoni. Test: `tools/dev/akersmoke.gd` (nel controllo d'avvio, `--fixed-fps 60`,
 `DUAT_REGION2=1`): tutte le mosse, divisione, tenaglia, furia, vittoria. Prova: `DUAT_REGION2=1 tools/dev/shot.sh akershot
 1280 720 res://scenes/game.tscn [mobile]`. Bot: `DUAT_SKIP=ammit DUAT_REGION2=1 DUAT_START_REGION=2` (13 doni).
+**Blocco 11 – servitori e arena** (`scripts/aker_arena.gd`, class_name `AkerArena`, costanti in cima; `Arenas.horizon_*`):
+metà ovest sabbia con 2 sabbie mobili fisse (`Hazards.Quicksand`, ora rallentano anche i nemici normali), metà est
+terreno spaccato con 2 **crepe di fuoco** (`AkerArena.FireCrack`: ogni 6 s, avviso 1 s rosso, fiammata 0,4 s da 12,
+`aker_crepa`); rocce degli angoli rimpicciolite e 4 **stele** (`AkerArena.Stele`, strato 1, gruppo `aker_stones`: fermano
+raggio, colpi e frecce; si spezzano al 3° passaggio del raggio o a una carica di Ieri, gruppo `horizon_stele`).
+**Servitori** (`AkerArena.Gates` evoca con `game._on_boss_summon`, cerchio d'avviso e bagliore della porta): Ombra di
+Sabbia `aker_shade` (porta del tramonto, ovest: lenta 42, vita 24 con la curva, contatto 8, scia di sabbie mobili) e
+Scintilla dell'Alba `aker_spark` (porta dell'alba, est: veloce 118, vita 8, a 18 px si accende 0,3 s ed esplode 10 nel
+raggio 26, macchia di fuoco r15 per 4 s, al massimo 2 macchie insieme; abbattuta prima non esplode). Fase 1 ogni porta
+ogni 10 s, max 2 vivi; fase 2 ogni 7 s, max 3, Ieri = ovest, Domani = est; caduto un leone la sua porta crolla.
+`Enemy.no_reward` (niente Ka né cuori); caduto Aker i servitori annunciati non escono.
 **Difficoltà NON ancora verificata** coi bot (obiettivo: 10-15% al primo tentativo con 12-13 doni, ~3 minuti).
 
 Prime prove della Sokar più dura (bot, pochi): Serket 650 veterani 8/8 casual 0/4; Aker 1550 veterani 3/8 casual 0/4;
@@ -165,11 +176,13 @@ del Cortile (come prima, i salvataggi la tengono); **arco** dopo `Meta.serpent_w
 (`Weapons.UNLOCK_COST`, `requirement_met`, `buy`): si compra al piedistallo (gemma che pulsa) o da **Neith nella Sala**
 (`hub.gd` `_neith_here`, `_start_neith`, `_offer_bow`; disegno condiviso in `scripts/neith_art.gd`, `talk_who`).
 Arco (`player.gd` `_bow_shot`, `_bow_aim`,
-`_spawn_arrow`; frecce in `scripts/arrow.gd`, disegno in `scripts/arrow_art.gd`): freccia ogni 0,5 s al 45% di un
-fendente (`BOW_ARROW`, blocco 10), gittata 212 px, si ferma al primo nemico, muri e colonne la fermano (raggio sullo
+`_spawn_arrow`; frecce in `scripts/arrow.gd`, disegno in `scripts/arrow_art.gd`): freccia ogni 0,5 s da 7 di danno base
+(`BOW_ARROW` 7/12 di un fendente, blocco 11), gittata 212 px, si ferma al primo nemico, muri e colonne la fermano (raggio sullo
 strato 1); tiro carico ×3 una freccia, gittata 306, che trapassa tutto, carica 1 s, movimento ×0,65, ricarica **5 s** (eccezione alla regola delle armi); mentre tiri
-×0,8 (`BOW_FIRE_SLOW`); ventaglio di 3 frecce corte (±18°, 120 px, 38%) alla fine dello scatto; mira: mira assistita
-a 12° (vedi blocco 9). Effetti dei doni al massimo una volta ogni 0,5 s per nemico (`arrow.gd` `FX_GAP`, meta
+×0,8 (`BOW_FIRE_SLOW`); ventaglio di 3 frecce corte (±18°, 120 px, 38%) alla fine dello scatto; mira: **nessuna assistenza**
+(blocco 11): la freccia parte dove punti (mouse, levetta destra; sul telefono il tasto dell'arco è una levetta di mira,
+`touch_controls.gd` `aim_touch`/`_set_aim`, `player.gd` `_touch_bow_input`: trascinare = frecce, dito fermo 0,25 s =
+carica, rilascio a carica piena = tiro carico, tocco rapido = una freccia; `last_stick` tiene la direzione 0,2 s). Effetti dei doni al massimo una volta ogni 0,5 s per nemico (`arrow.gd` `FX_GAP`, meta
 `arrow_fx`); lo scudo del guardiano di Sokar para le frecce (`blocks(dir)`, "PARATO"). Unico aspetto: Satet (+5/10/15%).
 Doni `arco_*` (campo `weapon`): Ra fuoco (sostituisce `ra_burn`), Sekhmet tiro carico +30/45/60%, Thoth trapassa 1 (dietro
 60/80/100%), Bastet critico del tiro carico 35/50/65%, Sobek rallenta 20/28/36% per 2 s (`Enemy.slow_t`, conta per
@@ -210,7 +223,7 @@ parola "Comodità"): **Voce degli Dèi** 15 (`voce`; pulsante nel menu dei doni,
 `Oasis.Barque` sull'acqua dell'Oasi, `_open_swap` → `_swap_choices` → `_do_swap`: un dono di un dio normale, non pesante né
 raro né di Anubi, scambiato con un altro dello stesso dio allo stesso livello; non si scambia un dono da cui dipende un
 altro, `_needed_by_other`), **Sigillo di Thoth** 22 (`sigillo`; `Boons.duo_chance()` 0,45→0,7, raro al posto del pesante
-e 35%→65%). Al banco dell'orafo: **Collana a due sigilli** 40 (`collana`; `Meta.amulet2`, `Run.amulet2`,
+e 35%→65%). Al banco dell'orafo: **Collana a due amuleti** 40 (`collana`; `Meta.amulet2`, `Run.amulet2`,
 `Run.wears(id)`, `Run.amulet_lvl(id)`, `Amulets.val_of(id)`, `equip/unequip/worn`; due icone nell'HUD; l'altare
 dell'Oasi riempie il secondo sigillo se è libero, altrimenti sostituisce il primo). Battute all'acquisto (`lines`,
 `speaker`): Anubi (Voce, Barca), Thoth (Sigillo, `talk_who` "thoth" nella Sala), Imhotep (Collana).
@@ -269,10 +282,12 @@ killer, boss)`. Per una regione nuova basta aggiungere righe alla tabella.
   `terrain_signal` → bordi colorati e icona al posto dell'ankh (hud_bars.gd `_terrain_edges`, `_terrain_icon`), suono
   "hurt" basso; niente scossa né pausa d'impatto. Fiume: bordo chiaro che pulsa (`RIM`), contro corrente il
   trascinamento cala fino al 60% (`RIVER_AGAINST`), all'arrivo di uno scatto niente tick immediato. Valori di danno
-  invariati: fiume 2 ogni 0,5 s (×1,25 = 5/s), veleno 2 ogni 0,6 s (3,3/s, non uccide, continua fuori e nello scatto).
-- *Mira della mischia* (`_melee_aim`, `_melee_pick`, `_attack_base`): da fermo il nemico più vicino a 360° entro portata
-  ×1,3 (`MELEE_ASSIST_REACH`), a pari distanza (±15%) quello verso cui guardi; in movimento/levetta destra/dopo lo scatto
-  cono di 45° (`MELEE_ASSIST_CONE`); visuale libera; bersaglio stabile. Vale per fendenti, frustate, attacco caricato e
+  invariati: fiume 2 ogni 0,5 s (×1,25 = 5/s). Veleno (blocco 11): 2 ogni 0,9 s (`POISON_TICK`), 3 s a puntura, massimo
+  5 s (`POISON_MAX`), un tempo per fonte (`poisons`), niente veleno se lo scudo ha preso tutto il colpo (`absorbed_frame`).
+  Scorpione: puntura ±45° (`STING_CONE`), 10 px sempre (`STING_CLOSE`), cono rosso d'avviso, velocità 72.
+- *Mira della mischia* (`_melee_aim`, `_melee_pick`, `_attack_base`; rivista nel blocco 11): SEMPRE il nemico più vicino
+  a 360° entro portata ×1,5 (`MELEE_ASSIST_REACH`), a pari distanza (±15%) quello verso cui guardi; visuale libera;
+  bersaglio stabile; nessuno a portata → dove ti muovi/guardi. L'arco escluso; l'Occhio a 12° solo al lancio. Vale per fendenti, frustate, attacco caricato e
   pastorale (`_hook_target`). Col mouse spenta; opzione "Mira assistita" attiva di base.
 - *Origine dei colpi* (`Boons.ORIGINS`, `Boons.acts_on(id, origine)`, `Run.hit_has`): origini khopesh, lancia, flagello,
   occhio, freccia; i doni con `weapon` valgono per la loro arma; le frecce (`arrow.gd`, `O := "freccia"`) ricevono solo i
@@ -292,6 +307,12 @@ killer, boss)`. Per una regione nuova basta aggiungere righe alla tabella.
 - *Pesanti*: Nefti **Fame dei Defunti** `nefti_heavy` (+1 vita a colpo, per le frecce col tetto di 0,5 s; tetto di Nefti
   20; -20 vita massima), Shu **Il Cielo Cade** `shu_heavy` (ogni colpo spinge a 260, schianti ×2; costo semplice -20% a
   tutti i danni). Raro e pesante di un dio condividono un posto (`Boons.offers`, `specials` a caso; col Sigillo il raro).
+
+**Blocco 11 (3/11/2026)**: veleno e scorpioni, arco senza mira assistita e levetta sul telefono, mira della mischia
+sempre sul più vicino, **Tempo Giusto** (Thoth `thoth_timing`: ricarica del caricato -15/22/30%, mai sotto 1,8 s,
+`CHARGE_CD_MIN`; con khopesh, lancia e flagello arriva al massimo a -10% per il minimo), testi degli acquisti
+(`favors.gd`, campo `sub` mostrato nella cassa; tasto "Altre scelte (N rimaste)"), Collana a due amuleti, Aker con
+servitori e arena nuova (vedi Regione 2).
 
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla

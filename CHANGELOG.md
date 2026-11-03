@@ -1,5 +1,15 @@
 ## In sviluppo · novembre 2026
 
+- Aker ha dei servitori: Ombre di Sabbia dalla porta del tramonto e Scintille dell'Alba dalla porta dell'alba; quando
+  un leone cade la sua porta crolla. L'arena è nuova: sabbie mobili a ovest, crepe di fuoco a est, quattro stele che
+  riparano dal raggio finché non si spezzano
+- veleno più leggero (2 ogni 0,9 s, al massimo 5 s) e niente veleno se lo scudo para tutta la puntura; la puntura dello
+  scorpione si vede (cono rosso) ed è più stretta; scorpioni un po' più lenti, Serket ne evoca meno
+- arco: niente mira assistita, frecce più forti; sul telefono il tasto dell'arco diventa una levetta per mirare
+- mischia: il colpo va sempre verso il nemico più vicino a portata
+- Thoth: nuovo dono Tempo Giusto (ricarica dell'attacco caricato più corta)
+- descrizioni degli acquisti più chiare; la Collana a due amuleti
+
 - alla morte si vede chi ti ha ferito negli ultimi 10 secondi (le prime tre fonti); i danni dal terreno (sabbia nera,
   veleno, fuoco) colorano i bordi dello schermo e mostrano un'icona accanto alla vita
 - il fiume di sabbia nera ha un bordo chiaro e si esce camminando contro corrente

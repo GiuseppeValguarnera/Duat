@@ -2,6 +2,9 @@ keys,it,en
 AKER TREMA,AKER TREMA,AKER TREMBLES
 Ieri e Domani,Ieri e Domani,Yesterday and Tomorrow
 «Io sono Ieri: ciò che è stato non torna.» «Io sono Domani: ciò che verrà non si ferma.»,«Io sono Ieri: ciò che è stato non torna.» «Io sono Domani: ciò che verrà non si ferma.»,«I am Yesterday: what has been does not return.» «I am Tomorrow: what is to come does not stop.»
+La stele si spezza,La stele si spezza,The stele breaks
+La porta del tramonto crolla,La porta del tramonto crolla,The gate of sunset collapses
+La porta dell'alba crolla,La porta dell'alba crolla,The gate of dawn collapses
 TENAGLIA,TENAGLIA,PINCER
 «Domani è caduto? Allora Ieri non avrà più fine.»,«Domani è caduto? Allora Ieri non avrà più fine.»,«Tomorrow has fallen? Then Yesterday shall never end.»
 «Ieri è sepolto. Ora ogni cosa è Domani.»,«Ieri è sepolto. Ora ogni cosa è Domani.»,«Yesterday is buried. Now all things are Tomorrow.»
@@ -149,6 +152,8 @@ Clessidra di Thoth,Clessidra di Thoth,Hourglass of Thoth
 "La prima volta in ogni stanza che vieni colpito, nemici e proiettili rallentano del 60%% per %.1f secondi; tu no.","La prima volta in ogni stanza che vieni colpito, nemici e proiettili rallentano del 60%% per %.1f secondi; tu no.","The first time you are hit in each room, enemies and projectiles slow down by 60%% for %.1f seconds; you don't."
 Geroglifo Scritto,Geroglifo Scritto,Written Glyph
 Ogni 8 colpi a segno (armi e Occhio) un geroglifo colpisce i tre nemici più vicini: %d danni.,Ogni 8 colpi a segno (armi e Occhio) un geroglifo colpisce i tre nemici più vicini: %d danni.,Every 8 hits (weapons and Eye) a glyph strikes the three nearest enemies: %d damage.
+Tempo Giusto,Tempo Giusto,Right Time
+"L'attacco caricato si ricarica il %d%% più in fretta (mai sotto 1,8 secondi). La carica dura come prima.","L'attacco caricato si ricarica il %d%% più in fretta (mai sotto 1,8 secondi). La carica dura come prima.",The charged attack recharges %d%% faster (never below 1.8 seconds). The charge itself lasts as before.
 Lezione dello Scriba,Lezione dello Scriba,Lesson of the Scribe
 "All'inizio di ogni regione e dopo ogni boss, uno dei tuoi doni a caso sale di un livello (al massimo una volta per regione).","All'inizio di ogni regione e dopo ogni boss, uno dei tuoi doni a caso sale di un livello (al massimo una volta per regione).","At the start of each region and after each boss, one of your boons at random rises one level (at most once per region)."
 Giudizio di Thoth,Giudizio di Thoth,Judgment of Thoth
@@ -491,6 +496,7 @@ Ogni colpo spinge · schianti ×2,Ogni colpo spinge · schianti ×2,Every hit pu
 Colpito: nemici -60% veloci,Colpito: nemici -60% veloci,Hit: enemies -60% speed
 Ogni 8 colpi: geroglifo %d,Ogni 8 colpi: geroglifo %d,Every 8 hits: glyph %d
 Un dono sale a ogni regione,Un dono sale a ogni regione,A boon rises each region
+Caricato: ricarica -%d%%,Caricato: ricarica -%d%%,Charged: recharge -%d%%
 Sotto il 12%: muoiono,Sotto il 12%: muoiono,Below 12%: they die
 Spiriti con la Prima Parola,Spiriti con la Prima Parola,Spirits with the First Word
 Prima Parola: scudo 4,Prima Parola: scudo 4,First Word: shield 4
@@ -799,23 +805,23 @@ SCHIANTO,SCHIANTO,SLAM
 +%d Ka,+%d Ka,+%d Ka
 Occhio pronto,Occhio pronto,Eye ready
 Voce degli Dèi,Voce degli Dèi,Voice of the Gods
-Una volta per discesa puoi chiedere a un dio altre tre scelte per il suo dono.,Una volta per discesa puoi chiedere a un dio altre tre scelte per il suo dono.,Once per descent you can ask a god for three new choices for their boon.
+"Quando un dio ti offre tre doni, puoi premere 'Altre scelte' per vederne altri tre al loro posto. Una volta per discesa.","Quando un dio ti offre tre doni, puoi premere 'Altre scelte' per vederne altri tre al loro posto. Una volta per discesa.","When a god offers you three boons, you can press 'Other choices' to see three more in their place. Once per descent."
 "Gli Egizi parlavano agli dèi attraverso le statue dei templi: il sacerdote poneva la domanda, e il dio rispondeva muovendo la barca sacra in avanti o indietro.","Gli Egizi parlavano agli dèi attraverso le statue dei templi: il sacerdote poneva la domanda, e il dio rispondeva muovendo la barca sacra in avanti o indietro.","The Egyptians spoke to the gods through the statues of the temples: the priest asked the question, and the god answered by moving the sacred barque forward or back."
 "Ora la tua voce arriva fino agli dèi, Scriba. Non tutti amano essere interrogati due volte: chiedi con rispetto, e chiedi una volta sola.","Ora la tua voce arriva fino agli dèi, Scriba. Non tutti amano essere interrogati due volte: chiedi con rispetto, e chiedi una volta sola.","Now your voice reaches the gods, Scribe. Not all of them like being asked twice: ask with respect, and ask only once."
 Voce degli Dèi · seconda eco,Voce degli Dèi · seconda eco,Voice of the Gods · second echo
-La Voce degli Dèi si può usare due volte per discesa.,La Voce degli Dèi si può usare due volte per discesa.,The Voice of the Gods can be used twice per descent.
+Puoi cambiare le scelte due volte per discesa invece di una.,Puoi cambiare le scelte due volte per discesa invece di una.,You can change the choices twice per descent instead of once.
 "Nelle grandi feste di Tebe la statua di Amon usciva dal tempio e rispondeva a chiunque le parlasse lungo la strada: la sua voce arrivava due volte, all'andata e al ritorno.","Nelle grandi feste di Tebe la statua di Amon usciva dal tempio e rispondeva a chiunque le parlasse lungo la strada: la sua voce arrivava due volte, all'andata e al ritorno.","At the great feasts of Thebes the statue of Amun left the temple and answered anyone who spoke to it along the road: its voice came twice, going and returning."
 La tua voce ha trovato un'eco. Gli dèi ti ascolteranno due volte. Ricorda però che anche il silenzio è una risposta.,La tua voce ha trovato un'eco. Gli dèi ti ascolteranno due volte. Ricorda però che anche il silenzio è una risposta.,Your voice has found an echo. The gods will listen to you twice. But remember that silence is also an answer.
 La Seconda Barca,La Seconda Barca,The Second Barque
-"Nell'Oasi della quarta ora una seconda barca ti aspetta sull'acqua: puoi scambiare un dono già preso con un altro dello stesso dio, allo stesso livello.","Nell'Oasi della quarta ora una seconda barca ti aspetta sull'acqua: puoi scambiare un dono già preso con un altro dello stesso dio, allo stesso livello.","In the Oasis of the fourth hour a second barque waits for you on the water: you can trade a boon you already have for another from the same god, at the same level."
+"Nell'Oasi puoi scambiare un dono che hai già con un altro dello stesso dio, allo stesso livello. Una volta per discesa.","Nell'Oasi puoi scambiare un dono che hai già con un altro dello stesso dio, allo stesso livello. Una volta per discesa.","In the Oasis you can swap a boon you already have for another from the same god, at the same level. Once per descent."
 "Ra attraversava il cielo su due barche: la Mandjet del giorno e la Mesektet della notte. Al tramonto passava dall'una all'altra, e il carico restava lo stesso.","Ra attraversava il cielo su due barche: la Mandjet del giorno e la Mesektet della notte. Al tramonto passava dall'una all'altra, e il carico restava lo stesso.","Ra crossed the sky on two barques: the Mandjet of the day and the Mesektet of the night. At sunset he passed from one to the other, and the cargo stayed the same."
 "Ra cambia barca al tramonto, Scriba, e nessuno lo chiama incostante. Nell'Oasi troverai la tua seconda barca: lascia sulla riva un dono, e un altro dello stesso dio salirà con te.","Ra cambia barca al tramonto, Scriba, e nessuno lo chiama incostante. Nell'Oasi troverai la tua seconda barca: lascia sulla riva un dono, e un altro dello stesso dio salirà con te.","Ra changes barque at sunset, Scribe, and no one calls him fickle. In the Oasis you will find your second barque: leave a boon on the shore, and another from the same god will come aboard with you."
 Il Sigillo di Thoth,Il Sigillo di Thoth,The Seal of Thoth
-I doni rari e i doni doppi compaiono più spesso.,I doni rari e i doni doppi compaiono più spesso.,Rare boons and duo boons appear more often.
+I doni rari e i doppi doni compaiono più spesso nelle scelte degli dèi.,I doni rari e i doppi doni compaiono più spesso nelle scelte degli dèi.,Rare boons and duo boons appear more often in the gods' choices.
 Thoth teneva il registro degli dèi e conosceva le parole che legano. Gli scribi gli dedicavano una goccia d'inchiostro prima di ogni lavoro.,Thoth teneva il registro degli dèi e conosceva le parole che legano. Gli scribi gli dedicavano una goccia d'inchiostro prima di ogni lavoro.,Thoth kept the register of the gods and knew the words that bind. Scribes offered him a drop of ink before every task.
 "Ho posato il mio sigillo sul tuo nome. Ora i patti tra gli dèi ti trovano più facilmente, e le cose rare ti vengono incontro. Non sprecarle: le ho contate.","Ho posato il mio sigillo sul tuo nome. Ora i patti tra gli dèi ti trovano più facilmente, e le cose rare ti vengono incontro. Non sprecarle: le ho contate.","I have set my seal upon your name. Now the pacts between the gods find you more easily, and rare things come to meet you. Do not waste them: I have counted them."
-La Collana a due sigilli,La Collana a due sigilli,The Necklace of Two Seals
-Porti due amuleti al collo invece di uno.,Porti due amuleti al collo invece di uno.,You wear two amulets instead of one.
+La Collana a due amuleti,La Collana a due amuleti,The Necklace of Two Amulets
+Puoi equipaggiare due amuleti insieme invece di uno. Il secondo si sceglie al banco dell'orafo.,Puoi equipaggiare due amuleti insieme invece di uno. Il secondo si sceglie al banco dell'orafo.,You can equip two amulets together instead of one. You choose the second one at the goldsmith's bench.
 "Le mummie dei re erano coperte di amuleti, a decine, tra una benda e l'altra: ognuno con il suo capitolo del Libro dei Morti e il suo posto sul corpo.","Le mummie dei re erano coperte di amuleti, a decine, tra una benda e l'altra: ognuno con il suo capitolo del Libro dei Morti e il suo posto sul corpo.","The mummies of kings were covered in amulets, dozens of them, between one bandage and the next: each with its own chapter of the Book of the Dead and its own place on the body."
 "Due sigilli d'oro sulla stessa catena. Ai miei tempi solo il faraone ne portava più d'uno, e lo pesavano ogni mattina perché non si stancasse.","Due sigilli d'oro sulla stessa catena. Ai miei tempi solo il faraone ne portava più d'uno, e lo pesavano ogni mattina perché non si stancasse.","Two golden seals on the same chain. In my day only the pharaoh wore more than one, and they weighed him every morning so he would not grow tired."
 "Ma tu non sei un faraone, giovane scriba. O forse sì. Portali bene: un amuleto è un pensiero, e due pensieri insieme sono già un dialogo.","Ma tu non sei un faraone, giovane scriba. O forse sì. Portali bene: un amuleto è un pensiero, e due pensieri insieme sono già un dialogo.","But you are not a pharaoh, young scribe. Or perhaps you are. Wear them well: an amulet is a thought, and two thoughts together are already a dialogue."
@@ -883,7 +889,8 @@ La quarta ora,La quarta ora,The fourth hour
 La terra di Sokar,La terra di Sokar,The land of Sokar
 I tuoi doni (%d)%s,I tuoi doni (%d)%s,Your boons (%d)%s
 Scegli,Scegli,Choose
-Voce degli Dèi: altre scelte (%d),Voce degli Dèi: altre scelte (%d),Voice of the Gods: new choices (%d)
+Altre scelte (%d rimasta),Altre scelte (%d rimasta),Other choices (%d left)
+Altre scelte (%d rimaste),Altre scelte (%d rimaste),Other choices (%d left)
 Nuovo,Nuovo,New
 Livello %d,Livello %d,Level %d
 Nuovo · subito livello %d,Nuovo · subito livello %d,New · straight to level %d
@@ -1697,7 +1704,7 @@ Quanto è forte la musica.,Quanto è forte la musica.,How loud the music is.
 Volume degli effetti,Volume degli effetti,Effects volume
 "Colpi, passi, nemici, ricompense: tutti i suoni tranne la musica.","Colpi, passi, nemici, ricompense: tutti i suoni tranne la musica.","Hits, steps, enemies, rewards: every sound except the music."
 Mira assistita,Mira assistita,Aim assist
-"Con tastiera, pad e telefono: da fermo il colpo da mischia va al nemico più vicino, camminando a quello davanti a te; l'arco e l'Occhio si correggono di poco verso chi hai davanti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","Con tastiera, pad e telefono: da fermo il colpo da mischia va al nemico più vicino, camminando a quello davanti a te; l'arco e l'Occhio si correggono di poco verso chi hai davanti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","With keyboard, gamepad and phone: standing still, melee attacks go to the nearest enemy, walking to the one in front of you; the bow and the Eye are nudged slightly toward whoever is ahead. It only corrects the direction, it doesn't chase. With the mouse it does nothing."
+"Con tastiera, pad e telefono il colpo da mischia va verso il nemico più vicino a portata, in qualsiasi direzione, e l'Occhio si corregge di poco verso chi hai davanti. L'arco tira sempre dove punti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","Con tastiera, pad e telefono il colpo da mischia va verso il nemico più vicino a portata, in qualsiasi direzione, e l'Occhio si corregge di poco verso chi hai davanti. L'arco tira sempre dove punti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","With keyboard, gamepad and phone, melee attacks go toward the nearest enemy in reach, in any direction, and the Eye is nudged slightly toward whoever is ahead. The bow always shoots where you aim. It only corrects the direction, it doesn't chase. With the mouse it does nothing."
 Vibrazione,Vibrazione,Vibration
 Il telefono o il pad vibrano quando vieni colpito e nei colpi più forti.,Il telefono o il pad vibrano quando vieni colpito e nei colpi più forti.,The phone or the pad vibrates when you are hit and on the strongest blows.
 Grandezza del testo,Grandezza del testo,Text size
@@ -1747,7 +1754,7 @@ La spazzata stordisce i nemici per {v} secondi.,La spazzata stordisce i nemici p
 "Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta.","Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta.","Khonsu, the moon, 'he who travels' through the night. One of his statues, it was told, was sent as far as Asia to heal a possessed princess."
 Arco di Satet,Arco di Satet,Bow of Satet
 ARCO,ARCO,BOW
-"Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La mira punta da sola il nemico più vicino.","Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La mira punta da sola il nemico più vicino.","Swift arrows from afar, stopping on the first enemy. Hold to draw the bow (you move slower): the charged shot pierces the whole line. At the end of a dash you loose a fan of three arrows. Aim locks onto the nearest enemy by itself."
+"Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La freccia parte dove punti: col mouse, con la levetta destra o, sul telefono, trascinando il tasto dell'arco.","Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La freccia parte dove punti: col mouse, con la levetta destra o, sul telefono, trascinando il tasto dell'arco.","Quick arrows from afar that stop on the first enemy. Hold to draw the bow (you move more slowly): the charged shot pierces the whole line. At the end of a dash it looses a fan of three arrows. The arrow flies where you aim: with the mouse, the right stick or, on the phone, by dragging the bow button."
 "Satet, la dea arciera di Elefantina, scagliava le sue frecce sulla prima cataratta: ogni anno, si diceva, era la sua freccia ad aprire la piena del Nilo. Neith, la più antica delle arciere, ne custodisce l'arco.","Satet, la dea arciera di Elefantina, scagliava le sue frecce sulla prima cataratta: ogni anno, si diceva, era la sua freccia ad aprire la piena del Nilo. Neith, la più antica delle arciere, ne custodisce l'arco.","Satet, the archer goddess of Elephantine, shot her arrows over the first cataract: every year, it was said, her arrow opened the Nile flood. Neith, the most ancient of archers, keeps her bow."
 Aspetto di Satet,Aspetto di Satet,Aspect of Satet
 L'arco della signora della cataratta. +{v}% di danni.,L'arco della signora della cataratta. +{v}% di danni.,The bow of the lady of the cataract. +{v}% damage.
@@ -1800,6 +1807,15 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+Una volta per discesa puoi chiedere a un dio altre tre scelte per il suo dono.,Una volta per discesa puoi chiedere a un dio altre tre scelte per il suo dono.,Once per descent you can ask a god for three new choices for their boon.
+La Voce degli Dèi si può usare due volte per discesa.,La Voce degli Dèi si può usare due volte per discesa.,The Voice of the Gods can be used twice per descent.
+"Nell'Oasi della quarta ora una seconda barca ti aspetta sull'acqua: puoi scambiare un dono già preso con un altro dello stesso dio, allo stesso livello.","Nell'Oasi della quarta ora una seconda barca ti aspetta sull'acqua: puoi scambiare un dono già preso con un altro dello stesso dio, allo stesso livello.","In the Oasis of the fourth hour a second barque waits for you on the water: you can trade a boon you already have for another from the same god, at the same level."
+I doni rari e i doni doppi compaiono più spesso.,I doni rari e i doni doppi compaiono più spesso.,Rare boons and duo boons appear more often.
+La Collana a due sigilli,La Collana a due sigilli,The Necklace of Two Seals
+Porti due amuleti al collo invece di uno.,Porti due amuleti al collo invece di uno.,You wear two amulets instead of one.
+Voce degli Dèi: altre scelte (%d),Voce degli Dèi: altre scelte (%d),Voice of the Gods: new choices (%d)
+"Con tastiera, pad e telefono: da fermo il colpo da mischia va al nemico più vicino, camminando a quello davanti a te; l'arco e l'Occhio si correggono di poco verso chi hai davanti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","Con tastiera, pad e telefono: da fermo il colpo da mischia va al nemico più vicino, camminando a quello davanti a te; l'arco e l'Occhio si correggono di poco verso chi hai davanti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","With keyboard, gamepad and phone: standing still, melee attacks go to the nearest enemy, walking to the one in front of you; the bow and the Eye are nudged slightly toward whoever is ahead. It only corrects the direction, it doesn't chase. With the mouse it does nothing."
+"Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La mira punta da sola il nemico più vicino.","Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La mira punta da sola il nemico più vicino.","Swift arrows from afar, stopping on the first enemy. Hold to draw the bow (you move slower): the charged shot pierces the whole line. At the end of a dash you loose a fan of three arrows. Aim locks onto the nearest enemy by itself."
 Sguardo di Thoth,Sguardo di Thoth,Gaze of Thoth
 Calcolo di Thoth,Calcolo di Thoth,Reckoning of Thoth
 Parola dello Scriba,Parola dello Scriba,Word of the Scribe
@@ -2254,3 +2270,9 @@ il veleno di Serket,il veleno di Serket,Serket's venom
 la sete di Sekhmet,la sete di Sekhmet,Sekhmet's thirst
 il salasso del Peso del Cuore,il salasso del Peso del Cuore,the bleeding of the Weight of the Heart
 l'anello di fuoco di Am-heh,l'anello di fuoco di Am-heh,Am-heh's ring of fire
+cambia le scelte,cambia le scelte,changes the choices
+un'Ombra di Sabbia,un'Ombra di Sabbia,a Sand Shade
+una Scintilla dell'Alba,una Scintilla dell'Alba,a Dawn Spark
+la fiammata di una Scintilla dell'Alba,la fiammata di una Scintilla dell'Alba,the blast of a Dawn Spark
+il fuoco delle Scintille,il fuoco delle Scintille,the fire of the Sparks
+una crepa di fuoco,una crepa di fuoco,a fire crack
