@@ -71,7 +71,7 @@ func _draw_body(flash: bool) -> void:
 ## La sfera di Khepri: rotola dritta, rimbalza sui muri della stanza e sulle colonne, ferisce
 ## giocatore e nemici (ognuno una volta ogni tanto). Dura qualche secondo, poi si sfalda.
 class KhepriBall extends Node2D:
-	const R := 9.0
+	const R := 12.0                      ## blocco 12: più grande, con un alone; ferisce solo se la tocchi
 	var vel := Vector2.RIGHT * 170.0
 	var owner_scarab: Node = null
 	var life := 7.0
@@ -112,7 +112,7 @@ class KhepriBall extends Node2D:
 			if _cool[k] <= 0.0:
 				_cool.erase(k)
 		var pl = get_tree().get_first_node_in_group("player")
-		if pl != null and not pl.dead and not _cool.has(pl) and pl.global_position.distance_to(global_position) < R + 7.0:
+		if pl != null and not pl.dead and not _cool.has(pl) and pl.global_position.distance_to(global_position) < R + Enemy.PLAYER_R:
 			_cool[pl] = 0.8
 			pl.hit_age = t
 			pl.take_damage(10.0, global_position, null, "khepri_ball")
@@ -125,6 +125,15 @@ class KhepriBall extends Node2D:
 		queue_redraw()
 
 	func _draw() -> void:
+		# la traiettoria: una fila di frecce rosse davanti alla sfera, e l'alone
+		var dv := vel.normalized()
+		for i in range(4):
+			var c := dv * (R + 14.0 + i * 16.0 + fmod(t * 40.0, 16.0))
+			var sd := dv.orthogonal() * 4.0
+			draw_polyline(PackedVector2Array([c - dv * 5.0 + sd, c, c - dv * 5.0 - sd]), Color(Enemy.WARN, 0.75 - i * 0.15), 2.0)
+		draw_circle(Vector2.ZERO, R + 5.0, Color(1.0, 0.75, 0.35, 0.18 + 0.06 * sin(t * 8.0)))
+		if Run.show_zones():
+			draw_arc(Vector2.ZERO, R + Enemy.PLAYER_R, 0.0, TAU, 24, Color(1.0, 0.3, 0.2, 0.7), 1.0)
 		draw_set_transform(Vector2(0, R * 0.9), 0.0, Vector2(1.0, 0.35))
 		draw_circle(Vector2.ZERO, R + 1.0, Color(0, 0, 0, 0.35))
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

@@ -13,6 +13,8 @@ const BoltScript := preload("res://scripts/enemy_bolt.gd")
 @export var windup := 0.8
 @export var bolt_speed := 270.0
 @export var bolt_damage := 12.0
+const BOLT_LIFE := 1.1                    ## blocco 12: in volo 1,1 s (circa 300 px), non 4
+const BOLT_HALF := 9.0                    ## la mezza larghezza vera: giavellotto 4 + sagoma colpibile 5
 
 var cd := 1.6
 var casting := 0.0
@@ -65,6 +67,7 @@ func _throw() -> void:
 	bolt.damage = bolt_damage
 	bolt.shooter = self
 	bolt.style = "javelin"
+	bolt.life = BOLT_LIFE
 	get_parent().add_child(bolt)
 	bolt.global_position = global_position + Vector2(0, -10) + aim_dir * 10.0
 
@@ -101,7 +104,7 @@ func _draw_body(flash: bool) -> void:
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	# la linea rossa d'avviso
 	if casting > 0.0:
-		var locked := casting <= 0.25
-		var col := Color(1.0, 0.25, 0.15, 0.35 + 0.45 * k)
-		var from := Vector2(0, -10)
-		draw_line(from, from + aim_dir * 260.0, col, 1.0 if not locked else 2.0)
+		# la striscia vera: lunga quanto vola il giavellotto, larga quanto colpisce
+		Enemy.warn_strip(self, Vector2(0, -10), aim_dir, bolt_speed * BOLT_LIFE, BOLT_HALF, k)
+		if casting <= 0.25:
+			draw_line(Vector2(0, -10), Vector2(0, -10) + aim_dir * bolt_speed * BOLT_LIFE, Color(Enemy.WARN, 0.9), 2.5)

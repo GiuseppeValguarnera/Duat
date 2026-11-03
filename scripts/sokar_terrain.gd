@@ -267,7 +267,7 @@ class FalconStatue extends Node2D:
 		var rel := p - global_position
 		var a := rel.dot(dir)
 		var o := absf(rel.dot(dir.orthogonal()))
-		return a > 0.0 and a < length and o < width * 0.5 + 4.0
+		return a > 8.0 and a < length and o < width * 0.5          # blocco 12: esattamente la striscia dell'avviso
 
 	func _strike(delta: float) -> void:
 		var pl = get_tree().get_first_node_in_group("player")
@@ -289,10 +289,7 @@ class FalconStatue extends Node2D:
 		if p == "warn":
 			# la linea d'avviso: sabbia che comincia a correre lungo la riga, e i bordi rossi
 			var k := (t - (every - warn - blow)) / warn
-			var a := 0.25 + 0.35 * k
-			draw_line(dir * 8.0 + side * width * 0.5, dir * length + side * width * 0.5, Color(1.0, 0.35, 0.2, a), 1.0)
-			draw_line(dir * 8.0 - side * width * 0.5, dir * length - side * width * 0.5, Color(1.0, 0.35, 0.2, a), 1.0)
-			draw_line(dir * 8.0, dir * length * k, Color(0.85, 0.7, 0.45, 0.35), width * 0.5)
+			Enemy.warn_strip(self, dir * 8.0, dir, length - 8.0, width * 0.5, k)
 		elif p == "blow":
 			var rng := RandomNumberGenerator.new()
 			rng.seed = 5
