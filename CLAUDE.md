@@ -179,8 +179,8 @@ Arco (`player.gd` `_bow_shot`, `_bow_aim`,
 `_spawn_arrow`; frecce in `scripts/arrow.gd`, disegno in `scripts/arrow_art.gd`): freccia ogni 0,5 s da 7 di danno base
 (`BOW_ARROW` 7/12 di un fendente, blocco 11), gittata 212 px, si ferma al primo nemico, muri e colonne la fermano (raggio sullo
 strato 1); tiro carico ×3 una freccia, gittata 306, che trapassa tutto, carica 1 s, movimento ×0,65, ricarica **5 s** (eccezione alla regola delle armi); mentre tiri
-×0,8 (`BOW_FIRE_SLOW`); ventaglio di 3 frecce corte (±18°, 120 px, 38%) alla fine dello scatto; mira: **nessuna assistenza**
-(blocco 11): la freccia parte dove punti (mouse, levetta destra; sul telefono il tasto dell'arco è una levetta di mira,
+×0,8 (`BOW_FIRE_SLOW`); ventaglio di 3 frecce corte (±18°, 120 px, 38%) alla fine dello scatto; mira: **quasi nessuna assistenza**
+(blocco 11; blocco 12: ±6° `BOW_ASSIST` solo con la levetta del telefono e col pad): la freccia parte dove punti (mouse, levetta destra; sul telefono il tasto dell'arco è una levetta di mira,
 `touch_controls.gd` `aim_touch`/`_set_aim`, `player.gd` `_touch_bow_input`: trascinare = frecce, dito fermo 0,25 s =
 carica, rilascio a carica piena = tiro carico, tocco rapido = una freccia; `last_stick` tiene la direzione 0,2 s). Effetti dei doni al massimo una volta ogni 0,5 s per nemico (`arrow.gd` `FX_GAP`, meta
 `arrow_fx`); lo scudo del guardiano di Sokar para le frecce (`blocks(dir)`, "PARATO"). Unico aspetto: Satet (+5/10/15%).
@@ -313,6 +313,31 @@ sempre sul più vicino, **Tempo Giusto** (Thoth `thoth_timing`: ricarica del car
 `CHARGE_CD_MIN`; con khopesh, lancia e flagello arriva al massimo a -10% per il minimo), testi degli acquisti
 (`favors.gd`, campo `sub` mostrato nella cassa; tasto "Altre scelte (N rimaste)"), Collana a due amuleti, Aker con
 servitori e arena nuova (vedi Regione 2).
+
+**Blocco 12 (3/11/2026) – leggibilità dei danni in Sokar** (valori di danno dei nemici invariati).
+- *Diagnosi*: `Run.hit_log` (15 voci: fonte, danno, distanza dal centro della fonte, stato dell'attacco, secondi di volo
+  dei proiettili via `player.hit_age`; `player._note_hit`) → Opzioni "Ultimi colpi" (`options_menu.gd` `_show_hits`,
+  `STATE_NAMES`). Opzione "Mostra aree di danno" (`Meta.options.zones`, `Run.show_zones()`): `Enemy._draw_zones` (corpo
+  azzurro, contatto rosso) + `_zones()` dei nemici (salto, carica, cono, esplosioni), sagoma del giocatore, proiettili.
+- *Regola unica* (`Enemy.PLAYER_R` 6, `TOUCH_PAD` 2, `touch_dist()`, `touches(p, r, at)`): i colpi di corpo vanno a segno
+  solo se le sagome si toccano; le zone (coni, strisce, cerchi) usano esattamente le misure dell'avviso. Avvisi con
+  `Enemy.warn_strip` / `Enemy.warn_circle` (rosso `Enemy.WARN` che si riempie). Ogni attacco sopra il 10% della vita ha
+  almeno 0,45 s di avviso: scorpione 0,45, Serket secondo ventaglio `SECOND_FAN` 0,63 (0,45 s), Scintille 0,45, Miraggio
+  non lancia da meno di 72 px (`MIN_THROW`). Serket: ventaglio senza margine, coda in linea `LINE_HALF` 12 e balzo
+  `BREACH_HALF` 16 larghi quanto l'avviso. Aker: morso su un punto fisso (`bite_at`, `_bite_center`) che smette di seguirti
+  a metà preparazione, carica `CHARGE_HALF` 32, onda con la fascia vera. Leoni: carica = contatto, balzo senza margine.
+- *Sciacallo*: salto 260 × 0,23 s = 60 px, pericolo ~75 (`LEAP_DANGER`, parte solo da lì), preparazione 0,45 s, direzione
+  bloccata a metà, striscia vera. *Guardiano*: carica 230 × 0,435 = 100 px, parte entro 110 (`CHARGE_FROM`), preparazione
+  0,9 s con direzione bloccata a metà; **scudo con resistenza** (`SHIELD_FRAC` 0,4 della vita; danno pieno dei colpi parati,
+  ×2 se `Run.heavy_strike` – attacco caricato, lancia lanciata, tiro carico –; spinta di Shu = 2 × schianto; contro colonna
+  o nemico −1/3): crepato sotto metà, rotto → barcolla 0,8 s e resta scoperto 6 s (`SHIELD_DOWN`), poi torna intero.
+- *Proiettili*: giavellotto 1,1 s (`BOLT_LIFE`, ~300 px) con striscia vera (`BOLT_HALF` 9); sfera di Khepri R 12, alone,
+  frecce rosse sulla traiettoria, ferisce a R + 6; statue-falco esattamente la striscia (niente +4).
+- *Avvoltoi*: a terra 1,9 s, in volo 1,6-2,6 s (`SOAR_TIME`), atterraggio con polvere e suono, picchiata = contatto; le
+  frecce li colpiscono in volo al 60% (`ARROW_AIR`, `Run.arrow_hit`). La mira della mischia ignora chi è in volo.
+- *Ba dannati*: miccia in secondi reali (`fuse_left`), niente spinte/Shu/stordimento/anti-incastro durante la miccia.
+- *Mira*: corpo del giocatore girato verso il colpo durante l'attacco; prova `tools/dev/aimsmoke.gd` nel controllo
+  d'avvio (davanti, dietro camminando all'indietro, due nemici, nessuno).
 
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla

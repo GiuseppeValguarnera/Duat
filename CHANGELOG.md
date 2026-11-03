@@ -1,5 +1,13 @@
 ## In sviluppo · novembre 2026
 
+- Sokar più leggibile: ogni colpo dei nemici va a segno solo se ti tocca davvero, e l'avviso rosso mostra la zona vera
+  e si riempie mentre arriva; almeno 0,45 s per schivare i colpi forti
+- nelle Opzioni: "Ultimi colpi" (chi ti ha colpito, da che distanza, in che momento) e "Mostra aree di danno"
+- sciacalli con un salto più corto; guardiani con una carica più corta e uno scudo che si crepa e si rompe
+- giavellotti che volano meno lontano, sfera di Khepri più grande e visibile, statue-falco precise
+- avvoltoi più a lungo a terra e colpibili dalle frecce anche in volo; Ba dannati con una miccia regolare
+- mira della mischia che si volta davvero verso il nemico più vicino; l'arco si corregge appena con la levetta e il pad
+
 - Aker ha dei servitori: Ombre di Sabbia dalla porta del tramonto e Scintille dell'Alba dalla porta dell'alba; quando
   un leone cade la sua porta crolla. L'arena è nuova: sabbie mobili a ovest, crepe di fuoco a est, quattro stele che
   riparano dal raggio finché non si spezzano

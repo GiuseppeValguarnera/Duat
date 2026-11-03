@@ -1655,6 +1655,7 @@ Danni subiti,Danni subiti,Damage taken
 Nemici e boss,Nemici e boss,Enemies and bosses
 Trappole,Trappole,Traps
 Ricompense e menu,Ricompense e menu,Rewards and menus
+SCUDO ROTTO,SCUDO ROTTO,SHIELD BROKEN
 SCATTO,SCATTO,DASH
 DONI,DONI,BOONS
 KHOPESH,KHOPESH,KHOPESH
@@ -1704,7 +1705,7 @@ Quanto è forte la musica.,Quanto è forte la musica.,How loud the music is.
 Volume degli effetti,Volume degli effetti,Effects volume
 "Colpi, passi, nemici, ricompense: tutti i suoni tranne la musica.","Colpi, passi, nemici, ricompense: tutti i suoni tranne la musica.","Hits, steps, enemies, rewards: every sound except the music."
 Mira assistita,Mira assistita,Aim assist
-"Con tastiera, pad e telefono il colpo da mischia va verso il nemico più vicino a portata, in qualsiasi direzione, e l'Occhio si corregge di poco verso chi hai davanti. L'arco tira sempre dove punti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","Con tastiera, pad e telefono il colpo da mischia va verso il nemico più vicino a portata, in qualsiasi direzione, e l'Occhio si corregge di poco verso chi hai davanti. L'arco tira sempre dove punti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","With keyboard, gamepad and phone, melee attacks go toward the nearest enemy in reach, in any direction, and the Eye is nudged slightly toward whoever is ahead. The bow always shoots where you aim. It only corrects the direction, it doesn't chase. With the mouse it does nothing."
+"Con tastiera, pad e telefono il colpo da mischia va verso il nemico più vicino a portata, in qualsiasi direzione, e l'Occhio si corregge di poco verso chi hai davanti. L'arco tira dove punti: solo con la levetta del telefono e col pad si corregge appena, di 6°. Corregge solo la direzione, non insegue. Con il mouse non agisce.","Con tastiera, pad e telefono il colpo da mischia va verso il nemico più vicino a portata, in qualsiasi direzione, e l'Occhio si corregge di poco verso chi hai davanti. L'arco tira dove punti: solo con la levetta del telefono e col pad si corregge appena, di 6°. Corregge solo la direzione, non insegue. Con il mouse non agisce.","With keyboard, gamepad and phone, melee attacks go toward the nearest enemy in reach, in any direction, and the Eye is nudged slightly toward whoever is ahead. The bow shoots where you aim: only with the phone's aim stick and the gamepad does it correct a tiny bit, by 6°. It only corrects the direction, it doesn't chase. With the mouse it does nothing."
 Vibrazione,Vibrazione,Vibration
 Il telefono o il pad vibrano quando vieni colpito e nei colpi più forti.,Il telefono o il pad vibrano quando vieni colpito e nei colpi più forti.,The phone or the pad vibrates when you are hit and on the strongest blows.
 Grandezza del testo,Grandezza del testo,Text size
@@ -1717,12 +1718,23 @@ Scossa dello schermo,Scossa dello schermo,Screen shake
 La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.,La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.,The camera shakes on heavy hits. Turn it off if it bothers you.
 Pausa d'impatto,Pausa d'impatto,Hit stop
 Il gioco si ferma per un istante quando un colpo va a segno.,Il gioco si ferma per un istante quando un colpo va a segno.,The game freezes for an instant when a blow lands.
+Mostra aree di danno,Mostra aree di danno,Show damage areas
+"Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.","Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.","Draws the real hit zones of enemies (body, leaps, charges, blasts, projectiles) and your own outline. It helps you understand what hit you."
+Ultimi colpi,Ultimi colpi,Last hits
+"Gli ultimi 15 colpi subiti: chi, quanto, da che distanza e in che momento dell'attacco. Premi per leggerli.","Gli ultimi 15 colpi subiti: chi, quanto, da che distanza e in che momento dell'attacco. Premi per leggerli.","The last 15 hits you took: who, how much, from what distance and at which moment of the attack. Press to read them."
 Ultimo problema,Ultimo problema,Last problem
 Premi per cancellarlo.,Premi per cancellarlo.,Press to clear it.
 English,English,English
 ATTIVA  (-%d%% danni),ATTIVA  (-%d%% danni),ACTIVE  (-%d%% damage)
 Tocca le frecce per cambiare · tocca fuori per chiudere,Tocca le frecce per cambiare · tocca fuori per chiudere,Tap the arrows to change · tap outside to close
 Su e giù per scegliere · sinistra e destra per cambiare · Esc / B per chiudere,Su e giù per scegliere · sinistra e destra per cambiare · Esc / B per chiudere,Up and down to choose · left and right to change · Esc / B to close
+"Nessun colpo subito, per ora.","Nessun colpo subito, per ora.","No hits taken, for now."
+%s — %s,%s — %s,%s — %s
+%d danni,%d danni,%d damage
+parato dallo scudo,parato dallo scudo,blocked by the shield
+a %d px,a %d px,at %d px
+in volo da %.1f s,in volo da %.1f s,in flight for %.1f s
+Tocca o premi Esc / B per tornare,Tocca o premi Esc / B per tornare,Tap or press Esc / B to go back
 ContinueMark,ContinueMark,ContinueMark
 %s · sviluppo,%s · sviluppo,%s · development
 %s/%s ore %s:%s,%s/%s ore %s:%s,%s/%s at %s:%s
@@ -1754,7 +1766,7 @@ La spazzata stordisce i nemici per {v} secondi.,La spazzata stordisce i nemici p
 "Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta.","Khonsu, la luna, 'colui che viaggia' attraverso la notte. Una sua statua, si raccontava, fu mandata fino in Asia a guarire una principessa posseduta.","Khonsu, the moon, 'he who travels' through the night. One of his statues, it was told, was sent as far as Asia to heal a possessed princess."
 Arco di Satet,Arco di Satet,Bow of Satet
 ARCO,ARCO,BOW
-"Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La freccia parte dove punti: col mouse, con la levetta destra o, sul telefono, trascinando il tasto dell'arco.","Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La freccia parte dove punti: col mouse, con la levetta destra o, sul telefono, trascinando il tasto dell'arco.","Quick arrows from afar that stop on the first enemy. Hold to draw the bow (you move more slowly): the charged shot pierces the whole line. At the end of a dash it looses a fan of three arrows. The arrow flies where you aim: with the mouse, the right stick or, on the phone, by dragging the bow button."
+"Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La freccia parte dove punti: col mouse, con la levetta destra o, sul telefono, trascinando il tasto dell'arco; con la levetta e col pad si corregge appena (6°) verso un nemico che hai proprio davanti.","Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La freccia parte dove punti: col mouse, con la levetta destra o, sul telefono, trascinando il tasto dell'arco; con la levetta e col pad si corregge appena (6°) verso un nemico che hai proprio davanti.","Quick arrows from afar that stop on the first enemy. Hold to draw the bow (you move more slowly): the charged shot pierces the whole line. At the end of a dash it looses a fan of three arrows. The arrow flies where you aim: with the mouse, the right stick or, on the phone, by dragging the bow button; with the stick and the gamepad it corrects a tiny bit (6°) toward an enemy right in front of you."
 "Satet, la dea arciera di Elefantina, scagliava le sue frecce sulla prima cataratta: ogni anno, si diceva, era la sua freccia ad aprire la piena del Nilo. Neith, la più antica delle arciere, ne custodisce l'arco.","Satet, la dea arciera di Elefantina, scagliava le sue frecce sulla prima cataratta: ogni anno, si diceva, era la sua freccia ad aprire la piena del Nilo. Neith, la più antica delle arciere, ne custodisce l'arco.","Satet, the archer goddess of Elephantine, shot her arrows over the first cataract: every year, it was said, her arrow opened the Nile flood. Neith, the most ancient of archers, keeps her bow."
 Aspetto di Satet,Aspetto di Satet,Aspect of Satet
 L'arco della signora della cataratta. +{v}% di danni.,L'arco della signora della cataratta. +{v}% di danni.,The bow of the lady of the cataract. +{v}% damage.
@@ -1807,6 +1819,8 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+"Con tastiera, pad e telefono il colpo da mischia va verso il nemico più vicino a portata, in qualsiasi direzione, e l'Occhio si corregge di poco verso chi hai davanti. L'arco tira sempre dove punti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","Con tastiera, pad e telefono il colpo da mischia va verso il nemico più vicino a portata, in qualsiasi direzione, e l'Occhio si corregge di poco verso chi hai davanti. L'arco tira sempre dove punti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","With keyboard, gamepad and phone, melee attacks go toward the nearest enemy in reach, in any direction, and the Eye is nudged slightly toward whoever is ahead. The bow always shoots where you aim. It only corrects the direction, it doesn't chase. With the mouse it does nothing."
+"Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La freccia parte dove punti: col mouse, con la levetta destra o, sul telefono, trascinando il tasto dell'arco.","Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La freccia parte dove punti: col mouse, con la levetta destra o, sul telefono, trascinando il tasto dell'arco.","Quick arrows from afar that stop on the first enemy. Hold to draw the bow (you move more slowly): the charged shot pierces the whole line. At the end of a dash it looses a fan of three arrows. The arrow flies where you aim: with the mouse, the right stick or, on the phone, by dragging the bow button."
 Una volta per discesa puoi chiedere a un dio altre tre scelte per il suo dono.,Una volta per discesa puoi chiedere a un dio altre tre scelte per il suo dono.,Once per descent you can ask a god for three new choices for their boon.
 La Voce degli Dèi si può usare due volte per discesa.,La Voce degli Dèi si può usare due volte per discesa.,The Voice of the Gods can be used twice per descent.
 "Nell'Oasi della quarta ora una seconda barca ti aspetta sull'acqua: puoi scambiare un dono già preso con un altro dello stesso dio, allo stesso livello.","Nell'Oasi della quarta ora una seconda barca ti aspetta sull'acqua: puoi scambiare un dono già preso con un altro dello stesso dio, allo stesso livello.","In the Oasis of the fourth hour a second barque waits for you on the water: you can trade a boon you already have for another from the same god, at the same level."
@@ -2276,3 +2290,26 @@ una Scintilla dell'Alba,una Scintilla dell'Alba,a Dawn Spark
 la fiammata di una Scintilla dell'Alba,la fiammata di una Scintilla dell'Alba,the blast of a Dawn Spark
 il fuoco delle Scintille,il fuoco delle Scintille,the fire of the Sparks
 una crepa di fuoco,una crepa di fuoco,a fire crack
+preparazione,preparazione,windup
+salto,salto,leap
+carica,carica,charge
+picchiata,picchiata,dive
+miccia,miccia,fuse
+puntura,puntura,sting
+morso,morso,bite
+preparazione del morso,preparazione del morso,bite windup
+preparazione della carica,preparazione della carica,charge windup
+soffio,soffio,breath
+preparazione del balzo,preparazione del balzo,leap windup
+balzo,balzo,pounce
+onda,onda,wave
+raggio,raggio,ray
+inseguimento,inseguimento,chase
+cammino,cammino,walking
+volo,volo,flight
+a terra,a terra,on the ground
+pausa,pausa,pause
+sotto la sabbia,sotto la sabbia,under the sand
+coda dalla sabbia,coda dalla sabbia,tail from the sand
+balzo fuori dalla sabbia,balzo fuori dalla sabbia,leap out of the sand
+ventaglio,ventaglio,tail fan
