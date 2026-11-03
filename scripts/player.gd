@@ -369,8 +369,14 @@ func _release_charge() -> void:
 
 
 ## La ricarica dell'attacco caricato: 2 s per tutte le armi, 5 s per il tiro carico dell'arco.
+## Tempo Giusto (Thoth) la accorcia del 15/22/30%, mai sotto CHARGE_CD_MIN; la carica resta di 1 s.
+const CHARGE_CD_MIN := 1.8
+
 func _charge_cd_max() -> float:
-	return BOW_CHARGE_CD if Run.weapon == "arco" else CHARGE_CD
+	var base := BOW_CHARGE_CD if Run.weapon == "arco" else CHARGE_CD
+	if Run.has("thoth_timing"):
+		return maxf(CHARGE_CD_MIN, base * (1.0 - Run.val("thoth_timing") / 100.0))
+	return base
 
 
 ## L'attacco caricato, nella direzione del momento del rilascio (con la mira automatica se attiva).

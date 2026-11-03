@@ -13,7 +13,7 @@ func _process(_d: float) -> bool:
 		p = get_first_node_in_group("player")
 		var run = root.get_node("Run")
 		var ids := ["nefti_veil", "sobek_river", "duo_sekhmet_bastet", "duo_anubi_sekhmet", "shu_column", "shu_divide",
-			"thoth_first", "thoth_glyph", "thoth_judgment", "thoth_stolen", "thoth_hourglass", "thoth_lesson", "nefti_heavy",
+			"thoth_first", "thoth_timing", "thoth_glyph", "thoth_judgment", "thoth_stolen", "thoth_hourglass", "thoth_lesson", "nefti_heavy",
 			"shu_heavy", "duo_thoth_iside", "duo_thoth_anubi", "anubi_guide", "horus_multi", "horus_pierce", "horus_mark"]
 		for id in load("res://scripts/boons.gd").ALL_IT:
 			if String(id).begins_with(run.weapon + "_"):
