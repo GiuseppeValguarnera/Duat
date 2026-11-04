@@ -25,7 +25,6 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		q.life = TRAIL_LIFE
 		q.position = global_position
 		get_parent().add_child(q)
-		get_parent().move_child(q, 0)
 	if to == Vector2.ZERO:
 		return Vector2.ZERO
 	return _steer(to.normalized() * speed, delta)

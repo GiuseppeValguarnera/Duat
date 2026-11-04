@@ -42,6 +42,7 @@ class SandRiver extends Node2D:
 	func _ready() -> void:
 		add_to_group("river")
 		z_index = 0
+		Hazards.ground.call_deferred(self)
 
 	func on_plate(p: Vector2) -> bool:
 		for r in plates:
@@ -147,6 +148,7 @@ class CrumbleTile extends Node2D:
 
 	func _ready() -> void:
 		add_to_group("traps")
+		Hazards.ground.call_deferred(self)
 
 	func _inside(p: Vector2, grow: float = 0.0) -> bool:
 		var h := SIZE / 2.0 + grow

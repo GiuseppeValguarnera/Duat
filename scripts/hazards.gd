@@ -11,6 +11,23 @@ class_name Hazards
 const WATER_SLOW := 0.7          ## velocità dentro l'acqua
 
 
+## Strato a terra (blocco 13): le chiazze e le zone sul pavimento (sabbie mobili, pozze di veleno,
+## fuoco a terra, crepe, fiume di sabbia nera, lastre) stanno SOPRA il pavimento e SOTTO le creature.
+## Niente z_index negativo (finirebbe sotto il pavimento): z 0 e posto subito dopo l'arredamento con
+## il pavimento (il nodo con `rebake`), cioè prima di eroe, nemici e boss nell'ordine di disegno.
+static func ground(n: Node) -> void:
+	if n == null or not is_instance_valid(n) or not n.is_inside_tree():
+		return
+	n.add_to_group("ground_hazards")
+	var par := n.get_parent()
+	if par == null:
+		return
+	for i in range(par.get_child_count()):
+		if par.get_child(i).has_method("rebake"):
+			par.move_child(n, i + 1)
+			return
+
+
 ## La pozza in cui si trova `p`, oppure null.
 static func water_at(tree: SceneTree, p: Vector2) -> Node2D:
 	for w in tree.get_nodes_in_group("water"):
@@ -195,6 +212,7 @@ class FirePatch extends Node2D:
 	func _ready() -> void:
 		add_to_group("fire")
 		z_index = 0
+		Hazards.ground.call_deferred(self)
 
 	func burning() -> bool:
 		return t >= ignite
@@ -677,17 +695,7 @@ class VenomPuddle extends Node2D:
 			queue_free()
 			return
 		Sfx.play_at("orb_pop", global_position, 0.2)
-		_under.call_deferred()
-
-	## Sopra il pavimento, sotto l'eroe e i nemici (z_index negativo finiva sotto il pavimento).
-	func _under() -> void:
-		var par := get_parent()
-		if par == null:
-			return
-		for i in range(par.get_child_count()):
-			if par.get_child(i).has_method("rebake"):          # l'arredamento con il pavimento
-				par.move_child(self, i + 1)
-				return
+		Hazards.ground.call_deferred(self)
 
 	func _process(delta: float) -> void:
 		t += delta
@@ -851,6 +859,8 @@ class Quicksand extends Node2D:
 
 	func _ready() -> void:
 		add_to_group("quicksand")
+		z_index = 0
+		Hazards.ground.call_deferred(self)               # sotto le creature (blocco 13)
 
 	func contains(p: Vector2) -> bool:
 		return ((p - global_position) / radii).length() < 1.0

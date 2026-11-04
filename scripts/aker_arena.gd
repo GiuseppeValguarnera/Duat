@@ -130,6 +130,7 @@ class FireCrack extends Node2D:
 
 	func _ready() -> void:
 		z_index = 0
+		Hazards.ground.call_deferred(self)
 		var rng := RandomNumberGenerator.new()
 		rng.seed = int(global_position.x * 13.0 + global_position.y)
 		for i in range(8):
