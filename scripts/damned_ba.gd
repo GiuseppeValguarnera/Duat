@@ -11,7 +11,12 @@ extends Enemy
 @export var trigger := 40.0
 
 var state := "drift"
-var fuse_left := 0.0                      ## blocco 12: la miccia corre in secondi reali, senza pause
+var fuse_left := 0.0
+## Blocco 13: l'esplosione ferisce anche i nemici (non boss e guardiani) e accende gli altri Ba nel
+## raggio, che esplodono a loro volta dopo CHAIN_DELAY (reazione a catena, un anello alla volta).
+const ENEMY_BLAST := 24.0
+const ENEMY_KNOCK := 220.0
+const CHAIN_DELAY := 0.3                      ## blocco 12: la miccia corre in secondi reali, senza pause
 var st := 0.0
 var bob := 0.0
 
@@ -86,8 +91,31 @@ func _blast() -> void:
 	Sfx.play_at("jar_break", global_position, 0.1)
 	var p = get_tree().get_first_node_in_group("player")
 	if p != null and not p.dead and p.global_position.distance_to(global_position) < blast_radius:
-		p.take_damage(blast_damage, global_position, self)
+		p.take_damage(blast_damage, global_position, self)      # una volta: poi c'è l'invulnerabilità del colpo
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if e == self or e.dead or e.global_position.distance_to(global_position) >= blast_radius + e.radius:
+			continue
+		if e.get_script() == get_script():
+			e.chain_ignite()                    # un altro Ba: si accende ed esplode tra poco
+			continue
+		if e.is_boss or e.miniboss:
+			continue                            # boss e guardiani non ne risentono
+		var away: Vector2 = (e.global_position - global_position).normalized()
+		e.take_hit(ENEMY_BLAST, away, ENEMY_KNOCK)
 	die()
+
+
+## Acceso da un'altra esplosione: esplode dopo CHAIN_DELAY (se già brillava, al più tardi allora).
+## Se lo uccidi in quell'attimo, si spegne come sempre.
+func chain_ignite() -> void:
+	if dead or state == "gone":
+		return
+	if state != "fuse":
+		state = "fuse"
+		fuse_left = CHAIN_DELAY
+		Sfx.play_at("soul", global_position, 0.2)
+	else:
+		fuse_left = minf(fuse_left, CHAIN_DELAY)
 
 
 func _stagger_time() -> float:
