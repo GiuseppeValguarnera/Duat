@@ -2167,28 +2167,55 @@ func _open_swap(barque: Node2D) -> void:
 	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(Color(0.3, 0.55, 0.7)))
 	center.add_child(pap)
 	var vs := get_viewport().get_visible_rect().size
+	# blocco 13: a sinistra la lista, a destra la scheda del dono evidenziato (nome, livello,
+	# descrizione, prezzo se pesante). Sul telefono un tocco evidenzia, il secondo conferma.
+	var total_w := minf(600.0 * Fx.ui, vs.x - 28.0)
+	var list_w := total_w * 0.46
+	var card_w := total_w - list_w - 10.0 * Fx.ui
+	var outer := VBoxContainer.new()
+	outer.add_theme_constant_override("separation", int(3 * Fx.ui))
+	pap.add_child(outer)
+	var h := UiStyle.label(Lang.t("La Seconda Barca"), 13, UiStyle.INK, true)
+	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	outer.add_child(h)
+	var sub := UiStyle.label(Lang.t("Quale dono lasci sulla riva? Un altro dello stesso dio salirà con te, allo stesso livello."), 8, UiStyle.INK_SOFT, false, total_w)
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	outer.add_child(sub)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", int(10 * Fx.ui))
+	outer.add_child(row)
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
-	pap.add_child(scroll)
+	row.add_child(scroll)
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", int(3 * Fx.ui))
-	col.custom_minimum_size = Vector2(minf(380.0 * Fx.ui, vs.x - 40.0), 0)
+	col.custom_minimum_size = Vector2(list_w, 0)
 	scroll.add_child(col)
-	var h := UiStyle.label(Lang.t("La Seconda Barca"), 13, UiStyle.INK, true)
-	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	col.add_child(h)
-	var sub := UiStyle.label(Lang.t("Quale dono lasci sulla riva? Un altro dello stesso dio salirà con te, allo stesso livello."), 8, UiStyle.INK_SOFT, false, col.custom_minimum_size.x)
-	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	col.add_child(sub)
+	var card := VBoxContainer.new()
+	card.custom_minimum_size = Vector2(card_w, 0)
+	card.add_theme_constant_override("separation", int(3 * Fx.ui))
+	row.add_child(card)
+	var show_card := func(id: String) -> void:
+		_boon_card(card, id, Run.level(id), card_w)
+	var touch := Fx.device == "touch"
+	var armed := [""]
 	var first: Button = null
 	for id in list:
 		var g: String = Boons.ALL[id]["god"]
 		var b := Button.new()
 		b.text = "%s · %s (%s)" % [Boons.god_name(g), Boons.ALL[id]["name"], Lang.t("liv. %d") % Run.level(id)]
+		b.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		b.custom_minimum_size.x = list_w
 		UiStyle.papyrus_button(b, Boons.god_color(g))
 		b.add_theme_font_size_override("font_size", Fx.fs(8))
+		b.focus_entered.connect(show_card.bind(id))
+		b.mouse_entered.connect(show_card.bind(id))
 		b.pressed.connect(func() -> void:
+			if touch and armed[0] != id:
+				armed[0] = id                   # primo tocco: si vede la scheda
+				show_card.call(id)
+				return
 			_close_choice()
 			_swap_choices(id, barque))
 		col.add_child(b)
@@ -2200,11 +2227,32 @@ func _open_swap(barque: Node2D) -> void:
 	back.add_theme_font_size_override("font_size", Fx.fs(8))
 	back.pressed.connect(_close_choice)
 	col.add_child(back)
+	if touch:
+		var tip := UiStyle.label(Lang.t("Tocca un dono per vederlo, toccalo di nuovo per sceglierlo"), 7, UiStyle.INK_SOFT, false, total_w)
+		tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		outer.add_child(tip)
+	show_card.call(list[0])
 	var fit := func() -> void:
-		if is_instance_valid(scroll) and is_instance_valid(col):
-			scroll.custom_minimum_size = Vector2(col.custom_minimum_size.x + 4.0, minf(col.get_combined_minimum_size().y, vs.y - 44.0))
+		if is_instance_valid(scroll) and is_instance_valid(col) and is_instance_valid(outer):
+			var room := vs.y - 44.0 - (outer.get_combined_minimum_size().y - row.get_combined_minimum_size().y)
+			scroll.custom_minimum_size = Vector2(list_w + 4.0, clampf(col.get_combined_minimum_size().y, 60.0, maxf(60.0, room)))
 	fit.call_deferred()
 	first.grab_focus.call_deferred()
+
+
+## La scheda di un dono (Seconda Barca): dio, nome, livello, descrizione e, se pesante, il prezzo.
+func _boon_card(box: VBoxContainer, id: String, lvl: int, w: float) -> void:
+	for c in box.get_children():
+		c.queue_free()
+	var b: Dictionary = Boons.ALL[id]
+	var g: String = b["god"]
+	var lv_txt := Lang.t("pesante") if Boons.is_heavy(id) else Lang.t("livello %d") % lvl
+	var top := UiStyle.label("%s · %s" % [Boons.god_name(g), lv_txt], 8, Boons.god_color(g).darkened(0.35), false, w)
+	box.add_child(top)
+	box.add_child(UiStyle.label(b["name"], 11, UiStyle.INK, true, w))
+	box.add_child(UiStyle.label(Boons.text(id, lvl), 8, UiStyle.INK_SOFT, false, w))
+	if Boons.has_cost(id):
+		box.add_child(UiStyle.label(Lang.t("Prezzo: %s") % Weapons.adapt(b["cost"]), 8, UiStyle.INK_RED, false, w))
 
 
 ## I doni dello stesso dio che potrebbero prendere il posto di `old`.
@@ -2250,7 +2298,9 @@ func _swap_choices(old: String, barque: Node2D) -> void:
 	for id in pool.slice(0, 3):
 		var l := mini(lvl, _max_level(id))
 		var sh := Boons.short(id, l)
-		cards.append({"tag": Lang.t("Al posto di %s") % Boons.ALL[old]["name"], "name": Boons.ALL[id]["name"], "body": Boons.text(id, l),
+		# il confronto prima/dopo: sotto il dono nuovo, quello che lasci sulla riva
+		cards.append({"tag": Lang.t("Al posto di %s") % Boons.ALL[old]["name"], "name": Boons.ALL[id]["name"],
+			"body": Boons.text(id, l) + "\n\n" + Lang.t("Prima (%s, livello %d): %s") % [Boons.ALL[old]["name"], lvl, Boons.text(old, lvl)],
 			"cost": "", "gain": sh[0], "loss": sh[1], "color": Boons.god_color(g), "heavy": false,
 			"on_pick": _do_swap.bind(old, id, l, barque)})
 	cards.append({"tag": Lang.t("Resta com'è"), "name": Boons.ALL[old]["name"], "body": Boons.text(old, lvl), "color": Color(0.7, 0.7, 0.75), "on_pick": _close_choice})
