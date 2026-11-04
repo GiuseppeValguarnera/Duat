@@ -76,20 +76,20 @@ const ThrownSpear := preload("res://scripts/thrown_spear.gd")
 ## scatto un ventaglio di 3 frecce corte. Mentre tende l'arco ci si muove meno piano che con le altre armi.
 ## Ritarato nel blocco 9 (era troppo forte): freccia al 38% di un fendente, circa 2 al secondo;
 ## tiro carico = 3 frecce, ricarica 5 s; tirando ti muovi del 20% più lento (BOW_FIRE_SLOW).
-const BOW_ARROW := 7.0 / 12.0         ## una freccia = 7 di danno base (≈58% di un fendente del khopesh; blocco 11)
-const BOW_SHOT := {"cd": 0.5, "mult": BOW_ARROW, "speed": 440.0, "dist": 212.0, "knock": 35.0}
-const BOW_CHARGED := {"mult": BOW_ARROW * 3.0, "speed": 620.0, "dist": 306.0, "knock": 130.0}
+const BOW_ARROW := 8.0 / 12.0         ## una freccia = 8 di danno base (2/3 di un fendente del khopesh; blocco 13)
+const BOW_SHOT := {"cd": 0.4, "mult": BOW_ARROW, "speed": 440.0, "dist": 235.0, "knock": 35.0}   ## 2,5 frecce al secondo
+const BOW_CHARGED := {"mult": BOW_ARROW * 3.5, "speed": 620.0, "dist": 306.0, "knock": 130.0}   ## 3,5 frecce di danno
 const BOW_FAN := {"mult": BOW_ARROW, "spread": 18.0, "speed": 420.0, "dist": 120.0, "knock": 70.0}
-const BOW_CHARGE_CD := 5.0
-const BOW_FIRE_SLOW := 0.8
+const BOW_CHARGE_CD := 4.0
+const BOW_FIRE_SLOW := 0.9
 ## Ricochet del Falco (Horus, arco): [rimbalzi, danni] per livello; raggio = un quarto dello schermo.
 const RICOCHET := [[1, 0.6], [1, 0.8], [2, 0.8]]
 const ArrowScript := preload("res://scripts/arrow.gd")
 ## Il Flagello di Osiride: tre frustate che colpiscono tutti i nemici in linea (larghezza `width`),
 ## la terza più ampia (un ventaglio di `arc` gradi). Danni pieni alla punta, metà addosso al corpo.
 const FLAIL := [
-	{"range": 80.0, "width": 9.0, "arc": 0.0, "mult": 0.85, "cd": 0.3, "lunge": 6.0, "knock": 70.0},
-	{"range": 80.0, "width": 9.0, "arc": 0.0, "mult": 0.85, "cd": 0.3, "lunge": 6.0, "knock": 70.0},
+	{"range": 80.0, "width": 9.0, "arc": 0.0, "mult": 0.8, "cd": 0.32, "lunge": 6.0, "knock": 70.0},
+	{"range": 80.0, "width": 9.0, "arc": 0.0, "mult": 0.8, "cd": 0.32, "lunge": 6.0, "knock": 70.0},
 	{"range": 86.0, "width": 0.0, "arc": 55.0, "mult": 1.4, "cd": 0.46, "lunge": 10.0, "knock": 160.0},
 ]
 ## Dopo lo scatto: una frustata lunga che trascina avanti, con te, i nemici colpiti.
@@ -97,7 +97,7 @@ const FLAIL_DASH := {"range": 118.0, "width": 11.0, "arc": 0.0, "mult": 1.3, "cd
 const FLAIL_BODY := 0.5                    ## danni addosso al corpo (alla punta 1)
 ## Il pastorale (attacco caricato): aggancia il nemico nel cono davanti a te; i normali vengono
 ## lanciati verso di te (o dove ti muovi), con élite, guardiani e boss sei tu a volare da loro.
-const HOOK := {"range": 240.0, "cone": 28.0, "mult": 1.6, "fling": 150.0, "pull_speed": 560.0}
+const HOOK := {"range": 150.0, "cone": 28.0, "mult": 1.6, "fling": 150.0, "pull_speed": 560.0}
 
 var hp := 0.0
 var was_wet := false					# per lo schizzo quando entri in acqua
@@ -823,7 +823,7 @@ func _hook_pulling() -> bool:
 ## Il nemico che il pastorale aggancerebbe guardando verso `dir` (null se nessuno).
 func _hook_target(dir: Vector2):
 	if _assist_on():
-		return _melee_pick(dir, HOOK["range"] / MELEE_ASSIST_REACH)   # il più vicino a 360°, entro la portata del pastorale
+		return _melee_pick(dir, HOOK["range"] / MELEE_ASSIST_REACH)   # il più vicino a 360°, entro il raggio vero del pastorale (niente +50%)
 	var best = null
 	var best_score := INF
 	var cone := deg_to_rad(HOOK["cone"] * (1.4 if Fx.device == "touch" else 1.0))

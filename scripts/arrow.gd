@@ -125,7 +125,9 @@ func _hit_along(a: Vector2, b: Vector2) -> bool:
 ## scattano al massimo una volta ogni FX_GAP secondi per nemico, non a ogni freccia: vale per tutte
 ## le frecce insieme, anche quelle della Faretra dello Sciacallo.
 const FX_GAP := 500
-const O := "freccia"                  ## l'origine di questi colpi (Boons.acts_on)
+const O := "freccia"
+const FAR_DIST := 120.0               ## blocco 13: oltre questa distanza dal giocatore la freccia fa +20%
+const FAR_BONUS := 1.2                  ## l'origine di questi colpi (Boons.acts_on)
 
 
 static func _fx_ready(e) -> bool:
@@ -142,6 +144,8 @@ func _strike(e) -> void:
 	var fx := _fx_ready(e)
 	var crit := Run.roll_crit(crit_chance)
 	var d := dmg * crit * (bounce_k if bounced else (1.0 if first else pierce_mult))
+	if player != null and is_instance_valid(player) and player.global_position.distance_to(e.global_position) > FAR_DIST:
+		d *= FAR_BONUS                     # colpo da lontano: l'arco premia chi tiene la distanza
 	if Run.hit_has("duo_ra_sekhmet", O) and e.burn_t > 0.0:
 		d *= 1.25
 	if Run.hit_has("duo_sobek_iside", O) and player != null and is_instance_valid(player) and player.shield > 0.0:
