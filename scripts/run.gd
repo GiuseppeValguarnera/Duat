@@ -720,6 +720,13 @@ func treasure_mult() -> float:
 
 
 ## Quanto cura l'Acqua del Nilo, in frazione della vita massima.
+## La cura del Traghettatore (blocco 13): il 60% della stanza di cura, così quella resta una scelta.
+const FERRY_HEAL_SHARE := 0.6
+
+func ferry_heal() -> float:
+	return nile_heal() * FERRY_HEAL_SHARE
+
+
 func nile_heal() -> float:
 	var h := Chapters.value("c154") / 100.0 if chap("c154") else 0.3
 	if Weights.rank("avarizia") > 0:

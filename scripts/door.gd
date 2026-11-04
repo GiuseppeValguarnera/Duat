@@ -117,10 +117,6 @@ func reward_description() -> String:
 		"lapis":
 			return Lang.t("Lapislazzuli: pietre preziose per i restauri (restano anche se cadi)")
 		"heal":
-			if Run.room + 1 == Run.ROOMS_PER_RUN:
-				if Run.region == 2:
-					return Lang.t("Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Aker") % roundi(Run.nile_heal() * 100.0)
-				return Lang.t("Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh") % roundi(Run.nile_heal() * 100.0)
 			return Lang.t("Acqua del Nilo: recuperi il %d%% della vita") % roundi(Run.nile_heal() * 100.0)
 		"boss":
 			if Run.region == 2:
@@ -133,6 +129,8 @@ func reward_description() -> String:
 		"region":
 			return Lang.t("La porta della quarta ora: oltre, la terra di Sokar")
 		"shop":
+			if Run.room + 1 == Run.GUARDIAN_ROOM or Run.room + 2 == Run.GUARDIAN_ROOM or Run.room + 1 >= Run.ROOMS_PER_RUN:
+				return Lang.t("Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa. Poi una porta sola")
 			return Lang.t("Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa)")
 		"desert":
 			return Lang.t("Il deserto di Sokar: da qui la discesa ricomincia, più dura")

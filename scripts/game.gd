@@ -42,7 +42,7 @@ const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
 const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "amheh_anello": "l'anello di fuoco di Am-heh", "aker_shade": "un'Ombra di Sabbia", "aker_spark": "una Scintilla dell'Alba", "aker_scintilla": "la fiammata di una Scintilla dell'Alba", "aker_fuoco": "il fuoco delle Scintille", "aker_crepa": "una crepa di fuoco", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra", "fiume": "il fiume di sabbia nera", "buca": "una buca delle sabbie che crollano", "falco": "una statua-falco", "javelin": "un lanciatore di giavellotti", "sokar_priest": "un sacerdote di Sokar", "khepri": "uno scarabeo di Khepri", "khepri_ball": "la sfera di Khepri", "mirage": "il miraggio", "serket_nube": "la nube di veleno", "serket_aura": "l'aura di veleno di Serket", "scorpion_veleno": "il veleno dello scorpione", "serpent_veleno": "il veleno del Serpente", "serket_veleno": "il veleno di Serket", "sekhmet_heavy": "la sete di Sekhmet", "salasso": "il salasso del Peso del Cuore"}
 const SHOP_ITEMS := [
-	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il 30% della vita", "price": 20},
+	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il %d%% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
 	{"kind": "upgrade", "title": "Inchiostro di Thoth", "desc": "Un tuo dono a caso sale di livello", "price": 30},
 ]
@@ -789,6 +789,13 @@ func _open_doors() -> void:
 	if Run.room + 1 == Run.GUARDIAN_ROOM:
 		_add_door("n", {"kind": "guardian"})
 		return
+	# blocco 13: prima di ogni boss e mini boss (Serpente, Am-heh, Serket, Aker) UNA porta sola, e
+	# dietro UNA stanza senza nemici con il solo Traghettatore (niente cura, niente combattimento)
+	if Run.room + 2 == Run.GUARDIAN_ROOM or Run.room + 1 == Run.ROOMS_PER_RUN:
+		saved_doors.clear()
+		_add_door("n", {"kind": "shop"})
+		saved_doors.append(["n", {"kind": "shop"}])
+		return
 	var sides: Array = [["w", "n", "e"], ["w", "e"], ["w", "n"], ["n", "e"]].pick_random()
 	if Run.chap("c72"):
 		sides = ["w", "n", "e"]              # Le porte aperte
@@ -800,15 +807,7 @@ func _open_doors() -> void:
 	pool.append({"kind": "lapis"} if Run.room >= 2 and randf() < 0.15 else {"kind": "ka"})
 	pool.append({"kind": "heal"})
 	pool.shuffle()
-	# il Traghettatore è una delle porte solo nella stanza subito prima del Serpente e di Ammit
-	var before_boss: bool = Run.room + 2 == Run.GUARDIAN_ROOM or Run.room + 1 == Run.ROOMS_PER_RUN
-	if before_boss:
-		sides = ["w", "n", "e"]
-		pool.insert(0, {"kind": "shop"})
-	# prima del boss c'è sempre una porta che cura, insieme alle altre scelte
-	if Run.room + 1 == Run.ROOMS_PER_RUN:
-		pool.erase({"kind": "heal"})
-		pool.insert(1, {"kind": "heal"})
+	var before_boss := false                  # (la stanza prima del boss ora ha la sua porta, qui sopra)
 	saved_doors.clear()
 	for i in range(sides.size()):
 		_add_door(sides[i], pool[i % pool.size()])
@@ -2040,6 +2039,8 @@ func _start_shop(oasis := false) -> void:
 		node.kind = it["kind"]
 		node.title = Lang.t(it["title"])
 		node.desc = Lang.t(it["desc"])
+		if it["kind"] == "heal":
+			node.desc = node.desc % roundi(Run.ferry_heal() * 100.0)     # il 60% della stanza di cura
 		var off := Chapters.value("c94") / 100.0
 		if it.get("hathor", false):
 			off = maxf(off, Amulets.val_of("hathor") / 100.0)     # lo sconto di Hathor non si somma a Calamaio e tavolozza: vale il più alto
@@ -2443,7 +2444,7 @@ func _buy(item) -> void:
 	Fx.burst(item.global_position + Vector2(0, -20), item.color(), 24, 110.0)
 	match item.kind:
 		"heal":
-			player.heal(roundf(Run.max_hp * 0.3))
+			player.heal(roundf(Run.max_hp * Run.ferry_heal()))
 		"boon":
 			var gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
 			if not gods.is_empty():
