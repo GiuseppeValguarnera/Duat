@@ -785,14 +785,13 @@ Dono di %s: scegli uno dei suoi poteri,Dono di %s: scegli uno dei suoi poteri,Bo
 "L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa","L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa","The altar of Set: a detour, you lose neither this chamber nor the other doors. Entering costs 8 health. A curse for 2 chambers, then a power for the whole descent"
 Tesoro di Ka: +25 Ka,Tesoro di Ka: +25 Ka,Ka Treasure: +25 Ka
 Lapislazzuli: pietre preziose per i restauri (restano anche se cadi),Lapislazzuli: pietre preziose per i restauri (restano anche se cadi),Lapis lazuli: precious stones for restorations (you keep them even if you fall)
-Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Aker,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Aker,Water of the Nile: recover %d%% of your health. Last chamber before Aker
-Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Water of the Nile: you recover %d%% of your health. Last chamber before Am-heh
 Acqua del Nilo: recuperi il %d%% della vita,Acqua del Nilo: recuperi il %d%% della vita,Water of the Nile: you recover %d%% of your health
 "La porta dell'orizzonte: Aker, il leone dalle due teste, custodisce il passaggio del sole","La porta dell'orizzonte: Aker, il leone dalle due teste, custodisce il passaggio del sole","The gate of the horizon: Aker, the two-headed lion, guards the passage of the sun"
 "Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Gate of the First Hour: Am-heh, the Devourer of Millions, awaits you in its lake of fire"
 Il tempio di Serket: la dea scorpione custodisce il deserto. Battila per un dono di livello superiore,Il tempio di Serket: la dea scorpione custodisce il deserto. Battila per un dono di livello superiore,The temple of Serket: the scorpion goddess guards the desert. Defeat her for a higher-level boon
 La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,The Middle Gate: the Serpent that guards it. Defeat it for a boon of a higher level
 "La porta della quarta ora: oltre, la terra di Sokar","La porta della quarta ora: oltre, la terra di Sokar","The gate of the fourth hour: beyond it, the land of Sokar"
+"Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa. Poi una porta sola","Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa. Poi una porta sola","The Ferryman, before the trial: a quiet hall to spend the Ka of the descent. Then a single door"
 Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),The Ferryman: spend this descent's Ka (what you spend does not come home with you)
 "Il deserto di Sokar: da qui la discesa ricomincia, più dura","Il deserto di Sokar: da qui la discesa ricomincia, più dura","The desert of Sokar: from here the descent begins again, harder"
 Comincia la discesa: Anubi ti aspetta con il primo dono,Comincia la discesa: Anubi ti aspetta con il primo dono,The descent begins: Anubis awaits you with the first boon
@@ -850,8 +849,10 @@ Puoi equipaggiare due amuleti insieme invece di uno. Il secondo si sceglie al ba
 "«Sali, scriba, o compra e prosegui. Le mie parole, almeno quelle, non costano nulla.»","«Sali, scriba, o compra e prosegui. Le mie parole, almeno quelle, non costano nulla.»","«Come aboard, scribe, or buy and move on. My words, at least, cost nothing.»"
 %d Ka,%d Ka,%d Ka
 Kheper: Reborn in the Duat,Kheper: Reborn in the Duat,Kheper: Reborn in the Duat
+!!(document.fullscreenElement || document.webkitFullscreenElement),!!(document.fullscreenElement || document.webkitFullscreenElement),!!(document.fullscreenElement || document.webkitFullscreenElement)
+Premi F per lo schermo intero,Premi F per lo schermo intero,Press F for full screen
 Acqua del Nilo,Acqua del Nilo,Water of the Nile
-Recuperi il 30% della vita,Recuperi il 30% della vita,You recover 30% of your health
+Recuperi il %d%% della vita,Recuperi il %d%% della vita,Restores %d%% of your health
 Offerta agli dèi,Offerta agli dèi,Offering to the Gods
 Un dio a caso ti offre un dono,Un dio a caso ti offre un dono,A random god offers you a boon
 Inchiostro di Thoth,Inchiostro di Thoth,Ink of Thoth
@@ -916,6 +917,7 @@ Ricomincia la run,Ricomincia la run,Restart the run
 Torna alla Sala (abbandona),Torna alla Sala (abbandona),Back to the Hall (abandon)
 Esci alla Sala (la discesa resta salvata),Esci alla Sala (la discesa resta salvata),Exit to the Hall (the descent stays saved)
 Esci (la discesa resta salvata),Esci (la discesa resta salvata),Quit (the descent stays saved)
+Schermo intero,Schermo intero,Full screen
 Esc / Start per riprendere,Esc / Start per riprendere,Esc / Start to resume
 Volume,Volume,Volume
 Indietro,Indietro,Back
@@ -993,17 +995,20 @@ L'acqua ricorda il Nilo: ti rende un poco di ciò che hai perduto,L'acqua ricord
 Nessuno dei tuoi doni può essere scambiato,Nessuno dei tuoi doni può essere scambiato,None of your boons can be traded
 "Quale dono lasci sulla riva? Un altro dello stesso dio salirà con te, allo stesso livello.","Quale dono lasci sulla riva? Un altro dello stesso dio salirà con te, allo stesso livello.","Which boon do you leave on the shore? Another from the same god will come aboard with you, at the same level."
 Non scambio nulla,Non scambio nulla,I trade nothing
+"Tocca un dono per vederlo, toccalo di nuovo per sceglierlo","Tocca un dono per vederlo, toccalo di nuovo per sceglierlo","Tap a boon to see it, tap it again to choose it"
+livello %d,livello %d,level %d
+Prezzo: %s,Prezzo: %s,Cost: %s
 Al posto di %s,Al posto di %s,Instead of %s
+"Prima (%s, livello %d): %s","Prima (%s, livello %d): %s","Before (%s, level %d): %s"
 Resta com'è,Resta com'è,Keep as it is
 %s ti offre un altro dei suoi doni,%s ti offre un altro dei suoi doni,%s offers you another of their boons
 %s al posto di %s,%s al posto di %s,%s instead of %s
 "Non hai altri amuleti da portare. Se ne forgiano alla Casa della Vita, coi lapislazzuli","Non hai altri amuleti da portare. Se ne forgiano alla Casa della Vita, coi lapislazzuli","You have no other amulets to wear. More are forged at the House of Life, with lapis lazuli"
-Amuleto,Amuleto,Amulet
-Nessun amuleto,Nessun amuleto,No amulet
 "Un solo amuleto al collo. Scegli ciò che porti, e lascia ciò che non ti serve","Un solo amuleto al collo. Scegli ciò che porti, e lascia ciò che non ti serve","One amulet at your neck. Choose what you carry, and leave what you do not need"
-Il nuovo amuleto prende il posto del primo sigillo; il secondo resta dov'è,Il nuovo amuleto prende il posto del primo sigillo; il secondo resta dov'è,The new amulet takes the place of the first seal; the second stays where it is
-Il secondo sigillo della collana è libero: il nuovo amuleto si aggiunge al tuo,Il secondo sigillo della collana è libero: il nuovo amuleto si aggiunge al tuo,The necklace's second seal is free: the new amulet joins yours
-"Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto.","Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto.","An amulet is a thought made of stone, scribe. Wear only one: wisdom lies in leaving the rest."
+Il nuovo amuleto prende il posto del primo; il secondo resta dov'è,Il nuovo amuleto prende il posto del primo; il secondo resta dov'è,The new amulet takes the place of the first; the second stays where it is
+La collana ha un posto libero: il nuovo amuleto si aggiunge al tuo,La collana ha un posto libero: il nuovo amuleto si aggiunge al tuo,The necklace has a free place: the new amulet joins yours
+Nessun amuleto,Nessun amuleto,No amulet
+Porti: %s,Porti: %s,You wear: %s
 Porti %s,Porti %s,You wear %s
 Non hai abbastanza Ka,Non hai abbastanza Ka,You don't have enough Ka
 La colonna crolla,La colonna crolla,The pillar crumbles
@@ -1718,6 +1723,7 @@ Scossa dello schermo,Scossa dello schermo,Screen shake
 La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.,La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.,The camera shakes on heavy hits. Turn it off if it bothers you.
 Pausa d'impatto,Pausa d'impatto,Hit stop
 Il gioco si ferma per un istante quando un colpo va a segno.,Il gioco si ferma per un istante quando un colpo va a segno.,The game freezes for an instant when a blow lands.
+Il gioco occupa tutto lo schermo. Scorciatoia: tasto F; Esc per uscire.,Il gioco occupa tutto lo schermo. Scorciatoia: tasto F; Esc per uscire.,The game fills the whole screen. Shortcut: F key; Esc to leave.
 Mostra aree di danno,Mostra aree di danno,Show damage areas
 "Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.","Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.","Draws the real hit zones of enemies (body, leaps, charges, blasts, projectiles) and your own outline. It helps you understand what hit you."
 Ultimi colpi,Ultimi colpi,Last hits
@@ -1726,6 +1732,7 @@ Ultimo problema,Ultimo problema,Last problem
 Premi per cancellarlo.,Premi per cancellarlo.,Press to clear it.
 English,English,English
 ATTIVA  (-%d%% danni),ATTIVA  (-%d%% danni),ACTIVE  (-%d%% damage)
+F,F,F
 Tocca le frecce per cambiare · tocca fuori per chiudere,Tocca le frecce per cambiare · tocca fuori per chiudere,Tap the arrows to change · tap outside to close
 Su e giù per scegliere · sinistra e destra per cambiare · Esc / B per chiudere,Su e giù per scegliere · sinistra e destra per cambiare · Esc / B per chiudere,Up and down to choose · left and right to change · Esc / B to close
 "Nessun colpo subito, per ora.","Nessun colpo subito, per ora.","No hits taken, for now."
@@ -1819,6 +1826,13 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Aker,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Aker,Water of the Nile: recover %d%% of your health. Last chamber before Aker
+Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Water of the Nile: you recover %d%% of your health. Last chamber before Am-heh
+Recuperi il 30% della vita,Recuperi il 30% della vita,You recover 30% of your health
+Amuleto,Amuleto,Amulet
+Il nuovo amuleto prende il posto del primo sigillo; il secondo resta dov'è,Il nuovo amuleto prende il posto del primo sigillo; il secondo resta dov'è,The new amulet takes the place of the first seal; the second stays where it is
+Il secondo sigillo della collana è libero: il nuovo amuleto si aggiunge al tuo,Il secondo sigillo della collana è libero: il nuovo amuleto si aggiunge al tuo,The necklace's second seal is free: the new amulet joins yours
+"Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto.","Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto.","An amulet is a thought made of stone, scribe. Wear only one: wisdom lies in leaving the rest."
 "Con tastiera, pad e telefono il colpo da mischia va verso il nemico più vicino a portata, in qualsiasi direzione, e l'Occhio si corregge di poco verso chi hai davanti. L'arco tira sempre dove punti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","Con tastiera, pad e telefono il colpo da mischia va verso il nemico più vicino a portata, in qualsiasi direzione, e l'Occhio si corregge di poco verso chi hai davanti. L'arco tira sempre dove punti. Corregge solo la direzione, non insegue. Con il mouse non agisce.","With keyboard, gamepad and phone, melee attacks go toward the nearest enemy in reach, in any direction, and the Eye is nudged slightly toward whoever is ahead. The bow always shoots where you aim. It only corrects the direction, it doesn't chase. With the mouse it does nothing."
 "Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La freccia parte dove punti: col mouse, con la levetta destra o, sul telefono, trascinando il tasto dell'arco.","Frecce rapide da lontano, che si fermano sul primo nemico. Tenendo premuto tendi l'arco (ti muovi più piano): il tiro carico trapassa tutta la fila. Alla fine dello scatto scocca un ventaglio di tre frecce. La freccia parte dove punti: col mouse, con la levetta destra o, sul telefono, trascinando il tasto dell'arco.","Quick arrows from afar that stop on the first enemy. Hold to draw the bow (you move more slowly): the charged shot pierces the whole line. At the end of a dash it looses a fan of three arrows. The arrow flies where you aim: with the mouse, the right stick or, on the phone, by dragging the bow button."
 Una volta per discesa puoi chiedere a un dio altre tre scelte per il suo dono.,Una volta per discesa puoi chiedere a un dio altre tre scelte per il suo dono.,Once per descent you can ask a god for three new choices for their boon.

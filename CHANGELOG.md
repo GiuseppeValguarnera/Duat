@@ -1,5 +1,13 @@
 ## In sviluppo · novembre 2026
 
+- le chiazze a terra (sabbie mobili, veleno, fuoco, crepe) stanno sotto i personaggi
+- arco più forte (frecce da 8, più rapide, colpo carico più pesante, bonus da lontano); flagello e pastorale un po' più corti
+- l'esplosione dei Ba dannati ferisce anche i nemici e accende gli altri Ba: reazioni a catena
+- schermo intero dalle Opzioni, dalla pausa o col tasto F (non su iPhone e iPad); la pagina non scorre più
+- Seconda Barca con la scheda del dono e il confronto prima/dopo; l'altare di Imhotep mostra tutti gli amuleti
+- prima di ogni boss e mini boss una sola porta, verso la sala del Traghettatore; la sua Acqua del Nilo cura meno della
+  stanza di cura (60%)
+
 - Sokar più leggibile: ogni colpo dei nemici va a segno solo se ti tocca davvero, e l'avviso rosso mostra la zona vera
   e si riempie mentre arriva; almeno 0,45 s per schivare i colpi forti
 - nelle Opzioni: "Ultimi colpi" (chi ti ha colpito, da che distanza, in che momento) e "Mostra aree di danno"

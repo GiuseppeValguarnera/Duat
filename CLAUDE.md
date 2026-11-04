@@ -176,10 +176,10 @@ del Cortile (come prima, i salvataggi la tengono); **arco** dopo `Meta.serpent_w
 (`Weapons.UNLOCK_COST`, `requirement_met`, `buy`): si compra al piedistallo (gemma che pulsa) o da **Neith nella Sala**
 (`hub.gd` `_neith_here`, `_start_neith`, `_offer_bow`; disegno condiviso in `scripts/neith_art.gd`, `talk_who`).
 Arco (`player.gd` `_bow_shot`, `_bow_aim`,
-`_spawn_arrow`; frecce in `scripts/arrow.gd`, disegno in `scripts/arrow_art.gd`): freccia ogni 0,5 s da 7 di danno base
-(`BOW_ARROW` 7/12 di un fendente, blocco 11), gittata 212 px, si ferma al primo nemico, muri e colonne la fermano (raggio sullo
-strato 1); tiro carico ×3 una freccia, gittata 306, che trapassa tutto, carica 1 s, movimento ×0,65, ricarica **5 s** (eccezione alla regola delle armi); mentre tiri
-×0,8 (`BOW_FIRE_SLOW`); ventaglio di 3 frecce corte (±18°, 120 px, 38%) alla fine dello scatto; mira: **quasi nessuna assistenza**
+`_spawn_arrow`; frecce in `scripts/arrow.gd`, disegno in `scripts/arrow_art.gd`): freccia ogni 0,4 s da 8 di danno base
+(`BOW_ARROW` 8/12 di un fendente, blocco 13; +20% oltre 120 px, `arrow.gd` `FAR_DIST`/`FAR_BONUS`), gittata 235 px, si ferma al primo nemico, muri e colonne la fermano (raggio sullo
+strato 1); tiro carico ×3,5 una freccia, gittata 306, che trapassa tutto, carica 1 s, movimento ×0,65, ricarica **4 s** (eccezione alla regola delle armi); mentre tiri
+×0,9 (`BOW_FIRE_SLOW`); ventaglio di 3 frecce corte (±18°, 120 px, 38%) alla fine dello scatto; mira: **quasi nessuna assistenza**
 (blocco 11; blocco 12: ±6° `BOW_ASSIST` solo con la levetta del telefono e col pad): la freccia parte dove punti (mouse, levetta destra; sul telefono il tasto dell'arco è una levetta di mira,
 `touch_controls.gd` `aim_touch`/`_set_aim`, `player.gd` `_touch_bow_input`: trascinare = frecce, dito fermo 0,25 s =
 carica, rilascio a carica piena = tiro carico, tocco rapido = una freccia; `last_stick` tiene la direzione 0,2 s). Effetti dei doni al massimo una volta ogni 0,5 s per nemico (`arrow.gd` `FX_GAP`, meta
@@ -203,10 +203,10 @@ khopesh e lancia), ricarica 2 s (`_charge_cd_max`) col cerchio sopra la testa.
 `scripts/flail_art.gd`: flagello a strisce oro/blu con tre code di perline, pastorale col ricciolo). Sblocco: prima vittoria
 su Am-heh **o** 15 discese, **35 lapis**, al piedistallo del Cortile (`Weapons.requirement_met/UNLOCK_COST`); Anubi lo
 annuncia (`flagello0`). Frustate (`player.gd` `_flail_swing`, `_in_lash`, `FLAIL`): 80 px in linea (mezza larghezza 9)
-×0,85, cd 0,3; terza a ventaglio 55°/86 px ×1,4, cd 0,46; colpisce **tutti** i nemici sulla linea; danni ×0,5 addosso al
+×0,80, cd 0,32 (blocco 13); terza a ventaglio 55°/86 px ×1,4, cd 0,46; colpisce **tutti** i nemici sulla linea; danni ×0,5 addosso al
 corpo che salgono fino a ×1 al 70% della portata (`FLAIL_BODY`). Dopo lo scatto (`FLAIL_DASH`): 118 px ×1,3, slancio 110,
 spinta 300 nella direzione del colpo (i nemici vengono trascinati con te). Attacco caricato = **pastorale** (`_hook`,
-`HOOK`): cono 28° (×1,4 sul telefono) fino a 240 px, ×1,6 danni; i nemici normali vengono lanciati verso di te (o 150 px
+`HOOK`): cono 28° (×1,4 sul telefono) fino a 150 px (blocco 13, la mira usa il raggio vero), ×1,6 danni; i nemici normali vengono lanciati verso di te (o 150 px
 dove ti muovi) con `Enemy.shu_push(dir, forza, true)` → volano, si schiantano, cadono in sabbia nera e trappole;
 élite/guardiani/boss: **voli tu** da loro (560 px/s, max 0,6 s, invulnerabile, `_hook_pulling`). Mentre carichi una linea
 tratteggiata e un cerchio indicano il bersaglio: **oro** = lo tiri, **rosso** = voli tu (`_draw_hook`).
@@ -338,6 +338,23 @@ servitori e arena nuova (vedi Regione 2).
 - *Ba dannati*: miccia in secondi reali (`fuse_left`), niente spinte/Shu/stordimento/anti-incastro durante la miccia.
 - *Mira*: corpo del giocatore girato verso il colpo durante l'attacco; prova `tools/dev/aimsmoke.gd` nel controllo
   d'avvio (davanti, dietro camminando all'indietro, due nemici, nessuno).
+
+**Blocco 13 (4/11/2026)**:
+- *Strato a terra*: `Hazards.ground(n)` (gruppo `ground_hazards`, z 0, subito dopo il nodo con `rebake`) per sabbie mobili,
+  pozze di veleno, fuoco a terra, crepe di fuoco, fiume di sabbia nera e lastre: sopra il pavimento, sotto le creature.
+- *Armi*: pastorale 150 px; frustate ×0,80 / 0,32 s; arco 8, 0,4 s, ×0,9 tirando, gittata 235, tiro carico 3,5 frecce con
+  ricarica 4 s, +20% oltre 120 px (vale anche per i rimbalzi del Ricochet).
+- *Ba dannati*: l'esplosione ferisce anche i nemici (`ENEMY_BLAST` 24, spinta 220; boss e guardiani immuni) e accende gli
+  altri Ba nel raggio (`chain_ignite`, `CHAIN_DELAY` 0,3 s: reazione a catena).
+- *Schermo intero*: `Fx.fs_supported/fs_on/fs_request/fs_hint`; Opzioni (riga `fullscreen`, `button_down`) e pausa; sul web
+  il gioco arma `window.duatWantFS` e `web/shell.html` esegue la richiesta al rilascio (pointerup/touchend/keyup/click);
+  tasto F gestito dalla pagina (sul PC scaricato da `Fx._unhandled_key_input`); niente su iPhone/iPad; suggerimento
+  "Premi F" una volta (`Meta.options.fs_hint`). La pagina non scorre (rotella, frecce, Spazio, PagSu/Giù, Inizio/Fine),
+  il canvas prende il focus al primo clic, `refit()` con debounce e solo se la misura cambia.
+- *Seconda Barca*: scheda del dono a destra (`_boon_card`), tocco = evidenzia, secondo tocco = conferma; nelle carte il
+  confronto "Prima (…)". *Altare di Imhotep*: lista completa degli amuleti forgiati con descrizione, che scorre.
+- *Prima di boss e mini boss*: una porta sola (`_open_doors`, stanza G-2 e 9) e una stanza col solo Traghettatore; tolta
+  la cura in alternativa. *Cura del Traghettatore*: `Run.ferry_heal()` = 60% di `nile_heal()` (18% di base).
 
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
