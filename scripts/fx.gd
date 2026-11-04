@@ -65,6 +65,70 @@ func scale_labels(root: Node) -> void:
 			c.add_theme_font_size_override("font_size", fs(c.get_theme_font_size("font_size")))
 
 
+# --- Schermo intero (blocco 13) ----------------------------------------------------------
+# Sul web il browser accetta lo schermo intero solo dentro un gesto dell'utente: il gioco "arma" la
+# richiesta (window.duatWantFS) quando il pulsante viene premuto, e web/shell.html la esegue al
+# rilascio (pointerup/touchend/keyup). Il tasto F lo gestisce direttamente la pagina; Esc esce (lo fa
+# il browser). Su iPhone e iPad non esiste: lì vale l'icona sulla schermata Home. Sul PC (versione
+# da scaricare) si cambia la modalità della finestra.
+
+func fs_supported() -> bool:
+	if OS.has_feature("web_ios"):
+		return false
+	if OS.has_feature("web"):
+		return true
+	return OS.has_feature("pc")
+
+
+func fs_on() -> bool:
+	if OS.has_feature("web"):
+		return bool(JavaScriptBridge.eval("!!(document.fullscreenElement || document.webkitFullscreenElement)", true))
+	return DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN or DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN
+
+
+## Da chiamare quando il pulsante "Schermo intero" viene premuto (button_down): sul web arma la
+## richiesta, che parte al rilascio del dito o del tasto; sul PC cambia subito.
+func fs_request() -> void:
+	if not fs_supported():
+		return
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.duatWantFS = true;", true)
+		return
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if fs_on() else DisplayServer.WINDOW_MODE_FULLSCREEN)
+
+
+## La prima volta sul PC (non sul telefono): "Premi F per lo schermo intero", una volta sola.
+func fs_hint(parent: Node) -> void:
+	if not fs_supported() or mobile or device == "touch" or Meta.options.get("fs_hint", false):
+		return
+	Meta.options["fs_hint"] = true
+	Meta.save()
+	var layer := CanvasLayer.new()
+	layer.layer = 40
+	parent.add_child(layer)
+	var lbl := Label.new()
+	lbl.text = Lang.t("Premi F per lo schermo intero")
+	lbl.add_theme_font_size_override("font_size", fs(11))
+	lbl.add_theme_color_override("font_color", Color(0.95, 0.85, 0.6))
+	lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	lbl.add_theme_constant_override("outline_size", 4)
+	lbl.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	lbl.position.y -= 40.0 * ui
+	layer.add_child(lbl)
+	var tw := lbl.create_tween()
+	tw.tween_interval(5.0)
+	tw.tween_property(lbl, "modulate:a", 0.0, 1.0)
+	tw.tween_callback(layer.queue_free)
+
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	# il tasto F sul PC scaricato (sul web lo gestisce la pagina, dentro il gesto)
+	if OS.has_feature("web") or not fs_supported():
+		return
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F:
+		fs_request()
+
+
 func _input(event: InputEvent) -> void:
 	if (event is InputEventMouseMotion or event is InputEventMouseButton) and event.device != InputEvent.DEVICE_ID_EMULATION:
 		device = "mouse"

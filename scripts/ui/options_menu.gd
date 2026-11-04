@@ -46,9 +46,12 @@ func _items() -> Array:
 		["feather", Lang.t("Piuma di Ma'at"), Lang.t("Una modalità per chi vuole un aiuto. Un quarto di nemici in meno nelle ondate, nemici più lenti del 10%, e subisci il 10% di danni in meno, un altro 2% a ogni morte, fino al 30%. In cambio custodisci il 40% del Ka, e lapislazzuli, cuori, premi del serdab e Lacrime valgono la metà; niente Lacrime per la prima vittoria con un'arma. Il Peso del Cuore non conta finché è attiva. La storia va avanti comunque.")],
 		["shake", Lang.t("Scossa dello schermo"), Lang.t("La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.")],
 		["hitstop", Lang.t("Pausa d'impatto"), Lang.t("Il gioco si ferma per un istante quando un colpo va a segno.")],
+		["fullscreen", Lang.t("Schermo intero"), Lang.t("Il gioco occupa tutto lo schermo. Scorciatoia: tasto F; Esc per uscire.")],
 		["zones", Lang.t("Mostra aree di danno"), Lang.t("Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.")],
 		["colpi", Lang.t("Ultimi colpi"), Lang.t("Gli ultimi 15 colpi subiti: chi, quanto, da che distanza e in che momento dell'attacco. Premi per leggerli.")],
 	]
+	if not Fx.fs_supported():
+		out = out.filter(func(it: Array) -> bool: return it[0] != "fullscreen")    # iPhone e iPad: l'icona della Home
 	# l'ultimo crash registrato nella versione web (scripts/diag.gd): premendo si cancella
 	var problem := Diag.last_problem()
 	if problem != "":
@@ -83,6 +86,8 @@ func _value(id: String) -> String:
 			return _onoff(Meta.options.get("hitstop", true))
 		"zones":
 			return _onoff(Meta.options.get("zones", false))
+		"fullscreen":
+			return Lang.t("F")
 		"colpi":
 			return "%d" % Run.hit_log.size()
 		"problema":
@@ -120,6 +125,8 @@ func _change(id: String, dir: int) -> void:
 			Meta.tutorial_done = not Meta.tutorial_done
 		"zones":
 			Meta.options["zones"] = not Meta.options.get("zones", false)
+		"fullscreen":
+			pass                                  # parte dal button_down (gesto dell'utente), vedi _row
 		"colpi":
 			Sfx.play("ui", 0.0)
 			_show_hits()
@@ -261,6 +268,8 @@ func _row(id: String, text: String, width: float) -> Dictionary:
 	value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	value.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if id == "fullscreen":
+		btn.button_down.connect(Fx.fs_request)
 	var is_extra := id.begins_with("extra")
 	if not is_extra:
 		hb.add_child(_arrow("‹", id, -1))

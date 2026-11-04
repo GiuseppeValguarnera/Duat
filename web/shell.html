@@ -14,7 +14,7 @@ html, body, #canvas { margin: 0; padding: 0; border: 0; }
 /* position: fixed + inset: 0 segue sempre lo schermo vero, anche dall'icona della Home
    e dopo aver girato il telefono (height=device-height su iOS prendeva l'altezza in verticale) */
 html, body { position: fixed; inset: 0; width: 100%; height: 100%; background: #06060c; overflow: hidden; }
-#canvas { position: absolute; left: 0; top: 0; }
+#canvas { position: absolute; left: 0; top: 0; max-width: 100vw; max-height: 100vh; }
 body {
 	color: white;
 	touch-action: none;
@@ -96,17 +96,60 @@ const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 		overlay.style.display = 'flex';
 		document.getElementById('install-skip').addEventListener('click', () => { overlay.style.display = 'none'; });
 	}
-	// iOS aggiorna in ritardo le misure della finestra quando giri il telefono o apri dall'icona:
-	// rifacciamo il calcolo un paio di volte, così il gioco riempie lo schermo senza tagli
+	// iOS aggiorna in ritardo le misure della finestra quando giri il telefono o apri dall'icona.
+	// Blocco 13: niente più scrollTo né resize ripetuti (sul PC facevano "salire e scendere" la
+	// pagina): un solo ricalcolo, ritardato, e solo se la misura è cambiata davvero.
+	let lastW = 0, lastH = 0, fitTimer = 0;
 	const refit = () => {
-		window.scrollTo(0, 0);
-		window.dispatchEvent(new Event('resize'));
+		clearTimeout(fitTimer);
+		fitTimer = setTimeout(() => {
+			const w = window.innerWidth, h = window.innerHeight;
+			if (w === lastW && h === lastH) return;
+			lastW = w; lastH = h;
+			window.dispatchEvent(new Event('resize'));
+		}, 150);
 	};
-	window.addEventListener('orientationchange', () => { setTimeout(refit, 150); setTimeout(refit, 600); });
+	window.addEventListener('orientationchange', refit);
 	if (window.visualViewport) {
-		window.visualViewport.addEventListener('resize', () => setTimeout(refit, 50));
+		window.visualViewport.addEventListener('resize', refit);
 	}
-	window.addEventListener('load', () => { setTimeout(refit, 300); setTimeout(refit, 1200); });
+	window.addEventListener('load', () => { lastW = window.innerWidth; lastH = window.innerHeight; setTimeout(refit, 600); });
+
+	// --- Schermo intero e niente scorrimento della pagina (blocco 13) ---------------------------
+	const canvas = document.getElementById('canvas');
+	canvas.tabIndex = 0;
+	canvas.addEventListener('pointerdown', () => { if (document.activeElement !== canvas) canvas.focus({ preventScroll: true }); });
+	const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+	const toggleFS = () => {
+		if (ios) return;                          // iPhone e iPad: si usa l'icona della Home
+		try {
+			if (fsEl()) {
+				(document.exitFullscreen || document.webkitExitFullscreen).call(document);
+			} else {
+				const el = document.documentElement;
+				const p = (el.requestFullscreen || el.webkitRequestFullscreen).call(el, { navigationUI: 'hide' });
+				if (p && p.catch) p.catch(() => {});
+			}
+		} catch (e) {}
+	};
+	// il gioco arma la richiesta alla pressione del pulsante (window.duatWantFS): la eseguiamo al
+	// rilascio, che per il browser è il gesto dell'utente
+	window.duatWantFS = false;
+	const fireFS = () => { if (window.duatWantFS) { window.duatWantFS = false; toggleFS(); } };
+	['pointerup', 'touchend', 'keyup', 'click'].forEach((ev) => document.addEventListener(ev, fireFS, true));
+	// tasti: F = schermo intero; frecce, Spazio, PagSu/PagGiù, Inizio/Fine non fanno scorrere la pagina
+	const NO_SCROLL = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End'];
+	document.addEventListener('keydown', (e) => {
+		const t = e.target;
+		if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+		if ((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat) {
+			toggleFS();
+		}
+		if (NO_SCROLL.indexOf(e.key) >= 0) e.preventDefault();
+	}, true);
+	// rotella e touchpad: nessuno scorrimento né zoom della pagina (il gioco li riceve lo stesso)
+	window.addEventListener('wheel', (e) => { e.preventDefault(); }, { passive: false });
+	window.addEventListener('scroll', () => { if (window.scrollX || window.scrollY) window.scrollTo(0, 0); });
 	// niente zoom con il doppio tocco o con due dita (le carte si scelgono con due tocchi)
 	document.addEventListener('gesturestart', (e) => e.preventDefault());
 	document.addEventListener('dblclick', (e) => e.preventDefault());

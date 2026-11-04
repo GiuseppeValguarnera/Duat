@@ -1520,6 +1520,15 @@ func _toggle_pause() -> void:
 		box.add_child(b)
 		if first == null:
 			first = b
+	if Fx.fs_supported():
+		# lo schermo intero: la richiesta parte alla pressione, il browser la esegue al rilascio
+		var fsb := Button.new()
+		fsb.text = Lang.t("Schermo intero")
+		fsb.custom_minimum_size = Vector2(160, 26) * Fx.ui
+		fsb.add_theme_font_size_override("font_size", Fx.fs(11))
+		fsb.button_down.connect(Fx.fs_request)
+		box.add_child(fsb)
+		box.move_child(fsb, 3)
 	var hint := Label.new()
 	hint.text = Lang.t("Esc / Start per riprendere")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

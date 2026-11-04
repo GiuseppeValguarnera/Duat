@@ -69,6 +69,7 @@ func _ready() -> void:
 			return
 		Run.clear_descent()
 	Run.in_hub = true
+	Fx.fs_hint.call_deferred(self)          # la prima volta sul PC: "Premi F per lo schermo intero"
 	Music.play("hub")
 	Run.new_run()
 	Fx.world = world
