@@ -2326,21 +2326,79 @@ func _show_amulet_altar(altar: Node2D) -> void:
 	if others.is_empty():
 		_banner(Lang.t("L'altare di Imhotep"), Lang.t("Non hai altri amuleti da portare. Se ne forgiano alla Casa della Vita, coi lapislazzuli"), Color(0.94, 0.72, 0.3), 3.5)
 		return
-	others.shuffle()
-	var cards := []
-	for id in others.slice(0, 2):
-		var d: Dictionary = Amulets.data()[id]
-		cards.append({"tag": Lang.t("Amuleto"), "name": d["name"], "body": Amulets.text(id, Amulets.level(id)), "color": Amulets.COLOR, "on_pick": _wear_amulet.bind(id, altar)})
+	# blocco 13: tutta la lista degli amuleti forgiati (non due a caso), ognuno con la descrizione;
+	# sul telefono la lista scorre col dito (DragScroll). Gli slot restano quelli della collana.
+	var sub := Lang.t("Un solo amuleto al collo. Scegli ciò che porti, e lascia ciò che non ti serve")
+	if Run.amulet2 != "":
+		sub = Lang.t("Il nuovo amuleto prende il posto del primo; il secondo resta dov'è")
+	elif Favors.has("collana") and Run.amulet != "":
+		sub = Lang.t("La collana ha un posto libero: il nuovo amuleto si aggiunge al tuo")
 	var cur := Lang.t("Nessun amuleto") if Run.amulet == "" else String(Amulets.data()[Run.amulet]["name"])
 	if Run.amulet2 != "":
 		cur += " · " + String(Amulets.data()[Run.amulet2]["name"])
-	cards.append({"tag": Lang.t("Resta com'è"), "name": cur, "body": "" if Run.amulet == "" else Amulets.text(Run.amulet, Run.amulet_level), "color": Color(0.7, 0.7, 0.75), "on_pick": _close_choice})
-	var sub := Lang.t("Un solo amuleto al collo. Scegli ciò che porti, e lascia ciò che non ti serve")
-	if Run.amulet2 != "":
-		sub = Lang.t("Il nuovo amuleto prende il posto del primo sigillo; il secondo resta dov'è")
-	elif Favors.has("collana") and Run.amulet != "":
-		sub = Lang.t("Il secondo sigillo della collana è libero: il nuovo amuleto si aggiunge al tuo")
-	_open_choice(Lang.t("L'altare di Imhotep"), Amulets.COLOR, sub, cards, Lang.t("Un amuleto è un pensiero fatto di pietra, scriba. Portane uno solo: la saggezza sta nel lasciare il resto."))
+	get_tree().paused = true
+	menu = CanvasLayer.new()
+	menu.layer = 20
+	menu.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(menu)
+	var dim := ColorRect.new()
+	dim.color = Color(0.02, 0.03, 0.08, 0.86)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	menu.add_child(dim)
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	menu.add_child(center)
+	var pap := PanelContainer.new()
+	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(Amulets.COLOR))
+	center.add_child(pap)
+	var vs := get_viewport().get_visible_rect().size
+	var w := minf(440.0 * Fx.ui, vs.x - 30.0)
+	var outer := VBoxContainer.new()
+	outer.add_theme_constant_override("separation", int(3 * Fx.ui))
+	pap.add_child(outer)
+	var h := UiStyle.label(Lang.t("L'altare di Imhotep"), 13, UiStyle.INK, true)
+	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	outer.add_child(h)
+	var s1 := UiStyle.label(sub, 8, UiStyle.INK_SOFT, false, w)
+	s1.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	outer.add_child(s1)
+	var s2 := UiStyle.label(Lang.t("Porti: %s") % cur, 8, UiStyle.INK, false, w)
+	s2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	outer.add_child(s2)
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	outer.add_child(scroll)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", int(3 * Fx.ui))
+	col.custom_minimum_size = Vector2(w, 0)
+	scroll.add_child(col)
+	var first: Button = null
+	for id in others:
+		var d: Dictionary = Amulets.data()[id]
+		var b := Button.new()
+		b.text = "%s  ·  %s" % [d["name"], Amulets.text(id, Amulets.level(id))]
+		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b.custom_minimum_size.x = w
+		UiStyle.papyrus_button(b, Amulets.COLOR)
+		b.add_theme_font_size_override("font_size", Fx.fs(8))
+		b.pressed.connect(_wear_amulet.bind(id, altar))
+		col.add_child(b)
+		if first == null:
+			first = b
+	var keep := Button.new()
+	keep.text = Lang.t("Resta com'è")
+	UiStyle.papyrus_button(keep, Color(0.6, 0.6, 0.65))
+	keep.add_theme_font_size_override("font_size", Fx.fs(8))
+	keep.pressed.connect(_close_choice)
+	col.add_child(keep)
+	var fit := func() -> void:
+		if is_instance_valid(scroll) and is_instance_valid(col) and is_instance_valid(outer):
+			var room := vs.y - 44.0 - (outer.get_combined_minimum_size().y - scroll.get_combined_minimum_size().y)
+			scroll.custom_minimum_size = Vector2(w + 4.0, clampf(col.get_combined_minimum_size().y, 60.0, maxf(60.0, room)))
+	fit.call_deferred()
+	first.grab_focus.call_deferred()
 
 
 func _wear_amulet(id: String, altar: Node2D) -> void:
