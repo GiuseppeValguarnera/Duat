@@ -31,8 +31,8 @@ const DASH_GAP := 0.08                  ## tra uno scatto e l'altro della stessa
 @export var attack_damage := 12.0
 
 @export_group("Occhio di Horus")
-@export var eye_damage := 24.0
-@export var eye_cooldown := 2.5
+@export var eye_damage := 18.0          ## blocco 14 (era 24)
+@export var eye_cooldown := 3.2         ## blocco 14 (era 2,5 s)
 
 @export_group("Forma Divina")
 @export var divine_time := 6.0

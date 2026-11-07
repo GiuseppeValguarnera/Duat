@@ -3,7 +3,7 @@ extends Area2D
 ## Con l'Occhio Penetrante (Horus) ne trapassa altri; con il Disco di Ra esplode.
 
 var direction := Vector2.RIGHT
-var damage := 24.0
+var damage := 18.0          ## il danno di base dell'Occhio (player.gd eye_damage lo imposta a ogni lancio)
 var speed := 320.0
 var life := 1.2
 var pierce_left := 0                  ## nemici in più che può attraversare
