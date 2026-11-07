@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="it">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-title" content="Kheper">
+		<meta name="theme-color" content="#06060c">
+		<title>Kheper: Reborn in the Duat</title>
+		<style>
+html, body, #canvas { margin: 0; padding: 0; border: 0; }
+/* position: fixed + inset: 0 segue sempre lo schermo vero, anche dall'icona della Home
+   e dopo aver girato il telefono (height=device-height su iOS prendeva l'altezza in verticale) */
+html, body { position: fixed; inset: 0; width: 100%; height: 100%; background: #06060c; overflow: hidden; }
+#canvas { position: absolute; left: 0; top: 0; max-width: 100vw; max-height: 100vh; }
+body {
+	color: white;
+	touch-action: none;
+	overscroll-behavior: none;
+	-webkit-user-select: none;
+	user-select: none;
+	-webkit-touch-callout: none;
+	-webkit-tap-highlight-color: transparent;
+	font-family: -apple-system, 'Segoe UI', sans-serif;
+}
+#canvas { display: block; touch-action: none; -ms-touch-action: none; }
+html { touch-action: none; }
+#canvas:focus { outline: none; }
+#status, #status-splash, #status-progress { position: absolute; left: 0; right: 0; }
+#status, #status-splash { top: 0; bottom: 0; }
+#status {
+	background-color: #242424;
+	display: flex; flex-direction: column; justify-content: center; align-items: center;
+	visibility: hidden;
+}
+#status-splash { max-height: 100%; max-width: 100%; margin: auto; }
+#status-splash.show-image--false { display: none; }
+#status-splash.fullsize--true { height: 100%; width: 100%; object-fit: contain; }
+#status-splash.use-filter--false { image-rendering: pixelated; }
+#status-progress, #status-notice { display: none; }
+#status-progress { bottom: 10%; width: 50%; margin: 0 auto; accent-color: #f0b84d; }
+#status-notice {
+	background-color: #5b3943; border-radius: 0.5rem; border: 1px solid #9b3943; color: #e0e0e0;
+	line-height: 1.3; margin: 0 2rem; overflow: hidden; padding: 1rem; text-align: center; z-index: 1;
+}
+/* Schermata che spiega come installare il gioco su iPhone per averlo a schermo intero */
+#install {
+	position: fixed; inset: 0; z-index: 10; display: none;
+	background: radial-gradient(circle at 50% 40%, #1c1a33 0%, #06060c 70%);
+	color: #f2e6c9; text-align: center; padding: 6vh 8vw; box-sizing: border-box;
+	flex-direction: column; justify-content: center; align-items: center; gap: 2.2vh;
+}
+#install h1 { margin: 0; color: #f0b84d; font-size: clamp(22px, 6vh, 40px); letter-spacing: 0.08em; }
+#install p { margin: 0; font-size: clamp(15px, 3.6vh, 22px); line-height: 1.45; max-width: 34em; }
+#install .steps { text-align: left; display: inline-block; }
+#install .key { display: inline-block; border: 1px solid #f0b84d; border-radius: 6px; padding: 0 0.4em; color: #f0b84d; }
+#install button {
+	margin-top: 1vh; background: transparent; color: #b8ad95; border: 1px solid #5a5446; border-radius: 8px;
+	font-size: clamp(13px, 3vh, 18px); padding: 0.5em 1.2em;
+}
+		</style>
+		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
+<link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
+<link rel="manifest" href="index.manifest.json">
+
+	</head>
+	<body>
+		<canvas id="canvas">Il tuo browser non supporta il canvas.</canvas>
+		<noscript>Il tuo browser non supporta JavaScript.</noscript>
+		<div id="status">
+			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="index.png" alt="">
+			<progress id="status-progress"></progress>
+			<div id="status-notice"></div>
+		</div>
+		<div id="install">
+			<h1>DUAT</h1>
+			<p>Per giocare <b>a schermo intero</b>, senza le barre di Safari, installa il gioco:</p>
+			<p class="steps">1. Tocca <span class="key">Condividi</span> (il quadrato con la freccia verso l'alto)<br>
+			2. Scegli <span class="key">Aggiungi alla schermata Home</span><br>
+			3. Apri <b>Kheper</b> dall'icona e gira il telefono in orizzontale</p>
+			<button id="install-skip">Gioca qui lo stesso</button>
+		</div>
+
+		<script src="index-094c10a-20261107112927.js"></script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index-094c10a-20261107112927","experimentalVK":false,"fileSizes":{"index-094c10a-20261107112927.pck":9118360,"index-094c10a-20261107112927.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"serviceWorker":""};
+const GODOT_THREADS_ENABLED = false;
+
+// Su iPhone e iPad, se il gioco non è stato aperto dall'icona della schermata Home,
+// mostriamo come installarlo: è l'unico modo di avere lo schermo intero su iOS.
+(function () {
+	const ua = navigator.userAgent;
+	const ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+	const standalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches;
+	const overlay = document.getElementById('install');
+	if (ios && !standalone) {
+		overlay.style.display = 'flex';
+		document.getElementById('install-skip').addEventListener('click', () => { overlay.style.display = 'none'; });
+	}
+	// iOS aggiorna in ritardo le misure della finestra quando giri il telefono o apri dall'icona.
+	// Blocco 13: niente più scrollTo né resize ripetuti (sul PC facevano "salire e scendere" la
+	// pagina): un solo ricalcolo, ritardato, e solo se la misura è cambiata davvero.
+	let lastW = 0, lastH = 0, fitTimer = 0;
+	const refit = () => {
+		clearTimeout(fitTimer);
+		fitTimer = setTimeout(() => {
+			const w = window.innerWidth, h = window.innerHeight;
+			if (w === lastW && h === lastH) return;
+			lastW = w; lastH = h;
+			window.dispatchEvent(new Event('resize'));
+		}, 150);
+	};
+	window.addEventListener('orientationchange', refit);
+	if (window.visualViewport) {
+		window.visualViewport.addEventListener('resize', refit);
+	}
+	window.addEventListener('load', () => { lastW = window.innerWidth; lastH = window.innerHeight; setTimeout(refit, 600); });
+
+	// --- Schermo intero e niente scorrimento della pagina (blocco 13) ---------------------------
+	const canvas = document.getElementById('canvas');
+	canvas.tabIndex = 0;
+	canvas.addEventListener('pointerdown', () => { if (document.activeElement !== canvas) canvas.focus({ preventScroll: true }); });
+	const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+	const toggleFS = () => {
+		if (ios) return;                          // iPhone e iPad: si usa l'icona della Home
+		try {
+			if (fsEl()) {
+				(document.exitFullscreen || document.webkitExitFullscreen).call(document);
+			} else {
+				const el = document.documentElement;
+				const p = (el.requestFullscreen || el.webkitRequestFullscreen).call(el, { navigationUI: 'hide' });
+				if (p && p.catch) p.catch(() => {});
+			}
+		} catch (e) {}
+	};
+	// il gioco arma la richiesta alla pressione del pulsante (window.duatWantFS): la eseguiamo al
+	// rilascio, che per il browser è il gesto dell'utente
+	window.duatWantFS = false;
+	const fireFS = () => { if (window.duatWantFS) { window.duatWantFS = false; toggleFS(); } };
+	['pointerup', 'touchend', 'keyup', 'click'].forEach((ev) => document.addEventListener(ev, fireFS, true));
+	// tasti: F = schermo intero; frecce, Spazio, PagSu/PagGiù, Inizio/Fine non fanno scorrere la pagina
+	const NO_SCROLL = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End'];
+	document.addEventListener('keydown', (e) => {
+		const t = e.target;
+		if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+		if ((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat) {
+			toggleFS();
+		}
+		if (NO_SCROLL.indexOf(e.key) >= 0) e.preventDefault();
+	}, true);
+	// rotella e touchpad: nessuno scorrimento né zoom della pagina (il gioco li riceve lo stesso)
+	window.addEventListener('wheel', (e) => { e.preventDefault(); }, { passive: false });
+	window.addEventListener('scroll', () => { if (window.scrollX || window.scrollY) window.scrollTo(0, 0); });
+	// niente zoom con il doppio tocco o con due dita (le carte si scelgono con due tocchi)
+	document.addEventListener('gesturestart', (e) => e.preventDefault());
+	document.addEventListener('dblclick', (e) => e.preventDefault());
+	let lastTouchEnd = 0;
+	document.addEventListener('touchend', (e) => {
+		const now = Date.now();
+		if (now - lastTouchEnd < 350 && e.target === document.body) {
+			e.preventDefault();
+		}
+		lastTouchEnd = now;
+	}, { passive: false });
+	// il vecchio service worker (versioni di prima) teneva il gioco in cache: via, e via le cache
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister())).catch(() => {});
+	}
+	if (window.caches) {
+		caches.keys().then((keys) => keys.forEach((k) => caches.delete(k))).catch(() => {});
+	}
+}());
+
+// --- Diagnosi dei crash ------------------------------------------------------------------
+// Il gioco scrive in localStorage 'duat_diag_live' gli ultimi eventi (scripts/diag.gd). Qui si
+// segna se la pagina è aperta e visibile: se all'avvio risulta ancora aperta, l'ultima volta è
+// morta senza chiudersi (crash, scheda chiusa dal sistema). Quel registro diventa 'duat_diag_last',
+// che il gioco mostra nelle Opzioni come "Ultimo problema". Tutto dentro try/catch.
+(function () {
+	const get = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+	const put = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+	try {
+		if (get('duat_alive') === '1') {
+			const live = get('duat_diag_live');
+			if (live) {
+				let d = {};
+				try { d = JSON.parse(live); } catch (e) {}
+				d.err = get('duat_diag_err') || '';
+				put('duat_diag_last', JSON.stringify(d));
+			}
+		}
+		put('duat_diag_err', '');
+		put('duat_alive', '1');
+		document.addEventListener('visibilitychange', () => put('duat_alive', document.visibilityState === 'visible' ? '1' : '0'));
+		window.addEventListener('pagehide', () => put('duat_alive', '0'));
+		window.addEventListener('error', (e) => put('duat_diag_err', String(e.message || 'errore').slice(0, 160)));
+		window.addEventListener('unhandledrejection', (e) => put('duat_diag_err', String((e.reason && e.reason.message) || e.reason || 'errore').slice(0, 160)));
+		document.getElementById('canvas').addEventListener('webglcontextlost', () => put('duat_diag_err', 'contesto WebGL perso'));
+	} catch (e) {}
+}());
+
+// --- Aggiornamenti ---------------------------------------------------------------------
+// Sulla schermata Home l'app conserva una copia del gioco e non la aggiorna da sola.
+// DUAT_BUILD è il numero di questa versione (lo scrive tools/deploy_web.sh); version.txt sul
+// sito dice qual è l'ultima. Il gioco legge window.duatUpdate e, se l'utente preme
+// "Aggiorna il gioco", chiama window.duatDoUpdate(): via la copia vecchia, scarica la nuova,
+// riapri. Il salvataggio (nel browser, IndexedDB) resta dov'è: l'app non viene cancellata.
+window.DUAT_BUILD = '094c10a-20261107112927';
+// due versioni: "dev" (sviluppo, si aggiorna a ogni modifica, sul sito GitHub) e "stable"
+// (la versione di prova pubblica su itch.io, aggiornata solo con tools/release.sh)
+window.DUAT_VERSION = '0.1.0';
+window.DUAT_CHANNEL = 'dev';
+window.DUAT_VERSION_URL = 'version.txt';
+window.duatUpdate = '';
+window.duatLatest = '';           // l'ultima versione pubblicata, letta da version.txt
+window.duatCheck = 'pending';     // 'pending' mentre controlla, 'ok', oppure 'error' (niente rete)
+window.duatCheckUpdate = function () {
+	fetch(window.DUAT_VERSION_URL + '?t=' + Date.now(), { cache: 'no-store' }).then((r) => {
+		if (!r.ok) throw new Error('version.txt ' + r.status);
+		return r.text();
+	}).then((v) => {
+		v = (v || '').trim();
+		window.duatLatest = v;
+		window.duatUpdate = (v !== '' && v !== window.DUAT_BUILD) ? v : '';
+		window.duatCheck = 'ok';
+	}).catch(() => { window.duatCheck = 'error'; });
+};
+window.duatDoUpdate = async function () {
+	// su itch.io il gioco è dentro la pagina di itch: basta ricaricare quella (lo dice il gioco)
+	if (window.DUAT_CHANNEL === 'stable') {
+		return;
+	}
+	try {
+		if ('serviceWorker' in navigator) {
+			const regs = await navigator.serviceWorker.getRegistrations();
+			await Promise.all(regs.map((r) => r.unregister()));
+		}
+		if (window.caches) {
+			const keys = await caches.keys();
+			await Promise.all(keys.map((k) => caches.delete(k)));
+		}
+		// scarica di nuovo i file del gioco ignorando la cache del browser
+		await Promise.all(['index.html', 'index-094c10a-20261107112927.js', 'index-094c10a-20261107112927.wasm', 'index-094c10a-20261107112927.pck', 'index.service.worker.js'].map((f) => fetch(f, { cache: 'reload' }).catch(() => null)));
+	} catch (e) {
+		console.error(e); // eslint-disable-line no-console
+	}
+	window.location.replace(window.location.pathname + '?v=' + Date.now());
+};
+window.duatCheckUpdate();
+setInterval(window.duatCheckUpdate, 5 * 60 * 1000);
+
+// Risoluzione di disegno: sugli iPhone il rapporto dei pixel è 3, e il gioco disegnava ogni
+// fotogramma a piena risoluzione (circa 2500×1200). Il gioco è pensato a 640×360: due pixel per
+// pixel bastano e restano nitidi, con meno della metà del lavoro per la scheda grafica.
+(function () {
+	try {
+		const real = window.devicePixelRatio || 1;
+		if (real > 2) {
+			Object.defineProperty(window, 'devicePixelRatio', { get: () => 2, configurable: true });
+		}
+	} catch (e) {}
+}());
+
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusProgress = document.getElementById('status-progress');
+	const statusNotice = document.getElementById('status-notice');
+	let initializing = true;
+	let statusMode = '';
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		if (mode === 'hidden') {
+			statusOverlay.remove();
+			initializing = false;
+			return;
+		}
+		statusOverlay.style.visibility = 'visible';
+		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		text.split('\n').forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('Errore sconosciuto.');
+		}
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
+	if (missing.length !== 0) {
+		displayFailureNotice('Al tuo browser mancano funzioni necessarie per il gioco:\n' + missing.join('\n'));
+	} else {
+		setStatusMode('progress');
+		engine.startGame({
+			'onProgress': function (current, total) {
+				if (current > 0 && total > 0) {
+					statusProgress.value = current;
+					statusProgress.max = total;
+				} else {
+					statusProgress.removeAttribute('value');
+					statusProgress.removeAttribute('max');
+				}
+			},
+		}).then(() => {
+			setStatusMode('hidden');
+		}, displayFailureNotice);
+	}
+}());
+		</script>
+	</body>
+</html>
+
