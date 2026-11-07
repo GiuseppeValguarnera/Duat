@@ -1,5 +1,9 @@
 ## In sviluppo · novembre 2026
 
+- Occhio di Horus più leggero: 18 di danno e 3,2 secondi di ricarica
+- prima di ogni boss e mini boss si sceglie tra il Traghettatore, una sala con la cura e una sala con un dono: tutte
+  senza nemici
+
 - le chiazze a terra (sabbie mobili, veleno, fuoco, crepe) stanno sotto i personaggi
 - arco più forte (frecce da 8, più rapide, colpo carico più pesante, bonus da lontano); flagello e pastorale un po' più corti
 - l'esplosione dei Ba dannati ferisce anche i nemici e accende gli altri Ba: reazioni a catena

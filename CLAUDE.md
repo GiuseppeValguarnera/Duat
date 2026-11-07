@@ -353,8 +353,15 @@ servitori e arena nuova (vedi Regione 2).
   il canvas prende il focus al primo clic, `refit()` con debounce e solo se la misura cambia.
 - *Seconda Barca*: scheda del dono a destra (`_boon_card`), tocco = evidenzia, secondo tocco = conferma; nelle carte il
   confronto "Prima (…)". *Altare di Imhotep*: lista completa degli amuleti forgiati con descrizione, che scorre.
-- *Prima di boss e mini boss*: una porta sola (`_open_doors`, stanza G-2 e 9) e una stanza col solo Traghettatore; tolta
-  la cura in alternativa. *Cura del Traghettatore*: `Run.ferry_heal()` = 60% di `nile_heal()` (18% di base).
+- *Prima di boss e mini boss* (corretto nel blocco 14): vedi sotto. *Cura del Traghettatore*: `Run.ferry_heal()` = 60%
+  di `nile_heal()` (18% di base).
+
+**Blocco 14 (7/11/2026)**: Occhio di Horus 18 di danno base (`eye_damage`, default di `eye.gd` allineato) e 3,2 s di
+ricarica (`eye_cooldown`); l'Occhio dell'Ushabti ha il suo danno (6). **Prima di boss e mini boss** (stanza G-2 e 9,
+`_open_doors`): 2-3 porte, TUTTE verso stanze senza nemici: Traghettatore, sala con la cura e sala con un dono
+(`{"calm": true}` nella ricompensa → `start_room` con `quiet`, `_start_quiet_room`: niente ondate, trappole né colonne,
+musica della Sala, ricompensa già a terra, non conta come stanza ripulita); dopo, una porta sola verso la prova. Porte con
+" · sala tranquilla, senza nemici". Prova `tools/dev/quietsmoke.gd` nel controllo d'avvio.
 
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla

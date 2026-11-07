@@ -31,6 +31,8 @@ done
 DUAT_NOTUT=1 DUAT_START_ROOM=2 HOME="$HOMEDIR" timeout 90 "$G" --headless --path . --script res://tools/dev/favorsmoke.gd >> "$OUT/run.txt" 2>&1
 # finestra a carte: frase a pagine, carte nello schermo, doppio tocco (tools/dev/choicesmoke.gd)
 DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 60 "$G" --headless --path . --script res://tools/dev/choicesmoke.gd -- --mobile >> "$OUT/run.txt" 2>&1
+# prima di boss e mini boss: porte solo verso stanze senza nemici (tools/dev/quietsmoke.gd)
+DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 60 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/quietsmoke.gd >> "$OUT/run.txt" 2>&1
 # mira assistita della mischia: quattro scenari sulla funzione di bersaglio (tools/dev/aimsmoke.gd)
 DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 60 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/aimsmoke.gd >> "$OUT/run.txt" 2>&1
 # Aker: tutte le mosse, la divisione, la tenaglia, la furia, la vittoria (tools/dev/akersmoke.gd)

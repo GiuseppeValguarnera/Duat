@@ -268,16 +268,17 @@ func start_room(reward: Dictionary) -> void:
 	var boss_room := Run.room > Run.ROOMS_PER_RUN
 	var kind: String = reward.get("kind", "none")
 	ROOM = ROOM_BIG if boss_room or kind == "guardian" or OS.get_environment("DUAT_BIGROOMS") != "" else ROOM_SMALL
-	var calm := kind == "guardian" or kind == "shop" or kind == "tutorial" or kind == "set" or kind == "oasis"
-	Run.curse_paused = boss_room or kind == "guardian" or kind == "shop" or kind == "set" or kind == "oasis"
+	var quiet: bool = reward.get("calm", false)    # blocco 14: sala tranquilla prima di boss e mini boss
+	var calm := kind == "guardian" or kind == "shop" or kind == "tutorial" or kind == "set" or kind == "oasis" or quiet
+	Run.curse_paused = boss_room or kind == "guardian" or kind == "shop" or kind == "set" or kind == "oasis" or quiet
 	shop_items.clear()
 	oasis_nodes.clear()
 	if not boss_room and kind != "guardian":
-		Music.play("hub" if kind == "shop" or kind == "oasis" else "room")
+		Music.play("hub" if kind == "shop" or kind == "oasis" or quiet else "room")
 	var layout: Array = LAYOUTS.pick_random() if Run.room > 1 else LAYOUTS[0]
 	if boss_room:
 		layout = BOSS_LAYOUT if _boss_kind() == "ammit" else []
-	elif kind == "shop" or kind == "tutorial" or kind == "oasis":
+	elif kind == "shop" or kind == "tutorial" or kind == "oasis" or quiet:
 		layout = []
 	elif kind == "guardian":
 		layout = LAYOUTS[0]
@@ -399,6 +400,10 @@ func start_room(reward: Dictionary) -> void:
 	if kind == "tutorial":
 		waves = []
 		tut.begin()
+		return
+	if quiet:
+		waves = []
+		_start_quiet_room.call_deferred()
 		return
 	var r := mini(Run.room + (1 if Run.region == 2 else 0), 8)
 	var horde := 1.0 + 0.25 * Weights.rank("orde")
@@ -699,6 +704,20 @@ func _announce_serdab(at: Vector2) -> void:
 	Fx.burst(at, Color(0.78, 0.66, 0.46), 26, 110.0)
 
 
+## Sala tranquilla prima di un boss o di un mini boss (blocco 14): niente nemici, niente trappole,
+## la ricompensa (cura o dono) è già lì. Non conta come stanza ripulita (niente effetti "a stanza
+## ripulita"): dopo, una porta sola verso la prova.
+func _start_quiet_room() -> void:
+	cleared = true
+	_banner(Lang.t("Una sala tranquilla"), Lang.t("Prima della prova: prendi ciò che ti aspetta"), Color(0.94, 0.72, 0.3))
+	var p = PickupScript.new()
+	p.kind = current_reward["kind"]
+	p.god = current_reward.get("god", "")
+	world.add_child(p)
+	p.position = _free_spot_near(Vector2(ROOM.size.x / 2.0, ROOM.size.y / 2.0 + 20.0))
+	p.collected.connect(_on_pickup_collected)
+
+
 func _room_cleared() -> void:
 	if cleared:
 		return
@@ -789,12 +808,19 @@ func _open_doors() -> void:
 	if Run.room + 1 == Run.GUARDIAN_ROOM:
 		_add_door("n", {"kind": "guardian"})
 		return
-	# blocco 13: prima di ogni boss e mini boss (Serpente, Am-heh, Serket, Aker) UNA porta sola, e
-	# dietro UNA stanza senza nemici con il solo Traghettatore (niente cura, niente combattimento)
+	# blocco 14 (corregge il 13): prima di ogni boss e mini boss (Serpente, Am-heh, Serket, Aker) le
+	# porte portano TUTTE a stanze senza nemici: il Traghettatore, una sala con la cura, una sala con un
+	# dono. Mai una stanza di combattimento in quel punto. Dopo ognuna, una porta sola verso la prova.
 	if Run.room + 2 == Run.GUARDIAN_ROOM or Run.room + 1 == Run.ROOMS_PER_RUN:
+		var calm_pool: Array = [{"kind": "shop"}, {"kind": "heal", "calm": true}]
+		var calm_gods := Boons.gods_with_boons(Run.boons, Run.room + 1)
+		if not calm_gods.is_empty():
+			calm_pool.append({"kind": "boon", "god": Amulets.pick_gods(calm_gods, 1)[0], "calm": true})
+		var calm_sides: Array = ["w", "n", "e"] if calm_pool.size() == 3 else ["w", "e"]
 		saved_doors.clear()
-		_add_door("n", {"kind": "shop"})
-		saved_doors.append(["n", {"kind": "shop"}])
+		for i in range(calm_pool.size()):
+			_add_door(calm_sides[i], calm_pool[i])
+			saved_doors.append([calm_sides[i], calm_pool[i]])
 		return
 	var sides: Array = [["w", "n", "e"], ["w", "e"], ["w", "n"], ["n", "e"]].pick_random()
 	if Run.chap("c72"):

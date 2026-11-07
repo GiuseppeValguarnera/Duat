@@ -107,6 +107,12 @@ func reward_label() -> String:
 
 ## Testo mostrato quando il giocatore si avvicina.
 func reward_description() -> String:
+	if reward.get("calm", false):
+		return _base_description() + Lang.t(" · sala tranquilla, senza nemici")
+	return _base_description()
+
+
+func _base_description() -> String:
 	match reward.get("kind", ""):
 		"boon":
 			return Lang.t("Dono di %s: scegli uno dei suoi poteri") % Boons.god_name(reward["god"])
@@ -130,7 +136,7 @@ func reward_description() -> String:
 			return Lang.t("La porta della quarta ora: oltre, la terra di Sokar")
 		"shop":
 			if Run.room + 1 == Run.GUARDIAN_ROOM or Run.room + 2 == Run.GUARDIAN_ROOM or Run.room + 1 >= Run.ROOMS_PER_RUN:
-				return Lang.t("Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa. Poi una porta sola")
+				return Lang.t("Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa")
 			return Lang.t("Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa)")
 		"desert":
 			return Lang.t("Il deserto di Sokar: da qui la discesa ricomincia, più dura")

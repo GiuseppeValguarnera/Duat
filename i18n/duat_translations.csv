@@ -781,6 +781,7 @@ Traghettatore,Traghettatore,Ferryman
 Il deserto,Il deserto,The desert
 La discesa,La discesa,The Descent
 Uscita,Uscita,Exit
+" · sala tranquilla, senza nemici"," · sala tranquilla, senza nemici"," · a quiet hall, no enemies"
 Dono di %s: scegli uno dei suoi poteri,Dono di %s: scegli uno dei suoi poteri,Boon of %s: choose one of their powers
 "L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa","L'altare di Set: una deviazione, non perdi questa stanza né le altre porte. Entrare costa 8 vita. Una maledizione per 2 stanze, poi un potere per tutta la discesa","The altar of Set: a detour, you lose neither this chamber nor the other doors. Entering costs 8 health. A curse for 2 chambers, then a power for the whole descent"
 Tesoro di Ka: +25 Ka,Tesoro di Ka: +25 Ka,Ka Treasure: +25 Ka
@@ -791,7 +792,7 @@ Acqua del Nilo: recuperi il %d%% della vita,Acqua del Nilo: recuperi il %d%% del
 Il tempio di Serket: la dea scorpione custodisce il deserto. Battila per un dono di livello superiore,Il tempio di Serket: la dea scorpione custodisce il deserto. Battila per un dono di livello superiore,The temple of Serket: the scorpion goddess guards the desert. Defeat her for a higher-level boon
 La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,The Middle Gate: the Serpent that guards it. Defeat it for a boon of a higher level
 "La porta della quarta ora: oltre, la terra di Sokar","La porta della quarta ora: oltre, la terra di Sokar","The gate of the fourth hour: beyond it, the land of Sokar"
-"Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa. Poi una porta sola","Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa. Poi una porta sola","The Ferryman, before the trial: a quiet hall to spend the Ka of the descent. Then a single door"
+"Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa","Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa","The Ferryman, before the trial: a quiet hall to spend the Ka of the descent"
 Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),The Ferryman: spend this descent's Ka (what you spend does not come home with you)
 "Il deserto di Sokar: da qui la discesa ricomincia, più dura","Il deserto di Sokar: da qui la discesa ricomincia, più dura","The desert of Sokar: from here the descent begins again, harder"
 Comincia la discesa: Anubi ti aspetta con il primo dono,Comincia la discesa: Anubi ti aspetta con il primo dono,The descent begins: Anubis awaits you with the first boon
@@ -876,6 +877,8 @@ Discesa ripresa,Discesa ripresa,Descent resumed
 Stanza %d di %d,Stanza %d di %d,Chamber %d of %d
 stanza %s,stanza %s,chamber %s
 Set mantiene la promessa,Set mantiene la promessa,Set keeps his promise
+Una sala tranquilla,Una sala tranquilla,A quiet hall
+Prima della prova: prendi ciò che ti aspetta,Prima della prova: prendi ciò che ti aspetta,Before the trial: take what awaits you
 di fila,di fila,in a row
 Il cuore di Sokar è aperto,Il cuore di Sokar è aperto,The heart of Sokar lies open
 Serket è caduta,Serket è caduta,Serket has fallen
@@ -1826,6 +1829,7 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+"Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa. Poi una porta sola","Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa. Poi una porta sola","The Ferryman, before the trial: a quiet hall to spend the Ka of the descent. Then a single door"
 Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Aker,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Aker,Water of the Nile: recover %d%% of your health. Last chamber before Aker
 Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Water of the Nile: you recover %d%% of your health. Last chamber before Am-heh
 Recuperi il 30% della vita,Recuperi il 30% della vita,You recover 30% of your health
