@@ -43,7 +43,7 @@ func _ready() -> void:
 	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_ON
 	if not is_boss:
 		max_hp *= Run.enemy_hp_mult()
-	if Meta.feather and not is_boss and not miniboss and not Run.in_hub:
+	if Meta.feather and not is_boss and not miniboss and not Run.in_hub and not Run.trial:
 		speed *= 0.9                       # Piuma di Ma'at: nemici un po' più lenti
 	if elite:
 		max_hp *= 1.8
@@ -421,7 +421,7 @@ func die() -> void:
 	# solo i nemici più grossi lasciano un po' di Ka, e non sempre (il 40% delle volte; di più con
 	# il capitolo 105 del Libro). Il grosso arriva dai tesori: prima si arrivava al Traghettatore
 	# con Ka per comprare tutto, e al boss con doni troppo alti e troppa cura.
-	var ka := 0 if no_reward else roundi(ka_value * Run.ka_mult())
+	var ka := 0 if no_reward or Run.trial else roundi(ka_value * Run.ka_mult())     # nella prova della Sfinge niente Ka
 	var ka_chance := KA_DROP_CHANCE if not Run.chap("c105") else Chapters.value("c105") / 100.0
 	if not (is_boss or miniboss or elite) and randf() >= ka_chance:
 		ka = 0

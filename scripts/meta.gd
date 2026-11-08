@@ -58,6 +58,7 @@ var favors: Array = []                ## le grazie degli dèi comprate con i lap
 var amulet_rooms := {}                ## amuleto -> stanze portate al collo (i livelli)
 var challenges := {}                  ## sfida -> 1 compiuta, 2 premio riscosso (challenges.gd)
 var stats := {}                       ## contatori delle sfide
+var sphinx := {}                      ## la prova della Sfinge (sphinx.gd): porta aperta, classifica, premi della settimana
 
 
 func _ready() -> void:
@@ -121,6 +122,7 @@ func _ready() -> void:
 		amulet_rooms = cfg.get_value("casa", "stanze", {})
 		challenges = cfg.get_value("casa", "sfide", {})
 		stats = cfg.get_value("casa", "contatori", {})
+		sphinx = cfg.get_value("sfinge", "dati", {})
 		# le sfide contano solo da quando la Casa è aperta: i salvataggi di prima ne avevano già
 		# compiute alcune a Casa murata, si ripulisce
 		if not casa and not challenges.is_empty():
@@ -185,6 +187,7 @@ func save() -> void:
 	cfg.set_value("casa", "stanze", amulet_rooms)
 	cfg.set_value("casa", "sfide", challenges)
 	cfg.set_value("casa", "contatori", stats)
+	cfg.set_value("sfinge", "dati", sphinx)
 	cfg.save(PATH)
 
 

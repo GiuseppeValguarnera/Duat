@@ -920,6 +920,7 @@ Ricomincia la run,Ricomincia la run,Restart the run
 Torna alla Sala (abbandona),Torna alla Sala (abbandona),Back to the Hall (abandon)
 Esci alla Sala (la discesa resta salvata),Esci alla Sala (la discesa resta salvata),Exit to the Hall (the descent stays saved)
 Esci (la discesa resta salvata),Esci (la discesa resta salvata),Quit (the descent stays saved)
+Ritirati dalla scala (il punteggio resta),Ritirati dalla scala (il punteggio resta),Retire from the stair (your score stays)
 Schermo intero,Schermo intero,Full screen
 Esc / Start per riprendere,Esc / Start per riprendere,Esc / Start to resume
 Volume,Volume,Volume
@@ -1107,12 +1108,22 @@ La bilancia di Ma'at · Sconfiggi Am-heh per poter posare i tuoi pesi,La bilanci
 %s · Accarezza il gatto,%s · Accarezza il gatto,%s · Pet the cat
 La Casa della Vita · amuleti e sfide · entra dalla porta,La Casa della Vita · amuleti e sfide · entra dalla porta,The House of Life · amulets and challenges · walk through the door
 "%s · Apri la Casa della Vita: amuleti e sfide (%d lapislazzuli, ne hai %d)","%s · Apri la Casa della Vita: amuleti e sfide (%d lapislazzuli, ne hai %d)","%s · Open the House of Life: amulets and challenges (%d lapis lazuli, you have %d)"
+%s · La scala dell'enigma: classifica e premi · arma del giorno: %s · entra dalla porta,%s · La scala dell'enigma: classifica e premi · arma del giorno: %s · entra dalla porta,%s · The Riddle Stair: leaderboard and rewards · weapon of the day: %s · walk through the door
+"%s · Apri la porta della Sfinge: una prova a ondate (%d lapislazzuli, ne hai %d)","%s · Apri la porta della Sfinge: una prova a ondate (%d lapislazzuli, ne hai %d)","%s · Open the Sphinx's door: a wave trial (%d lapis lazuli, you have %d)"
 Il Cortile di Neith · le armi · entra dalla porta,Il Cortile di Neith · le armi · entra dalla porta,The Courtyard of Neith · the weapons · enter through the door
 Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta,The Courtyard of Neith · it will open when you have defeated the Serpent of the Gate
 Il cancello del Duat è a nord,Il cancello del Duat è a nord,The gate of the Duat lies to the north
 Aggiornamento del gioco,Aggiornamento del gioco,Game update
 Lascia un commento,Lascia un commento,Leave a comment
 Esci dal gioco,Esci dal gioco,Quit the game
+La porta della Sfinge è aperta,La porta della Sfinge è aperta,The Sphinx's door is open
+La scala dell'enigma,La scala dell'enigma,The Riddle Stair
+"Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: solo ciò che la Sfinge ti concede sulla scala. Morire qui non tocca la discesa.","Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: solo ciò che la Sfinge ti concede sulla scala. Morire qui non tocca la discesa.","Today's weapon is %s: the same for everyone. Normal health, no boons, chapters or amulets: only what the Sphinx grants you on the stair. Dying here doesn't touch your descent."
+ondata %d: preso,ondata %d: preso,wave %d: claimed
+ondata %d: %d Ka + %d lapislazzuli,ondata %d: %d Ka + %d lapislazzuli,wave %d: %d Ka + %d lapis lazuli
+Premi della settimana (si rinnovano tra %s): ,Premi della settimana (si rinnovano tra %s): ,Weekly rewards (they renew in %s): 
+"Nessun punteggio, per ora. La scala aspetta.","Nessun punteggio, per ora. La scala aspetta.",No scores yet. The stair is waiting.
+%d. %d punti · ondata %d · %s · %s,%d. %d punti · ondata %d · %s · %s,%d. %d points · wave %d · %s · %s
 La piuma di Ma'at,La piuma di Ma'at,The Feather of Ma'at
 "Un quarto di nemici in meno, più lenti del 10%, e il 10% di danni in meno (un altro 2% a ogni morte, fino al 30%). In cambio custodisci il 40% del Ka, e lapislazzuli, cuori, serdab e Lacrime valgono la metà. Il Peso del Cuore non conta. La storia va avanti comunque. Puoi toglierla quando vuoi dalle Opzioni.","Un quarto di nemici in meno, più lenti del 10%, e il 10% di danni in meno (un altro 2% a ogni morte, fino al 30%). In cambio custodisci il 40% del Ka, e lapislazzuli, cuori, serdab e Lacrime valgono la metà. Il Peso del Cuore non conta. La storia va avanti comunque. Puoi toglierla quando vuoi dalle Opzioni.","A quarter fewer enemies, 10% slower, and 10% less damage taken (another 2% with each death, up to 30%). In exchange you keep 40% of the Ka, and lapis lazuli, hearts, serdab and Tears are worth half. The Weight of the Heart does not count. The story still moves on. You can remove it whenever you like from the Options."
 Accetto la piuma,Accetto la piuma,I accept the feather
@@ -1664,6 +1675,110 @@ Nemici e boss,Nemici e boss,Enemies and bosses
 Trappole,Trappole,Traps
 Ricompense e menu,Ricompense e menu,Rewards and menus
 SCUDO ROTTO,SCUDO ROTTO,SHIELD BROKEN
+%d giorni e %d ore,%d giorni e %d ore,%d days and %d hours
+%d ore,%d ore,%d hours
+Il Guardiano della Sabbia,Il Guardiano della Sabbia,The Guardian of the Sand
+L'Ombra di Ieri,L'Ombra di Ieri,The Shadow of Yesterday
+L'Ombra di Domani,L'Ombra di Domani,The Shadow of Tomorrow
+La prossima ondata è più corta: 3 nemici in meno.,La prossima ondata è più corta: 3 nemici in meno.,The next wave is shorter: 3 fewer enemies.
+"Un dono in più, subito: tre a scelta, livello base.","Un dono in più, subito: tre a scelta, livello base.","One extra boon, right now: pick one of three, base level."
+Ti curi subito del 15% della vita massima.,Ti curi subito del 15% della vita massima.,You heal 15% of your max health right away.
+Nella prossima ondata i nemici sono più lenti del 15%.,Nella prossima ondata i nemici sono più lenti del 15%.,In the next wave enemies are 15% slower.
+Cominci la prossima ondata con uno scudo da 12.,Cominci la prossima ondata con uno scudo da 12.,You start the next wave with a 12-point shield.
+Nella prossima ondata i nemici hanno il 35% di vita in più.,Nella prossima ondata i nemici hanno il 35% di vita in più.,In the next wave enemies have 35% more health.
+Nella prossima ondata i nemici sono più veloci del 15%.,Nella prossima ondata i nemici sono più veloci del 15%.,In the next wave enemies are 15% faster.
+"Niente cure per 3 ondate, nemmeno quella che arriva ogni 5 ondate.","Niente cure per 3 ondate, nemmeno quella che arriva ogni 5 ondate.","No healing for 3 waves, not even the one that comes every 5 waves."
+"Per 3 ondate, dopo un colpo resti invulnerabile la metà del tempo.","Per 3 ondate, dopo un colpo resti invulnerabile la metà del tempo.","For 3 waves, after a hit you stay invulnerable for half the time."
+La prossima ondata ha 4 nemici in più.,La prossima ondata ha 4 nemici in più.,The next wave has 4 more enemies.
+Nella prossima ondata due nemici in più sono élite.,Nella prossima ondata due nemici in più sono élite.,In the next wave two more enemies are elite.
+Nella prossima ondata i nemici fanno il 20% di danni in più.,Nella prossima ondata i nemici fanno il 20% di danni in più.,In the next wave enemies deal 20% more damage.
+"Ogni mattina nasco dal grembo di Nut, ogni sera lei mi inghiotte. Chi sono?","Ogni mattina nasco dal grembo di Nut, ogni sera lei mi inghiotte. Chi sono?","Every morning I am born from Nut's womb, every evening she swallows me. Who am I?"
+"Ra, il sole che rinasce.","Ra, il sole che rinasce.","Ra, the sun reborn."
+Ra. E stanotte attraverso il Duat con lui.,Ra. E stanotte attraverso il Duat con lui.,Ra. And tonight I cross the Duat with him.
+"Salgo ogni anno senza avere piedi, porto il limo nero e lascio pane dietro di me. Chi sono?","Salgo ogni anno senza avere piedi, porto il limo nero e lascio pane dietro di me. Chi sono?","Every year I rise without feet, I bring the black silt and leave bread behind me. Who am I?"
+La piena del Nilo.,La piena del Nilo.,The flood of the Nile.
+"Hapi, che non chiede permesso a nessuno.","Hapi, che non chiede permesso a nessuno.","Hapi, who asks no one's permission."
+Ho la testa di ibis e il calamo in mano: scrivo ciò che il cuore confessa. Chi sono?,Ho la testa di ibis e il calamo in mano: scrivo ciò che il cuore confessa. Chi sono?,I have an ibis head and a reed pen in hand: I write what the heart confesses. Who am I?
+"Thoth, lo scriba degli dèi.","Thoth, lo scriba degli dèi.","Thoth, scribe of the gods."
+Thoth. Scriva pure: non ho paura.,Thoth. Scriva pure: non ho paura.,Thoth. Let him write: I'm not afraid.
+Sono più leggera di ogni cuore giusto e più pesante di ogni menzogna. Cosa sono?,Sono più leggera di ogni cuore giusto e più pesante di ogni menzogna. Cosa sono?,I am lighter than every just heart and heavier than every lie. What am I?
+La piuma di Ma'at.,La piuma di Ma'at.,The feather of Ma'at.
+La piuma. Mettimi pure sulla bilancia.,La piuma. Mettimi pure sulla bilancia.,The feather. Put me on the scale.
+Spingo il sole davanti a me come una palla e a ogni alba rinasco con lui. Chi sono?,Spingo il sole davanti a me come una palla e a ogni alba rinasco con lui. Chi sono?,"I push the sun before me like a ball, and at every dawn I am reborn with it. Who am I?"
+"Khepri, lo scarabeo.","Khepri, lo scarabeo.","Khepri, the scarab."
+"Khepri. Anch'io spingo, e non mi fermo.","Khepri. Anch'io spingo, e non mi fermo.","Khepri. I push too, and I don't stop."
+Mi fecero a pezzi e mi sparsero lungo il fiume; una sposa mi ricompose. Chi sono?,Mi fecero a pezzi e mi sparsero lungo il fiume; una sposa mi ricompose. Chi sono?,They cut me to pieces and scattered me along the river; a wife put me back together. Who am I?
+"Osiride, signore dei morti.","Osiride, signore dei morti.","Osiris, lord of the dead."
+Osiride. Anche i miei pezzi si rialzeranno.,Osiride. Anche i miei pezzi si rialzeranno.,Osiris. My pieces will rise too.
+"Prima di ogni cosa ero acqua, senza fondo e senza luce. Chi sono?","Prima di ogni cosa ero acqua, senza fondo e senza luce. Chi sono?","Before everything I was water, bottomless and without light. Who am I?"
+"Nun, le acque del principio.","Nun, le acque del principio.","Nun, the waters of the beginning."
+Nun. E da te sono uscito.,Nun. E da te sono uscito.,Nun. And out of you I came.
+Mi strapparono e Thoth mi ricucì: ora proteggo chi mi porta al collo. Cosa sono?,Mi strapparono e Thoth mi ricucì: ora proteggo chi mi porta al collo. Cosa sono?,I was torn out and Thoth mended me: now I protect whoever wears me. What am I?
+L'occhio di Horus.,L'occhio di Horus.,The Eye of Horus.
+"L'occhio di Horus, che vede tutto.","L'occhio di Horus, che vede tutto.","The Eye of Horus, which sees everything."
+"Ogni notte la mia barca passa dodici porte, e alla settima un serpente mi aspetta. Chi sono?","Ogni notte la mia barca passa dodici porte, e alla settima un serpente mi aspetta. Chi sono?","Every night my boat passes twelve gates, and at the seventh a serpent waits for me. Who am I?"
+Ra nella sua barca notturna.,Ra nella sua barca notturna.,Ra in his night boat.
+Ra. E il serpente lo affronto io.,Ra. E il serpente lo affronto io.,Ra. And I'll face the serpent myself.
+"Testa di coccodrillo, petto di leone, dorso d'ippopotamo: mangio i cuori pesanti. Chi sono?","Testa di coccodrillo, petto di leone, dorso d'ippopotamo: mangio i cuori pesanti. Chi sono?","Crocodile head, lion chest, hippo back: I eat heavy hearts. Who am I?"
+"Ammit, la divoratrice.","Ammit, la divoratrice.","Ammit, the devourer."
+Ammit. Il mio cuore non lo avrà.,Ammit. Il mio cuore non lo avrà.,Ammit. She won't get my heart.
+"Sono un cappio sopra una croce, e gli dèi mi porgono a chi deve vivere. Cosa sono?","Sono un cappio sopra una croce, e gli dèi mi porgono a chi deve vivere. Cosa sono?","I am a loop above a cross, and the gods hold me out to those who must live. What am I?"
+"L'ankh, la vita.","L'ankh, la vita.","The ankh, life."
+L'ankh. La vita me la prendo da me.,L'ankh. La vita me la prendo da me.,The ankh. I'll take life by myself.
+"Ho il corpo di leone e il volto di un re, e guardo l'oriente da quando hai memoria. Chi sono?","Ho il corpo di leone e il volto di un re, e guardo l'oriente da quando hai memoria. Chi sono?","I have a lion's body and a king's face, and I've watched the east for as long as you remember. Who am I?"
+"Sei tu, Sfinge.","Sei tu, Sfinge.","You are, Sphinx."
+Sei tu. E non mi spaventi.,Sei tu. E non mi spaventi.,You are. And you don't scare me.
+"Ho la testa di sciacallo, preparo i corpi e accompagno le anime alla bilancia. Chi sono?","Ho la testa di sciacallo, preparo i corpi e accompagno le anime alla bilancia. Chi sono?","I have a jackal head, I prepare the bodies and guide souls to the scale. Who am I?"
+"Anubi, il guardiano delle tombe.","Anubi, il guardiano delle tombe.","Anubis, guardian of the tombs."
+Anubi. Stavolta non mi accompagna.,Anubi. Stavolta non mi accompagna.,Anubis. This time he won't guide me.
+"Un anello di corda chiude il mio nome: chi lo scalpella, cancella me. Cosa sono?","Un anello di corda chiude il mio nome: chi lo scalpella, cancella me. Cosa sono?",A ring of rope closes around my name: whoever chisels it away erases me. What am I?
+"Il cartiglio, che custodisce il nome.","Il cartiglio, che custodisce il nome.","The cartouche, keeper of the name."
+Il nome. Il mio resterà inciso.,Il nome. Il mio resterà inciso.,The name. Mine will stay carved.
+"Verde come le canne, signore delle acque: il Nilo è la mia casa. Chi sono?","Verde come le canne, signore delle acque: il Nilo è la mia casa. Chi sono?","Green as the reeds, lord of the waters: the Nile is my home. Who am I?"
+"Sobek, il coccodrillo.","Sobek, il coccodrillo.","Sobek, the crocodile."
+Sobek. Nuoterò nel suo fiume.,Sobek. Nuoterò nel suo fiume.,Sobek. I'll swim in his river.
+"Con le ali ridiedi il respiro al mio sposo, e il mio nome è il trono. Chi sono?","Con le ali ridiedi il respiro al mio sposo, e il mio nome è il trono. Chi sono?","With my wings I gave breath back to my husband, and my name is the throne. Who am I?"
+"Iside, la grande maga.","Iside, la grande maga.","Isis, the great sorceress."
+Iside. Ma oggi le ali sono le mie.,Iside. Ma oggi le ali sono le mie.,Isis. But today the wings are mine.
+"Uscii per prima dalle acque immobili: una collina nel nulla, dove si posò la luce. Cosa sono?","Uscii per prima dalle acque immobili: una collina nel nulla, dove si posò la luce. Cosa sono?","I was the first to rise from the still waters: a hill in the void, where the light came to rest. What am I?"
+La collina primordiale.,La collina primordiale.,The primeval mound.
+La collina. Ci salirò in cima.,La collina. Ci salirò in cima.,The mound. I'll climb to the top.
+La Sfinge · ondata %d · %d punti,La Sfinge · ondata %d · %d punti,The Sphinx · wave %d · %d points
+"Arma del giorno: %s · uguale per tutti, oggi","Arma del giorno: %s · uguale per tutti, oggi","Weapon of the day: %s · the same for everyone, today"
+Scudo 12,Scudo 12,Shield 12
+Ondata %d · un guardiano,Ondata %d · un guardiano,Wave %d · a guardian
+%d nemici,%d nemici,%d enemies
+la Sfinge ricorda la tua risposta,la Sfinge ricorda la tua risposta,the Sphinx remembers your answer
+Ondata %d,Ondata %d,Wave %d
+La sabbia di Sokar,La sabbia di Sokar,The sand of Sokar
+Le sabbie mobili rallentano te e i nemici,Le sabbie mobili rallentano te e i nemici,Quicksand slows you and the enemies
+senza colpi +%d,senza colpi +%d,no hits +%d
+risposta audace +%d,risposta audace +%d,bold answer +%d
++%d punti,+%d punti,+%d points
+Ondata %d superata,Ondata %d superata,Wave %d cleared
+"Premio della settimana: +%d Ka, +%d lapislazzuli","Premio della settimana: +%d Ka, +%d lapislazzuli","Weekly reward: +%d Ka, +%d lapis lazuli"
+Niente cura: l'hai promesso alla Sfinge,Niente cura: l'hai promesso alla Sfinge,No healing: you promised the Sphinx
+Gli dèi guardano la scala,Gli dèi guardano la scala,The gods watch the stair
+"Un dono, al livello base","Un dono, al livello base","One boon, at base level"
++%d punti se superi l'ondata.,+%d punti se superi l'ondata.,+%d points if you clear the wave.
+Risposta audace,Risposta audace,Bold answer
+Risposta prudente,Risposta prudente,Cautious answer
+La Sfinge,La Sfinge,The Sphinx
+Ogni risposta è giusta: scegli che prova vuoi,Ogni risposta è giusta: scegli che prova vuoi,Every answer is right: choose the trial you want
+La Sfinge annuisce,La Sfinge annuisce,The Sphinx nods
+Ti sei ritirato dalla scala,Ti sei ritirato dalla scala,You retired from the stair
+La Sfinge ha parlato,La Sfinge ha parlato,The Sphinx has spoken
+%d punti,%d punti,%d points
+Ondate superate: %d   ·   Arma del giorno: %s,Ondate superate: %d   ·   Arma del giorno: %s,Waves cleared: %d   ·   Weapon of the day: %s
+Risposte audaci superate: %d   ·   Ondate senza colpi: %d,Risposte audaci superate: %d   ·   Ondate senza colpi: %d,Bold answers cleared: %d   ·   Waves without hits: %d
+Il tuo miglior punteggio sulla scala!,Il tuo miglior punteggio sulla scala!,Your best score on the stair!
+%d° posto nella tua classifica,%d° posto nella tua classifica,#%d in your leaderboard
+Premi della settimana: nessuno in questa prova,Premi della settimana: nessuno in questa prova,Weekly rewards: none in this trial
+"ondata %d: +%d Ka, +%d lapislazzuli","ondata %d: +%d Ka, +%d lapislazzuli","wave %d: +%d Ka, +%d lapis lazuli"
+Premi della settimana: ,Premi della settimana: ,Weekly rewards: 
+La discesa e le tue risorse non cambiano: la prova resta a parte.,La discesa e le tue risorse non cambiano: la prova resta a parte.,Your descent and your resources don't change: the trial stays separate.
+Riprova,Riprova,Retry
+Torna alla Sala,Torna alla Sala,Back to the Hall
 SCATTO,SCATTO,DASH
 DONI,DONI,BOONS
 KHOPESH,KHOPESH,KHOPESH

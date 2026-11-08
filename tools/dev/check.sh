@@ -35,6 +35,8 @@ DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 60 "$G" --headless --path . --script res://
 DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 60 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/quietsmoke.gd >> "$OUT/run.txt" 2>&1
 # mira assistita della mischia: quattro scenari sulla funzione di bersaglio (tools/dev/aimsmoke.gd)
 DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 60 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/aimsmoke.gd >> "$OUT/run.txt" 2>&1
+# la prova della Sfinge: ondate, guardiani, enigmi, doni, premi, classifica (tools/dev/sphinxsmoke.gd)
+DUAT_NOTUT=1 DUAT_SPHINX_DAY=20400 HOME="$HOMEDIR" timeout 150 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/sphinxsmoke.gd >> "$OUT/run.txt" 2>&1
 # Aker: tutte le mosse, la divisione, la tenaglia, la furia, la vittoria (tools/dev/akersmoke.gd)
 DUAT_NOTUT=1 DUAT_REGION2=1 HOME="$HOMEDIR" timeout 120 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/akersmoke.gd >> "$OUT/run.txt" 2>&1
 ERR=$(cat "$OUT/import.txt" "$OUT/run.txt" | grep -E "SCRIPT ERROR|Parse Error|Compile Error|Failed to load script" -A1 | grep -v "^--$" | sort | uniq -c)

@@ -157,6 +157,7 @@ var hud_sek := ""
 const DummyScript := preload("res://scripts/dummy.gd")
 
 @onready var world: Node2D = $World
+var trial: SphinxTrial = null          ## la prova della Sfinge (Run.trial, scripts/sphinx_trial.gd)
 var tut := Tutorial.new(self)        ## l'addestramento della prima volta (scripts/tutorial.gd)
 var rooms := RoomBuilder.new(self)      ## la costruzione delle stanze (scripts/room_builder.gd)
 @onready var hud: Label = $UI/Hud
@@ -193,6 +194,14 @@ func _ready() -> void:
 	var listener := PanelListener.new()
 	listener.game = self
 	add_child(listener)
+	# la prova della Sfinge (blocco 15): un'arena sola, a ondate, fuori dalla discesa
+	if Run.trial:
+		trial = SphinxTrial.new()
+		trial.game = self
+		add_child(trial)
+		Run.room = 0
+		start_room({"kind": "sphinx"})
+		return
 	# una discesa interrotta (gioco chiuso, pagina chiusa dal telefono) riprende dalla sua stanza
 	if not Run.resume.is_empty():
 		var d: Dictionary = Run.resume
@@ -267,9 +276,9 @@ func start_room(reward: Dictionary) -> void:
 	pillars.clear()
 	var boss_room := Run.room > Run.ROOMS_PER_RUN
 	var kind: String = reward.get("kind", "none")
-	ROOM = ROOM_BIG if boss_room or kind == "guardian" or OS.get_environment("DUAT_BIGROOMS") != "" else ROOM_SMALL
+	ROOM = ROOM_BIG if boss_room or kind == "guardian" or kind == "sphinx" or OS.get_environment("DUAT_BIGROOMS") != "" else ROOM_SMALL
 	var quiet: bool = reward.get("calm", false)    # blocco 14: sala tranquilla prima di boss e mini boss
-	var calm := kind == "guardian" or kind == "shop" or kind == "tutorial" or kind == "set" or kind == "oasis" or quiet
+	var calm := kind == "guardian" or kind == "shop" or kind == "tutorial" or kind == "set" or kind == "oasis" or quiet or kind == "sphinx"
 	Run.curse_paused = boss_room or kind == "guardian" or kind == "shop" or kind == "set" or kind == "oasis" or quiet
 	shop_items.clear()
 	oasis_nodes.clear()
@@ -282,6 +291,8 @@ func start_room(reward: Dictionary) -> void:
 		layout = []
 	elif kind == "guardian":
 		layout = LAYOUTS[0]
+	elif kind == "sphinx":
+		layout = Sphinx.TRIAL_PILLARS
 	for f in layout:
 		pillars.append(Vector2(lerpf(WALL, ROOM.size.x - WALL, f.x), lerpf(TOP, ROOM.size.y - WALL, f.y)))
 	rooms.build_walls()
@@ -329,6 +340,8 @@ func start_room(reward: Dictionary) -> void:
 		_build_arena(arena, pool_spots)
 	if current_reward.get("kind", "") == "set":
 		decor.mosaic = ""                  # al centro c'è l'altare di Set: niente mosaico sopra
+	if kind == "sphinx":
+		trial.build_arena()
 	pillar_art = DecorScript.Pillars.new()
 	pillar_art.list = pillars
 	pillar_art.in_water = arena == "gate"
@@ -400,6 +413,10 @@ func start_room(reward: Dictionary) -> void:
 	if kind == "tutorial":
 		waves = []
 		tut.begin()
+		return
+	if kind == "sphinx":
+		waves = []
+		trial.begin()
 		return
 	if quiet:
 		waves = []
@@ -568,6 +585,11 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 		marker.queue_free()
 	if gen != room_gen or finished:
 		return
+	# la prova della Sfinge marca élite e guardiani così: "mummy@e", "aker_lion@ieri", "serket@g"
+	var tag := ""
+	if kind.contains("@"):
+		tag = kind.get_slice("@", 1)
+		kind = kind.get_slice("@", 0)
 	spawning -= 1
 	if guardian_down:
 		# caduto il guardiano, i suoi rinforzi annunciati non escono più (gli scorpioni di Serket
@@ -590,7 +612,9 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 	var elite_kinds := ["mummy", "priest"] if Run.region == 1 else ["mummy", "sokar_guard", "vulture", "jackal", "javelin"]
 	var elite_from := 3 if Run.region == 1 else 1
 	var elite_chance := minf(0.2, 0.06 + 0.02 * Run.room) if Run.region == 1 else minf(0.32, 0.14 + 0.02 * Run.room)
-	if Run.room >= elite_from - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind in elite_kinds and randf() < elite_chance * (1 + elite_w):
+	if trial != null:
+		trial.adjust(e, kind, tag)
+	elif Run.room >= elite_from - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind in elite_kinds and randf() < elite_chance * (1 + elite_w):
 		e.elite = true
 		# niente più cambio di musica per le élite: "Frozen Desert" era calmo quasi come la Sala e
 		# in battaglia sembrava la musica dell'hub. Le élite si riconoscono dal bordo d'oro.
@@ -719,6 +743,9 @@ func _start_quiet_room() -> void:
 
 
 func _room_cleared() -> void:
+	if trial != null:
+		trial.on_wave_cleared()           # la prova della Sfinge: la prossima ondata, l'enigma, i doni
+		return
 	if cleared:
 		return
 	cleared = true
@@ -1509,7 +1536,7 @@ func _toggle_pause() -> void:
 		# se era aperta una scelta dei doni, il gioco resta fermo su quella
 		get_tree().paused = menu != null or panel != null
 		return
-	if player == null or player.dead:
+	if player == null or player.dead or (trial != null and trial.ended):
 		return
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -1536,7 +1563,10 @@ func _toggle_pause() -> void:
 	title.add_theme_color_override("font_color", Color(0.94, 0.72, 0.3))
 	box.add_child(title)
 	var first: Button = null
-	for entry in [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Opzioni"), _open_options], [Lang.t("Ricomincia la run"), _restart_run], [Lang.t("Torna alla Sala (abbandona)"), _abandon_run], [Lang.t("Esci alla Sala (la discesa resta salvata)") if OS.has_feature("web") else Lang.t("Esci (la discesa resta salvata)"), _quit_game]]:
+	var entries := [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Opzioni"), _open_options], [Lang.t("Ricomincia la run"), _restart_run], [Lang.t("Torna alla Sala (abbandona)"), _abandon_run], [Lang.t("Esci alla Sala (la discesa resta salvata)") if OS.has_feature("web") else Lang.t("Esci (la discesa resta salvata)"), _quit_game]]
+	if trial != null:
+		entries = [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Opzioni"), _open_options], [Lang.t("Ritirati dalla scala (il punteggio resta)"), _retire_trial]]
+	for entry in entries:
 		var b := Button.new()
 		b.text = entry[0]
 		b.custom_minimum_size = Vector2(160, 26) * Fx.ui
@@ -1680,6 +1710,15 @@ func _abandon_run() -> void:
 	get_tree().change_scene_to_file("res://scenes/hub.tscn")
 
 
+## La prova della Sfinge: ci si ritira, il punteggio fin qui entra in classifica.
+func _retire_trial() -> void:
+	if pause_menu != null:
+		pause_menu.queue_free()
+		pause_menu = null
+	get_tree().paused = false
+	trial.finish(true)
+
+
 func _restart_run() -> void:
 	Run.clear_descent()
 	get_tree().paused = false
@@ -1783,6 +1822,9 @@ func _boons_text() -> String:
 # ---------------------------------------------------------------- fine run
 
 func _on_player_died() -> void:
+	if trial != null:
+		trial.finish()                    # la prova della Sfinge: niente conseguenze sulla discesa
+		return
 	finished = true
 	can_leave = false
 	Run.clear_descent()
@@ -2810,6 +2852,8 @@ func _process(_delta: float) -> void:
 	var room_txt := (Lang.t("Ammit · colonne: %d") % pillars.size() if _boss_kind() == "ammit" else (Lang.t("Aker") if _boss_kind() == "aker" else Lang.t("Am-heh"))) if Run.room > Run.ROOMS_PER_RUN else Lang.t("Stanza %d/%d") % [Run.room, Run.ROOMS_PER_RUN]
 	if Run.max_region() > 1 and Run.room <= Run.ROOMS_PER_RUN:
 		room_txt = Run.region_name() + " · " + room_txt
+	if trial != null:
+		room_txt = trial.hud_line()
 	if tut.step >= 0:
 		room_txt = Lang.t("Addestramento")
 		tut.tick()

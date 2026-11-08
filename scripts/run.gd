@@ -58,6 +58,13 @@ var mask_used := false                ## Capitolo 151: il primo colpo della stan
 var heart_used := false               # Capitolo 30 già usato in questa discesa
 var in_hub := false                   # true nella Sala del Giudizio
 var training := false                 # nel Cortile di Neith: non si muore
+## La prova della Sfinge (blocco 15, sphinx.gd): equipaggiamento fisso, niente meta-progressione.
+## trial_hp/speed/dmg li imposta sphinx_trial.gd a ogni ondata.
+var trial := false
+var trial_hp := 1.0
+var trial_speed := 1.0
+var trial_dmg := 1.0
+var from_sphinx := false              # si torna nella Sala dalla porta della Sfinge
 ## Registro dei colpi (blocco 12, Opzioni → "Ultimi colpi"): gli ultimi HIT_LOG_MAX danni subiti,
 ## dal più recente. Ogni voce: fonte, danno, distanza dal centro della fonte, stato dell'attacco,
 ## secondi di volo per i proiettili (-1 se non è un proiettile). Resta tra una discesa e l'altra.
@@ -169,11 +176,34 @@ func new_run() -> void:
 	kheper_left = int(Amulets.value("kheper", amulet_lvl("kheper"))) if wears("kheper") else 0
 	decoy_t = 0.0
 	deep_radii = Vector2.ZERO
+	if trial:
+		_trial_setup()
+		return
 	Challenges.on_run_start()
 	if chap("c17"):
 		max_hp += Chapters.value("c17")
 		hp = max_hp
 	ka = int(Chapters.value("c110"))         # Campi di Iaru: Ka per il Traghettatore
+
+
+## La prova della Sfinge: l'arma del giorno con il primo aspetto al livello 1, vita standard,
+## niente amuleti, voci, Ka o capitoli (chap() e Chapters.is_equipped sono spenti).
+func _trial_setup() -> void:
+	weapon = Sphinx.weapon_of_day()
+	aspect = Weapons.first_aspect(weapon)
+	aspect_level = 1
+	amulet = ""
+	amulet_level = 1
+	amulet2 = ""
+	amulet2_level = 1
+	voices_left = 0
+	kheper_left = 0
+	ka = 0
+	trial_hp = 1.0
+	trial_speed = 1.0
+	trial_dmg = 1.0
+	max_hp = 60.0
+	hp = max_hp
 
 
 # --- salvataggio a metà discesa ---------------------------------------------------
@@ -182,6 +212,8 @@ func new_run() -> void:
 # A fine discesa (morte, vittoria, abbandono) il salvataggio viene cancellato.
 
 func save_descent(reward: Dictionary, extra: Dictionary) -> void:
+	if trial:
+		return                                # la prova della Sfinge non tocca la discesa salvata
 	var d := {
 		"max_hp": max_hp, "hp": hp, "ka": ka, "room": room, "boons": boons.duplicate(),
 		"blessings": Array(blessings), "curses": curses.duplicate(true), "sekhem": sekhem,
@@ -377,7 +409,7 @@ func grant_blessing(id: String) -> void:
 
 ## Il Sekhem è il dono di Am-heh: si sblocca per sempre la prima volta che lo sconfiggi.
 func sekhem_unlocked() -> bool:
-	return Meta.sekhem_unlocked
+	return Meta.sekhem_unlocked and not trial
 
 
 func add_sekhem(amount: float) -> void:
@@ -396,7 +428,7 @@ func sekhem_ready() -> bool:
 
 ## Un capitolo del Libro dei Morti è attivo in questa discesa?
 func chap(id: String) -> bool:
-	return Meta.chapters_equipped.has(id)
+	return Meta.chapters_equipped.has(id) and not trial
 
 
 func all_damage_mult() -> float:
@@ -504,6 +536,8 @@ func dash_cooldown_mult() -> float:
 
 func damage_taken_mult() -> float:
 	var m := 1.3 if cursed("fragile") else 1.0
+	if trial:
+		m *= trial_dmg
 	if region >= 2:
 		m *= SOKAR_DAMAGE
 	m *= 1.0 + 0.2 * Weights.rank("zanne")
@@ -517,7 +551,7 @@ func damage_taken_mult() -> float:
 
 ## Piuma di Ma'at: 10% di danni in meno, +2% a ogni morte, fino al 30%.
 func feather_guard() -> float:
-	if not Meta.feather:
+	if not Meta.feather or trial:
 		return 0.0
 	return minf(0.3, 0.1 + 0.02 * Meta.feather_deaths)
 
@@ -559,6 +593,8 @@ static func region_hp_curve(reg: int, rm: int) -> float:
 
 
 func enemy_hp_mult() -> float:
+	if trial:
+		return trial_hp
 	var m := region_hp_curve(region, room)
 	if has("anubi_guide"):
 		m *= 1.05
@@ -711,7 +747,7 @@ var shu_gust := false
 
 
 func enemy_speed_mult() -> float:
-	return 1.2 if cursed("fast_enemies") else 1.0
+	return (1.2 if cursed("fast_enemies") else 1.0) * (trial_speed if trial else 1.0)
 
 
 ## Moltiplicatore dei tesori di Ka (porte "Tesoro di Ka").

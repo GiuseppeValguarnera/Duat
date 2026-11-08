@@ -12,6 +12,7 @@ const PlayerScene := preload("res://scenes/player.tscn")
 const DecorScript := preload("res://scripts/room_decor.gd")
 const ARMORY_Y := 218.0                   ## la porta del Cortile di Neith, nella parete ovest
 const CASA_Y := 218.0                     ## la porta della Casa della Vita, nella parete est
+const SPHINX_X := 616.0                   ## la porta della Sfinge, nella parete nord (blocco 15)
 
 var player
 var emerging: Rebirth.Emergence = null           ## la riemersione dal disco solare, finché dura (rebirth.gd)
@@ -45,6 +46,7 @@ var armed_key := ""                   ## sul telefono: la voce già selezionata 
 var update_tag: Button                 ## «Nuova versione, aggiorna!» in basso a destra (solo web)
 var update_label_state := ""           # com'era il controllo della versione quando le Opzioni sono state disegnate
 var t := 0.0
+var sphinx_board: CanvasLayer = null      ## la classifica della Sfinge, se aperta
 
 @onready var world: Node2D = $World
 @onready var hud: Label = $UI/Hud
@@ -59,6 +61,7 @@ func _ready() -> void:
 	Diag.record.call_deferred("Sala")
 	Engine.time_scale = 1.0
 	get_tree().paused = false
+	Run.trial = false                       # di ritorno dalla prova della Sfinge
 	# una discesa rimasta a metà (gioco chiuso, telefono che chiude la pagina): si riprende da lì
 	# (sul web "Esci" porta qui: allora la discesa aspetta al cancello, vedi _start_run)
 	if Run.has_saved_descent() and not Run.hold_descent:
@@ -153,6 +156,9 @@ func _build() -> void:
 	if Run.from_casa:
 		Run.from_casa = false
 		player.position = Vector2(ROOM.size.x - WALL - 26.0, CASA_Y)
+	if Run.from_sphinx:
+		Run.from_sphinx = false
+		player.position = Vector2(SPHINX_X, TOP + 30.0)
 	if Run.from_restore:
 		Run.from_restore = false
 		player.position = spots["cassa"] + Vector2(0, 30)
@@ -314,7 +320,7 @@ func _process(delta: float) -> void:
 		help.text = ""                       # riprese per trailer e screenshot
 		hud.text = ""
 
-	if talk_box.visible or book != null:
+	if talk_box.visible or book != null or sphinx_board != null:
 		prompt.visible = false
 		return
 	# il cancello si attraversa camminandoci dentro
@@ -327,6 +333,10 @@ func _process(delta: float) -> void:
 		Sfx.play("door")
 		get_tree().change_scene_to_file("res://scenes/armory.tscn")
 		return
+	# la porta della Sfinge, a nord: si attraversa quando è aperta (Sphinx.COST lapislazzuli)
+	if Sphinx.is_open() and player.global_position.y < TOP + 14.0 and absf(player.global_position.x - SPHINX_X) < 16.0:
+		_start_sphinx()
+		return
 	# la porta della Casa della Vita, a est: si attraversa quando è aperta (30 lapislazzuli)
 	if Meta.casa and player.global_position.x > ROOM.size.x - WALL - 14.0 and absf(player.global_position.y - CASA_Y) < 24.0:
 		Sfx.play("door")
@@ -337,6 +347,8 @@ func _process(delta: float) -> void:
 		near = "cortile"
 	if player.global_position.x > ROOM.size.x - WALL - 40.0 and absf(player.global_position.y - CASA_Y) < 30.0:
 		near = "casa"
+	if player.global_position.y < TOP + 44.0 and absf(player.global_position.x - SPHINX_X) < 30.0:
+		near = "sfinge"
 	for k in ["anubi", "libro", "bilancia", "papiri", "cassa"]:
 		if player.global_position.distance_to(spots[k]) < 40.0:
 			near = k
@@ -371,6 +383,11 @@ func _process(delta: float) -> void:
 				prompt.text = Lang.t("La Casa della Vita · amuleti e sfide · entra dalla porta")
 			else:
 				prompt.text = Lang.t("%s · Apri la Casa della Vita: amuleti e sfide (%d lapislazzuli, ne hai %d)") % [key, CASA_COST, Meta.lapis]
+		"sfinge":
+			if Sphinx.is_open():
+				prompt.text = Lang.t("%s · La scala dell'enigma: classifica e premi · arma del giorno: %s · entra dalla porta") % [key, Sphinx.weapon_name(Sphinx.weapon_of_day())]
+			else:
+				prompt.text = Lang.t("%s · Apri la porta della Sfinge: una prova a ondate (%d lapislazzuli, ne hai %d)") % [key, Sphinx.COST, Meta.lapis]
 		"cortile":
 			if Meta.serpent_wins > 0:
 				prompt.text = Lang.t("Il Cortile di Neith · le armi · entra dalla porta")
@@ -382,6 +399,11 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if sphinx_board != null:
+		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("interact") or event.is_action_pressed("pause"):
+			_close_sphinx_board()
+			get_viewport().set_input_as_handled()
+		return
 	if book != null:
 		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("interact") or event.is_action_pressed("pause"):
 			_close_book()
@@ -408,6 +430,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			_start_neith()
 		elif near == "casa" and not Meta.casa:
 			_open_casa()
+		elif near == "sfinge":
+			if Sphinx.is_open():
+				_show_sphinx_board()
+			else:
+				_open_sphinx()
 		elif near == "bilancia" and Weights.unlocked():
 			_open_book("pesi")
 		get_viewport().set_input_as_handled()
@@ -455,6 +482,96 @@ func _open_casa() -> void:
 	Fx.burst(Vector2(ROOM.size.x - WALL, CASA_Y), Color(0.78, 0.66, 0.46), 40, 140.0)
 	Fx.burst(Vector2(ROOM.size.x - WALL, CASA_Y), Restorations.LAPIS_COLOR, 20, 110.0)
 	queue_redraw()
+
+
+## Si apre la porta della Sfinge: i lapislazzuli spesi, la lastra col lucchetto che scivola via.
+func _open_sphinx() -> void:
+	if Meta.lapis < Sphinx.COST:
+		Fx.float_text(player.global_position + Vector2(0, -20), Lang.t("Servono %d lapislazzuli") % Sphinx.COST, Color(0.9, 0.4, 0.35))
+		Fx.shake(2.0)
+		return
+	Meta.lapis -= Sphinx.COST
+	Sphinx.open()
+	Sfx.play("jar_break", 0.0)
+	Sfx.play("boon", 0.0)
+	Fx.shake(5.0)
+	Fx.burst(Vector2(SPHINX_X, TOP - 6.0), Color(0.93, 0.78, 0.45), 36, 130.0)
+	Fx.burst(Vector2(SPHINX_X, TOP - 6.0), Restorations.LAPIS_COLOR, 18, 100.0)
+	Fx.float_text(player.global_position + Vector2(0, -26), Lang.t("La porta della Sfinge è aperta"), Color(0.93, 0.78, 0.45), 10)
+	queue_redraw()
+
+
+func _start_sphinx() -> void:
+	Run.trial = true
+	Meta.save()
+	Sfx.play("door")
+	get_viewport().set_input_as_handled()
+	get_tree().change_scene_to_file("res://scenes/game.tscn")
+
+
+## La classifica della Sfinge (i 10 migliori punteggi di questo dispositivo), i premi della
+## settimana e l'arma del giorno.
+func _show_sphinx_board() -> void:
+	player.set_physics_process(false)
+	var u := Fx.ui
+	var vs := get_viewport().get_visible_rect().size
+	var layer := CanvasLayer.new()
+	layer.layer = 20
+	add_child(layer)
+	sphinx_board = layer
+	var dim := ColorRect.new()
+	dim.color = Color(0.03, 0.03, 0.06, 0.82)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(dim)
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(center)
+	var pap := PanelContainer.new()
+	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(Color(0.6, 0.46, 0.2)))
+	center.add_child(pap)
+	var w := minf(430.0 * u, vs.x - 36.0)
+	var col := VBoxContainer.new()
+	col.custom_minimum_size = Vector2(w, 0)
+	col.add_theme_constant_override("separation", int(3 * u))
+	pap.add_child(col)
+	var h := UiStyle.label(Lang.t("La scala dell'enigma"), 13, UiStyle.INK, true)
+	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(h)
+	col.add_child(UiStyle.label(Lang.t("Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: solo ciò che la Sfinge ti concede sulla scala. Morire qui non tocca la discesa.") % Sphinx.weapon_name(Sphinx.weapon_of_day()), 8, UiStyle.INK_SOFT, false, w))
+	var c := Sphinx.claimed()
+	var parts := []
+	for th in Sphinx.WEEKLY:
+		var r: Array = Sphinx.WEEKLY[th]
+		parts.append((Lang.t("ondata %d: preso") % th) if c.has(th) else (Lang.t("ondata %d: %d Ka + %d lapislazzuli") % [th, r[0], r[1]]))
+	col.add_child(UiStyle.label(Lang.t("Premi della settimana (si rinnovano tra %s): ") % Sphinx.reset_text() + " · ".join(parts), 8, UiStyle.INK_GREEN, false, w))
+	var list := Sphinx.scores()
+	var sc := ScrollContainer.new()
+	sc.custom_minimum_size = Vector2(w, minf(120.0 * u, vs.y * 0.36))
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	col.add_child(sc)
+	var rows := VBoxContainer.new()
+	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sc.add_child(rows)
+	if list.is_empty():
+		rows.add_child(UiStyle.label(Lang.t("Nessun punteggio, per ora. La scala aspetta."), 9, UiStyle.INK_SOFT, false, w))
+	for i in range(list.size()):
+		var e: Dictionary = list[i]
+		rows.add_child(UiStyle.label(Lang.t("%d. %d punti · ondata %d · %s · %s") % [i + 1, int(e["score"]), int(e["wave"]), Sphinx.weapon_name(String(e["weapon"])), String(e["date"])], 9, UiStyle.INK if i > 0 else UiStyle.INK_RED, i == 0, w))
+	var b := Button.new()
+	b.text = Lang.t("Chiudi")
+	UiStyle.papyrus_button(b, Color(0.93, 0.78, 0.45))
+	b.add_theme_font_size_override("font_size", Fx.fs(9))
+	b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	b.pressed.connect(_close_sphinx_board)
+	col.add_child(b)
+	b.grab_focus.call_deferred()
+
+
+func _close_sphinx_board() -> void:
+	if sphinx_board != null:
+		sphinx_board.queue_free()
+		sphinx_board = null
+	player.set_physics_process(true)
 
 
 ## Anubi offre la Piuma di Ma'at: sì o no, subito, senza cercarla nelle Opzioni.
@@ -1475,6 +1592,7 @@ func _draw() -> void:
 	draw_arc(ac + Vector2(0, -4), 3.5, 0, TAU, 12, Color(0.3, 0.62, 0.66, 0.9), 1.5)
 	draw_line(ac + Vector2(0, -1), ac + Vector2(0, 9), Color(0.3, 0.62, 0.66, 0.9), 1.5)
 	draw_line(ac + Vector2(-5, 1), ac + Vector2(5, 1), Color(0.3, 0.62, 0.66, 0.9), 1.5)
+	_draw_sphinx_door(pulse)
 	_draw_cartouche(Vector2(g.x, 15.0))
 	_draw_scale(spots["bilancia"])
 	if Restorations.has("trono"):
@@ -1587,6 +1705,46 @@ func _draw_cartouche(c: Vector2) -> void:
 				draw_arc(p + Vector2(4, 5), 4.0, PI, TAU, 10, gold, 1.4)
 	if shown > 0:
 		draw_rect(r.grow(3.0), Color(gold, 0.06 + 0.04 * sin(t * 1.5)))
+
+
+## La porta della Sfinge nella parete nord: un varco con la testa di sfinge in rilievo sopra.
+## Chiusa: una lastra di pietra con il lucchetto e il prezzo in lapislazzuli.
+func _draw_sphinx_door(pulse: float) -> void:
+	var x := SPHINX_X
+	var gold := Color(0.94, 0.72, 0.3)
+	draw_rect(Rect2(x - 16, WALL + 6, 32, TOP - WALL - 2), Color(0.02, 0.02, 0.05))
+	if Sphinx.is_open():
+		draw_rect(Rect2(x - 14, WALL + 8, 28, TOP - WALL - 4), Color(0.93, 0.78, 0.45, 0.16 + 0.12 * pulse))
+	else:
+		draw_rect(Rect2(x - 14, WALL + 8, 28, TOP - WALL - 4), Color(0.62, 0.55, 0.45))
+		draw_line(Vector2(x - 14, WALL + 18), Vector2(x + 14, WALL + 18), Color(0.45, 0.4, 0.32), 1.0)
+		_draw_padlock(Vector2(x, WALL + 20), 1.0)
+		var font := UiStyle.title_font()
+		var txt := str(Sphinx.COST)
+		var fw := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+		draw_circle(Vector2(x - fw / 2.0 - 4, TOP - 4), 2.6, Restorations.LAPIS_COLOR)
+		draw_string(font, Vector2(x - fw / 2.0 + 1, TOP - 1), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.95, 0.92, 0.85))
+	draw_rect(Rect2(x - 19, WALL + 3, 38, 3), gold)
+	draw_rect(Rect2(x - 19, WALL + 3, 3, TOP - WALL), gold)
+	draw_rect(Rect2(x + 16, WALL + 3, 3, TOP - WALL), gold)
+	# la testa della sfinge sopra il varco: nemes a righe e il volto
+	var hc := Vector2(x, WALL - 5)
+	draw_colored_polygon(PackedVector2Array([hc + Vector2(-9, 7), hc + Vector2(-7, -5), hc + Vector2(0, -8), hc + Vector2(7, -5), hc + Vector2(9, 7)]), Color(0.86, 0.72, 0.42))
+	draw_line(hc + Vector2(-8, 0), hc + Vector2(8, 0), Color(0.22, 0.34, 0.6), 1.2)
+	draw_line(hc + Vector2(-8, 4), hc + Vector2(8, 4), Color(0.22, 0.34, 0.6), 1.2)
+	draw_rect(Rect2(hc.x - 4, hc.y - 3, 8, 9), Color(0.78, 0.66, 0.46))
+	var eye := Color(0.98, 0.82, 0.4, 0.5 + 0.5 * pulse) if Sphinx.is_open() else Color(0.2, 0.15, 0.1)
+	draw_rect(Rect2(hc.x - 3, hc.y, 2, 1), eye)
+	draw_rect(Rect2(hc.x + 1, hc.y, 2, 1), eye)
+
+
+## Un lucchetto: arco e corpo d'oro scuro, col buco della chiave.
+func _draw_padlock(c: Vector2, s: float) -> void:
+	draw_arc(c + Vector2(0, -3) * s, 3.2 * s, PI, TAU, 10, Color(0.25, 0.2, 0.15), 2.2 * s)
+	draw_arc(c + Vector2(0, -3) * s, 3.2 * s, PI, TAU, 10, Color(0.85, 0.7, 0.4), 1.2 * s)
+	draw_rect(Rect2(c.x - 4.5 * s, c.y - 3 * s, 9 * s, 7 * s), Color(0.25, 0.2, 0.15))
+	draw_rect(Rect2(c.x - 3.8 * s, c.y - 2.4 * s, 7.6 * s, 5.8 * s), Color(0.85, 0.7, 0.4))
+	draw_circle(c + Vector2(0, 0.3) * s, 1.0 * s, Color(0.25, 0.2, 0.15))
 
 
 func _draw_scale(p: Vector2) -> void:

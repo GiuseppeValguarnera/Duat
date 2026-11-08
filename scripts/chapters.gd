@@ -48,7 +48,7 @@ static func is_unlocked(id: String) -> bool:
 
 
 static func is_equipped(id: String) -> bool:
-	return Meta.chapters_equipped.has(id)
+	return Meta.chapters_equipped.has(id) and not Run.trial     # la prova della Sfinge: niente capitoli
 
 
 ## Valore del capitolo al livello comprato (0 se non è attivo).

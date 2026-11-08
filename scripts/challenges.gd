@@ -152,7 +152,7 @@ static func on_room_done(was_hit: bool, dashed: bool) -> void:
 
 
 static func on_boon(god: String) -> void:
-	if Run.training or god in ["", "set", "anubi", "duo"]:
+	if Run.training or Run.trial or god in ["", "set", "anubi", "duo"]:
 		return
 	var n := 0
 	for b in Run.boons:
@@ -193,7 +193,7 @@ static func on_serdab() -> void:
 
 
 static func on_kill(scene_path: String) -> void:
-	if Run.training:
+	if Run.training or Run.trial:
 		return
 	if scene_path.ends_with("scarab.tscn"):
 		_count("scarabei", "scarabei")
