@@ -59,6 +59,7 @@ var amulet_rooms := {}                ## amuleto -> stanze portate al collo (i l
 var challenges := {}                  ## sfida -> 1 compiuta, 2 premio riscosso (challenges.gd)
 var stats := {}                       ## contatori delle sfide
 var doors_used: Array = []            ## porte della Sala già attraversate (le frecce a terra spariscono): cancello, cortile, casa, sfinge
+var tales_read: Array = []            ## «Racconti dell'acqua» già letti alla vasca (tales.gd)
 var sphinx := {}                      ## la prova della Sfinge (sphinx.gd): porta aperta, classifica, premi della settimana
 
 
@@ -125,6 +126,7 @@ func _ready() -> void:
 		stats = cfg.get_value("casa", "contatori", {})
 		sphinx = cfg.get_value("sfinge", "dati", {})
 		doors_used = cfg.get_value("sala", "porte", [])
+		tales_read = cfg.get_value("sala", "racconti", [])
 		if not cfg.has_section_key("sala", "porte"):
 			# salvataggi di prima delle frecce: le porte già usate di sicuro
 			if runs > 0:
@@ -197,6 +199,7 @@ func save() -> void:
 	cfg.set_value("casa", "contatori", stats)
 	cfg.set_value("sfinge", "dati", sphinx)
 	cfg.set_value("sala", "porte", doors_used)
+	cfg.set_value("sala", "racconti", tales_read)
 	cfg.save(PATH)
 
 

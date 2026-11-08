@@ -21,7 +21,7 @@ var near := ""
 var talk_lines: Array = []
 var commented := false
 var talk_who := "anubi"                  ## chi sta parlando: "anubi" o "neith" (quando viene a offrirti l'arco)
-var _news := [false, false, false, false, false]   ## Anubi, Libro, Papiri, cassa: c'è qualcosa di nuovo? (_draw_markers)
+var _news := [false, false, false, false, false, false]   ## Anubi, Libro, Papiri, cassa: c'è qualcosa di nuovo? (_draw_markers)
 var bastet_cat: Node2D = null           ## il gatto di Bastet (restauro)
 var _news_t := 0.0
 var book: CanvasLayer = null           # finestra aperta (Libro dei Morti o Papiri di Thoth)
@@ -47,6 +47,11 @@ var update_tag: Button                 ## «Nuova versione, aggiorna!» in basso
 var update_label_state := ""           # com'era il controllo della versione quando le Opzioni sono state disegnate
 var t := 0.0
 var sphinx_board: CanvasLayer = null      ## la classifica della Sfinge, se aperta
+var tales_box: CanvasLayer = null         ## i «Racconti dell'acqua», se aperti
+var tale_list: Array = []
+var tale_i := 0
+var hub_art: Node2D = null
+var scale_glow := 0.0                     ## la luce calda della bilancia quando ti avvicini
 
 @onready var world: Node2D = $World
 @onready var hud: Label = $UI/Hud
@@ -90,6 +95,8 @@ func _ready() -> void:
 		# Neith, quando porta l'arco: nello spazio libero tra la porta del Cortile e Anubi, lontana
 		# dalle colonne (x 100) e dal tappeto che porta al cancello
 		"neith": Vector2(cx - 172.0, 236.0),
+		# la vasca del Nilo (restauro) e i suoi «Racconti dell'acqua» (tales.gd)
+		"vasca": Vector2(cx - 246.0, 328.0),
 	}
 	_build()
 	Fx.scale_labels($UI)
@@ -110,7 +117,8 @@ func _build() -> void:
 	_solid(Rect2(ROOM.size.x - WALL, 0, WALL, ROOM.size.y))
 	_solid(Rect2(spots["anubi"] - Vector2(18, 6), Vector2(36, 10)))
 	_solid(Rect2(spots["libro"] - Vector2(12, 6), Vector2(24, 12)))
-	_solid(Rect2(spots["bilancia"] - Vector2(14, 6), Vector2(28, 12)))
+	_solid(Rect2(spots["bilancia"] - Vector2(20, 7), Vector2(40, 13)))      # la base a gradini
+	_solid(Rect2(spots["vasca"] - Vector2(38, 14), Vector2(76, 28)))         # la vasca incassata
 	_solid(Rect2(spots["papiri"] - Vector2(20, 8), Vector2(40, 12)))
 	_solid(Rect2(spots["cassa"] - Vector2(18, 7), Vector2(36, 12)))
 	var decor := DecorScript.new()
@@ -147,6 +155,7 @@ func _build() -> void:
 	var art := HubArt.new()
 	art.spots = spots
 	world.add_child(art)
+	hub_art = art
 	_add_dust()
 	var floor_arrows := HubDoorArrows.new()
 	floor_arrows.hub = self
@@ -323,7 +332,8 @@ func _process(delta: float) -> void:
 		help.text = ""                       # riprese per trailer e screenshot
 		hud.text = ""
 
-	if talk_box.visible or book != null or sphinx_board != null:
+	scale_glow = move_toward(scale_glow, 1.0 if player.global_position.distance_to(spots["bilancia"]) < 70.0 else 0.0, delta * 1.5)
+	if talk_box.visible or book != null or sphinx_board != null or tales_box != null:
 		prompt.visible = false
 		return
 	# il cancello si attraversa camminandoci dentro
@@ -354,6 +364,8 @@ func _process(delta: float) -> void:
 		near = "casa"
 	if player.global_position.y < TOP + 44.0 and absf(player.global_position.x - SPHINX_X) < 30.0:
 		near = "sfinge"
+	if Rect2(spots["vasca"] - Vector2(40, 16), Vector2(80, 32)).grow(18.0).has_point(player.global_position):
+		near = "vasca"
 	for k in ["anubi", "libro", "bilancia", "papiri", "cassa"]:
 		if player.global_position.distance_to(spots[k]) < 40.0:
 			near = k
@@ -381,6 +393,11 @@ func _process(delta: float) -> void:
 			prompt.text = Lang.t("%s · La cassa dello scalpellino: restauri e grazie degli dèi (lapislazzuli: %d)") % [key, Meta.lapis]
 		"gatto":
 			prompt.text = Lang.t("%s · Accarezza il gatto") % key
+		"vasca":
+			var tn := Tales.unlocked().size()
+			prompt.text = Lang.t("%s · Racconti dell'acqua (%d su %d)") % [key, tn, Tales.all().size()]
+			if Tales.unread() > 0:
+				prompt.text += Lang.t(" · un racconto nuovo")
 		"neith":
 			prompt.text = Lang.t("%s · Parla con Neith") % key
 		"casa":
@@ -404,6 +421,17 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if tales_box != null:
+		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("interact") or event.is_action_pressed("pause"):
+			_close_tales()
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_left") or event.is_action_pressed("move_left"):
+			_turn_tale(-1)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("ui_right") or event.is_action_pressed("move_right"):
+			_turn_tale(1)
+			get_viewport().set_input_as_handled()
+		return
 	if sphinx_board != null:
 		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("interact") or event.is_action_pressed("pause"):
 			_close_sphinx_board()
@@ -431,6 +459,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			_open_book("restauri")
 		elif near == "gatto":
 			bastet_cat.pet()
+		elif near == "vasca":
+			_open_tales()
 		elif near == "neith":
 			_start_neith()
 		elif near == "casa" and not Meta.casa:
@@ -577,6 +607,109 @@ func _close_sphinx_board() -> void:
 	if sphinx_board != null:
 		sphinx_board.queue_free()
 		sphinx_board = null
+	player.set_physics_process(true)
+
+
+## I «Racconti dell'acqua» (tales.gd): un racconto per pagina, con le frecce (anche sul telefono);
+## si parte dal primo non ancora letto. L'acqua si increspa e fa il suo suono.
+func _open_tales() -> void:
+	tale_list = Tales.unlocked()
+	if tale_list.is_empty():
+		return
+	player.set_physics_process(false)
+	Sfx.play("splash", 0.1, -6.0)
+	if hub_art != null and is_instance_valid(hub_art):
+		hub_art.ripple(player.global_position)
+	tale_i = 0
+	for i in range(tale_list.size()):
+		if Tales.is_new(String(tale_list[i][0])):
+			tale_i = i
+			break
+	tales_box = CanvasLayer.new()
+	tales_box.layer = 20
+	add_child(tales_box)
+	_fill_tale()
+
+
+func _fill_tale() -> void:
+	for c in tales_box.get_children():
+		c.queue_free()
+	var u := Fx.ui
+	var vs := get_viewport().get_visible_rect().size
+	var e: Array = tale_list[tale_i]
+	var fresh := Tales.is_new(String(e[0]))
+	Tales.mark_read(String(e[0]))
+	var dim := ColorRect.new()
+	dim.color = Color(0.02, 0.04, 0.08, 0.8)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	tales_box.add_child(dim)
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	tales_box.add_child(center)
+	var pap := PanelContainer.new()
+	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(Color(0.2, 0.42, 0.55)))
+	center.add_child(pap)
+	var w := minf(420.0 * u, vs.x - 40.0)
+	var col := VBoxContainer.new()
+	col.custom_minimum_size = Vector2(w, 0)
+	col.add_theme_constant_override("separation", int(4 * u))
+	pap.add_child(col)
+	var sub := UiStyle.label(Lang.t("Racconti dell'acqua · %d di %d") % [tale_i + 1, tale_list.size()] + ("   ·   " + Lang.t("NUOVO") if fresh else ""), 8, UiStyle.INK_SOFT)
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(sub)
+	var h := UiStyle.label(String(e[1]), 13, UiStyle.INK, true)
+	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(h)
+	var body := UiStyle.label(String(e[2]), 9, UiStyle.INK, false, w)
+	col.add_child(body)
+	var hint := Tales.next_hint()
+	if hint != "" and tale_i == tale_list.size() - 1:
+		var hl := UiStyle.label(Lang.t("Il prossimo racconto: %s") % hint, 8, UiStyle.INK_SOFT, false, w)
+		hl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(hl)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", int(10 * u))
+	col.add_child(row)
+	var accent := Color(0.3, 0.62, 0.75)
+	var prev := Button.new()
+	prev.text = "◀"
+	UiStyle.papyrus_button(prev, accent)
+	prev.add_theme_font_size_override("font_size", Fx.fs(12))
+	prev.custom_minimum_size = Vector2(44, 26) * u
+	prev.disabled = tale_i == 0
+	prev.pressed.connect(_turn_tale.bind(-1))
+	row.add_child(prev)
+	var close := Button.new()
+	close.text = Lang.t("Chiudi")
+	UiStyle.papyrus_button(close, accent)
+	close.add_theme_font_size_override("font_size", Fx.fs(10))
+	close.pressed.connect(_close_tales)
+	row.add_child(close)
+	var nxt := Button.new()
+	nxt.text = "▶"
+	UiStyle.papyrus_button(nxt, accent)
+	nxt.add_theme_font_size_override("font_size", Fx.fs(12))
+	nxt.custom_minimum_size = Vector2(44, 26) * u
+	nxt.disabled = tale_i >= tale_list.size() - 1
+	nxt.pressed.connect(_turn_tale.bind(1))
+	row.add_child(nxt)
+	(nxt if not nxt.disabled else close).grab_focus.call_deferred()
+
+
+func _turn_tale(dir: int) -> void:
+	var j := clampi(tale_i + dir, 0, tale_list.size() - 1)
+	if j == tale_i or tales_box == null:
+		return
+	tale_i = j
+	Sfx.play("ui", 0.0)
+	_fill_tale()
+
+
+func _close_tales() -> void:
+	if tales_box != null:
+		tales_box.queue_free()
+		tales_box = null
 	player.set_physics_process(true)
 
 
@@ -1633,11 +1766,13 @@ func _draw_markers() -> void:
 	if Meta.serpent_wins > 0:
 		UiStyle.sparkle(self, Vector2(WALL + 6.0, ARMORY_Y), 16.0, t, near == "cortile", 2.6)
 	UiStyle.sparkle(self, Vector2(ROOM.size.x - WALL - 6.0, CASA_Y), 16.0, t, near == "casa", 3.7)
+	UiStyle.sparkle(self, spots["vasca"] + Vector2(0, -6), 20.0, t, near == "vasca", 8.2)
 	# le novità si ricontrollano due volte al secondo, non a ogni fotogramma (la storia è lunga)
 	if t >= _news_t:
 		_news_t = t + 0.5
 		_news = [Dialogue.has_news(not commented), Chapters.something_affordable(), Lore.unread_ricordi() > 0, Restorations.something_affordable() or Favors.something_affordable(),
-			(Meta.casa and (Challenges.to_claim() > 0 or Amulets.something_to_forge())) or (not Meta.casa and Meta.lapis >= CASA_COST)]
+			(Meta.casa and (Challenges.to_claim() > 0 or Amulets.something_to_forge())) or (not Meta.casa and Meta.lapis >= CASA_COST),
+			Tales.unread() > 0]
 	if _news[0]:
 		UiStyle.exclaim(self, a + Vector2(0, -82), t)
 	if _news[1]:
@@ -1650,6 +1785,8 @@ func _draw_markers() -> void:
 		UiStyle.exclaim(self, cs + Vector2(0, -36), t)
 	if _news[4]:
 		UiStyle.exclaim(self, Vector2(ROOM.size.x - WALL - 12.0, CASA_Y - 66.0), t)
+	if _news[5]:
+		UiStyle.exclaim(self, spots["vasca"] + Vector2(0, -34), t)
 	if _neith_here():
 		UiStyle.sparkle(self, spots["neith"] + Vector2(0, -40), 18.0, t, near == "neith", 7.3)
 		if not Meta.neith_seen.has("arco_sala"):
@@ -1784,21 +1921,92 @@ func _draw_padlock_on(ci: CanvasItem, c: Vector2, s: float) -> void:
 	ci.draw_circle(c + Vector2(0, 0.3) * s, 1.0 * s, Color(0.25, 0.2, 0.15))
 
 
+## La bilancia di Ma'at (blocco 15): base di pietra a gradini con i geroglifi, asta d'oro con la
+## piuma in cima, giogo con due piatti appesi. Su uno il cuore, sull'altro la piuma. I piatti
+## oscillano piano e si inclinano con i progressi: all'inizio il cuore pesa, a ogni guardiano e boss
+## battuto (e con i restauri) la bilancia va verso l'equilibrio; i Pesi del Cuore lo riappesantiscono.
+## Avvicinandoti si accende una luce calda, sopra la luce di luna del cancello.
+func _scale_balance() -> float:
+	var k := 0.0
+	if Meta.serpent_wins > 0:
+		k += 0.2
+	if Meta.ammit_wins > 0:
+		k += 0.3
+	if Meta.serket_wins > 0:
+		k += 0.15
+	if Meta.aker_wins > 0:
+		k += 0.2
+	if not Restorations.ALL.is_empty():
+		k += 0.15 * clampf(Meta.restorations.size() / float(Restorations.ALL.size()), 0.0, 1.0)
+	return clampf(k, 0.0, 1.0)
+
+
 func _draw_scale(p: Vector2) -> void:
 	var gold := Color(0.94, 0.72, 0.3)
-	var tilt := sin(t * 0.8) * 3.0 - minf(Weights.total(), 8) * 1.2   # i pesi abbassano il piatto del cuore
-	draw_rect(Rect2(p.x - 12, p.y - 2, 24, 6), Color(0.6, 0.45, 0.2))
-	draw_rect(Rect2(p.x - 1.5, p.y - 34, 3, 32), gold)
-	draw_line(Vector2(p.x - 22, p.y - 32 - tilt), Vector2(p.x + 22, p.y - 32 + tilt), gold, 2.0)
-	for s in [-1.0, 1.0]:
-		var hp := Vector2(p.x + 22 * s, p.y - 32 + tilt * s)
-		draw_line(hp, hp + Vector2(-6, 12), gold, 1.0)
-		draw_line(hp, hp + Vector2(6, 12), gold, 1.0)
-		draw_line(hp + Vector2(-8, 12), hp + Vector2(8, 12), gold, 2.0)
-		if s < 0.0:
-			draw_circle(hp + Vector2(0, 8), 3.5, Color(0.8, 0.2, 0.2))
+	var gold_d := Color(0.62, 0.42, 0.14)
+	var outl := Color(0.14, 0.09, 0.05)
+	if scale_glow > 0.01:
+		for k in range(4):
+			draw_circle(p + Vector2(0, -26), 58.0 - k * 12.0, Color(1.0, 0.7, 0.35, 0.05 * scale_glow))
+	# l'ombra e la base a gradini
+	draw_set_transform(p + Vector2(0, 5), 0.0, Vector2(1.0, 0.32))
+	draw_circle(Vector2.ZERO, 26.0, Color(0, 0, 0, 0.3))
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	var steps := [[Rect2(p.x - 20, p.y - 2, 40, 8), Color(0.5, 0.44, 0.36)], [Rect2(p.x - 15, p.y - 7, 30, 5), Color(0.6, 0.53, 0.43)], [Rect2(p.x - 10, p.y - 11, 20, 4), Color(0.68, 0.6, 0.48)]]
+	for st in steps:
+		draw_rect(st[0], st[1])
+		draw_rect(st[0], outl, false, 1.0)
+		draw_line(st[0].position + Vector2(1, 1), st[0].position + Vector2(st[0].size.x - 1, 1), Color(1, 0.95, 0.85, 0.25), 1.0)
+	# geroglifi incisi sul gradino più basso: acqua, occhio, ankh, piuma, acqua
+	var gy := p.y + 2.0
+	var ink := Color(0.24, 0.32, 0.55)
+	draw_polyline(PackedVector2Array([Vector2(p.x - 17, gy), Vector2(p.x - 15.5, gy - 1.2), Vector2(p.x - 14, gy), Vector2(p.x - 12.5, gy - 1.2), Vector2(p.x - 11, gy)]), ink, 1.0)
+	draw_arc(Vector2(p.x - 6, gy - 0.5), 1.8, PI, TAU, 6, ink, 1.0)
+	draw_circle(Vector2(p.x - 6, gy - 0.3), 0.7, ink)
+	draw_arc(Vector2(p.x, gy - 1.6), 1.1, 0.0, TAU, 6, ink, 0.9)
+	draw_line(Vector2(p.x, gy - 0.5), Vector2(p.x, gy + 2.0), ink, 0.9)
+	draw_line(Vector2(p.x - 1.4, gy - 0.2), Vector2(p.x + 1.4, gy - 0.2), ink, 0.9)
+	draw_line(Vector2(p.x + 6, gy + 2), Vector2(p.x + 7, gy - 2), ink, 1.0)
+	draw_polyline(PackedVector2Array([Vector2(p.x + 11, gy), Vector2(p.x + 12.5, gy - 1.2), Vector2(p.x + 14, gy), Vector2(p.x + 15.5, gy - 1.2), Vector2(p.x + 17, gy)]), ink, 1.0)
+	# l'asta, con gli anelli, e la piuma di Ma'at in cima
+	var pivot := Vector2(p.x, p.y - 42)
+	draw_rect(Rect2(p.x - 1.8, pivot.y, 3.6, p.y - 11 - pivot.y), gold)
+	draw_line(Vector2(p.x + 1.2, pivot.y + 2), Vector2(p.x + 1.2, p.y - 12), Color(1, 0.92, 0.65, 0.6), 1.0)
+	for ry in [p.y - 16.0, p.y - 26.0, p.y - 36.0]:
+		draw_rect(Rect2(p.x - 2.6, ry, 5.2, 1.6), gold_d)
+	draw_colored_polygon(PackedVector2Array([pivot + Vector2(0, -2), pivot + Vector2(-2.2, -7), pivot + Vector2(0, -13), pivot + Vector2(2.2, -7)]), Color(0.97, 0.95, 0.88))
+	draw_line(pivot + Vector2(0, -2), pivot + Vector2(0.8, -12), Color(0.7, 0.62, 0.45), 0.8)
+	# il giogo: inclinato dal cuore (all'inizio pesa) e dai Pesi, oscilla piano
+	var heavy := (1.0 - _scale_balance()) * 12.0 + minf(Weights.total(), 8) * 1.5
+	var ang := deg_to_rad(heavy + sin(t * 0.7) * 2.2)
+	var arm := Vector2(cos(ang), sin(ang)) * 23.0
+	var lft := pivot + Vector2(-arm.x, arm.y)        # il cuore, più in basso quando pesa
+	var rgt := pivot + Vector2(arm.x, -arm.y)
+	draw_line(lft, rgt, outl, 3.4)
+	draw_line(lft, rgt, gold, 2.0)
+	draw_circle(pivot, 2.4, gold_d)
+	for side in [-1.0, 1.0]:
+		var hp: Vector2 = lft if side < 0.0 else rgt
+		var swing := sin(t * 1.1 + side) * 1.0
+		var bowl := hp + Vector2(swing, 13.0)
+		draw_line(hp, bowl + Vector2(-6, 0), Color(gold, 0.8), 0.8)
+		draw_line(hp, bowl + Vector2(6, 0), Color(gold, 0.8), 0.8)
+		draw_line(hp, bowl, Color(gold, 0.6), 0.6)
+		draw_colored_polygon(PackedVector2Array([bowl + Vector2(-8, 0), bowl + Vector2(8, 0), bowl + Vector2(5, 3), bowl + Vector2(-5, 3)]), gold)
+		draw_line(bowl + Vector2(-8, 0), bowl + Vector2(8, 0), outl, 1.0)
+		if side < 0.0:
+			# il cuore (ib): un vaso rosso con le due anse
+			var hc := bowl + Vector2(0, -3.5)
+			draw_circle(hc + Vector2(-1.4, -0.6), 2.0, Color(0.72, 0.14, 0.12))
+			draw_circle(hc + Vector2(1.4, -0.6), 2.0, Color(0.72, 0.14, 0.12))
+			draw_colored_polygon(PackedVector2Array([hc + Vector2(-3.2, -0.2), hc + Vector2(3.2, -0.2), hc + Vector2(0, 3.2)]), Color(0.72, 0.14, 0.12))
+			draw_circle(hc + Vector2(-1.6, -1.2), 0.6, Color(1, 0.6, 0.55, 0.8))
 		else:
-			draw_line(hp + Vector2(0, 3), hp + Vector2(1, 11), Color(0.95, 0.95, 0.9), 2.0)
+			# la piuma di Ma'at, ricurva in cima
+			var fb := bowl + Vector2(0, -0.5)
+			var tip := fb + Vector2(2.0 + swing * 0.5, -10.0)
+			draw_colored_polygon(PackedVector2Array([fb, fb + Vector2(-2.2, -5), tip, fb + Vector2(2.0, -5)]), Color(0.97, 0.95, 0.88))
+			draw_line(fb, tip, Color(0.7, 0.62, 0.45), 0.8)
 
 
 ## Anubi nella Sala: in piedi su un basamento, alto il doppio di te, con lo scettro was e
@@ -2164,18 +2372,27 @@ class NewRoomArrow extends Control:
 class HubArt extends Node2D:
 	var spots := {}
 	var t := 0.0
+	var ripples: Array = []              ## [posizione, età]: l'acqua toccata (Racconti dell'acqua)
 	const OUTL := Color(0.12, 0.08, 0.05)
 
 	func _process(delta: float) -> void:
 		t += delta
-		if Restorations.has("vasca"):
-			queue_redraw()                 # l'acqua si muove
+		for r in ripples:
+			r[1] += delta
+		ripples = ripples.filter(func(r: Array) -> bool: return r[1] < 1.6)
+		queue_redraw()                     # l'acqua, i pesci, le lampade
+
+	func ripple(at: Vector2) -> void:
+		var c: Vector2 = spots["vasca"]
+		var p := Vector2(clampf(at.x, c.x - 26.0, c.x + 26.0), clampf(at.y, c.y - 6.0, c.y + 6.0))
+		ripples.append([p, 0.0])
+		ripples.append([p + Vector2(6, 2), -0.25])
 
 	func _draw() -> void:
 		var cx: float = spots["cancello"].x
 		_panel(Rect2(cx - 102, 38, 70, 22), true)
 		_panel(Rect2(cx + 32, 38, 70, 22), false)
-		_pool(spots["cassa"] + Vector2(-96, 6))
+		_pool(spots["vasca"])
 
 	func _panel(r: Rect2, left: bool) -> void:
 		if not Restorations.has("pitture"):
@@ -2215,42 +2432,138 @@ class HubArt extends Node2D:
 			draw_colored_polygon(PackedVector2Array([Vector2(am.x - 9, base - 1), Vector2(am.x - 8, base - 8), Vector2(am.x + 2, base - 9), Vector2(am.x + 10, base - 8), Vector2(am.x + 10, base - 6), Vector2(am.x + 3, base - 5), Vector2(am.x + 3, base - 1)]), Color(0.3, 0.45, 0.25))
 			draw_circle(Vector2(am.x - 3, base - 7), 3.2, Color(0.82, 0.6, 0.28))
 
+	## La vasca del Nilo (blocco 15): incassata nel pavimento, con il bordo di pietra scolpito a
+	## fiori di loto, l'acqua che ondeggia piano con il riflesso della luna, foglie e fiori di loto,
+	## ciuffi di papiro agli angoli, due lampade ai lati; ogni tanto passa un pesce o si apre un
+	## cerchio sull'acqua. Prima del restauro è secca: fango crepato e papiri appassiti.
 	func _pool(c: Vector2) -> void:
 		var full := Restorations.has("vasca")
-		var rim := PackedVector2Array()
-		for i in range(20):
-			var a := TAU * i / 20.0
-			rim.append(c + Vector2(cos(a) * 34.0, sin(a) * 13.0))
-		draw_colored_polygon(rim, Color(0.55, 0.45, 0.32))
-		var rc := rim.duplicate()
-		rc.append(rim[0])
-		draw_polyline(rc, OUTL, 1.0)
-		var inner := PackedVector2Array()
-		for i in range(20):
-			var a := TAU * i / 20.0
-			inner.append(c + Vector2(cos(a) * 29.0, sin(a) * 10.0))
+		var outer := Rect2(c - Vector2(40, 16), Vector2(80, 32))
+		draw_rect(Rect2(outer.position + Vector2(2, 3), outer.size), Color(0, 0, 0, 0.28))
+		# il bordo di pietra
+		draw_rect(outer, Color(0.62, 0.54, 0.42))
+		draw_rect(outer, OUTL, false, 1.0)
+		draw_line(outer.position + Vector2(1, 1), Vector2(outer.end.x - 1, outer.position.y + 1), Color(1, 0.95, 0.85, 0.3), 1.0)
+		# lo scolpito: piccoli fiori di loto a ventaglio sul bordo alto e basso
+		for i in range(7):
+			var x := outer.position.x + 8.0 + i * 10.7
+			for yy in [outer.position.y + 2.6, outer.end.y - 2.4]:
+				var lc := Vector2(x, yy)
+				draw_line(lc + Vector2(-1.6, 0.8), lc + Vector2(0, -0.9), Color(0.4, 0.33, 0.24), 0.9)
+				draw_line(lc + Vector2(1.6, 0.8), lc + Vector2(0, -0.9), Color(0.4, 0.33, 0.24), 0.9)
+				draw_line(lc + Vector2(0, 0.9), lc + Vector2(0, -1.2), Color(0.4, 0.33, 0.24), 0.9)
+		# il gradino interno: la vasca è più bassa del pavimento
+		var step := outer.grow(-5.0)
+		draw_rect(step, Color(0.42, 0.36, 0.27))
+		var water := Rect2(step.position + Vector2(2, 2), step.size - Vector2(4, 3))
+		for lx in [outer.position.x - 9.0, outer.end.x + 9.0]:
+			_lamp(Vector2(lx, c.y + 4.0), full)
 		if not full:
-			# secca: fango crepato
-			draw_colored_polygon(inner, Color(0.38, 0.3, 0.22))
-			draw_polyline(PackedVector2Array([c + Vector2(-18, -2), c + Vector2(-6, 2), c + Vector2(4, -3), c + Vector2(16, 3)]), Color(0.22, 0.16, 0.1), 1.0)
-			draw_polyline(PackedVector2Array([c + Vector2(-6, 2), c + Vector2(-2, 7)]), Color(0.22, 0.16, 0.1), 1.0)
+			# secca: fango crepato e papiri appassiti
+			draw_rect(water, Color(0.36, 0.28, 0.2))
+			var crack := Color(0.2, 0.15, 0.1)
+			draw_polyline(PackedVector2Array([c + Vector2(-24, -2), c + Vector2(-10, 2), c + Vector2(0, -3), c + Vector2(14, 3), c + Vector2(26, -1)]), crack, 1.0)
+			draw_polyline(PackedVector2Array([c + Vector2(-10, 2), c + Vector2(-6, 6)]), crack, 1.0)
+			draw_polyline(PackedVector2Array([c + Vector2(14, 3), c + Vector2(12, -5)]), crack, 1.0)
+			_papyrus(outer.position + Vector2(-2, 2), false)
+			_papyrus(Vector2(outer.end.x + 2, outer.position.y + 2), false)
 			return
-		draw_colored_polygon(inner, Color(0.12, 0.36, 0.52))
-		for k in range(2):
-			var rr := fmod(t * 6.0 + k * 14.0, 28.0)
-			draw_arc(c + Vector2(-6, 0), rr, 0.0, TAU, 20, Color(0.55, 0.85, 1.0, 0.35 * (1.0 - rr / 28.0)), 1.0)
-		# foglie e fiori di loto
-		for lp in [Vector2(-16, -3), Vector2(12, 2), Vector2(2, -5)]:
-			draw_set_transform(c + lp, 0.0, Vector2(1.0, 0.5))
-			draw_circle(Vector2.ZERO, 5.0, Color(0.2, 0.5, 0.28))
+		# l'acqua: più scura sotto il bordo, onde lente
+		draw_rect(water, Color(0.1, 0.3, 0.44))
+		draw_rect(Rect2(water.position, Vector2(water.size.x, 3)), Color(0.04, 0.15, 0.26, 0.85))
+		draw_rect(Rect2(water.position.x, water.position.y, 2, water.size.y), Color(0.04, 0.15, 0.26, 0.5))
+		for k in range(3):
+			var yy := water.position.y + 6.0 + k * 5.0
+			var pts := PackedVector2Array()
+			var x := water.position.x + 2.0
+			while x <= water.end.x - 2.0:
+				pts.append(Vector2(x, yy + sin(x * 0.22 + t * 1.1 + k * 1.7) * 0.8))
+				x += 4.0
+			draw_polyline(pts, Color(0.55, 0.82, 0.95, 0.18), 1.0)
+		# il riflesso della luna: tratti chiari che si spezzano con l'acqua
+		var moon := Vector2(c.x + 10.0, c.y - 1.0)
+		for k in range(4):
+			var mw := 9.0 - k * 1.8 + sin(t * 1.7 + k * 1.3) * 1.6
+			var my := moon.y - 3.0 + k * 2.4
+			draw_line(Vector2(moon.x - mw / 2.0 + sin(t + k) * 0.8, my), Vector2(moon.x + mw / 2.0 + sin(t + k) * 0.8, my), Color(0.88, 0.94, 1.0, 0.55 - k * 0.1), 1.2)
+		# un pesce, ogni tanto: un'ombra arancione che attraversa la vasca sott'acqua
+		var cyc := fmod(t, 9.0)
+		if cyc < 3.2:
+			var u := cyc / 3.2
+			var fp := Vector2(lerpf(water.position.x + 4.0, water.end.x - 4.0, u), water.position.y + 9.0 + sin(u * 6.0) * 2.0)
+			var fa := sin(u * PI) * 0.7
+			draw_set_transform(fp, 0.0, Vector2(1.0, 0.6))
+			draw_circle(Vector2.ZERO, 2.6, Color(0.95, 0.5, 0.2, fa))
 			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-		for fp in [Vector2(-16, -5), Vector2(12, 0)]:
-			var f: Vector2 = c + fp
-			draw_colored_polygon(PackedVector2Array([f + Vector2(-3, 0), f + Vector2(-1, -5), f + Vector2(0, -1), f + Vector2(1, -5), f + Vector2(3, 0)]), Color(0.95, 0.75, 0.85))
+			draw_colored_polygon(PackedVector2Array([fp + Vector2(-2, 0), fp + Vector2(-5, -1.6 + sin(t * 12.0)), fp + Vector2(-5, 1.6 + sin(t * 12.0))]), Color(0.95, 0.5, 0.2, fa))
+		# un cerchio che si apre da solo ogni tanto (una goccia, un insetto)
+		var rc := fmod(t + 4.5, 6.0)
+		if rc < 1.4:
+			var rp := Vector2(c.x - 14.0 + fmod(floorf((t + 4.5) / 6.0) * 17.0, 30.0), c.y + 2.0)
+			_ring(rp, rc)
+		for r in ripples:
+			if r[1] >= 0.0:
+				_ring(r[0], r[1])
+		# foglie di loto (con la tacca) e fiori
+		for lp in [Vector2(-22, 3), Vector2(-14, -4), Vector2(18, 4), Vector2(25, -3)]:
+			var bob := sin(t * 0.9 + lp.x) * 0.5
+			var q: Vector2 = c + lp + Vector2(0, bob)
+			draw_set_transform(q, 0.0, Vector2(1.0, 0.55))
+			draw_circle(Vector2.ZERO, 4.6, Color(0.18, 0.46, 0.26))
+			draw_colored_polygon(PackedVector2Array([Vector2.ZERO, Vector2(4.8, -1.4), Vector2(4.8, 1.4)]), Color(0.1, 0.3, 0.44))
+			draw_arc(Vector2.ZERO, 3.2, 0.4, 5.9, 10, Color(0.3, 0.6, 0.34, 0.6), 0.6)
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		for fp2 in [Vector2(-20, 1), Vector2(20, 2)]:
+			var f: Vector2 = c + fp2 + Vector2(0, sin(t * 0.9 + fp2.x) * 0.5)
+			draw_colored_polygon(PackedVector2Array([f + Vector2(-3.4, 0), f + Vector2(-2.2, -4), f + Vector2(-0.6, -1.2), f + Vector2(0, -5), f + Vector2(0.6, -1.2), f + Vector2(2.2, -4), f + Vector2(3.4, 0)]), Color(0.97, 0.8, 0.88))
+			draw_circle(f + Vector2(0, -0.6), 0.9, Color(0.98, 0.85, 0.35))
+		_papyrus(outer.position + Vector2(-2, 2), true)
+		_papyrus(Vector2(outer.end.x + 2, outer.position.y + 2), true)
+		_papyrus(Vector2(outer.end.x - 4, outer.end.y + 1), true)
+
+	func _ring(p: Vector2, age: float) -> void:
+		var k := clampf(age / 1.4, 0.0, 1.0)
+		draw_set_transform(p, 0.0, Vector2(1.0, 0.45))
+		draw_arc(Vector2.ZERO, 2.0 + k * 11.0, 0.0, TAU, 20, Color(0.75, 0.92, 1.0, 0.55 * (1.0 - k)), 1.0)
+		if k > 0.25:
+			draw_arc(Vector2.ZERO, k * 7.0, 0.0, TAU, 16, Color(0.75, 0.92, 1.0, 0.35 * (1.0 - k)), 1.0)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+	## Un ciuffo di papiro: steli verdi con l'ombrella a ventaglio (o secco, prima del restauro).
+	func _papyrus(base: Vector2, alive: bool) -> void:
+		var stem := Color(0.3, 0.55, 0.26) if alive else Color(0.5, 0.44, 0.28)
+		var head := Color(0.45, 0.68, 0.3) if alive else Color(0.58, 0.5, 0.32)
+		for k in range(3):
+			var lean := (k - 1) * 3.0 + sin(t * 0.8 + base.x + k) * (0.8 if alive else 0.0)
+			var h := 15.0 + k * 3.0 if alive else 9.0 + k * 2.0
+			var top := base + Vector2(lean, -h)
+			draw_line(base + Vector2((k - 1) * 1.2, 0), top, stem, 1.0)
+			if alive:
+				for f in range(5):
+					var a := -PI / 2.0 + (f - 2) * 0.35
+					draw_line(top, top + Vector2.from_angle(a) * 4.0, head, 1.0)
+			else:
+				draw_line(top, top + Vector2(2.5, 2.5), head, 1.0)
+
+	## Una lampada a olio su un piedistallo di bronzo, con la fiamma che trema (spenta se secca).
+	func _lamp(p: Vector2, lit: bool) -> void:
+		var bronze := Color(0.55, 0.38, 0.18)
+		draw_rect(Rect2(p.x - 3, p.y - 1, 6, 2), bronze.darkened(0.3))
+		draw_line(p, p + Vector2(0, -12), bronze, 1.6)
+		draw_colored_polygon(PackedVector2Array([p + Vector2(-4, -12), p + Vector2(4, -12), p + Vector2(2.5, -9.5), p + Vector2(-2.5, -9.5)]), bronze)
+		if not lit:
+			return
+		var fl := sin(t * 11.0 + p.x) * 0.6 + sin(t * 7.3) * 0.4
+		for k in range(3):
+			draw_circle(p + Vector2(0, -15), 9.0 - k * 2.8, Color(1.0, 0.65, 0.3, 0.06 + 0.02 * k))
+		draw_colored_polygon(PackedVector2Array([p + Vector2(-1.6, -12.5), p + Vector2(1.6, -12.5), p + Vector2(fl * 0.6, -17.5 - absf(fl))]), Color(1.0, 0.72, 0.3))
+		draw_circle(p + Vector2(0, -13.4), 0.9, Color(1.0, 0.95, 0.7))
 
 
-## Il gatto di Bastet (restauro): un gatto egizio nero col collare e l'orecchino d'oro. Ti segue
-## da lontano, si siede quando ti fermi, e si lascia accarezzare.
+## Il gatto di Bastet (restauro, ridisegnato nel blocco 15): un gatto nero lucido senza pelo, alla
+## maniera delle statuette di Bastet: orecchie grandi, corpo magro, coda lunga e sottile, collare
+## d'oro con lo scarabeo e un piccolo orecchino. Ti segue da lontano, si siede quando ti fermi, e si
+## lascia accarezzare. Il riflesso sulla pelle (una linea chiara) dice che è lucido, non peloso.
 class HubCat extends Node2D:
 	var player: Node2D
 	var t := 0.0
@@ -2280,41 +2593,68 @@ class HubCat extends Node2D:
 		Fx.burst(global_position + Vector2(0, -12), Color(1.0, 0.55, 0.7), 8, 40.0)
 
 	func _draw() -> void:
-		var black := Color(0.1, 0.09, 0.12)
-		draw_set_transform(Vector2(0, 2), 0.0, Vector2(1.0, 0.35))
-		draw_circle(Vector2.ZERO, 9.0, Color(0, 0, 0, 0.3))
+		var skin := Color(0.07, 0.065, 0.09)
+		var shine := Color(0.5, 0.48, 0.62, 0.75)       # il riflesso sulla pelle nuda e lucida
+		var gold := Color(0.95, 0.75, 0.3)
+		var scarab := Color(0.16, 0.58, 0.62)
+		var eye_c := Color(0.72, 0.9, 0.35)
+		draw_set_transform(Vector2(0, 2), 0.0, Vector2(1.0, 0.32))
+		draw_circle(Vector2.ZERO, 10.0, Color(0, 0, 0, 0.3))
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2(face, 1.0))
 		if moving:
 			var w := sin(walk)
-			for lx in [-5.0 + w * 1.5, 4.0 - w * 1.5]:
-				draw_line(Vector2(lx, -5), Vector2(lx, 0), black, 1.8)
-			draw_colored_polygon(PackedVector2Array([Vector2(-8, -9), Vector2(5, -10), Vector2(7, -5), Vector2(-7, -4)]), black)
-			draw_line(Vector2(-8, -8), Vector2(-13, -12 + w), black, 1.4)
-			var hc := Vector2(7, -11)
-			draw_circle(hc, 3.4, black)
-			draw_colored_polygon(PackedVector2Array([hc + Vector2(-2.5, -1.5), hc + Vector2(-1.5, -6), hc + Vector2(0, -2)]), black)
-			draw_colored_polygon(PackedVector2Array([hc + Vector2(0.5, -2), hc + Vector2(2, -6), hc + Vector2(3, -1.5)]), black)
-			draw_circle(hc + Vector2(1.4, -0.5), 0.7, Color(0.9, 0.8, 0.3))
+			# zampe lunghe e sottili
+			for lp in [[-6.0, w], [-3.5, -w], [4.5, -w], [7.0, w]]:
+				var lx: float = lp[0]
+				var sw: float = lp[1]
+				draw_line(Vector2(lx, -7), Vector2(lx + sw * 1.6, 0), skin, 1.3)
+			# corpo magro, la schiena un po' arcuata, la pancia rientrante
+			var body := PackedVector2Array([Vector2(-8, -7), Vector2(-6, -10.5), Vector2(1, -10), Vector2(6, -11), Vector2(8.5, -8.5), Vector2(6, -6.2), Vector2(0, -6.6), Vector2(-6, -5.8)])
+			draw_colored_polygon(body, skin)
+			draw_polyline(PackedVector2Array([Vector2(-6, -10.2), Vector2(1, -9.7), Vector2(5.5, -10.6)]), shine, 0.8)
+			# coda lunga e sottile, alta e ricurva in punta
+			draw_polyline(PackedVector2Array([Vector2(-8, -8), Vector2(-12, -11), Vector2(-14, -15 + w * 0.6), Vector2(-13, -18 + w), Vector2(-11, -18.5 + w)]), skin, 1.1)
+			_head(Vector2(9.5, -13.5), skin, shine, gold, scarab, eye_c)
 		else:
-			# seduto, alla maniera delle statuette di Bastet
-			draw_colored_polygon(PackedVector2Array([Vector2(-5, 0), Vector2(5, 0), Vector2(4, -8), Vector2(1, -13), Vector2(-3, -12), Vector2(-5, -6)]), black)
-			draw_arc(Vector2(-6, -2), 3.5, PI * 0.5, PI * 1.6, 8, black, 1.4)       # la coda attorno alle zampe
-			var hc := Vector2(1, -16)
-			draw_circle(hc, 3.6, black)
-			draw_colored_polygon(PackedVector2Array([hc + Vector2(-3, -1.5), hc + Vector2(-2, -6.5), hc + Vector2(-0.5, -2.5)]), black)
-			draw_colored_polygon(PackedVector2Array([hc + Vector2(0.5, -2.5), hc + Vector2(2, -6.5), hc + Vector2(3, -1.5)]), black)
-			var eye := Color(0.9, 0.8, 0.3) if happy <= 0.0 else Color(0.9, 0.8, 0.3, 0.0)
-			draw_circle(hc + Vector2(1.6, -0.4), 0.7, eye)
-			if happy > 0.0:
-				draw_arc(hc + Vector2(1.6, 0.0), 0.9, PI, TAU, 4, Color(0.9, 0.8, 0.3), 0.6)   # occhi socchiusi
-			draw_line(Vector2(-2, -11), Vector2(3, -11), Color(0.2, 0.45, 0.8), 1.2)     # il collare
-			draw_circle(hc + Vector2(-1.5, 1.5), 0.7, Color(0.95, 0.75, 0.3))          # l'orecchino d'oro
+			# seduto, come le statuette di Bastet: dritto, magro, le zampe davanti unite
+			draw_colored_polygon(PackedVector2Array([Vector2(-6, 0), Vector2(3, 0), Vector2(3.5, -6), Vector2(2.5, -12), Vector2(0, -15), Vector2(-2.5, -13), Vector2(-5, -7)]), skin)
+			draw_line(Vector2(2.0, -9), Vector2(2.4, 0), skin, 1.5)
+			draw_line(Vector2(3.4, -9), Vector2(3.8, 0), skin, 1.4)
+			draw_polyline(PackedVector2Array([Vector2(-3.5, -11), Vector2(-4.6, -6), Vector2(-4.4, -2)]), shine, 0.8)
+			# la coda lunga che gira davanti alle zampe
+			draw_polyline(PackedVector2Array([Vector2(-5.5, -0.5), Vector2(-8, -1), Vector2(-8.5, 0.8), Vector2(-4, 1.6), Vector2(2, 1.4), Vector2(5.5, 0.6)]), skin, 1.1)
+			_head(Vector2(1.0, -18.0), skin, shine, gold, scarab, eye_c)
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		if happy > 0.0:
-			var hp := Vector2(0, -26 - (1.6 - happy) * 8.0)
+			var hp := Vector2(0, -30 - (1.6 - happy) * 8.0)
 			draw_circle(hp + Vector2(-1.5, 0), 1.6, Color(1.0, 0.5, 0.65, happy / 1.6))
 			draw_circle(hp + Vector2(1.5, 0), 1.6, Color(1.0, 0.5, 0.65, happy / 1.6))
 			draw_colored_polygon(PackedVector2Array([hp + Vector2(-3, 0.5), hp + Vector2(3, 0.5), hp + Vector2(0, 3.5)]), Color(1.0, 0.5, 0.65, happy / 1.6))
+
+	## La testa: a cuneo, con le orecchie grandi (l'interno appena più chiaro), gli occhi a mandorla
+	## verde-oro (socchiusi quando lo accarezzi), il collare d'oro con lo scarabeo e l'orecchino.
+	func _head(hc: Vector2, skin: Color, shine: Color, gold: Color, scarab: Color, eye_c: Color) -> void:
+		# il collo e il collare con lo scarabeo
+		draw_line(hc + Vector2(-1.5, 2), hc + Vector2(-2.5, 6), skin, 3.0)
+		draw_line(hc + Vector2(-4.2, 4.6), hc + Vector2(0.6, 3.6), gold, 1.4)
+		draw_circle(hc + Vector2(-1.4, 5.0), 1.2, scarab)
+		draw_circle(hc + Vector2(-1.4, 5.0), 0.5, gold)
+		# la testa a cuneo
+		draw_colored_polygon(PackedVector2Array([hc + Vector2(-3, -2.5), hc + Vector2(2, -3), hc + Vector2(4.5, 0), hc + Vector2(2.8, 2.2), hc + Vector2(-2.2, 2.4), hc + Vector2(-3.6, 0)]), skin)
+		# orecchie grandi, dritte
+		draw_colored_polygon(PackedVector2Array([hc + Vector2(-3.2, -1.8), hc + Vector2(-4.4, -9.5), hc + Vector2(-0.6, -2.8)]), skin)
+		draw_colored_polygon(PackedVector2Array([hc + Vector2(0.2, -2.9), hc + Vector2(2.6, -10.0), hc + Vector2(3.4, -1.8)]), skin)
+		draw_colored_polygon(PackedVector2Array([hc + Vector2(-2.9, -2.6), hc + Vector2(-3.8, -7.6), hc + Vector2(-1.4, -3.0)]), Color(0.32, 0.2, 0.26))
+		draw_colored_polygon(PackedVector2Array([hc + Vector2(1.0, -3.0), hc + Vector2(2.5, -8.2), hc + Vector2(2.9, -2.4)]), Color(0.32, 0.2, 0.26))
+		draw_line(hc + Vector2(-2.4, -2.6), hc + Vector2(1.6, -2.9), shine, 0.7)       # il riflesso sulla fronte
+		# l'orecchino d'oro all'orecchio sinistro
+		draw_arc(hc + Vector2(-3.9, -3.6), 0.9, 0.0, TAU, 8, gold, 0.7)
+		if happy <= 0.0:
+			draw_colored_polygon(PackedVector2Array([hc + Vector2(0.6, -0.6), hc + Vector2(1.8, -1.2), hc + Vector2(3.0, -0.6), hc + Vector2(1.8, 0.0)]), eye_c)
+			draw_line(hc + Vector2(1.8, -1.0), hc + Vector2(1.8, -0.2), Color(0.05, 0.05, 0.05), 0.6)
+		else:
+			draw_arc(hc + Vector2(1.8, -0.2), 1.0, PI, TAU, 5, eye_c, 0.7)          # occhi socchiusi
+		draw_circle(hc + Vector2(4.2, 0.6), 0.5, Color(0.3, 0.2, 0.25))             # il naso
 
 
 ## Il regalo del gatto: una moneta di Ka con l'impronta di una zampa, davanti al cancello.
