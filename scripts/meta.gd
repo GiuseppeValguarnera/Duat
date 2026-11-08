@@ -139,7 +139,8 @@ func _ready() -> void:
 			challenges = {}
 			stats = {"rinascite": stats.get("rinascite", 0)}
 	Lang.apply(String(options.get("lang", "auto")))
-	Fx.apply_text_scale()                 # la grandezza del testo scelta nelle Opzioni
+	Fx.apply_text_scale()
+	Sphinx.touch_clock()                  # l'ultima data vista: protegge i premi settimanali della Sfinge                 # la grandezza del testo scelta nelle Opzioni
 
 
 func save() -> void:

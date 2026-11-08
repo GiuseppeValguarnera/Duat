@@ -573,13 +573,16 @@ func _show_sphinx_board() -> void:
 	var h := UiStyle.label(Lang.t("La scala dell'enigma"), 13, UiStyle.INK, true)
 	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(h)
-	col.add_child(UiStyle.label(Lang.t("Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: solo ciò che la Sfinge ti concede sulla scala. Morire qui non tocca la discesa.") % Sphinx.weapon_name(Sphinx.weapon_of_day()), 8, UiStyle.INK_SOFT, false, w))
+	col.add_child(UiStyle.label(Lang.t("Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: ogni 3 ondate la Sfinge si ferma per un enigma e un dono. Morire qui non tocca la discesa.") % Sphinx.weapon_name(Sphinx.weapon_of_day()), 8, UiStyle.INK_SOFT, false, w))
 	var c := Sphinx.claimed()
 	var parts := []
 	for th in Sphinx.WEEKLY:
 		var r: Array = Sphinx.WEEKLY[th]
 		parts.append((Lang.t("ondata %d: preso") % th) if c.has(th) else (Lang.t("ondata %d: %d Ka + %d lapislazzuli") % [th, r[0], r[1]]))
-	col.add_child(UiStyle.label(Lang.t("Premi della settimana (si rinnovano tra %s): ") % Sphinx.reset_text() + " · ".join(parts), 8, UiStyle.INK_GREEN, false, w))
+	if Sphinx.clock_ok():
+		col.add_child(UiStyle.label(Lang.t("Premi della settimana (si rinnovano tra %s): ") % Sphinx.reset_text() + " · ".join(parts), 8, UiStyle.INK_GREEN, false, w))
+	else:
+		col.add_child(UiStyle.label(Lang.t("I premi della settimana non sono disponibili: controlla la data del dispositivo."), 8, UiStyle.INK_SOFT, false, w))
 	var list := Sphinx.scores()
 	var sc := ScrollContainer.new()
 	sc.custom_minimum_size = Vector2(w, minf(120.0 * u, vs.y * 0.36))

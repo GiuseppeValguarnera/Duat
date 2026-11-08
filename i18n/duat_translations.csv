@@ -920,6 +920,7 @@ Ricomincia la run,Ricomincia la run,Restart the run
 Torna alla Sala (abbandona),Torna alla Sala (abbandona),Back to the Hall (abandon)
 Esci alla Sala (la discesa resta salvata),Esci alla Sala (la discesa resta salvata),Exit to the Hall (the descent stays saved)
 Esci (la discesa resta salvata),Esci (la discesa resta salvata),Quit (the descent stays saved)
+Comandi dell'arma,Comandi dell'arma,Weapon controls
 Ritirati dalla scala (il punteggio resta),Ritirati dalla scala (il punteggio resta),Retire from the stair (your score stays)
 Schermo intero,Schermo intero,Full screen
 Esc / Start per riprendere,Esc / Start per riprendere,Esc / Start to resume
@@ -1120,10 +1121,11 @@ Lascia un commento,Lascia un commento,Leave a comment
 Esci dal gioco,Esci dal gioco,Quit the game
 La porta della Sfinge è aperta,La porta della Sfinge è aperta,The Sphinx's door is open
 La scala dell'enigma,La scala dell'enigma,The Riddle Stair
-"Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: solo ciò che la Sfinge ti concede sulla scala. Morire qui non tocca la discesa.","Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: solo ciò che la Sfinge ti concede sulla scala. Morire qui non tocca la discesa.","Today's weapon is %s: the same for everyone. Normal health, no boons, chapters or amulets: only what the Sphinx grants you on the stair. Dying here doesn't touch your descent."
+"Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: ogni 3 ondate la Sfinge si ferma per un enigma e un dono. Morire qui non tocca la discesa.","Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: ogni 3 ondate la Sfinge si ferma per un enigma e un dono. Morire qui non tocca la discesa.","Today's weapon is %s: the same for everyone. Normal health, no boons, chapters or amulets: every 3 waves the Sphinx stops for a riddle and a boon. Dying here doesn't touch your descent."
 ondata %d: preso,ondata %d: preso,wave %d: claimed
 ondata %d: %d Ka + %d lapislazzuli,ondata %d: %d Ka + %d lapislazzuli,wave %d: %d Ka + %d lapis lazuli
 Premi della settimana (si rinnovano tra %s): ,Premi della settimana (si rinnovano tra %s): ,Weekly rewards (they renew in %s): 
+I premi della settimana non sono disponibili: controlla la data del dispositivo.,I premi della settimana non sono disponibili: controlla la data del dispositivo.,Weekly rewards aren't available: check the device date.
 "Nessun punteggio, per ora. La scala aspetta.","Nessun punteggio, per ora. La scala aspetta.",No scores yet. The stair is waiting.
 %d. %d punti · ondata %d · %s · %s,%d. %d punti · ondata %d · %s · %s,%d. %d points · wave %d · %s · %s
 Racconti dell'acqua · %d di %d,Racconti dell'acqua · %d di %d,Tales of the water · %d of %d
@@ -1688,19 +1690,30 @@ SCUDO ROTTO,SCUDO ROTTO,SHIELD BROKEN
 %d ore,%d ore,%d hours
 Il Guardiano della Sabbia,Il Guardiano della Sabbia,The Guardian of the Sand
 L'Ombra di Ieri,L'Ombra di Ieri,The Shadow of Yesterday
+Il grande scarabeo di Khepri,Il grande scarabeo di Khepri,The great scarab of Khepri
 L'Ombra di Domani,L'Ombra di Domani,The Shadow of Tomorrow
-La prossima ondata è più corta: 3 nemici in meno.,La prossima ondata è più corta: 3 nemici in meno.,The next wave is shorter: 3 fewer enemies.
+Per le prossime 3 ondate: 2 nemici in meno in ognuna.,Per le prossime 3 ondate: 2 nemici in meno in ognuna.,For the next 3 waves: 2 fewer enemies in each.
 "Un dono in più, subito: tre a scelta, livello base.","Un dono in più, subito: tre a scelta, livello base.","One extra boon, right now: pick one of three, base level."
 Ti curi subito del 15% della vita massima.,Ti curi subito del 15% della vita massima.,You heal 15% of your max health right away.
-Nella prossima ondata i nemici sono più lenti del 15%.,Nella prossima ondata i nemici sono più lenti del 15%.,In the next wave enemies are 15% slower.
-Cominci la prossima ondata con uno scudo da 12.,Cominci la prossima ondata con uno scudo da 12.,You start the next wave with a 12-point shield.
-Nella prossima ondata i nemici hanno il 35% di vita in più.,Nella prossima ondata i nemici hanno il 35% di vita in più.,In the next wave enemies have 35% more health.
-Nella prossima ondata i nemici sono più veloci del 15%.,Nella prossima ondata i nemici sono più veloci del 15%.,In the next wave enemies are 15% faster.
-"Niente cure per 3 ondate, nemmeno quella che arriva ogni 5 ondate.","Niente cure per 3 ondate, nemmeno quella che arriva ogni 5 ondate.","No healing for 3 waves, not even the one that comes every 5 waves."
-"Per 3 ondate, dopo un colpo resti invulnerabile la metà del tempo.","Per 3 ondate, dopo un colpo resti invulnerabile la metà del tempo.","For 3 waves, after a hit you stay invulnerable for half the time."
-La prossima ondata ha 4 nemici in più.,La prossima ondata ha 4 nemici in più.,The next wave has 4 more enemies.
-Nella prossima ondata due nemici in più sono élite.,Nella prossima ondata due nemici in più sono élite.,In the next wave two more enemies are elite.
-Nella prossima ondata i nemici fanno il 20% di danni in più.,Nella prossima ondata i nemici fanno il 20% di danni in più.,In the next wave enemies deal 20% more damage.
+Per le prossime 3 ondate: nemici più lenti del 15%.,Per le prossime 3 ondate: nemici più lenti del 15%.,For the next 3 waves: enemies are 15% slower.
+Per le prossime 3 ondate: cominci ognuna con uno scudo da 12.,Per le prossime 3 ondate: cominci ognuna con uno scudo da 12.,For the next 3 waves: you start each one with a 12-point shield.
+Per le prossime 3 ondate: nemici con il 30% di vita in più.,Per le prossime 3 ondate: nemici con il 30% di vita in più.,For the next 3 waves: enemies have 30% more health.
+Per le prossime 3 ondate: nemici più veloci del 15%.,Per le prossime 3 ondate: nemici più veloci del 15%.,For the next 3 waves: enemies are 15% faster.
+"Per le prossime 3 ondate: niente cure, nemmeno quella che arriva ogni 5 ondate.","Per le prossime 3 ondate: niente cure, nemmeno quella che arriva ogni 5 ondate.","For the next 3 waves: no healing, not even the one that comes every 5 waves."
+Per le prossime 3 ondate: dopo un colpo resti invulnerabile la metà del tempo.,Per le prossime 3 ondate: dopo un colpo resti invulnerabile la metà del tempo.,For the next 3 waves: after a hit you stay invulnerable for half the time.
+Per le prossime 3 ondate: 3 nemici in più in ognuna.,Per le prossime 3 ondate: 3 nemici in più in ognuna.,For the next 3 waves: 3 more enemies in each.
+Per le prossime 3 ondate: due nemici in più sono élite.,Per le prossime 3 ondate: due nemici in più sono élite.,For the next 3 waves: two more enemies are elite.
+Per le prossime 3 ondate: i nemici fanno il 20% di danni in più.,Per le prossime 3 ondate: i nemici fanno il 20% di danni in più.,For the next 3 waves: enemies deal 20% more damage.
+ondate più corte,ondate più corte,shorter waves
+nemici lenti,nemici lenti,slow enemies
+scudo a ogni ondata,scudo a ogni ondata,shield every wave
+nemici più resistenti,nemici più resistenti,tougher enemies
+nemici veloci,nemici veloci,fast enemies
+niente cure,niente cure,no healing
+invulnerabilità dimezzata,invulnerabilità dimezzata,halved invulnerability
+più nemici,più nemici,more enemies
+più élite,più élite,more elites
+nemici più forti,nemici più forti,stronger enemies
 "Ogni mattina nasco dal grembo di Nut, ogni sera lei mi inghiotte. Chi sono?","Ogni mattina nasco dal grembo di Nut, ogni sera lei mi inghiotte. Chi sono?","Every morning I am born from Nut's womb, every evening she swallows me. Who am I?"
 "Ra, il sole che rinasce.","Ra, il sole che rinasce.","Ra, the sun reborn."
 Ra. E stanotte attraverso il Duat con lui.,Ra. E stanotte attraverso il Duat con lui.,Ra. And tonight I cross the Duat with him.
@@ -1754,10 +1767,35 @@ La collina primordiale.,La collina primordiale.,The primeval mound.
 La collina. Ci salirò in cima.,La collina. Ci salirò in cima.,The mound. I'll climb to the top.
 La Sfinge · ondata %d · %d punti,La Sfinge · ondata %d · %d punti,The Sphinx · wave %d · %d points
 "Arma del giorno: %s · uguale per tutti, oggi","Arma del giorno: %s · uguale per tutti, oggi","Weapon of the day: %s · the same for everyone, today"
+Arma del giorno,Arma del giorno,Weapon of the day
+"La prova: ondate sempre più dure, con vita normale e solo i doni che trovi qui. Ogni 3 ondate la Sfinge si ferma: un enigma e un dono. Conta quanto in alto arrivi.","La prova: ondate sempre più dure, con vita normale e solo i doni che trovi qui. Ogni 3 ondate la Sfinge si ferma: un enigma e un dono. Conta quanto in alto arrivi.","The trial: ever harder waves, with normal health and only the boons you find here. Every 3 waves the Sphinx stops: a riddle and a boon. What counts is how high you climb."
+Comincia,Comincia,Start
+Trascina il tasto dell'arco,Trascina il tasto dell'arco,Drag the bow button
+Tieni fermo il dito,Tieni fermo il dito,Hold your finger still
+Tasto d'attacco,Tasto d'attacco,Attack button
+Tieni premuto l'attacco,Tieni premuto l'attacco,Hold attack
+"Scatto, poi attacco","Scatto, poi attacco","Dash, then attack"
+RB,RB,RB
+Tieni premuto RB,Tieni premuto RB,Hold RB
+"LB/A, poi RB","LB/A, poi RB","LB/A, then RB"
+Clic sinistro,Clic sinistro,Left click
+Tieni premuto il clic,Tieni premuto il clic,Hold the click
+"Spazio, poi clic","Spazio, poi clic","Space, then click"
+Affondi lunghi e stretti; il terzo è un'ampia spazzata.,Affondi lunghi e stretti; il terzo è un'ampia spazzata.,"Long, narrow thrusts; the third is a wide sweep."
+La lanci: trapassa tutti e torna. Finché non torna sei disarmato.,La lanci: trapassa tutti e torna. Finché non torna sei disarmato.,"You throw it: it pierces everyone and comes back. Until it does, you're unarmed."
+Affondo in corsa che trapassa la fila.,Affondo in corsa che trapassa la fila.,A running thrust that pierces the line.
+Frecce rapide dove punti: si fermano sul primo nemico.,Frecce rapide dove punti: si fermano sul primo nemico.,Quick arrows where you aim: they stop on the first enemy.
+Tiro carico: una freccia che trapassa tutto (ricarica 4 s).,Tiro carico: una freccia che trapassa tutto (ricarica 4 s).,Charged shot: one arrow that pierces everything (4 s recharge).
+"Alla fine dello scatto, un ventaglio di tre frecce.","Alla fine dello scatto, un ventaglio di tre frecce.","At the end of the dash, a fan of three arrows."
+"Frustate in linea: colpiscono tutti, i danni pieni sono in punta.","Frustate in linea: colpiscono tutti, i danni pieni sono in punta.","Lashes in a line: they hit everyone, full damage at the tip."
+Il pastorale aggancia e ti lancia addosso un nemico; élite e guardiani tirano te.,Il pastorale aggancia e ti lancia addosso un nemico; élite e guardiani tirano te.,The crook hooks an enemy and throws it at you; elites and guardians pull you instead.
+Una frustata lunga che trascina con te i nemici colpiti.,Una frustata lunga che trascina con te i nemici colpiti.,A long lash that drags the enemies it hits along with you.
+Tre fendenti: il terzo è il più forte.,Tre fendenti: il terzo è il più forte.,Three slashes: the third is the strongest.
+"Un colpo a giro, tutto intorno a te.","Un colpo a giro, tutto intorno a te.","A spinning strike, all around you."
+Un fendente più largo e più lungo.,Un fendente più largo e più lungo.,"A wider, longer slash."
 Scudo 12,Scudo 12,Shield 12
 Ondata %d · un guardiano,Ondata %d · un guardiano,Wave %d · a guardian
 %d nemici,%d nemici,%d enemies
-la Sfinge ricorda la tua risposta,la Sfinge ricorda la tua risposta,the Sphinx remembers your answer
 Ondata %d,Ondata %d,Wave %d
 La sabbia di Sokar,La sabbia di Sokar,The sand of Sokar
 Le sabbie mobili rallentano te e i nemici,Le sabbie mobili rallentano te e i nemici,Quicksand slows you and the enemies
@@ -1767,12 +1805,13 @@ risposta audace +%d,risposta audace +%d,bold answer +%d
 Ondata %d superata,Ondata %d superata,Wave %d cleared
 "Premio della settimana: +%d Ka, +%d lapislazzuli","Premio della settimana: +%d Ka, +%d lapislazzuli","Weekly reward: +%d Ka, +%d lapis lazuli"
 Niente cura: l'hai promesso alla Sfinge,Niente cura: l'hai promesso alla Sfinge,No healing: you promised the Sphinx
-Gli dèi guardano la scala,Gli dèi guardano la scala,The gods watch the stair
+Pausa della Sfinge · il dono,Pausa della Sfinge · il dono,Sphinx's pause · the boon
 "Un dono, al livello base","Un dono, al livello base","One boon, at base level"
-+%d punti se superi l'ondata.,+%d punti se superi l'ondata.,+%d points if you clear the wave.
++%d punti per ogni ondata superata con questo effetto.,+%d punti per ogni ondata superata con questo effetto.,+%d points for every wave cleared with this effect.
 Risposta audace,Risposta audace,Bold answer
 Risposta prudente,Risposta prudente,Cautious answer
-Ogni risposta è giusta: scegli che prova vuoi,Ogni risposta è giusta: scegli che prova vuoi,Every answer is right: choose the trial you want
+Pausa della Sfinge · l'enigma,Pausa della Sfinge · l'enigma,Sphinx's pause · the riddle
+Ogni risposta è giusta: scegli che prova vuoi per le prossime 3 ondate,Ogni risposta è giusta: scegli che prova vuoi per le prossime 3 ondate,Every answer is right: choose the trial you want for the next 3 waves
 La Sfinge annuisce,La Sfinge annuisce,The Sphinx nods
 Ti sei ritirato dalla scala,Ti sei ritirato dalla scala,You retired from the stair
 La Sfinge ha parlato,La Sfinge ha parlato,The Sphinx has spoken
@@ -1986,6 +2025,21 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+"Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: solo ciò che la Sfinge ti concede sulla scala. Morire qui non tocca la discesa.","Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: solo ciò che la Sfinge ti concede sulla scala. Morire qui non tocca la discesa.","Today's weapon is %s: the same for everyone. Normal health, no boons, chapters or amulets: only what the Sphinx grants you on the stair. Dying here doesn't touch your descent."
+La prossima ondata è più corta: 3 nemici in meno.,La prossima ondata è più corta: 3 nemici in meno.,The next wave is shorter: 3 fewer enemies.
+Nella prossima ondata i nemici sono più lenti del 15%.,Nella prossima ondata i nemici sono più lenti del 15%.,In the next wave enemies are 15% slower.
+Cominci la prossima ondata con uno scudo da 12.,Cominci la prossima ondata con uno scudo da 12.,You start the next wave with a 12-point shield.
+Nella prossima ondata i nemici hanno il 35% di vita in più.,Nella prossima ondata i nemici hanno il 35% di vita in più.,In the next wave enemies have 35% more health.
+Nella prossima ondata i nemici sono più veloci del 15%.,Nella prossima ondata i nemici sono più veloci del 15%.,In the next wave enemies are 15% faster.
+"Niente cure per 3 ondate, nemmeno quella che arriva ogni 5 ondate.","Niente cure per 3 ondate, nemmeno quella che arriva ogni 5 ondate.","No healing for 3 waves, not even the one that comes every 5 waves."
+"Per 3 ondate, dopo un colpo resti invulnerabile la metà del tempo.","Per 3 ondate, dopo un colpo resti invulnerabile la metà del tempo.","For 3 waves, after a hit you stay invulnerable for half the time."
+La prossima ondata ha 4 nemici in più.,La prossima ondata ha 4 nemici in più.,The next wave has 4 more enemies.
+Nella prossima ondata due nemici in più sono élite.,Nella prossima ondata due nemici in più sono élite.,In the next wave two more enemies are elite.
+Nella prossima ondata i nemici fanno il 20% di danni in più.,Nella prossima ondata i nemici fanno il 20% di danni in più.,In the next wave enemies deal 20% more damage.
+la Sfinge ricorda la tua risposta,la Sfinge ricorda la tua risposta,the Sphinx remembers your answer
+Gli dèi guardano la scala,Gli dèi guardano la scala,The gods watch the stair
++%d punti se superi l'ondata.,+%d punti se superi l'ondata.,+%d points if you clear the wave.
+Ogni risposta è giusta: scegli che prova vuoi,Ogni risposta è giusta: scegli che prova vuoi,Every answer is right: choose the trial you want
 "Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa. Poi una porta sola","Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa. Poi una porta sola","The Ferryman, before the trial: a quiet hall to spend the Ka of the descent. Then a single door"
 Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Aker,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Aker,Water of the Nile: recover %d%% of your health. Last chamber before Aker
 Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Acqua del Nilo: recuperi il %d%% della vita. Ultima stanza prima di Am-heh,Water of the Nile: you recover %d%% of your health. Last chamber before Am-heh

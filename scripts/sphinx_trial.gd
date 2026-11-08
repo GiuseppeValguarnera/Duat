@@ -12,10 +12,9 @@ var wave := 0
 var score := 0
 var hard_taken := 0                      ## risposte dure superate
 var clean := 0                           ## ondate senza colpi subiti
-var cur := {}                            ## effetti della Sfinge sull'ondata in corso
-var nxt := {}                            ## effetti decisi per la prossima ondata
-var noheal_left := 0                     ## ondate ancora senza cure
-var fragile_left := 0                    ## ondate ancora con l'invulnerabilità dimezzata
+var active := ""                         ## l'effetto dell'ultimo enigma (dura fino alla pausa successiva)
+var active_left := 0                     ## ondate che restano con l'effetto attivo
+var prize_blocked := false               ## data del dispositivo indietro: premi della settimana sospesi
 var rewards: Array = []                  ## premi settimanali presi in questa prova: [soglia, Ka, lapis]
 var wave_t := 0.0
 var running := false
@@ -24,7 +23,6 @@ var order: Array = []
 var riddle_i := 0
 var weapon := ""
 var zones_added := 0
-var mounds: Array = []
 
 
 func _ready() -> void:
@@ -39,11 +37,18 @@ func _process(delta: float) -> void:
 
 ## La riga dell'HUD al posto di «Stanza N/10».
 func hud_line() -> String:
-	return Lang.t("La Sfinge · ondata %d · %d punti") % [maxi(wave, 1), score]
+	var s := Lang.t("La Sfinge · ondata %d · %d punti") % [maxi(wave, 1), score]
+	if active != "" and active_left > 0:
+		s += " · " + Sphinx.effect_short(active) + " (%d)" % active_left
+	return s
 
 
-## L'arena: la Sfinge sdraiata contro la parete nord, i cumuli di sabbia (Serket ne esce) e due
-## colonne. Chiamata da game.start_room.
+func _on(eff: String) -> bool:
+	return active == eff and active_left > 0
+
+
+## L'arena: la Sfinge sdraiata contro la parete nord e due colonne. Chiamata da game.start_room.
+## (Blocco 16: niente più Serket qui, e quindi niente cumuli: il suo guardiano è lo scarabeo di Khepri.)
 func build_arena() -> void:
 	var cx: float = game.ROOM.size.x / 2.0
 	var statue := SphinxStatue.new()
@@ -52,15 +57,132 @@ func build_arena() -> void:
 	var r := Rect2(cx - 44.0, game.TOP, 88.0, 40.0)
 	game.obstacles.append(r)
 	game._solid(r)
-	mounds = Arenas.temple_mounds(game.ROOM, game.TOP, game.WALL)
-	var m := SandMounds.new()
-	m.list = mounds
-	game.world.add_child(m)
 
 
 func begin() -> void:
+	Sphinx.touch_clock()
+	prize_blocked = not Sphinx.clock_ok()
+	var seen: Array = Meta.sphinx.get("intro", [])
+	if seen.has(weapon):
+		_begin_waves()
+	else:
+		seen.append(weapon)
+		Meta.sphinx["intro"] = seen
+		Meta.save()
+		show_controls(_begin_waves)
+
+
+func _begin_waves() -> void:
 	game._banner(Lang.t("La scala dell'enigma"), Lang.t("Arma del giorno: %s · uguale per tutti, oggi") % Sphinx.weapon_name(weapon), SAND, 3.0)
+	if prize_blocked:
+		Fx.float_text(game.player.global_position + Vector2(0, -30), Lang.t("I premi della settimana non sono disponibili: controlla la data del dispositivo."), Color(0.85, 0.82, 0.75), 9)
 	get_tree().create_timer(2.6, false).timeout.connect(_start_wave)
+
+
+## La schermata di inizio (blocco 16): l'arma del giorno con il suo disegno, i tre comandi
+## (attacco, attacco caricato tenendo premuto, attacco dopo lo scatto) e una riga sulla prova. La
+## prima volta con ogni arma; poi dal pulsante «Comandi dell'arma» della pausa. Sul telefono il
+## riquadro si rimpicciolisce finché non sta tutto nello schermo.
+func show_controls(then: Callable) -> void:
+	var was_paused := get_tree().paused
+	get_tree().paused = true
+	var u: float = Fx.ui
+	var vs: Vector2 = get_viewport().get_visible_rect().size
+	var layer := CanvasLayer.new()
+	layer.layer = 27
+	layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(layer)
+	var dim := ColorRect.new()
+	dim.color = Color(0.03, 0.02, 0.05, 0.88)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(dim)
+	var pap := PanelContainer.new()
+	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(Color(0.6, 0.46, 0.2)))
+	layer.add_child(pap)
+	var w := minf(440.0 * u, vs.x - 32.0)
+	var col := VBoxContainer.new()
+	col.custom_minimum_size = Vector2(w, 0)
+	col.add_theme_constant_override("separation", int(3 * u))
+	pap.add_child(col)
+	var top := HBoxContainer.new()
+	top.alignment = BoxContainer.ALIGNMENT_CENTER
+	top.add_theme_constant_override("separation", int(8 * u))
+	col.add_child(top)
+	var icon := WeaponIcon.new()
+	icon.weapon = weapon
+	icon.custom_minimum_size = Vector2(44, 44) * u
+	top.add_child(icon)
+	var names := VBoxContainer.new()
+	names.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	top.add_child(names)
+	names.add_child(UiStyle.label(Lang.t("Arma del giorno"), 8, UiStyle.INK_SOFT))
+	names.add_child(UiStyle.label(Sphinx.weapon_name(weapon), 14, UiStyle.INK, true))
+	var keys := _keys()
+	var moves := _moves()
+	for i in range(3):
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", int(6 * u))
+		col.add_child(row)
+		var k := UiStyle.label(String(keys[i]), 9, UiStyle.INK_RED, true)
+		k.custom_minimum_size.x = w * 0.3
+		k.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		row.add_child(k)
+		row.add_child(UiStyle.label(String(moves[i]), 9, UiStyle.INK, false, w * 0.66))
+	var about := UiStyle.label(Lang.t("La prova: ondate sempre più dure, con vita normale e solo i doni che trovi qui. Ogni 3 ondate la Sfinge si ferma: un enigma e un dono. Conta quanto in alto arrivi."), 8, UiStyle.INK_SOFT, false, w)
+	col.add_child(about)
+	var b := Button.new()
+	b.text = Lang.t("Comincia") if not was_paused else Lang.t("Indietro")
+	UiStyle.papyrus_button(b, SAND)
+	b.add_theme_font_size_override("font_size", Fx.fs(10))
+	b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	col.add_child(b)
+	b.pressed.connect(func() -> void:
+		layer.queue_free()
+		get_tree().paused = was_paused
+		then.call())
+	b.grab_focus.call_deferred()
+	_fit_panel.call_deferred(pap, vs)
+
+
+## Centra il riquadro e, se è più alto dello schermo (telefono, testo grande), lo rimpicciolisce.
+func _fit_panel(pap: Control, vs: Vector2) -> void:
+	if not is_instance_valid(pap):
+		return
+	var sz := pap.get_combined_minimum_size()
+	pap.size = sz
+	var k := minf(1.0, minf((vs.y - 12.0) / maxf(1.0, sz.y), (vs.x - 12.0) / maxf(1.0, sz.x)))
+	pap.scale = Vector2(k, k)
+	pap.position = (vs - sz * k) / 2.0
+
+
+## Come si fanno le tre mosse, col dispositivo che stai usando.
+func _keys() -> Array:
+	if Fx.device == "touch":
+		if weapon == "arco":
+			return [Lang.t("Trascina il tasto dell'arco"), Lang.t("Tieni fermo il dito"), Lang.t("Scatto")]
+		return [Lang.t("Tasto d'attacco"), Lang.t("Tieni premuto l'attacco"), Lang.t("Scatto, poi attacco")]
+	if Fx.device == "pad":
+		return [Lang.t("RB"), Lang.t("Tieni premuto RB"), Lang.t("LB/A, poi RB")]
+	return [Lang.t("Clic sinistro"), Lang.t("Tieni premuto il clic"), Lang.t("Spazio, poi clic")]
+
+
+func _moves() -> Array:
+	match weapon:
+		"lancia":
+			return [Lang.t("Affondi lunghi e stretti; il terzo è un'ampia spazzata."),
+				Lang.t("La lanci: trapassa tutti e torna. Finché non torna sei disarmato."),
+				Lang.t("Affondo in corsa che trapassa la fila.")]
+		"arco":
+			return [Lang.t("Frecce rapide dove punti: si fermano sul primo nemico."),
+				Lang.t("Tiro carico: una freccia che trapassa tutto (ricarica 4 s)."),
+				Lang.t("Alla fine dello scatto, un ventaglio di tre frecce.")]
+		"flagello":
+			return [Lang.t("Frustate in linea: colpiscono tutti, i danni pieni sono in punta."),
+				Lang.t("Il pastorale aggancia e ti lancia addosso un nemico; élite e guardiani tirano te."),
+				Lang.t("Una frustata lunga che trascina con te i nemici colpiti.")]
+	return [Lang.t("Tre fendenti: il terzo è il più forte."),
+		Lang.t("Un colpo a giro, tutto intorno a te."),
+		Lang.t("Un fendente più largo e più lungo.")]
 
 
 # --- ondate -------------------------------------------------------------------------------
@@ -69,17 +191,15 @@ func _start_wave() -> void:
 	if ended or game.player == null or game.player.dead:
 		return
 	wave += 1
-	cur = nxt
-	nxt = {}
-	Run.trial_hp = Sphinx.hp_mult(wave) * (1.35 if cur.has("tough") else 1.0)
-	Run.trial_speed = Sphinx.speed_mult(wave) * (1.15 if cur.has("fast") else 1.0) * (0.85 if cur.has("slow") else 1.0)
-	Run.trial_dmg = Sphinx.dmg_mult(wave) * (1.2 if cur.has("sting") else 1.0)
-	game.player.hit_invuln = 0.8 * (0.5 if fragile_left > 0 else 1.0)
-	if cur.has("shield"):
+	Run.trial_hp = Sphinx.hp_mult(wave) * (1.3 if _on("tough") else 1.0)
+	Run.trial_speed = Sphinx.speed_mult(wave) * (1.15 if _on("fast") else 1.0) * (0.85 if _on("slow") else 1.0)
+	Run.trial_dmg = Sphinx.dmg_mult(wave) * (1.2 if _on("sting") else 1.0)
+	game.player.hit_invuln = 0.8 * (0.5 if _on("fragile") else 1.0)
+	if _on("shield"):
 		game.player.shield = maxf(game.player.shield, 12.0)
 		Fx.float_text(game.player.global_position + Vector2(0, -20), Lang.t("Scudo 12"), Boons.god_color("iside"))
-	var extra := (4 if cur.has("horde") else 0) - (3 if cur.has("short") else 0)
-	var list := Sphinx.wave_list(wave, extra, 2 if cur.has("elite") else 0)
+	var extra := (3 if _on("horde") else 0) - (2 if _on("short") else 0)
+	var list := Sphinx.wave_list(wave, extra, 2 if _on("elite") else 0)
 	game.guardian_down = false
 	game.boss = null
 	game.boss_group = []
@@ -103,8 +223,8 @@ func _start_wave() -> void:
 			game.waves.append(list.slice(half))
 		game._spawn_wave(game.waves.pop_front(), 1.0)
 		var sub := Lang.t("%d nemici") % list.size()
-		if not cur.is_empty():
-			sub += " · " + Lang.t("la Sfinge ricorda la tua risposta")
+		if active != "" and active_left > 0:
+			sub += " · " + Sphinx.effect_short(active)
 		game._banner(Lang.t("Ondata %d") % wave, sub, SAND, 1.6)
 		Music.play("room")
 	wave_t = 0.0
@@ -144,11 +264,6 @@ func adjust(e: Enemy, kind: String, tag: String) -> void:
 		e.max_hp = float(gi["hp"]) * (1.0 + 0.3 * int(gi["cycle"]))
 		e.no_reward = true
 		_show_bar.call_deferred(e, gi["name"])
-	elif kind == "serket":
-		var gi := Sphinx.guard_info(wave)
-		e.set("dais_radii", Vector2.ZERO)    # nell'arena della Sfinge non c'è il piano di pietra
-		e.set("mounds", mounds)
-		e.max_hp = float(gi["hp"]) * (1.0 + 0.3 * int(gi["cycle"])) / maxf(0.1, Run.trial_hp)
 	elif tag == "g":
 		var gi := Sphinx.guard_info(wave)
 		e.elite = true
@@ -179,8 +294,8 @@ func on_wave_cleared() -> void:
 		notes.append(Lang.t("senza colpi +%d") % Sphinx.PTS_CLEAN)
 	if wave_t < Sphinx.QUICK_SECS:
 		gained += Sphinx.PTS_QUICK
-	if cur.has("hard"):
-		gained += Sphinx.PTS_HARD
+	if active_left > 0 and Sphinx.is_hard(active):
+		gained += Sphinx.PTS_HARD             # per ogni ondata superata con l'effetto audace attivo
 		hard_taken += 1
 		notes.append(Lang.t("risposta audace +%d") % Sphinx.PTS_HARD)
 	score += gained
@@ -188,28 +303,35 @@ func on_wave_cleared() -> void:
 	if not notes.is_empty():
 		sub += " · " + " · ".join(notes)
 	game._banner(Lang.t("Ondata %d superata") % wave, sub, SAND, 1.8)
-	var prize := Sphinx.claim(wave)
+	var busy := false                         # premio o cura: la pausa aspetta che si leggano
+	var prize := [] if prize_blocked else Sphinx.claim(wave)
 	if not prize.is_empty():
+		busy = true
 		rewards.append([wave, prize[0], prize[1]])
 		Sfx.play("boon", 0.0)
 		Fx.float_text(game.player.global_position + Vector2(0, -30), Lang.t("Premio della settimana: +%d Ka, +%d lapislazzuli") % [prize[0], prize[1]], Restorations.LAPIS_COLOR, 10)
 	if wave % Sphinx.HEAL_EVERY == 0:
-		if noheal_left > 0:
+		busy = true
+		if _on("noheal"):
 			Fx.float_text(game.player.global_position + Vector2(0, -20), Lang.t("Niente cura: l'hai promesso alla Sfinge"), HARD_COL)
 		else:
 			game.player.heal(roundf(Run.max_hp * Sphinx.HEAL))
-	noheal_left = maxi(0, noheal_left - 1)
-	fragile_left = maxi(0, fragile_left - 1)
-	get_tree().create_timer(1.6, false).timeout.connect(_after_wave)
+	active_left = maxi(0, active_left - 1)
+	if active_left == 0:
+		active = ""
+	var pause := wave % Sphinx.BOON_EVERY == 0
+	if pause:
+		# la cura (e il premio) prima, poi la pausa della Sfinge: in sequenza, mai sovrapposte
+		get_tree().create_timer(2.8 if busy else 1.6, false).timeout.connect(_sphinx_pause)
+	else:
+		_queue_wave()
 
 
-func _after_wave() -> void:
+## La pausa della Sfinge (dopo le ondate 3, 6, 9...): l'enigma, poi il dono.
+func _sphinx_pause() -> void:
 	if ended or game.player == null or game.player.dead:
 		return
-	if wave % Sphinx.BOON_EVERY == 0:
-		_offer_boons(_riddle)
-	else:
-		_riddle()
+	_riddle()
 
 
 # --- doni -----------------------------------------------------------------------------------
@@ -229,7 +351,7 @@ func _offer_boons(then: Callable) -> void:
 			tag += Lang.t(" · solo %s") % String(Weapons.ALL[Boons.ALL[id]["weapon"]]["short"]).to_lower()
 		cards.append({"tag": tag, "name": Boons.ALL[id]["name"], "body": Boons.text(id, 1),
 			"gain": sh[0], "loss": sh[1], "color": Boons.god_color(g), "on_pick": _pick_boon.bind(id, then)})
-	game._open_choice(Lang.t("Gli dèi guardano la scala"), SAND, Lang.t("Un dono, al livello base"), cards)
+	game._open_choice(Lang.t("Pausa della Sfinge · il dono"), SAND, Lang.t("Un dono, al livello base"), cards)
 
 
 func _pick_boon(id: String, then: Callable) -> void:
@@ -254,35 +376,28 @@ func _riddle() -> void:
 		var hard: bool = side == "hard"
 		var body := Sphinx.effect_text(eff)
 		if hard:
-			body += "\n" + Lang.t("+%d punti se superi l'ondata.") % Sphinx.PTS_HARD
+			body += "\n" + Lang.t("+%d punti per ogni ondata superata con questo effetto.") % Sphinx.PTS_HARD
 		cards.append({"tag": Lang.t("Risposta audace") if hard else Lang.t("Risposta prudente"),
 			"name": "«" + String(r[side]) + "»", "body": body,
 			"color": HARD_COL if hard else SOFT_COL, "on_pick": _answer.bind(eff)})
-	game._open_choice(Lang.t("La Sfinge"), SAND, Lang.t("Ogni risposta è giusta: scegli che prova vuoi"), cards, String(r["q"]))
+	game._open_choice(Lang.t("Pausa della Sfinge · l'enigma"), SAND, Lang.t("Ogni risposta è giusta: scegli che prova vuoi per le prossime 3 ondate"), cards, String(r["q"]))
 
 
 func _answer(eff: String) -> void:
 	game._close_choice()
 	Sfx.play("ui", 0.0)
 	var hard := Sphinx.is_hard(eff)
-	match eff:
-		"noheal":
-			noheal_left = 3
-		"fragile":
-			fragile_left = 3
-		"heal":
-			game.player.heal(roundf(Run.max_hp * 0.15))
-		"gift":
-			pass
-		_:
-			nxt[eff] = true
-	if hard:
-		nxt["hard"] = true                    # il bonus arriva se superi la prossima ondata
+	active = ""
+	active_left = 0
+	if eff == "heal":
+		game.player.heal(roundf(Run.max_hp * 0.15))
+	elif eff != "gift":
+		active = eff                          # dura fino alla prossima pausa: 3 ondate
+		active_left = Sphinx.EFFECT_WAVES
 	game._banner(Lang.t("La Sfinge annuisce"), Sphinx.effect_text(eff), HARD_COL if hard else SOFT_COL, 2.0)
-	if eff == "gift":
-		get_tree().create_timer(0.8, false).timeout.connect(_offer_boons.bind(_queue_wave))
-	else:
-		_queue_wave()
+	# poi il dono della pausa (due, se la risposta era «un dono in più»)
+	var after := _offer_boons.bind(_queue_wave) if eff == "gift" else _queue_wave
+	get_tree().create_timer(0.9, false).timeout.connect(_offer_boons.bind(after))
 
 
 func _queue_wave() -> void:
@@ -359,6 +474,8 @@ func _summary(reached: int, pos: int, retired: bool) -> void:
 		for r in rewards:
 			parts.append(Lang.t("ondata %d: +%d Ka, +%d lapislazzuli") % r)
 		pr = Lang.t("Premi della settimana: ") + " · ".join(parts)
+	if prize_blocked:
+		pr = Lang.t("I premi della settimana non sono disponibili: controlla la data del dispositivo.")
 	var prl := UiStyle.label(pr, 9, UiStyle.INK_GREEN, false, w)
 	prl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(prl)
@@ -448,19 +565,33 @@ class SphinxStatue extends Node2D:
 		draw_circle(h + Vector2(0, -9), 1.6, Color(0.94, 0.72, 0.3))       # l'ureo
 
 
-## I cumuli di sabbia dell'arena (da lì escono gli scorpioni quando arriva Serket).
-class SandMounds extends Node2D:
-	var list: Array = []
 
-	func _ready() -> void:
-		z_index = 0
-		Hazards.ground.call_deferred(self)
+## Il disegno dell'arma del giorno nella schermata dei comandi (come sui piedistalli del Cortile).
+class WeaponIcon extends Control:
+	var weapon := "khopesh"
 
 	func _draw() -> void:
-		for p in list:
-			var c: Vector2 = p - global_position
-			draw_set_transform(c, 0.0, Vector2(1.0, 0.45))
-			draw_circle(Vector2.ZERO, 17.0, Color(0.62, 0.5, 0.32))
-			draw_circle(Vector2(-3, -4), 11.0, Color(0.74, 0.61, 0.4))
-			draw_circle(Vector2(-5, -7), 5.0, Color(0.84, 0.72, 0.5))
-			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		var gold := Color(0.94, 0.72, 0.3)
+		var k := size.y / 44.0
+		var c := size / 2.0
+		draw_circle(c, size.y * 0.48, Color(0.12, 0.09, 0.06, 0.85))
+		draw_arc(c, size.y * 0.48, 0.0, TAU, 32, gold, 1.5)
+		draw_set_transform(c, 0.0, Vector2(k, k))
+		match weapon:
+			"arco":
+				ArrowArt.draw_bow(self, Vector2(0, 0), 0.0, 1.0, 0.0)
+			"flagello":
+				FlailArt.draw_crook(self, Vector2(5, 12), Vector2(-0.35, -1).normalized(), 24.0, FlailArt.GOLD)
+				FlailArt.draw_flail(self, Vector2(-5, 12), Vector2(0.35, -1).normalized(), 1.5)
+			"lancia":
+				draw_line(Vector2(0, 16), Vector2(0, -10), Color(0.55, 0.38, 0.2), 2.0)
+				draw_colored_polygon(PackedVector2Array([Vector2(0, -18), Vector2(3, -10), Vector2(-3, -10)]), Color(0.85, 0.85, 0.9))
+				draw_line(Vector2(-3, -8), Vector2(3, -8), gold, 1.5)
+			_:
+				draw_line(Vector2(-2, 14), Vector2(0, 4), gold, 2.5)
+				var blade := PackedVector2Array()
+				for i in range(9):
+					var t := i / 8.0
+					blade.append(Vector2(sin(t * PI) * 7.0 - t * 3.0, 4.0 - t * 18.0))
+				draw_polyline(blade, Color(0.85, 0.85, 0.9), 2.5)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

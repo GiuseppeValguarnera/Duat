@@ -1565,7 +1565,7 @@ func _toggle_pause() -> void:
 	var first: Button = null
 	var entries := [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Opzioni"), _open_options], [Lang.t("Ricomincia la run"), _restart_run], [Lang.t("Torna alla Sala (abbandona)"), _abandon_run], [Lang.t("Esci alla Sala (la discesa resta salvata)") if OS.has_feature("web") else Lang.t("Esci (la discesa resta salvata)"), _quit_game]]
 	if trial != null:
-		entries = [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Opzioni"), _open_options], [Lang.t("Ritirati dalla scala (il punteggio resta)"), _retire_trial]]
+		entries = [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Comandi dell'arma"), _trial_controls], [Lang.t("Opzioni"), _open_options], [Lang.t("Ritirati dalla scala (il punteggio resta)"), _retire_trial]]
 	for entry in entries:
 		var b := Button.new()
 		b.text = entry[0]
@@ -1708,6 +1708,19 @@ func _abandon_run() -> void:
 	get_tree().paused = false
 	Engine.time_scale = 1.0
 	get_tree().change_scene_to_file("res://scenes/hub.tscn")
+
+
+## La prova della Sfinge: la schermata con i comandi dell'arma del giorno, sopra la pausa.
+func _trial_controls() -> void:
+	if pause_menu == null:
+		return
+	pause_menu.visible = false
+	trial.show_controls(func() -> void:
+		if pause_menu != null and is_instance_valid(pause_menu):
+			pause_menu.visible = true
+			for b in pause_menu.find_children("*", "Button", true, false):
+				b.grab_focus.call_deferred()
+				break)
 
 
 ## La prova della Sfinge: ci si ritira, il punteggio fin qui entra in classifica.

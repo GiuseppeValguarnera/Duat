@@ -19,11 +19,12 @@ const MONDAY := 345600                 ## lunedì 5 gennaio 1970, 00:00 UTC (il 
 const WEEK := 604800
 ## Punteggio: ondate superate, risposte dure, ondate senza colpi; il tempo conta poco.
 const PTS_WAVE := 10
-const PTS_HARD := 5                    ## solo se superi l'ondata che la risposta ha reso più dura
+const PTS_HARD := 4                    ## per ogni ondata superata con un effetto audace attivo (al massimo 3 a pausa: 12)
 const PTS_CLEAN := 3
 const PTS_QUICK := 1
 const QUICK_SECS := 25.0
-const BOON_EVERY := 3                  ## dopo ogni 3 ondate, tre doni (livello base)
+const BOON_EVERY := 3                  ## pausa della Sfinge dopo ogni 3 ondate: enigma + tre doni (livello base)
+const EFFECT_WAVES := 3               ## l'effetto dell'enigma dura fino alla pausa successiva
 const HEAL_EVERY := 5                  ## ogni 5 ondate, una piccola cura
 const HEAL := 0.15
 const GUARD_EVERY := 5                 ## ogni 5 ondate un'ondata «guardiano»
@@ -95,9 +96,27 @@ static func scores() -> Array:
 	return Meta.sphinx.get("scores", [])
 
 
-## Le soglie già riscosse questa settimana (si azzerano da sole al cambio di settimana).
+## Protezione della data (blocco 16): l'ultima data/ora vista dal gioco. Se l'orologio del
+## dispositivo torna indietro rispetto a questa, i premi della Sfinge non si assegnano (la classifica
+## resta com'è). CLOCK_SLACK tollera le piccole correzioni automatiche dell'orologio.
+const CLOCK_SLACK := 600
+
+
+static func touch_clock() -> void:
+	var now := now_unix()
+	if now > int(Meta.sphinx.get("last_seen", 0)):
+		Meta.sphinx["last_seen"] = now
+		Meta.save()
+
+
+static func clock_ok() -> bool:
+	return now_unix() + CLOCK_SLACK >= int(Meta.sphinx.get("last_seen", 0))
+
+
+## Le soglie già riscosse questa settimana. Si azzerano solo quando la settimana va AVANTI: con
+## l'orologio portato indietro restano quelle di prima (e comunque claim() non paga).
 static func claimed() -> Array:
-	if int(Meta.sphinx.get("week", -1)) != week():
+	if week() > int(Meta.sphinx.get("week", -1)):
 		Meta.sphinx["week"] = week()
 		Meta.sphinx["claimed"] = []
 	return Meta.sphinx.get("claimed", [])
@@ -105,8 +124,9 @@ static func claimed() -> Array:
 
 ## Raggiunta una soglia: il premio, se non è già stato preso questa settimana. [Ka, lapis] o [].
 static func claim(threshold: int) -> Array:
-	if not WEEKLY.has(threshold):
+	if not WEEKLY.has(threshold) or not clock_ok():
 		return []
+	touch_clock()
 	var c := claimed()
 	if c.has(threshold):
 		return []
@@ -193,7 +213,9 @@ const ELITE_OK := ["mummy", "priest", "sokar_guard", "vulture", "jackal", "javel
 const GUARDS := [
 	{"kind": "sokar_guard@g", "name": "Il Guardiano della Sabbia", "hp": 2.0},
 	{"kind": "aker_lion@ieri", "name": "L'Ombra di Ieri", "hp": 260.0},
-	{"kind": "serket@g", "name": "Serket, la dea scorpione", "hp": 520.0},
+	# blocco 16: al posto di Serket (le sue regole di terreno vogliono la sabbia e il piano di pietra del
+	# suo tempio) un guardiano senza regole di terreno: il grande scarabeo di Khepri, élite
+	{"kind": "khepri@g", "name": "Il grande scarabeo di Khepri", "hp": 3.0},
 	{"kind": "aker_lion@domani", "name": "L'Ombra di Domani", "hp": 420.0},
 ]
 
@@ -208,7 +230,7 @@ static func guard_info(w: int) -> Dictionary:
 
 
 static func guard_names() -> Array:
-	return [Lang.t("Il Guardiano della Sabbia"), Lang.t("L'Ombra di Ieri"), Lang.t("Serket, la dea scorpione"), Lang.t("L'Ombra di Domani")]
+	return [Lang.t("Il Guardiano della Sabbia"), Lang.t("L'Ombra di Ieri"), Lang.t("Il grande scarabeo di Khepri"), Lang.t("L'Ombra di Domani")]
 
 
 ## L'ondata `w` del giorno: uguale per tutti (seme del giorno + numero dell'ondata). `extra` sono i
@@ -276,29 +298,55 @@ static func is_hard(effect: String) -> bool:
 static func effect_text(effect: String) -> String:
 	match effect:
 		"short":
-			return Lang.t("La prossima ondata è più corta: 3 nemici in meno.")
+			return Lang.t("Per le prossime 3 ondate: 2 nemici in meno in ognuna.")
 		"gift":
 			return Lang.t("Un dono in più, subito: tre a scelta, livello base.")
 		"heal":
 			return Lang.t("Ti curi subito del 15% della vita massima.")
 		"slow":
-			return Lang.t("Nella prossima ondata i nemici sono più lenti del 15%.")
+			return Lang.t("Per le prossime 3 ondate: nemici più lenti del 15%.")
 		"shield":
-			return Lang.t("Cominci la prossima ondata con uno scudo da 12.")
+			return Lang.t("Per le prossime 3 ondate: cominci ognuna con uno scudo da 12.")
 		"tough":
-			return Lang.t("Nella prossima ondata i nemici hanno il 35% di vita in più.")
+			return Lang.t("Per le prossime 3 ondate: nemici con il 30% di vita in più.")
 		"fast":
-			return Lang.t("Nella prossima ondata i nemici sono più veloci del 15%.")
+			return Lang.t("Per le prossime 3 ondate: nemici più veloci del 15%.")
 		"noheal":
-			return Lang.t("Niente cure per 3 ondate, nemmeno quella che arriva ogni 5 ondate.")
+			return Lang.t("Per le prossime 3 ondate: niente cure, nemmeno quella che arriva ogni 5 ondate.")
 		"fragile":
-			return Lang.t("Per 3 ondate, dopo un colpo resti invulnerabile la metà del tempo.")
+			return Lang.t("Per le prossime 3 ondate: dopo un colpo resti invulnerabile la metà del tempo.")
 		"horde":
-			return Lang.t("La prossima ondata ha 4 nemici in più.")
+			return Lang.t("Per le prossime 3 ondate: 3 nemici in più in ognuna.")
 		"elite":
-			return Lang.t("Nella prossima ondata due nemici in più sono élite.")
+			return Lang.t("Per le prossime 3 ondate: due nemici in più sono élite.")
 		"sting":
-			return Lang.t("Nella prossima ondata i nemici fanno il 20% di danni in più.")
+			return Lang.t("Per le prossime 3 ondate: i nemici fanno il 20% di danni in più.")
+	return ""
+
+
+## Il nome corto dell'effetto per l'HUD (in modo discreto, accanto all'ondata).
+static func effect_short(effect: String) -> String:
+	match effect:
+		"short":
+			return Lang.t("ondate più corte")
+		"slow":
+			return Lang.t("nemici lenti")
+		"shield":
+			return Lang.t("scudo a ogni ondata")
+		"tough":
+			return Lang.t("nemici più resistenti")
+		"fast":
+			return Lang.t("nemici veloci")
+		"noheal":
+			return Lang.t("niente cure")
+		"fragile":
+			return Lang.t("invulnerabilità dimezzata")
+		"horde":
+			return Lang.t("più nemici")
+		"elite":
+			return Lang.t("più élite")
+		"sting":
+			return Lang.t("nemici più forti")
 	return ""
 
 
@@ -343,7 +391,8 @@ static func riddles() -> Array:
 	]
 
 
-## L'ordine degli enigmi del giorno (uguale per tutti); finito il giro, ricomincia.
+## L'ordine degli enigmi del giorno (uguale per tutti): nella stessa prova non si ripetono finché
+## ce ne sono di non usati (17 enigmi, una pausa ogni 3 ondate: il giro finisce all'ondata 51).
 static func riddle_order() -> Array:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = day_seed(day()) + 31
