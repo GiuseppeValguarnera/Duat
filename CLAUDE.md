@@ -374,12 +374,20 @@ musica della Sala, ricompensa già a terra, non conta come stanza ripulita); dop
   (`Sphinx.day()`, `DUAT_SPHINX_DAY` per le prove; `DUAT_WEAPON` forza l'arma). Ondate: `Sphinx.wave_list` (nemici di
   Wernes, quelli di Sokar dalla 11ª; élite con "@e"), vita/danni/velocità con `Run.trial_hp/trial_dmg/trial_speed`
   (`hp_mult` come Wernes fino alla 25, danni fino a ×1,25, dopo la 25 solo numero e velocità +2%/ondata fino a +30%).
-  Guardiani ogni 5 (`GUARDS`: guardiano di Sokar élite, Ombra di Ieri `aker_lion@ieri` 260, Serket 520 coi cumuli,
-  Ombra di Domani 420; +30% a giro). Sabbie mobili dalla 11ª, crepe di fuoco dalla 16ª. Doni ogni 3 (`boon_offers`: tre
-  dèi diversi, solo nuovi, niente pesanti/rari/doppi/Set/Anubi), cura 15% ogni 5. Enigmi (`riddles()`, 17, ordine del
-  giorno): risposta prudente (short, gift, heal, slow, shield) o audace (tough, fast, noheal, fragile, horde, elite,
-  sting) con l'effetto scritto sulla carta. Punti: 10 a ondata, +3 senza colpi, +1 sotto 25 s, +5 se superi l'ondata resa
-  dura. `Meta.sphinx`: open, scores (10, con giorno/seme/arma/regole per una classifica online futura), week/claimed
+  Guardiani ogni 5 (`GUARDS`: guardiano di Sokar élite, Ombra di Ieri `aker_lion@ieri` 260, grande scarabeo di Khepri
+  `khepri@g` ×3 élite (blocco 16, al posto di Serket: nell'arena di pietra le sue regole di sabbia non si leggevano),
+  Ombra di Domani 420; +30% a giro). Sabbie mobili dalla 11ª, crepe di fuoco dalla 16ª. **Pausa della Sfinge** ogni 3
+  ondate (blocco 16, `_sphinx_pause`): enigma (`riddles()`, 17, ordine del giorno, nessuna ripetizione nella prova
+  finché ce ne sono) poi tre doni (`boon_offers`: dèi diversi, solo nuovi, niente pesanti/rari/doppi/Set/Anubi); se cade
+  insieme alla cura (ondata 15) prima la cura, poi la pausa. Risposta prudente (short −2, gift, heal, slow, shield) o
+  audace (tough +30%, fast, noheal, fragile, horde +3, elite, sting): l'effetto dura 3 ondate (`active`,
+  `active_left`, `Sphinx.EFFECT_WAVES`), nell'HUD accanto all'ondata (`effect_short`). Cura 15% ogni 5. Punti: 10 a
+  ondata, +3 senza colpi, +1 sotto 25 s, +4 (`PTS_HARD`) per ogni ondata superata con un effetto audace attivo.
+  *Schermata dei comandi* (`show_controls`, `WeaponIcon`, `_keys` per dispositivo, `_moves` per arma, `_fit_panel`
+  rimpicciolisce sul telefono): prima dell'ondata 1 una volta per arma (`Meta.sphinx.intro`), poi da «Comandi
+  dell'arma» nella pausa. *Protezione della data* (`Sphinx.touch_clock` a ogni avvio in `Meta._ready`, a ogni prova e
+  a ogni premio; `clock_ok` con 10 minuti di tolleranza; `last_seen`): orologio indietro → niente premi settimanali,
+  riga neutra nella bacheca e nel riepilogo; le soglie riscosse si azzerano solo quando la settimana va avanti. `Meta.sphinx`: open, scores (10, con giorno/seme/arma/regole per una classifica online futura), week/claimed
   (premi `WEEKLY` 5/10/15/20 → 15+1, 25+2, 35+3, 50+4; settimana dal lunedì 00:00 UTC). Prova `tools/dev/sphinxsmoke.gd`
   (nel controllo d'avvio).
 - *Frecce e nomi* (`hub.gd` `HubDoorArrows`, `_draw_door_names`): chevron a terra verso cancello (due tratti, più

@@ -1,5 +1,11 @@
 ## In sviluppo · novembre 2026
 
+- Sfinge: l'enigma arriva in una pausa ogni 3 ondate, insieme al dono, e il suo effetto dura fino alla pausa dopo
+  (lo vedi accanto all'ondata); la risposta audace dà punti per ogni ondata superata; gli enigmi non si ripetono
+- prima della prova una schermata con l'arma del giorno e i suoi comandi (si rivede da «Comandi dell'arma» nella pausa)
+- premi settimanali protetti: se la data del dispositivo torna indietro non vengono assegnati
+- il guardiano dell'ondata 15 è il grande scarabeo di Khepri (Serket resta nel suo tempio di Sokar)
+
 - nuova porta nella Sala: la Sfinge e «La scala dell'enigma» (28 lapislazzuli). Una prova a ondate con l'arma del
   giorno, uguale per tutti: vita normale, niente doni, capitoli o amuleti; tre doni ogni 3 ondate, una cura ogni 5,
   un guardiano ogni 5 (il Guardiano della Sabbia, l'Ombra di Ieri, Serket, l'Ombra di Domani). Tra un'ondata e l'altra
