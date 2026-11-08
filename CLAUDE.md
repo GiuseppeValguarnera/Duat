@@ -363,6 +363,34 @@ ricarica (`eye_cooldown`); l'Occhio dell'Ushabti ha il suo danno (6). **Prima di
 musica della Sala, ricompensa già a terra, non conta come stanza ripulita); dopo, una porta sola verso la prova. Porte con
 " · sala tranquilla, senza nemici". Prova `tools/dev/quietsmoke.gd` nel controllo d'avvio.
 
+**Blocco 15 (8/11/2026)**:
+- *Sfinge, «La scala dell'enigma»* (`scripts/sphinx.gd` class_name `Sphinx`: regole, dati, enigmi; `scripts/sphinx_trial.gd`
+  class_name `SphinxTrial`: la partita). Porta nella parete nord della Sala a x 616 (`hub.gd` `SPHINX_X`), 28 lapislazzuli
+  (`Sphinx.COST`; lucchetto e prezzo sulla lastra), E = classifica e premi (`_show_sphinx_board`), ci si entra camminando.
+  `Run.trial` → game.gd riusa tutto: `start_room({"kind": "sphinx"})` (arena grande, due colonne `TRIAL_PILLARS`, statua
+  della Sfinge, cumuli di sabbia), `_room_cleared` → `trial.on_wave_cleared`, `_on_player_died` → `trial.finish`, pausa con
+  "Ritirati". Spenti nella prova: capitoli (`Run.chap`, `Chapters.is_equipped`), Pesi, Piuma, amuleti, Sekhem, Ka dei
+  nemici, sfide, salvataggio della discesa (`Run.save_descent`). Arma del giorno e ondate dal seme del giorno UTC
+  (`Sphinx.day()`, `DUAT_SPHINX_DAY` per le prove; `DUAT_WEAPON` forza l'arma). Ondate: `Sphinx.wave_list` (nemici di
+  Wernes, quelli di Sokar dalla 11ª; élite con "@e"), vita/danni/velocità con `Run.trial_hp/trial_dmg/trial_speed`
+  (`hp_mult` come Wernes fino alla 25, danni fino a ×1,25, dopo la 25 solo numero e velocità +2%/ondata fino a +30%).
+  Guardiani ogni 5 (`GUARDS`: guardiano di Sokar élite, Ombra di Ieri `aker_lion@ieri` 260, Serket 520 coi cumuli,
+  Ombra di Domani 420; +30% a giro). Sabbie mobili dalla 11ª, crepe di fuoco dalla 16ª. Doni ogni 3 (`boon_offers`: tre
+  dèi diversi, solo nuovi, niente pesanti/rari/doppi/Set/Anubi), cura 15% ogni 5. Enigmi (`riddles()`, 17, ordine del
+  giorno): risposta prudente (short, gift, heal, slow, shield) o audace (tough, fast, noheal, fragile, horde, elite,
+  sting) con l'effetto scritto sulla carta. Punti: 10 a ondata, +3 senza colpi, +1 sotto 25 s, +5 se superi l'ondata resa
+  dura. `Meta.sphinx`: open, scores (10, con giorno/seme/arma/regole per una classifica online futura), week/claimed
+  (premi `WEEKLY` 5/10/15/20 → 15+1, 25+2, 35+3, 50+4; settimana dal lunedì 00:00 UTC). Prova `tools/dev/sphinxsmoke.gd`
+  (nel controllo d'avvio).
+- *Frecce e nomi* (`hub.gd` `HubDoorArrows`, `_draw_door_names`): chevron a terra verso cancello (due tratti, più
+  evidenti), Sfinge, Cortile, Casa; di pietra con lucchetto e prezzo se chiuse. Spariscono dopo `Meta.use_door(id)`
+  (`Meta.doors_used`), opzione "Mostra le frecce" (`Meta.options.arrows`). Sul telefono ×1,45 e contorno chiaro.
+- *Grafica della Sala*: `HubCat` nero lucido senza pelo (`_head`), `_draw_scale` (base a gradini, geroglifi,
+  `_scale_balance()` dai guardiani/boss battuti e dai restauri, Pesi che riappesantiscono, `scale_glow`), vasca del Nilo
+  `HubArt._pool` in `spots["vasca"]` (solida, bordo scolpito, onde, luna, pesce ogni 9 s, papiri, lampade; secca senza
+  restauro). *Racconti dell'acqua* (`scripts/tales.gd` class_name `Tales`, 12 miti con condizione; `Meta.tales_read`,
+  punto esclamativo sulla vasca; `hub.gd` `_open_tales`, una pagina per racconto con ◀ ▶ e tastiera).
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima
@@ -389,7 +417,8 @@ moltiplicatore dei danni subiti (Sokar ×1,25), ondate più piene ed élite più
      Aker, nemici nuovi) e ritarare. Mega test con i bot solo se lo chiede, di notte.
 3. Raccogliere le impressioni su arco e flagello (danni, tiro carico, aggancio del pastorale, mira automatica col mouse)
    e ritarare; aspetti in più per arco e flagello.
-4. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
+4. Raccogliere le impressioni sulla Sfinge (durezza delle ondate e dei guardiani, enigmi, premi) e ritarare.
+5. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
    se segnalato, lo stesso fix dello scorrimento col pad (`_settle_entries` in casa.gd) in altre finestre.
 
 ## Dati dei test (per confronto)

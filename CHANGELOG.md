@@ -1,5 +1,17 @@
 ## In sviluppo · novembre 2026
 
+- nuova porta nella Sala: la Sfinge e «La scala dell'enigma» (28 lapislazzuli). Una prova a ondate con l'arma del
+  giorno, uguale per tutti: vita normale, niente doni, capitoli o amuleti; tre doni ogni 3 ondate, una cura ogni 5,
+  un guardiano ogni 5 (il Guardiano della Sabbia, l'Ombra di Ieri, Serket, l'Ombra di Domani). Tra un'ondata e l'altra
+  la Sfinge dice un indovinello: la risposta prudente aiuta, quella audace rende più dura la prossima ondata e vale
+  più punti. Classifica dei 10 migliori punteggi e premi settimanali (Ka e lapislazzuli) alle ondate 5, 10, 15 e 20.
+  Morire nella prova non tocca la discesa
+- frecce a terra verso le porte della Sala (spariscono dopo il primo passaggio; nelle Opzioni "Mostra le frecce") e il
+  nome sopra ogni porta
+- Sala più bella: il gatto di Bastet è un gatto nero lucido senza pelo; la bilancia di Ma'at si inclina con i tuoi
+  progressi e si accende quando ti avvicini; la vasca del Nilo ha acqua viva, loto, papiri, pesci e lampade, e racconta
+  i «Racconti dell'acqua»: 12 miti egizi che si sbloccano andando avanti
+
 - Occhio di Horus più leggero: 18 di danno e 3,2 secondi di ricarica
 - prima di ogni boss e mini boss si sceglie tra il Traghettatore, una sala con la cura e una sala con un dono: tutte
   senza nemici
