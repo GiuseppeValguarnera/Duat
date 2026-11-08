@@ -368,7 +368,7 @@ musica della Sala, ricompensa già a terra, non conta come stanza ripulita); dop
   class_name `SphinxTrial`: la partita). Porta nella parete nord della Sala a x 616 (`hub.gd` `SPHINX_X`), 28 lapislazzuli
   (`Sphinx.COST`; lucchetto e prezzo sulla lastra), E = classifica e premi (`_show_sphinx_board`), ci si entra camminando.
   `Run.trial` → game.gd riusa tutto: `start_room({"kind": "sphinx"})` (arena grande, due colonne `TRIAL_PILLARS`, statua
-  della Sfinge, cumuli di sabbia), `_room_cleared` → `trial.on_wave_cleared`, `_on_player_died` → `trial.finish`, pausa con
+  della Sfinge), `_room_cleared` → `trial.on_wave_cleared`, `_on_player_died` → `trial.finish`, pausa con
   "Ritirati". Spenti nella prova: capitoli (`Run.chap`, `Chapters.is_equipped`), Pesi, Piuma, amuleti, Sekhem, Ka dei
   nemici, sfide, salvataggio della discesa (`Run.save_descent`). Arma del giorno e ondate dal seme del giorno UTC
   (`Sphinx.day()`, `DUAT_SPHINX_DAY` per le prove; `DUAT_WEAPON` forza l'arma). Ondate: `Sphinx.wave_list` (nemici di
