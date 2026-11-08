@@ -47,6 +47,7 @@ func _items() -> Array:
 		["shake", Lang.t("Scossa dello schermo"), Lang.t("La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.")],
 		["hitstop", Lang.t("Pausa d'impatto"), Lang.t("Il gioco si ferma per un istante quando un colpo va a segno.")],
 		["fullscreen", Lang.t("Schermo intero"), Lang.t("Il gioco occupa tutto lo schermo. Scorciatoia: tasto F; Esc per uscire.")],
+		["arrows", Lang.t("Mostra le frecce"), Lang.t("Le frecce a terra nella Sala che indicano le porte (discesa, Casa della Vita, Cortile di Neith, Sfinge). Di solito spariscono dopo che hai usato una porta la prima volta: accese, restano sempre.")],
 		["zones", Lang.t("Mostra aree di danno"), Lang.t("Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.")],
 		["colpi", Lang.t("Ultimi colpi"), Lang.t("Gli ultimi 15 colpi subiti: chi, quanto, da che distanza e in che momento dell'attacco. Premi per leggerli.")],
 	]
@@ -86,6 +87,8 @@ func _value(id: String) -> String:
 			return _onoff(Meta.options.get("hitstop", true))
 		"zones":
 			return _onoff(Meta.options.get("zones", false))
+		"arrows":
+			return _onoff(Meta.options.get("arrows", false))
 		"fullscreen":
 			return Lang.t("F")
 		"colpi":
@@ -125,6 +128,8 @@ func _change(id: String, dir: int) -> void:
 			Meta.tutorial_done = not Meta.tutorial_done
 		"zones":
 			Meta.options["zones"] = not Meta.options.get("zones", false)
+		"arrows":
+			Meta.options["arrows"] = not Meta.options.get("arrows", false)
 		"fullscreen":
 			pass                                  # parte dal button_down (gesto dell'utente), vedi _row
 		"colpi":

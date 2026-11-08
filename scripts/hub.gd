@@ -148,6 +148,9 @@ func _build() -> void:
 	art.spots = spots
 	world.add_child(art)
 	_add_dust()
+	var floor_arrows := HubDoorArrows.new()
+	floor_arrows.hub = self
+	world.add_child(floor_arrows)
 	player = PlayerScene.instantiate()
 	player.position = Vector2(ROOM.size.x / 2.0, ROOM.size.y - WALL - 30.0)
 	if Run.from_armory:
@@ -330,6 +333,7 @@ func _process(delta: float) -> void:
 	# la porta del Cortile di Neith si attraversa camminandoci dentro (aperta dopo il primo Serpente)
 	var at_door: bool = player.global_position.x < WALL + 14.0 and absf(player.global_position.y - ARMORY_Y) < 24.0
 	if at_door and Meta.serpent_wins > 0:
+		Meta.use_door("cortile")
 		Sfx.play("door")
 		get_tree().change_scene_to_file("res://scenes/armory.tscn")
 		return
@@ -339,6 +343,7 @@ func _process(delta: float) -> void:
 		return
 	# la porta della Casa della Vita, a est: si attraversa quando è aperta (30 lapislazzuli)
 	if Meta.casa and player.global_position.x > ROOM.size.x - WALL - 14.0 and absf(player.global_position.y - CASA_Y) < 24.0:
+		Meta.use_door("casa")
 		Sfx.play("door")
 		get_tree().change_scene_to_file("res://scenes/casa.tscn")
 		return
@@ -502,6 +507,7 @@ func _open_sphinx() -> void:
 
 
 func _start_sphinx() -> void:
+	Meta.use_door("sfinge")
 	Run.trial = true
 	Meta.save()
 	Sfx.play("door")
@@ -627,6 +633,7 @@ func _start_run() -> void:
 		if Run.has_saved_descent():
 			Run.resume = Run.load_descent()
 	Meta.last_end = ""
+	Meta.use_door("cancello")
 	Meta.save()
 	Sfx.play("door")
 	get_tree().change_scene_to_file("res://scenes/game.tscn")
@@ -1594,6 +1601,7 @@ func _draw() -> void:
 	draw_line(ac + Vector2(-5, 1), ac + Vector2(5, 1), Color(0.3, 0.62, 0.66, 0.9), 1.5)
 	_draw_sphinx_door(pulse)
 	_draw_cartouche(Vector2(g.x, 15.0))
+	_draw_door_names()
 	_draw_scale(spots["bilancia"])
 	if Restorations.has("trono"):
 		_draw_throne(spots["anubi"])
@@ -1738,13 +1746,42 @@ func _draw_sphinx_door(pulse: float) -> void:
 	draw_rect(Rect2(hc.x + 1, hc.y, 2, 1), eye)
 
 
+## Il nome sopra ogni porta della Sala (blocco 15): oro se aperta, pietra se ancora chiusa.
+func _draw_door_names() -> void:
+	var font := UiStyle.title_font()
+	var fs := 8 if Fx.mobile else 7
+	var cx := ROOM.size.x / 2.0
+	var names := [
+		[Lang.t("Discesa nel Duat"), Vector2(cx, WALL + 11.0), 0, true],
+		[Lang.t("La Sfinge"), Vector2(SPHINX_X, 13.0), 0, Sphinx.is_open()],
+		[Lang.t("Cortile di Neith"), Vector2(WALL + 3.0, ARMORY_Y - 54.0), -1, Meta.serpent_wins > 0],
+		[Lang.t("Casa della Vita"), Vector2(ROOM.size.x - WALL - 3.0, CASA_Y - 56.0), 1, Meta.casa],
+	]
+	for n in names:
+		var txt: String = n[0]
+		var w := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var p: Vector2 = n[1]
+		var x := p.x - w / 2.0
+		if int(n[2]) < 0:
+			x = p.x
+		elif int(n[2]) > 0:
+			x = p.x - w
+		var col := Color(0.97, 0.82, 0.45) if n[3] else Color(0.66, 0.62, 0.56)
+		draw_string_outline(font, Vector2(x, p.y), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, Color(0.04, 0.03, 0.06, 0.9))
+		draw_string(font, Vector2(x, p.y), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
+
+
 ## Un lucchetto: arco e corpo d'oro scuro, col buco della chiave.
 func _draw_padlock(c: Vector2, s: float) -> void:
-	draw_arc(c + Vector2(0, -3) * s, 3.2 * s, PI, TAU, 10, Color(0.25, 0.2, 0.15), 2.2 * s)
-	draw_arc(c + Vector2(0, -3) * s, 3.2 * s, PI, TAU, 10, Color(0.85, 0.7, 0.4), 1.2 * s)
-	draw_rect(Rect2(c.x - 4.5 * s, c.y - 3 * s, 9 * s, 7 * s), Color(0.25, 0.2, 0.15))
-	draw_rect(Rect2(c.x - 3.8 * s, c.y - 2.4 * s, 7.6 * s, 5.8 * s), Color(0.85, 0.7, 0.4))
-	draw_circle(c + Vector2(0, 0.3) * s, 1.0 * s, Color(0.25, 0.2, 0.15))
+	_draw_padlock_on(self, c, s)
+
+
+func _draw_padlock_on(ci: CanvasItem, c: Vector2, s: float) -> void:
+	ci.draw_arc(c + Vector2(0, -3) * s, 3.2 * s, PI, TAU, 10, Color(0.25, 0.2, 0.15), 2.2 * s)
+	ci.draw_arc(c + Vector2(0, -3) * s, 3.2 * s, PI, TAU, 10, Color(0.85, 0.7, 0.4), 1.2 * s)
+	ci.draw_rect(Rect2(c.x - 4.5 * s, c.y - 3 * s, 9 * s, 7 * s), Color(0.25, 0.2, 0.15))
+	ci.draw_rect(Rect2(c.x - 3.8 * s, c.y - 2.4 * s, 7.6 * s, 5.8 * s), Color(0.85, 0.7, 0.4))
+	ci.draw_circle(c + Vector2(0, 0.3) * s, 1.0 * s, Color(0.25, 0.2, 0.15))
 
 
 func _draw_scale(p: Vector2) -> void:
@@ -2303,3 +2340,97 @@ class CatGift extends Node2D:
 		draw_circle(Vector2(0, -2.4 + bob), 1.1, Color(0.6, 0.42, 0.14))
 		for k in range(3):
 			draw_circle(Vector2(-1.6 + k * 1.6, -4.8 + bob), 0.55, Color(0.6, 0.42, 0.14))
+
+
+## Le frecce a terra verso le porte principali (blocco 15): discesa (la più evidente), Casa della
+## Vita, Cortile di Neith, Sfinge. Chevron che scivolano piano verso la porta; per le porte ancora
+## chiuse sono di pietra, con il lucchetto e il prezzo. Spariscono dopo il primo passaggio dalla porta
+## (Meta.doors_used), a meno che nelle Opzioni «Mostra le frecce» sia acceso. Sul telefono più grandi
+## e con il contorno chiaro. Stanno a terra: i personaggi ci passano sopra.
+class HubDoorArrows extends Node2D:
+	var hub
+	var t := 0.0
+
+	func _ready() -> void:
+		z_index = 0
+
+	func _process(delta: float) -> void:
+		t += delta
+		queue_redraw()
+
+	func _door_list() -> Array:
+		var cx: float = hub.ROOM.size.x / 2.0
+		var top: float = hub.TOP
+		var wall: float = hub.WALL
+		var rw: float = hub.ROOM.size.x
+		# id, inizio, fine, aperta, prezzo (lapislazzuli; -1 = condizione), evidente
+		return [
+			["cancello", Vector2(cx, 152.0), Vector2(cx, top + 16.0), true, 0, true],
+			["cancello", Vector2(cx, 330.0), Vector2(cx, 236.0), true, 0, true],
+			["sfinge", Vector2(hub.SPHINX_X, 138.0), Vector2(hub.SPHINX_X, top + 18.0), Sphinx.is_open(), Sphinx.COST, false],
+			["cortile", Vector2(wall + 110.0, hub.ARMORY_Y), Vector2(wall + 16.0, hub.ARMORY_Y), Meta.serpent_wins > 0, -1, false],
+			["casa", Vector2(rw - wall - 110.0, hub.CASA_Y), Vector2(rw - wall - 16.0, hub.CASA_Y), Meta.casa, hub.CASA_COST, false],
+		]
+
+	func _draw() -> void:
+		var always: bool = Meta.options.get("arrows", false)
+		var big := 1.45 if Fx.mobile else 1.0
+		for d in _door_list():
+			if not always and Meta.doors_used.has(d[0]):
+				continue
+			var from: Vector2 = d[1]
+			var to: Vector2 = d[2]
+			var open: bool = d[3]
+			var strong: bool = d[5]
+			var dir := (to - from).normalized()
+			var length := from.distance_to(to)
+			var step := 26.0 * big
+			var n := maxi(2, floori(length / step))
+			var s := (7.0 if strong else 5.5) * big
+			var base := Color(1.0, 0.82, 0.38) if open else Color(0.62, 0.6, 0.58)
+			var flow := fmod(t * 9.0, step)             # piano: scivolano di 9 pixel al secondo
+			for i in range(n):
+				var dist := i * step + flow
+				if dist > length:
+					continue
+				var p := from + dir * dist
+				# si accendono avvicinandosi alla porta e sfumano alle estremità
+				var k := dist / length
+				var a := clampf(minf(dist, length - dist) / (step * 0.9), 0.0, 1.0) * (0.35 + 0.45 * k)
+				if strong:
+					a = minf(1.0, a * 1.3)
+				_chevron(p, dir, s, Color(base, a), open, big)
+			if not open:
+				_lock(to - dir * 22.0 * big + Vector2(0, -6) * big, int(d[4]), big)
+
+	func _chevron(p: Vector2, dir: Vector2, s: float, col: Color, open: bool, big: float) -> void:
+		var side := dir.orthogonal()
+		var tip := p + dir * s
+		var l := p - dir * s * 0.2 + side * s
+		var r := p - dir * s * 0.2 - side * s
+		var mid := p + dir * s * 0.25
+		var pts := PackedVector2Array([l, tip, r, mid])
+		if Fx.mobile or big > 1.0:
+			# sul telefono: contorno chiaro, si vedono anche sul pavimento scuro
+			draw_polyline(PackedVector2Array([l, tip, r]), Color(1, 0.97, 0.88, col.a * 0.8), 5.0 * big)
+		draw_colored_polygon(pts, col if open else Color(col, col.a * 0.9))
+		if not open:
+			draw_line(l.lerp(tip, 0.5), r.lerp(tip, 0.5), Color(0.35, 0.33, 0.3, col.a), 1.0)   # crepa: è di pietra
+
+	func _lock(c: Vector2, price: int, big: float) -> void:
+		var bob := sin(t * 2.0) * 1.2
+		c.y += bob
+		var font := UiStyle.title_font()
+		var fs := roundi(7.0 * big)
+		var txt := Lang.t("batti il Serpente") if price < 0 else str(price)
+		var tw := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var w := 14.0 * big + tw + (6.0 * big if price > 0 else 0.0)
+		var r := Rect2(c.x - w / 2.0, c.y - 7.0 * big, w, 14.0 * big)
+		draw_rect(r, Color(0.06, 0.05, 0.08, 0.78))
+		draw_rect(r, Color(1, 0.97, 0.88, 0.7) if Fx.mobile else Color(0.62, 0.6, 0.58, 0.8), false, 1.0)
+		hub._draw_padlock_on(self, Vector2(r.position.x + 7.0 * big, c.y + 1.0 * big), 0.85 * big)
+		var x := r.position.x + 13.0 * big
+		if price > 0:
+			draw_circle(Vector2(x + 2.5 * big, c.y), 2.4 * big, Restorations.LAPIS_COLOR)
+			x += 6.0 * big
+		draw_string(font, Vector2(x, c.y + fs * 0.36), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.95, 0.92, 0.85))

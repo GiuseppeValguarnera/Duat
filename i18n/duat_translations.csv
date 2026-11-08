@@ -1300,9 +1300,13 @@ Chi ti ha fermato,Chi ti ha fermato,What stopped you
 Gli dèi che hai scelto,Gli dèi che hai scelto,The gods you chose
 I nemici abbattuti,I nemici abbattuti,Enemies slain
 In tutte le discese: %d,In tutte le discese: %d,Across all descents: %d
+Discesa nel Duat,Discesa nel Duat,Descent into the Duat
+La Sfinge,La Sfinge,The Sphinx
+Cortile di Neith,Cortile di Neith,Neith's Courtyard
 NUOVO · Cortile di Neith,NUOVO · Cortile di Neith,NEW · Courtyard of Neith
 Mrrr...,Mrrr...,Mrrr...
 Il gatto ti ha portato 5 Ka,Il gatto ti ha portato 5 Ka,The cat brought you 5 Ka
+batti il Serpente,batti il Serpente,beat the Serpent
 "Il nodo di Iside! Diaspro rosso, il sangue della dea. Le trappole del Duat le hanno costruite artigiani pigri: con questo al collo, le loro fatiche diventano solletico.","Il nodo di Iside! Diaspro rosso, il sangue della dea. Le trappole del Duat le hanno costruite artigiani pigri: con questo al collo, le loro fatiche diventano solletico.","The knot of Isis! Red jasper, the blood of the goddess. The traps of the Duat were built by lazy craftsmen: with this around your neck, their labours become a tickle."
 Consiglio da maestro: con il nodo puoi attraversare le grate e gli spuntoni invece di girarci intorno. La strada più corta è anche la più elegante.,Consiglio da maestro: con il nodo puoi attraversare le grate e gli spuntoni invece di girarci intorno. La strada più corta è anche la più elegante.,A master's advice: with the knot you can walk through grates and spikes instead of going around them. The shortest road is also the most elegant.
 "L'ankh. Lo portano tutti gli dèi in ogni pittura, e nessuno sa dire con certezza cosa raffiguri. Io lo so, naturalmente. Ma un maestro non svela tutto alla prima lezione.","L'ankh. Lo portano tutti gli dèi in ogni pittura, e nessuno sa dire con certezza cosa raffiguri. Io lo so, naturalmente. Ma un maestro non svela tutto alla prima lezione.","The ankh. Every god holds one in every painting, and nobody can say for certain what it depicts. I know, naturally. But a master does not reveal everything in the first lesson."
@@ -1763,7 +1767,6 @@ Gli dèi guardano la scala,Gli dèi guardano la scala,The gods watch the stair
 +%d punti se superi l'ondata.,+%d punti se superi l'ondata.,+%d points if you clear the wave.
 Risposta audace,Risposta audace,Bold answer
 Risposta prudente,Risposta prudente,Cautious answer
-La Sfinge,La Sfinge,The Sphinx
 Ogni risposta è giusta: scegli che prova vuoi,Ogni risposta è giusta: scegli che prova vuoi,Every answer is right: choose the trial you want
 La Sfinge annuisce,La Sfinge annuisce,The Sphinx nods
 Ti sei ritirato dalla scala,Ti sei ritirato dalla scala,You retired from the stair
@@ -1842,6 +1845,8 @@ La telecamera trema ai colpi forti. Spegnila se ti dà fastidio.,La telecamera t
 Pausa d'impatto,Pausa d'impatto,Hit stop
 Il gioco si ferma per un istante quando un colpo va a segno.,Il gioco si ferma per un istante quando un colpo va a segno.,The game freezes for an instant when a blow lands.
 Il gioco occupa tutto lo schermo. Scorciatoia: tasto F; Esc per uscire.,Il gioco occupa tutto lo schermo. Scorciatoia: tasto F; Esc per uscire.,The game fills the whole screen. Shortcut: F key; Esc to leave.
+Mostra le frecce,Mostra le frecce,Show the arrows
+"Le frecce a terra nella Sala che indicano le porte (discesa, Casa della Vita, Cortile di Neith, Sfinge). Di solito spariscono dopo che hai usato una porta la prima volta: accese, restano sempre.","Le frecce a terra nella Sala che indicano le porte (discesa, Casa della Vita, Cortile di Neith, Sfinge). Di solito spariscono dopo che hai usato una porta la prima volta: accese, restano sempre.","The arrows on the floor of the Hall that point to the doors (descent, House of Life, Neith's Courtyard, Sphinx). Usually they disappear after you've used a door for the first time: when on, they always stay."
 Mostra aree di danno,Mostra aree di danno,Show damage areas
 "Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.","Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.","Draws the real hit zones of enemies (body, leaps, charges, blasts, projectiles) and your own outline. It helps you understand what hit you."
 Ultimi colpi,Ultimi colpi,Last hits

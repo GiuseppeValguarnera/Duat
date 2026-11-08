@@ -58,6 +58,7 @@ var favors: Array = []                ## le grazie degli dèi comprate con i lap
 var amulet_rooms := {}                ## amuleto -> stanze portate al collo (i livelli)
 var challenges := {}                  ## sfida -> 1 compiuta, 2 premio riscosso (challenges.gd)
 var stats := {}                       ## contatori delle sfide
+var doors_used: Array = []            ## porte della Sala già attraversate (le frecce a terra spariscono): cancello, cortile, casa, sfinge
 var sphinx := {}                      ## la prova della Sfinge (sphinx.gd): porta aperta, classifica, premi della settimana
 
 
@@ -123,6 +124,13 @@ func _ready() -> void:
 		challenges = cfg.get_value("casa", "sfide", {})
 		stats = cfg.get_value("casa", "contatori", {})
 		sphinx = cfg.get_value("sfinge", "dati", {})
+		doors_used = cfg.get_value("sala", "porte", [])
+		if not cfg.has_section_key("sala", "porte"):
+			# salvataggi di prima delle frecce: le porte già usate di sicuro
+			if runs > 0:
+				doors_used.append("cancello")
+			if weapons_unlocked.has("lancia"):
+				doors_used.append("cortile")
 		# le sfide contano solo da quando la Casa è aperta: i salvataggi di prima ne avevano già
 		# compiute alcune a Casa murata, si ripulisce
 		if not casa and not challenges.is_empty():
@@ -188,7 +196,15 @@ func save() -> void:
 	cfg.set_value("casa", "sfide", challenges)
 	cfg.set_value("casa", "contatori", stats)
 	cfg.set_value("sfinge", "dati", sphinx)
+	cfg.set_value("sala", "porte", doors_used)
 	cfg.save(PATH)
+
+
+## Una porta della Sala usata per la prima volta: la sua freccia a terra sparisce.
+func use_door(id: String) -> void:
+	if not doors_used.has(id):
+		doors_used.append(id)
+		save()
 
 
 ## Lacrime di Iside per un boss battuto: una sola volta per ogni arma, e di nuovo con il
