@@ -45,6 +45,13 @@ static func all() -> Array:
 		["aker", Lang.t("I leoni dell'orizzonte"),
 			Lang.t("Aker è la terra stessa, il varco dove il sole entra la sera ed esce al mattino. Lo disegnavano come due leoni schiena contro schiena, con il sole tra loro: uno guarda l'ovest e si chiama Ieri, l'altro guarda l'est e si chiama Domani. Custodisce le porte, perché la notte non esca dal Duat."),
 			Meta.aker_wins >= 1, Lang.t("Sconfiggi Aker.")],
+		# dal Tesoro della Sfinge (blocco 17)
+		["harmachis", Lang.t("Horemakhet, Horus nell'orizzonte"),
+			Lang.t("Nel Nuovo Regno la Grande Sfinge di Giza era venerata come Horemakhet, «Horus nell'orizzonte»: il sole che sorge, che lei guarda da sempre verso oriente. I pellegrini le lasciavano stele con orecchie scolpite, perché il dio ascoltasse le loro preghiere."),
+			SphinxShop.owns("s_harmachis"), Lang.t("Si trova nel Tesoro della Sfinge.")],
+		["thutmose", Lang.t("Il sogno di Thutmose"),
+			Lang.t("Il giovane principe Thutmose si addormentò, durante una caccia, all'ombra della Sfinge sepolta fino al collo nella sabbia. In sogno il dio gli promise il trono se l'avesse liberata. Diventato re, Thutmose IV fece togliere la sabbia e pose tra le sue zampe una stele che racconta il sogno: è ancora lì."),
+			SphinxShop.owns("s_thutmose"), Lang.t("Si trova nel Tesoro della Sfinge.")],
 	]
 
 

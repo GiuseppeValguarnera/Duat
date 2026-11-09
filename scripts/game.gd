@@ -565,6 +565,7 @@ func _make_wave(budget: int, allow_priest: bool) -> Array:
 
 
 func _spawn_wave(list: Array, delay: float) -> void:
+	Run.word_ready = true                 # Peso della Parola (Sfinge): il primo colpo di ogni ondata
 	for i in range(list.size()):
 		spawning += 1
 		_spawn_after(list[i], _free_spot(), delay + i * 0.12)
@@ -1340,12 +1341,24 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 	if Weights.rank("silenzio") > 0 and options.size() > 2:
 		options.resize(2)
 	var duos := Boons.duos_for(from_god, Run.boons)
+	var duo_in := false
 	if not duos.is_empty() and randf() < Boons.duo_chance():
+		duo_in = true
 		var slots := 2 if Weights.rank("silenzio") > 0 else 3
 		if options.size() >= slots:
 			options[slots - 1] = duos.pick_random()
 		else:
 			options.append(duos.pick_random())
+	# Favore della Sfinge (blocco 17): a volte un dono della Sfinge prende l'ultimo posto. Al massimo uno
+	# per discesa, mai insieme a un dono doppio, pesante o raro.
+	var special := duo_in
+	for o in options:
+		if Boons.is_heavy(o) or Boons.is_rare(o):
+			special = true
+	if Sphinx.favor_roll(Run.boons) and not special and options.size() >= 2:
+		var pool := Boons.sphinx_pool(Run.boons, false)
+		if not pool.is_empty():
+			options[options.size() - 1] = pool.pick_random()
 	var cards := []
 	for id in options:
 		var lvl := mini(Run.level(id) + (2 if bonus_boon else 1), _max_level(id))
@@ -1361,12 +1374,14 @@ func _show_boon_menu(god: String, then_doors: bool = true) -> void:
 		if Boons.is_duo(id):
 			var gs: Array = Boons.ALL[id]["gods"]
 			tag = Lang.t("Dono doppio · %s + %s") % [Boons.god_name(gs[0]), Boons.god_name(gs[1])]
+		if Boons.is_sphinx(id):
+			tag = Lang.t("Dono della Sfinge · raro")
 		var sh := Boons.short(id, lvl)
 		cards.append({
 			"tag": tag, "name": Boons.ALL[id]["name"], "body": Boons.text(id, lvl),
 			"cost": Weapons.adapt(Boons.ALL[id]["cost"]) if Boons.has_cost(id) else "",
 			"gain": sh[0], "loss": sh[1],
-			"color": Boons.god_color("duo") if Boons.is_duo(id) else Boons.god_color(from_god),
+			"color": Boons.god_color("duo") if Boons.is_duo(id) else (Boons.color_of(id) if Boons.is_sphinx(id) else Boons.god_color(from_god)),
 			"heavy": Boons.is_heavy(id),
 			"on_pick": _choose_boon.bind(id),
 		})
@@ -1397,6 +1412,8 @@ func _choose_start_boon(id: String) -> void:
 
 
 func _max_level(id: String) -> int:
+	if Boons.is_sphinx(id):
+		return 1                          # i doni della Sfinge hanno un solo livello
 	return Boons.MAX_LEVEL if Boons.ALL[id].has("values") else 1
 
 
@@ -1408,7 +1425,10 @@ func _choose_boon(id: String) -> void:
 	_close_choice()
 	var g: String = Boons.ALL[id]["god"]
 	var lvl := Run.level(id)
-	_boon_fx(Boons.god_color(g), Lang.t("Dono di %s") % Boons.god_name(g) if g != "duo" else Lang.t("Dono doppio"), Boons.ALL[id]["name"] + ("" if lvl <= 1 else Lang.t("  ·  livello %d") % lvl))
+	var title := Lang.t("Dono di %s") % Boons.god_name(g) if g != "duo" else Lang.t("Dono doppio")
+	if g == "sfinge":
+		title = Lang.t("Dono della Sfinge")
+	_boon_fx(Boons.color_of(id), title, Boons.ALL[id]["name"] + ("" if lvl <= 1 else Lang.t("  ·  livello %d") % lvl))
 	if doors_after_boon:
 		_open_doors()
 
@@ -1536,7 +1556,7 @@ func _toggle_pause() -> void:
 		# se era aperta una scelta dei doni, il gioco resta fermo su quella
 		get_tree().paused = menu != null or panel != null
 		return
-	if player == null or player.dead or (trial != null and trial.ended):
+	if player == null or player.dead or (trial != null and (trial.ended or trial.ui_open)):
 		return
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -1565,7 +1585,7 @@ func _toggle_pause() -> void:
 	var first: Button = null
 	var entries := [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Opzioni"), _open_options], [Lang.t("Ricomincia la run"), _restart_run], [Lang.t("Torna alla Sala (abbandona)"), _abandon_run], [Lang.t("Esci alla Sala (la discesa resta salvata)") if OS.has_feature("web") else Lang.t("Esci (la discesa resta salvata)"), _quit_game]]
 	if trial != null:
-		entries = [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Comandi dell'arma"), _trial_controls], [Lang.t("Opzioni"), _open_options], [Lang.t("Ritirati dalla scala (il punteggio resta)"), _retire_trial]]
+		entries = [[Lang.t("Riprendi"), _toggle_pause], [Lang.t("Comandi dell'arma"), _trial_controls], [Lang.t("Opzioni"), _open_options], [Lang.t("Ritirati dalla scala (il punteggio resta)") if trial.started else Lang.t("Torna alla Sala"), _retire_trial]]
 	for entry in entries:
 		var b := Button.new()
 		b.text = entry[0]
@@ -2225,7 +2245,7 @@ func _open_swap(barque: Node2D) -> void:
 	var list := []
 	for id in Run.boons:
 		var g: String = Boons.ALL[id]["god"]
-		if g in ["anubi", "duo", "set"] or Boons.is_heavy(id) or Boons.is_rare(id):
+		if g in ["anubi", "duo", "set", "sfinge"] or Boons.is_heavy(id) or Boons.is_rare(id):
 			continue
 		if _swap_candidates(id).is_empty() or _needed_by_other(id):
 			continue
@@ -2503,7 +2523,7 @@ func _wear_amulet(id: String, altar: Node2D) -> void:
 func _upgradable() -> Array:
 	var out := []
 	for id in Run.boons:
-		if Boons.ALL[id].get("god", "") in ["anubi", "duo"]:
+		if Boons.ALL[id].get("god", "") in ["anubi", "duo", "sfinge"]:
 			continue
 		if Run.level(id) < _max_level(id):
 			out.append(id)
@@ -2943,6 +2963,11 @@ func _process(_delta: float) -> void:
 				Sfx.play("ui", 0.0)
 				ferry.say(_oasis_mahaf_line() if in_oasis else FerrymanScript.talk_line())
 				oasis_mahaf_talked = true
+	# la Sfinge, prima della prova: ci si parla con il tasto d'azione (blocco 17)
+	if trial != null and trial.near_statue() and menu == null:
+		near = trial.prompt_text()
+		if Input.is_action_just_pressed("interact") and pause_menu == null:
+			trial.open_menu()
 	# le porte: da vicino si legge cosa c'è dietro; accanto si entra con "interagisci"
 	for d in doors:
 		if not is_instance_valid(d) or not d.open or d._used:

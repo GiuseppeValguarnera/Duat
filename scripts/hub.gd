@@ -563,7 +563,14 @@ func _show_sphinx_board() -> void:
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(center)
 	var pap := PanelContainer.new()
-	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(Color(0.6, 0.46, 0.2)))
+	# la cornice comprata nel Tesoro della Sfinge
+	var fr := SphinxShop.frame()
+	var border := Color(0.6, 0.46, 0.2)
+	if fr == "f_lapis":
+		border = Color(0.2, 0.33, 0.72)
+	elif fr == "f_oro":
+		border = Color(0.95, 0.74, 0.3)
+	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(border))
 	center.add_child(pap)
 	var w := minf(430.0 * u, vs.x - 36.0)
 	var col := VBoxContainer.new()
@@ -573,6 +580,12 @@ func _show_sphinx_board() -> void:
 	var h := UiStyle.label(Lang.t("La scala dell'enigma"), 13, UiStyle.INK, true)
 	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(h)
+	var who := SphinxUI.seals_text()
+	if SphinxShop.title_text() != "":
+		who = Lang.t("Il tuo titolo: %s") % SphinxShop.title_text() + "   ·   " + who
+	var whol := UiStyle.label(who, 8, UiStyle.INK_RED, true)
+	whol.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(whol)
 	col.add_child(UiStyle.label(Lang.t("Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: ogni 3 ondate la Sfinge si ferma per un enigma e un dono. Morire qui non tocca la discesa.") % Sphinx.weapon_name(Sphinx.weapon_of_day()), 8, UiStyle.INK_SOFT, false, w))
 	var c := Sphinx.claimed()
 	var parts := []
@@ -595,7 +608,11 @@ func _show_sphinx_board() -> void:
 		rows.add_child(UiStyle.label(Lang.t("Nessun punteggio, per ora. La scala aspetta."), 9, UiStyle.INK_SOFT, false, w))
 	for i in range(list.size()):
 		var e: Dictionary = list[i]
-		rows.add_child(UiStyle.label(Lang.t("%d. %d punti · ondata %d · %s · %s") % [i + 1, int(e["score"]), int(e["wave"]), Sphinx.weapon_name(String(e["weapon"])), String(e["date"])], 9, UiStyle.INK if i > 0 else UiStyle.INK_RED, i == 0, w))
+		var line := Lang.t("%d. %d punti · ondata %d · %s · %s") % [i + 1, int(e["score"]), int(e["wave"]), Sphinx.weapon_name(String(e["weapon"])), String(e["date"])]
+		var em: Array = e.get("mods", [])
+		if not em.is_empty():
+			line += "\n" + "    " + Lang.t("modificatori: %s (%s)") % [SphinxShop.mod_names(em), SphinxShop.mult_text(SphinxShop.mult(em))]
+		rows.add_child(UiStyle.label(line, 9, UiStyle.INK if i > 0 else UiStyle.INK_RED, i == 0, w))
 	var b := Button.new()
 	b.text = Lang.t("Chiudi")
 	UiStyle.papyrus_button(b, Color(0.93, 0.78, 0.45))
@@ -1233,6 +1250,8 @@ func _fill_restorations(focus_id: String = "") -> void:
 			continue
 		var f: Dictionary = fdata[id]
 		var state := Lang.t("presa") if Favors.has(id) else Lang.t("%d lapislazzuli") % int(f["cost"])
+		if f.get("seals", false) and not Favors.has(id):
+			state = Lang.t("%d sigilli · nel Tesoro della Sfinge") % int(f["cost"])
 		var col := Color(0.62, 0.95, 0.7) if Favors.has(id) else (Color(0.95, 0.9, 0.78) if Favors.can_buy(id) else Color(0.6, 0.55, 0.48))
 		var b := _list_button(left, "%s   [%s]" % [f["name"], state], col)
 		_tap(b, _on_favor_pressed.bind(id))
@@ -1249,6 +1268,8 @@ func _show_favor(id: String) -> void:
 	var action := ""
 	if Favors.has(id):
 		action = Lang.t("Già tua.")
+	elif f.get("seals", false):
+		action = Lang.t("Si ottiene nel Tesoro della Sfinge: %d sigilli (ne hai %d).") % [int(f["cost"]), Sphinx.seals()]
 	elif Favors.can_buy(id):
 		action = Lang.t("Premi per prenderla: %d lapislazzuli.") % int(f["cost"])
 	else:
@@ -1260,6 +1281,9 @@ func _show_favor(id: String) -> void:
 
 ## Una grazia presa: chi la consegna (Anubi o Thoth dai Papiri) dice la sua battuta.
 func _on_favor_pressed(id: String) -> void:
+	if Favors.ALL_IT[id].get("seals", false):
+		_show_favor(id)                       # il Favore della Sfinge si prende nel Tesoro della Sfinge
+		return
 	if not Favors.buy(id):
 		Fx.shake(2.0)
 		_fill_restorations(id)

@@ -156,9 +156,34 @@ static func record(entry: Dictionary) -> int:
 	return pos if pos <= TOP_N else 0
 
 
-static func new_entry(score: int, wave: int, weapon: String, hard: int, clean: int) -> Dictionary:
+static func new_entry(score: int, wave: int, weapon: String, hard: int, clean: int, mods: Array = [], raw: int = -1) -> Dictionary:
 	return {"score": score, "wave": wave, "weapon": weapon, "day": day(), "date": date_text(day()),
-		"seed": day_seed(day()), "hard": hard, "clean": clean, "rules": RULES}
+		"seed": day_seed(day()), "hard": hard, "clean": clean, "rules": RULES, "mods": mods,
+		"mult": SphinxShop.mult(mods), "raw": score if raw < 0 else raw, "title": SphinxShop.title_text()}
+
+
+static func seals() -> int:
+	return SphinxShop.seals()
+
+
+## Favore della Sfinge (blocco 17): nelle discese, a volte, un dono della Sfinge tra le scelte.
+const FAVOR_CHANCE := 0.125
+
+
+static func favor_roll(owned: Dictionary) -> bool:
+	if Run.trial or not Favors.has("favore_sfinge"):
+		return false
+	for id in owned:
+		if Boons.is_sphinx(id):
+			return false                      # al massimo un dono della Sfinge per discesa
+	return randf() < FAVOR_CHANCE
+
+
+static func best_score() -> int:
+	var b := 0
+	for e in scores():
+		b = maxi(b, int(e["score"]))
+	return b
 
 
 # --- difficoltà --------------------------------------------------------------------------
@@ -353,7 +378,7 @@ static func effect_short(effect: String) -> String:
 ## Gli indovinelli della Sfinge, a tema egizio. Le due risposte sono tutte e due «giuste»: la
 ## prudente e l'audace cambiano solo la prova (nessuno deve conoscere la soluzione).
 static func riddles() -> Array:
-	return [
+	var base := [
 		{"q": Lang.t("Ogni mattina nasco dal grembo di Nut, ogni sera lei mi inghiotte. Chi sono?"),
 			"soft": Lang.t("Ra, il sole che rinasce."), "hard": Lang.t("Ra. E stanotte attraverso il Duat con lui."), "s": "heal", "h": "tough"},
 		{"q": Lang.t("Salgo ogni anno senza avere piedi, porto il limo nero e lascio pane dietro di me. Chi sono?"),
@@ -389,6 +414,39 @@ static func riddles() -> Array:
 		{"q": Lang.t("Uscii per prima dalle acque immobili: una collina nel nulla, dove si posò la luce. Cosa sono?"),
 			"soft": Lang.t("La collina primordiale."), "hard": Lang.t("La collina. Ci salirò in cima."), "s": "short", "h": "sting"},
 	]
+	if SphinxShop.owns("r_nilo"):
+		base.append_array(_riddles_river())
+	if SphinxShop.owns("r_stelle"):
+		base.append_array(_riddles_sky())
+	return base
+
+
+## Enigmi del fiume (Tesoro della Sfinge).
+static func _riddles_river() -> Array:
+	return [
+		{"q": Lang.t("Scorro da sud a nord, al contrario di tutti i fiumi che conosci. Chi sono?"),
+			"soft": Lang.t("Il Nilo."), "hard": Lang.t("Il Nilo. E io lo risalgo."), "s": "slow", "h": "horde"},
+		{"q": Lang.t("Sono la terra nera che il fiume lascia: il mio nome è il nome dell'Egitto. Cosa sono?"),
+			"soft": Lang.t("Kemet, la terra nera."), "hard": Lang.t("Kemet. E la difenderò."), "s": "heal", "h": "tough"},
+		{"q": Lang.t("Misuro il fiume con gradini di pietra: dal mio numero dipendono il pane e le tasse. Cosa sono?"),
+			"soft": Lang.t("Il nilometro."), "hard": Lang.t("Il nilometro. Misura anche me."), "s": "shield", "h": "fast"},
+		{"q": Lang.t("Fiorisco all'alba sull'acqua e mi chiudo al tramonto, come il sole che rinasce. Cosa sono?"),
+			"soft": Lang.t("Il loto azzurro."), "hard": Lang.t("Il loto. Anch'io mi rialzo ogni mattina."), "s": "gift", "h": "fragile"},
+	]
+
+
+## Enigmi del cielo (Tesoro della Sfinge).
+static func _riddles_sky() -> Array:
+	return [
+		{"q": Lang.t("Il mio corpo è coperto di stelle e mi piego sopra la terra, sostenuta dall'aria. Chi sono?"),
+			"soft": Lang.t("Nut, il cielo."), "hard": Lang.t("Nut. E sotto di te salgo ancora."), "s": "slow", "h": "sting"},
+		{"q": Lang.t("Quando sorgo prima del sole, il fiume sta per salire. Chi sono?"),
+			"soft": Lang.t("Sopdet, la stella della piena."), "hard": Lang.t("Sopdet. Annuncio la piena e la tempesta."), "s": "short", "h": "elite"},
+		{"q": Lang.t("Sono le stelle che non tramontano mai, e i re volevano diventare come noi. Chi siamo?"),
+			"soft": Lang.t("Le Imperiture."), "hard": Lang.t("Le Imperiture. Non tramonterò nemmeno io."), "s": "shield", "h": "noheal"},
+		{"q": Lang.t("Sono il disco del sole al tramonto, vecchio e stanco, prima di entrare nella notte. Chi sono?"),
+			"soft": Lang.t("Atum, il sole della sera."), "hard": Lang.t("Atum. E io non sono stanco."), "s": "heal", "h": "fast"},
+	]
 
 
 ## L'ordine degli enigmi del giorno (uguale per tutti): nella stessa prova non si ripetono finché
@@ -405,29 +463,16 @@ static func riddle_order() -> Array:
 	return idx
 
 
-## Doni della prova: tre di dèi diversi, solo nuovi (livello base), mai pesanti, rari, doppi, di
-## Set o di Anubi (che hanno un prezzo). Lo stesso seme per tutti finché i doni presi sono uguali.
+## Doni della prova (blocco 17): i doni propri della Sfinge, tre a caso tra quelli non ancora presi,
+## un solo livello, validi per ogni arma. Con «Digiuno» niente Respiro dell'Orizzonte (non curerebbe).
 static func boon_offers(owned: Dictionary, w: int) -> Array:
-	var by_god := {}
-	for id in Boons.ALL:
-		var g: String = Boons.ALL[id]["god"]
-		if g in ["set", "anubi", "duo"] or owned.has(id):
-			continue
-		if Boons.is_heavy(id) or Boons.is_rare(id) or Boons.has_cost(id) or not Boons.available_now(id):
-			continue
-		if not Boons.fits_weapon(id) or not Boons.requirements_met(id, owned):
-			continue
-		if not by_god.has(g):
-			by_god[g] = []
-		by_god[g].append(id)
+	var pool := Boons.sphinx_pool(owned, true)
+	if SphinxShop.has_mod("noheal"):
+		pool.erase("sf_breath")
+	pool.sort()
 	var rng := RandomNumberGenerator.new()
 	rng.seed = day_seed(day()) ^ (w * 104729) ^ owned.size()
-	var gods: Array = by_god.keys()
-	gods.sort()
 	var out := []
-	while out.size() < 3 and not gods.is_empty():
-		var g: String = gods.pop_at(rng.randi() % gods.size())
-		var list: Array = by_god[g]
-		list.sort()
-		out.append(list[rng.randi() % list.size()])
+	while out.size() < 3 and not pool.is_empty():
+		out.append(pool.pop_at(rng.randi() % pool.size()))
 	return out

@@ -129,6 +129,7 @@ Anubi,Anubi,Anubis
 Nefti,Nefti,Nephthys
 Shu,Shu,Shu
 Doppio,Doppio,Duo
+Sfinge,Sfinge,Sphinx
 Colpo Solare,Colpo Solare,Solar Strike
 Il khopesh incendia i nemici: %d danni ogni mezzo secondo per 2 secondi.,Il khopesh incendia i nemici: %d danni ogni mezzo secondo per 2 secondi.,Your khopesh sets enemies ablaze: %d damage every half second for 2 seconds.
 Disco di Ra,Disco di Ra,Disc of Ra
@@ -279,6 +280,28 @@ Ottieni il %d%% di Ka in più.,Ottieni il %d%% di Ka in più.,You gain %d%% more
 Guida delle Anime,Guida delle Anime,Guide of Souls
 Ogni nemico abbattuto libera uno spirito che colpisce il nemico più vicino: %d danni.,Ogni nemico abbattuto libera uno spirito che colpisce il nemico più vicino: %d danni.,Every enemy slain releases a spirit that strikes the nearest enemy: %d damage.
 I nemici hanno il 5% di vita in più.,I nemici hanno il 5% di vita in più.,Enemies have 5% more health.
+Pazienza di Pietra,Pazienza di Pietra,Stone Patience
+L'attacco caricato si carica il %d%% più in fretta.,L'attacco caricato si carica il %d%% più in fretta.,The charged attack charges %d%% faster.
+Sabbia sotto i Piedi,Sabbia sotto i Piedi,Sand Underfoot
+Lo scatto si ricarica il %d%% più in fretta e dopo lo scatto corri il 15%% più veloce per un attimo.,Lo scatto si ricarica il %d%% più in fretta e dopo lo scatto corri il 15%% più veloce per un attimo.,"The dash recharges %d%% faster, and after a dash you run 15%% faster for a moment."
+Zanna del Custode,Zanna del Custode,Fang of the Guardian
+Tutti i tuoi colpi fanno il %d%% di danni in più.,Tutti i tuoi colpi fanno il %d%% di danni in più.,All your hits deal %d%% more damage.
+Ombra Lunga,Ombra Lunga,Long Shadow
+Dopo un colpo resti invulnerabile %.1f secondi in più.,Dopo un colpo resti invulnerabile %.1f secondi in più.,After a hit you stay invulnerable %.1f seconds longer.
+Respiro dell'Orizzonte,Respiro dell'Orizzonte,Breath of the Horizon
+Quando abbatti un guardiano o un boss ti curi di %d punti vita.,Quando abbatti un guardiano o un boss ti curi di %d punti vita.,When you take down a guardian or a boss you heal %d health.
+Occhio Sfrontato,Occhio Sfrontato,Brazen Eye
+Mano Sicura,Mano Sicura,Steady Hand
+Ogni colpo a segno delle armi accorcia la ricarica dell'Occhio di %.1f secondi.,Ogni colpo a segno delle armi accorcia la ricarica dell'Occhio di %.1f secondi.,Every weapon hit shortens the Eye's recharge by %.1f seconds.
+Moneta della Sfinge,Moneta della Sfinge,Sphinx's Coin
+Ogni ondata superata senza colpi ti dà %d sigillo della Sfinge in più.,Ogni ondata superata senza colpi ti dà %d sigillo della Sfinge in più.,Every wave cleared without being hit gives you %d extra Sphinx seal.
+Secondo Sguardo,Secondo Sguardo,Second Glance
+Una volta per prova o per discesa sopravvivi a un colpo mortale con %d punto vita.,Una volta per prova o per discesa sopravvivi a un colpo mortale con %d punto vita.,Once per trial or per descent you survive a lethal hit with %d health.
+Peso della Parola,Peso della Parola,Weight of the Word
+Il primo colpo che dai in ogni ondata fa il %d%% di danni in più.,Il primo colpo che dai in ogni ondata fa il %d%% di danni in più.,The first hit you land in each wave deals %d%% more damage.
+Pelle d'Arenaria,Pelle d'Arenaria,Sandstone Skin
+Sguardo di Pietra,Sguardo di Pietra,Stone Gaze
+I nemici colpiti dall'attacco caricato rallentano del %d%% per 2 secondi.,I nemici colpiti dall'attacco caricato rallentano del %d%% per 2 secondi.,Enemies hit by your charged attack are slowed by %d%% for 2 seconds.
 Occhio del Sole,Occhio del Sole,Eye of the Sun
 L'Occhio di Horus incendia sempre ed esplode quando si ferma (almeno 12 danni).,L'Occhio di Horus incendia sempre ed esplode quando si ferma (almeno 12 danni).,The Eye of Horus always sets enemies ablaze and explodes when it stops (at least 12 damage).
 Sole Furente,Sole Furente,Raging Sun
@@ -825,6 +848,10 @@ Puoi equipaggiare due amuleti insieme invece di uno. Il secondo si sceglie al ba
 "Le mummie dei re erano coperte di amuleti, a decine, tra una benda e l'altra: ognuno con il suo capitolo del Libro dei Morti e il suo posto sul corpo.","Le mummie dei re erano coperte di amuleti, a decine, tra una benda e l'altra: ognuno con il suo capitolo del Libro dei Morti e il suo posto sul corpo.","The mummies of kings were covered in amulets, dozens of them, between one bandage and the next: each with its own chapter of the Book of the Dead and its own place on the body."
 "Due sigilli d'oro sulla stessa catena. Ai miei tempi solo il faraone ne portava più d'uno, e lo pesavano ogni mattina perché non si stancasse.","Due sigilli d'oro sulla stessa catena. Ai miei tempi solo il faraone ne portava più d'uno, e lo pesavano ogni mattina perché non si stancasse.","Two golden seals on the same chain. In my day only the pharaoh wore more than one, and they weighed him every morning so he would not grow tired."
 "Ma tu non sei un faraone, giovane scriba. O forse sì. Portali bene: un amuleto è un pensiero, e due pensieri insieme sono già un dialogo.","Ma tu non sei un faraone, giovane scriba. O forse sì. Portali bene: un amuleto è un pensiero, e due pensieri insieme sono già un dialogo.","But you are not a pharaoh, young scribe. Or perhaps you are. Wear them well: an amulet is a thought, and two thoughts together are already a dialogue."
+Il Favore della Sfinge,Il Favore della Sfinge,The Sphinx's Favour
+"Nelle discese normali, a volte uno dei doni della Sfinge prende l'ultimo posto tra le scelte degli dèi (circa una scelta su otto). Non è mai garantito, ne puoi prendere al massimo uno per discesa e non compare insieme a un dono doppio, pesante o raro. Si ottiene nel Tesoro della Sfinge, con i sigilli.","Nelle discese normali, a volte uno dei doni della Sfinge prende l'ultimo posto tra le scelte degli dèi (circa una scelta su otto). Non è mai garantito, ne puoi prendere al massimo uno per discesa e non compare insieme a un dono doppio, pesante o raro. Si ottiene nel Tesoro della Sfinge, con i sigilli.","In normal descents, sometimes one of the Sphinx's boons takes the last place among the gods' choices (about one choice in eight). It's never guaranteed, you can take at most one per descent, and it never shows up together with a duo, heavy or rare boon. You get it in the Sphinx's Treasure, with seals."
+"I re d'Egitto si facevano ritrarre come sfingi: corpo di leone, volto umano. Davanti alla Grande Sfinge di Giza Thutmose IV sognò che il dio gli prometteva il trono, se l'avesse liberata dalla sabbia.","I re d'Egitto si facevano ritrarre come sfingi: corpo di leone, volto umano. Davanti alla Grande Sfinge di Giza Thutmose IV sognò che il dio gli prometteva il trono, se l'avesse liberata dalla sabbia.","The kings of Egypt had themselves portrayed as sphinxes: a lion's body, a human face. Before the Great Sphinx of Giza, Thutmose IV dreamed that the god promised him the throne if he freed it from the sand."
+"Sei tornato con abbastanza sigilli da annoiarmi. Prendi il mio favore: ogni tanto, laggiù, ti offrirò un dono anch'io. Non sempre. Mi piace farmi desiderare.","Sei tornato con abbastanza sigilli da annoiarmi. Prendi il mio favore: ogni tanto, laggiù, ti offrirò un dono anch'io. Non sempre. Mi piace farmi desiderare.","You came back with enough seals to bore me. Take my favour: now and then, down there, I'll offer you a boon too. Not always. I like to be wanted."
 «Ogni sponda ha il suo prezzo. Anche questa.»,«Ogni sponda ha il suo prezzo. Anche questa.»,«Every shore has its price. This one too.»
 «Conosci il nome di ogni parte della mia barca? No? Allora paga.»,«Conosci il nome di ogni parte della mia barca? No? Allora paga.»,«Do you know the name of every part of my boat? No? Then pay.»
 "«I costruttori di tombe muravano stanze senza porta, per il Ka dei re. Chi guarda bene le crepe, a volte trova chi gli risponde.»","«I costruttori di tombe muravano stanze senza porta, per il Ka dei re. Chi guarda bene le crepe, a volte trova chi gli risponde.»","«The tomb builders walled up rooms without doors, for the Ka of kings. Whoever looks closely at the cracks sometimes finds someone who answers.»"
@@ -902,11 +929,13 @@ Dono pesante,Dono pesante,Heavy boon
 Dono raro,Dono raro,Rare gift
  · solo %s, · solo %s, · only %s
 Dono doppio · %s + %s,Dono doppio · %s + %s,Duo boon · %s + %s
+Dono della Sfinge · raro,Dono della Sfinge · raro,Sphinx's boon · rare
 %s ti offre un dono,%s ti offre un dono,%s offers you a boon
 Dono di Anubi,Dono di Anubi,Boon of Anubis
 Anubi pesa il tuo cuore,Anubi pesa il tuo cuore,Anubis weighs your heart
 Dono di %s,Dono di %s,Boon of %s
 Dono doppio,Dono doppio,Duo Boon
+Dono della Sfinge,Dono della Sfinge,Sphinx's boon
 Patto di Set,Patto di Set,Pact of Set
 Prima · maledizione per %d stanze,Prima · maledizione per %d stanze,First · curse for %d chambers
 Poi · per tutta la discesa,Poi · per tutta la discesa,Then · for the whole descent
@@ -922,6 +951,7 @@ Esci alla Sala (la discesa resta salvata),Esci alla Sala (la discesa resta salva
 Esci (la discesa resta salvata),Esci (la discesa resta salvata),Quit (the descent stays saved)
 Comandi dell'arma,Comandi dell'arma,Weapon controls
 Ritirati dalla scala (il punteggio resta),Ritirati dalla scala (il punteggio resta),Retire from the stair (your score stays)
+Torna alla Sala,Torna alla Sala,Back to the Hall
 Schermo intero,Schermo intero,Full screen
 Esc / Start per riprendere,Esc / Start per riprendere,Esc / Start to resume
 Volume,Volume,Volume
@@ -1121,6 +1151,7 @@ Lascia un commento,Lascia un commento,Leave a comment
 Esci dal gioco,Esci dal gioco,Quit the game
 La porta della Sfinge è aperta,La porta della Sfinge è aperta,The Sphinx's door is open
 La scala dell'enigma,La scala dell'enigma,The Riddle Stair
+Il tuo titolo: %s,Il tuo titolo: %s,Your title: %s
 "Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: ogni 3 ondate la Sfinge si ferma per un enigma e un dono. Morire qui non tocca la discesa.","Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: ogni 3 ondate la Sfinge si ferma per un enigma e un dono. Morire qui non tocca la discesa.","Today's weapon is %s: the same for everyone. Normal health, no boons, chapters or amulets: every 3 waves the Sphinx stops for a riddle and a boon. Dying here doesn't touch your descent."
 ondata %d: preso,ondata %d: preso,wave %d: claimed
 ondata %d: %d Ka + %d lapislazzuli,ondata %d: %d Ka + %d lapislazzuli,wave %d: %d Ka + %d lapis lazuli
@@ -1128,6 +1159,7 @@ Premi della settimana (si rinnovano tra %s): ,Premi della settimana (si rinnovan
 I premi della settimana non sono disponibili: controlla la data del dispositivo.,I premi della settimana non sono disponibili: controlla la data del dispositivo.,Weekly rewards aren't available: check the device date.
 "Nessun punteggio, per ora. La scala aspetta.","Nessun punteggio, per ora. La scala aspetta.",No scores yet. The stair is waiting.
 %d. %d punti · ondata %d · %s · %s,%d. %d punti · ondata %d · %s · %s,%d. %d points · wave %d · %s · %s
+modificatori: %s (%s),modificatori: %s (%s),modifiers: %s (%s)
 Racconti dell'acqua · %d di %d,Racconti dell'acqua · %d di %d,Tales of the water · %d of %d
 NUOVO,NUOVO,NEW
 Il prossimo racconto: %s,Il prossimo racconto: %s,The next tale: %s
@@ -1173,7 +1205,9 @@ Un papiro più lungo per formule in più. I più ricchi si facevano dipingere Li
 I restauri della Sala,I restauri della Sala,Restoring the Hall
 Lapislazzuli: %d    ·    Restauri fatti: %d di %d,Lapislazzuli: %d    ·    Restauri fatti: %d di %d,Lapis lazuli: %d    ·    Restorations done: %d of %d
 — Grazie degli dèi —,— Grazie degli dèi —,— Graces of the gods —
+%d sigilli · nel Tesoro della Sfinge,%d sigilli · nel Tesoro della Sfinge,%d seals · in the Sphinx's Treasure
 Già tua.,Già tua.,Already yours.
+Si ottiene nel Tesoro della Sfinge: %d sigilli (ne hai %d).,Si ottiene nel Tesoro della Sfinge: %d sigilli (ne hai %d).,You get it in the Sphinx's Treasure: %d seals (you have %d).
 Premi per prenderla: %d lapislazzuli.,Premi per prenderla: %d lapislazzuli.,Press to take it: %d lapis lazuli.
 Costa %d lapislazzuli: te ne mancano %d.,Costa %d lapislazzuli: te ne mancano %d.,It costs %d lapis lazuli: you are %d short.
 Già restaurato.,Già restaurato.,Already restored.
@@ -1667,6 +1701,7 @@ Wernes,Wernes,Wernes
 Esci,Esci,Exit
 Il tempo rallenta,Il tempo rallenta,Time slows down
 PRIMA PAROLA,PRIMA PAROLA,FIRST WORD
+PESO DELLA PAROLA,PESO DELLA PAROLA,WEIGHT OF THE WORD
 Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,Un'offerta che il re dà: mille pani e mille brocche di birra per il Ka del signore di questa casa.,An offering that the king gives: a thousand loaves and a thousand jars of beer for the Ka of the lord of this house.
 "O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O tu che passi davanti a questa statua, di' «pane e birra» per il Ka del re.","O you who pass before this statue, say «bread and beer» for the Ka of the king."
 "Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","Il re è un falco d'oro. Il re vola verso il cielo, e il cielo lo accoglie.","The king is a falcon of gold. The king flies toward the sky, and the sky welcomes him."
@@ -1765,8 +1800,251 @@ Iside. Ma oggi le ali sono le mie.,Iside. Ma oggi le ali sono le mie.,Isis. But 
 "Uscii per prima dalle acque immobili: una collina nel nulla, dove si posò la luce. Cosa sono?","Uscii per prima dalle acque immobili: una collina nel nulla, dove si posò la luce. Cosa sono?","I was the first to rise from the still waters: a hill in the void, where the light came to rest. What am I?"
 La collina primordiale.,La collina primordiale.,The primeval mound.
 La collina. Ci salirò in cima.,La collina. Ci salirò in cima.,The mound. I'll climb to the top.
+"Scorro da sud a nord, al contrario di tutti i fiumi che conosci. Chi sono?","Scorro da sud a nord, al contrario di tutti i fiumi che conosci. Chi sono?","I flow from south to north, the opposite of every river you know. Who am I?"
+Il Nilo.,Il Nilo.,The Nile.
+Il Nilo. E io lo risalgo.,Il Nilo. E io lo risalgo.,The Nile. And I'll go up it.
+Sono la terra nera che il fiume lascia: il mio nome è il nome dell'Egitto. Cosa sono?,Sono la terra nera che il fiume lascia: il mio nome è il nome dell'Egitto. Cosa sono?,I am the black earth the river leaves behind: my name is the name of Egypt. What am I?
+"Kemet, la terra nera.","Kemet, la terra nera.","Kemet, the black land."
+Kemet. E la difenderò.,Kemet. E la difenderò.,Kemet. And I'll defend it.
+Misuro il fiume con gradini di pietra: dal mio numero dipendono il pane e le tasse. Cosa sono?,Misuro il fiume con gradini di pietra: dal mio numero dipendono il pane e le tasse. Cosa sono?,I measure the river with stone steps: bread and taxes depend on my number. What am I?
+Il nilometro.,Il nilometro.,The Nilometer.
+Il nilometro. Misura anche me.,Il nilometro. Misura anche me.,The Nilometer. Let it measure me too.
+"Fiorisco all'alba sull'acqua e mi chiudo al tramonto, come il sole che rinasce. Cosa sono?","Fiorisco all'alba sull'acqua e mi chiudo al tramonto, come il sole che rinasce. Cosa sono?","I bloom at dawn on the water and close at sunset, like the sun reborn. What am I?"
+Il loto azzurro.,Il loto azzurro.,The blue lotus.
+Il loto. Anch'io mi rialzo ogni mattina.,Il loto. Anch'io mi rialzo ogni mattina.,The lotus. I rise again every morning too.
+"Il mio corpo è coperto di stelle e mi piego sopra la terra, sostenuta dall'aria. Chi sono?","Il mio corpo è coperto di stelle e mi piego sopra la terra, sostenuta dall'aria. Chi sono?","My body is covered in stars and I bend over the earth, held up by the air. Who am I?"
+"Nut, il cielo.","Nut, il cielo.","Nut, the sky."
+Nut. E sotto di te salgo ancora.,Nut. E sotto di te salgo ancora.,Nut. And beneath you I climb on.
+"Quando sorgo prima del sole, il fiume sta per salire. Chi sono?","Quando sorgo prima del sole, il fiume sta per salire. Chi sono?","When I rise before the sun, the river is about to swell. Who am I?"
+"Sopdet, la stella della piena.","Sopdet, la stella della piena.","Sopdet, the star of the flood."
+Sopdet. Annuncio la piena e la tempesta.,Sopdet. Annuncio la piena e la tempesta.,Sopdet. I herald the flood and the storm.
+"Sono le stelle che non tramontano mai, e i re volevano diventare come noi. Chi siamo?","Sono le stelle che non tramontano mai, e i re volevano diventare come noi. Chi siamo?","We are the stars that never set, and kings wanted to become like us. Who are we?"
+Le Imperiture.,Le Imperiture.,The Imperishable Ones.
+Le Imperiture. Non tramonterò nemmeno io.,Le Imperiture. Non tramonterò nemmeno io.,The Imperishable Ones. I won't set either.
+"Sono il disco del sole al tramonto, vecchio e stanco, prima di entrare nella notte. Chi sono?","Sono il disco del sole al tramonto, vecchio e stanco, prima di entrare nella notte. Chi sono?","I am the sun's disc at dusk, old and tired, before entering the night. Who am I?"
+"Atum, il sole della sera.","Atum, il sole della sera.","Atum, the evening sun."
+Atum. E io non sono stanco.,Atum. E io non sono stanco.,Atum. And I'm not tired.
+Un visitatore. Che novità. L'ultimo è arrivato quando le piramidi erano ancora a punta.,Un visitatore. Che novità. L'ultimo è arrivato quando le piramidi erano ancora a punta.,A visitor. How novel. The last one came when the pyramids still had their tips.
+"Io sono la Sfinge. Custodisco la scala dell'enigma: ondate su ondate, ognuna un po' più cattiva della precedente.","Io sono la Sfinge. Custodisco la scala dell'enigma: ondate su ondate, ognuna un po' più cattiva della precedente.","I am the Sphinx. I guard the riddle stair: wave after wave, each a little nastier than the last."
+"Qui non contano i tuoi doni né i tuoi amuleti. Ti presto un'arma, quella del giorno, la stessa per tutti. Il resto lo guadagni salendo.","Qui non contano i tuoi doni né i tuoi amuleti. Ti presto un'arma, quella del giorno, la stessa per tutti. Il resto lo guadagni salendo.","Here your boons and amulets don't count. I lend you a weapon, the weapon of the day, the same for everyone. The rest you earn by climbing."
+Ogni tre ondate mi fermo e ti faccio un indovinello. Nessuna risposta è sbagliata: scegli solo quanto vuoi soffrire.,Ogni tre ondate mi fermo e ti faccio un indovinello. Nessuna risposta è sbagliata: scegli solo quanto vuoi soffrire.,Every three waves I stop and ask you a riddle. No answer is wrong: you only choose how much you want to suffer.
+"In cambio ti do sigilli, i miei. Li spendi nel mio Tesoro. E se muori, pazienza: qui non si perde niente, tranne la dignità.","In cambio ti do sigilli, i miei. Li spendi nel mio Tesoro. E se muori, pazienza: qui non si perde niente, tranne la dignità.","In return I give you seals, mine. You spend them in my Treasure. And if you die, never mind: nothing is lost here, except your dignity."
+Sei tornato. Il tuo record no.,Sei tornato. Il tuo record no.,You came back. Your record didn't.
+Di nuovo tu. Stavo giusto contando i granelli di sabbia. Ero a sette.,Di nuovo tu. Stavo giusto contando i granelli di sabbia. Ero a sette.,You again. I was just counting the grains of sand. I'd got to seven.
+"Ah, il mio visitatore preferito. Non dirlo agli altri: non ce ne sono.","Ah, il mio visitatore preferito. Non dirlo agli altri: non ce ne sono.","Ah, my favourite visitor. Don't tell the others: there aren't any."
+"Ti aspettavo. Non è vero, ma suona bene.","Ti aspettavo. Non è vero, ma suona bene.","I was expecting you. It's not true, but it sounds nice."
+"La scala è dove l'hai lasciata. Anch'io, purtroppo per le mie zampe.","La scala è dove l'hai lasciata. Anch'io, purtroppo per le mie zampe.","The stair is where you left it. So am I, sadly for my paws."
+Bentornato. Ho lucidato la pietra per te. Si fa per dire.,Bentornato. Ho lucidato la pietra per te. Si fa per dire.,Welcome back. I polished the stone for you. Figuratively.
+"Hai la faccia di chi ha un piano. Lo dicono tutti, prima dell'ondata sei.","Hai la faccia di chi ha un piano. Lo dicono tutti, prima dell'ondata sei.","You have the face of someone with a plan. They all do, before wave six."
+Eccoti. Il deserto era noioso senza qualcuno da guardare cadere.,Eccoti. Il deserto era noioso senza qualcuno da guardare cadere.,There you are. The desert was boring without someone to watch fall.
+"Quanto tempo. Per me un battito di palpebre, per te un'eternità. Siediti, cioè: combatti.","Quanto tempo. Per me un battito di palpebre, per te un'eternità. Siediti, cioè: combatti.","It's been a while. For me a blink, for you an eternity. Sit down, I mean: fight."
+Credevo ti fossi perso nel Duat. Poi ho ricordato che ti perdi solo qui.,Credevo ti fossi perso nel Duat. Poi ho ricordato che ti perdi solo qui.,I thought you'd got lost in the Duat. Then I remembered you only get lost here.
+Sei sparito per giorni. Ho fatto finta di non accorgermene. Con scarso successo.,Sei sparito per giorni. Ho fatto finta di non accorgermene. Con scarso successo.,You vanished for days. I pretended not to notice. Without much success.
+"Oh, guarda chi si ricorda della vecchia Sfinge. Le ragnatele le ho lasciate per te.","Oh, guarda chi si ricorda della vecchia Sfinge. Le ragnatele le ho lasciate per te.","Oh, look who remembers the old Sphinx. I left the cobwebs for you."
+"Hai preso una pausa. Saggio. La scala, intanto, non è diventata più corta.","Hai preso una pausa. Saggio. La scala, intanto, non è diventata più corta.","You took a break. Wise. The stair, meanwhile, hasn't got any shorter."
+Bentornato. Il tuo posto in classifica ti ha aspettato con più pazienza di me.,Bentornato. Il tuo posto in classifica ti ha aspettato con più pazienza di me.,Welcome back. Your place on the leaderboard waited for you more patiently than I did.
+"I premi di questa settimana li hai già presi tutti. Sei qui per la gloria, allora. O per me.","I premi di questa settimana li hai già presi tutti. Sei qui per la gloria, allora. O per me.",You've already taken all of this week's rewards. So you're here for glory. Or for me.
+Niente più premi fino a lunedì. Restano i sigilli e il piacere della mia compagnia.,Niente più premi fino a lunedì. Restano i sigilli e il piacere della mia compagnia.,No more rewards until Monday. What's left are seals and the pleasure of my company.
+"Hai svuotato le soglie della settimana. Ora sali solo per orgoglio, il motivo migliore.","Hai svuotato le soglie della settimana. Ora sali solo per orgoglio, il motivo migliore.","You've emptied this week's thresholds. Now you climb only for pride, the best reason of all."
+La settimana non ha più niente da darti. Io sì: altri indovinelli.,La settimana non ha più niente da darti. Io sì: altri indovinelli.,The week has nothing left to give you. I do: more riddles.
+Premi esauriti. Mi piaci di più quando non hai un motivo.,Premi esauriti. Mi piaci di più quando non hai un motivo.,Rewards sold out. I like you better when you have no reason.
+"Tutte le soglie prese. Se cerchi un'altra ricompensa, guarda la classifica e piangi.","Tutte le soglie prese. Se cerchi un'altra ricompensa, guarda la classifica e piangi.","Every threshold taken. If you want another reward, look at the leaderboard and weep."
+Il tuo record è %d punti. Io ne ho visti di migliori. Quasi tutti miei.,Il tuo record è %d punti. Io ne ho visti di migliori. Quasi tutti miei.,Your record is %d points. I've seen better. Mostly mine.
+"%d punti, il tuo massimo. Un numero rispettabile, per un mortale.","%d punti, il tuo massimo. Un numero rispettabile, per un mortale.","%d points, your best. A respectable number, for a mortal."
+Il tuo meglio è %d. Oggi magari ti batti da solo. Magari.,Il tuo meglio è %d. Oggi magari ti batti da solo. Magari.,Your best is %d. Maybe today you beat yourself. Maybe.
+Ricordo i tuoi %d punti. Li ricordo perché me li hai ripetuti tre volte.,Ricordo i tuoi %d punti. Li ricordo perché me li hai ripetuti tre volte.,I remember your %d points. I remember because you told me three times.
+%d punti in cima alla tua lista. La cima è un posto ventoso: scendi spesso.,%d punti in cima alla tua lista. La cima è un posto ventoso: scendi spesso.,%d points at the top of your list. The top is a windy place: you come down often.
+"Hai fatto %d, una volta. Gli dèi ne parlano ancora. Due, per la precisione.","Hai fatto %d, una volta. Gli dèi ne parlano ancora. Due, per la precisione.","You scored %d, once. The gods still talk about it. Two of them, to be precise."
+Oggi l'arma è %s. Non l'ho scelta io: la sorte ha un senso dell'umorismo peggiore del mio.,Oggi l'arma è %s. Non l'ho scelta io: la sorte ha un senso dell'umorismo peggiore del mio.,Today the weapon is %s. I didn't choose it: fate has a worse sense of humour than mine.
+"Arma del giorno: %s. Uguale per tutti, quindi niente scuse.","Arma del giorno: %s. Uguale per tutti, quindi niente scuse.","Weapon of the day: %s. The same for everyone, so no excuses."
+Ti tocca %s. Trattala bene: domani torna nel mio deposito.,Ti tocca %s. Trattala bene: domani torna nel mio deposito.,You get %s. Treat it well: tomorrow it goes back in my storeroom.
+"%s, oggi. Se non la sai usare, è il momento giusto per imparare. Di fronte a me.","%s, oggi. Se non la sai usare, è il momento giusto per imparare. Di fronte a me.","%s, today. If you can't use it, now's the right time to learn. In front of me."
+"Oggi si sale con %s. La scala non fa differenze. Io sì, ma non lo ammetterò.","Oggi si sale con %s. La scala non fa differenze. Io sì, ma non lo ammetterò.","Today we climb with %s. The stair plays no favourites. I do, but I won't admit it."
+L'arma è %s. La stessa che oggi hanno in mano tutti gli altri sciocchi come te.,L'arma è %s. La stessa che oggi hanno in mano tutti gli altri sciocchi come te.,The weapon is %s. The same one every other fool like you is holding today.
+Allora sali. Io guardo.,Allora sali. Io guardo.,"Climb, then. I'll watch."
+Coraggio o distrazione? Lo scopriremo all'ondata tre.,Coraggio o distrazione? Lo scopriremo all'ondata tre.,Courage or distraction? We'll find out at wave three.
+Comincia. Prometto di non ridere. Ad alta voce.,Comincia. Prometto di non ridere. Ad alta voce.,Begin. I promise not to laugh. Out loud.
+"La scala ti aspetta. Anche il pavimento, a dire il vero.","La scala ti aspetta. Anche il pavimento, a dire il vero.","The stair is waiting for you. So is the floor, to be honest."
+Vai. E ricordati di schivare: la gente se ne dimentica sempre.,Vai. E ricordati di schivare: la gente se ne dimentica sempre.,Go. And remember to dodge: people always forget.
+Molto bene. Che la sabbia ti sia leggera.,Molto bene. Che la sabbia ti sia leggera.,Very well. May the sand rest lightly on you.
+"Tutto ha un prezzo, tranne l'attesa, che è gratis.","Tutto ha un prezzo, tranne l'attesa, che è gratis.","Everything has a price, except waiting, which is free."
+"Il mio Tesoro. Guarda pure, ma non toccare con le dita sporche di mummia.","Il mio Tesoro. Guarda pure, ma non toccare con le dita sporche di mummia.","My Treasure. Look all you like, but don't touch with mummy-stained fingers."
+"Accetto solo sigilli. I lapislazzuli tienili per lo scalpellino, che è meno raffinato.","Accetto solo sigilli. I lapislazzuli tienili per lo scalpellino, che è meno raffinato.","I only accept seals. Keep your lapis lazuli for the stonecutter, who is less refined."
+"Ogni oggetto qui ha una storia. Quasi tutte inventate da me, ma sono belle.","Ogni oggetto qui ha una storia. Quasi tutte inventate da me, ma sono belle.","Every object here has a story. Almost all invented by me, but they're lovely."
+"Compra qualcosa per me, e dirò che sei generoso. Compra qualcosa per te, e dirò che sei umano.","Compra qualcosa per me, e dirò che sei generoso. Compra qualcosa per te, e dirò che sei umano.","Buy something for me, and I'll say you're generous. Buy something for yourself, and I'll say you're human."
+"Niente sconti. Sono una statua: non ho bisogno di soldi, ho bisogno di rispetto.","Niente sconti. Sono una statua: non ho bisogno di soldi, ho bisogno di rispetto.","No discounts. I'm a statue: I don't need money, I need respect."
+"Scegli con calma. Io ho tutta l'eternità, tu no.","Scegli con calma. Io ho tutta l'eternità, tu no.","Choose calmly. I have all of eternity, you don't."
+Vuoi renderti la vita più difficile? Finalmente una richiesta sensata.,Vuoi renderti la vita più difficile? Finalmente una richiesta sensata.,You want to make life harder for yourself? Finally a sensible request.
+"Più dura la prova, più alti i punti. È l'unica giustizia che conosco.","Più dura la prova, più alti i punti. È l'unica giustizia che conosco.","The harder the trial, the higher the points. It's the only justice I know."
+Tre al massimo. Non voglio raccoglierti col cucchiaino.,Tre al massimo. Non voglio raccoglierti col cucchiaino.,Three at most. I don't want to scrape you up with a spoon.
+I modificatori restano per tutta la prova. Non come i tuoi buoni propositi.,I modificatori restano per tutta la prova. Non come i tuoi buoni propositi.,Modifiers last the whole trial. Unlike your good intentions.
+"Scegli bene: alla classifica piacciono i coraggiosi, al pavimento ancora di più.","Scegli bene: alla classifica piacciono i coraggiosi, al pavimento ancora di più.","Choose well: the leaderboard likes the brave, the floor even more."
+Ogni peso che aggiungi lo vedo. E lo apprezzo. In silenzio.,Ogni peso che aggiungi lo vedo. E lo apprezzo. In silenzio.,"Every weight you add, I see. And I appreciate it. In silence."
+Vai già via? Non ti tratterrò. Non posso: sono di pietra.,Vai già via? Non ti tratterrò. Non posso: sono di pietra.,Leaving already? I won't hold you back. I can't: I'm made of stone.
+Torna quando avrai voglia di perdere con stile.,Torna quando avrai voglia di perdere con stile.,Come back when you feel like losing with style.
+Scappare è una strategia. Ne ho viste di peggiori. Poche.,Scappare è una strategia. Ne ho viste di peggiori. Poche.,Running away is a strategy. I've seen worse. Not many.
+La scala resta qui. Anch'io. Purtroppo.,La scala resta qui. Anch'io. Purtroppo.,The stair stays here. So do I. Sadly.
+"Arrivederci. Mi annoierò in tua assenza, ma non lo saprai mai.","Arrivederci. Mi annoierò in tua assenza, ma non lo saprai mai.","Goodbye. I'll be bored in your absence, but you'll never know."
+"Vai pure. Domani l'arma sarà un'altra, e tu no.","Vai pure. Domani l'arma sarà un'altra, e tu no.","Go ahead. Tomorrow the weapon will be different, and you won't."
+"Puoi anche parlarmi, sai. Non mordo. Non più.","Puoi anche parlarmi, sai. Non mordo. Non più.","You could talk to me, you know. I don't bite. Not anymore."
+Mi stai fissando. Io ti fisso da prima che tu nascessi.,Mi stai fissando. Io ti fisso da prima che tu nascessi.,You're staring at me. I've been staring at you since before you were born.
+"Se aspetti che l'indovinello si risolva da solo, siediti: ci vorrà un po'.","Se aspetti che l'indovinello si risolva da solo, siediti: ci vorrà un po'.","If you're waiting for the riddle to solve itself, sit down: it'll take a while."
+"Stai pensando o ti sei incantato? In entrambi i casi, ti capisco.","Stai pensando o ti sei incantato? In entrambi i casi, ti capisco.","Are you thinking or did you freeze? Either way, I understand."
+"Sono enorme, è vero. Puoi smettere di guardarmi così.","Sono enorme, è vero. Puoi smettere di guardarmi così.","I'm huge, it's true. You can stop looking at me like that."
+Hai una domanda? Io ne ho mille. Comincia tu.,Hai una domanda? Io ne ho mille. Comincia tu.,Do you have a question? I have a thousand. You go first.
+"Il silenzio mi piace. Il tuo, però, comincia a pesare.","Il silenzio mi piace. Il tuo, però, comincia a pesare.","I like silence. Yours, though, is starting to weigh."
+Nemmeno un saluto. I giovani d'oggi.,Nemmeno un saluto. I giovani d'oggi.,Not even a goodbye. Young people today.
+Torna quando trovi il coraggio. O la strada.,Torna quando trovi il coraggio. O la strada.,Come back when you find the courage. Or the way.
+"Ti sei avvicinato, ti sei allontanato. Una danza che conosco bene.","Ti sei avvicinato, ti sei allontanato. Una danza che conosco bene.","You came closer, you walked away. A dance I know well."
+"Ah, girare intorno ai problemi. Un classico.","Ah, girare intorno ai problemi. Un classico.","Ah, going around in circles. A classic."
+Ero pronta a parlare. Sarà per un altro millennio.,Ero pronta a parlare. Sarà per un altro millennio.,"I was ready to talk. Another millennium, then."
+"Vai, vai. Ti guardo lo stesso.","Vai, vai. Ti guardo lo stesso.","Go on, go on. I'm watching you anyway."
+"Contro ogni pronostico, compreso il mio.","Contro ogni pronostico, compreso il mio.","Against all odds, mine included."
+Un nuovo record. Lo scolpirò da qualche parte. Piccolo.,Un nuovo record. Lo scolpirò da qualche parte. Piccolo.,A new record. I'll carve it somewhere. Small.
+Più in alto di sempre. La scala è sorpresa. Io meno: un po' ci credevo.,Più in alto di sempre. La scala è sorpresa. Io meno: un po' ci credevo.,Higher than ever. The stair is surprised. I'm less so: I half believed in you.
+"Hai battuto te stesso. È l'avversario più difficile, perché conosce tutte le tue scuse.","Hai battuto te stesso. È l'avversario più difficile, perché conosce tutte le tue scuse.","You beat yourself. The hardest opponent, because it knows all your excuses."
+"Record. Non abituarti: la gloria è sabbia, scivola.","Record. Non abituarti: la gloria è sabbia, scivola.","Record. Don't get used to it: glory is sand, it slips away."
+"Bene. Molto bene. Non lo ripeterò, quindi ascolta bene.","Bene. Molto bene. Non lo ripeterò, quindi ascolta bene.","Good. Very good. I won't say it again, so listen carefully."
+Oggi hai salito più gradini di quanti ne ricordi io. E io ricordo tutto.,Oggi hai salito più gradini di quanti ne ricordi io. E io ricordo tutto.,Today you climbed more steps than I can remember. And I remember everything.
+Quasi il tuo record. Quasi è la parola più crudele che conosco.,Quasi il tuo record. Quasi è la parola più crudele che conosco.,Almost your record. Almost is the cruellest word I know.
+"Ti mancava poco. Lo so, l'ho visto, e ho sospirato.","Ti mancava poco. Lo so, l'ho visto, e ho sospirato.","You were so close. I know, I saw it, and I sighed."
+A un passo dal tuo meglio. La prossima volta fai quel passo.,A un passo dal tuo meglio. La prossima volta fai quel passo.,One step from your best. Next time take that step.
+Così vicino che il record ti ha sentito respirare.,Così vicino che il record ti ha sentito respirare.,So close the record heard you breathing.
+"Non è un record, ma ci assomiglia. Come un cugino.","Non è un record, ma ci assomiglia. Come un cugino.","It's not a record, but it looks like one. Like a cousin."
+Quasi. Gli dèi tengono un libro solo per i quasi. È enorme.,Quasi. Gli dèi tengono un libro solo per i quasi. È enorme.,Almost. The gods keep a book just for the almosts. It's enormous.
+Già finito? Stavo ancora sistemando la coda.,Già finito? Stavo ancora sistemando la coda.,Done already? I was still arranging my tail.
+Una salita breve. Brevissima. Quasi una discesa.,Una salita breve. Brevissima. Quasi una discesa.,A short climb. Very short. Almost a descent.
+Così presto? Avevo appena cominciato a fare il tifo. In segreto.,Così presto? Avevo appena cominciato a fare il tifo. In segreto.,So soon? I'd only just started cheering. In secret.
+"Non tutti i giorni sono buoni. Questo, per esempio.","Non tutti i giorni sono buoni. Questo, per esempio.","Not every day is a good one. This one, for instance."
+"La scala ha più gradini di così. Te lo assicuro, li ho contati.","La scala ha più gradini di così. Te lo assicuro, li ho contati.","The stair has more steps than that. I assure you, I've counted them."
+Un inizio sfortunato. O un riscaldamento. Scegli tu la storia.,Un inizio sfortunato. O un riscaldamento. Scegli tu la storia.,An unlucky start. Or a warm-up. You choose the story.
+"Una prova onesta. Non memorabile, ma onesta.","Una prova onesta. Non memorabile, ma onesta.","An honest trial. Not memorable, but honest."
+"Sei salito, sei caduto. La storia di ogni mortale, in piccolo.","Sei salito, sei caduto. La storia di ogni mortale, in piccolo.","You climbed, you fell. The story of every mortal, in miniature."
+"Non male. Non bene. Esattamente nel mezzo, dove vive la maggior parte del mondo.","Non male. Non bene. Esattamente nel mezzo, dove vive la maggior parte del mondo.","Not bad. Not good. Right in the middle, where most of the world lives."
+Hai fatto quello che potevi. Domani potrai di più. O di meno. Vedremo.,Hai fatto quello che potevi. Domani potrai di più. O di meno. Vedremo.,You did what you could. Tomorrow you'll manage more. Or less. We'll see.
+"La scala ti ha respinto, come fa con tutti. Con te è stata quasi gentile.","La scala ti ha respinto, come fa con tutti. Con te è stata quasi gentile.","The stair pushed you back, as it does with everyone. With you it was almost kind."
+Ricorderò questa prova. Per un po'. Diciamo fino a cena.,Ricorderò questa prova. Per un po'. Diciamo fino a cena.,I'll remember this trial. For a while. Let's say until dinner.
+Né trionfo né disastro. Mi piaci quando sei prevedibile.,Né trionfo né disastro. Mi piaci quando sei prevedibile.,Neither triumph nor disaster. I like you when you're predictable.
+Ti ritiri. Saggezza o paura? Spesso sono la stessa cosa con vestiti diversi.,Ti ritiri. Saggezza o paura? Spesso sono la stessa cosa con vestiti diversi.,You retire. Wisdom or fear? They're often the same thing in different clothes.
+Hai scelto tu quando fermarti. Pochi lo fanno. Pochissimi lo fanno al momento giusto.,Hai scelto tu quando fermarti. Pochi lo fanno. Pochissimi lo fanno al momento giusto.,You chose when to stop. Few do. Very few do it at the right moment.
+"Un ritiro ordinato. Il punteggio resta, il dolore no.","Un ritiro ordinato. Il punteggio resta, il dolore no.","An orderly retreat. The score stays, the pain doesn't."
+"Ti fermi qui. Rispetto la decisione. Non la condivido, ma la rispetto.","Ti fermi qui. Rispetto la decisione. Non la condivido, ma la rispetto.","You stop here. I respect the decision. I don't share it, but I respect it."
+Meglio scendere con le proprie gambe. Così mi hanno detto: io non ne ho bisogno.,Meglio scendere con le proprie gambe. Così mi hanno detto: io non ne ho bisogno.,Better to step down on your own legs. So I've been told: I don't need them.
+"Basta così, per oggi. Anche le statue sanno quando chiudere gli occhi.","Basta così, per oggi. Anche le statue sanno quando chiudere gli occhi.",Enough for today. Even statues know when to close their eyes.
+"Una mummia. Lenta, bendata, eppure ti ha preso. Riflettici.","Una mummia. Lenta, bendata, eppure ti ha preso. Riflettici.","A mummy. Slow, bandaged, and still it got you. Think about that."
+"Ti ha fermato una mummia. Le bende, almeno, ce le aveva già.","Ti ha fermato una mummia. Le bende, almeno, ce le aveva già.",A mummy stopped you. At least it already had the bandages.
+"Gli scarabei. Piccoli, tanti, e tu uno solo. La matematica è crudele.","Gli scarabei. Piccoli, tanti, e tu uno solo. La matematica è crudele.","The scarabs. Small, many, and only one of you. Mathematics is cruel."
+Ti hanno sommerso gli scarabei. Khepri sarà fiero di loro.,Ti hanno sommerso gli scarabei. Khepri sarà fiero di loro.,The scarabs swamped you. Khepri will be proud of them.
+Lo scorpione ti ha ucciso. Di nuovo. Io lo chiamerei fedeltà.,Lo scorpione ti ha ucciso. Di nuovo. Io lo chiamerei fedeltà.,The scorpion killed you. Again. I'd call it loyalty.
+"Uno scorpione. Il cono rosso era lì apposta, sai.","Uno scorpione. Il cono rosso era lì apposta, sai.","A scorpion. The red cone was there on purpose, you know."
+Il veleno dello scorpione. Serket manda i suoi saluti.,Il veleno dello scorpione. Serket manda i suoi saluti.,The scorpion's venom. Serket sends her regards.
+"Un sacerdote. Le preghiere funzionano, a quanto pare. Le sue.","Un sacerdote. Le preghiere funzionano, a quanto pare. Le sue.","A priest. Prayers work, apparently. His."
+"Ti ha colpito un sacerdote. Da lontano, come fanno i prudenti.","Ti ha colpito un sacerdote. Da lontano, come fanno i prudenti.","A priest hit you. From afar, as the cautious do."
+"Un cobra. Ha sibilato, ti ha avvisato. Era educato, almeno.","Un cobra. Ha sibilato, ti ha avvisato. Era educato, almeno.","A cobra. It hissed, it warned you. Polite, at least."
+"Il cobra. Elegante, rapido, letale. Non lo invidio. Un po' sì.","Il cobra. Elegante, rapido, letale. Non lo invidio. Un po' sì.","The cobra. Elegant, quick, deadly. I don't envy it. A little, maybe."
+"Un Ba dannato. È esploso, come fanno le anime arrabbiate.","Un Ba dannato. È esploso, come fanno le anime arrabbiate.","A damned Ba. It exploded, as angry souls do."
+"Ti sei fatto saltare da un Ba. La miccia si vedeva, sai.","Ti sei fatto saltare da un Ba. La miccia si vedeva, sai.","You let a Ba blow you up. The fuse was visible, you know."
+"Gli sciacalli. Uno ti distrae, gli altri ti mordono. Un vecchio trucco.","Gli sciacalli. Uno ti distrae, gli altri ti mordono. Un vecchio trucco.","The jackals. One distracts you, the others bite. An old trick."
+"Il branco ti ha preso. Anubi ride sotto i baffi. Ha i baffi, credo.","Il branco ti ha preso. Anubi ride sotto i baffi. Ha i baffi, credo.","The pack got you. Anubis is laughing up his sleeve. He has sleeves, I think."
+"Un guardiano di Sokar. Lo scudo davanti, la carica dritta. Prevedibile, per chi guarda.","Un guardiano di Sokar. Lo scudo davanti, la carica dritta. Prevedibile, per chi guarda.","A guardian of Sokar. Shield in front, charge straight ahead. Predictable, for those who watch."
+"Ti ha travolto un guardiano. Di fianco, la prossima volta. I fianchi non hanno scudi.","Ti ha travolto un guardiano. Di fianco, la prossima volta. I fianchi non hanno scudi.","A guardian ran you over. From the side, next time. Flanks have no shields."
+"Un avvoltoio. L'ombra a terra diceva tutto, ma tu guardavi altrove.","Un avvoltoio. L'ombra a terra diceva tutto, ma tu guardavi altrove.","A vulture. The shadow on the ground said it all, but you were looking elsewhere."
+Dal cielo. Gli avvoltoi di Nekhbet non sbagliano mai il pranzo.,Dal cielo. Gli avvoltoi di Nekhbet non sbagliano mai il pranzo.,From the sky. Nekhbet's vultures never miss lunch.
+Un giavellotto. La striscia era lunga e chiara. Un po' come le mie lezioni.,Un giavellotto. La striscia era lunga e chiara. Un po' come le mie lezioni.,A javelin. The strip was long and clear. A bit like my lessons.
+Il lanciatore ti ha centrato. Bel tiro. Non per te.,Il lanciatore ti ha centrato. Bel tiro. Non per te.,The thrower hit you dead on. Nice shot. Not for you.
+Un sacerdote di Sokar. Il deserto ha i suoi predicatori.,Un sacerdote di Sokar. Il deserto ha i suoi predicatori.,A priest of Sokar. The desert has its preachers.
+Ti ha fermato un sacerdote di Sokar. La sabbia gli dà sempre ragione.,Ti ha fermato un sacerdote di Sokar. La sabbia gli dà sempre ragione.,A priest of Sokar stopped you. The sand always proves him right.
+"La sfera di Khepri. Rotola, rimbalza, non perdona. Come il sole.","La sfera di Khepri. Rotola, rimbalza, non perdona. Come il sole.","Khepri's sphere. It rolls, it bounces, it doesn't forgive. Like the sun."
+Uno scarabeo di Khepri. Ha spinto il sole addosso a te. Che onore.,Uno scarabeo di Khepri. Ha spinto il sole addosso a te. Che onore.,A scarab of Khepri. It pushed the sun right at you. What an honour.
+Il miraggio. Ti ha ingannato. Succede anche ai migliori. Succede soprattutto a te.,Il miraggio. Ti ha ingannato. Succede anche ai migliori. Succede soprattutto a te.,The mirage. It fooled you. It happens to the best. It happens to you especially.
+"Hai combattuto un'illusione e hai perso. C'è una morale, ma è triste.","Hai combattuto un'illusione e hai perso. C'è una morale, ma è triste.","You fought an illusion and lost. There's a moral, but it's sad."
+"L'ombra di un leone di Aker. Solo l'ombra, e ti è bastata.","L'ombra di un leone di Aker. Solo l'ombra, e ti è bastata.","The shadow of one of Aker's lions. Just the shadow, and it was enough for you."
+"Un leone dell'orizzonte. Ieri o Domani, che importa: oggi ha vinto lui.","Un leone dell'orizzonte. Ieri o Domani, che importa: oggi ha vinto lui.","A lion of the horizon. Yesterday or Tomorrow, what does it matter: today it won."
+"Una crepa di fuoco. Diventa rossa prima di bruciare. Tu no, a quanto vedo.","Una crepa di fuoco. Diventa rossa prima di bruciare. Tu no, a quanto vedo.","A fire crack. It turns red before it burns. You didn't, apparently."
+Il fuoco della terra spaccata. Ti aveva avvisato per un intero secondo.,Il fuoco della terra spaccata. Ti aveva avvisato per un intero secondo.,The fire of the split earth. It warned you for a whole second.
+"Sei caduto. Capita. Agli altri capita meno, ma capita.","Sei caduto. Capita. Agli altri capita meno, ma capita.","You fell. It happens. It happens less to others, but it happens."
+"La scala ti ha scosso via, come la sabbia da una zampa.","La scala ti ha scosso via, come la sabbia da una zampa.","The stair shook you off, like sand from a paw."
+Una brutta fine per una salita discreta.,Una brutta fine per una salita discreta.,A bad end to a decent climb.
+Non so cosa ti abbia colpito per ultimo. So solo che ti ha colpito bene.,Non so cosa ti abbia colpito per ultimo. So solo che ti ha colpito bene.,I don't know what hit you last. I only know it hit you well.
+Fine. Il pavimento ti ringrazia della visita.,Fine. Il pavimento ti ringrazia della visita.,The end. The floor thanks you for the visit.
+"Hai lottato. Il risultato non lo dice, ma io sì.","Hai lottato. Il risultato non lo dice, ma io sì.","You fought. The result doesn't say it, but I do."
+Giù. Di nuovo. La gravità è l'unico dio che non si offende mai.,Giù. Di nuovo. La gravità è l'unico dio che non si offende mai.,Down. Again. Gravity is the only god that never takes offence.
+"È finita. Ma ogni fine, qui, è soltanto un altro inizio. Lo dico sempre, è il mio lavoro.","È finita. Ma ogni fine, qui, è soltanto un altro inizio. Lo dico sempre, è il mio lavoro.","It's over. But every end, here, is just another beginning. I always say it, it's my job."
+Una volta ero sepolta nella sabbia fino al collo. Un principe si addormentò all'ombra della mia testa e io gli promisi un regno. Lo ebbe. Mi ripagò spalando.,Una volta ero sepolta nella sabbia fino al collo. Un principe si addormentò all'ombra della mia testa e io gli promisi un regno. Lo ebbe. Mi ripagò spalando.,Once I was buried in sand up to my neck. A prince fell asleep in the shade of my head and I promised him a kingdom. He got it. He paid me back with a shovel.
+"Mi chiamavano Horemakhet, Horus nell'orizzonte. Guardo l'oriente perché è da lì che il sole torna. Ogni mattina. Non ha mai saltato un giorno: lo ammiro.","Mi chiamavano Horemakhet, Horus nell'orizzonte. Guardo l'oriente perché è da lì che il sole torna. Ogni mattina. Non ha mai saltato un giorno: lo ammiro.","They called me Horemakhet, Horus in the horizon. I look east because that's where the sun comes back. Every morning. It has never missed a day: I admire it."
+"Mi hanno rubato il naso, un tempo. Non chiedermi chi. Ho fatto pace con il profilo che mi resta.","Mi hanno rubato il naso, un tempo. Non chiedermi chi. Ho fatto pace con il profilo che mi resta.","My nose was stolen, once. Don't ask me by whom. I've made peace with the profile I have left."
+I Greci raccontano di una sfinge che mangiava chi sbagliava l'indovinello. Una parente lontana. Molto lontana. Io preferisco i sigilli.,I Greci raccontano di una sfinge che mangiava chi sbagliava l'indovinello. Una parente lontana. Molto lontana. Io preferisco i sigilli.,The Greeks tell of a sphinx who ate whoever got the riddle wrong. A distant relative. Very distant. I prefer seals.
+"Ho visto costruire le piramidi. Sembravano più alte, allora. Forse ero più piccola io.","Ho visto costruire le piramidi. Sembravano più alte, allora. Forse ero più piccola io.",I watched the pyramids being built. They looked taller back then. Maybe I was smaller.
+"Sai qual è l'indovinello più difficile? Perché torni. Io una risposta ce l'ho, ma me la tengo.","Sai qual è l'indovinello più difficile? Perché torni. Io una risposta ce l'ho, ma me la tengo.","Do you know the hardest riddle? Why you keep coming back. I have an answer, but I'm keeping it."
+Una volta un uccello ha fatto il nido nel mio orecchio. È rimasto tre secoli. Mi manca ancora.,Una volta un uccello ha fatto il nido nel mio orecchio. È rimasto tre secoli. Mi manca ancora.,Once a bird nested in my ear. It stayed three centuries. I still miss it.
+"Non dormo mai. Chiudo gli occhi, ogni tanto, per far credere al deserto che può riposare anche lui.","Non dormo mai. Chiudo gli occhi, ogni tanto, per far credere al deserto che può riposare anche lui.","I never sleep. I close my eyes now and then, so the desert believes it can rest too."
+Pietra Dura,Pietra Dura,Hard Stone
+I nemici hanno il 30% di vita in più.,I nemici hanno il 30% di vita in più.,Enemies have 30% more health.
+Vento del Deserto,Vento del Deserto,Desert Wind
+I nemici sono più veloci del 15%.,I nemici sono più veloci del 15%.,Enemies are 15% faster.
+Digiuno,Digiuno,Fasting
+"Nessuna cura, di nessun tipo: né quella ogni 5 ondate, né quella degli enigmi, né quella dei doni.","Nessuna cura, di nessun tipo: né quella ogni 5 ondate, né quella degli enigmi, né quella dei doni.","No healing of any kind: not the one every 5 waves, not the riddles', not the boons'."
+Pelle Sottile,Pelle Sottile,Thin Skin
+Dopo un colpo resti invulnerabile la metà del tempo.,Dopo un colpo resti invulnerabile la metà del tempo.,After a hit you stay invulnerable for half the time.
+Sciame,Sciame,Swarm
+Ogni ondata ha 3 nemici in più.,Ogni ondata ha 3 nemici in più.,Every wave has 3 more enemies.
+Primo Sangue,Primo Sangue,First Blood
+"Il primo colpo che subisci in ogni ondata fa il 50% di danni in più (i colpi restano quelli di sempre, con il loro avviso).","Il primo colpo che subisci in ogni ondata fa il 50% di danni in più (i colpi restano quelli di sempre, con il loro avviso).","The first hit you take in each wave deals 50% more damage (the attacks stay the usual ones, with their warning)."
+Corte d'Oro,Corte d'Oro,Golden Court
+"In ogni ondata un nemico in più è élite, fin dalla prima.","In ogni ondata un nemico in più è élite, fin dalla prima.","In every wave one more enemy is elite, from the very first."
+Morso del Deserto,Morso del Deserto,Desert Bite
+I nemici fanno il 20% di danni in più.,I nemici fanno il 20% di danni in più.,Enemies deal 20% more damage.
+Modificatore: Sciame,Modificatore: Sciame,Modifier: Swarm
+"Sblocca il modificatore Sciame: ogni ondata ha 3 nemici in più (+0,30 al moltiplicatore).","Sblocca il modificatore Sciame: ogni ondata ha 3 nemici in più (+0,30 al moltiplicatore).",Unlocks the Swarm modifier: every wave has 3 more enemies (+0.30 to the multiplier).
+Modificatore: Primo Sangue,Modificatore: Primo Sangue,Modifier: First Blood
+"Sblocca il modificatore Primo Sangue: il primo colpo subito in ogni ondata fa il 50% di danni in più (+0,25).","Sblocca il modificatore Primo Sangue: il primo colpo subito in ogni ondata fa il 50% di danni in più (+0,25).",Unlocks the First Blood modifier: the first hit you take in each wave deals 50% more damage (+0.25).
+Modificatore: Corte d'Oro,Modificatore: Corte d'Oro,Modifier: Golden Court
+"Sblocca il modificatore Corte d'Oro: un'élite in più in ogni ondata (+0,35).","Sblocca il modificatore Corte d'Oro: un'élite in più in ogni ondata (+0,35).",Unlocks the Golden Court modifier: one more elite in every wave (+0.35).
+Modificatore: Morso del Deserto,Modificatore: Morso del Deserto,Modifier: Desert Bite
+"Sblocca il modificatore Morso del Deserto: i nemici fanno il 20% di danni in più (+0,30).","Sblocca il modificatore Morso del Deserto: i nemici fanno il 20% di danni in più (+0,30).",Unlocks the Desert Bite modifier: enemies deal 20% more damage (+0.30).
+Enigmi del fiume,Enigmi del fiume,Riddles of the river
+"Quattro enigmi nuovi sul Nilo e i suoi dèi, che la Sfinge mescola agli altri nelle pause.","Quattro enigmi nuovi sul Nilo e i suoi dèi, che la Sfinge mescola agli altri nelle pause.","Four new riddles about the Nile and its gods, which the Sphinx mixes with the others in the pauses."
+Enigmi del cielo,Enigmi del cielo,Riddles of the sky
+"Quattro enigmi nuovi sulle stelle, il cielo di Nut e i viaggi del sole.","Quattro enigmi nuovi sulle stelle, il cielo di Nut e i viaggi del sole.","Four new riddles about the stars, Nut's sky and the journeys of the sun."
+Titolo: Viandante,Titolo: Viandante,Title: Wanderer
+Un titolo accanto al tuo nome nella classifica della Sfinge.,Un titolo accanto al tuo nome nella classifica della Sfinge.,A title next to your name on the Sphinx's leaderboard.
+Titolo: Solutore di enigmi,Titolo: Solutore di enigmi,Title: Riddle Solver
+Titolo: Amico della Sfinge,Titolo: Amico della Sfinge,Title: Friend of the Sphinx
+Un titolo accanto al tuo nome nella classifica. Lei dirà che non è vero.,Un titolo accanto al tuo nome nella classifica. Lei dirà che non è vero.,A title next to your name on the leaderboard. She'll say it isn't true.
+Titolo: Custode della scala,Titolo: Custode della scala,Title: Keeper of the Stair
+Il titolo più alto nella classifica della Sfinge.,Il titolo più alto nella classifica della Sfinge.,The highest title on the Sphinx's leaderboard.
+Cornice di lapislazzuli,Cornice di lapislazzuli,Lapis lazuli frame
+Una cornice blu e oro intorno alla tua classifica.,Una cornice blu e oro intorno alla tua classifica.,A blue and gold frame around your leaderboard.
+Cornice d'oro,Cornice d'oro,Golden frame
+"Una cornice d'oro intorno alla tua classifica, con le gemme agli angoli.","Una cornice d'oro intorno alla tua classifica, con le gemme agli angoli.","A golden frame around your leaderboard, with gems at the corners."
+Collare usekh,Collare usekh,Usekh collar
+Un largo collare d'oro e lapislazzuli sul petto della Sfinge.,Un largo collare d'oro e lapislazzuli sul petto della Sfinge.,A broad collar of gold and lapis lazuli on the Sphinx's chest.
+Orecchini e ureo,Orecchini e ureo,Earrings and uraeus
+Orecchini d'oro e un ureo di lapislazzuli sulla fronte della Sfinge.,Orecchini d'oro e un ureo di lapislazzuli sulla fronte della Sfinge.,Gold earrings and a lapis lazuli uraeus on the Sphinx's brow.
+Fiori di loto,Fiori di loto,Lotus flowers
+Mazzi di loti bianchi e blu ai piedi della Sfinge.,Mazzi di loti bianchi e blu ai piedi della Sfinge.,Bunches of white and blue lotuses at the Sphinx's feet.
+Bracieri accesi,Bracieri accesi,Lit braziers
+"Due bracieri di bronzo accesi ai lati della Sfinge, nell'arena.","Due bracieri di bronzo accesi ai lati della Sfinge, nell'arena.","Two lit bronze braziers at the Sphinx's sides, in the arena."
+Stendardi,Stendardi,Banners
+"Due stendardi blu e oro appesi alla parete, dietro la Sfinge.","Due stendardi blu e oro appesi alla parete, dietro la Sfinge.","Two blue and gold banners hanging on the wall, behind the Sphinx."
+Ricordi della Sfinge,Ricordi della Sfinge,Memories of the Sphinx
+"Nel menu compare «Ascolta»: la Sfinge racconta qualcosa di sé, a modo suo.","Nel menu compare «Ascolta»: la Sfinge racconta qualcosa di sé, a modo suo.","«Listen» appears in the menu: the Sphinx tells you something about herself, in her own way."
+Racconto: Horemakhet,Racconto: Horemakhet,Tale: Horemakhet
+Un racconto nuovo per la vasca della Sala: la Sfinge come Horus nell'orizzonte.,Un racconto nuovo per la vasca della Sala: la Sfinge come Horus nell'orizzonte.,A new tale for the pool in the Hall: the Sphinx as Horus in the horizon.
+Racconto: il sogno di Thutmose,Racconto: il sogno di Thutmose,Tale: the dream of Thutmose
+"Un racconto nuovo per la vasca della Sala: la stele del sogno, tra le zampe della Sfinge.","Un racconto nuovo per la vasca della Sala: la stele del sogno, tra le zampe della Sfinge.","A new tale for the pool in the Hall: the dream stele, between the Sphinx's paws."
+"Nelle discese normali, a volte uno dei doni della Sfinge prende l'ultimo posto tra le scelte degli dèi (circa una scelta su otto). Mai garantito, al massimo uno per discesa, mai insieme a un dono doppio, pesante o raro. È l'unica cosa del Tesoro che conta nelle discese.","Nelle discese normali, a volte uno dei doni della Sfinge prende l'ultimo posto tra le scelte degli dèi (circa una scelta su otto). Mai garantito, al massimo uno per discesa, mai insieme a un dono doppio, pesante o raro. È l'unica cosa del Tesoro che conta nelle discese.","In normal descents, sometimes one of the Sphinx's boons takes the last place among the gods' choices (about one choice in eight). Never guaranteed, at most one per descent, never together with a duo, heavy or rare boon. It's the only thing in the Treasure that counts in descents."
+Parla con la Sfinge,Parla con la Sfinge,Talk to the Sphinx
 La Sfinge · ondata %d · %d punti,La Sfinge · ondata %d · %d punti,The Sphinx · wave %d · %d points
+Allora? La scala non si sale da sola.,Allora? La scala non si sale da sola.,Well? The stair won't climb itself.
+Accetta la prova,Accetta la prova,Accept the trial
+Modificatori,Modificatori,Modifiers
+Il Tesoro della Sfinge,Il Tesoro della Sfinge,The Sphinx's Treasure
+Comandi,Comandi,Controls
+Ascolta,Ascolta,Listen
+Vai via,Vai via,Leave
 "Arma del giorno: %s · uguale per tutti, oggi","Arma del giorno: %s · uguale per tutti, oggi","Weapon of the day: %s · the same for everyone, today"
+Modificatori: %s · punti %s,Modificatori: %s · punti %s,Modifiers: %s · points %s
 Arma del giorno,Arma del giorno,Weapon of the day
 "La prova: ondate sempre più dure, con vita normale e solo i doni che trovi qui. Ogni 3 ondate la Sfinge si ferma: un enigma e un dono. Conta quanto in alto arrivi.","La prova: ondate sempre più dure, con vita normale e solo i doni che trovi qui. Ogni 3 ondate la Sfinge si ferma: un enigma e un dono. Conta quanto in alto arrivi.","The trial: ever harder waves, with normal health and only the boons you find here. Every 3 waves the Sphinx stops: a riddle and a boon. What counts is how high you climb."
 Comincia,Comincia,Start
@@ -1802,11 +2080,13 @@ Le sabbie mobili rallentano te e i nemici,Le sabbie mobili rallentano te e i nem
 senza colpi +%d,senza colpi +%d,no hits +%d
 risposta audace +%d,risposta audace +%d,bold answer +%d
 +%d punti,+%d punti,+%d points
++%d sigilli,+%d sigilli,+%d seals
 Ondata %d superata,Ondata %d superata,Wave %d cleared
 "Premio della settimana: +%d Ka, +%d lapislazzuli","Premio della settimana: +%d Ka, +%d lapislazzuli","Weekly reward: +%d Ka, +%d lapis lazuli"
 Niente cura: l'hai promesso alla Sfinge,Niente cura: l'hai promesso alla Sfinge,No healing: you promised the Sphinx
 Pausa della Sfinge · il dono,Pausa della Sfinge · il dono,Sphinx's pause · the boon
 "Un dono, al livello base","Un dono, al livello base","One boon, at base level"
+Con Digiuno non ti cura.,Con Digiuno non ti cura.,With Fasting it doesn't heal you.
 +%d punti per ogni ondata superata con questo effetto.,+%d punti per ogni ondata superata con questo effetto.,+%d points for every wave cleared with this effect.
 Risposta audace,Risposta audace,Bold answer
 Risposta prudente,Risposta prudente,Cautious answer
@@ -1818,6 +2098,9 @@ La Sfinge ha parlato,La Sfinge ha parlato,The Sphinx has spoken
 %d punti,%d punti,%d points
 Ondate superate: %d   ·   Arma del giorno: %s,Ondate superate: %d   ·   Arma del giorno: %s,Waves cleared: %d   ·   Weapon of the day: %s
 Risposte audaci superate: %d   ·   Ondate senza colpi: %d,Risposte audaci superate: %d   ·   Ondate senza colpi: %d,Bold answers cleared: %d   ·   Waves without hits: %d
+Modificatori: %s (%s),Modificatori: %s (%s),Modifiers: %s (%s)
+Modificatori: nessuno,Modificatori: nessuno,Modifiers: none
+Sigilli della Sfinge guadagnati: %d (ne hai %d),Sigilli della Sfinge guadagnati: %d (ne hai %d),Sphinx seals earned: %d (you have %d)
 Il tuo miglior punteggio sulla scala!,Il tuo miglior punteggio sulla scala!,Your best score on the stair!
 %d° posto nella tua classifica,%d° posto nella tua classifica,#%d in your leaderboard
 Premi della settimana: nessuno in questa prova,Premi della settimana: nessuno in questa prova,Weekly rewards: none in this trial
@@ -1825,7 +2108,24 @@ Premi della settimana: nessuno in questa prova,Premi della settimana: nessuno in
 Premi della settimana: ,Premi della settimana: ,Weekly rewards: 
 La discesa e le tue risorse non cambiano: la prova resta a parte.,La discesa e le tue risorse non cambiano: la prova resta a parte.,Your descent and your resources don't change: the trial stays separate.
 Riprova,Riprova,Retry
-Torna alla Sala,Torna alla Sala,Back to the Hall
+Sigilli della Sfinge: %d,Sigilli della Sfinge: %d,Sphinx seals: %d
+LA SFINGE,LA SFINGE,THE SPHINX
+Valgono per tutta la prova (massimo 3) e alzano il moltiplicatore del punteggio. I premi della settimana dipendono solo dall'ondata.,Valgono per tutta la prova (massimo 3) e alzano il moltiplicatore del punteggio. I premi della settimana dipendono solo dall'ondata.,They last the whole trial (3 at most) and raise the score multiplier. Weekly rewards depend only on the wave.
+Moltiplicatore del punteggio: %s · attivi %d di %d,Moltiplicatore del punteggio: %s · attivi %d di %d,Score multiplier: %s · active %d of %d
+nel Tesoro · %d sigilli,nel Tesoro · %d sigilli,in the Treasure · %d seals
+Fatto,Fatto,Done
+in uso,in uso,in use
+%d sigilli,%d sigilli,%d seals
+Costa %d sigilli.,Costa %d sigilli.,Costs %d seals.
+Costa %d sigilli: te ne mancano %d.,Costa %d sigilli: te ne mancano %d.,Costs %d seals: you're %d short.
+Compra,Compra,Buy
+È tuo.,È tuo.,It's yours.
+Togli,Togli,Remove
+Indossa,Indossa,Wear
+Usa,Usa,Use
+Preso,Preso,Taken
+(tocca di nuovo per confermare),(tocca di nuovo per confermare),(tap again to confirm)
+"Un buon acquisto. Lo dico a tutti, ma con te lo penso.","Un buon acquisto. Lo dico a tutti, ma con te lo penso.","A good purchase. I say that to everyone, but with you I mean it."
 Le acque di Nun,Le acque di Nun,The waters of Nun
 "Prima del cielo e della terra c'era solo Nun: acqua scura, immobile, senza fondo. Da quell'acqua emerse una collina, la prima terra, e sulla collina si posò la luce. Ogni anno, quando il Nilo si ritira e lascia i campi coperti di limo, l'Egitto rivede quel primo mattino.","Prima del cielo e della terra c'era solo Nun: acqua scura, immobile, senza fondo. Da quell'acqua emerse una collina, la prima terra, e sulla collina si posò la luce. Ogni anno, quando il Nilo si ritira e lascia i campi coperti di limo, l'Egitto rivede quel primo mattino.","Before sky and earth there was only Nun: dark water, still, bottomless. From that water a hill rose, the first land, and on the hill the light came to rest. Every year, when the Nile withdraws and leaves the fields covered in silt, Egypt sees that first morning again."
 Hapi e la piena,Hapi e la piena,Hapi and the flood
@@ -1858,6 +2158,11 @@ Sconfiggi Serket.,Sconfiggi Serket.,Defeat Serket.
 I leoni dell'orizzonte,I leoni dell'orizzonte,The lions of the horizon
 "Aker è la terra stessa, il varco dove il sole entra la sera ed esce al mattino. Lo disegnavano come due leoni schiena contro schiena, con il sole tra loro: uno guarda l'ovest e si chiama Ieri, l'altro guarda l'est e si chiama Domani. Custodisce le porte, perché la notte non esca dal Duat.","Aker è la terra stessa, il varco dove il sole entra la sera ed esce al mattino. Lo disegnavano come due leoni schiena contro schiena, con il sole tra loro: uno guarda l'ovest e si chiama Ieri, l'altro guarda l'est e si chiama Domani. Custodisce le porte, perché la notte non esca dal Duat.","Aker is the earth itself, the passage where the sun goes in at evening and comes out in the morning. He was drawn as two lions back to back, with the sun between them: one faces west and is called Yesterday, the other faces east and is called Tomorrow. He guards the gates, so that the night does not leave the Duat."
 Sconfiggi Aker.,Sconfiggi Aker.,Defeat Aker.
+"Horemakhet, Horus nell'orizzonte","Horemakhet, Horus nell'orizzonte","Horemakhet, Horus in the horizon"
+"Nel Nuovo Regno la Grande Sfinge di Giza era venerata come Horemakhet, «Horus nell'orizzonte»: il sole che sorge, che lei guarda da sempre verso oriente. I pellegrini le lasciavano stele con orecchie scolpite, perché il dio ascoltasse le loro preghiere.","Nel Nuovo Regno la Grande Sfinge di Giza era venerata come Horemakhet, «Horus nell'orizzonte»: il sole che sorge, che lei guarda da sempre verso oriente. I pellegrini le lasciavano stele con orecchie scolpite, perché il dio ascoltasse le loro preghiere.","In the New Kingdom the Great Sphinx of Giza was worshipped as Horemakhet, «Horus in the horizon»: the rising sun, which it has always faced in the east. Pilgrims left it stelae carved with ears, so that the god would hear their prayers."
+Si trova nel Tesoro della Sfinge.,Si trova nel Tesoro della Sfinge.,It can be found in the Sphinx's Treasure.
+Il sogno di Thutmose,Il sogno di Thutmose,The dream of Thutmose
+"Il giovane principe Thutmose si addormentò, durante una caccia, all'ombra della Sfinge sepolta fino al collo nella sabbia. In sogno il dio gli promise il trono se l'avesse liberata. Diventato re, Thutmose IV fece togliere la sabbia e pose tra le sue zampe una stele che racconta il sogno: è ancora lì.","Il giovane principe Thutmose si addormentò, durante una caccia, all'ombra della Sfinge sepolta fino al collo nella sabbia. In sogno il dio gli promise il trono se l'avesse liberata. Diventato re, Thutmose IV fece togliere la sabbia e pose tra le sue zampe una stele che racconta il sogno: è ancora lì.","The young prince Thutmose fell asleep, during a hunt, in the shade of the Sphinx, buried up to its neck in sand. In a dream the god promised him the throne if he freed it. Once king, Thutmose IV had the sand removed and placed between its paws a stele that tells the dream: it is still there."
 SCATTO,SCATTO,DASH
 DONI,DONI,BOONS
 KHOPESH,KHOPESH,KHOPESH
@@ -2025,6 +2330,12 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+"
+    ","
+    ",
+"%s%s   %s
+%s","%s%s   %s
+%s",
 "Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: solo ciò che la Sfinge ti concede sulla scala. Morire qui non tocca la discesa.","Oggi l'arma è %s: la stessa per tutti. Vita normale, nessun dono, capitolo o amuleto: solo ciò che la Sfinge ti concede sulla scala. Morire qui non tocca la discesa.","Today's weapon is %s: the same for everyone. Normal health, no boons, chapters or amulets: only what the Sphinx grants you on the stair. Dying here doesn't touch your descent."
 La prossima ondata è più corta: 3 nemici in meno.,La prossima ondata è più corta: 3 nemici in meno.,The next wave is shorter: 3 fewer enemies.
 Nella prossima ondata i nemici sono più lenti del 15%.,Nella prossima ondata i nemici sono più lenti del 15%.,In the next wave enemies are 15% slower.
@@ -2221,7 +2532,6 @@ Subisci il 15% di danni in più.,Subisci il 15% di danni in più.,You take 15% m
 -6% velocità,-6% velocità,-6% speed
 +15% danni subiti,+15% danni subiti,+15% damage taken
 Vita,Vita,Health
-Comandi,Comandi,Controls
 "Ammit, la Divoratrice","Ammit, la Divoratrice","Ammit, the Devourer"
 Il Serpente della Porta,Il Serpente della Porta,The Serpent of the Gate
 Ogni porta del Duat ha il suo guardiano,Ogni porta del Duat ha il suo guardiano,Every gate of the Duat has its guardian

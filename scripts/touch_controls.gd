@@ -58,7 +58,8 @@ func _layout() -> Array:
 	out.append({"action": "special", "pos": Vector2(r - 108, b - 122), "r": 24.0, "label": Lang.t("OCCHIO")})
 	if Run.sekhem_unlocked():
 		out.append({"action": "super", "pos": Vector2(r - 170, b - 100), "r": 20.0, "label": Lang.t("SEKHEM")})
-	if shop or (scene != null and "oasis_nodes" in scene and not scene.oasis_nodes.is_empty()) or _near_door(scene) != null:
+	var by_sphinx: bool = scene != null and "trial" in scene and scene.trial != null and scene.trial.near_statue()
+	if shop or by_sphinx or (scene != null and "oasis_nodes" in scene and not scene.oasis_nodes.is_empty()) or _near_door(scene) != null:
 		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": _interact_label(scene)})
 	elif scene != null and "is_armory" in scene:
 		out.append({"action": "interact", "pos": Vector2(r - 40, b - 140), "r": 20.0, "label": Lang.t("AZIONE")})
@@ -92,6 +93,8 @@ func _interact_label(scene) -> String:
 			return Lang.t("ASCOLTA") if o is Oasis.Statue else Lang.t("USA")
 	if _near_door(scene) != null:
 		return Lang.t("ENTRA")
+	if "trial" in scene and scene.trial != null and scene.trial.near_statue():
+		return Lang.t("PARLA")
 	if "ferry" in scene and is_instance_valid(scene.ferry) and pl.global_position.distance_to(scene.ferry.global_position + Vector2(0, 12)) < 56.0:
 		return Lang.t("PARLA")
 	return Lang.t("AZIONE")
