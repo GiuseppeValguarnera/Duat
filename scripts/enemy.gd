@@ -215,7 +215,7 @@ func _on_hit(_dmg: float) -> void:
 ## (non i boss) e spegne le fiamme.
 func _puddle_slow() -> float:
 	if slow_t > 0.0:
-		return (1.0 - maxf(Run.val("arco_sobek"), Run.val("flagello_sobek")) / 100.0) * _water_tide_slow()
+		return (1.0 - maxf(maxf(Run.val("arco_sobek"), Run.val("flagello_sobek")), Run.val("sf_gaze")) / 100.0) * _water_tide_slow()
 	return _water_tide_slow()
 
 

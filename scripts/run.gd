@@ -46,6 +46,11 @@ var curses: Array = []                # [{"curse", "rooms", "blessing"}]
 var sekhem := 0.0
 var divine := false                   # true durante la Forma Divina
 var revived := false                  # Protezione di Bastet già usata in questa run
+var sf_second_used := false           # Secondo Sguardo (dono della Sfinge) già usato
+var word_ready := false               # Peso della Parola (Sfinge): il primo colpo dell'ondata
+var trial_first := false              # modificatore della Sfinge «Primo sangue»
+var trial_noheal := false             # modificatore della Sfinge «Digiuno»: nessuna cura
+var sphinx_reopen := false            # «Riprova»: la prova si riapre col dialogo della Sfinge
 var blood_kills := 0
 var nefti_room_heal := 0.0             # Nefti: quanto ha già curato in questa stanza (c'è un tetto)
 var nefti_hits := 0                    # Veglia Funebre: colpi a segno contati sotto un terzo della vita
@@ -145,6 +150,8 @@ func new_run() -> void:
 	sekhem = 0.0
 	divine = false
 	revived = false
+	sf_second_used = false
+	word_ready = false
 	blood_kills = 0
 	ka = 0
 	kills = 0
@@ -316,7 +323,8 @@ func val(id: String) -> float:
 	var l := level(id)
 	if l == 0 or Boons.is_heavy(id):
 		return 0.0
-	return float(Boons.ALL[id]["values"][l - 1])
+	var v: Array = Boons.ALL[id]["values"]
+	return float(v[mini(l, v.size()) - 1])
 
 
 func add_boon(id: String) -> void:
@@ -343,6 +351,9 @@ func add_boon(id: String) -> void:
 	if id == "anubi_light":
 		max_hp -= 5.0
 		hp = minf(hp, max_hp)
+	if id == "sf_sandstone":
+		max_hp += val(id)                       # Pelle d'Arenaria (Sfinge)
+		hp += val(id)
 	if id == "nefti_heavy":
 		max_hp = maxf(20.0, max_hp - 20.0)      # Fame dei Defunti: il prezzo
 		hp = minf(hp, max_hp)
@@ -443,6 +454,7 @@ func all_damage_mult() -> float:
 		m *= 0.8                 # Il Cielo Cade: il prezzo
 	if chap("c125") and hp > max_hp * 0.8:
 		m *= 1.0 + Chapters.value("c125") / 100.0
+	m *= 1.0 + val("sf_fang") / 100.0       # Zanna del Custode (Sfinge)
 	return m
 
 
@@ -483,6 +495,7 @@ func eye_cooldown_mult() -> float:
 		m *= 1.0 - val("anubi_mouth") / 100.0
 	if chap("c89"):
 		m *= 1.0 - Chapters.value("c89") / 100.0
+	m *= 1.0 - val("sf_eye") / 100.0        # Occhio Sfrontato (Sfinge)
 	return m
 
 
@@ -531,6 +544,7 @@ func dash_cooldown_mult() -> float:
 	if has("ra_dawn"):
 		m *= 1.4
 	m *= 1.0 - Chapters.value("c56") / 100.0
+	m *= 1.0 - val("sf_sand") / 100.0       # Sabbia sotto i Piedi (Sfinge)
 	return m
 
 
@@ -689,6 +703,10 @@ func player_hit(e: Node, fx: bool = true) -> float:
 			_glyph.call_deferred()
 	if fx and has("nefti_heavy"):
 		nefti_heal(1.0)                       # Fame dei Defunti
+	if word_ready and has("sf_word") and e != null and is_instance_valid(e):
+		word_ready = false                    # Peso della Parola (Sfinge): il primo colpo dell'ondata
+		m *= 1.0 + val("sf_word") / 100.0
+		Fx.float_text(e.global_position + Vector2(0, -30), Lang.t("PESO DELLA PAROLA"), Boons.color_of("sf_word"))
 	return m
 
 
@@ -702,6 +720,8 @@ func after_player_hit(e: Node, dir: Vector2, fx: bool = true) -> void:
 		return
 	if fx and has("shu_heavy") and dir != Vector2.ZERO:
 		e.shu_push(dir.normalized(), 260.0)   # Il Cielo Cade: ogni colpo spinge
+	if has("sf_gaze") and heavy_strike:
+		e.slow_t = maxf(e.slow_t, 2.0)        # Sguardo di Pietra (Sfinge)
 
 
 ## Geroglifo Scritto: colpisce i tre nemici più vicini al giocatore.
@@ -861,12 +881,18 @@ func nefti_on_kill(e: Node) -> void:
 		nefti_heal(h)
 	if e.elite and has("nefti_feast"):
 		nefti_heal(val("nefti_feast"))
+	if has("sf_breath") and (e.is_boss or e.miniboss or e.has_meta("sphinx_guard")):
+		p.heal(val("sf_breath"))              # Respiro dell'Orizzonte (Sfinge)
 	if marked and has("nefti_kite"):
 		p.refill_dash()
 
 
 ## Un colpo d'attacco a segno (player.gd): la Veglia Funebre conta i colpi sotto un terzo della vita.
 func nefti_on_hit() -> void:
+	if has("sf_hand"):
+		var pl = get_tree().get_first_node_in_group("player")      # Mano Sicura (Sfinge): l'Occhio torna prima
+		if pl != null and pl.eye_cd > 0.0:
+			pl.eye_cd = maxf(0.0, pl.eye_cd - val("sf_hand"))
 	if not has("nefti_vigil"):
 		return
 	var p = get_tree().get_first_node_in_group("player")

@@ -27,6 +27,8 @@ const GODS_IT := {
 	"nefti": {"name": "Nefti", "color": Color(0.78, 0.84, 0.96)},          # argento e blu notte
 	"shu": {"name": "Shu", "color": Color(0.97, 0.93, 0.82)},             # bianco perla con riflessi d'oro
 	"duo": {"name": "Doppio", "color": Color(1.0, 0.86, 0.45)},
+	# blocco 17: i doni della Sfinge (prova della Sfinge; nelle discese solo col Favore della Sfinge)
+	"sfinge": {"name": "Sfinge", "color": Color(0.84, 0.69, 0.44)},          # arenaria
 }
 
 ## `values` = il numero del dono ai livelli 1, 2 e 3 (entra nel %d della descrizione).
@@ -110,6 +112,21 @@ const ALL_IT := {
 	"anubi_guardian": {"god": "anubi", "balanced": true, "name": "Custode della Necropoli", "desc": "Il terzo colpo della combo fa il %d%% di danni in più.", "values": [50], "cost": "I primi due colpi della combo fanno il 10% di danni in meno."},
 	"anubi_tribute": {"god": "anubi", "balanced": true, "name": "Offerte ai Defunti", "desc": "Ottieni il %d%% di Ka in più.", "values": [40], "cost": "-5 vita massima."},
 	"anubi_guide": {"god": "anubi", "balanced": true, "name": "Guida delle Anime", "desc": "Ogni nemico abbattuto libera uno spirito che colpisce il nemico più vicino: %d danni.", "values": [15], "cost": "I nemici hanno il 5% di vita in più."},
+	# Doni della Sfinge (blocco 17): un solo livello, valori modesti, funzionano con ogni arma. Non sono doni
+	# di un dio: nella prova della Sfinge sostituiscono quelli degli dèi; nelle discese compaiono (al massimo
+	# uno) solo col Favore della Sfinge. `trial_only` = ha senso solo nella prova. `color` = il loro colore.
+	"sf_patience": {"god": "sfinge", "name": "Pazienza di Pietra", "desc": "L'attacco caricato si carica il %d%% più in fretta.", "values": [20], "color": Color(0.72, 0.62, 0.5)},
+	"sf_sand": {"god": "sfinge", "name": "Sabbia sotto i Piedi", "desc": "Lo scatto si ricarica il %d%% più in fretta e dopo lo scatto corri il 15%% più veloce per un attimo.", "values": [15], "color": Color(0.93, 0.8, 0.52)},
+	"sf_fang": {"god": "sfinge", "name": "Zanna del Custode", "desc": "Tutti i tuoi colpi fanno il %d%% di danni in più.", "values": [10], "color": Color(0.9, 0.55, 0.32)},
+	"sf_shadow": {"god": "sfinge", "name": "Ombra Lunga", "desc": "Dopo un colpo resti invulnerabile %.1f secondi in più.", "values": [0.3], "color": Color(0.45, 0.4, 0.62)},
+	"sf_breath": {"god": "sfinge", "name": "Respiro dell'Orizzonte", "desc": "Quando abbatti un guardiano o un boss ti curi di %d punti vita.", "values": [10], "color": Color(0.98, 0.72, 0.5)},
+	"sf_eye": {"god": "sfinge", "name": "Occhio Sfrontato", "desc": "L'Occhio di Horus si ricarica il %d%% più in fretta.", "values": [20], "color": Color(0.45, 0.68, 0.92)},
+	"sf_hand": {"god": "sfinge", "name": "Mano Sicura", "desc": "Ogni colpo a segno delle armi accorcia la ricarica dell'Occhio di %.1f secondi.", "values": [0.2], "color": Color(0.62, 0.78, 0.66)},
+	"sf_coin": {"god": "sfinge", "trial_only": true, "name": "Moneta della Sfinge", "desc": "Ogni ondata superata senza colpi ti dà %d sigillo della Sfinge in più.", "values": [1], "color": Color(0.98, 0.86, 0.4)},
+	"sf_second": {"god": "sfinge", "name": "Secondo Sguardo", "desc": "Una volta per prova o per discesa sopravvivi a un colpo mortale con %d punto vita.", "values": [1], "color": Color(0.88, 0.84, 0.74)},
+	"sf_word": {"god": "sfinge", "name": "Peso della Parola", "desc": "Il primo colpo che dai in ogni ondata fa il %d%% di danni in più.", "values": [50], "color": Color(0.8, 0.42, 0.42)},
+	"sf_sandstone": {"god": "sfinge", "name": "Pelle d'Arenaria", "desc": "+%d vita massima.", "values": [10], "color": Color(0.78, 0.58, 0.4)},
+	"sf_gaze": {"god": "sfinge", "name": "Sguardo di Pietra", "desc": "I nemici colpiti dall'attacco caricato rallentano del %d%% per 2 secondi.", "values": [25], "color": Color(0.58, 0.6, 0.64)},
 	# Doni Doppi: compaiono quando hai già doni di entrambi gli dèi
 	"duo_ra_horus": {"god": "duo", "gods": ["ra", "horus"], "name": "Occhio del Sole", "desc": "L'Occhio di Horus incendia sempre ed esplode quando si ferma (almeno 12 danni)."},
 	"duo_ra_sekhmet": {"god": "duo", "gods": ["ra", "sekhmet"], "name": "Sole Furente", "desc": "I nemici in fiamme subiscono il 25% di danni in più dal khopesh."},
@@ -356,7 +373,7 @@ static func gods_with_boons(owned: Dictionary, for_room: int = 99) -> Array:
 			continue                      # Nefti si mostra la prima volta nel deserto di Sokar
 		if g == "shu" and Run.region < 2 and not Meta.shu_met:
 			continue                      # anche Shu: la prima volta nel vento del deserto
-		if g != "set" and g != "anubi" and g != "duo" and not offers(g, owned).is_empty():
+		if g != "set" and g != "anubi" and g != "duo" and g != "sfinge" and not offers(g, owned).is_empty():
 			out.append(g)
 	return out
 
@@ -385,6 +402,28 @@ const SEAL_RARE_CHANCE := 0.65
 
 static func duo_chance() -> float:
 	return SEAL_DUO_CHANCE if Favors.has("sigillo") else DUO_CHANCE
+
+
+## Doni della Sfinge (blocco 17).
+static func is_sphinx(id: String) -> bool:
+	return ALL.has(id) and ALL[id]["god"] == "sfinge"
+
+
+## Il colore della carta di un dono: quello suo (doni della Sfinge) o quello del dio.
+static func color_of(id: String) -> Color:
+	return ALL[id].get("color", god_color(ALL[id]["god"]))
+
+
+## I doni della Sfinge che si possono offrire: nella prova tutti, nelle discese non quelli `trial_only`.
+static func sphinx_pool(owned: Dictionary, in_trial: bool) -> Array:
+	var out := []
+	for id in ALL:
+		if ALL[id]["god"] != "sfinge" or owned.has(id) or not fits_weapon(id):
+			continue
+		if ALL[id].get("trial_only", false) and not in_trial:
+			continue
+		out.append(id)
+	return out
 
 
 static func is_duo(id: String) -> bool:

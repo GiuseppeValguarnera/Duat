@@ -148,6 +148,7 @@ var swing_arc := 0.0
 var swing_index := 0
 
 var eye_cd := 0.0
+var sand_t := 0.0                       ## Sabbia sotto i Piedi: corsa dopo lo scatto
 var eye_charges := 1                   # Il Sole e la Luna: cariche dell'Occhio pronte
 var divine_t := 0.0
 var drain_t := 3.0                     # Sete Insaziabile
@@ -188,6 +189,11 @@ func _ready() -> void:
 
 
 ## Ricarica effettiva dell'Occhio, doni compresi.
+## Quanto dura la carica dell'attacco caricato (Pazienza di Pietra, dono della Sfinge, la accorcia).
+func _charge_time() -> float:
+	return CHARGE_TIME * (1.0 - Run.val("sf_patience") / 100.0)
+
+
 func eye_cd_max() -> float:
 	return eye_cooldown * Run.eye_cooldown_mult()
 
@@ -215,6 +221,8 @@ func _dash_ready_fx() -> void:
 func heal(amount: float) -> void:
 	if dead or amount <= 0.0:
 		return
+	if Run.trial and Run.trial_noheal:
+		return                                # modificatore della Sfinge «Digiuno»: nessuna cura
 	amount *= Run.heal_mult()
 	hp = minf(max_hp, hp + amount)
 	Run.hp = hp
@@ -250,7 +258,7 @@ func _physics_process(delta: float) -> void:
 		velocity = dash_dir * dash_speed * (1.0 + Run.val("shu_wings") / 100.0 if Run.has("shu_wings") else 1.0)
 		_dash_damage()
 	else:
-		var s := speed * Run.move_mult() * (attack_slowdown if atk_t > 0.0 and Run.weapon != "arco" else 1.0)
+		var s := speed * Run.move_mult() * (1.15 if sand_t > 0.0 else 1.0) * (attack_slowdown if atk_t > 0.0 and Run.weapon != "arco" else 1.0)
 		if Run.weapon == "arco" and bow_slow_t > 0.0 and not charging:
 			s *= BOW_FIRE_SLOW              # mentre tiri con l'arco
 		if charging:
@@ -308,7 +316,7 @@ func _touch_bow_input(delta: float) -> void:
 			charging = true
 			charge_k = 0.0
 		if charging:
-			charge_k = minf(1.0, charge_k + delta / CHARGE_TIME)
+			charge_k = minf(1.0, charge_k + delta / _charge_time())
 			if charge_k >= 1.0 and not charge_full:
 				charge_full = true
 				charge_flash_t = 0.25
@@ -343,7 +351,7 @@ func _attack_input(delta: float) -> void:
 			charging = true
 			charge_k = 0.0
 			swing_queued = false
-		charge_k = minf(1.0, charge_k + delta / CHARGE_TIME)
+		charge_k = minf(1.0, charge_k + delta / _charge_time())
 		if charge_k >= 1.0 and not charge_full:
 			charge_full = true
 			charge_flash_t = 0.25
@@ -497,6 +505,7 @@ func _tick(delta: float) -> void:
 	hook_pull_t = maxf(0.0, hook_pull_t - delta)
 	var dash_ending := dash_t > 0.0 and dash_t <= delta
 	dash_t = maxf(0.0, dash_t - delta)
+	sand_t = maxf(0.0, sand_t - delta)
 	if dash_ending:
 		_dash_ended()
 	dash_gap_t = maxf(0.0, dash_gap_t - delta)
@@ -699,6 +708,8 @@ func _start_dash(move: Vector2) -> void:
 ## e attiva i doni legati allo scatto. Va chiamata in _tick, prima che si legga l'attacco.
 func _dash_ended() -> void:
 	after_dash_t = 0.35
+	if Run.has("sf_sand"):
+		sand_t = 0.6                          # Sabbia sotto i Piedi (Sfinge): uno scatto di corsa
 	if Run.has("sekhmet_leap"):
 		leap_ready = true
 	if Run.has("sobek_tide"):
@@ -1312,6 +1323,8 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 	if dead or invuln_t > 0.0 or dash_t > 0.0:
 		return false
 	amount *= Run.damage_taken_mult()
+	if Run.trial and Run.trial_first and not Run.room_hit and not TERRAIN_KINDS.has(kind):
+		amount *= 1.5                         # modificatore della Sfinge «Primo sangue»: il primo colpo dell'ondata
 	# Nodo di Iside: le trappole fanno meno male (spuntoni, grate, olio, statue dell'ureo)
 	if Run.wears("iside") and attacker == null and kind in ["", "grata", "ureo", "olio"]:
 		amount *= 1.0 - Amulets.val_of("iside") / 100.0
@@ -1356,7 +1369,7 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 	if Run.has("anubi_scale") and attacker != null and not attacker.dead:
 		attacker.take_hit(amount * Run.val("anubi_scale") / 100.0, (attacker.global_position - global_position).normalized(), 120.0)
 		Fx.burst(attacker.global_position + Vector2(0, -8), Boons.god_color("anubi"), 12, 80.0)
-	invuln_t = hit_invuln
+	invuln_t = hit_invuln + Run.val("sf_shadow")      # Ombra Lunga (Sfinge): un po' di più
 	flash_t = 0.15
 	if light:
 		Fx.damage_number(global_position, amount, Color(1, 0.6, 0.4))
@@ -1378,6 +1391,12 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 		invuln_t = 1.5
 		Fx.burst(global_position + Vector2(0, -10), Boons.god_color("bastet"), 40, 160.0)
 		Fx.float_text(global_position + Vector2(0, -20), Lang.t("Bastet ti protegge!"), Boons.god_color("bastet"))
+	if hp <= 0.0 and Run.has("sf_second") and not Run.sf_second_used:
+		Run.sf_second_used = true            # Secondo Sguardo (Sfinge): una volta, resti in piedi con 1
+		hp = 1.0
+		invuln_t = 1.2
+		Fx.burst(global_position + Vector2(0, -10), Boons.color_of("sf_second"), 34, 150.0)
+		Fx.float_text(global_position + Vector2(0, -20), Lang.t("Secondo Sguardo"), Boons.color_of("sf_second"))
 	if hp <= 0.0:
 		hp = 0.0
 		dead = true
