@@ -399,6 +399,36 @@ musica della Sala, ricompensa già a terra, non conta come stanza ripulita); dop
   restauro). *Racconti dell'acqua* (`scripts/tales.gd` class_name `Tales`, 12 miti con condizione; `Meta.tales_read`,
   punto esclamativo sulla vasca; `hub.gd` `_open_tales`, una pagina per racconto con ◀ ▶ e tastiera).
 
+**Blocco 17 (9/11/2026) – la Sfinge personaggio**:
+- *Luogo e dialogo*: entrando dalla porta della Sala si arriva nell'arena e la prova NON parte. `scripts/sphinx_statue.gd`
+  (class_name `SphinxStatue`, vista di fronte, `process_mode` sempre attivo): occhi che seguono piano il giocatore entro
+  `ZONE` 240, palpebre, polvere e occhi accesi quando parla (`speak`), rumore sordo (`amheh_land` basso), fumetto `say()`
+  che non ferma il gioco, ornamenti dal Tesoro (collare, gioielli, loti, bracieri, stendardi). Solida: 164×116 dalla
+  parete. `SphinxTrial.near_statue()` → prompt e tasto PARLA (touch_controls) → `open_menu()`: dialogo
+  `SphinxUI.TalkBox` (macchina da scrivere 80 caratteri/s, tocco o tasto completa) con menu Accetta la prova /
+  Modificatori / Il Tesoro della Sfinge / Comandi / Ascolta (con «Ricordi») / Vai via. Prima visita: discorso lungo
+  (`first`); poi 1-2 righe per situazione (assenza > 3 giorni, premi già presi, record, ritorno) + arma del giorno.
+  Reazioni senza dialogo: fermo davanti 7 s → `idle`, te ne vai senza menu → `walk_off` (45%, attesa 10-14 s).
+- *Battute* (`scripts/sphinx_lines.gd`, `SphinxLines.table()`/`pick()`: a caso senza ripetere l'ultima, salvata in
+  `Meta.sphinx.last_line`): first, enter_back/long/claimed/record, weapon, accept, shop, mods, leave, idle, walk_off,
+  record, near, early, normal, retired, cause_* (da `Run.last_hit`, mappa `CAUSES`; altrimenti `cause_generic`), memories.
+- *Sconfitta*: `_outcome` (record se supera il migliore, vicino ≥ 85%, precoce se < metà della media delle ondate dopo 3
+  prove), `_death_talk` (esito + causa) poi riepilogo con modificatori, sigilli, premi; «Riprova» = `Run.sphinx_reopen` e
+  ricarica la scena col menu già aperto; il pausa prima della prova dice «Torna alla Sala».
+- *Modificatori* (`scripts/sphinx_shop.gd` `MODS_IT`, massimo 3, `mods_on`, salvati): Pietra Dura, Vento del Deserto,
+  Digiuno (`Run.trial_noheal`: `player.heal` non cura), Pelle Sottile (gratis); Sciame, Primo Sangue (`Run.trial_first`:
+  primo colpo dell'ondata ×1,5 in `take_damage`), Corte d'Oro, Morso del Deserto (dal Tesoro). Punteggio ×(1 + somma
+  dei bonus) (`total_score`); la classifica salva mods, mult, raw, titolo. Premi settimanali invariati (ondata).
+- *Doni della Sfinge* (boons.gd, dio "sfinge", un livello, campo `color`, `Boons.is_sphinx/color_of/sphinx_pool`): nella
+  prova sostituiscono gli dèi (`Sphinx.boon_offers`); effetti in run.gd/player.gd (`sf_*`); `sf_coin` solo nella prova.
+  Esclusi da `gods_with_boons`, Lezione dello Scriba, Kheper, Seconda Barca, Inchiostro di Thoth, `_max_level` 1.
+- *Sigilli e Tesoro* (`SphinxShop.seals/add_seals/buy`, `ITEMS_IT`, `SphinxUI.open_shop` con anteprima `Preview` e doppio
+  tocco): 1 a ondata, +2 guardiano, +1 senza colpi (+1 Moneta); oggetti 20-80, Favore 450. Enigmi extra
+  `_riddles_river/_riddles_sky`, racconti `harmachis` e `thutmose` in tales.gd, titolo e cornice nella bacheca della Sala.
+- *Favore della Sfinge* (`favore_sfinge` in favors.gd con `seals`, visibile alla cassa ma si prende nel Tesoro):
+  `Sphinx.favor_roll` (12,5% per scelta, al massimo un dono della Sfinge per discesa, mai con doppio/pesante/raro) in
+  `game._show_boon_menu`, carta «Dono della Sfinge · raro».
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima

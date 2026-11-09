@@ -1,5 +1,13 @@
 ## In sviluppo · novembre 2026
 
+- la Sfinge ha una voce: è una statua enorme che ti segue con gli occhi, sbatte le palpebre e commenta (con ironia) se
+  la guardi senza parlarle. La prova parte solo quando la accetti dal suo menu
+- modificatori della prova (fino a 3) che alzano il moltiplicatore del punteggio
+- doni della Sfinge al posto di quelli degli dèi nella prova; sigilli della Sfinge da spendere nel suo Tesoro (ornamenti
+  per lei, titoli, cornici, enigmi e racconti nuovi, modificatori) e il Favore della Sfinge, che a volte porta un suo
+  dono anche nelle discese
+- alla morte la Sfinge commenta com'è andata e cosa ti ha colpito; «Riprova» ti rimette subito davanti a lei
+
 - Sfinge: l'enigma arriva in una pausa ogni 3 ondate, insieme al dono, e il suo effetto dura fino alla pausa dopo
   (lo vedi accanto all'ondata); la risposta audace dà punti per ogni ondata superata; gli enigmi non si ripetono
 - prima della prova una schermata con l'arma del giorno e i suoi comandi (si rivede da «Comandi dell'arma» nella pausa)
