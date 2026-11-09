@@ -27,9 +27,15 @@ const ALL_IT := {
 		"desc": "Puoi equipaggiare due amuleti insieme invece di uno. Il secondo si sceglie al banco dell'orafo.",
 		"lore": "Le mummie dei re erano coperte di amuleti, a decine, tra una benda e l'altra: ognuno con il suo capitolo del Libro dei Morti e il suo posto sul corpo.",
 		"lines": ["Due sigilli d'oro sulla stessa catena. Ai miei tempi solo il faraone ne portava più d'uno, e lo pesavano ogni mattina perché non si stancasse.", "Ma tu non sei un faraone, giovane scriba. O forse sì. Portali bene: un amuleto è un pensiero, e due pensieri insieme sono già un dialogo."]},
+	# blocco 17: si compra con i sigilli nel Tesoro della Sfinge; qui compare per spiegare cosa fa
+	"favore_sfinge": {"name": "Il Favore della Sfinge", "cost": 450, "seals": true, "speaker": "sfinge", "sub": "doni della Sfinge nelle discese",
+		"desc": "Nelle discese normali, a volte uno dei doni della Sfinge prende l'ultimo posto tra le scelte degli dèi (circa una scelta su otto). Non è mai garantito, ne puoi prendere al massimo uno per discesa e non compare insieme a un dono doppio, pesante o raro. Si ottiene nel Tesoro della Sfinge, con i sigilli.",
+		"lore": "I re d'Egitto si facevano ritrarre come sfingi: corpo di leone, volto umano. Davanti alla Grande Sfinge di Giza Thutmose IV sognò che il dio gli prometteva il trono, se l'avesse liberata dalla sabbia.",
+		"lines": ["Sei tornato con abbastanza sigilli da annoiarmi. Prendi il mio favore: ogni tanto, laggiù, ti offrirò un dono anch'io. Non sempre. Mi piace farmi desiderare."]},
 }
-## Quelle della cassa dello scalpellino, in ordine (la collana è dell'orafo).
-const SHOP := ["voce", "voce2", "barca", "sigillo"]
+## Quelle della cassa dello scalpellino, in ordine (la collana è dell'orafo; il Favore della Sfinge si vede
+## qui ma si compra nel Tesoro della Sfinge, con i sigilli).
+const SHOP := ["voce", "voce2", "barca", "sigillo", "favore_sfinge"]
 static var ALL := {}
 
 
@@ -54,7 +60,16 @@ static func visible(id: String) -> bool:
 
 
 static func can_buy(id: String) -> bool:
+	if ALL_IT[id].get("seals", false):
+		return false                          # si compra solo nel Tesoro della Sfinge
 	return not has(id) and visible(id) and Meta.lapis >= int(ALL_IT[id]["cost"])
+
+
+## Il Favore della Sfinge comprato nel Tesoro (con i sigilli, non con i lapislazzuli).
+static func grant(id: String) -> void:
+	if not Meta.favors.has(id):
+		Meta.favors.append(id)
+		Meta.save()
 
 
 static func buy(id: String) -> bool:

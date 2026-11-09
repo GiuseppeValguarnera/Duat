@@ -58,6 +58,7 @@ static func refresh_data() -> void:
 	Amulets.refresh_lang()
 	Challenges.refresh_lang()
 	Favors.refresh_lang()
+	SphinxShop.refresh_lang()
 
 
 ## Applica la scelta delle Opzioni: "auto" segue la lingua del telefono o del computer
