@@ -310,6 +310,12 @@ static func story() -> Array:
 			Lang.t("Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere."),
 			Lang.t("Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro."),
 			Lang.t("Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.")]},
+		{"id": "artigli0", "if": Weapons.requirement_met("artigli") and not Weapons.is_unlocked("artigli"), "lines": [
+			Lang.t("Nel Cortile di Neith un telo è caduto da un piedistallo. Sotto ci sono gli artigli di Bastet."),
+			Lang.t("La gatta li presta di rado. Deve averti visto passare tra gli scorpioni.")]},
+		{"id": "scettro0", "if": Weapons.requirement_met("scettro") and not Weapons.is_unlocked("scettro"), "lines": [
+			Lang.t("Lo scettro di Ptah si è mostrato, nel Cortile. Non accadeva da quando l'ultimo re lo posò."),
+			Lang.t("È un'arma per chi comanda, Scriba. Mi chiedo perché si offra a te.")]},
 		{"id": "flagello0", "if": Weapons.requirement_met("flagello") and not Weapons.is_unlocked("flagello"), "lines": [
 			Lang.t("Nel cortile di Neith qualcosa si è svegliato, Scriba. Sotto il telo dormivano il flagello e il pastorale di Osiride: le insegne del re dei morti."),
 			Lang.t("Neith li cede per trentacinque lapislazzuli. Non chiedermi perché una dea abbia bisogno di pietre: le dee hanno i loro conti.")]},

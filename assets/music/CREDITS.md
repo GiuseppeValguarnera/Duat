@@ -24,3 +24,24 @@ percepito; Desert Mystic e Frozen Desert sono stati accorciati del silenzio fina
 ## death.ogg
 
 Tema della morte, creato per il gioco (CC0): il suono `divine.ogg` rallentato di un'ottava con eco lunga, il colpo di `book.ogg` rallentato, e un bordone di tre note sinusoidali (La, Mi, La) con tremolo, tutto mixato con ffmpeg. I suoni di partenza sono CC0 (vedi `assets/sfx/CREDITS.md`).
+
+
+## Temi dei boss e delle regioni (12/11/2026)
+
+Tutti di **Kevin MacLeod** (incompetech.com), licenza **Creative Commons: By Attribution 4.0**
+(https://creativecommons.org/licenses/by/4.0/). La citazione è nel gioco: Opzioni → Crediti.
+Modifiche: ricodificati in Ogg Vorbis (~80 kbps), portati a −16 LUFS, i più lunghi tagliati con una dissolvenza.
+
+| File | Brano | Uso |
+| --- | --- | --- |
+| boss_amheh.ogg | Volatile Reaction | Am-heh |
+| boss_serket.ogg | Curse of the Scarab (primi 172 s) | Serket |
+| boss_aker.ogg | Clash Defiant (primi 180 s) | Aker, prima fase |
+| boss_aker2.ogg | The Descent | Aker, Ieri e Domani |
+| room_sokar.ogg | Tabuk | stanze di Sokar |
+| room_r3.ogg | Drums of the Deep (primi 170 s) | stanze del Banco di Apopi |
+| guard_r3.ogg | Grim Idol (primi 176 s) | Shezmu |
+| boss_r3.ogg | Killers (primi 184 s) | Apopi |
+
+File presi da https://github.com/Sayshal/minstrel-packs-music-01 e https://github.com/dinglegames/dingle-radio
+(che li ridistribuiscono con la stessa licenza).

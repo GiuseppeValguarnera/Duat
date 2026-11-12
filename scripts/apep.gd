@@ -17,7 +17,7 @@ signal summon(kinds: Array)        # il gioco lo collega a ogni boss: fa uscire 
 
 const BoltScript := preload("res://scripts/enemy_bolt.gd")
 
-const HP := 3200.0
+const HP := 2200.0                ## era 3200: i bot (24 doni) ci mettevano oltre 5 minuti; ora circa 3 e mezzo
 const LUNGE_WARN := 0.75
 const LUNGE_WARN2 := 0.5
 const LUNGE_LEN := 420.0

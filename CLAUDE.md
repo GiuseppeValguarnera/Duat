@@ -456,6 +456,61 @@ musica della Sala, ricompensa già a terra, non conta come stanza ripulita); dop
   fonte): prossimo ritocco da valutare (cono degli affondi o spinta), dopo le impressioni del proprietario.
 - *Terza regione*: rimandata di proposito (Sokar ha ancora poche vittorie e nessuna impressione dal proprietario).
 
+**Blocco 18 (12/11/2026, sera) – terza regione, musica, HUD, armi nuove, pad**.
+- *Regione 3 – il Banco di Apopi* (la settima ora; `Run.APEP_READY`, `max_region()` 3, ci si arriva dalla porta dopo Aker:
+  `_next_region` con titolo «La settima ora», niente oasi, +25% vita; `DUAT_START_REGION=3` per le prove). Danni subiti
+  ×1,5 (`APEP_DAMAGE`), Ka ×1,5, ondate ×1,4, élite 20% +2%/stanza fino al 38%, vita dalla regola delle regioni (3,28 → 5,44).
+  Pavimento `ApepArena.paint_cave_floor` (roccia nera-viola, vene di caos, pozzanghere AZZURRE: le nere sono Isfet), muri
+  viola, `decor.SHADE` 0,3, luce fredda. Pericoli in `scripts/apep_world.gd` (class_name `Chaos`): `Isfet` (pozza di caos:
+  3 danni ogni 0,5 s, danno da terreno `isfet` → bordi viola `caos`; fissa o a tempo), `Coil` (spira di Apopi: cerchio
+  rosso 1 s, raggio 30, 12 danni, `spira`), `Darkness` (anello di buio attorno all'eroe). Stanze: `room_builder._place_apep`
+  (2-4 pozze, 1-3 spire dalla stanza 2, spuntoni dalla 4). Nemici (`APEP_KINDS` in game.gd, stessa macchina delle ondate di
+  Sokar via `_region_kinds()`): **Figlio di Apopi** `apep_spawn` (serpe, affondo in linea, morendo lascia Isfet 4 s),
+  **Sheut** `sheut` (ombra: sparisce e riaffiora alle spalle, cerchio 0,6 s, raggio 26), **Portatore di coltelli** `knifer`
+  (3 coltelli a ventaglio, 5 se élite; stile `knife` in enemy_bolt.gd), **Shetyu** `shetyu` (tartaruga: guscio = metà danni,
+  trottola con 3 rimbalzi, poi 1,8 s sul dorso a ×1,5); tornano Ba dannati e scarabei di Khepri.
+  Guardiano **Shezmu** (`scripts/shezmu.gd`, arena `press` = `ApepArena.paint_press`; vita 480 × curva ≈ 2035): mannaia che
+  va e torna (classe interna `Cleaver`), torchio (3 pietre, 5 in sequenza da infuriato), vino a ventaglio che lascia Isfet,
+  carica (contro il muro resta stordito). Premio 6-7 lapis, `Meta.shezmu_wins`.
+  Boss **Apopi** (`scripts/apep.gd`, arena `bank` = `ApepArena.paint_bank` con la barca di Ra arenata; vita 2200 fissa,
+  costanti in cima): si combatte la testa, il corpo sono le posizioni passate (`trail`). Affondo (striscia 420×44, 22 danni,
+  poi ESPOSTO 1,3 s a ×1,25), beve il fiume (risucchio 2,4 s a 80 px/s con `move_and_collide`, morso vicino alla bocca, poi
+  sputo di 7 sfere `isfet`), coda (cerchio 46, 20 danni, lascia Isfet), Figli (max 3 vivi, segnale `summon`). Sotto metà
+  vita: buio a intervalli (7 s sì, 9 no; il boss sale a z 6 così lui e gli avvisi restano sopra), due affondi, tre code.
+  `_apep_defeated`: «Apopi è legato», 12-14 lapis, `Meta.apep_wins`, Lacrime `claim_boss("apep", 3)`, poi vittoria.
+  Storia (tappa 3, docs/storia.md): Ricordo V «La mano della regina» (la regina ora si chiama **Meritneith**: nome scelto
+  da Claude, da confermare col proprietario), Anubi `apep0`/`apep1`/`name3_apep`, terzo segno del cartiglio (pane), Mahaf
+  `LINES_APEP`, battute di morte regione 3 in `death_table()`, racconti `apopi` e `shezmu`.
+  Bot: `DUAT_START_REGION=3` + `DUAT_SKIP=guardian|ammit|sokar` (20/24/17 doni); non conoscono ancora le mosse dei
+  nemici nuovi (Shezmu e Apopi hanno `bot_escape`). Primo campione (10 partite di veterani, bot che non conoscono i nemici nuovi): discesa intera con 17 doni 0/6, 5 muoiono
+  da Shezmu con lui al 4-15% (uno arriva alla stanza 6); Shezmu da solo 1/2; Apopi a 3200 0/2 con il 51-69% di vita rimasta dopo
+  107-166 s (oltre 5 minuti per finirlo): portato a 2200, Shezmu da 540 a 480. **Da rimisurare** e da sentire giocando.
+  Armi in Wernes (3 veterani a testa, prima del ritocco): khopesh stanze 6-7-11, lancia 6-5-6, arco 11-7 e una partita fino alla
+  stanza 9 del Banco, flagello 7-6-5, artigli 3-5-3, scettro 5-5-3 → artigli e scettro alzati, spazzata della lancia 1,75.
+- *Musica*: un tema per boss e per regione, caricati al bisogno (`Music.LAZY`, `Music.room_track()`): `boss_amheh`,
+  `boss_serket`, `boss_aker` + `boss_aker2`, `room_sokar`, `room_r3`, `guard_r3`, `boss_r3`; il Serpente e i guardiani
+  della Sfinge tengono `boss` (Arabesque). Tutti di Kevin MacLeod, **CC BY 4.0**: citazione obbligatoria, ora in Opzioni →
+  **Crediti** (`options_menu.gd` `CREDITS`, `page_kind`) e in `assets/music/CREDITS.md`. Fonte dei file: il repo GitHub
+  `Sayshal/minstrel-packs-music-01` (ogg) e `dinglegames/dingle-radio` (Tabuk); i siti di musica restano bloccati, ma
+  GitHub si raggiunge (i file LFS no). Ricodificati a ~80 kbps, −16 LUFS, i lunghi tagliati a ~3 min: +12 MB al gioco.
+- *HUD* (`hud_bars.gd`): **`size` del Control era 0×0** (sotto un CanvasLayer): i bordi colorati del danno da terreno
+  (blocco 10) e della vita bassa non si sono mai visti; ora `_vs()`. Barra di boss e guardiani in alto al centro
+  (`_boss_bar`: cartiglio, scia del danno, tacca a metà; legge `boss_bar/boss_fill/boss_name` di game.gd, che restano
+  invisibili per la logica), gemme dei doni (`_boon_row`) al posto di "Doni: N", tacche delle stanze (`_room_pips`), riga
+  dei comandi solo nelle prime 3 discese o nella prima stanza.
+- *Pad*: `follow_focus` sulle liste della Sfinge (Modificatori, Tesoro) e delle Opzioni; la levetta destra scorre la lista
+  più in alto ovunque (`DragScroll._process`, tolto il doppione in casa.gd). Prova `tools/dev/padmenu.gd`.
+- *Armi nuove* (i due piedistalli coperti del Cortile; `Weapons.FUTURE_IT` ora è vuoto): **Artigli di Bastet** `artigli`
+  (Serket battuta o 25 discese, 40 lapis; `CLAWS` 32 px ×0,7 ogni 0,14 s, terzo ×1,4; dopo lo scatto giro `CLAW_DASH`;
+  caricato = Balzo della Gatta `_pounce`: 112 px, intoccabile, onda r 46 ×2,7) e **Scettro di Ptah** `scettro` (Aker
+  battuto o 40 discese, 50 lapis; si chiama così perché "Scettro Was" è già un amuleto; `SCEPTRE` 46 px ×0,95 ogni 0,26 s, terzo =
+  raggio 132 px ×1,5 che trapassa; dopo lo scatto spazzata; caricato = Cerchio del Dominio `scripts/was_circle.gd`: r 62,
+  4 s, scariche ×0,42 ogni 0,5 s, −35% velocità (`Enemy.slow_pct`), dentro +15% ai tuoi colpi). Disegno `scripts/arms_art.gd`
+  (`ArmsArt`). Quattro doni per arma (`artigli_*`, `scettro_*`), aspetto unico, Neith `artigli_preso`/`scettro_preso`,
+  Anubi `artigli0`/`scettro0`. Passano dal ramo generico di `_swing()` (tabelle). Mancano: battute degli dèi alla prima
+  volta, risposta di Ammit, bot dedicato. Sono anche tra le armi del giorno della Sfinge.
+- *Strumenti*: `tools/dev/shots/roomshot.gd` (foto di una stanza), `tools/dev/check.sh` prova anche la regione 3 e le armi nuove.
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima
@@ -483,7 +538,9 @@ moltiplicatore dei danni subiti (Sokar ×1,25), ondate più piene ed élite più
 3. Raccogliere le impressioni su arco e flagello (danni, tiro carico, aggancio del pastorale, mira automatica col mouse)
    e ritarare; aspetti in più per arco e flagello.
 4. Raccogliere le impressioni sulla Sfinge (durezza delle ondate e dei guardiani, enigmi, premi) e ritarare.
-5. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
+5. **Banco di Apopi e armi nuove**: raccogliere le impressioni (durezza, leggibilità di Shezmu e Apopi, buio), misurare coi
+   bot, ritarare; confermare il nome della regina; battute degli dèi per artigli e scettro; poi la tappa 4 (Ammit, il finale).
+6. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
    se segnalato, lo stesso fix dello scorrimento col pad (`_settle_entries` in casa.gd) in altre finestre.
 
 ## Dati dei test (per confronto)

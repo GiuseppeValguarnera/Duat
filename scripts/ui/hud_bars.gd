@@ -100,7 +100,7 @@ func _draw() -> void:
 		var lth := maxf(_vs().x, _vs().y) * 0.05
 		for i in range(4):
 			var lw := lth * (1.0 - i * 0.25)
-			var red := Color(0.75, 0.05, 0.05, (0.05 + 0.09 * beat) * (1.3 - low * 2.0))
+			var red := Color(0.75, 0.05, 0.05, (0.03 + 0.06 * beat) * (1.3 - low * 2.0))
 			draw_rect(Rect2(0, 0, _vs().x, lw), red)
 			draw_rect(Rect2(0, _vs().y - lw, _vs().x, lw), red)
 			draw_rect(Rect2(0, 0, lw, _vs().y), red)

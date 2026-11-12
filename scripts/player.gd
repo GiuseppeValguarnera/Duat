@@ -49,13 +49,34 @@ const COMBO := [
 	{"range": 44.0, "arc": 170.0, "mult": 1.8, "cd": 0.42, "lunge": 45.0, "knock": 240.0},
 ]
 
+## Gli Artigli di Bastet (12/11): due graffi velocissimi e corti, poi un affondo con tutte e due le mani.
+## Poco danno a colpo, tanti colpi: per chi sta addosso al nemico ed entra ed esce con lo scatto.
+const CLAWS := [
+	{"range": 32.0, "arc": 120.0, "mult": 0.7, "cd": 0.14, "lunge": 14.0, "knock": 50.0},
+	{"range": 32.0, "arc": 120.0, "mult": 0.7, "cd": 0.14, "lunge": 14.0, "knock": 50.0},
+	{"range": 38.0, "arc": 150.0, "mult": 1.4, "cd": 0.3, "lunge": 36.0, "knock": 150.0},
+]
+const CLAW_DASH := {"range": 40.0, "arc": 360.0, "mult": 1.15, "cd": 0.22, "lunge": 0.0, "knock": 120.0}
+## Il Balzo della Gatta (attacco caricato): salti dove miri, in aria non ti colpiscono, atterri con un'onda.
+const CLAW_POUNCE := {"dist": 112.0, "radius": 46.0, "mult": 2.7, "knock": 230.0, "air": 0.26}
+## Lo Scettro di Ptah (12/11): due colpi d'asta a media distanza, poi un RAGGIO stretto e lungo che
+## trapassa la fila. L'attacco caricato pianta lo scettro: il Cerchio del Dominio (scripts/was_circle.gd).
+const SCEPTRE := [
+	{"range": 46.0, "arc": 70.0, "mult": 0.95, "cd": 0.26, "lunge": 8.0, "knock": 110.0},
+	{"range": 46.0, "arc": 70.0, "mult": 0.95, "cd": 0.26, "lunge": 8.0, "knock": 110.0},
+	{"range": 132.0, "arc": 16.0, "mult": 1.5, "cd": 0.42, "lunge": 0.0, "knock": 170.0},
+]
+const SCEPTRE_DASH := {"range": 50.0, "arc": 200.0, "mult": 1.35, "cd": 0.32, "lunge": 30.0, "knock": 280.0}
+const WAS_TICK_MULT := 0.42             ## una scarica del Cerchio = 42% di un fendente (8 scariche in 4 s)
+const WAS_INSIDE := 1.15                ## dentro il Cerchio i tuoi colpi fanno +15%
+
 ## La lancia di Neith: due affondi lunghi e stretti, poi un'ampia spazzata.
 const SPEAR := [
 	# revisione del 12/11: affondi ×1,15 e cono 40° (erano ×1,0 e 34°). Nei test la lancia era l'arma più
 	# debole dappertutto (Wernes: oltre il Serpente 2 su 12 contro 6 del khopesh; Sfinge: ondata 5-9 contro 10)
 	{"range": 52.0, "arc": 40.0, "mult": 1.15, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
 	{"range": 52.0, "arc": 40.0, "mult": 1.15, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
-	{"range": 42.0, "arc": 200.0, "mult": 1.6, "cd": 0.46, "lunge": 18.0, "knock": 210.0},
+	{"range": 42.0, "arc": 200.0, "mult": 1.75, "cd": 0.46, "lunge": 18.0, "knock": 210.0},      # spazzata 1,6 → 1,75 (12/11 sera)
 ]
 ## Attacco in scatto (un colpo durante lo scatto o subito dopo). Lancia: affondo in corsa,
 ## lunghissimo e stretto, che trapassa la fila. Khopesh: fendente più largo e più lungo.
@@ -416,6 +437,21 @@ func _charged_attack_do() -> void:
 		v.global_position = global_position + (dir * 150.0 if spear or bow else Vector2.ZERO)
 	if Run.weapon == "flagello":
 		_hook(dir, base)
+		return
+	if Run.weapon == "artigli":
+		_pounce(dir, base)
+		return
+	if Run.weapon == "scettro":
+		var wc := WasCircle.new()
+		wc.dmg = base * WAS_TICK_MULT * (1.0 + Run.val("scettro_ra") / 100.0)
+		wc.player = self
+		get_parent().add_child(wc)
+		wc.global_position = global_position
+		atk_t = 0.2
+		atk_cd = 0.35
+		swing_index = 2
+		spin_swing = false
+		Fx.burst(global_position + Vector2(0, -6), ArmsArt.TURQ, 26, 150.0)
 		return
 	if bow:
 		# il tiro carico: una freccia grande che trapassa tutta la fila
@@ -1024,7 +1060,9 @@ func _swing() -> void:
 	if combo_window <= 0.0:
 		combo = 0
 	var spear := Run.weapon == "lancia"
-	var table: Array = SPEAR if spear else COMBO
+	var claws := Run.weapon == "artigli"
+	var sceptre := Run.weapon == "scettro"
+	var table: Array = SPEAR if spear else (CLAWS if claws else (SCEPTRE if sceptre else COMBO))
 	var c: Dictionary = table[combo]
 	swing_index = combo
 	spin_swing = false
@@ -1033,7 +1071,7 @@ func _swing() -> void:
 	var dash_atk := after_dash_t > 0.0
 	var lunging := dash_atk and spear
 	if dash_atk:
-		c = SPEAR_LUNGE if spear else KHOPESH_DASH
+		c = SPEAR_LUNGE if spear else (CLAW_DASH if claws else (SCEPTRE_DASH if sceptre else KHOPESH_DASH))
 		swing_index = 3
 	else:
 		combo = (combo + 1) % table.size()
@@ -1052,7 +1090,16 @@ func _swing() -> void:
 		swing_range *= 1.0 + Run.aspect_val("onuris") / 100.0
 	# doni delle armi
 	var sweep := spear and swing_index == 2 and not lunging
-	if not spear:
+	if claws:
+		spin_swing = dash_atk
+	elif sceptre:
+		if swing_index == 2:
+			swing_range *= 1.0 + Run.val("scettro_thoth") / 100.0
+		elif swing_index < 2:
+			aspect_mult *= 1.0 + Run.val("scettro_sekhmet") / 100.0
+		if WasCircle.holds(global_position, get_tree()):
+			aspect_mult *= WAS_INSIDE
+	elif not spear:
 		if Run.has("ra_edge"):
 			swing_range *= 1.0 + Run.val("ra_edge") / 100.0
 			swing_arc += deg_to_rad(20.0)
@@ -1105,6 +1152,10 @@ func _swing() -> void:
 			continue
 		if absf(swing_dir.angle_to(to)) <= swing_arc * 0.5 or to.length() < e.radius + 6.0:
 			var crit_chance := Run.khopesh_crit_chance()
+			if claws:
+				crit_chance += Run.val("artigli_bastet") / 100.0
+				if Run.has("artigli_sobek"):
+					e.slow_t = maxf(e.slow_t, 2.0)
 			if lunging and Run.has("bastet_point"):
 				crit_chance += Run.val("bastet_point") / 100.0
 			var crit := Run.roll_crit(crit_chance)
@@ -1164,6 +1215,49 @@ func _shockwave(radius: float, dmg: float, kb: float, color: Color) -> void:
 	for e in get_tree().get_nodes_in_group("enemies"):
 		if not e.dead and global_position.distance_to(e.global_position) < radius + e.radius:
 			e.take_hit(dmg, (e.global_position - global_position).normalized(), kb)
+
+
+## Artigli di Bastet, attacco caricato: il Balzo della Gatta. Un salto fino a 112 px dove miri (si
+## ferma contro i muri), intoccabile in aria, e all'arrivo un'onda che colpisce tutto intorno.
+func _pounce(dir: Vector2, base: float) -> void:
+	invuln_t = maxf(invuln_t, float(CLAW_POUNCE["air"]) + 0.12)
+	var from := global_position
+	move_and_collide(dir * float(CLAW_POUNCE["dist"]))
+	reset_physics_interpolation()
+	for i in range(6):
+		Fx.burst(from.lerp(global_position, i / 5.0) + Vector2(0, -8), Boons.god_color("bastet"), 3, 40.0)
+	atk_t = 0.2
+	atk_cd = 0.3
+	swing_range = CLAW_POUNCE["radius"]
+	swing_arc = TAU
+	swing_index = 2
+	spin_swing = true
+	Sfx.play("dash", 0.05)
+	Sfx.play("swing", 0.0)
+	if Run.has("artigli_iside"):
+		shield = maxf(shield, Run.val("artigli_iside"))
+	var dmg: float = base * float(CLAW_POUNCE["mult"]) * (1.0 + Run.val("artigli_sekhmet") / 100.0)
+	var hit_any := false
+	for j in get_tree().get_nodes_in_group("breakables"):
+		if not j.broken and global_position.distance_to(j.global_position) < swing_range + 8.0:
+			j.smash()
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if e.dead:
+			continue
+		var to: Vector2 = e.global_position - global_position
+		if to.length() > swing_range + e.radius:
+			continue
+		var crit := Run.roll_crit(Run.khopesh_crit_chance() + Run.val("artigli_bastet") / 100.0)
+		if crit > 1.0:
+			Fx.float_text(e.global_position + Vector2(0, -20), Lang.t("CRITICO"), Boons.god_color("bastet"))
+		Run.nefti_on_hit()
+		e.take_hit(dmg * crit * Run.player_hit(e), to.normalized() if to != Vector2.ZERO else dir, float(CLAW_POUNCE["knock"]) * Run.knock_mult(), Run.khopesh_burns())
+		Run.after_player_hit(e, to)
+		Fx.impact(e.global_position + Vector2(0, -e.radius), to.normalized(), true)
+		hit_any = true
+	Fx.shake(6.0)
+	if hit_any:
+		Fx.hitstop(0.08)
 
 
 func eye_ready() -> bool:
@@ -1334,6 +1428,8 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 			invuln_t = 0.3
 			Fx.float_text(global_position + Vector2(0, -14), Lang.t("Il nodo di Iside ti protegge"), Color(0.86, 0.32, 0.26))
 			return false
+	if Run.has("scettro_iside") and WasCircle.holds(global_position, get_tree()):
+		amount *= 1.0 - Run.val("scettro_iside") / 100.0      # Cerchio di Iside
 	if Run.training:
 		amount = minf(amount, hp - 1.0)       # nel Cortile di Neith i colpi si sentono, ma non uccidono
 	if Run.chap("c151") and not Run.mask_used:
@@ -1693,6 +1789,20 @@ func _draw() -> void:
 		draw_line(hand - wdir * 8.0, hand + wdir * reach, Color(0.55, 0.38, 0.2, a), 1.6)
 		var tipp := hand + wdir * reach
 		draw_colored_polygon(PackedVector2Array([tipp + wdir * 6.0, tipp + wdir.orthogonal() * 2.2, tipp - wdir.orthogonal() * 2.2]), Color(0.85, 0.85, 0.9, a))
+	elif Run.weapon == "artigli":
+		var open_k := 0.0 if swing_k < 0.0 else sin(swing_k * PI)
+		ArmsArt.draw_claws(self, hand, wdir, 1.0, open_k, a)
+		ArmsArt.draw_claws(self, hand - wdir.orthogonal() * 7.0 - wdir * 3.0, wdir, 0.9, open_k, a)
+	elif Run.weapon == "scettro":
+		ArmsArt.draw_sceptre(self, hand, wdir, 1.0, charge_k if charging else (1.0 if swing_k >= 0.0 and swing_index == 2 else 0.0), a)
+		if atk_t > 0.0 and swing_index == 2 and swing_arc < deg_to_rad(30.0):
+			# il raggio: una lama di luce turchese lunga quanto il colpo
+			var bk := clampf(atk_t / 0.14, 0.0, 1.0)
+			var b0 := Vector2(0, -8) + swing_dir * 22.0
+			var b1 := swing_dir * swing_range
+			draw_line(b0, b1, Color(ArmsArt.TURQ, 0.35 * bk), 9.0)
+			draw_line(b0, b1, Color(ArmsArt.TURQ, 0.9 * bk), 4.0)
+			draw_line(b0, b1, Color(1, 1, 1, 0.9 * bk), 1.5)
 	else:
 		_draw_khopesh(hand, wdir, 1.0 if swing_k < 0.0 else 1.15, a)
 	# indicatore di mira

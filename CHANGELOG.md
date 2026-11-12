@@ -1,5 +1,18 @@
 ## In sviluppo · novembre 2026
 
+- **terza regione: il Banco di Apopi** (la settima ora), dopo Aker. Una caverna nera e viola con pozze di caos e spire
+  che escono dal pavimento; quattro nemici nuovi (i Figli di Apopi, le ombre senza padrone, i portatori di coltelli, la
+  tartaruga del caos); il guardiano Shezmu, Signore del Torchio; il boss Apopi, che beve il fiume e inghiotte la luce.
+  Molto più dura di Sokar. Nuovo Ricordo, nuove parole di Anubi e di Mahaf, il terzo segno del cartiglio
+- **due armi nuove** nel Cortile: gli Artigli di Bastet (graffi velocissimi e il Balzo della Gatta) e lo Scettro di Ptah
+  (un raggio che trapassa e il Cerchio del Dominio), ognuna con quattro doni suoi
+- **musica**: ogni boss ha il suo tema, e Sokar e il Banco di Apopi hanno la loro musica nelle stanze (Kevin MacLeod,
+  CC BY 4.0). Nelle Opzioni c'è la pagina dei Crediti
+- **HUD**: la barra dei boss è in alto, con la cornice e la scia del danno; i tuoi doni sono una fila di gemme colorate;
+  una riga di tacche mostra a che punto sei della regione; la riga dei comandi sparisce dopo le prime discese. I bordi
+  rossi con poca vita (e quelli colorati del veleno e del fuoco) ora si vedono davvero: prima un errore li nascondeva
+- **controller**: nel menu della Sfinge e nelle Opzioni la lista segue la selezione; la levetta destra scorre ogni lista
+
 - revisione generale: la terra di Sokar ora è un deserto vero (sabbia chiara, lastre sparse, onde del vento) e gli
   sciacalli sono neri come Anubi, così si vedono; stanze un po' meno buie dappertutto
 - nella Sala la porta della Sfinge, i nomi delle porte e la bilancia non finiscono più sotto il decoro

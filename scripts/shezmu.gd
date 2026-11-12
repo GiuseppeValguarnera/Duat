@@ -261,7 +261,7 @@ func _update_press(delta: float) -> void:
 		var before: float = sp[1]
 		sp[1] = before - delta
 		if sp[2] and before > PRESS_WARN and float(sp[1]) <= PRESS_WARN and p != null:
-			sp[0] = p.global_position        # la pietra "in ritardo" sceglie il punto quando parte il suo avviso
+			sp[0] = p.global_position        # la pietra in ritardo sceglie il punto quando parte il suo avviso
 			sp[2] = false
 		if before > 0.0 and float(sp[1]) <= 0.0:
 			var at: Vector2 = sp[0]

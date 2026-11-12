@@ -321,6 +321,14 @@ func _moves() -> Array:
 			return [Lang.t("Frecce rapide dove punti: si fermano sul primo nemico."),
 				Lang.t("Tiro carico: una freccia che trapassa tutto (ricarica 4 s)."),
 				Lang.t("Alla fine dello scatto, un ventaglio di tre frecce.")]
+		"artigli":
+			return [Lang.t("Graffi velocissimi e corti: stai addosso al nemico."),
+				Lang.t("Il Balzo della Gatta: salti dove miri e atterri con un'onda."),
+				Lang.t("Un graffio tutto intorno a te.")]
+		"scettro":
+			return [Lang.t("Due colpi d'asta, poi un raggio lungo che trapassa la fila."),
+				Lang.t("Pianti lo scettro: un cerchio che rallenta e colpisce a scariche."),
+				Lang.t("Una spazzata che allontana tutti.")]
 		"flagello":
 			return [Lang.t("Frustate in linea: colpiscono tutti, i danni pieni sono in punta."),
 				Lang.t("Il pastorale aggancia e ti lancia addosso un nemico; élite e guardiani tirano te."),
@@ -722,6 +730,11 @@ class WeaponIcon extends Control:
 		match weapon:
 			"arco":
 				ArrowArt.draw_bow(self, Vector2(0, 0), 0.0, 1.0, 0.0)
+			"artigli":
+				ArmsArt.draw_claws(self, Vector2(-6, 8), Vector2(-0.25, -1).normalized(), 1.7, 0.6)
+				ArmsArt.draw_claws(self, Vector2(6, 8), Vector2(0.25, -1).normalized(), 1.7, 0.6)
+			"scettro":
+				ArmsArt.draw_sceptre(self, Vector2(0, 6), Vector2.UP, 1.0, 0.6)
 			"flagello":
 				FlailArt.draw_crook(self, Vector2(5, 12), Vector2(-0.35, -1).normalized(), 24.0, FlailArt.GOLD)
 				FlailArt.draw_flail(self, Vector2(-5, 12), Vector2(0.35, -1).normalized(), 1.5)

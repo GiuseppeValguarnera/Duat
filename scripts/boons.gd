@@ -88,6 +88,15 @@ const ALL_IT := {
 	"flagello_horus": {"god": "horus", "weapon": "flagello", "name": "Pastorale del Falco", "desc": "Agganciare un nemico ricarica subito l'Occhio di Horus."},
 	"flagello_anubi": {"god": "anubi", "weapon": "flagello", "balanced": true, "name": "Ritmo dello Sciacallo", "desc": "Le frustate sono il %d%% più rapide.", "values": [30], "cost": "La frusta arriva il 20% meno lontano."},
 	"flagello_nefti": {"god": "nefti", "weapon": "flagello", "name": "Pastorale del Lutto", "desc": "Chi agganci è marchiato col Lutto: se muore ti cura di %d.", "values": [2, 3, 4]},
+	# Artigli di Bastet e Scettro di Ptah (12/11): quattro doni per arma
+	"artigli_bastet": {"god": "bastet", "weapon": "artigli", "name": "Nove Vite", "desc": "Gli artigli hanno il %d%% in più di probabilità di colpo critico.", "values": [10, 15, 20]},
+	"artigli_sekhmet": {"god": "sekhmet", "weapon": "artigli", "name": "Furia della Leonessa", "desc": "Il Balzo della Gatta fa il %d%% di danni in più.", "values": [30, 45, 60]},
+	"artigli_sobek": {"god": "sobek", "weapon": "artigli", "name": "Presa del Coccodrillo", "desc": "I graffi rallentano i nemici del %d%% per 2 secondi.", "values": [15, 22, 30]},
+	"artigli_iside": {"god": "iside", "weapon": "artigli", "name": "Passo Felpato", "desc": "Ogni Balzo della Gatta ti dà uno scudo di %d (non si somma).", "values": [5, 7, 9]},
+	"scettro_thoth": {"god": "thoth", "weapon": "scettro", "name": "Parola di Potere", "desc": "Il raggio dello scettro arriva il %d%% più lontano.", "values": [20, 30, 40]},
+	"scettro_ra": {"god": "ra", "weapon": "scettro", "name": "Sole di Ptah", "desc": "Le scariche del Cerchio del Dominio fanno il %d%% di danni in più.", "values": [30, 45, 60]},
+	"scettro_sekhmet": {"god": "sekhmet", "weapon": "scettro", "name": "Verga della Leonessa", "desc": "I primi due colpi dello scettro fanno il %d%% di danni in più.", "values": [15, 22, 30]},
+	"scettro_iside": {"god": "iside", "weapon": "scettro", "name": "Cerchio di Iside", "desc": "Dentro il Cerchio del Dominio subisci il %d%% di danni in meno.", "values": [15, 22, 30]},
 	"flagello_shu": {"god": "shu", "weapon": "flagello", "name": "Lancio del Vento", "desc": "Chi lanci col pastorale, se sbatte, subisce uno schianto da %d danni.", "values": [12, 18, 24]},
 	# Iside: protezione, cure, magia
 	"iside_wings": {"god": "iside", "name": "Ali di Iside", "desc": "All'inizio di ogni stanza hai uno scudo che assorbe %d danni.", "values": [10, 15, 20]},
@@ -236,7 +245,7 @@ static func available_now(id: String) -> bool:
 
 ## Doni che funzionano solo insieme ad altri: compaiono soltanto se ne possiedi almeno uno.
 const REQUIRES := {
-	"sobek_river": ["sobek_bite", "sobek_tide", "arco_sobek", "flagello_sobek"],
+	"sobek_river": ["sobek_bite", "sobek_tide", "arco_sobek", "flagello_sobek", "artigli_sobek"],
 	"duo_ra_sekhmet": ["ra_burn", "ra_dawn", "ra_eye", "ra_heavy", "arco_ra", "flagello_ra"],
 	"duo_sekhmet_bastet": ["bastet_claws", "bastet_heavy", "bastet_point", "arco_bastet", "flagello_bastet"],
 	"duo_horus_bastet": ["bastet_eyes", "bastet_heavy"],
@@ -269,8 +278,8 @@ const NOT_FOR := {
 ## "occhio", "freccia". I doni di un'arma (campo `weapon`) valgono solo per i colpi di quell'arma;
 ## quelli che non sono qui e non hanno un'arma sono generali (danni %, critici, vita, scatto, cure).
 ## Le frecce ricevono SOLO i doni dell'arco e quelli generali: niente doni dell'Occhio.
-const MELEE := ["khopesh", "lancia", "flagello"]
-const WEAPON_HITS := ["khopesh", "lancia", "flagello", "freccia"]
+const MELEE := ["khopesh", "lancia", "flagello", "artigli", "scettro"]
+const WEAPON_HITS := ["khopesh", "lancia", "flagello", "freccia", "artigli", "scettro"]
 const EYE := ["occhio"]
 const ORIGINS := {
 	# l'Occhio di Horus (dominio di Horus)
@@ -285,7 +294,7 @@ const ORIGINS := {
 	"duo_ra_sekhmet": WEAPON_HITS, "duo_sekhmet_bastet": WEAPON_HITS, "duo_sobek_iside": WEAPON_HITS,
 	"duo_anubi_sekhmet": WEAPON_HITS, "sekhmet_leap": WEAPON_HITS, "bastet_claws": WEAPON_HITS,
 }
-const WEAPON_ORIGIN := {"khopesh": "khopesh", "lancia": "lancia", "flagello": "flagello", "arco": "freccia"}
+const WEAPON_ORIGIN := {"khopesh": "khopesh", "lancia": "lancia", "flagello": "flagello", "arco": "freccia", "artigli": "artigli", "scettro": "scettro"}
 
 
 static func acts_on(id: String, origin: String) -> bool:
@@ -480,6 +489,10 @@ const SHORT_IT := {
 	"ra_burn": ["Arma: fuoco %d ogni 0,5 s", ""],
 	"flagello_ra": ["3ª frustata: fuoco %d", ""],
 	"flagello_sekhmet": ["Punta +%d%% danni", ""],
+	"artigli_bastet": ["Artigli: critico +%d%%", ""], "artigli_sekhmet": ["Balzo +%d%% danni", ""],
+	"artigli_sobek": ["Graffi: -%d%% velocità", ""], "artigli_iside": ["Balzo: scudo %d", ""],
+	"scettro_thoth": ["Raggio +%d%% più lungo", ""], "scettro_ra": ["Cerchio +%d%% danni", ""],
+	"scettro_sekhmet": ["1° e 2° colpo +%d%% danni", ""], "scettro_iside": ["Nel Cerchio: -%d%% danni subiti", ""],
 	"flagello_thoth": ["Frusta +%d%% più lunga", ""],
 	"flagello_bastet": ["Aggancio: critico sicuro +%d%%", ""],
 	"flagello_sobek": ["Frustate: -%d%% velocità", ""],

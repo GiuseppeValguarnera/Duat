@@ -2931,7 +2931,7 @@ func _victory() -> void:
 	if Run.region == 2:
 		head = Lang.t("Hai sconfitto Aker!\nIeri e Domani sono caduti, ma il sole non è sorto. La notte continua.")
 	if Run.region >= 3:
-		head = Lang.t("Hai respinto Apopi!\nIl serpente è legato fino alla prossima notte. Resta una sola porta: la Sala delle Due Verità.")
+		head = Lang.t("Hai respinto Apopi!") + "\n" + Lang.t("Il serpente è legato fino alla prossima notte. Resta una sola porta: la Sala delle Due Verità.")
 	message.text = Lang.t("%s%s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio") % [head, extra, _end_run_summary()]
 	_fit_message()
 

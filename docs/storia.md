@@ -10,7 +10,7 @@ Uno scriba scende nel Duat per salvare dall'oblio la storia del suo faraone, Akh
 
 - **Il protagonista.** Crede di essere uno scriba di corte, uno dei migliori del faraone Akhet. Ricorda di aver scritto le sue imprese, e le ricorda con dettagli vividi: il peso del khopesh, il freddo della camera del tesoro, la mano della regina. Gli dèi lo chiamano "Scriba". In verità è **Akhet**.
 - **Akhet** ("l'orizzonte", il punto dove il sole rinasce). Faraone potente e amato, ossessionato dalla morte. Da vivo ha rubato il **nome segreto di Ra** per diventare immortale. Il suo nome è stato scalpellato da ogni pietra d'Egitto.
-- **La regina** (nome ancora da decidere). Moglie di Akhet. Quando Akhet morì sapeva che il suo cuore, sulla bilancia, sarebbe stato divorato da Ammit. Per salvarlo fece cancellare il suo nome (senza nome non c'è giudizio) e lo seppellì con la tavolozza e l'identità del suo scriba. È Iside che salva Osiride, ma con una colpa vera da nascondere.
+- **La regina Meritneith** ("amata da Neith": nome proposto nel blocco 18, da confermare). Moglie di Akhet. Quando Akhet morì sapeva che il suo cuore, sulla bilancia, sarebbe stato divorato da Ammit. Per salvarlo fece cancellare il suo nome (senza nome non c'è giudizio) e lo seppellì con la tavolozza e l'identità del suo scriba. È Iside che salva Osiride, ma con una colpa vera da nascondere.
 - **Mahaf, il Traghettatore** ("colui che guarda indietro", dal mito: ha il volto girato verso il passato). Fu lui a portare l'anima di Akhet nel Duat la prima notte. La regina lo pagò per proteggerlo finché non ricordasse: per questo compare sempre prima dei boss. All'inizio è avido e burbero; più la storia avanza, più abbassa i prezzi senza dirlo. Nel finale si gira e ti guarda in faccia per la prima volta.
 - **Anubi.** Custode della bilancia. Non sa chi sei e la cosa lo inquieta: la bilancia trema quando torni.
 - **Set.** Sa tutto, o quasi, e si diverte. Ride quando parli del "tuo" faraone.
@@ -65,7 +65,9 @@ Dopo ogni boss si sblocca un ricordo: un breve racconto delle imprese di Akhet, 
 
 | IV | 1ª vittoria su Aker | Il nome nascosto | il re a Iunu, solo, nella sala del nome segreto | il presente che scappa ("Le dico... le disse") e la chiusa: "Il sole sorse ogni giorno, finché il re visse" |
 
-I ricordi di Sokar compaiono nei Papiri solo dopo esserci arrivati. Poi: la regina (tappa 3), e l'ultimo tutto in prima persona.
+| V | 1ª vittoria su Apopi | La mano della regina | la regina fa cancellare il nome del re per salvarlo dalla pesatura e posa nel sarcofago una tavolozza da scriba | "la mia... una tavolozza da scriba" e la chiusa: "Era sulla mia fronte" |
+
+I ricordi di Sokar e del Banco di Apopi compaiono nei Papiri solo dopo esserci arrivati. Manca l'ultimo, tutto in prima persona (tappa 4).
 
 ## Il registro delle voci
 

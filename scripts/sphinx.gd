@@ -9,7 +9,7 @@ extends RefCounted
 
 const COST := 28                       ## lapislazzuli per aprire la porta (poco sopra la grazia più economica, 15)
 const RULES := 1                       ## versione delle regole: i punteggi di regole diverse non si confrontano
-const WEAPONS := ["khopesh", "lancia", "arco", "flagello"]
+const WEAPONS := ["khopesh", "lancia", "arco", "flagello", "artigli", "scettro"]
 const TOP_N := 10
 ## Premi settimanali: soglia di ondata -> [Ka, lapislazzuli]. Una volta a settimana per soglia; la
 ## settimana ricomincia il lunedì alle 00:00 UTC. Una discesa normale porta a casa 60-150 Ka e

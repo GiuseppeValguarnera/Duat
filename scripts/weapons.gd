@@ -50,17 +50,32 @@ const ALL_IT := {
 				"lore": "Osiride regnò sull'Egitto prima degli uomini; ucciso da Set e ricomposto da Iside, scese a regnare nel Duat. Lo si dipinge verde o nero, il colore della terra fertile e della vita che rinasce."},
 		},
 	},
+	"artigli": {
+		"name": "Artigli di Bastet", "short": "ARTIGLI", "the": "gli artigli",
+		"desc": "Due graffi velocissimi e un affondo a due mani: poco danno a colpo, tantissimi colpi. Corti: devi stare addosso al nemico. Attaccando dopo lo scatto graffi tutto intorno a te; tenendo premuto fai il Balzo della Gatta: salti dove miri, in aria non ti colpiscono, e atterri con un'onda.",
+		"lore": "Bastet fu prima leonessa e poi gatta: la dea che protegge la casa con le unghie. Ogni notte, sotto l'albero sacro di Iunu, il Grande Gatto di Ra taglia la testa del serpente Apopi con un coltello. A Bubasti le portavano in dono gatti di bronzo a migliaia.",
+		"aspects": {
+			"bastet": {"name": "Aspetto di Bastet", "desc": "Gli artigli della signora di Bubasti. +{v}% di danni.", "values": [5, 10, 15], "cost": [0, 1, 2],
+				"lore": "Erodoto racconta che la festa di Bastet a Bubasti era la più grande d'Egitto: settecentomila persone sulle barche, con flauti e sistri."},
+		},
+	},
+	"scettro": {
+		"name": "Scettro di Ptah", "short": "SCETTRO", "the": "lo scettro",
+		"desc": "Due colpi d'asta a media distanza, poi un raggio stretto e lungo che trapassa tutta la fila. Attaccando dopo lo scatto una spazzata che allontana tutti; tenendo premuto pianti lo scettro: il Cerchio del Dominio rallenta e colpisce a scariche chi ci sta dentro, e tu lì dentro colpisci più forte.",
+		"lore": "Ptah di Menfi creò il mondo pensandolo nel cuore e pronunciandolo con la lingua. Il suo scettro unisce tre segni: il was (il dominio), il djed (la stabilità) e l'ankh (la vita). Gli artigiani lo chiamavano «il più grande dei maestri».",
+		"aspects": {
+			"ptah": {"name": "Aspetto di Ptah", "desc": "Lo scettro del signore degli artigiani. +{v}% di danni.", "values": [5, 10, 15], "cost": [0, 1, 2],
+				"lore": "Il nome stesso dell'Egitto viene da lui: Hut-ka-Ptah, «la casa del ka di Ptah», il tempio di Menfi, che i Greci pronunciarono Aigyptos."},
+		},
+	},
 }
 
 ## Le armi che si comprano nel Cortile con i lapislazzuli, quando la condizione è soddisfatta.
 ## Il khopesh è tuo da subito, la lancia te la regala Neith alla prima visita.
-const UNLOCK_COST := {"arco": 20, "flagello": 35}
+const UNLOCK_COST := {"arco": 20, "flagello": 35, "artigli": 40, "scettro": 50}
 
 ## Armi ancora da forgiare: solo il nome, coperte nel cortile.
-const FUTURE_IT := [
-	{"name": "Scettro was", "glyph": "was"},
-	{"name": "Artigli di Bastet", "glyph": "artigli"},
-]
+const FUTURE_IT := []
 
 const MAX_LEVEL := 3
 
@@ -78,6 +93,10 @@ static func requirement_met(w: String) -> bool:
 			return Meta.serpent_wins >= 3
 		"flagello":
 			return Meta.ammit_wins >= 1 or Meta.runs >= 15
+		"artigli":
+			return Meta.serket_wins >= 1 or Meta.runs >= 25
+		"scettro":
+			return Meta.aker_wins >= 1 or Meta.runs >= 40
 	return true
 
 
@@ -88,6 +107,10 @@ static func requirement_text(w: String) -> String:
 			return Lang.t("Batti il Serpente della Porta tre volte (%d/3)") % mini(Meta.serpent_wins, 3)
 		"flagello":
 			return Lang.t("Batti Am-heh, oppure compi 15 discese (%d/15)") % mini(Meta.runs, 15)
+		"artigli":
+			return Lang.t("Batti Serket, oppure compi 25 discese (%d/25)") % mini(Meta.runs, 25)
+		"scettro":
+			return Lang.t("Batti Aker, oppure compi 40 discese (%d/40)") % mini(Meta.runs, 40)
 	return ""
 
 
@@ -177,6 +200,16 @@ static func choose(w: String, a: String = "") -> void:
 static func adapt(s: String) -> String:
 	if Run.weapon == "khopesh" or Run.weapon == "":
 		return s
+	if Run.weapon == "artigli":
+		if Lang.is_en():
+			return s.replace("Khopesh", "Claws").replace("khopesh", "claws")
+		return s.replace("Il khopesh", "Gli artigli").replace("il khopesh", "gli artigli").replace("del khopesh", "degli artigli") \
+			.replace("dal khopesh", "dagli artigli").replace("al khopesh", "agli artigli").replace("Khopesh", "Artigli").replace("khopesh", "artigli")
+	if Run.weapon == "scettro":
+		if Lang.is_en():
+			return s.replace("Khopesh", "Sceptre").replace("khopesh", "sceptre")
+		return s.replace("Il khopesh", "Lo scettro").replace("il khopesh", "lo scettro").replace("del khopesh", "dello scettro") \
+			.replace("dal khopesh", "dallo scettro").replace("al khopesh", "allo scettro").replace("Khopesh", "Scettro").replace("khopesh", "scettro")
 	if Run.weapon == "flagello":
 		if Lang.is_en():
 			return s.replace("Khopesh", "Flail").replace("khopesh", "flail")

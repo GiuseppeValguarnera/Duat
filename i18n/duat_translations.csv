@@ -43,6 +43,11 @@ Occhio Udjat,Occhio Udjat,Udjat Eye
 Scarabeo Kheper,Scarabeo Kheper,Kheper Scarab
 I primi %d doni della discesa arrivano già al livello 2.,I primi %d doni della discesa arrivano già al livello 2.,The first %d boons of the descent arrive already at level 2.
 "Lo scarabeo che spinge il sole fuori dalla notte: il dio del divenire, di ciò che rinasce. Kheper, come te.","Lo scarabeo che spinge il sole fuori dalla notte: il dio del divenire, di ciò che rinasce. Kheper, come te.","The scarab that pushes the sun out of the night: the god of becoming, of what is reborn. Kheper, like you."
+ESPOSTO,ESPOSTO,EXPOSED
+Apopi inghiotte la luce,Apopi inghiotte la luce,Apep swallows the light
+Il buio va e viene. Gli avvisi rossi li vedi sempre,Il buio va e viene. Gli avvisi rossi li vedi sempre,The dark comes and goes. You always see the red warnings
+I FIGLI DI APOPI,I FIGLI DI APOPI,THE CHILDREN OF APEP
+APOPI BEVE IL FIUME,APOPI BEVE IL FIUME,APEP DRINKS THE RIVER
 Sciame di scarabei,Sciame di scarabei,Swarm of scarabs
 Due mummie,Due mummie,Two mummies
 Un sacerdote,Un sacerdote,A priest
@@ -82,6 +87,10 @@ Misura la distanza. Poi accorciala.,Misura la distanza. Poi accorciala.,Measure 
 Un'arma che non conosci ti tradirà nel momento peggiore.,Un'arma che non conosci ti tradirà nel momento peggiore.,A weapon you do not know will betray you at the worst moment.
 Torna quando avrai qualcosa da mostrarmi.,Torna quando avrai qualcosa da mostrarmi.,Come back when you have something to show me.
 "Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.","Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.","Strike the figures. They do not complain. I do, when you strike badly."
+"Gli artigli di Bastet. Lei li usa ogni notte, sotto l'albero di Iunu, contro il serpente. Non sono un'arma da re: sono un'arma da chi non vuole essere preso.","Gli artigli di Bastet. Lei li usa ogni notte, sotto l'albero di Iunu, contro il serpente. Non sono un'arma da re: sono un'arma da chi non vuole essere preso.","The claws of Bastet. She uses them every night, under the tree of Iunu, against the serpent. They are no king's weapon: they are the weapon of one who will not be caught."
+"Entra, graffia, esci. Se resti fermo a contare i colpi, hai già sbagliato arma.","Entra, graffia, esci. Se resti fermo a contare i colpi, hai già sbagliato arma.","Go in, scratch, get out. If you stand still counting your hits, you already picked the wrong weapon."
+"Lo scettro di Ptah. Con quello non si colpisce: si decide. Dove lo pianti, la terra è tua finché la luce dura.","Lo scettro di Ptah. Con quello non si colpisce: si decide. Dove lo pianti, la terra è tua finché la luce dura.","The sceptre of Ptah. You do not strike with it: you decide. Where you plant it, the ground is yours for as long as the light lasts."
+"I re lo tenevano in mano nelle statue. Tu lo tieni come uno che c'è abituato. ...Gli scribi, a volte, mi sorprendono.","I re lo tenevano in mano nelle statue. Tu lo tieni come uno che c'è abituato. ...Gli scribi, a volte, mi sorprendono.","Kings held it in their statues. You hold it like someone who is used to it. ...Scribes, at times, surprise me."
 "Il flagello e il pastorale di Osiride. Non sono armi da guerriera: sono le insegne del re. Con il pastorale si guida il gregge, con il flagello lo si difende.","Il flagello e il pastorale di Osiride. Non sono armi da guerriera: sono le insegne del re. Con il pastorale si guida il gregge, con il flagello lo si difende.","The flail and crook of Osiris. They are not a warrior's weapons: they are the king's insignia. With the crook one guides the flock, with the flail one defends it."
 "La frusta morde con la punta: chi ti sta troppo addosso la sente appena. Tieni la distanza giusta, come un pastore con il suo bastone.","La frusta morde con la punta: chi ti sta troppo addosso la sente appena. Tieni la distanza giusta, come un pastore con il suo bastone.","The whip bites with its tip: whoever stands too close barely feels it. Keep the right distance, like a shepherd with his staff."
 "L'arco di Satet ha scelto la tua mano. Tienilo basso, respira, e non inseguire la preda: lascia che sia la freccia a farlo.","L'arco di Satet ha scelto la tua mano. Tienilo basso, respira, e non inseguire la preda: lascia che sia la freccia a farlo.","Satet's bow has chosen your hand. Hold it low, breathe, and do not chase the prey: let the arrow do that."
@@ -229,6 +238,21 @@ Le frustate sono il %d%% più rapide.,Le frustate sono il %d%% più rapide.,Lash
 La frusta arriva il 20% meno lontano.,La frusta arriva il 20% meno lontano.,The whip reaches 20% less far.
 Pastorale del Lutto,Pastorale del Lutto,Crook of Mourning
 Chi agganci è marchiato col Lutto: se muore ti cura di %d.,Chi agganci è marchiato col Lutto: se muore ti cura di %d.,"Whoever you hook is marked with Mourning: if they die, they heal you for %d."
+Nove Vite,Nove Vite,Nine Lives
+Gli artigli hanno il %d%% in più di probabilità di colpo critico.,Gli artigli hanno il %d%% in più di probabilità di colpo critico.,The claws have %d%% more chance of a critical hit.
+Il Balzo della Gatta fa il %d%% di danni in più.,Il Balzo della Gatta fa il %d%% di danni in più.,The Cat's Pounce deals %d%% more damage.
+Presa del Coccodrillo,Presa del Coccodrillo,Crocodile's Grip
+I graffi rallentano i nemici del %d%% per 2 secondi.,I graffi rallentano i nemici del %d%% per 2 secondi.,Scratches slow enemies by %d%% for 2 seconds.
+Passo Felpato,Passo Felpato,Soft Step
+Ogni Balzo della Gatta ti dà uno scudo di %d (non si somma).,Ogni Balzo della Gatta ti dà uno scudo di %d (non si somma).,Each Cat's Pounce gives you a shield of %d (does not stack).
+Parola di Potere,Parola di Potere,Word of Power
+Il raggio dello scettro arriva il %d%% più lontano.,Il raggio dello scettro arriva il %d%% più lontano.,The sceptre's ray reaches %d%% farther.
+Sole di Ptah,Sole di Ptah,Sun of Ptah
+Le scariche del Cerchio del Dominio fanno il %d%% di danni in più.,Le scariche del Cerchio del Dominio fanno il %d%% di danni in più.,The pulses of the Circle of Dominion deal %d%% more damage.
+Verga della Leonessa,Verga della Leonessa,Rod of the Lioness
+I primi due colpi dello scettro fanno il %d%% di danni in più.,I primi due colpi dello scettro fanno il %d%% di danni in più.,The first two sceptre strikes deal %d%% more damage.
+Cerchio di Iside,Cerchio di Iside,Circle of Isis
+Dentro il Cerchio del Dominio subisci il %d%% di danni in meno.,Dentro il Cerchio del Dominio subisci il %d%% di danni in meno.,Inside the Circle of Dominion you take %d%% less damage.
 Lancio del Vento,Lancio del Vento,Throw of the Wind
 "Chi lanci col pastorale, se sbatte, subisce uno schianto da %d danni.","Chi lanci col pastorale, se sbatte, subisce uno schianto da %d danni.",Whoever you throw with the crook takes a %d damage slam if they hit something.
 Ali di Iside,Ali di Iside,Wings of Isis
@@ -421,6 +445,14 @@ L'Occhio torna,L'Occhio torna,The Eye returns
 "Arma: fuoco %d ogni 0,5 s","Arma: fuoco %d ogni 0,5 s",Weapon: fire %d every 0.5 s
 3ª frustata: fuoco %d,3ª frustata: fuoco %d,3rd lash: fire %d
 Punta +%d%% danni,Punta +%d%% danni,Tip +%d%% damage
+Artigli: critico +%d%%,Artigli: critico +%d%%,Claws: crit +%d%%
+Balzo +%d%% danni,Balzo +%d%% danni,Pounce +%d%% damage
+Graffi: -%d%% velocità,Graffi: -%d%% velocità,Scratches: -%d%% speed
+Balzo: scudo %d,Balzo: scudo %d,Pounce: shield %d
+Raggio +%d%% più lungo,Raggio +%d%% più lungo,Ray +%d%% longer
+Cerchio +%d%% danni,Cerchio +%d%% danni,Circle +%d%% damage
+1° e 2° colpo +%d%% danni,1° e 2° colpo +%d%% danni,1st and 2nd strike +%d%% damage
+Nel Cerchio: -%d%% danni subiti,Nel Cerchio: -%d%% danni subiti,In the Circle: -%d%% damage taken
 Frusta +%d%% più lunga,Frusta +%d%% più lunga,Whip +%d%% longer
 Aggancio: critico sicuro +%d%%,Aggancio: critico sicuro +%d%%,Hook: sure critical +%d%%
 Frustate: -%d%% velocità,Frustate: -%d%% velocità,Lashes: -%d%% speed
@@ -673,6 +705,27 @@ Il leone dell'orizzonte non ha fretta. Il sole aspetta da mille anni: può aspet
 "Piano {piano}. Le statue del falco vegliano, la sabbia cede, il fiume nero scorre. Il deserto combatte senza mani.","Piano {piano}. Le statue del falco vegliano, la sabbia cede, il fiume nero scorre. Il deserto combatte senza mani.","Floor {piano}. The falcon statues keep watch, the sand gives way, the black river flows. The desert fights without hands."
 "Aker è caduto, e il sole ha tremato. Non è ancora sorto, ma ha ricordato la strada.","Aker è caduto, e il sole ha tremato. Non è ancora sorto, ma ha ricordato la strada.","Aker has fallen, and the sun trembled. It has not risen yet, but it remembered the way."
 "Hai attraversato la terra di Sokar. I giorni passano, Scriba, e tu sei ancora in cammino.","Hai attraversato la terra di Sokar. I giorni passano, Scriba, e tu sei ancora in cammino.","You have crossed the land of Sokar. The days go by, Scribe, and you are still on the road."
+"Piano {piano}. Hai visto l'acqua nera, e l'acqua nera ha visto te.","Piano {piano}. Hai visto l'acqua nera, e l'acqua nera ha visto te.","Floor {piano}. You saw the black water, and the black water saw you."
+"Nella settima ora anche l'ombra ha un padrone, e non sei tu. Guardati le spalle, Scriba.","Nella settima ora anche l'ombra ha un padrone, e non sei tu. Guardati le spalle, Scriba.","In the seventh hour even the shadow has a master, and it is not you. Watch your back, Scribe."
+Piano {piano}. Il caos non combatte: aspetta che tu metta il piede dove ha già aperto la bocca.,Piano {piano}. Il caos non combatte: aspetta che tu metta il piede dove ha già aperto la bocca.,Floor {piano}. Chaos does not fight: it waits for you to step where it has already opened its mouth.
+Piano {piano}. Dove muore una serpe resta il suo veleno. Scegli dove ucciderle.,Piano {piano}. Dove muore una serpe resta il suo veleno. Scegli dove ucciderle.,Floor {piano}. Where a snake dies its venom stays. Choose where you kill them.
+"Sei caduto a metà della caverna, dove il serpente sogna. I suoi sogni hanno i denti.","Sei caduto a metà della caverna, dove il serpente sogna. I suoi sogni hanno i denti.","You fell in the middle of the cavern, where the serpent dreams. Its dreams have teeth."
+"Piano {piano}. La tartaruga si ferma sempre a pancia in su. Aspetta quel momento: la fretta, qui, è una preghiera ad Apopi.","Piano {piano}. La tartaruga si ferma sempre a pancia in su. Aspetta quel momento: la fretta, qui, è una preghiera ad Apopi.","Floor {piano}. The turtle always ends on its back. Wait for that moment: haste, down here, is a prayer to Apep."
+Piano {piano}. Hai sentito il banco di sabbia sotto i piedi. Il serpente ti ha sentito arrivare.,Piano {piano}. Hai sentito il banco di sabbia sotto i piedi. Il serpente ti ha sentito arrivare.,Floor {piano}. You felt the sandbank under your feet. The serpent felt you coming.
+"Così vicino alla barca arenata. Ra ti ha visto, Scriba: non può parlare, ma ti ha visto.","Così vicino alla barca arenata. Ra ti ha visto, Scriba: non può parlare, ma ti ha visto.","So close to the stranded barque. Ra saw you, Scribe: he cannot speak, but he saw you."
+"Piano {piano}. Più si scende, più il buio somiglia a qualcuno. Non fermarti a riconoscerlo.","Piano {piano}. Più si scende, più il buio somiglia a qualcuno. Non fermarti a riconoscerlo.","Floor {piano}. The deeper you go, the more the dark looks like someone. Do not stop to recognise them."
+"Shezmu ti ha spremuto, Scriba. Fa lo stesso vino da quattromila anni, e non gli è mai mancata l'uva.","Shezmu ti ha spremuto, Scriba. Fa lo stesso vino da quattromila anni, e non gli è mai mancata l'uva.","Shezmu pressed you, Scribe. He has made the same wine for four thousand years, and he has never run short of grapes."
+La mannaia torna sempre dal suo padrone. Chi le volta le spalle la sente due volte.,La mannaia torna sempre dal suo padrone. Chi le volta le spalle la sente due volte.,The cleaver always returns to its master. Whoever turns their back on it feels it twice.
+Piano {piano}. Il Signore del Torchio carica come un toro e come un toro si ferma: contro il muro.,Piano {piano}. Il Signore del Torchio carica come un toro e come un toro si ferma: contro il muro.,"Floor {piano}. The Lord of the Press charges like a bull, and like a bull he stops: against the wall."
+"Apopi ti ha bevuto come beve il fiume. Ma il fiume torna, ogni notte. Anche tu.","Apopi ti ha bevuto come beve il fiume. Ma il fiume torna, ogni notte. Anche tu.","Apep drank you as he drinks the river. But the river returns, every night. So do you."
+"Hai guardato il caos negli occhi. Pochi lo hanno fatto, e nessuno una volta sola.","Hai guardato il caos negli occhi. Pochi lo hanno fatto, e nessuno una volta sola.","You looked chaos in the eyes. Few have, and no one only once."
+"Piano {piano}. Il serpente non si uccide. Si lega, un nodo per notte. Stanotte il nodo si è sciolto.","Piano {piano}. Il serpente non si uccide. Si lega, un nodo per notte. Stanotte il nodo si è sciolto.","Floor {piano}. The serpent cannot be killed. It is bound, one knot each night. Tonight the knot came undone."
+"Quando beve, cammina contro la corrente e scatta di lato. Quando affonda, il suo muso resta nella sabbia: quello è il tuo momento.","Quando beve, cammina contro la corrente e scatta di lato. Quando affonda, il suo muso resta nella sabbia: quello è il tuo momento.","When he drinks, walk against the current and dash sideways. When he lunges, his snout stays in the sand: that is your moment."
+"Non un nemico, Scriba: l'Isfet. Il caos non ha bisogno di mani per prendere ciò che vuole.","Non un nemico, Scriba: l'Isfet. Il caos non ha bisogno di mani per prendere ciò che vuole.","Not an enemy, Scribe: Isfet. Chaos needs no hands to take what it wants."
+"La caverna respira, e tu eri nel suo respiro. Guarda il pavimento: le crepe dicono dove dorme la spira.","La caverna respira, e tu eri nel suo respiro. Guarda il pavimento: le crepe dicono dove dorme la spira.","The cavern breathes, and you were in its breath. Watch the floor: the cracks tell you where the coil sleeps."
+"Piano {piano}. Le pozze nere hanno occhi. Se le vedi aprirsi, sei già troppo vicino.","Piano {piano}. Le pozze nere hanno occhi. Se le vedi aprirsi, sei già troppo vicino.","Floor {piano}. The black pools have eyes. If you see them open, you are already too close."
+"Apopi è legato, e la barca di Ra è tornata a galla. Per una notte, Scriba, l'ordine ha vinto.","Apopi è legato, e la barca di Ra è tornata a galla. Per una notte, Scriba, l'ordine ha vinto.","Apep is bound, and the barque of Ra floats again. For one night, Scribe, order has won."
+Hai attraversato il cuore della notte. Resta una porta sola. La conosci: ci passi davanti ogni volta che torni.,Hai attraversato il cuore della notte. Resta una porta sola. La conosci: ci passi davanti ogni volta che torni.,You crossed the heart of the night. Only one door remains. You know it: you walk past it every time you return.
 "Am-heh è caduto. Il Divoratore di Milioni ha contato i dannati per mille anni, e stanotte ha perso il conto.","Am-heh è caduto. Il Divoratore di Milioni ha contato i dannati per mille anni, e stanotte ha perso il conto.","Am-heh has fallen. The Devourer of Millions counted the damned for a thousand years, and tonight it lost count."
 "Il suo Sekhem ora scorre in te. Quando sarà colmo, lascia che ti trasformi.","Il suo Sekhem ora scorre in te. Quando sarà colmo, lascia che ti trasformi.","Her Sekhem now flows in you. When it is full, let it transform you."
 "Ma la Prima Ora è solo l'inizio. Ammit, la vera Divoratrice, ti aspetta in fondo alla notte, accanto alla mia bilancia.","Ma la Prima Ora è solo l'inizio. Ammit, la vera Divoratrice, ti aspetta in fondo alla notte, accanto alla mia bilancia.","But the First Hour is only the beginning. Ammit, the true Devourer, awaits you at the bottom of the night, beside my scales."
@@ -755,6 +808,10 @@ Il Libro dei Morti ora ti concede un capitolo in più. E Am-heh ti ha lasciato i
 "Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Ora che hai abbattuto il Divoratore di Milioni, la bilancia ti riconosce. Puoi posarvi dei pesi, prima di scendere.","Now that you have felled the Devourer of Millions, the scales recognise you. You may lay weights upon them, before you descend."
 "Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.","Ogni peso rende il cammino più duro. Ma il Duat paga chi sceglie di soffrire: più pesante è il tuo cuore, più Ka porterai indietro.","Every weight makes the path harder. But the Duat rewards those who choose to suffer: the heavier your heart, the more Ka you will bring back."
 Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.,Non c'è vergogna nel cuore leggero. C'è gloria nel cuore che pesa e passa ugualmente.,There is no shame in a light heart. There is glory in the heart that is heavy and passes all the same.
+Nel Cortile di Neith un telo è caduto da un piedistallo. Sotto ci sono gli artigli di Bastet.,Nel Cortile di Neith un telo è caduto da un piedistallo. Sotto ci sono gli artigli di Bastet.,In Neith's Courtyard a cloth has fallen from a pedestal. Beneath it lie the claws of Bastet.
+La gatta li presta di rado. Deve averti visto passare tra gli scorpioni.,La gatta li presta di rado. Deve averti visto passare tra gli scorpioni.,The cat seldom lends them. She must have seen you pass among the scorpions.
+"Lo scettro di Ptah si è mostrato, nel Cortile. Non accadeva da quando l'ultimo re lo posò.","Lo scettro di Ptah si è mostrato, nel Cortile. Non accadeva da quando l'ultimo re lo posò.","The sceptre of Ptah has shown itself, in the Courtyard. That had not happened since the last king laid it down."
+"È un'arma per chi comanda, Scriba. Mi chiedo perché si offra a te.","È un'arma per chi comanda, Scriba. Mi chiedo perché si offra a te.","It is a weapon for those who command, Scribe. I wonder why it offers itself to you."
 "Nel cortile di Neith qualcosa si è svegliato, Scriba. Sotto il telo dormivano il flagello e il pastorale di Osiride: le insegne del re dei morti.","Nel cortile di Neith qualcosa si è svegliato, Scriba. Sotto il telo dormivano il flagello e il pastorale di Osiride: le insegne del re dei morti.","In Neith's courtyard something has awakened, Scribe. Under the linen slept the flail and crook of Osiris: the insignia of the king of the dead."
 Neith li cede per trentacinque lapislazzuli. Non chiedermi perché una dea abbia bisogno di pietre: le dee hanno i loro conti.,Neith li cede per trentacinque lapislazzuli. Non chiedermi perché una dea abbia bisogno di pietre: le dee hanno i loro conti.,Neith yields them for thirty-five lapis lazuli. Do not ask me why a goddess needs stones: goddesses keep their own accounts.
 "Porti il flagello e il pastorale. Le insegne del faraone, Scriba. Le stesse che Osiride stringe sul petto, seduto accanto alla mia bilancia.","Porti il flagello e il pastorale. Le insegne del faraone, Scriba. Le stesse che Osiride stringe sul petto, seduto accanto alla mia bilancia.","You carry the flail and the crook. The pharaoh's insignia, Scribe. The very ones Osiris holds on his chest, seated beside my scale."
@@ -775,6 +832,14 @@ Sokar custodisce ciò che è sepolto. Nella sua sabbia ogni cosa nascosta attend
 "Il dio del sole rinasce pronunciando il proprio nome segreto. Quel nome gli è stato tolto. Chi lo ha preso lo ha portato quaggiù, nella notte. E la notte, Scriba, non restituisce ciò che custodisce.","Il dio del sole rinasce pronunciando il proprio nome segreto. Quel nome gli è stato tolto. Chi lo ha preso lo ha portato quaggiù, nella notte. E la notte, Scriba, non restituisce ciò che custodisce.","The sun god is reborn by speaking his own secret name. That name was taken from him. Whoever took it carried it down here, into the night. And the night, Scribe, does not give back what it keeps."
 Un secondo segno è riaffiorato nel cartiglio del tuo re: un cerchio solcato da linee.,Un secondo segno è riaffiorato nel cartiglio del tuo re: un cerchio solcato da linee.,A second sign has surfaced in your king's cartouche: a circle furrowed with lines.
 "Aker l'ha lasciato andare, come si restituisce ciò che non ci appartiene. I guardiani dell'orizzonte sanno di chi è ogni cosa.","Aker l'ha lasciato andare, come si restituisce ciò che non ci appartiene. I guardiani dell'orizzonte sanno di chi è ogni cosa.","Aker let it go, as one returns what does not belong to him. The guardians of the horizon know whose every thing is."
+Sei disceso oltre l'orizzonte. Ora sei nella settima ora: il banco di sabbia di Apopi.,Sei disceso oltre l'orizzonte. Ora sei nella settima ora: il banco di sabbia di Apopi.,You have descended beyond the horizon. Now you are in the seventh hour: the sandbank of Apep.
+"Là il serpente beve il fiume, e la barca di Ra resta in secca. Accade ogni notte, da prima che esistessero le notti.","Là il serpente beve il fiume, e la barca di Ra resta in secca. Accade ogni notte, da prima che esistessero le notti.","There the serpent drinks the river, and the barque of Ra lies aground. It happens every night, since before there were nights."
+"Apopi non ha padre e non ha fine. Non cerca te, Scriba. Cerca qualcosa, e crede che tu sappia dov'è. Vorrei saperlo anch'io.","Apopi non ha padre e non ha fine. Non cerca te, Scriba. Cerca qualcosa, e crede che tu sappia dov'è. Vorrei saperlo anch'io.","Apep has no father and no end. He is not looking for you, Scribe. He is looking for something, and believes you know where it is. I wish I knew too."
+"Hai legato il serpente. Nessuno lo uccide: tu lo hai fermato, ed è più di quanto si chieda a un'anima.","Hai legato il serpente. Nessuno lo uccide: tu lo hai fermato, ed è più di quanto si chieda a un'anima.","You have bound the serpent. No one kills him: you stopped him, and that is more than is asked of a soul."
+"Ti dava la caccia. Apopi fiuta il nome segreto di Ra come lo sciacallo fiuta la tomba aperta. Ti segue perché tu sai dove si trova, anche se non sai di saperlo.","Ti dava la caccia. Apopi fiuta il nome segreto di Ra come lo sciacallo fiuta la tomba aperta. Ti segue perché tu sai dove si trova, anche se non sai di saperlo.","He was hunting you. Apep scents the secret name of Ra as the jackal scents an open tomb. He follows you because you know where it is, even if you do not know that you know."
+"Ho interrogato i registri, infine. Il nome del tuo re non fu cancellato per odio. Fu la regina. Lo tolse da ogni pietra perché la bilancia non potesse chiamarlo, e lo depose nel buio dietro un volto che non era il suo. Io peso i cuori da quattromila anni, e nessuno mi aveva mai ingannato per amore.","Ho interrogato i registri, infine. Il nome del tuo re non fu cancellato per odio. Fu la regina. Lo tolse da ogni pietra perché la bilancia non potesse chiamarlo, e lo depose nel buio dietro un volto che non era il suo. Io peso i cuori da quattromila anni, e nessuno mi aveva mai ingannato per amore.","I have questioned the records, at last. Your king's name was not erased out of hatred. It was the queen. She took it from every stone so the scales could not call him, and laid him in the dark behind a face that was not his. I have weighed hearts for four thousand years, and no one had ever deceived me out of love."
+"Un terzo segno è tornato nel cartiglio: una piccola cupola. Il pane. Il segno più umile, e quello che regge gli altri.","Un terzo segno è tornato nel cartiglio: una piccola cupola. Il pane. Il segno più umile, e quello che regge gli altri.","A third sign has returned to the cartouche: a small dome. The bread. The humblest sign, and the one that holds up the others."
+"Ne manca uno. E l'ultimo, Scriba, non lo custodisce nessun mostro.","Ne manca uno. E l'ultimo, Scriba, non lo custodisce nessun mostro.","One is missing. And the last, Scribe, is guarded by no monster."
 "Ho interrogato Ma'at, su di te. Non mi ha risposto.","Ho interrogato Ma'at, su di te. Non mi ha risposto.",I questioned Ma'at about you. She did not answer.
 In quattromila anni non era mai accaduto.,In quattromila anni non era mai accaduto.,In four thousand years that had never happened.
 "Il terzo segno: un pane. Ibis, cerchio, pane. Il nome si legge quasi, ma un segno manca ancora.","Il terzo segno: un pane. Ibis, cerchio, pane. Il nome si legge quasi, ma un segno manca ancora.","The third sign: a loaf of bread. Ibis, circle, bread. The name can almost be read, but one sign is still missing."
@@ -796,6 +861,7 @@ Il Ka che non spendi torna qui con te. Quello che spendi ti tiene in vita. Scegl
 Ka,Ka,Ka
 Lapislazzuli,Lapislazzuli,Lapis lazuli
 Cura,Cura,Healing
+Apopi,Apopi,Apep
 Aker,Aker,Aker
 Am-heh,Am-heh,Am-heh
 Guardiano,Guardiano,Guardian
@@ -810,10 +876,13 @@ Dono di %s: scegli uno dei suoi poteri,Dono di %s: scegli uno dei suoi poteri,Bo
 Tesoro di Ka: +25 Ka,Tesoro di Ka: +25 Ka,Ka Treasure: +25 Ka
 Lapislazzuli: pietre preziose per i restauri (restano anche se cadi),Lapislazzuli: pietre preziose per i restauri (restano anche se cadi),Lapis lazuli: precious stones for restorations (you keep them even if you fall)
 Acqua del Nilo: recuperi il %d%% della vita,Acqua del Nilo: recuperi il %d%% della vita,Water of the Nile: you recover %d%% of your health
+Il banco di sabbia: Apopi ha bevuto il fiume e la barca di Ra è arenata. Respingilo,Il banco di sabbia: Apopi ha bevuto il fiume e la barca di Ra è arenata. Respingilo,The sandbank: Apep has drunk the river and the barque of Ra is aground. Drive him back
 "La porta dell'orizzonte: Aker, il leone dalle due teste, custodisce il passaggio del sole","La porta dell'orizzonte: Aker, il leone dalle due teste, custodisce il passaggio del sole","The gate of the horizon: Aker, the two-headed lion, guards the passage of the sun"
 "Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Cancello della Prima Ora: Am-heh, il Divoratore di Milioni, ti aspetta nel suo lago di fuoco","Gate of the First Hour: Am-heh, the Devourer of Millions, awaits you in its lake of fire"
+Il torchio di Shezmu: il dio che spreme i dannati custodisce la via. Battilo per un dono di livello superiore,Il torchio di Shezmu: il dio che spreme i dannati custodisce la via. Battilo per un dono di livello superiore,The press of Shezmu: the god who presses the damned guards the way. Beat him for a higher-level boon
 Il tempio di Serket: la dea scorpione custodisce il deserto. Battila per un dono di livello superiore,Il tempio di Serket: la dea scorpione custodisce il deserto. Battila per un dono di livello superiore,The temple of Serket: the scorpion goddess guards the desert. Defeat her for a higher-level boon
 La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello superiore,The Middle Gate: the Serpent that guards it. Defeat it for a boon of a higher level
+"La porta della settima ora: oltre, il Banco di Apopi","La porta della settima ora: oltre, il Banco di Apopi","The door of the seventh hour: beyond, the Sandbank of Apep"
 "La porta della quarta ora: oltre, la terra di Sokar","La porta della quarta ora: oltre, la terra di Sokar","The gate of the fourth hour: beyond it, the land of Sokar"
 "Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa","Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa","The Ferryman, before the trial: a quiet hall to spend the Ka of the descent"
 Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),The Ferryman: spend this descent's Ka (what you spend does not come home with you)
@@ -870,6 +939,10 @@ Il Favore della Sfinge,Il Favore della Sfinge,The Sphinx's Favour
 "«Aker veglia sull'orizzonte. Ciò che porta quel nome, egli lo riconosce al primo sguardo. ...Non so perché te lo dico. Compra.»","«Aker veglia sull'orizzonte. Ciò che porta quel nome, egli lo riconosce al primo sguardo. ...Non so perché te lo dico. Compra.»","«Aker watches over the horizon. Whatever bears that name, he knows at first sight. ...I don't know why I'm telling you. Buy.»"
 «Il sole non passa più per questa terra. Un tempo era lui il mio carico. Ora sei tu.»,«Il sole non passa più per questa terra. Un tempo era lui il mio carico. Ora sei tu.»,«The sun no longer passes through this land. Once he was my cargo. Now you are.»
 "«Le cose sepolte, qui, non dormono. Ascoltano.»","«Le cose sepolte, qui, non dormono. Ascoltano.»","«Buried things, here, do not sleep. They listen.»"
+«Qui non remo. Qui prego che non mi veda. La mia barca è piccola: per lui sono un'esca.»,«Qui non remo. Qui prego che non mi veda. La mia barca è piccola: per lui sono un'esca.»,"""Here I do not row. Here I pray he does not see me. My boat is small: to him I am bait."""
+«L'acqua è nera perché lui l'ha già bevuta una volta. Quella che vedi è ciò che ha sputato.»,«L'acqua è nera perché lui l'ha già bevuta una volta. Quella che vedi è ciò che ha sputato.»,"""The water is black because he has already drunk it once. What you see is what he spat out."""
+"«Quando si volta, non guardarlo negli occhi. I rematori di Ra si addormentarono così. Solo Set restò sveglio.»","«Quando si volta, non guardarlo negli occhi. I rematori di Ra si addormentarono così. Solo Set restò sveglio.»","""When he turns, do not look him in the eyes. That is how Ra's rowers fell asleep. Only Set stayed awake."""
+"«Ti ho portato tre volte, ormai. Alla prima non ti conoscevo. Ora quasi mi dispiace chiederti il Ka. Quasi.»","«Ti ho portato tre volte, ormai. Alla prima non ti conoscevo. Ora quasi mi dispiace chiederti il Ka. Quasi.»","""I have carried you three times now. The first time I did not know you. Now I am almost sorry to ask for your Ka. Almost."""
 "«Il tuo re aveva paura di questa barca. Anche da vivo, nelle feste del Fiume, saliva sempre per ultimo.»","«Il tuo re aveva paura di questa barca. Anche da vivo, nelle feste del Fiume, saliva sempre per ultimo.»","«Your king was afraid of this boat. Even in life, at the festivals of the River, he always boarded last.»"
 «Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»,«Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»,«Don't look at me like that. I only see the past. And yours is... crowded.»
 "«Più scendi, meno ti costa la mia merce. Non è generosità. È fretta.»","«Più scendi, meno ti costa la mia merce. Non è generosità. È fretta.»","«The deeper you go, the less my wares cost you. It is not generosity. It is haste.»"
@@ -897,6 +970,12 @@ Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra,Ogni port
 AKER,AKER,AKER
 Il leone dell'orizzonte,Il leone dell'orizzonte,The Lion of the Horizon
 Non ha un dietro: colpiscilo sui fianchi. Dietro le pietre il raggio non passa,Non ha un dietro: colpiscilo sui fianchi. Dietro le pietre il raggio non passa,He has no back: strike his flanks. The ray cannot pass behind the stones
+SHEZMU,SHEZMU,SHEZMU
+Il Signore del Torchio,Il Signore del Torchio,The Lord of the Press
+La mannaia torna indietro: non darle le spalle. Dopo la carica contro il muro è stordito,La mannaia torna indietro: non darle le spalle. Dopo la carica contro il muro è stordito,The cleaver comes back: do not turn your back on it. After charging into the wall he is stunned
+APOPI,APOPI,APEP
+Il serpente del caos,Il serpente del caos,The serpent of chaos
+Non si uccide: si respinge. Dopo l'affondo ha il muso nella sabbia: colpiscilo lì,Non si uccide: si respinge. Dopo l'affondo ha il muso nella sabbia: colpiscilo lì,He cannot be killed: only driven back. After the lunge his snout is in the sand: hit him there
 SERKET,SERKET,SERKET
 Colei che fa respirare la gola,Colei che fa respirare la gola,She Who Lets the Throat Breathe
 "Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare","Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare","Follow the furrow in the sand: where it ends, the tail strikes. On the stone she cannot dig"
@@ -907,6 +986,8 @@ Set mantiene la promessa,Set mantiene la promessa,Set keeps his promise
 Una sala tranquilla,Una sala tranquilla,A quiet hall
 Prima della prova: prendi ciò che ti aspetta,Prima della prova: prendi ciò che ti aspetta,Before the trial: take what awaits you
 di fila,di fila,in a row
+Il torchio è fermo. Il banco di sabbia è vicino,Il torchio è fermo. Il banco di sabbia è vicino,The press is still. The sandbank is near
+Shezmu è caduto,Shezmu è caduto,Shezmu has fallen
 Il cuore di Sokar è aperto,Il cuore di Sokar è aperto,The heart of Sokar lies open
 Serket è caduta,Serket è caduta,Serket has fallen
 Il Cortile di Neith si è aperto,Il Cortile di Neith si è aperto,The Courtyard of Neith has opened
@@ -918,6 +999,9 @@ Scegli una porta: la ricompensa è scritta sopra,Scegli una porta: la ricompensa
 +10 Ka,+10 Ka,+10 Ka
 La quarta ora,La quarta ora,The fourth hour
 La terra di Sokar,La terra di Sokar,The land of Sokar
+La settima ora,La settima ora,The seventh hour
+Il Banco di Apopi,Il Banco di Apopi,The Sandbank of Apep
+"Qui il serpente beve il fiume. L'acqua è nera, e guarda","Qui il serpente beve il fiume. L'acqua è nera, e guarda","Here the serpent drinks the river. The water is black, and it watches"
 I tuoi doni (%d)%s,I tuoi doni (%d)%s,Your boons (%d)%s
 Scegli,Scegli,Choose
 Altre scelte (%d rimasta),Altre scelte (%d rimasta),Other choices (%d left)
@@ -995,11 +1079,13 @@ liv. %d,liv. %d,lv. %d
 %s
 
 "
+"Apopi, il serpente del caos","Apopi, il serpente del caos","Apep, the serpent of chaos"
 "Aker, il leone dell'orizzonte","Aker, il leone dell'orizzonte","Aker, the lion of the horizon"
 "Am-heh, il Divoratore di Milioni","Am-heh, il Divoratore di Milioni","Am-heh, the Devourer of Millions"
 "stanza %d di %d, piano %d","stanza %d di %d, piano %d","room %d of %d, floor %d"
 il Serpente della Porta,il Serpente della Porta,the Serpent of the Gate
 "Serket, la dea scorpione","Serket, la dea scorpione","Serket, the scorpion goddess"
+"Shezmu, il Signore del Torchio","Shezmu, il Signore del Torchio","Shezmu, the Lord of the Press"
 una trappola,una trappola,a trap
 Negli ultimi 10 secondi,Negli ultimi 10 secondi,In the last 10 seconds
 Il tuo cuore è stato pesato,Il tuo cuore è stato pesato,Your heart has been weighed
@@ -1009,9 +1095,11 @@ Tocca lo schermo,Tocca lo schermo,Tap the screen
 Premi Start,Premi Start,Press Start
 Premi R,Premi R,Press R
 %s per tornare alla Sala del Giudizio,%s per tornare alla Sala del Giudizio,%s to return to the Hall of Judgement
+"APOPI, IL SERPENTE DEL CAOS","APOPI, IL SERPENTE DEL CAOS","APEP, THE SERPENT OF CHAOS"
 "AKER, IL LEONE DELL'ORIZZONTE","AKER, IL LEONE DELL'ORIZZONTE","AKER, THE LION OF THE HORIZON"
 "AM-HEH, IL DIVORATORE DI MILIONI","AM-HEH, IL DIVORATORE DI MILIONI","AM-HEH, THE DEVOURER OF MILLIONS"
 "AMMIT, LA DIVORATRICE","AMMIT, LA DIVORATRICE","AMMIT, THE DEVOURER"
+"SHEZMU, IL SIGNORE DEL TORCHIO","SHEZMU, IL SIGNORE DEL TORCHIO","SHEZMU, THE LORD OF THE PRESS"
 "SERKET, LA DEA SCORPIONE","SERKET, LA DEA SCORPIONE","SERKET, THE SCORPION GODDESS"
 L'altare di Set,L'altare di Set,The altar of Set
 Una deviazione nel deserto rosso. Le tue porte ti aspettano,Una deviazione nel deserto rosso. Le tue porte ti aspettano,A detour into the red desert. Your doors are waiting for you
@@ -1055,6 +1143,8 @@ La porta della quarta ora,La porta della quarta ora,The gate of the fourth hour
 "Oltre il lago, la terra di Sokar. La barca di Ra ti aspetta","Oltre il lago, la terra di Sokar. La barca di Ra ti aspetta","Beyond the lake, the land of Sokar. The boat of Ra awaits you"
 Aker è caduto,Aker è caduto,Aker has fallen
 Il sole tra le montagne trema... e non sorge,Il sole tra le montagne trema... e non sorge,The sun between the mountains trembles... and does not rise
+Apopi è legato,Apopi è legato,Apep is bound
+Non muore: nessuno può ucciderlo. Ma stanotte la barca passa,Non muore: nessuno può ucciderlo. Ma stanotte la barca passa,He does not die: no one can kill him. But tonight the barque passes
 Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Time %d:%02d   ·   Enemies slain %d   ·   Damage dealt %d
 Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Boons gathered %d   ·   Ka gathered %d%s   ·   Stored Ka %d
  (Peso del Cuore +%d%%), (Peso del Cuore +%d%%), (Weight of the Heart +%d%%)
@@ -1086,6 +1176,8 @@ The First Hour is behind you. The other hours of the night await."
 Ieri e Domani sono caduti, ma il sole non è sorto. La notte continua.","Hai sconfitto Aker!
 Ieri e Domani sono caduti, ma il sole non è sorto. La notte continua.","You defeated Aker!
 Yesterday and Tomorrow have fallen, but the sun has not risen. The night goes on."
+Hai respinto Apopi!,Hai respinto Apopi!,You drove back Apep!
+Il serpente è legato fino alla prossima notte. Resta una sola porta: la Sala delle Due Verità.,Il serpente è legato fino alla prossima notte. Resta una sola porta: la Sala delle Due Verità.,The serpent is bound until the next night. Only one door remains: the Hall of Two Truths.
 "%s%s
 
 %s
@@ -1106,8 +1198,7 @@ Ammit · colonne: %d,Ammit · colonne: %d,Ammit · pillars: %d
 Stanza %d/%d,Stanza %d/%d,Chamber %d/%d
 Addestramento,Addestramento,Training
 Piuma di Ma'at: -%d%% danni,Piuma di Ma'at: -%d%% danni,Feather of Ma'at: -%d%% damage
-Doni: %d,Doni: %d,Boons: %d
-Doni: %d (Tab per vederli),Doni: %d (Tab per vederli),Boons: %d (Tab to view)
+Tab / Select: i tuoi doni,Tab / Select: i tuoi doni,Tab / Select: your boons
     Maledizione: %s (ancora %d stanze),    Maledizione: %s (ancora %d stanze),    Curse: %s (%d chambers left)
     Was %d/5 (+%d%% danni),    Was %d/5 (+%d%% danni),    Was %d/5 (+%d%% damage)
 Tempo %d:%02d,Tempo %d:%02d,Time %d:%02d
@@ -1630,6 +1721,8 @@ III · La casa dell'eternità,III · La casa dell'eternità,III · The house of 
 "Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»","Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»","The king began digging his tomb in the first year of his reign, like every king. But he went down into it every night. A single lamp, and hours before the walls still white, where the painters would paint the weighing of the heart. One night he called me and asked me to read him chapter one hundred and twenty-five. I read it twice. The second time, my hand... his hand gripped the scroll until its edge broke. He said only: «I do not want to be weighed.»"
 IV · Il nome nascosto,IV · Il nome nascosto,IV · The Hidden Name
 "Nel nono anno il re andò a Iunu, la città del sole, e non volle nessuno con sé. Nemmeno me. Lo scrissi lo stesso: il re visitò il tempio di Ra e offrì mille pani. È quello che si scrive. Ma io so che entrò nella sala dove nessun uomo entra, quella dove i sacerdoti custodiscono la storia di Iside e del nome segreto. So che il buio là dentro odora di cedro e di cera. So che le parole si dicono a bassa voce, perché anche il muro ascolta. Le dico... le disse. Uscì all'alba. Quel giorno il sole sorse, come sempre. Il sole sorse ogni giorno, finché il re visse.","Nel nono anno il re andò a Iunu, la città del sole, e non volle nessuno con sé. Nemmeno me. Lo scrissi lo stesso: il re visitò il tempio di Ra e offrì mille pani. È quello che si scrive. Ma io so che entrò nella sala dove nessun uomo entra, quella dove i sacerdoti custodiscono la storia di Iside e del nome segreto. So che il buio là dentro odora di cedro e di cera. So che le parole si dicono a bassa voce, perché anche il muro ascolta. Le dico... le disse. Uscì all'alba. Quel giorno il sole sorse, come sempre. Il sole sorse ogni giorno, finché il re visse.","In the ninth year the king went to Iunu, the city of the sun, and would have no one with him. Not even me. I wrote it all the same: the king visited the temple of Ra and offered a thousand loaves. That is what one writes. But I know he entered the hall no man enters, the one where the priests keep the story of Isis and the secret name. I know the dark in there smells of cedar and wax. I know the words are spoken softly, because even the wall listens. I speak them... he spoke them. He came out at dawn. That day the sun rose, as always. The sun rose every day, for as long as the king lived."
+V · La mano della regina,V · La mano della regina,V · The queen's hand
+"Quando il re morì, la regina Meritneith non pianse davanti a nessuno. Chiamò gli scalpellini, di notte. Scrissi anche questo, perché uno scriba scrive tutto: che la regina fece togliere il nome del re da ogni pietra, da ogni stele, da ogni rotolo. La corte disse: odio. Io c'ero, e non era odio. Le tremavano le mani. Disse: «Senza nome non c'è pesatura. Senza pesatura la Divoratrice non avrà il suo cuore.» Poi fece portare una tavolozza da scriba, la mia... una tavolozza da scriba, e la posò nel sarcofago, sul petto, dove si posa lo scarabeo del cuore. Si chinò. Disse: «Dormi dietro un altro volto, amore mio, finché il buio non avrà dimenticato il tuo.» Non capii a chi parlasse. Ricordo la sua mano, fredda. Era sulla mia fronte.","Quando il re morì, la regina Meritneith non pianse davanti a nessuno. Chiamò gli scalpellini, di notte. Scrissi anche questo, perché uno scriba scrive tutto: che la regina fece togliere il nome del re da ogni pietra, da ogni stele, da ogni rotolo. La corte disse: odio. Io c'ero, e non era odio. Le tremavano le mani. Disse: «Senza nome non c'è pesatura. Senza pesatura la Divoratrice non avrà il suo cuore.» Poi fece portare una tavolozza da scriba, la mia... una tavolozza da scriba, e la posò nel sarcofago, sul petto, dove si posa lo scarabeo del cuore. Si chinò. Disse: «Dormi dietro un altro volto, amore mio, finché il buio non avrà dimenticato il tuo.» Non capii a chi parlasse. Ricordo la sua mano, fredda. Era sulla mia fronte.","When the king died, Queen Meritneith wept before no one. She summoned the stonecutters, by night. I wrote this down too, because a scribe writes everything: that the queen had the king's name removed from every stone, every stela, every scroll. The court said: hatred. I was there, and it was not hatred. Her hands were shaking. She said: ""Without a name there is no weighing. Without a weighing the Devourer will not have his heart."" Then she had a scribe's palette brought, mine... a scribe's palette, and laid it in the sarcophagus, on the chest, where the heart scarab is placed. She bent down. She said: ""Sleep behind another face, my love, until the dark has forgotten yours."" I did not understand whom she was speaking to. I remember her hand, cold. It was on my forehead."
 "Un arco, piccolo scriba? Anche i miei raggi colpiscono da lontano. Le tue frecce porteranno un poco del mio fuoco.","Un arco, piccolo scriba? Anche i miei raggi colpiscono da lontano. Le tue frecce porteranno un poco del mio fuoco.","A bow, little scribe? My rays strike from afar too. Your arrows will carry a little of my fire."
 "Ti nascondi dietro una corda tesa? Io caccio con le zanne. Ma una freccia nel cuore della preda... sì, anche questa è caccia.","Ti nascondi dietro una corda tesa? Io caccio con le zanne. Ma una freccia nel cuore della preda... sì, anche questa è caccia.","You hide behind a drawn string? I hunt with fangs. But an arrow in the heart of the prey... yes, that is hunting too."
 L'arco di Satet. Ne annoto il peso e la tensione: una freccia è un pensiero che vola dritto. Che il tuo non esiti.,L'arco di Satet. Ne annoto il peso e la tensione: una freccia è un pensiero che vola dritto. Che il tuo non esiti.,The bow of Satet. I record its weight and its tension: an arrow is a thought that flies straight. May yours not falter.
@@ -1721,6 +1814,9 @@ Danni subiti,Danni subiti,Damage taken
 Nemici e boss,Nemici e boss,Enemies and bosses
 Trappole,Trappole,Traps
 Ricompense e menu,Ricompense e menu,Rewards and menus
+GUSCIO,GUSCIO,SHELL
+IL TORCHIO GIRA,IL TORCHIO GIRA,THE PRESS TURNS
+STORDITO,STORDITO,STUNNED
 SCUDO ROTTO,SCUDO ROTTO,SHIELD BROKEN
 %d giorni e %d ore,%d giorni e %d ore,%d days and %d hours
 %d ore,%d ore,%d hours
@@ -2069,6 +2165,12 @@ Affondo in corsa che trapassa la fila.,Affondo in corsa che trapassa la fila.,A 
 Frecce rapide dove punti: si fermano sul primo nemico.,Frecce rapide dove punti: si fermano sul primo nemico.,Quick arrows where you aim: they stop on the first enemy.
 Tiro carico: una freccia che trapassa tutto (ricarica 4 s).,Tiro carico: una freccia che trapassa tutto (ricarica 4 s).,Charged shot: one arrow that pierces everything (4 s recharge).
 "Alla fine dello scatto, un ventaglio di tre frecce.","Alla fine dello scatto, un ventaglio di tre frecce.","At the end of the dash, a fan of three arrows."
+Graffi velocissimi e corti: stai addosso al nemico.,Graffi velocissimi e corti: stai addosso al nemico.,"Very fast, short scratches: stay right on the enemy."
+Il Balzo della Gatta: salti dove miri e atterri con un'onda.,Il Balzo della Gatta: salti dove miri e atterri con un'onda.,The Cat's Pounce: you leap where you aim and land with a shockwave.
+Un graffio tutto intorno a te.,Un graffio tutto intorno a te.,A scratch all around you.
+"Due colpi d'asta, poi un raggio lungo che trapassa la fila.","Due colpi d'asta, poi un raggio lungo che trapassa la fila.","Two staff strikes, then a long ray that pierces the whole line."
+Pianti lo scettro: un cerchio che rallenta e colpisce a scariche.,Pianti lo scettro: un cerchio che rallenta e colpisce a scariche.,You plant the sceptre: a circle that slows and strikes in pulses.
+Una spazzata che allontana tutti.,Una spazzata che allontana tutti.,A sweep that pushes everyone away.
 "Frustate in linea: colpiscono tutti, i danni pieni sono in punta.","Frustate in linea: colpiscono tutti, i danni pieni sono in punta.","Lashes in a line: they hit everyone, full damage at the tip."
 Il pastorale aggancia e ti lancia addosso un nemico; élite e guardiani tirano te.,Il pastorale aggancia e ti lancia addosso un nemico; élite e guardiani tirano te.,The crook hooks an enemy and throws it at you; elites and guardians pull you instead.
 Una frustata lunga che trascina con te i nemici colpiti.,Una frustata lunga che trascina con te i nemici colpiti.,A long lash that drags the enemies it hits along with you.
@@ -2162,6 +2264,12 @@ Sconfiggi Serket.,Sconfiggi Serket.,Defeat Serket.
 I leoni dell'orizzonte,I leoni dell'orizzonte,The lions of the horizon
 "Aker è la terra stessa, il varco dove il sole entra la sera ed esce al mattino. Lo disegnavano come due leoni schiena contro schiena, con il sole tra loro: uno guarda l'ovest e si chiama Ieri, l'altro guarda l'est e si chiama Domani. Custodisce le porte, perché la notte non esca dal Duat.","Aker è la terra stessa, il varco dove il sole entra la sera ed esce al mattino. Lo disegnavano come due leoni schiena contro schiena, con il sole tra loro: uno guarda l'ovest e si chiama Ieri, l'altro guarda l'est e si chiama Domani. Custodisce le porte, perché la notte non esca dal Duat.","Aker is the earth itself, the passage where the sun goes in at evening and comes out in the morning. He was drawn as two lions back to back, with the sun between them: one faces west and is called Yesterday, the other faces east and is called Tomorrow. He guards the gates, so that the night does not leave the Duat."
 Sconfiggi Aker.,Sconfiggi Aker.,Defeat Aker.
+Il serpente che beve il fiume,Il serpente che beve il fiume,The serpent who drinks the river
+"Apopi è il caos che c'era prima del mondo: un serpente senza fine, lungo quanto la notte. Ogni sera aspetta la barca di Ra su un banco di sabbia e beve l'acqua del fiume per farla arenare; il suo sguardo addormenta i rematori. Set lo trafigge dalla prua, Iside lo incanta, Serket lo lega. Non muore mai: ogni notte torna, e ogni notte va respinto. Nei templi i sacerdoti bruciavano serpenti di cera per aiutare il sole.","Apopi è il caos che c'era prima del mondo: un serpente senza fine, lungo quanto la notte. Ogni sera aspetta la barca di Ra su un banco di sabbia e beve l'acqua del fiume per farla arenare; il suo sguardo addormenta i rematori. Set lo trafigge dalla prua, Iside lo incanta, Serket lo lega. Non muore mai: ogni notte torna, e ogni notte va respinto. Nei templi i sacerdoti bruciavano serpenti di cera per aiutare il sole.","Apep is the chaos that existed before the world: an endless serpent, as long as the night. Every evening he waits for the barque of Ra on a sandbank and drinks the river's water to run it aground; his gaze puts the rowers to sleep. Set spears him from the prow, Isis enchants him, Serket binds him. He never dies: every night he returns, and every night he must be driven back. In the temples the priests burned wax serpents to help the sun."
+Arriva al Banco di Apopi.,Arriva al Banco di Apopi.,Reach the Sandbank of Apep.
+Il vino di Shezmu,Il vino di Shezmu,The wine of Shezmu
+"Shezmu è il dio del torchio: spreme l'uva per il vino e i fiori per i profumi. Ma nel Duat spreme le teste dei dannati come grappoli, e il suo vino rosso lo porta ai giusti. Per questo ha due volti: per i morti buoni è colui che versa da bere, per gli altri è il macellaio degli dèi.","Shezmu è il dio del torchio: spreme l'uva per il vino e i fiori per i profumi. Ma nel Duat spreme le teste dei dannati come grappoli, e il suo vino rosso lo porta ai giusti. Per questo ha due volti: per i morti buoni è colui che versa da bere, per gli altri è il macellaio degli dèi.","Shezmu is the god of the press: he presses grapes for wine and flowers for perfume. But in the Duat he presses the heads of the damned like bunches of grapes, and brings his red wine to the righteous. That is why he has two faces: to the good dead he is the one who pours the drink, to the others he is the butcher of the gods."
+Sconfiggi Shezmu.,Sconfiggi Shezmu.,Defeat Shezmu.
 "Horemakhet, Horus nell'orizzonte","Horemakhet, Horus nell'orizzonte","Horemakhet, Horus in the horizon"
 "Nel Nuovo Regno la Grande Sfinge di Giza era venerata come Horemakhet, «Horus nell'orizzonte»: il sole che sorge, che lei guarda da sempre verso oriente. I pellegrini le lasciavano stele con orecchie scolpite, perché il dio ascoltasse le loro preghiere.","Nel Nuovo Regno la Grande Sfinge di Giza era venerata come Horemakhet, «Horus nell'orizzonte»: il sole che sorge, che lei guarda da sempre verso oriente. I pellegrini le lasciavano stele con orecchie scolpite, perché il dio ascoltasse le loro preghiere.","In the New Kingdom the Great Sphinx of Giza was worshipped as Horemakhet, «Horus in the horizon»: the rising sun, which it has always faced in the east. Pilgrims left it stelae carved with ears, so that the god would hear their prayers."
 Si trova nel Tesoro della Sfinge.,Si trova nel Tesoro della Sfinge.,It can be found in the Sphinx's Treasure.
@@ -2234,6 +2342,8 @@ Mostra le frecce,Mostra le frecce,Show the arrows
 "Le frecce a terra nella Sala che indicano le porte (discesa, Casa della Vita, Cortile di Neith, Sfinge). Di solito spariscono dopo che hai usato una porta la prima volta: accese, restano sempre.","Le frecce a terra nella Sala che indicano le porte (discesa, Casa della Vita, Cortile di Neith, Sfinge). Di solito spariscono dopo che hai usato una porta la prima volta: accese, restano sempre.","The arrows on the floor of the Hall that point to the doors (descent, House of Life, Courtyard of Neith, Sphinx). Usually they disappear after you've used a door for the first time: when on, they always stay."
 Mostra aree di danno,Mostra aree di danno,Show damage areas
 "Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.","Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.","Draws the real hit zones of enemies (body, leaps, charges, blasts, projectiles) and your own outline. It helps you understand what hit you."
+Crediti,Crediti,Credits
+"Chi ha fatto la musica, i suoni e i caratteri del gioco. Premi per leggerli.","Chi ha fatto la musica, i suoni e i caratteri del gioco. Premi per leggerli.","Who made the game's music, sounds and fonts. Press to read them."
 Ultimi colpi,Ultimi colpi,Last hits
 "Gli ultimi 15 colpi subiti: chi, quanto, da che distanza e in che momento dell'attacco. Premi per leggerli.","Gli ultimi 15 colpi subiti: chi, quanto, da che distanza e in che momento dell'attacco. Premi per leggerli.","The last 15 hits you took: who, how much, from what distance and at which moment of the attack. Press to read them."
 Ultimo problema,Ultimo problema,Last problem
@@ -2243,6 +2353,15 @@ ATTIVA  (-%d%% danni),ATTIVA  (-%d%% danni),ACTIVE  (-%d%% damage)
 F,F,F
 Tocca le frecce per cambiare · tocca fuori per chiudere,Tocca le frecce per cambiare · tocca fuori per chiudere,Tap the arrows to change · tap outside to close
 Su e giù per scegliere · sinistra e destra per cambiare · Esc / B per chiudere,Su e giù per scegliere · sinistra e destra per cambiare · Esc / B per chiudere,Up and down to choose · left and right to change · Esc / B to close
+MUSICA,MUSICA,MUSIC
+"Kevin MacLeod (incompetech.com), licenza Creative Commons: By Attribution 4.0 — creativecommons.org/licenses/by/4.0","Kevin MacLeod (incompetech.com), licenza Creative Commons: By Attribution 4.0 — creativecommons.org/licenses/by/4.0","Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 — creativecommons.org/licenses/by/4.0"
+"«Volatile Reaction» (Am-heh) · «Curse of the Scarab» (Serket) · «Clash Defiant» e «The Descent» (Aker) · «Tabuk» (la terra di Sokar) · «Drums of the Deep», «Grim Idol» e «Killers» (la caverna di Apopi). Brani accorciati e portati allo stesso volume.","«Volatile Reaction» (Am-heh) · «Curse of the Scarab» (Serket) · «Clash Defiant» e «The Descent» (Aker) · «Tabuk» (la terra di Sokar) · «Drums of the Deep», «Grim Idol» e «Killers» (la caverna di Apopi). Brani accorciati e portati allo stesso volume.","""Volatile Reaction"" (Am-heh) · ""Curse of the Scarab"" (Serket) · ""Clash Defiant"" and ""The Descent"" (Aker) · ""Tabuk"" (the land of Sokar) · ""Drums of the Deep"", ""Grim Idol"" and ""Killers"" (the cavern of Apep). Tracks shortened and levelled to the same volume."
+"«Arabesque» di brainiac256, licenza Creative Commons Attribution 3.0 (i guardiani delle porte).","«Arabesque» di brainiac256, licenza Creative Commons Attribution 3.0 (i guardiani delle porte).","""Arabesque"" by brainiac256, licensed under Creative Commons Attribution 3.0 (the guardians of the gates)."
+"«Desert Mystic» di PolygonDan, «Desert Loop» di iamoneabe, «Frozen Desert» di Dizzy Crow: CC0, da opengameart.org.","«Desert Mystic» di PolygonDan, «Desert Loop» di iamoneabe, «Frozen Desert» di Dizzy Crow: CC0, da opengameart.org.","""Desert Mystic"" by PolygonDan, ""Desert Loop"" by iamoneabe, ""Frozen Desert"" by Dizzy Crow: CC0, from opengameart.org."
+SUONI E CARATTERI,SUONI E CARATTERI,SOUNDS AND FONTS
+Suoni CC0 (vedi assets/sfx/CREDITS.md nel progetto). Caratteri con licenza libera (SIL Open Font License).,Suoni CC0 (vedi assets/sfx/CREDITS.md nel progetto). Caratteri con licenza libera (SIL Open Font License).,CC0 sounds (see assets/sfx/CREDITS.md in the project). Fonts under a free licence (SIL Open Font License).
+GIOCO,GIOCO,GAME
+Ideato da Skizzo. Motore: Godot Engine (licenza MIT).,Ideato da Skizzo. Motore: Godot Engine (licenza MIT).,Created by Skizzo. Engine: Godot Engine (MIT licence).
 "Nessun colpo subito, per ora.","Nessun colpo subito, per ora.","No hits taken, for now."
 %s — %s,%s — %s,%s — %s
 %d danni,%d danni,%d damage
@@ -2294,17 +2413,45 @@ il flagello,il flagello,the flail
 Aspetto di Osiride,Aspetto di Osiride,Aspect of Osiris
 Le insegne del re dei morti. +{v}% di danni.,Le insegne del re dei morti. +{v}% di danni.,The insignia of the king of the dead. +{v}% damage.
 "Osiride regnò sull'Egitto prima degli uomini; ucciso da Set e ricomposto da Iside, scese a regnare nel Duat. Lo si dipinge verde o nero, il colore della terra fertile e della vita che rinasce.","Osiride regnò sull'Egitto prima degli uomini; ucciso da Set e ricomposto da Iside, scese a regnare nel Duat. Lo si dipinge verde o nero, il colore della terra fertile e della vita che rinasce.","Osiris ruled Egypt before mankind; killed by Set and put back together by Isis, he went down to reign in the Duat. He is painted green or black, the colour of fertile earth and of life reborn."
-Scettro was,Scettro was,Was sceptre
 Artigli di Bastet,Artigli di Bastet,Claws of Bastet
+ARTIGLI,ARTIGLI,CLAWS
+gli artigli,gli artigli,the claws
+"Due graffi velocissimi e un affondo a due mani: poco danno a colpo, tantissimi colpi. Corti: devi stare addosso al nemico. Attaccando dopo lo scatto graffi tutto intorno a te; tenendo premuto fai il Balzo della Gatta: salti dove miri, in aria non ti colpiscono, e atterri con un'onda.","Due graffi velocissimi e un affondo a due mani: poco danno a colpo, tantissimi colpi. Corti: devi stare addosso al nemico. Attaccando dopo lo scatto graffi tutto intorno a te; tenendo premuto fai il Balzo della Gatta: salti dove miri, in aria non ti colpiscono, e atterri con un'onda.","Two very fast scratches and a two-handed thrust: little damage per hit, a great many hits. Short: you must stay right on the enemy. Attacking after a dash you scratch all around you; holding the button you do the Cat's Pounce: you leap where you aim, nothing can hit you in the air, and you land with a shockwave."
+"Bastet fu prima leonessa e poi gatta: la dea che protegge la casa con le unghie. Ogni notte, sotto l'albero sacro di Iunu, il Grande Gatto di Ra taglia la testa del serpente Apopi con un coltello. A Bubasti le portavano in dono gatti di bronzo a migliaia.","Bastet fu prima leonessa e poi gatta: la dea che protegge la casa con le unghie. Ogni notte, sotto l'albero sacro di Iunu, il Grande Gatto di Ra taglia la testa del serpente Apopi con un coltello. A Bubasti le portavano in dono gatti di bronzo a migliaia.","Bastet was first a lioness and then a cat: the goddess who protects the home with her claws. Every night, under the sacred tree of Iunu, the Great Cat of Ra cuts off the head of the serpent Apep with a knife. At Bubastis people brought her bronze cats by the thousand."
+Aspetto di Bastet,Aspetto di Bastet,Aspect of Bastet
+Gli artigli della signora di Bubasti. +{v}% di danni.,Gli artigli della signora di Bubasti. +{v}% di danni.,The claws of the lady of Bubastis. +{v}% damage.
+"Erodoto racconta che la festa di Bastet a Bubasti era la più grande d'Egitto: settecentomila persone sulle barche, con flauti e sistri.","Erodoto racconta che la festa di Bastet a Bubasti era la più grande d'Egitto: settecentomila persone sulle barche, con flauti e sistri.","Herodotus tells that the festival of Bastet at Bubastis was the greatest in Egypt: seven hundred thousand people on boats, with flutes and sistrums."
+Scettro di Ptah,Scettro di Ptah,Sceptre of Ptah
+SCETTRO,SCETTRO,SCEPTRE
+lo scettro,lo scettro,the sceptre
+"Due colpi d'asta a media distanza, poi un raggio stretto e lungo che trapassa tutta la fila. Attaccando dopo lo scatto una spazzata che allontana tutti; tenendo premuto pianti lo scettro: il Cerchio del Dominio rallenta e colpisce a scariche chi ci sta dentro, e tu lì dentro colpisci più forte.","Due colpi d'asta a media distanza, poi un raggio stretto e lungo che trapassa tutta la fila. Attaccando dopo lo scatto una spazzata che allontana tutti; tenendo premuto pianti lo scettro: il Cerchio del Dominio rallenta e colpisce a scariche chi ci sta dentro, e tu lì dentro colpisci più forte.","Two staff strikes at medium range, then a long narrow ray that pierces the whole line. Attacking after a dash, a sweep that pushes everyone away; holding the button you plant the sceptre: the Circle of Dominion slows and strikes in pulses whoever stands inside, and inside it you hit harder."
+"Ptah di Menfi creò il mondo pensandolo nel cuore e pronunciandolo con la lingua. Il suo scettro unisce tre segni: il was (il dominio), il djed (la stabilità) e l'ankh (la vita). Gli artigiani lo chiamavano «il più grande dei maestri».","Ptah di Menfi creò il mondo pensandolo nel cuore e pronunciandolo con la lingua. Il suo scettro unisce tre segni: il was (il dominio), il djed (la stabilità) e l'ankh (la vita). Gli artigiani lo chiamavano «il più grande dei maestri».","Ptah of Memphis created the world by thinking it in his heart and speaking it with his tongue. His sceptre joins three signs: the was (dominion), the djed (stability) and the ankh (life). Craftsmen called him ""the greatest of masters""."
+Aspetto di Ptah,Aspetto di Ptah,Aspect of Ptah
+Lo scettro del signore degli artigiani. +{v}% di danni.,Lo scettro del signore degli artigiani. +{v}% di danni.,The sceptre of the lord of craftsmen. +{v}% damage.
+"Il nome stesso dell'Egitto viene da lui: Hut-ka-Ptah, «la casa del ka di Ptah», il tempio di Menfi, che i Greci pronunciarono Aigyptos.","Il nome stesso dell'Egitto viene da lui: Hut-ka-Ptah, «la casa del ka di Ptah», il tempio di Menfi, che i Greci pronunciarono Aigyptos.","The very name of Egypt comes from him: Hut-ka-Ptah, ""the house of the ka of Ptah"", the temple of Memphis, which the Greeks pronounced Aigyptos."
 Batti il Serpente della Porta tre volte (%d/3),Batti il Serpente della Porta tre volte (%d/3),Defeat the Serpent of the Gate three times (%d/3)
 "Batti Am-heh, oppure compi 15 discese (%d/15)","Batti Am-heh, oppure compi 15 discese (%d/15)","Defeat Am-heh, or complete 15 descents (%d/15)"
+"Batti Serket, oppure compi 25 discese (%d/25)","Batti Serket, oppure compi 25 discese (%d/25)","Beat Serket, or complete 25 descents (%d/25)"
+"Batti Aker, oppure compi 40 discese (%d/40)","Batti Aker, oppure compi 40 discese (%d/40)","Beat Aker, or complete 40 descents (%d/40)"
+Claws,Claws,Claws
+Gli artigli,Gli artigli,The claws
+del khopesh,del khopesh,of the khopesh
+degli artigli,degli artigli,of the claws
+dal khopesh,dal khopesh,from the khopesh
+dagli artigli,dagli artigli,from the claws
+al khopesh,al khopesh,to the khopesh
+agli artigli,agli artigli,to the claws
+Artigli,Artigli,Claws
+Sceptre,Sceptre,Sceptre
+Lo scettro,Lo scettro,The sceptre
+dello scettro,dello scettro,of the sceptre
+dallo scettro,dallo scettro,from the sceptre
+allo scettro,allo scettro,to the sceptre
+Scettro,Scettro,Sceptre
 Flail,Flail,Flail
 Flagello,Flagello,Flail
 Bow,Bow,Bow
 L'arco,L'arco,The bow
-del khopesh,del khopesh,of the khopesh
-dal khopesh,dal khopesh,from the khopesh
-al khopesh,al khopesh,to the khopesh
 Arco,Arco,Bow
 Spear,Spear,Spear
 La lancia,La lancia,The spear
@@ -2334,6 +2481,13 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+"Hai respinto Apopi!
+Il serpente è legato fino alla prossima notte. Resta una sola porta: la Sala delle Due Verità.","Hai respinto Apopi!
+Il serpente è legato fino alla prossima notte. Resta una sola porta: la Sala delle Due Verità.",
+in ritardo,in ritardo,
+Doni: %d,Doni: %d,Boons: %d
+Doni: %d (Tab per vederli),Doni: %d (Tab per vederli),Boons: %d (Tab to view)
+Scettro was,Scettro was,Was sceptre
 La Sfinge · ondata %d · %d punti,La Sfinge · ondata %d · %d punti,The Sphinx · wave %d · %d points
 Pausa della Sfinge · il dono,Pausa della Sfinge · il dono,Sphinx's pause · the boon
 Pausa della Sfinge · l'enigma,Pausa della Sfinge · l'enigma,Sphinx's pause · the riddle
@@ -2858,3 +3012,9 @@ sotto la sabbia,sotto la sabbia,under the sand
 coda dalla sabbia,coda dalla sabbia,tail from the sand
 balzo fuori dalla sabbia,balzo fuori dalla sabbia,leap out of the sand
 ventaglio,ventaglio,tail fan
+un Figlio di Apopi,un Figlio di Apopi,a Child of Apep
+un'ombra senza padrone,un'ombra senza padrone,a masterless shadow
+un portatore di coltelli,un portatore di coltelli,a knife bearer
+la tartaruga del caos,la tartaruga del caos,the chaos turtle
+"l'Isfet, il caos che ribolle","l'Isfet, il caos che ribolle","Isfet, the seething chaos"
+una spira di Apopi,una spira di Apopi,a coil of Apep

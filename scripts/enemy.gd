@@ -33,6 +33,7 @@ const KA_DROP_CHANCE := 0.4             ## quante volte un nemico lascia il suo 
 var stagger_t := 0.0
 var mourn_t := 0.0                    ## il marchio del Lutto di Nefti (secondi)
 var mark_t := 0.0                     ## Sguardo del Falco: secondi in cui il khopesh fa più danni
+var slow_pct := 0.0                    ## rallentamento "generico" in percento (Cerchio del Dominio), vale finché slow_t > 0
 var slow_t := 0.0                      ## rallentato dalle Frecce della Palude o dalla Frusta della Palude (Sobek)
 var hook_slam := false                 ## lanciato dal pastorale: lo schianto usa il Lancio del Vento (Shu)
 var no_reward := false                 ## servitori di Aker: niente Ka e niente cuori
@@ -215,7 +216,8 @@ func _on_hit(_dmg: float) -> void:
 ## (non i boss) e spegne le fiamme.
 func _puddle_slow() -> float:
 	if slow_t > 0.0:
-		return (1.0 - maxf(maxf(Run.val("arco_sobek"), Run.val("flagello_sobek")), Run.val("sf_gaze")) / 100.0) * _water_tide_slow()
+		return (1.0 - maxf(maxf(maxf(Run.val("arco_sobek"), Run.val("flagello_sobek")), maxf(Run.val("sf_gaze"), Run.val("artigli_sobek"))), slow_pct) / 100.0) * _water_tide_slow()
+	slow_pct = 0.0
 	return _water_tide_slow()
 
 
