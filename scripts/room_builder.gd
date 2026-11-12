@@ -85,6 +85,9 @@ func floor_ok(p: Vector2) -> bool:
 ## che prendono il posto di altrettanti spuntoni.
 func place_elements() -> void:
 	var r := Run.room
+	if Run.region >= 3:
+		_place_apep(r)
+		return
 	if Run.region == 2:
 		_place_sokar(r)
 		return
@@ -112,6 +115,53 @@ func place_elements() -> void:
 ##    l'entrata e le porte; il soffio della statua-falco taglia una zona di passaggio;
 ##  - le sabbie mobili in 2-3 macchie in parti diverse della stanza;
 ##  - mai trappole sull'entrata o davanti alle porte, e il centro resta libero (floor_ok).
+## Il Banco di Apopi: pozze fisse di Isfet (2-4), spire di Apopi sotto il pavimento (1-3, dalla
+## seconda stanza), spuntoni dalla quarta. Niente acqua né fiumi: qui il fiume l'ha bevuto il serpente.
+func _place_apep(r: int) -> void:
+	var spots: Array = []
+	var n_pool := 2 + (1 if r >= 3 else 0) + (1 if r >= 6 and randf() < 0.6 else 0)
+	for i in range(n_pool):
+		var at := _apep_spot(spots, 70.0)
+		if at == Vector2.INF:
+			continue
+		spots.append(at)
+		var pool := Chaos.Isfet.new()
+		pool.r = randf_range(20.0, 30.0)
+		pool.position = at
+		g.world.add_child(pool)
+	var n_coil := 0 if r < 2 else (1 + (1 if r >= 4 else 0) + (1 if r >= 7 else 0))
+	for i in range(n_coil):
+		var at2 := _apep_spot(spots, 80.0)
+		if at2 == Vector2.INF:
+			continue
+		spots.append(at2)
+		var coil := Chaos.Coil.new()
+		coil.period = maxf(4.0, 6.5 - 0.25 * r)
+		coil.position = at2
+		g.world.add_child(coil)
+	if r >= 4:
+		_place_spikes_near(spots, 2 + (1 if r >= 7 else 0))
+	if r >= 3:
+		place_jars()
+
+
+## Un punto libero sul pavimento, lontano dalle porte, dal centro (dove compare l'eroe) e dagli altri.
+func _apep_spot(taken: Array, apart: float) -> Vector2:
+	var fr := Rect2(g.WALL + 46.0, g.TOP + 46.0, g.ROOM.size.x - g.WALL * 2.0 - 92.0, g.ROOM.size.y - g.WALL - g.TOP - 92.0)
+	var start := Vector2(g.ROOM.size.x / 2.0, g.ROOM.size.y - g.WALL - 40.0)
+	for tries in range(30):
+		var p := Vector2(randf_range(fr.position.x, fr.end.x), randf_range(fr.position.y, fr.end.y))
+		if p.distance_to(start) < 80.0 or not spot_ok(p):
+			continue
+		var ok := true
+		for q in taken:
+			if p.distance_to(q) < apart:
+				ok = false
+		if ok:
+			return p
+	return Vector2.INF
+
+
 func _place_sokar(r: int) -> void:
 	var schemes := ["trappole"]
 	if r >= 3:

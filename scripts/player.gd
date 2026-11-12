@@ -164,9 +164,9 @@ var dmg_log: Array = []
 var log_clock := 0.0
 ## Segnale del danno da terreno: colore del bordo e icona accanto alla vita (hud_bars.gd).
 const TERRAIN_FLASH := 0.35
-const TERRAIN_COLORS := {"sabbia": Color(0.35, 0.22, 0.12), "veleno": Color(0.45, 0.95, 0.3), "fuoco": Color(1.0, 0.55, 0.15)}
+const TERRAIN_COLORS := {"sabbia": Color(0.35, 0.22, 0.12), "veleno": Color(0.45, 0.95, 0.3), "fuoco": Color(1.0, 0.55, 0.15), "caos": Color(0.6, 0.25, 0.9)}
 ## Fonti di danno "da terreno": tick leggeri, senza scossa forte né pausa d'impatto.
-const TERRAIN_KINDS := {"fiume": "sabbia", "amheh_fuoco": "fuoco", "olio": "fuoco", "aker_fuoco": "fuoco"}
+const TERRAIN_KINDS := {"fiume": "sabbia", "amheh_fuoco": "fuoco", "olio": "fuoco", "aker_fuoco": "fuoco", "isfet": "caos"}
 var terrain_t := 0.0
 ## Proiettili: prima di ferire dicono da quanti secondi sono in volo (registro dei colpi).
 var hit_age := -1.0

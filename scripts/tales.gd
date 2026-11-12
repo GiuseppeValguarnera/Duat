@@ -45,6 +45,12 @@ static func all() -> Array:
 		["aker", Lang.t("I leoni dell'orizzonte"),
 			Lang.t("Aker è la terra stessa, il varco dove il sole entra la sera ed esce al mattino. Lo disegnavano come due leoni schiena contro schiena, con il sole tra loro: uno guarda l'ovest e si chiama Ieri, l'altro guarda l'est e si chiama Domani. Custodisce le porte, perché la notte non esca dal Duat."),
 			Meta.aker_wins >= 1, Lang.t("Sconfiggi Aker.")],
+		["apopi", Lang.t("Il serpente che beve il fiume"),
+			Lang.t("Apopi è il caos che c'era prima del mondo: un serpente senza fine, lungo quanto la notte. Ogni sera aspetta la barca di Ra su un banco di sabbia e beve l'acqua del fiume per farla arenare; il suo sguardo addormenta i rematori. Set lo trafigge dalla prua, Iside lo incanta, Serket lo lega. Non muore mai: ogni notte torna, e ogni notte va respinto. Nei templi i sacerdoti bruciavano serpenti di cera per aiutare il sole."),
+			Meta.apep_seen, Lang.t("Arriva al Banco di Apopi.")],
+		["shezmu", Lang.t("Il vino di Shezmu"),
+			Lang.t("Shezmu è il dio del torchio: spreme l'uva per il vino e i fiori per i profumi. Ma nel Duat spreme le teste dei dannati come grappoli, e il suo vino rosso lo porta ai giusti. Per questo ha due volti: per i morti buoni è colui che versa da bere, per gli altri è il macellaio degli dèi."),
+			Meta.shezmu_wins >= 1, Lang.t("Sconfiggi Shezmu.")],
 		# dal Tesoro della Sfinge (blocco 17)
 		["harmachis", Lang.t("Horemakhet, Horus nell'orizzonte"),
 			Lang.t("Nel Nuovo Regno la Grande Sfinge di Giza era venerata come Horemakhet, «Horus nell'orizzonte»: il sole che sorge, che lei guarda da sempre verso oriente. I pellegrini le lasciavano stele con orecchie scolpite, perché il dio ascoltasse le loro preghiere."),

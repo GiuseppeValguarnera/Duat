@@ -71,7 +71,7 @@ func _on_body_entered(body: Node) -> void:
 		return
 	if body is StaticBody2D:
 		Fx.burst(global_position, Color(0.85, 0.4, 1.0), 6, 60.0)
-		if style != "dart" and style != "javelin":
+		if style != "dart" and style != "javelin" and style != "knife":
 			Sfx.play_at("orb_pop", global_position, 0.2)
 		_land()
 		queue_free()
@@ -97,6 +97,19 @@ func _draw() -> void:
 		draw_colored_polygon(PackedVector2Array([direction * 8.0, direction * 1.0 + direction.orthogonal() * 2.5, direction * 1.0 - direction.orthogonal() * 2.5]), Color(0.8, 0.55, 0.25))
 		draw_line(tail, tail + direction * 3.0 + direction.orthogonal() * 3.0, Color(0.85, 0.25, 0.15), 1.5)
 		draw_line(tail, tail + direction * 3.0 - direction.orthogonal() * 3.0, Color(0.85, 0.25, 0.15), 1.5)
+		return
+	if style == "knife":
+		# il coltello dei demoni di Apopi: lama di selce che gira, con una scia viola
+		var kd := Vector2.from_angle(age * 22.0)
+		draw_line(-direction * 10.0, Vector2.ZERO, Color(0.6, 0.3, 0.9, 0.35), 3.0)
+		draw_colored_polygon(PackedVector2Array([kd * 7.0, kd.orthogonal() * 2.0, -kd * 4.0, -kd.orthogonal() * 2.0]), Color(0.1, 0.06, 0.1))
+		draw_colored_polygon(PackedVector2Array([kd * 6.0, kd.orthogonal() * 1.2, -kd * 1.0, -kd.orthogonal() * 1.2]), Color(0.86, 0.84, 0.92))
+		draw_line(-kd * 1.0, -kd * 4.0, Color(0.6, 0.35, 0.2), 1.8)
+		return
+	if style == "isfet":
+		draw_circle(Vector2.ZERO, 6.5, Color(0.6, 0.25, 0.9, 0.3))
+		draw_circle(Vector2.ZERO, 4.0, Color(0.1, 0.03, 0.16))
+		draw_arc(Vector2.ZERO, 4.0, 0.0, TAU, 12, Color(0.8, 0.45, 1.0), 1.0)
 		return
 	if style == "sand":
 		draw_circle(Vector2.ZERO, 6.0, Color(0.95, 0.8, 0.5, 0.3))

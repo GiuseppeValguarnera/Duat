@@ -125,11 +125,7 @@ func _process(delta: float) -> void:
 		_forge_news = Amulets.something_to_forge()
 		_wall_news = Challenges.to_claim() > 0
 		_imhotep_news = Imhotep.has_news()
-	if menu != null and menu_scroll != null and is_instance_valid(menu_scroll):
-		# la levetta destra scorre la pagina, come una rotella
-		var ax := Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y)
-		if absf(ax) > 0.25:
-			menu_scroll.scroll_vertical += int(ax * 700.0 * delta)
+	# la levetta destra scorre le liste ovunque: lo fa DragScroll
 	if menu != null or talk_box.visible:
 		prompt.visible = false
 		return

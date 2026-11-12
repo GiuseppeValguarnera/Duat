@@ -307,6 +307,8 @@ func _process(delta: float) -> void:
 			n = 12                 # ad Aker si arriva in fondo a Sokar: la discesa più ricca
 		if skip == "sokar":
 			n = 12                 # discesa intera di Sokar con i doni di chi arriva dopo Am-heh
+		if Run.region >= 3:
+			n = {"guardian": 20, "ammit": 24}.get(skip, 17)      # al Banco di Apopi si arriva dopo due regioni
 		var pool := []
 		for id in Boons.ALL:
 			var gd: String = Boons.ALL[id].get("god", "")
@@ -314,7 +316,7 @@ func _process(delta: float) -> void:
 				pool.append(id)
 		pool.shuffle()
 		for i in range(n):
-			Run.add_boon(pool[i])
+			Run.add_boon(pool[i % pool.size()])      # oltre la fine dell'elenco i doni salgono di livello
 		if skip == "ammit":
 			Run.add_boon(pool[0])
 		var extra := OS.get_environment("DUAT_EXTRA")
@@ -325,7 +327,7 @@ func _process(delta: float) -> void:
 			if not Run.has(extra):
 				Run.add_boon(extra)
 		if skip == "sokar":
-			Run.max_hp += 10.0          # dopo Am-heh: un cuore e qualche cura in più
+			Run.max_hp += 20.0 if Run.region >= 3 else 10.0          # dopo Am-heh (e Aker): cuori e cure in più
 			Run.hp = Run.max_hp
 			g.player.max_hp = Run.max_hp
 			g.player.hp = Run.hp

@@ -1827,7 +1827,7 @@ func _draw_markers() -> void:
 ## Vedi docs/storia.md.
 func _draw_cartouche(c: Vector2) -> void:
 	var gold := Color(0.94, 0.72, 0.3)
-	var signs := [Meta.ammit_wins >= 1, Meta.aker_wins >= 1, false, false]     # pane: Apopi; orizzonte: il finale
+	var signs := [Meta.ammit_wins >= 1, Meta.aker_wins >= 1, Meta.apep_wins >= 1, false]     # pane: Apopi; orizzonte: il finale
 	var shown := 0
 	for sg in signs:
 		if sg:
@@ -1970,6 +1970,8 @@ func _scale_balance() -> float:
 	if Meta.serket_wins > 0:
 		k += 0.15
 	if Meta.aker_wins > 0:
+		k += 0.2
+	if Meta.apep_wins > 0:
 		k += 0.2
 	if not Restorations.ALL.is_empty():
 		k += 0.15 * clampf(Meta.restorations.size() / float(Restorations.ALL.size()), 0.0, 1.0)

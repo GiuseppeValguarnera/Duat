@@ -33,6 +33,12 @@ const LINES_SOKAR := [
 	"«Il sole non passa più per questa terra. Un tempo era lui il mio carico. Ora sei tu.»",
 	"«Le cose sepolte, qui, non dormono. Ascoltano.»",
 ]
+const LINES_APEP := [
+	"«Qui non remo. Qui prego che non mi veda. La mia barca è piccola: per lui sono un'esca.»",
+	"«L'acqua è nera perché lui l'ha già bevuta una volta. Quella che vedi è ciò che ha sputato.»",
+	"«Quando si volta, non guardarlo negli occhi. I rematori di Ra si addormentarono così. Solo Set restò sveglio.»",
+	"«Ti ho portato tre volte, ormai. Alla prima non ti conoscevo. Ora quasi mi dispiace chiederti il Ka. Quasi.»",
+]
 const LINES_WORRIED := [
 	"«Il tuo re aveva paura di questa barca. Anche da vivo, nelle feste del Fiume, saliva sempre per ultimo.»",
 	"«Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»",
@@ -52,6 +58,8 @@ static func trust() -> int:
 
 ## Una frase di Mahaf adatta al punto della storia (a volte una di quelle di prima).
 static func line() -> String:
+	if Run.region >= 3 and randf() < 0.5:
+		return Lang.t(LINES_APEP.pick_random())
 	if Run.region == 2 and randf() < 0.5:
 		return Lang.t(LINES_SOKAR.pick_random())
 	var pools := [LINES, LINES_CURIOUS, LINES_WORRIED]
@@ -66,6 +74,9 @@ static func _available() -> Array:
 	var pools := [LINES, LINES_CURIOUS, LINES_WORRIED]
 	var out := []
 	# a Sokar le frasi della quarta ora vengono prima: sono quelle che non hai ancora sentito
+	if Run.region >= 3:
+		for i in range(LINES_APEP.size()):
+			out.append(["mahaf_a_%d" % i, LINES_APEP[i]])
 	if Run.region == 2:
 		for i in range(LINES_SOKAR.size()):
 			out.append(["mahaf_s_%d" % i, LINES_SOKAR[i]])

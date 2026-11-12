@@ -14,6 +14,10 @@ const SEKHEM_MAX := 100.0
 ## discesa continua da una all'altra, come in Hades. Sokar è in costruzione: si gioca solo con
 ## DUAT_REGION2=1 (per le prove) finché non è completa.
 const SOKAR_READY := true
+## La terza regione, il Banco di Apopi (12/11/2026): aperta. Ci si arriva solo dopo Aker.
+const APEP_READY := true
+const APEP_DAMAGE := 1.5              ## danni subiti nel Banco (Sokar ×1,25)
+const APEP_KA := 1.5
 var region := 1
 
 
@@ -28,11 +32,15 @@ func depth(reg: int = -1, rm: int = -1) -> int:
 
 
 func max_region() -> int:
+	if APEP_READY and (SOKAR_READY or OS.get_environment("DUAT_REGION2") != ""):
+		return 3
 	return 2 if SOKAR_READY or OS.get_environment("DUAT_REGION2") != "" else 1
 
 
 ## Il nome della tappa, per l'HUD e i banner.
 func region_name() -> String:
+	if region >= 3:
+		return Lang.t("Apopi")
 	return Lang.t("Wernes") if region == 1 else Lang.t("Sokar")
 
 
@@ -552,7 +560,9 @@ func damage_taken_mult() -> float:
 	var m := 1.3 if cursed("fragile") else 1.0
 	if trial:
 		m *= trial_dmg
-	if region >= 2:
+	if region >= 3:
+		m *= APEP_DAMAGE
+	elif region >= 2:
 		m *= SOKAR_DAMAGE
 	m *= 1.0 + 0.2 * Weights.rank("zanne")
 	m *= 1.0 - val("sobek_skin") / 100.0
@@ -792,7 +802,9 @@ func nile_heal() -> float:
 
 func ka_mult() -> float:
 	var m := 1.5 if has("set_greed") else 1.0
-	if region >= 2:
+	if region >= 3:
+		m *= APEP_KA
+	elif region >= 2:
 		m *= SOKAR_KA
 	m *= 1.0 + val("anubi_tribute") / 100.0
 	if has("anubi_scale"):

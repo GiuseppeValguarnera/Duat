@@ -42,7 +42,7 @@ func _process(delta: float) -> void:
 func _terrain_edges(p: Node) -> void:
 	var col: Color = p.TERRAIN_COLORS.get(p.terrain_kind, Color(0.35, 0.22, 0.12))
 	var k: float = p.terrain_t / p.TERRAIN_FLASH
-	var vs := size
+	var vs := _vs()
 	var th := maxf(vs.x, vs.y) * 0.04
 	for i in range(4):
 		var w := th * (1.0 - i * 0.25)
@@ -97,14 +97,14 @@ func _draw() -> void:
 	var low: float = p.hp / maxf(1.0, p.max_hp)
 	if low < 0.3 and not p.dead and p.terrain_t <= 0.0:
 		var beat := pow(maxf(0.0, sin(Time.get_ticks_msec() / 1000.0 * TAU * (1.0 if low > 0.15 else 1.5))), 3.0)
-		var lth := maxf(size.x, size.y) * 0.05
+		var lth := maxf(_vs().x, _vs().y) * 0.05
 		for i in range(4):
 			var lw := lth * (1.0 - i * 0.25)
 			var red := Color(0.75, 0.05, 0.05, (0.05 + 0.09 * beat) * (1.3 - low * 2.0))
-			draw_rect(Rect2(0, 0, size.x, lw), red)
-			draw_rect(Rect2(0, size.y - lw, size.x, lw), red)
-			draw_rect(Rect2(0, 0, lw, size.y), red)
-			draw_rect(Rect2(size.x - lw, 0, lw, size.y), red)
+			draw_rect(Rect2(0, 0, _vs().x, lw), red)
+			draw_rect(Rect2(0, _vs().y - lw, _vs().x, lw), red)
+			draw_rect(Rect2(0, 0, lw, _vs().y), red)
+			draw_rect(Rect2(_vs().x - lw, 0, lw, _vs().y), red)
 	# danno dal terreno (blocco 10): bordi dello schermo colorati e, al posto dell'ankh, l'icona
 	if p.terrain_t > 0.0:
 		_terrain_edges(p)
@@ -171,6 +171,17 @@ func _draw() -> void:
 		if am == "was" and Run.was_stacks > 0:
 			_text(title, ac + Vector2(-9, 25) * u, "+%d%%" % int(Run.was_stacks * Amulets.val_of("was")), _fs(8), GOLD)
 		slot += 1
+	if not (Run.training or game.tut.step >= 0):
+		# una fascia scura dietro tacche e gemme: sopra i fregi delle stanze non si leggevano
+		var sbk := StyleBoxFlat.new()
+		sbk.bg_color = Color(0.05, 0.04, 0.09, 0.62)
+		sbk.set_corner_radius_all(int(4 * u))
+		var rows_h := (10.0 if Run.trial else (24.0 if Run.boons.size() + Run.blessings.size() > 0 else 11.0)) * u
+		if not (Run.trial and Run.boons.is_empty()):
+			draw_style_box(sbk, Rect2(o.x, o.y + ph + 1.0 * u, pw, rows_h))
+	_room_pips(Vector2(o.x + 8.0 * u, o.y + ph + 6.0 * u), pw - 16.0 * u, u)
+	_boon_row(o + Vector2(2.0 * u, ph + 13.0 * u), u)
+	_boss_bar(u, font, title)
 	# Occhio di Horus
 	if touch:
 		return
@@ -198,6 +209,126 @@ func _draw() -> void:
 			draw_circle(pp, 1.6 * u, GOLD if i < charges else Color(0.3, 0.25, 0.2))
 
 var hu := 1.0
+
+
+## La misura dello schermo. NON `size`: sotto un CanvasLayer questo Control resta 0×0, e per questo i
+## bordi colorati (danno da terreno, vita bassa) non si sono mai visti finché non è stato corretto (12/11).
+func _vs() -> Vector2:
+	return get_viewport().get_visible_rect().size
+
+
+var boss_shown := -1.0          # la scia del danno sulla barra del boss
+var boss_in := 0.0              # la barra entra dall'alto
+
+
+## Le stanze della regione: una tacca per stanza (piena = fatta, oro = quella in corso), un rombo per
+## il guardiano e uno più grande per il boss. Si legge a colpo d'occhio quanto manca.
+func _room_pips(at: Vector2, w: float, u: float) -> void:
+	if Run.trial or Run.training or game.tut.step >= 0:
+		return
+	var n: int = Run.ROOMS_PER_RUN + 1
+	var gap := w / float(n - 1)
+	for i in range(n):
+		var rm := i + 1
+		var c := at + Vector2(gap * i, 0)
+		var done: bool = Run.room > rm
+		var now: bool = Run.room == rm
+		var col := GOLD if now else (Color(0.8, 0.66, 0.42) if done else Color(0.3, 0.26, 0.24))
+		var special: bool = rm == Run.GUARDIAN_ROOM or rm == n
+		if special:
+			var r := (3.4 if rm == n else 2.6) * u
+			draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)]), Color(0, 0, 0, 0.8))
+			var r2 := r - 0.9 * u
+			draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r2), c + Vector2(r2, 0), c + Vector2(0, r2), c + Vector2(-r2, 0)]), Color(0.9, 0.3, 0.22) if not done and not now else col)
+		else:
+			draw_circle(c, 2.0 * u, Color(0, 0, 0, 0.8))
+			draw_circle(c, 1.3 * u, col)
+		if now:
+			draw_arc(c, 3.6 * u, 0, TAU, 12, Color(GOLD, 0.5 + 0.4 * sin(Time.get_ticks_msec() / 220.0)), 1.0)
+
+
+## I doni presi: una gemma per dono col colore del dio e un puntino per livello (al posto della
+## scritta "Doni: N"). I pesanti e i rari hanno il bordo chiaro, i doni di Set sono rombi rossi.
+func _boon_row(at: Vector2, u: float) -> void:
+	if Run.training or game.tut.step >= 0:
+		return
+	var ids: Array = Run.boons.keys()
+	var x := at.x
+	var y := at.y + 4.0 * u
+	var step := 9.5 * u
+	var maxn := 16
+	for i in range(mini(ids.size(), maxn)):
+		var id: String = ids[i]
+		if not Boons.ALL.has(id):
+			continue
+		var c := Vector2(x + 4.0 * u, y)
+		var col: Color = Boons.color_of(id)
+		var special: bool = Boons.is_heavy(id) or Boons.is_rare(id) or Boons.is_duo(id)
+		draw_circle(c, 4.2 * u, Color(0, 0, 0, 0.85))
+		draw_circle(c, 3.3 * u, col.darkened(0.25))
+		draw_circle(c + Vector2(-0.8, -0.9) * u, 1.6 * u, col.lightened(0.35))
+		if special:
+			draw_arc(c, 4.2 * u, 0, TAU, 14, Color(1, 0.95, 0.75), 1.0)
+		var lv := int(Run.boons[id])
+		for k in range(mini(lv, 3)):
+			draw_circle(c + Vector2((k - (mini(lv, 3) - 1) / 2.0) * 2.6, 6.2) * u, 0.9 * u, GOLD)
+		x += step
+	if ids.size() > maxn:
+		_text(UiStyle.body_font(), Vector2(x + 1.0 * u, y + 3.0 * u), "+%d" % (ids.size() - maxn), _fs(7), GOLD)
+		x += 14.0 * u
+	for b in Run.blessings:
+		var c2 := Vector2(x + 4.0 * u, y)
+		var r := 4.2 * u
+		draw_colored_polygon(PackedVector2Array([c2 + Vector2(0, -r), c2 + Vector2(r, 0), c2 + Vector2(0, r), c2 + Vector2(-r, 0)]), Color(0, 0, 0, 0.85))
+		r -= 1.0 * u
+		draw_colored_polygon(PackedVector2Array([c2 + Vector2(0, -r), c2 + Vector2(r, 0), c2 + Vector2(0, r), c2 + Vector2(-r, 0)]), Color(0.78, 0.2, 0.16))
+		x += step
+
+
+## La barra dei boss e dei guardiani: in alto al centro, cartiglio con la cornice d'oro, la scia chiara
+## del danno appena fatto, una tacca a metà vita (dove lo scontro cambia) e il nome sopra. I valori
+## vengono dalla barra di game.gd (boss_bar/boss_fill/boss_name), che resta per la logica ma non si vede.
+func _boss_bar(u: float, _font: Font, title: Font) -> void:
+	var bb: ColorRect = game.boss_bar
+	if bb == null or not bb.visible:
+		boss_shown = -1.0
+		boss_in = 0.0
+		return
+	boss_in = minf(1.0, boss_in + get_process_delta_time() * 3.0)
+	var frac := clampf(game.boss_fill.size.x / maxf(1.0, bb.size.x), 0.0, 1.0)
+	if boss_shown < 0.0 or frac > boss_shown:
+		boss_shown = frac
+	else:
+		boss_shown = move_toward(boss_shown, frac, maxf(0.08, (boss_shown - frac) * 2.0) * get_process_delta_time())
+	var col: Color = game.boss_fill.color
+	var w := minf(_vs().x * (0.44 if Fx.mobile else 0.34), 260.0 * u)
+	var h := 8.0 * u
+	var x := (_vs().x - w) / 2.0
+	var y := lerpf(-20.0, 20.0 if Fx.mobile else 22.0, ease(boss_in, 0.4)) * u
+	var nm: String = game.boss_name.text
+	var fs := _fs(10)
+	var tw := title.get_string_size(nm, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	draw_string_outline(title, Vector2((_vs().x - tw) / 2.0, y - 4.0 * u), nm, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 5, Color(0, 0, 0, 0.95))
+	draw_string(title, Vector2((_vs().x - tw) / 2.0, y - 4.0 * u), nm, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col.lightened(0.45))
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.08, 0.03, 0.04, 0.92)
+	sb.set_corner_radius_all(int(4 * u))
+	sb.border_color = GOLD
+	sb.set_border_width_all(maxi(1, int(1.5 * u)))
+	draw_style_box(sb, Rect2(x - 3 * u, y - 3 * u, w + 6 * u, h + 6 * u))
+	if boss_shown > frac:
+		draw_rect(Rect2(x + w * frac, y, w * (boss_shown - frac), h), Color(1, 0.92, 0.7))
+	draw_rect(Rect2(x, y, w * frac, h), col)
+	draw_rect(Rect2(x, y, w * frac, h * 0.35), col.lightened(0.35))
+	draw_rect(Rect2(x, y + h * 0.75, w * frac, h * 0.25), col.darkened(0.3))
+	draw_rect(Rect2(x + w * 0.5 - 0.5 * u, y - 1 * u, 1.0 * u, h + 2 * u), Color(0, 0, 0, 0.7))
+	# le estremità: due rombi d'oro, come i fermagli di un cartiglio
+	for ex in [x - 3 * u, x + w + 3 * u]:
+		var r := 4.5 * u
+		var c := Vector2(ex, y + h / 2.0)
+		draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)]), GOLD_DARK)
+		r -= 1.3 * u
+		draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)]), GOLD)
 
 func _fs(n: int) -> int:
 	return maxi(7, roundi(n * hu * 1.1))

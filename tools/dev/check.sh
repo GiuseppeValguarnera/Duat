@@ -20,8 +20,12 @@ for scene in res://scenes/hub.tscn res://scenes/armory.tscn res://scenes/game.ts
   DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 60 "$G" --headless --path . --quit-after 600 "$scene" >> "$OUT/run.txt" 2>&1
 done
 # Sokar: stanze 1, 4 e 8 (terreno, trappole, nemici del deserto)
-for room in 1 4 8; do
+for room in 1 4 8; do   # (sotto: anche il Banco di Apopi)
   DUAT_NOTUT=1 DUAT_REGION2=1 DUAT_START_REGION=2 DUAT_START_ROOM=$room HOME="$HOMEDIR" timeout 60 "$G" --headless --path . --quit-after 900 res://scenes/game.tscn >> "$OUT/run.txt" 2>&1
+done
+# il Banco di Apopi (terza regione): stanze 1, 4, 8, guardiano (5) e boss (11)
+for room in 1 4 8 5 11; do
+  DUAT_NOTUT=1 DUAT_START_REGION=3 DUAT_START_ROOM=$room HOME="$HOMEDIR" timeout 60 "$G" --headless --path . --quit-after 900 res://scenes/game.tscn >> "$OUT/run.txt" 2>&1
 done
 # arco e flagello: colpi, attacco caricato e in scatto con tutti i loro doni (tools/dev/weaponsmoke.gd)
 for w in arco flagello khopesh; do

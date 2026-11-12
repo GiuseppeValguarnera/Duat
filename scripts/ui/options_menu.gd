@@ -49,6 +49,7 @@ func _items() -> Array:
 		["fullscreen", Lang.t("Schermo intero"), Lang.t("Il gioco occupa tutto lo schermo. Scorciatoia: tasto F; Esc per uscire.")],
 		["arrows", Lang.t("Mostra le frecce"), Lang.t("Le frecce a terra nella Sala che indicano le porte (discesa, Casa della Vita, Cortile di Neith, Sfinge). Di solito spariscono dopo che hai usato una porta la prima volta: accese, restano sempre.")],
 		["zones", Lang.t("Mostra aree di danno"), Lang.t("Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.")],
+		["crediti", Lang.t("Crediti"), Lang.t("Chi ha fatto la musica, i suoni e i caratteri del gioco. Premi per leggerli.")],
 		["colpi", Lang.t("Ultimi colpi"), Lang.t("Gli ultimi 15 colpi subiti: chi, quanto, da che distanza e in che momento dell'attacco. Premi per leggerli.")],
 	]
 	if not Fx.fs_supported():
@@ -134,6 +135,12 @@ func _change(id: String, dir: int) -> void:
 			pass                                  # parte dal button_down (gesto dell'utente), vedi _row
 		"colpi":
 			Sfx.play("ui", 0.0)
+			page_kind = "colpi"
+			_show_hits()
+			return
+		"crediti":
+			Sfx.play("ui", 0.0)
+			page_kind = "crediti"
 			_show_hits()
 			return
 		"feather":
@@ -196,6 +203,7 @@ func _build() -> void:
 	col.add_child(_rule(w * 0.7))
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
 	scroll.custom_minimum_size = Vector2(0, minf(vs.y * 0.62, 11 * 22.0 * Fx.ui))
 	col.add_child(scroll)
 	var list := VBoxContainer.new()
@@ -321,6 +329,20 @@ const STATE_NAMES := {"windup": "preparazione", "leap": "salto", "charge": "cari
 	"soar": "volo", "rise": "a terra", "recover": "pausa", "drift": "volo", "under": "sotto la sabbia",
 	"line_warn": "coda dalla sabbia", "breach": "balzo fuori dalla sabbia", "fan_windup": "ventaglio"}
 var hits_page := false
+var page_kind := "colpi"
+
+## I crediti (le licenze CC-BY chiedono la citazione dentro il gioco).
+const CREDITS := [
+	"MUSICA",
+	"Kevin MacLeod (incompetech.com), licenza Creative Commons: By Attribution 4.0 — creativecommons.org/licenses/by/4.0",
+	"«Volatile Reaction» (Am-heh) · «Curse of the Scarab» (Serket) · «Clash Defiant» e «The Descent» (Aker) · «Tabuk» (la terra di Sokar) · «Drums of the Deep», «Grim Idol» e «Killers» (la caverna di Apopi). Brani accorciati e portati allo stesso volume.",
+	"«Arabesque» di brainiac256, licenza Creative Commons Attribution 3.0 (i guardiani delle porte).",
+	"«Desert Mystic» di PolygonDan, «Desert Loop» di iamoneabe, «Frozen Desert» di Dizzy Crow: CC0, da opengameart.org.",
+	"SUONI E CARATTERI",
+	"Suoni CC0 (vedi assets/sfx/CREDITS.md nel progetto). Caratteri con licenza libera (SIL Open Font License).",
+	"GIOCO",
+	"Ideato da Skizzo. Motore: Godot Engine (licenza MIT).",
+]
 
 
 ## La pagina "Ultimi colpi": testo semplice, uno per riga, dal più recente.
@@ -342,7 +364,7 @@ func _show_hits() -> void:
 	col.add_theme_constant_override("separation", int(3 * Fx.ui))
 	col.custom_minimum_size = Vector2(w, 0)
 	root.add_child(col)
-	var title := UiStyle.heading(Lang.t("Ultimi colpi"), 14, GOLD)
+	var title := UiStyle.heading(Lang.t("Crediti") if page_kind == "crediti" else Lang.t("Ultimi colpi"), 14, GOLD)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(title)
 	var scroll := ScrollContainer.new()
@@ -352,10 +374,14 @@ func _show_hits() -> void:
 	var lines := VBoxContainer.new()
 	lines.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(lines)
-	if Run.hit_log.is_empty():
+	if page_kind == "crediti":
+		for c in CREDITS:
+			var head: bool = String(c) == String(c).to_upper()
+			lines.add_child(UiStyle.label(Lang.t(c), 9 if head else 8, GOLD if head else Color(0.95, 0.9, 0.8), false, w - 10.0))
+	elif Run.hit_log.is_empty():
 		lines.add_child(UiStyle.label(Lang.t("Nessun colpo subito, per ora."), 9, SOFT, false, w - 10.0))
 	var names: Dictionary = Game.KILLER_NAMES
-	for h in Run.hit_log:
+	for h in (Run.hit_log if page_kind == "colpi" else []):
 		var e: Dictionary = h
 		var who: String = Lang.t(names.get(e["src"], e["src"]))
 		var txt := "%s — %s" % [who.substr(0, 1).to_upper() + who.substr(1), Lang.t("%d danni") % roundi(float(e["dmg"])) if float(e["dmg"]) > 0.0 else Lang.t("parato dallo scudo")]
@@ -377,7 +403,7 @@ func _show_hits() -> void:
 
 func _back_from_hits() -> void:
 	hits_page = false
-	focus_id = "colpi"
+	focus_id = page_kind
 	_build()
 
 

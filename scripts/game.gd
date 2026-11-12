@@ -37,10 +37,17 @@ const ENEMIES := {
 	"sokar_priest": preload("res://scenes/sokar_priest.tscn"),  # sacerdote di Sokar (scudi di sabbia)
 	"khepri": preload("res://scenes/khepri.tscn"),              # scarabeo di Khepri (la sfera)
 	"mirage": preload("res://scenes/mirage.tscn"),              # il Miraggio (le copie)
+	# il Banco di Apopi (terza regione)
+	"apep_spawn": preload("res://scenes/apep_spawn.tscn"),      # Figlio di Apopi (serpe, lascia Isfet)
+	"sheut": preload("res://scenes/sheut.tscn"),                # ombra senza padrone (riaffiora alle spalle)
+	"knifer": preload("res://scenes/knifer.tscn"),              # portatore di coltelli (ventaglio di tre)
+	"shetyu": preload("res://scenes/shetyu.tscn"),              # tartaruga del caos (trottola)
+	"shezmu": preload("res://scenes/shezmu.tscn"),              # guardiano: il Signore del Torchio
+	"apep": preload("res://scenes/apep.tscn"),                  # boss: Apopi
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "amheh_anello": "l'anello di fuoco di Am-heh", "aker_shade": "un'Ombra di Sabbia", "aker_spark": "una Scintilla dell'Alba", "aker_scintilla": "la fiammata di una Scintilla dell'Alba", "aker_fuoco": "il fuoco delle Scintille", "aker_crepa": "una crepa di fuoco", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra", "fiume": "il fiume di sabbia nera", "buca": "una buca delle sabbie che crollano", "falco": "una statua-falco", "javelin": "un lanciatore di giavellotti", "sokar_priest": "un sacerdote di Sokar", "khepri": "uno scarabeo di Khepri", "khepri_ball": "la sfera di Khepri", "mirage": "il miraggio", "serket_nube": "la nube di veleno", "serket_aura": "l'aura di veleno di Serket", "scorpion_veleno": "il veleno dello scorpione", "serpent_veleno": "il veleno del Serpente", "serket_veleno": "il veleno di Serket", "sekhmet_heavy": "la sete di Sekhmet", "salasso": "il salasso del Peso del Cuore"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "amheh_anello": "l'anello di fuoco di Am-heh", "aker_shade": "un'Ombra di Sabbia", "aker_spark": "una Scintilla dell'Alba", "aker_scintilla": "la fiammata di una Scintilla dell'Alba", "aker_fuoco": "il fuoco delle Scintille", "aker_crepa": "una crepa di fuoco", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra", "fiume": "il fiume di sabbia nera", "buca": "una buca delle sabbie che crollano", "falco": "una statua-falco", "javelin": "un lanciatore di giavellotti", "sokar_priest": "un sacerdote di Sokar", "khepri": "uno scarabeo di Khepri", "khepri_ball": "la sfera di Khepri", "mirage": "il miraggio", "serket_nube": "la nube di veleno", "serket_aura": "l'aura di veleno di Serket", "scorpion_veleno": "il veleno dello scorpione", "serpent_veleno": "il veleno del Serpente", "serket_veleno": "il veleno di Serket", "sekhmet_heavy": "la sete di Sekhmet", "salasso": "il salasso del Peso del Cuore", "apep_spawn": "un Figlio di Apopi", "sheut": "un'ombra senza padrone", "knifer": "un portatore di coltelli", "shetyu": "la tartaruga del caos", "shezmu": "Shezmu, il Signore del Torchio", "apep": "Apopi", "isfet": "l'Isfet, il caos che ribolle", "spira": "una spira di Apopi"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il %d%% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -61,11 +68,13 @@ const ChoiceCard := preload("res://scripts/ui/choice_card.gd")
 const BossIntro := preload("res://scripts/ui/boss_intro.gd")
 ## Nome, titolo e consiglio di ogni boss, per la presentazione; e la musica che parte con lei.
 const BOSS_INTROS := {
-	"amheh": ["AM-HEH", "Il guardiano del Lago di Fuoco", "Per il giusto il lago è acqua, per il dannato è fuoco. Resta nell'acqua", "boss", Color(1, 0.55, 0.2)],
+	"amheh": ["AM-HEH", "Il guardiano del Lago di Fuoco", "Per il giusto il lago è acqua, per il dannato è fuoco. Resta nell'acqua", "boss_amheh", Color(1, 0.55, 0.2)],
 	"ammit": ["AMMIT", "La Divoratrice", "Divora i cuori che non superano il giudizio", "boss", Color(0.9, 0.35, 0.25)],
 	"serpent": ["IL SERPENTE DELLA PORTA", "Guardiano della quinta porta", "Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra", "boss", Color(0.5, 0.95, 0.45)],
-	"aker": ["AKER", "Il leone dell'orizzonte", "Non ha un dietro: colpiscilo sui fianchi. Dietro le pietre il raggio non passa", "boss", Color(1.0, 0.7, 0.3)],
-	"serket": ["SERKET", "Colei che fa respirare la gola", "Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare", "boss", Color(0.4, 0.9, 0.82)],
+	"aker": ["AKER", "Il leone dell'orizzonte", "Non ha un dietro: colpiscilo sui fianchi. Dietro le pietre il raggio non passa", "boss_aker", Color(1.0, 0.7, 0.3)],
+	"shezmu": ["SHEZMU", "Il Signore del Torchio", "La mannaia torna indietro: non darle le spalle. Dopo la carica contro il muro è stordito", "guard_r3", Color(0.9, 0.25, 0.25)],
+	"apep": ["APOPI", "Il serpente del caos", "Non si uccide: si respinge. Dopo l'affondo ha il muso nella sabbia: colpiscilo lì", "boss_r3", Color(0.7, 0.4, 1.0)],
+	"serket": ["SERKET", "Colei che fa respirare la gola", "Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare", "boss_serket", Color(0.4, 0.9, 0.82)],
 }
 const DecorScript := preload("res://scripts/room_decor.gd")
 const UshabtiScript := preload("res://scripts/ushabti.gd")
@@ -98,7 +107,7 @@ const BOSS_KIND := "amheh"            ## il boss della Prima Ora (Ammit resta pe
 
 ## Il boss della regione: Am-heh nelle acque di Wernes, Aker nel deserto di Sokar.
 func _boss_kind() -> String:
-	return "aker" if Run.region == 2 else BOSS_KIND
+	return "apep" if Run.region >= 3 else ("aker" if Run.region == 2 else BOSS_KIND)
 ## Arena di Am-heh: quattro pozze d'acqua (posizione nel pavimento, raggi dell'ellisse).
 const AMHEH_POOLS := [[Vector2(0.25, 0.36), Vector2(54, 30)], [Vector2(0.75, 0.36), Vector2(54, 30)], [Vector2(0.36, 0.8), Vector2(48, 27)], [Vector2(0.64, 0.8), Vector2(48, 27)]]
 ## Arena di Ammit: 6 colonne, ognuna crolla dopo averla stordita una volta.
@@ -190,7 +199,7 @@ func _ready() -> void:
 	var arrows := DoorArrows.new()
 	arrows.game = self
 	$UI.add_child(arrows)
-	hud.position.y = (44.0 if Fx.mobile else 46.0)
+	hud.position.y = 68.0                  # sotto le tacche delle stanze e le gemme dei doni (hud_bars.gd)
 	var listener := PanelListener.new()
 	listener.game = self
 	add_child(listener)
@@ -220,6 +229,8 @@ func _ready() -> void:
 	# per le prove: partire direttamente da Sokar
 	if OS.get_environment("DUAT_START_REGION") == "2" and Run.max_region() > 1:
 		Run.region = 2
+	if OS.get_environment("DUAT_START_REGION") == "3" and Run.max_region() > 2:
+		Run.region = 3
 	if OS.get_environment("DUAT_START_ROOM") != "":
 		Run.room = int(OS.get_environment("DUAT_START_ROOM")) - 1     # per il controllo d'avvio
 	# la prima stanza non ha ricompensa: il primo dono è quello di Anubi
@@ -283,7 +294,7 @@ func start_room(reward: Dictionary) -> void:
 	shop_items.clear()
 	oasis_nodes.clear()
 	if not boss_room and kind != "guardian":
-		Music.play("hub" if kind == "shop" or kind == "oasis" or quiet else "room")
+		Music.play("hub" if kind == "shop" or kind == "oasis" or quiet else Music.room_track())
 	var layout: Array = LAYOUTS.pick_random() if Run.room > 1 else LAYOUTS[0]
 	if boss_room:
 		layout = BOSS_LAYOUT if _boss_kind() == "ammit" else []
@@ -304,6 +315,10 @@ func start_room(reward: Dictionary) -> void:
 		arena = "horizon"                # Sokar: la porta dell'orizzonte
 	if arena == "gate" and Run.region == 2:
 		arena = "temple"                 # Sokar: il tempio di Serket
+	if arena == "gate" and Run.region >= 3:
+		arena = "press"                  # Banco di Apopi: il torchio di Shezmu
+	if boss_room and _boss_kind() == "apep":
+		arena = "bank"                   # il banco di sabbia dove la barca di Ra è arenata
 	if kind == "oasis":
 		arena = "oasis"                  # la sosta tra le due regioni
 	if arena == "lake":
@@ -316,11 +331,17 @@ func start_room(reward: Dictionary) -> void:
 		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_horizon(ci, ROOM, TOP, WALL)
 	elif arena == "oasis":
 		decor.under = func(ci: CanvasItem) -> void: Oasis.paint(ci, ROOM, TOP, WALL)
+	elif arena == "press":
+		decor.under = func(ci: CanvasItem) -> void: ApepArena.paint_press(ci, ROOM, TOP, WALL)
+	elif arena == "bank":
+		decor.under = func(ci: CanvasItem) -> void: ApepArena.paint_bank(ci, ROOM, TOP, WALL)
 	decor.arena = arena
 	Run.deep_center = Arenas.deep_center(ROOM, TOP, WALL) if arena == "gate" else Vector2.ZERO
 	Run.deep_radii = Arenas.DEEP_RADII if arena == "gate" else Vector2.ZERO
 	if arena != "":
 		decor.SHADE = 0.18
+	elif Run.region >= 3 and not Run.trial:
+		decor.SHADE = 0.3                  # la caverna è già scura di suo: poca ombra sopra, o non si legge niente
 	elif Run.region == 2 and not Run.trial:
 		decor.SHADE = 0.34                 # il deserto di Sokar è più luminoso delle tombe allagate di Wernes
 	else:
@@ -344,6 +365,8 @@ func start_room(reward: Dictionary) -> void:
 		_build_arena(arena, pool_spots)
 	if arena == "" and Run.region == 2 and not Run.trial:
 		decor.ambient.color = Color(1.0, 0.94, 0.82)      # luce calda di sabbia
+	if Run.region >= 3 and not Run.trial and arena != "oasis":
+		decor.ambient.color = Color(0.9, 0.86, 1.0)       # luce fredda, viola: il cuore della notte
 	if current_reward.get("kind", "") == "set":
 		decor.mosaic = ""                  # al centro c'è l'altare di Set: niente mosaico sopra
 	if kind == "sphinx":
@@ -428,14 +451,16 @@ func start_room(reward: Dictionary) -> void:
 		waves = []
 		_start_quiet_room.call_deferred()
 		return
-	var r := mini(Run.room + (1 if Run.region == 2 else 0), 8)
+	var r := mini(Run.room + (1 if Run.region >= 2 else 0), 8)
 	var horde := 1.0 + 0.25 * Weights.rank("orde")
 	if Run.region == 2:
 		horde *= 1.3                              # Sokar: più nemici per ondata, non una terza ondata
+	elif Run.region >= 3:
+		horde *= 1.4                              # Banco di Apopi
 	if Meta.feather:
 		horde *= 0.75                             # Piuma di Ma'at: un quarto di nemici in meno
 	var soft := 1 if r <= 2 else 0                # le prime due stanze sono un po' più leggere
-	if Run.region == 2:
+	if Run.region >= 2:
 		sokar_types = _sokar_room_types()
 	waves = [_make_wave(roundi((4 + r * 2 - soft) * horde), r >= 3), _make_wave(roundi((3 + r * 2 - soft) * horde), r >= 3)]
 	_spawn_wave(waves.pop_front(), 1.0)
@@ -457,14 +482,31 @@ const SOKAR_KINDS := {
 }
 var sokar_types: Array = []              ## i tipi di nemici di questa stanza di Sokar
 
+## Il Banco di Apopi: serpi (a coppie), ombre, tartarughe; a distanza i portatori di coltelli. Dalle
+## regioni prima tornano i Ba dannati e gli scarabei di Khepri: il caos raccoglie tutto.
+const APEP_KINDS := {
+	"apep_spawn": [3, ["apep_spawn", "apep_spawn"], false, 3],
+	"sheut": [3, ["sheut"], false, 2],
+	"shetyu": [4, ["shetyu"], false, 1],
+	"damned_ba": [2, ["damned_ba", "damned_ba"], false, 1],
+	"knifer": [2, ["knifer"], true, 2],
+	"khepri": [3, ["khepri"], true, 1],
+}
+
+
+## La tabella dei nemici della regione in corso (Sokar o il Banco di Apopi).
+func _region_kinds() -> Dictionary:
+	return APEP_KINDS if Run.region >= 3 else SOKAR_KINDS
+
 
 ## I tipi di una stanza di Sokar: 2-3 nelle prime due stanze (almeno uno da corpo a corpo), tutti
 ## dalla terza.
 func _sokar_room_types() -> Array:
-	var all := SOKAR_KINDS.keys()
+	var kinds := _region_kinds()
+	var all := kinds.keys()
 	if Run.room >= 3:
 		return all
-	var melee := all.filter(func(k) -> bool: return not SOKAR_KINDS[k][2])
+	var melee := all.filter(func(k) -> bool: return not kinds[k][2])
 	var out := [melee.pick_random()]
 	var rest := all.filter(func(k) -> bool: return k != out[0])
 	rest.shuffle()
@@ -485,7 +527,7 @@ func _make_sokar_wave(budget: int) -> Array:
 	while budget > 0 and tries < 60:
 		tries += 1
 		var k: String = sokar_types.pick_random()
-		var d: Array = SOKAR_KINDS[k]
+		var d: Array = _region_kinds()[k]
 		var cost: int = d[0]
 		var units: Array = d[1]
 		var ranged: bool = d[2]
@@ -501,12 +543,12 @@ func _make_sokar_wave(budget: int) -> Array:
 		else:
 			melee_n += units.size()
 	if out.is_empty():
-		out = ["scorpion", "scorpion"]
+		out = ["apep_spawn", "apep_spawn"] if Run.region >= 3 else ["scorpion", "scorpion"]
 	return out
 
 
 func _make_wave(budget: int, allow_priest: bool) -> Array:
-	if Run.region == 2 and not sokar_types.is_empty():
+	if Run.region >= 2 and not sokar_types.is_empty():
 		return _make_sokar_wave(budget)
 	var out := []
 	var late := Run.room > Run.GUARDIAN_ROOM    # dopo il guardiano arrivano i cobra
@@ -616,9 +658,11 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 	# dalla terza stanza alcune mummie e alcuni sacerdoti sono élite
 	var elite_w := Weights.rank("elite")
 	# Sokar: élite già dalla prima stanza e più spesso (anche guardiani, avvoltoi, sciacalli e lanciatori)
-	var elite_kinds := ["mummy", "priest"] if Run.region == 1 else ["mummy", "sokar_guard", "vulture", "jackal", "javelin"]
+	var elite_kinds := ["mummy", "priest"] if Run.region == 1 else ["mummy", "sokar_guard", "vulture", "jackal", "javelin", "sheut", "knifer", "apep_spawn"]
 	var elite_from := 3 if Run.region == 1 else 1
 	var elite_chance := minf(0.2, 0.06 + 0.02 * Run.room) if Run.region == 1 else minf(0.32, 0.14 + 0.02 * Run.room)
+	if Run.region >= 3:
+		elite_chance = minf(0.38, 0.2 + 0.02 * Run.room)
 	if trial != null:
 		trial.adjust(e, kind, tag)
 	elif Run.room >= elite_from - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind in elite_kinds and randf() < elite_chance * (1 + elite_w):
@@ -775,7 +819,13 @@ func _room_cleared() -> void:
 		var tear_txt := ""
 		var fallen := ""
 		var fallen_col := Color(0.6, 1, 0.5)
-		if Run.region == 2:
+		if Run.region >= 3:
+			Meta.shezmu_wins += 1
+			Restorations.gain(randi_range(6, 7), player.global_position)
+			tear_txt = Lang.t("Il torchio è fermo. Il banco di sabbia è vicino")
+			fallen = Lang.t("Shezmu è caduto")
+			fallen_col = Color(0.9, 0.3, 0.3)
+		elif Run.region == 2:
 			Meta.serket_wins += 1
 			Restorations.gain(randi_range(5, 6), player.global_position)
 			tear_txt = Lang.t("Il cuore di Sokar è aperto")
@@ -1007,6 +1057,21 @@ func _next_region() -> void:
 	var p := Rebirth.RegionPassage.new()
 	p.title = Lang.t("La quarta ora")
 	p.sub = Lang.t("La terra di Sokar")
+	if Run.region >= 3:
+		# niente oasi: la barca scivola nell'acqua nera. Ra ti presta un respiro (un quarto della vita)
+		if not Meta.apep_seen:
+			Meta.apep_seen = true
+			Meta.save()
+		p.title = Lang.t("La settima ora")
+		p.sub = Lang.t("Il Banco di Apopi")
+		get_tree().root.add_child(p)
+		get_tree().create_timer(1.2, true).timeout.connect(func() -> void:
+			Run.room = 1
+			start_room({"kind": "none"})
+			if player != null and is_instance_valid(player):
+				player.heal(player.max_hp * 0.25)
+			_banner(Lang.t("Il Banco di Apopi"), Lang.t("Qui il serpente beve il fiume. L'acqua è nera, e guarda"), Color(0.7, 0.45, 1.0), 4.5))
+		return
 	get_tree().root.add_child(p)
 	get_tree().create_timer(1.2, true).timeout.connect(func() -> void: start_room({"kind": "oasis"}))
 
@@ -1867,9 +1932,9 @@ func _on_player_died() -> void:
 	finished = true
 	can_leave = false
 	Run.clear_descent()
-	var where := (Lang.t("Aker, il leone dell'orizzonte") if Run.region == 2 else Lang.t("Am-heh, il Divoratore di Milioni")) if Run.room > Run.ROOMS_PER_RUN else Lang.t("stanza %d di %d, piano %d") % [Run.room, Run.ROOMS_PER_RUN, Run.depth()]
+	var where := (Lang.t("Apopi, il serpente del caos") if Run.region >= 3 else (Lang.t("Aker, il leone dell'orizzonte") if Run.region == 2 else Lang.t("Am-heh, il Divoratore di Milioni"))) if Run.room > Run.ROOMS_PER_RUN else Lang.t("stanza %d di %d, piano %d") % [Run.room, Run.ROOMS_PER_RUN, Run.depth()]
 	if current_reward.get("kind", "") == "guardian":
-		where = Lang.t("il Serpente della Porta") if Run.region == 1 else Lang.t("Serket, la dea scorpione")
+		where = Lang.t("il Serpente della Porta") if Run.region == 1 else (Lang.t("Serket, la dea scorpione") if Run.region == 2 else Lang.t("Shezmu, il Signore del Torchio"))
 		if Run.region == 1:
 			Meta.serpent_streak += 1         # dopo 3 di fila Anubi offre la Piuma di Ma'at
 	Meta.last_end = "ammit" if Run.room > Run.ROOMS_PER_RUN else "room"   # "ammit" = morto contro il boss della regione (nome storico nel salvataggio)
@@ -1997,7 +2062,10 @@ func _start_boss() -> void:
 	# silenzio finché il boss non si presenta: la musica parte con lui (_boss_intro)
 	Music.stop()
 	boss_fill.color = Color(0.85, 0.2, 0.15)
-	if _boss_kind() == "aker":
+	if _boss_kind() == "apep":
+		boss_name.text = Lang.t("APOPI, IL SERPENTE DEL CAOS")
+		boss_fill.color = Color(0.62, 0.3, 0.9)
+	elif _boss_kind() == "aker":
 		boss_name.text = Lang.t("AKER, IL LEONE DELL'ORIZZONTE")
 		boss_fill.color = Color(0.95, 0.65, 0.25)
 	elif _boss_kind() == "amheh":
@@ -2011,6 +2079,8 @@ func _start_boss() -> void:
 	var at := Vector2(ROOM.size.x / 2.0, TOP + 110.0)
 	if _boss_kind() == "aker":
 		at = Vector2(ROOM.size.x / 2.0, (TOP + ROOM.size.y - WALL) / 2.0 - 30.0)   # sulla strada del sole
+	if _boss_kind() == "apep":
+		at = Vector2(ROOM.size.x / 2.0, TOP + 70.0)
 	_spawn_after(_boss_kind(), at, 1.6)
 
 
@@ -2078,6 +2148,15 @@ func _build_arena(arena: String, pool_spots: Array) -> void:
 func _start_guardian() -> void:
 	Diag.record("guardiano")
 	Music.stop()
+	if Run.region >= 3:
+		# Banco di Apopi: Shezmu nel suo torchio
+		boss_name.text = Lang.t("SHEZMU, IL SIGNORE DEL TORCHIO")
+		boss_fill.color = Color(0.8, 0.2, 0.22)
+		boss_bar.visible = true
+		boss_fill.size.x = boss_bar.size.x
+		spawning += 1
+		_spawn_after("shezmu", Vector2(ROOM.size.x / 2.0, TOP + 96.0), 1.4)
+		return
 	if Run.region == 2:
 		# Sokar: Serket nel suo tempio (niente statue del cobra: la complicazione sono i suoi scorpioni)
 		boss_name.text = Lang.t("SERKET, LA DEA SCORPIONE")
@@ -2637,6 +2716,9 @@ func _boss_defeated() -> void:
 	if _boss_kind() == "aker":
 		await _aker_defeated()
 		return
+	if _boss_kind() == "apep":
+		await _apep_defeated()
+		return
 	Meta.ammit_wins += 1
 	Challenges.on_amheh_beaten()
 	var lesson := Run.scribe_lesson()      # Lezione dello Scriba: dopo un boss
@@ -2721,6 +2803,27 @@ func _aker_defeated() -> void:
 	_victory()
 
 
+## Apopi è respinto: non muore (ogni notte ritorna), ma stanotte è legato. L'acqua nera torna a
+## salire attorno al banco e la barca di Ra si rimette a galla. Tappa 3 della storia: la regina.
+func _apep_defeated() -> void:
+	Meta.apep_wins += 1
+	var lesson := Run.scribe_lesson()
+	if lesson != "":
+		_scribe_lesson_fx.call_deferred(lesson)
+	Restorations.gain(randi_range(12, 14), player.global_position)
+	var win_secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
+	if Meta.best_time < 0 or win_secs < Meta.best_time:
+		Meta.best_time = win_secs
+	ammit_tears = Meta.claim_boss("apep", 3)    # Lacrime di Iside: la prima volta con ogni arma (una in più: è la terza ora)
+	if Weights.unlocked() and not Meta.feather and Weights.total() > Meta.best_weight:
+		Meta.best_weight = Weights.total()
+	Meta.save()
+	Fx.shake(14.0)
+	_banner(Lang.t("Apopi è legato"), Lang.t("Non muore: nessuno può ucciderlo. Ma stanotte la barca passa"), Color(0.75, 0.5, 1.0), 3.4)
+	await get_tree().create_timer(4.0).timeout
+	_victory()
+
+
 ## Bordi dello schermo più scuri: dà l'idea di una tomba illuminata dalle torce.
 func _build_vignette() -> void:
 	var grad := Gradient.new()
@@ -2769,6 +2872,7 @@ func _build_boss_bar() -> void:
 	boss_name.add_theme_font_override("font", UiStyle.title_font())
 	ui.add_child(boss_bar)
 	boss_bar.visible = false
+	boss_bar.modulate.a = 0.0             # la disegna HudBars (in alto, col cartiglio): questa resta per la logica
 
 
 ## Riepilogo della discesa. Salva anche il Ka raccolto, che resta tra una run e l'altra.
@@ -2813,6 +2917,8 @@ func _victory() -> void:
 	# i nuovi poteri arrivano con la prima vittoria su Am-heh: dopo Aker non si ripetono
 	var extra := Lang.t("\nNuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti") if Meta.ammit_wins == 1 and Run.region == 1 else ""
 	var ric := Lore.ricordo_for(Meta.aker_wins, "aker") if Run.region == 2 else Lore.ricordo_for(Meta.ammit_wins)
+	if Run.region >= 3:
+		ric = Lore.ricordo_for(Meta.apep_wins, "apep")
 	if ric != "":
 		extra += Lang.t("\nUn ricordo è riaffiorato: «%s». Lo trovi nei Papiri di Thoth") % ric
 	if ammit_tears > 0:
@@ -2824,6 +2930,8 @@ func _victory() -> void:
 	var head := Lang.t("Hai sconfitto Am-heh!\nLa Prima Ora è superata. Le altre ore della notte ti attendono.")
 	if Run.region == 2:
 		head = Lang.t("Hai sconfitto Aker!\nIeri e Domani sono caduti, ma il sole non è sorto. La notte continua.")
+	if Run.region >= 3:
+		head = Lang.t("Hai respinto Apopi!\nIl serpente è legato fino alla prossima notte. Resta una sola porta: la Sala delle Due Verità.")
 	message.text = Lang.t("%s%s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio") % [head, extra, _end_run_summary()]
 	_fit_message()
 
@@ -2888,7 +2996,7 @@ func _process(_delta: float) -> void:
 	var sek := Lang.t("PRONTO (Q / LT)") if Run.sekhem_ready() else "%d%%" % int(Run.sekhem)
 	if player.divine_t > 0.0:
 		sek = Lang.t("FORMA DIVINA %.1fs") % player.divine_t
-	var room_txt := (Lang.t("Ammit · colonne: %d") % pillars.size() if _boss_kind() == "ammit" else (Lang.t("Aker") if _boss_kind() == "aker" else Lang.t("Am-heh"))) if Run.room > Run.ROOMS_PER_RUN else Lang.t("Stanza %d/%d") % [Run.room, Run.ROOMS_PER_RUN]
+	var room_txt := (Lang.t("Ammit · colonne: %d") % pillars.size() if _boss_kind() == "ammit" else (Lang.t("Aker") if _boss_kind() == "aker" else (Lang.t("Apopi") if _boss_kind() == "apep" else Lang.t("Am-heh")))) if Run.room > Run.ROOMS_PER_RUN else Lang.t("Stanza %d/%d") % [Run.room, Run.ROOMS_PER_RUN]
 	if Run.max_region() > 1 and Run.room <= Run.ROOMS_PER_RUN:
 		room_txt = Run.region_name() + " · " + room_txt
 	if trial != null:
@@ -2914,8 +3022,8 @@ func _process(_delta: float) -> void:
 		boss_fill.size.x = boss_bar.size.x * clampf(boss.hp / boss.max_hp, 0.0, 1.0)
 	var n := Run.boons.size() + Run.blessings.size()
 	var line2 := ""
-	if n > 0:
-		line2 = (Lang.t("Doni: %d") % n) if Fx.device == "touch" else Lang.t("Doni: %d (Tab per vederli)") % n
+	if n > 0 and Meta.runs < 3 and Fx.device != "touch":
+		line2 = Lang.t("Tab / Select: i tuoi doni")       # le gemme sotto la barra sono i doni (hud_bars.gd)
 	for c in Run.curses:
 		line2 += Lang.t("    Maledizione: %s (ancora %d stanze)") % [Boons.SET_CURSES[c["curse"]]["desc"], c["rooms"]]
 	# Scettro Was: quante stanze pulite ha già contato (il bonus non si perde prendendo danni)
@@ -3004,6 +3112,8 @@ func _process(_delta: float) -> void:
 		help.text = Lang.t("WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox")
 		if trial != null:
 			help.text = Lang.t("WASD muovi · mouse mira · clic sinistro attacca (tieni premuto: carica) · Spazio scatto · clic destro Occhio · Tab doni · Esc pausa")
+	if not (Meta.runs < 3 or (Run.room <= 1 and Run.region == 1) or trial != null or tut.step >= 0):
+		help.text = ""                       # dopo le prime discese la riga dei comandi resta solo nella prima stanza
 	if TRAILER:
 		help.text = ""                       # riprese per trailer e screenshot: niente scritte d'aiuto
 		reticle.visible = false
@@ -3053,11 +3163,14 @@ func paint_floor(ci: CanvasItem) -> void:
 	var sokar := Run.region == 2 and not set_altar and not Run.trial
 	# Sokar ha la sua faccia (revisione del 12/11): non più le lastre di Wernes con un po' di sabbia sopra,
 	# ma un deserto chiaro che ha invaso la tomba, con isole di lastre che affiorano e le onde del vento
+	var apep := Run.region >= 3 and not set_altar and not Run.trial
 	ci.draw_rect(floor_r, Color(0.74, 0.6, 0.38) if sokar else Color(0.22, 0.15, 0.09))
 	var base := Color(0.55, 0.24, 0.15) if set_altar else (Color(0.6, 0.48, 0.3) if sokar else Color(0.53, 0.4, 0.25))
 	var y := TOP
 	var row := 0
-	while y < r.end.y - WALL:
+	if apep:
+		ApepArena.paint_cave_floor(ci, floor_r, Run.room)       # la caverna: niente lastre
+	while y < r.end.y - WALL and not apep:
 		var x := r.position.x + WALL - (16.0 if row % 2 == 1 else 0.0)        # lastre sfalsate, come i muri veri
 		while x < r.end.x - WALL:
 			var x0 := maxf(x, WALL)
@@ -3121,14 +3234,18 @@ func paint_floor(ci: CanvasItem) -> void:
 			wy += rng.randf_range(15.0, 24.0)
 			wrow += 1
 	var dark := Color(0.27, 0.19, 0.11) if sokar else Color(0.19, 0.13, 0.08)
+	if Run.region >= 3 and not Run.trial:
+		dark = Color(0.08, 0.06, 0.11)
 	ci.draw_rect(Rect2(r.position.x, r.position.y, r.size.x, WALL), dark)
-	ci.draw_rect(Rect2(r.position.x, r.position.y + WALL, r.size.x, WALL), Color(0.62, 0.47, 0.28) if sokar else Color(0.46, 0.33, 0.2))
+	ci.draw_rect(Rect2(r.position.x, r.position.y + WALL, r.size.x, WALL), Color(0.62, 0.47, 0.28) if sokar else (Color(0.24, 0.18, 0.3) if Run.region >= 3 and not Run.trial else Color(0.46, 0.33, 0.2)))
 	var i := 0
 	var fx := r.position.x
 	while fx < r.end.x:
 		var fa := Color(0.25, 0.66, 0.6)
 		if sokar:
 			fa = Color(0.72, 0.26, 0.16)              # il fregio di Sokar: ocra rossa e oro, non il turchese dell'acqua
+		elif Run.region >= 3 and not Run.trial:
+			fa = Color(0.5, 0.2, 0.7)                 # il fregio del Banco: viola del caos e oro
 		ci.draw_rect(Rect2(fx, r.position.y + WALL + 12, 16, 6), fa if i % 2 == 0 else Color(0.91, 0.69, 0.29))
 		fx += 16.0
 		i += 1

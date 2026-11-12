@@ -170,7 +170,8 @@ const RICORDI_IT := [
 	{"needs": 1, "title": "I · La lancia di Buto", "text": "Scrissi la battaglia di Buto come me la dettarono i capitani. Il re scese dal carro prima che le linee si toccassero e prese la lancia dalle mani del portatore: una lancia antica, dissero, uscita dal tempio di Neith a Sais. I capitani ricordavano le grida, la polvere, il fiume rosso. Io ricordo il legno. Liscio, caldo di sole, con una scheggia sotto il pollice destro che il re non volle mai far limare. Non so perché lo ricordo. Forse me lo raccontò lui."},
 	{"needs": 2, "title": "II · La doppia corona", "text": "Il giorno dell'incoronazione scrissi i cinque nomi del re su cento rotoli. Toro possente. Amato di Ma'at. Colui che sorge all'orizzonte. La corona bianca dentro la corona rossa, una sola corona per le Due Terre. Dalla folla sembrava leggera. Non lo era: faceva sudare la nuca, e il lino sotto si bagnava tutto prima del tramonto. Questo nei rotoli non c'è. Non l'ho mai scritto. Eppure lo so, come se me l'avesse confidato lui, quella sera, togliendosela davanti a me."},
 	{"needs": 3, "title": "III · La casa dell'eternità", "text": "Il re cominciò a scavare la sua tomba nel primo anno di regno, come tutti i re. Ma lui ci scendeva ogni notte. Una lampada sola, e ore davanti alle pareti ancora bianche, dove i pittori avrebbero dipinto la pesatura del cuore. Una notte mi chiamò e mi chiese di leggergli il capitolo centoventicinque. Lo lessi due volte. Alla seconda, la mia mano... la sua mano strinse il rotolo fino a spezzarne il bordo. Disse soltanto: «Non voglio essere pesato.»"},
-	{"needs": 1, "boss": "aker", "title": "IV · Il nome nascosto", "text": "Nel nono anno il re andò a Iunu, la città del sole, e non volle nessuno con sé. Nemmeno me. Lo scrissi lo stesso: il re visitò il tempio di Ra e offrì mille pani. È quello che si scrive. Ma io so che entrò nella sala dove nessun uomo entra, quella dove i sacerdoti custodiscono la storia di Iside e del nome segreto. So che il buio là dentro odora di cedro e di cera. So che le parole si dicono a bassa voce, perché anche il muro ascolta. Le dico... le disse. Uscì all'alba. Quel giorno il sole sorse, come sempre. Il sole sorse ogni giorno, finché il re visse."}
+	{"needs": 1, "boss": "aker", "title": "IV · Il nome nascosto", "text": "Nel nono anno il re andò a Iunu, la città del sole, e non volle nessuno con sé. Nemmeno me. Lo scrissi lo stesso: il re visitò il tempio di Ra e offrì mille pani. È quello che si scrive. Ma io so che entrò nella sala dove nessun uomo entra, quella dove i sacerdoti custodiscono la storia di Iside e del nome segreto. So che il buio là dentro odora di cedro e di cera. So che le parole si dicono a bassa voce, perché anche il muro ascolta. Le dico... le disse. Uscì all'alba. Quel giorno il sole sorse, come sempre. Il sole sorse ogni giorno, finché il re visse."},
+	{"needs": 1, "boss": "apep", "title": "V · La mano della regina", "text": "Quando il re morì, la regina Meritneith non pianse davanti a nessuno. Chiamò gli scalpellini, di notte. Scrissi anche questo, perché uno scriba scrive tutto: che la regina fece togliere il nome del re da ogni pietra, da ogni stele, da ogni rotolo. La corte disse: odio. Io c'ero, e non era odio. Le tremavano le mani. Disse: «Senza nome non c'è pesatura. Senza pesatura la Divoratrice non avrà il suo cuore.» Poi fece portare una tavolozza da scriba, la mia... una tavolozza da scriba, e la posò nel sarcofago, sul petto, dove si posa lo scarabeo del cuore. Si chinò. Disse: «Dormi dietro un altro volto, amore mio, finché il buio non avrà dimenticato il tuo.» Non capii a chi parlasse. Ricordo la sua mano, fredda. Era sulla mia fronte."}
 ]
 
 
@@ -183,11 +184,15 @@ static func ricordo_boss(r: Dictionary) -> String:
 ## I ricordi di Sokar compaiono nei Papiri (anche sigillati) solo dopo che ci sei arrivato.
 ## (Non si usa Run qui: Lore si carica con le lingue all'avvio, e Run dipende dalle lingue.)
 static func ricordo_visible(r: Dictionary) -> bool:
+	if ricordo_boss(r) == "apep":
+		return Meta.apep_seen
 	return ricordo_boss(r) != "aker" or Meta.sokar_seen
 
 
 static func ricordo_open(r: Dictionary) -> bool:
 	var wins: int = Meta.aker_wins if ricordo_boss(r) == "aker" else Meta.ammit_wins
+	if ricordo_boss(r) == "apep":
+		wins = Meta.apep_wins
 	return wins >= int(r["needs"])
 
 

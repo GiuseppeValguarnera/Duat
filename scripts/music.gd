@@ -5,6 +5,10 @@ extends Node
 
 const FADE := 1.6
 const TRACKS := ["hub", "room", "elite", "boss", "death"]
+## Brani caricati solo quando servono (12/11: un tema per ogni boss e uno per ogni regione).
+## Se un file manca si ripiega sul brano tra parentesi.
+const LAZY := {"boss_amheh": "boss", "boss_serket": "boss", "boss_aker": "boss", "boss_aker2": "elite",
+	"room_sokar": "room", "room_r3": "room", "guard_r3": "boss", "boss_r3": "boss"}
 
 var streams := {}
 var players: Array[AudioStreamPlayer] = []
@@ -33,6 +37,14 @@ func _ready() -> void:
 ## Passa al brano `name`. Se sta già suonando non fa nulla.
 func play(track: String) -> void:
 	duck = 1.0
+	if not streams.has(track) and LAZY.has(track):
+		var path := "res://assets/music/%s.ogg" % track
+		if ResourceLoader.exists(path):
+			var s: AudioStreamOggVorbis = load(path)
+			s.loop = true
+			streams[track] = s
+		else:
+			track = LAZY[track]
 	if track == current or not streams.has(track):
 		return
 	current = track
@@ -43,6 +55,13 @@ func play(track: String) -> void:
 	p.play()
 	levels[active] = 0.0
 	targets[active] = 1.0
+
+
+## Il brano delle stanze di combattimento della regione in corso.
+func room_track() -> String:
+	if Run.trial:
+		return "room"
+	return "room_sokar" if Run.region == 2 else ("room_r3" if Run.region >= 3 else "room")
 
 
 ## Abbassa la musica (0..1) senza cambiare brano: alla morte, nei riepiloghi.

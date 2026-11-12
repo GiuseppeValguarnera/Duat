@@ -525,7 +525,7 @@ func _split() -> void:
 	Fx.burst(global_position + Vector2(0, -30), Color(0.6, 0.6, 0.62), 30, 160.0)      # il disco spento si spezza
 	Fx.burst(global_position, SAND, 40, 200.0)
 	Sfx.play_at("serpent_erupt", global_position, 0.0)
-	Music.play("elite")                    # la seconda fase ha un'altra musica: si sente che è cambiato tutto
+	Music.play("boss_aker2")                   # la seconda fase ha un'altra musica: si sente che è cambiato tutto
 	var g = get_tree().current_scene
 	if g != null and g.has_method("_banner"):
 		g._banner(Lang.t("Ieri e Domani"), Lang.t("«Io sono Ieri: ciò che è stato non torna.» «Io sono Domani: ciò che verrà non si ferma.»"), Color(1.0, 0.78, 0.4), 3.2)

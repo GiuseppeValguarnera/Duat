@@ -209,6 +209,7 @@ static func open_mods(parent: Node, statue: SphinxStatue, on_close: Callable) ->
 	var sc := ScrollContainer.new()
 	sc.custom_minimum_size = Vector2(w, minf(190.0 * u, vs.y * 0.5))
 	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	sc.follow_focus = true
 	col.add_child(sc)
 	var rows := VBoxContainer.new()
 	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -287,6 +288,7 @@ static func open_shop(parent: Node, statue: SphinxStatue, on_close: Callable) ->
 	var sc := ScrollContainer.new()
 	sc.custom_minimum_size = Vector2(w if narrow else w * 0.48, minf(200.0 * u, vs.y * (0.32 if narrow else 0.55)))
 	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	sc.follow_focus = true
 	body.add_child(sc)
 	var list := VBoxContainer.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL

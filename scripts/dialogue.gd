@@ -18,7 +18,7 @@ static func _pick(lines: Array) -> String:
 ## (morte contro il guardiano), "boss" (contro il boss), "hazard" (uccisi dal terreno della regione),
 ## "win" (il boss della regione battuto). "{piano}" diventa la profondità totale (Run.depth).
 ## Le frasi sono dentro una funzione (non una costante) perché Lang.t le traduca.
-const HAZARD_KILLERS := ["fiume", "buca", "falco"]
+const HAZARD_KILLERS := ["fiume", "buca", "falco", "isfet", "spira"]
 
 
 static func death_table() -> Dictionary:
@@ -87,6 +87,45 @@ static func death_table() -> Dictionary:
 				Lang.t("Hai attraversato la terra di Sokar. I giorni passano, Scriba, e tu sei ancora in cammino."),
 			],
 		},
+		3: {
+			"bands": [
+				[1, 3, [
+					Lang.t("Piano {piano}. Hai visto l'acqua nera, e l'acqua nera ha visto te."),
+					Lang.t("Nella settima ora anche l'ombra ha un padrone, e non sei tu. Guardati le spalle, Scriba."),
+					Lang.t("Piano {piano}. Il caos non combatte: aspetta che tu metta il piede dove ha già aperto la bocca."),
+				]],
+				[4, 6, [
+					Lang.t("Piano {piano}. Dove muore una serpe resta il suo veleno. Scegli dove ucciderle."),
+					Lang.t("Sei caduto a metà della caverna, dove il serpente sogna. I suoi sogni hanno i denti."),
+					Lang.t("Piano {piano}. La tartaruga si ferma sempre a pancia in su. Aspetta quel momento: la fretta, qui, è una preghiera ad Apopi."),
+				]],
+				[7, 10, [
+					Lang.t("Piano {piano}. Hai sentito il banco di sabbia sotto i piedi. Il serpente ti ha sentito arrivare."),
+					Lang.t("Così vicino alla barca arenata. Ra ti ha visto, Scriba: non può parlare, ma ti ha visto."),
+					Lang.t("Piano {piano}. Più si scende, più il buio somiglia a qualcuno. Non fermarti a riconoscerlo."),
+				]],
+			],
+			"guardian": [
+				Lang.t("Shezmu ti ha spremuto, Scriba. Fa lo stesso vino da quattromila anni, e non gli è mai mancata l'uva."),
+				Lang.t("La mannaia torna sempre dal suo padrone. Chi le volta le spalle la sente due volte."),
+				Lang.t("Piano {piano}. Il Signore del Torchio carica come un toro e come un toro si ferma: contro il muro."),
+			],
+			"boss": [
+				Lang.t("Apopi ti ha bevuto come beve il fiume. Ma il fiume torna, ogni notte. Anche tu."),
+				Lang.t("Hai guardato il caos negli occhi. Pochi lo hanno fatto, e nessuno una volta sola."),
+				Lang.t("Piano {piano}. Il serpente non si uccide. Si lega, un nodo per notte. Stanotte il nodo si è sciolto."),
+			],
+			"boss_tip": Lang.t("Quando beve, cammina contro la corrente e scatta di lato. Quando affonda, il suo muso resta nella sabbia: quello è il tuo momento."),
+			"hazard": [
+				Lang.t("Non un nemico, Scriba: l'Isfet. Il caos non ha bisogno di mani per prendere ciò che vuole."),
+				Lang.t("La caverna respira, e tu eri nel suo respiro. Guarda il pavimento: le crepe dicono dove dorme la spira."),
+				Lang.t("Piano {piano}. Le pozze nere hanno occhi. Se le vedi aprirsi, sei già troppo vicino."),
+			],
+			"win": [
+				Lang.t("Apopi è legato, e la barca di Ra è tornata a galla. Per una notte, Scriba, l'ordine ha vinto."),
+				Lang.t("Hai attraversato il cuore della notte. Resta una porta sola. La conosci: ci passi davanti ogni volta che torni."),
+			],
+		},
 	}
 
 
@@ -106,7 +145,7 @@ static func death_line(reg: int, rm: int, killer: String, boss: bool) -> Array:
 		return out
 	if killer in HAZARD_KILLERS and t.has("hazard"):
 		return [_with_depth(_pick(t["hazard"]), reg, rm)]
-	if rm == Run.GUARDIAN_ROOM and (killer.begins_with("serpent") or killer in ["serket", "scorpion"]):
+	if rm == Run.GUARDIAN_ROOM and (killer.begins_with("serpent") or killer in ["serket", "scorpion", "shezmu"]):
 		return [_with_depth(_pick(t["guardian"]), reg, rm)]
 	for band in t["bands"]:
 		if rm >= int(band[0]) and rm <= int(band[1]):
@@ -301,6 +340,18 @@ static func story() -> Array:
 		{"id": "name2_aker", "if": Meta.aker_wins >= 1 and Meta.dialogue_seen.has("aker1"), "lines": [
 			Lang.t("Un secondo segno è riaffiorato nel cartiglio del tuo re: un cerchio solcato da linee."),
 			Lang.t("Aker l'ha lasciato andare, come si restituisce ciò che non ci appartiene. I guardiani dell'orizzonte sanno di chi è ogni cosa.")]},
+		# il Banco di Apopi, la settima ora: l'arrivo, poi la regina (tappa 3, docs/storia.md)
+		{"id": "apep0", "if": Meta.apep_seen, "lines": [
+			Lang.t("Sei disceso oltre l'orizzonte. Ora sei nella settima ora: il banco di sabbia di Apopi."),
+			Lang.t("Là il serpente beve il fiume, e la barca di Ra resta in secca. Accade ogni notte, da prima che esistessero le notti."),
+			Lang.t("Apopi non ha padre e non ha fine. Non cerca te, Scriba. Cerca qualcosa, e crede che tu sappia dov'è. Vorrei saperlo anch'io.")]},
+		{"id": "apep1", "if": Meta.apep_wins >= 1, "lines": [
+			Lang.t("Hai legato il serpente. Nessuno lo uccide: tu lo hai fermato, ed è più di quanto si chieda a un'anima."),
+			Lang.t("Ti dava la caccia. Apopi fiuta il nome segreto di Ra come lo sciacallo fiuta la tomba aperta. Ti segue perché tu sai dove si trova, anche se non sai di saperlo."),
+			Lang.t("Ho interrogato i registri, infine. Il nome del tuo re non fu cancellato per odio. Fu la regina. Lo tolse da ogni pietra perché la bilancia non potesse chiamarlo, e lo depose nel buio dietro un volto che non era il suo. Io peso i cuori da quattromila anni, e nessuno mi aveva mai ingannato per amore.")]},
+		{"id": "name3_apep", "if": Meta.apep_wins >= 1 and Meta.dialogue_seen.has("apep1"), "lines": [
+			Lang.t("Un terzo segno è tornato nel cartiglio: una piccola cupola. Il pane. Il segno più umile, e quello che regge gli altri."),
+			Lang.t("Ne manca uno. E l'ultimo, Scriba, non lo custodisce nessun mostro.")]},
 		{"id": "deaths12", "if": Meta.runs >= 12, "lines": [
 			Lang.t("Ho interrogato Ma'at, su di te. Non mi ha risposto."),
 			Lang.t("In quattromila anni non era mai accaduto.")]},

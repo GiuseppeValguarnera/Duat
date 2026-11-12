@@ -360,8 +360,7 @@ func _start_wave() -> void:
 		game._spawn_wave(list, 1.2)
 		var gi := Sphinx.guard_info(wave)
 		game._banner(Lang.t("Ondata %d · un guardiano") % wave, gi["name"], HARD_COL, 2.4)
-		if not String(gi["kind"]).begins_with("serket"):
-			Music.play("elite")
+		Music.play("boss")                    # i guardiani della scala hanno la musica dei guardiani
 	else:
 		var half := floori(list.size() / 2.0) if list.size() > 8 else list.size()
 		game.waves = [list.slice(0, half)]
