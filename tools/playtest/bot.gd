@@ -591,6 +591,14 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 				var perp: float = absf(rel.dot(c.direction.orthogonal()))
 				if perp < 12.0:
 					return c.direction.orthogonal() * (1.0 if rel.dot(c.direction.orthogonal()) > 0.0 else -1.0)
+	# la sfera di Khepri: si vede arrivare (frecce rosse sulla traiettoria), ci si toglie di lato
+	for b in get_tree().get_nodes_in_group("khepri_balls"):
+		var bd: Vector2 = b.vel.normalized()
+		var brel: Vector2 = pos - b.global_position
+		var balong: float = brel.dot(bd)
+		if balong > -6.0 and balong < 110.0 and absf(brel.dot(bd.orthogonal())) < 22.0:
+			threat_kind = "khepri_ball"
+			return bd.orthogonal() * (1.0 if brel.dot(bd.orthogonal()) > 0.0 else -1.0)
 	for e in enemies:
 		var rel: Vector2 = pos - e.global_position
 		var d := rel.length()

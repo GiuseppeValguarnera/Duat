@@ -321,6 +321,10 @@ func start_room(reward: Dictionary) -> void:
 	Run.deep_radii = Arenas.DEEP_RADII if arena == "gate" else Vector2.ZERO
 	if arena != "":
 		decor.SHADE = 0.18
+	elif Run.region == 2 and not Run.trial:
+		decor.SHADE = 0.34                 # il deserto di Sokar è più luminoso delle tombe allagate di Wernes
+	else:
+		decor.SHADE = 0.46                 # (era 0,52: gli angoli erano troppo bui per leggere i nemici)
 	room_decor = decor
 	world.add_child(decor)
 	var pool_spots: Array = []
@@ -338,6 +342,8 @@ func start_room(reward: Dictionary) -> void:
 	if arena != "":
 		obstacles.append_array(Arenas.solids(arena, ROOM, TOP, WALL, pool_spots))
 		_build_arena(arena, pool_spots)
+	if arena == "" and Run.region == 2 and not Run.trial:
+		decor.ambient.color = Color(1.0, 0.94, 0.82)      # luce calda di sabbia
 	if current_reward.get("kind", "") == "set":
 		decor.mosaic = ""                  # al centro c'è l'altare di Set: niente mosaico sopra
 	if kind == "sphinx":
@@ -2916,6 +2922,10 @@ func _process(_delta: float) -> void:
 	if Run.wears("was") and not Run.training:
 		var was_bonus := roundi(Run.was_stacks * Amulets.val_of("was"))
 		line2 += Lang.t("    Was %d/5 (+%d%% danni)") % [Run.was_stacks, was_bonus]
+	if trial != null and trial.started:
+		var extra := trial.hud_extra()        # moltiplicatore, effetto dell'enigma, sigilli: sotto la barra
+		if extra != "":
+			line2 += ("    " if line2 != "" else "") + extra
 	if line2 != "":
 		hud.text += ("\n" if hud.text != "" else "") + line2.strip_edges()
 	# la clessidra di Thoth (restauro della Sala): il tempo della discesa e il record
@@ -2992,6 +3002,8 @@ func _process(_delta: float) -> void:
 		help.text = Lang.t("Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa")
 	else:
 		help.text = Lang.t("WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox")
+		if trial != null:
+			help.text = Lang.t("WASD muovi · mouse mira · clic sinistro attacca (tieni premuto: carica) · Spazio scatto · clic destro Occhio · Tab doni · Esc pausa")
 	if TRAILER:
 		help.text = ""                       # riprese per trailer e screenshot: niente scritte d'aiuto
 		reticle.visible = false
@@ -3038,8 +3050,10 @@ func paint_floor(ci: CanvasItem) -> void:
 	# il pavimento: lastre di pietra con la fuga scura e calda (prima era blu e sembrava una
 	# griglia), ogni lastra con il suo tono, il bordo alto in luce e quello basso in ombra
 	var floor_r := Rect2(WALL, TOP, r.size.x - WALL * 2.0, r.size.y - WALL - TOP)
-	ci.draw_rect(floor_r, Color(0.22, 0.15, 0.09))
-	var sokar := Run.region == 2 and not set_altar
+	var sokar := Run.region == 2 and not set_altar and not Run.trial
+	# Sokar ha la sua faccia (revisione del 12/11): non più le lastre di Wernes con un po' di sabbia sopra,
+	# ma un deserto chiaro che ha invaso la tomba, con isole di lastre che affiorano e le onde del vento
+	ci.draw_rect(floor_r, Color(0.74, 0.6, 0.38) if sokar else Color(0.22, 0.15, 0.09))
 	var base := Color(0.55, 0.24, 0.15) if set_altar else (Color(0.6, 0.48, 0.3) if sokar else Color(0.53, 0.4, 0.25))
 	var y := TOP
 	var row := 0
@@ -3049,6 +3063,12 @@ func paint_floor(ci: CanvasItem) -> void:
 			var x0 := maxf(x, WALL)
 			var x1 := minf(x + tile, r.end.x - WALL)
 			var n := fmod(absf(sin(x * 12.9898 + y * 78.233 + Run.room) * 43758.5453), 1.0)
+			if sokar:
+				# le lastre affiorano solo a isole (rumore largo): il resto è sabbia
+				var isle := sin(x * 0.011 + Run.room * 1.7) * cos(y * 0.017 - Run.room * 0.9) + sin((x + y) * 0.006 + Run.room)
+				if isle < 0.55 + n * 0.5:
+					x += tile
+					continue
 			var c := base.darkened(n * 0.16)
 			if n > 0.93 and not set_altar:
 				c = c.lerp(Color(0.62, 0.5, 0.34), 0.5)        # qualche lastra più chiara, rifatta
@@ -3067,22 +3087,49 @@ func paint_floor(ci: CanvasItem) -> void:
 		# il deserto di Sokar: la sabbia ha invaso la tomba, cumuli e onde che coprono le lastre
 		var rng := RandomNumberGenerator.new()
 		rng.seed = Run.room * 977 + 13
-		for i in range(9):
+		# chiazze più chiare e più scure: la sabbia non è una tinta piatta
+		for i in range(14):
 			var c := Vector2(rng.randf_range(WALL, r.size.x - WALL), rng.randf_range(TOP, r.size.y - WALL))
-			var rad := Vector2(rng.randf_range(60, 140), rng.randf_range(24, 50))
+			var rad := Vector2(rng.randf_range(50, 130), rng.randf_range(20, 46))
 			ci.draw_set_transform(c, 0.0, Vector2(1.0, rad.y / rad.x))
-			ci.draw_circle(Vector2.ZERO, rad.x, Color(0.78, 0.64, 0.42, 0.55))
-			ci.draw_circle(Vector2.ZERO, rad.x * 0.7, Color(0.82, 0.68, 0.46, 0.6))
-			for k in range(3):
-				ci.draw_arc(Vector2(0, rad.x * 0.2 * k), rad.x * (0.55 + 0.12 * k), PI * 1.15, PI * 1.85, 16, Color(0.66, 0.52, 0.32, 0.5), 1.2)
+			var light := i % 3 != 0
+			ci.draw_circle(Vector2.ZERO, rad.x, Color(0.84, 0.71, 0.47, 0.4) if light else Color(0.6, 0.47, 0.29, 0.3))
+			ci.draw_circle(Vector2.ZERO, rad.x * 0.65, Color(0.88, 0.76, 0.52, 0.35) if light else Color(0.56, 0.43, 0.27, 0.25))
 			ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	var dark := Color(0.19, 0.13, 0.08)
+		# le onde del vento: righe ondulate chiare con l'ombra sotto, per tutta la stanza
+		var wy := TOP + 14.0
+		var wrow := 0
+		while wy < r.end.y - WALL - 6.0:
+			var seg := PackedVector2Array()
+			var wx := WALL + 4.0 + rng.randf_range(0.0, 60.0)
+			var span := rng.randf_range(90.0, 220.0)
+			while wx < r.end.x - WALL - 4.0:
+				seg.clear()
+				var x1 := minf(wx + span, r.end.x - WALL - 4.0)
+				var px := wx
+				while px <= x1:
+					seg.append(Vector2(px, wy + sin(px * 0.045 + wrow * 1.3) * 2.2))
+					px += 8.0
+				if seg.size() >= 2:
+					ci.draw_polyline(seg, Color(0.5, 0.38, 0.22, 0.32), 1.0)
+					var hi := PackedVector2Array()
+					for q in seg:
+						hi.append(q + Vector2(0, -1.5))
+					ci.draw_polyline(hi, Color(0.95, 0.84, 0.6, 0.28), 1.0)
+				wx = x1 + rng.randf_range(30.0, 110.0)
+				span = rng.randf_range(90.0, 220.0)
+			wy += rng.randf_range(15.0, 24.0)
+			wrow += 1
+	var dark := Color(0.27, 0.19, 0.11) if sokar else Color(0.19, 0.13, 0.08)
 	ci.draw_rect(Rect2(r.position.x, r.position.y, r.size.x, WALL), dark)
-	ci.draw_rect(Rect2(r.position.x, r.position.y + WALL, r.size.x, WALL), Color(0.46, 0.33, 0.2))
+	ci.draw_rect(Rect2(r.position.x, r.position.y + WALL, r.size.x, WALL), Color(0.62, 0.47, 0.28) if sokar else Color(0.46, 0.33, 0.2))
 	var i := 0
 	var fx := r.position.x
 	while fx < r.end.x:
-		ci.draw_rect(Rect2(fx, r.position.y + WALL + 12, 16, 6), Color(0.25, 0.66, 0.6) if i % 2 == 0 else Color(0.91, 0.69, 0.29))
+		var fa := Color(0.25, 0.66, 0.6)
+		if sokar:
+			fa = Color(0.72, 0.26, 0.16)              # il fregio di Sokar: ocra rossa e oro, non il turchese dell'acqua
+		ci.draw_rect(Rect2(fx, r.position.y + WALL + 12, 16, 6), fa if i % 2 == 0 else Color(0.91, 0.69, 0.29))
 		fx += 16.0
 		i += 1
 	ci.draw_rect(Rect2(r.position.x, r.end.y - WALL, r.size.x, WALL), dark)

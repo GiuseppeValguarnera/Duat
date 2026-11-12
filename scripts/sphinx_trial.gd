@@ -82,12 +82,20 @@ func prompt_text() -> String:
 
 ## La riga dell'HUD al posto di «Stanza N/10».
 func hud_line() -> String:
-	var s := Lang.t("La Sfinge · ondata %d · %d punti") % [maxi(wave, 1), total_score()]
+	if not started:
+		return Lang.t("La scala dell'enigma")
+	return Lang.t("Ondata %d · %d punti") % [maxi(wave, 1), total_score()]
+
+
+## Sotto la barra della vita, in piccolo: moltiplicatore dei modificatori, effetto dell'enigma, sigilli.
+func hud_extra() -> String:
+	var parts := []
 	if not mods.is_empty():
-		s += " " + SphinxShop.mult_text(SphinxShop.mult(mods))
+		parts.append(Lang.t("Punti %s") % SphinxShop.mult_text(SphinxShop.mult(mods)))
 	if active != "" and active_left > 0:
-		s += " · " + Sphinx.effect_short(active) + " (%d)" % active_left
-	return s
+		parts.append(Lang.t("Enigma: %s (%d)") % [Sphinx.effect_short(active), active_left])
+	parts.append(Lang.t("Sigilli +%d") % seals_got)
+	return " · ".join(parts)
 
 
 func _on(eff: String) -> bool:
@@ -495,7 +503,7 @@ func _offer_boons(then: Callable) -> void:
 		var sh := Boons.short(id, 1)
 		cards.append({"tag": Lang.t("Dono della Sfinge"), "name": Boons.ALL[id]["name"], "body": Boons.text(id, 1),
 			"gain": sh[0], "loss": sh[1], "color": Boons.color_of(id), "on_pick": _pick_boon.bind(id, then)})
-	game._open_choice(Lang.t("Pausa della Sfinge · il dono"), SAND, Lang.t("Un dono, al livello base"), cards)
+	game._open_choice(Lang.t("Pausa della Sfinge · dono"), SAND, Lang.t("Un dono, al livello base"), cards)
 
 
 func _pick_boon(id: String, then: Callable) -> void:
@@ -526,7 +534,7 @@ func _riddle() -> void:
 			"name": "«" + String(r[side]) + "»", "body": body,
 			"color": HARD_COL if hard else SOFT_COL, "on_pick": _answer.bind(eff)})
 	statue.speak(1.5)
-	game._open_choice(Lang.t("Pausa della Sfinge · l'enigma"), SAND, Lang.t("Ogni risposta è giusta: scegli che prova vuoi per le prossime 3 ondate"), cards, String(r["q"]))
+	game._open_choice(Lang.t("Pausa della Sfinge · enigma"), SAND, Lang.t("Ogni risposta è giusta: scegli che prova vuoi per le prossime 3 ondate"), cards, String(r["q"]))
 
 
 func _answer(eff: String) -> void:

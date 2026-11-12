@@ -1118,6 +1118,7 @@ Tempo %d:%02d,Tempo %d:%02d,Time %d:%02d
 Entra · %s,Entra · %s,Enter · %s
 Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa,Left stick move · right aim · RB attack · RT Eye · LB/A dash · LT Divine Form · Select boons · Start pause
 WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox,WASD move · mouse aim · left click attack · Space dash · right click Eye · Q Divine Form (after the first boss) · Tab boons · Esc pause · F1 hitbox
+WASD muovi · mouse mira · clic sinistro attacca (tieni premuto: carica) · Spazio scatto · clic destro Occhio · Tab doni · Esc pausa,WASD muovi · mouse mira · clic sinistro attacca (tieni premuto: carica) · Spazio scatto · clic destro Occhio · Tab doni · Esc pausa,WASD move · mouse aim · left click attack (hold: charge) · Space dash · right click Eye · Tab boons · Esc pause
 Ureo!,Ureo!,Uraeus!
 Sala,Sala,Hall
 "Nuova versione, aggiorna!","Nuova versione, aggiorna!","New version, update!"
@@ -2035,7 +2036,10 @@ Racconto: il sogno di Thutmose,Racconto: il sogno di Thutmose,Tale: the dream of
 "Un racconto nuovo per la vasca della Sala: la stele del sogno, tra le zampe della Sfinge.","Un racconto nuovo per la vasca della Sala: la stele del sogno, tra le zampe della Sfinge.","A new tale for the pool in the Hall: the dream stele, between the Sphinx's paws."
 "Nelle discese normali, a volte uno dei doni della Sfinge prende l'ultimo posto tra le scelte degli dèi (circa una scelta su otto). Mai garantito, al massimo uno per discesa, mai insieme a un dono doppio, pesante o raro. È l'unica cosa del Tesoro che conta nelle discese.","Nelle discese normali, a volte uno dei doni della Sfinge prende l'ultimo posto tra le scelte degli dèi (circa una scelta su otto). Mai garantito, al massimo uno per discesa, mai insieme a un dono doppio, pesante o raro. È l'unica cosa del Tesoro che conta nelle discese.","In normal descents, sometimes one of the Sphinx's boons takes the last place among the gods' choices (about one choice in eight). Never guaranteed, at most one per descent, never together with a duo, heavy or rare boon. It's the only thing in the Treasure that counts in descents."
 Parla con la Sfinge,Parla con la Sfinge,Talk to the Sphinx
-La Sfinge · ondata %d · %d punti,La Sfinge · ondata %d · %d punti,The Sphinx · wave %d · %d points
+Ondata %d · %d punti,Ondata %d · %d punti,Wave %d · %d points
+Punti %s,Punti %s,Points %s
+Enigma: %s (%d),Enigma: %s (%d),Riddle: %s (%d)
+Sigilli +%d,Sigilli +%d,Seals +%d
 Allora? La scala non si sale da sola.,Allora? La scala non si sale da sola.,Well? The stair won't climb itself.
 Accetta la prova,Accetta la prova,Accept the trial
 Modificatori,Modificatori,Modifiers
@@ -2084,13 +2088,13 @@ risposta audace +%d,risposta audace +%d,bold answer +%d
 Ondata %d superata,Ondata %d superata,Wave %d cleared
 "Premio della settimana: +%d Ka, +%d lapislazzuli","Premio della settimana: +%d Ka, +%d lapislazzuli","Weekly reward: +%d Ka, +%d lapis lazuli"
 Niente cura: l'hai promesso alla Sfinge,Niente cura: l'hai promesso alla Sfinge,No healing: you promised the Sphinx
-Pausa della Sfinge · il dono,Pausa della Sfinge · il dono,Sphinx's pause · the boon
+Pausa della Sfinge · dono,Pausa della Sfinge · dono,Sphinx's pause · boon
 "Un dono, al livello base","Un dono, al livello base","One boon, at base level"
 Con Digiuno non ti cura.,Con Digiuno non ti cura.,With Fasting it doesn't heal you.
 +%d punti per ogni ondata superata con questo effetto.,+%d punti per ogni ondata superata con questo effetto.,+%d points for every wave cleared with this effect.
 Risposta audace,Risposta audace,Bold answer
 Risposta prudente,Risposta prudente,Cautious answer
-Pausa della Sfinge · l'enigma,Pausa della Sfinge · l'enigma,Sphinx's pause · the riddle
+Pausa della Sfinge · enigma,Pausa della Sfinge · enigma,Sphinx's pause · riddle
 Ogni risposta è giusta: scegli che prova vuoi per le prossime 3 ondate,Ogni risposta è giusta: scegli che prova vuoi per le prossime 3 ondate,Every answer is right: choose the trial you want for the next 3 waves
 La Sfinge annuisce,La Sfinge annuisce,The Sphinx nods
 Ti sei ritirato dalla scala,Ti sei ritirato dalla scala,You retired from the stair
@@ -2330,6 +2334,9 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+La Sfinge · ondata %d · %d punti,La Sfinge · ondata %d · %d punti,The Sphinx · wave %d · %d points
+Pausa della Sfinge · il dono,Pausa della Sfinge · il dono,Sphinx's pause · the boon
+Pausa della Sfinge · l'enigma,Pausa della Sfinge · l'enigma,Sphinx's pause · the riddle
 "
     ","
     ",

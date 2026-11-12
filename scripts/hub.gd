@@ -157,6 +157,9 @@ func _build() -> void:
 	world.add_child(art)
 	hub_art = art
 	_add_dust()
+	var front := HubFront.new()
+	front.hub = self
+	world.add_child(front)
 	var floor_arrows := HubDoorArrows.new()
 	floor_arrows.hub = self
 	world.add_child(floor_arrows)
@@ -1759,10 +1762,9 @@ func _draw() -> void:
 	draw_arc(ac + Vector2(0, -4), 3.5, 0, TAU, 12, Color(0.3, 0.62, 0.66, 0.9), 1.5)
 	draw_line(ac + Vector2(0, -1), ac + Vector2(0, 9), Color(0.3, 0.62, 0.66, 0.9), 1.5)
 	draw_line(ac + Vector2(-5, 1), ac + Vector2(5, 1), Color(0.3, 0.62, 0.66, 0.9), 1.5)
-	_draw_sphinx_door(pulse)
 	_draw_cartouche(Vector2(g.x, 15.0))
-	_draw_door_names()
-	_draw_scale(spots["bilancia"])
+	# la porta della Sfinge, i nomi delle porte e la bilancia li disegna HubFront, SOPRA il decoro
+	# (il fregio della parete e il rosone del pavimento li coprivano)
 	if Restorations.has("trono"):
 		_draw_throne(spots["anubi"])
 	_draw_anubi(spots["anubi"])
@@ -1881,43 +1883,49 @@ func _draw_cartouche(c: Vector2) -> void:
 
 ## La porta della Sfinge nella parete nord: un varco con la testa di sfinge in rilievo sopra.
 ## Chiusa: una lastra di pietra con il lucchetto e il prezzo in lapislazzuli.
-func _draw_sphinx_door(pulse: float) -> void:
+func _draw_sphinx_door(ci: CanvasItem, pulse: float) -> void:
 	var x := SPHINX_X
 	var gold := Color(0.94, 0.72, 0.3)
-	draw_rect(Rect2(x - 16, WALL + 6, 32, TOP - WALL - 2), Color(0.02, 0.02, 0.05))
-	if Sphinx.is_open():
-		draw_rect(Rect2(x - 14, WALL + 8, 28, TOP - WALL - 4), Color(0.93, 0.78, 0.45, 0.16 + 0.12 * pulse))
+	var open := Sphinx.is_open()
+	# il varco (largo come il cancello) e, da aperta, la luce color sabbia che esce sul pavimento
+	ci.draw_rect(Rect2(x - 20, WALL, 40, TOP - WALL + 4), Color(0.02, 0.02, 0.05))
+	if open:
+		ci.draw_rect(Rect2(x - 18, WALL + 2, 36, TOP - WALL), Color(1.0, 0.62, 0.22, 0.5 + 0.25 * pulse))
+		ci.draw_rect(Rect2(x - 10, WALL + 8, 20, TOP - WALL - 6), Color(1.0, 0.85, 0.5, 0.25 + 0.2 * pulse))
+		ci.draw_colored_polygon(PackedVector2Array([Vector2(x - 18, TOP + 2), Vector2(x + 18, TOP + 2), Vector2(x + 34, TOP + 58), Vector2(x - 34, TOP + 58)]), Color(0.96, 0.78, 0.42, 0.07 + 0.04 * pulse))
 	else:
-		draw_rect(Rect2(x - 14, WALL + 8, 28, TOP - WALL - 4), Color(0.62, 0.55, 0.45))
-		draw_line(Vector2(x - 14, WALL + 18), Vector2(x + 14, WALL + 18), Color(0.45, 0.4, 0.32), 1.0)
-		_draw_padlock(Vector2(x, WALL + 20), 1.0)
+		ci.draw_rect(Rect2(x - 18, WALL + 2, 36, TOP - WALL), Color(0.62, 0.55, 0.45))
+		ci.draw_rect(Rect2(x - 18, WALL + 2, 36, TOP - WALL), Color(0.4, 0.34, 0.26), false, 1.0)
+		ci.draw_line(Vector2(x - 18, WALL + 12), Vector2(x + 18, WALL + 12), Color(0.45, 0.4, 0.32), 1.0)
+		_draw_padlock_on(ci, Vector2(x, WALL + 13), 1.3)
 		var font := UiStyle.title_font()
 		var txt := str(Sphinx.COST)
-		var fw := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
-		draw_circle(Vector2(x - fw / 2.0 - 4, TOP - 4), 2.6, Restorations.LAPIS_COLOR)
-		draw_string(font, Vector2(x - fw / 2.0 + 1, TOP - 1), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.95, 0.92, 0.85))
-	draw_rect(Rect2(x - 19, WALL + 3, 38, 3), gold)
-	draw_rect(Rect2(x - 19, WALL + 3, 3, TOP - WALL), gold)
-	draw_rect(Rect2(x + 16, WALL + 3, 3, TOP - WALL), gold)
+		var fw := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 9).x
+		ci.draw_circle(Vector2(x - fw / 2.0 - 4, TOP - 6), 3.0, Restorations.LAPIS_COLOR)
+		ci.draw_string_outline(font, Vector2(x - fw / 2.0 + 2, TOP - 3), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, 3, Color(0.05, 0.04, 0.06))
+		ci.draw_string(font, Vector2(x - fw / 2.0 + 2, TOP - 3), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color(0.98, 0.95, 0.88))
+	ci.draw_rect(Rect2(x - 24, WALL - 4, 48, 4), gold)
+	ci.draw_rect(Rect2(x - 24, WALL - 4, 4, TOP - WALL + 8), gold)
+	ci.draw_rect(Rect2(x + 20, WALL - 4, 4, TOP - WALL + 8), gold)
 	# la testa della sfinge sopra il varco: nemes a righe e il volto
-	var hc := Vector2(x, WALL - 5)
-	draw_colored_polygon(PackedVector2Array([hc + Vector2(-9, 7), hc + Vector2(-7, -5), hc + Vector2(0, -8), hc + Vector2(7, -5), hc + Vector2(9, 7)]), Color(0.86, 0.72, 0.42))
-	draw_line(hc + Vector2(-8, 0), hc + Vector2(8, 0), Color(0.22, 0.34, 0.6), 1.2)
-	draw_line(hc + Vector2(-8, 4), hc + Vector2(8, 4), Color(0.22, 0.34, 0.6), 1.2)
-	draw_rect(Rect2(hc.x - 4, hc.y - 3, 8, 9), Color(0.78, 0.66, 0.46))
-	var eye := Color(0.98, 0.82, 0.4, 0.5 + 0.5 * pulse) if Sphinx.is_open() else Color(0.2, 0.15, 0.1)
-	draw_rect(Rect2(hc.x - 3, hc.y, 2, 1), eye)
-	draw_rect(Rect2(hc.x + 1, hc.y, 2, 1), eye)
+	var hc := Vector2(x, WALL - 13)
+	ci.draw_colored_polygon(PackedVector2Array([hc + Vector2(-11, 9), hc + Vector2(-8, -6), hc + Vector2(0, -10), hc + Vector2(8, -6), hc + Vector2(11, 9)]), Color(0.86, 0.72, 0.42))
+	for k in range(3):
+		ci.draw_line(hc + Vector2(-9, -2 + k * 4), hc + Vector2(9, -2 + k * 4), Color(0.22, 0.34, 0.6), 1.2)
+	ci.draw_rect(Rect2(hc.x - 5, hc.y - 4, 10, 11), Color(0.82, 0.7, 0.5))
+	var eye := Color(1.0, 0.85, 0.45, 0.6 + 0.4 * pulse) if open else Color(0.2, 0.15, 0.1)
+	ci.draw_rect(Rect2(hc.x - 4, hc.y - 1, 3, 1.5), eye)
+	ci.draw_rect(Rect2(hc.x + 1, hc.y - 1, 3, 1.5), eye)
 
 
 ## Il nome sopra ogni porta della Sala (blocco 15): oro se aperta, pietra se ancora chiusa.
-func _draw_door_names() -> void:
+func _draw_door_names(ci: CanvasItem) -> void:
 	var font := UiStyle.title_font()
-	var fs := 8 if Fx.mobile else 7
+	var fs := 9 if Fx.mobile else 8
 	var cx := ROOM.size.x / 2.0
 	var names := [
 		[Lang.t("Discesa nel Duat"), Vector2(cx, WALL + 11.0), 0, true],
-		[Lang.t("La Sfinge"), Vector2(SPHINX_X, 13.0), 0, Sphinx.is_open()],
+		[Lang.t("La Sfinge"), Vector2(SPHINX_X, 11.0), 0, Sphinx.is_open()],
 		[Lang.t("Cortile di Neith"), Vector2(WALL + 3.0, ARMORY_Y - 54.0), -1, Meta.serpent_wins > 0],
 		[Lang.t("Casa della Vita"), Vector2(ROOM.size.x - WALL - 3.0, CASA_Y - 56.0), 1, Meta.casa],
 	]
@@ -1931,8 +1939,8 @@ func _draw_door_names() -> void:
 		elif int(n[2]) > 0:
 			x = p.x - w
 		var col := Color(0.97, 0.82, 0.45) if n[3] else Color(0.66, 0.62, 0.56)
-		draw_string_outline(font, Vector2(x, p.y), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, Color(0.04, 0.03, 0.06, 0.9))
-		draw_string(font, Vector2(x, p.y), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
+		ci.draw_string_outline(font, Vector2(x, p.y), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, Color(0.04, 0.03, 0.06, 0.9))
+		ci.draw_string(font, Vector2(x, p.y), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
 
 
 ## Un lucchetto: arco e corpo d'oro scuro, col buco della chiave.
@@ -1968,72 +1976,72 @@ func _scale_balance() -> float:
 	return clampf(k, 0.0, 1.0)
 
 
-func _draw_scale(p: Vector2) -> void:
+func _draw_scale(ci: CanvasItem, p: Vector2) -> void:
 	var gold := Color(0.94, 0.72, 0.3)
 	var gold_d := Color(0.62, 0.42, 0.14)
 	var outl := Color(0.14, 0.09, 0.05)
 	if scale_glow > 0.01:
 		for k in range(4):
-			draw_circle(p + Vector2(0, -26), 58.0 - k * 12.0, Color(1.0, 0.7, 0.35, 0.05 * scale_glow))
+			ci.draw_circle(p + Vector2(0, -26), 58.0 - k * 12.0, Color(1.0, 0.7, 0.35, 0.05 * scale_glow))
 	# l'ombra e la base a gradini
-	draw_set_transform(p + Vector2(0, 5), 0.0, Vector2(1.0, 0.32))
-	draw_circle(Vector2.ZERO, 26.0, Color(0, 0, 0, 0.3))
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	var steps := [[Rect2(p.x - 20, p.y - 2, 40, 8), Color(0.5, 0.44, 0.36)], [Rect2(p.x - 15, p.y - 7, 30, 5), Color(0.6, 0.53, 0.43)], [Rect2(p.x - 10, p.y - 11, 20, 4), Color(0.68, 0.6, 0.48)]]
+	ci.draw_set_transform(p + Vector2(0, 5), 0.0, Vector2(1.0, 0.32))
+	ci.draw_circle(Vector2.ZERO, 26.0, Color(0, 0, 0, 0.3))
+	ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	var steps := [[Rect2(p.x - 20, p.y - 2, 40, 8), Color(0.36, 0.31, 0.26)], [Rect2(p.x - 15, p.y - 7, 30, 5), Color(0.44, 0.38, 0.31)], [Rect2(p.x - 10, p.y - 11, 20, 4), Color(0.52, 0.45, 0.36)]]
 	for st in steps:
-		draw_rect(st[0], st[1])
-		draw_rect(st[0], outl, false, 1.0)
-		draw_line(st[0].position + Vector2(1, 1), st[0].position + Vector2(st[0].size.x - 1, 1), Color(1, 0.95, 0.85, 0.25), 1.0)
+		ci.draw_rect(st[0], st[1])
+		ci.draw_rect(st[0], outl, false, 1.0)
+		ci.draw_line(st[0].position + Vector2(1, 1), st[0].position + Vector2(st[0].size.x - 1, 1), Color(1, 0.95, 0.85, 0.25), 1.0)
 	# geroglifi incisi sul gradino più basso: acqua, occhio, ankh, piuma, acqua
 	var gy := p.y + 2.0
 	var ink := Color(0.24, 0.32, 0.55)
-	draw_polyline(PackedVector2Array([Vector2(p.x - 17, gy), Vector2(p.x - 15.5, gy - 1.2), Vector2(p.x - 14, gy), Vector2(p.x - 12.5, gy - 1.2), Vector2(p.x - 11, gy)]), ink, 1.0)
-	draw_arc(Vector2(p.x - 6, gy - 0.5), 1.8, PI, TAU, 6, ink, 1.0)
-	draw_circle(Vector2(p.x - 6, gy - 0.3), 0.7, ink)
-	draw_arc(Vector2(p.x, gy - 1.6), 1.1, 0.0, TAU, 6, ink, 0.9)
-	draw_line(Vector2(p.x, gy - 0.5), Vector2(p.x, gy + 2.0), ink, 0.9)
-	draw_line(Vector2(p.x - 1.4, gy - 0.2), Vector2(p.x + 1.4, gy - 0.2), ink, 0.9)
-	draw_line(Vector2(p.x + 6, gy + 2), Vector2(p.x + 7, gy - 2), ink, 1.0)
-	draw_polyline(PackedVector2Array([Vector2(p.x + 11, gy), Vector2(p.x + 12.5, gy - 1.2), Vector2(p.x + 14, gy), Vector2(p.x + 15.5, gy - 1.2), Vector2(p.x + 17, gy)]), ink, 1.0)
+	ci.draw_polyline(PackedVector2Array([Vector2(p.x - 17, gy), Vector2(p.x - 15.5, gy - 1.2), Vector2(p.x - 14, gy), Vector2(p.x - 12.5, gy - 1.2), Vector2(p.x - 11, gy)]), ink, 1.0)
+	ci.draw_arc(Vector2(p.x - 6, gy - 0.5), 1.8, PI, TAU, 6, ink, 1.0)
+	ci.draw_circle(Vector2(p.x - 6, gy - 0.3), 0.7, ink)
+	ci.draw_arc(Vector2(p.x, gy - 1.6), 1.1, 0.0, TAU, 6, ink, 0.9)
+	ci.draw_line(Vector2(p.x, gy - 0.5), Vector2(p.x, gy + 2.0), ink, 0.9)
+	ci.draw_line(Vector2(p.x - 1.4, gy - 0.2), Vector2(p.x + 1.4, gy - 0.2), ink, 0.9)
+	ci.draw_line(Vector2(p.x + 6, gy + 2), Vector2(p.x + 7, gy - 2), ink, 1.0)
+	ci.draw_polyline(PackedVector2Array([Vector2(p.x + 11, gy), Vector2(p.x + 12.5, gy - 1.2), Vector2(p.x + 14, gy), Vector2(p.x + 15.5, gy - 1.2), Vector2(p.x + 17, gy)]), ink, 1.0)
 	# l'asta, con gli anelli, e la piuma di Ma'at in cima
 	var pivot := Vector2(p.x, p.y - 42)
-	draw_rect(Rect2(p.x - 1.8, pivot.y, 3.6, p.y - 11 - pivot.y), gold)
-	draw_line(Vector2(p.x + 1.2, pivot.y + 2), Vector2(p.x + 1.2, p.y - 12), Color(1, 0.92, 0.65, 0.6), 1.0)
+	ci.draw_rect(Rect2(p.x - 1.8, pivot.y, 3.6, p.y - 11 - pivot.y), gold)
+	ci.draw_line(Vector2(p.x + 1.2, pivot.y + 2), Vector2(p.x + 1.2, p.y - 12), Color(1, 0.92, 0.65, 0.6), 1.0)
 	for ry in [p.y - 16.0, p.y - 26.0, p.y - 36.0]:
-		draw_rect(Rect2(p.x - 2.6, ry, 5.2, 1.6), gold_d)
-	draw_colored_polygon(PackedVector2Array([pivot + Vector2(0, -2), pivot + Vector2(-2.2, -7), pivot + Vector2(0, -13), pivot + Vector2(2.2, -7)]), Color(0.97, 0.95, 0.88))
-	draw_line(pivot + Vector2(0, -2), pivot + Vector2(0.8, -12), Color(0.7, 0.62, 0.45), 0.8)
+		ci.draw_rect(Rect2(p.x - 2.6, ry, 5.2, 1.6), gold_d)
+	ci.draw_colored_polygon(PackedVector2Array([pivot + Vector2(0, -2), pivot + Vector2(-2.2, -7), pivot + Vector2(0, -13), pivot + Vector2(2.2, -7)]), Color(0.97, 0.95, 0.88))
+	ci.draw_line(pivot + Vector2(0, -2), pivot + Vector2(0.8, -12), Color(0.7, 0.62, 0.45), 0.8)
 	# il giogo: inclinato dal cuore (all'inizio pesa) e dai Pesi, oscilla piano
 	var heavy := (1.0 - _scale_balance()) * 12.0 + minf(Weights.total(), 8) * 1.5
 	var ang := deg_to_rad(heavy + sin(t * 0.7) * 2.2)
 	var arm := Vector2(cos(ang), sin(ang)) * 23.0
 	var lft := pivot + Vector2(-arm.x, arm.y)        # il cuore, più in basso quando pesa
 	var rgt := pivot + Vector2(arm.x, -arm.y)
-	draw_line(lft, rgt, outl, 3.4)
-	draw_line(lft, rgt, gold, 2.0)
-	draw_circle(pivot, 2.4, gold_d)
+	ci.draw_line(lft, rgt, outl, 3.4)
+	ci.draw_line(lft, rgt, gold, 2.0)
+	ci.draw_circle(pivot, 2.4, gold_d)
 	for side in [-1.0, 1.0]:
 		var hp: Vector2 = lft if side < 0.0 else rgt
 		var swing := sin(t * 1.1 + side) * 1.0
 		var bowl := hp + Vector2(swing, 13.0)
-		draw_line(hp, bowl + Vector2(-6, 0), Color(gold, 0.8), 0.8)
-		draw_line(hp, bowl + Vector2(6, 0), Color(gold, 0.8), 0.8)
-		draw_line(hp, bowl, Color(gold, 0.6), 0.6)
-		draw_colored_polygon(PackedVector2Array([bowl + Vector2(-8, 0), bowl + Vector2(8, 0), bowl + Vector2(5, 3), bowl + Vector2(-5, 3)]), gold)
-		draw_line(bowl + Vector2(-8, 0), bowl + Vector2(8, 0), outl, 1.0)
+		ci.draw_line(hp, bowl + Vector2(-6, 0), Color(gold, 0.8), 0.8)
+		ci.draw_line(hp, bowl + Vector2(6, 0), Color(gold, 0.8), 0.8)
+		ci.draw_line(hp, bowl, Color(gold, 0.6), 0.6)
+		ci.draw_colored_polygon(PackedVector2Array([bowl + Vector2(-8, 0), bowl + Vector2(8, 0), bowl + Vector2(5, 3), bowl + Vector2(-5, 3)]), gold)
+		ci.draw_line(bowl + Vector2(-8, 0), bowl + Vector2(8, 0), outl, 1.0)
 		if side < 0.0:
 			# il cuore (ib): un vaso rosso con le due anse
 			var hc := bowl + Vector2(0, -3.5)
-			draw_circle(hc + Vector2(-1.4, -0.6), 2.0, Color(0.72, 0.14, 0.12))
-			draw_circle(hc + Vector2(1.4, -0.6), 2.0, Color(0.72, 0.14, 0.12))
-			draw_colored_polygon(PackedVector2Array([hc + Vector2(-3.2, -0.2), hc + Vector2(3.2, -0.2), hc + Vector2(0, 3.2)]), Color(0.72, 0.14, 0.12))
-			draw_circle(hc + Vector2(-1.6, -1.2), 0.6, Color(1, 0.6, 0.55, 0.8))
+			ci.draw_circle(hc + Vector2(-1.4, -0.6), 2.0, Color(0.72, 0.14, 0.12))
+			ci.draw_circle(hc + Vector2(1.4, -0.6), 2.0, Color(0.72, 0.14, 0.12))
+			ci.draw_colored_polygon(PackedVector2Array([hc + Vector2(-3.2, -0.2), hc + Vector2(3.2, -0.2), hc + Vector2(0, 3.2)]), Color(0.72, 0.14, 0.12))
+			ci.draw_circle(hc + Vector2(-1.6, -1.2), 0.6, Color(1, 0.6, 0.55, 0.8))
 		else:
 			# la piuma di Ma'at, ricurva in cima
 			var fb := bowl + Vector2(0, -0.5)
 			var tip := fb + Vector2(2.0 + swing * 0.5, -10.0)
-			draw_colored_polygon(PackedVector2Array([fb, fb + Vector2(-2.2, -5), tip, fb + Vector2(2.0, -5)]), Color(0.97, 0.95, 0.88))
-			draw_line(fb, tip, Color(0.7, 0.62, 0.45), 0.8)
+			ci.draw_colored_polygon(PackedVector2Array([fb, fb + Vector2(-2.2, -5), tip, fb + Vector2(2.0, -5)]), Color(0.97, 0.95, 0.88))
+			ci.draw_line(fb, tip, Color(0.7, 0.62, 0.45), 0.8)
 
 
 ## Anubi nella Sala: in piedi su un basamento, alto il doppio di te, con lo scettro was e
@@ -2753,7 +2761,7 @@ class HubDoorArrows extends Node2D:
 			var length := from.distance_to(to)
 			var step := 26.0 * big
 			var n := maxi(2, floori(length / step))
-			var s := (7.0 if strong else 5.5) * big
+			var s := (7.5 if strong else 6.5) * big
 			var base := Color(1.0, 0.82, 0.38) if open else Color(0.62, 0.6, 0.58)
 			var flow := fmod(t * 9.0, step)             # piano: scivolano di 9 pixel al secondo
 			for i in range(n):
@@ -2763,7 +2771,7 @@ class HubDoorArrows extends Node2D:
 				var p := from + dir * dist
 				# si accendono avvicinandosi alla porta e sfumano alle estremità
 				var k := dist / length
-				var a := clampf(minf(dist, length - dist) / (step * 0.9), 0.0, 1.0) * (0.35 + 0.45 * k)
+				var a := clampf(minf(dist, length - dist) / (step * 0.9), 0.0, 1.0) * (0.6 + 0.4 * k)
 				if strong:
 					a = minf(1.0, a * 1.3)
 				_chevron(p, dir, s, Color(base, a), open, big)
@@ -2777,6 +2785,8 @@ class HubDoorArrows extends Node2D:
 		var r := p - dir * s * 0.2 - side * s
 		var mid := p + dir * s * 0.25
 		var pts := PackedVector2Array([l, tip, r, mid])
+		# un'ombra scura sotto: staccano dal pavimento qualunque colore abbia
+		draw_polyline(PackedVector2Array([l + Vector2(0, 1), tip + Vector2(0, 1), r + Vector2(0, 1)]), Color(0.02, 0.02, 0.05, col.a * 0.7), 4.0 * big)
 		if Fx.mobile or big > 1.0:
 			# sul telefono: contorno chiaro, si vedono anche sul pavimento scuro
 			draw_polyline(PackedVector2Array([l, tip, r]), Color(1, 0.97, 0.88, col.a * 0.8), 5.0 * big)
@@ -2801,3 +2811,18 @@ class HubDoorArrows extends Node2D:
 			draw_circle(Vector2(x + 2.5 * big, c.y), 2.4 * big, Restorations.LAPIS_COLOR)
 			x += 6.0 * big
 		draw_string(font, Vector2(x, c.y + fs * 0.36), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.95, 0.92, 0.85))
+
+
+## Ciò che va disegnato SOPRA il decoro della Sala (fregio della parete, rosone del pavimento): la porta
+## della Sfinge, i nomi sopra le porte e la bilancia di Ma'at. Sta sotto i personaggi.
+class HubFront extends Node2D:
+	var hub
+
+	func _process(_delta: float) -> void:
+		queue_redraw()
+
+	func _draw() -> void:
+		var pulse := 0.5 + 0.5 * sin(hub.t * 2.0)
+		hub._draw_sphinx_door(self, pulse)
+		hub._draw_door_names(self)
+		hub._draw_scale(self, hub.spots["bilancia"])
