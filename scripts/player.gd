@@ -51,8 +51,10 @@ const COMBO := [
 
 ## La lancia di Neith: due affondi lunghi e stretti, poi un'ampia spazzata.
 const SPEAR := [
-	{"range": 52.0, "arc": 34.0, "mult": 1.0, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
-	{"range": 52.0, "arc": 34.0, "mult": 1.0, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
+	# revisione del 12/11: affondi ×1,15 e cono 40° (erano ×1,0 e 34°). Nei test la lancia era l'arma più
+	# debole dappertutto (Wernes: oltre il Serpente 2 su 12 contro 6 del khopesh; Sfinge: ondata 5-9 contro 10)
+	{"range": 52.0, "arc": 40.0, "mult": 1.15, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
+	{"range": 52.0, "arc": 40.0, "mult": 1.15, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
 	{"range": 42.0, "arc": 200.0, "mult": 1.6, "cd": 0.46, "lunge": 18.0, "knock": 210.0},
 ]
 ## Attacco in scatto (un colpo durante lo scatto o subito dopo). Lancia: affondo in corsa,

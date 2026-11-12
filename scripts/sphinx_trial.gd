@@ -406,6 +406,7 @@ func adjust(e: Enemy, kind: String, tag: String) -> void:
 		return
 	if kind == "aker_lion":
 		e.set("kind", tag)
+		e.set("shadow", true)                 # l'Ombra: carica più lenta (×0,8) e danni ×0,65
 		var gi := Sphinx.guard_info(wave)
 		e.max_hp = float(gi["hp"]) * (1.0 + 0.3 * int(gi["cycle"]))
 		e.no_reward = true

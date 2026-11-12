@@ -52,6 +52,9 @@ const SAND := Color(0.78, 0.62, 0.38)
 @export var kind := "ieri"           ## "ieri" (sabbia) o "domani" (fuoco)
 
 var partner = null                   # l'altro leone
+var shadow := false                  ## «Ombra» nella prova della Sfinge: un leone solo, più lento e meno forte (il vero è per chi ha 12 doni)
+const SHADOW_DMG := 0.65
+const SHADOW_SPEED := 0.8
 var floor_rect := Rect2(32, 64, 736, 384)
 var state := "intro"
 var st := 0.9
@@ -96,7 +99,7 @@ func _player():
 
 func _hurt(amount: float, from: Vector2) -> bool:
 	var p = _player()
-	return p != null and p.take_damage(amount * (1.0 + fury), from, self)
+	return p != null and p.take_damage(amount * (1.0 + fury) * (SHADOW_DMG if shadow else 1.0), from, self)
 
 
 ## L'avviso, accorciato dalla furia ma mai sotto MIN_WINDUP.
@@ -184,7 +187,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			if st <= 0.0:
 				_recover()
 				return Vector2.ZERO
-			return aim * CHARGE_SPEED * (1.0 + fury * 0.5)
+			return aim * CHARGE_SPEED * (1.0 + fury * 0.5) * (SHADOW_SPEED if shadow else 1.0)
 		"wave_windup":
 			if st > windup_len * 0.5 and to != Vector2.ZERO:
 				aim = to / d
@@ -317,7 +320,7 @@ func _ray(to: Vector2) -> void:
 	r.sweep = sw
 	r.warn = maxf(MIN_WINDUP, RAY_WARN / (1.0 + fury))
 	r.dur = RAY_TIME
-	r.damage = RAY_DAMAGE * (1.0 + fury)
+	r.damage = RAY_DAMAGE * (1.0 + fury) * (SHADOW_DMG if shadow else 1.0)
 	r.src = self
 	r.position = o
 	get_parent().add_child(r)
@@ -433,7 +436,7 @@ func _draw_body(flash: bool) -> void:
 func _draw_warnings() -> void:
 	if state == "charge_windup" or state == "pincer_move":
 		var k := 1.0 - st / windup_len if state == "charge_windup" else 0.3
-		var ln := CHARGE_SPEED * CHARGE_TIME * (1.0 + fury * 0.5)
+		var ln := CHARGE_SPEED * CHARGE_TIME * (1.0 + fury * 0.5) * (SHADOW_SPEED if shadow else 1.0)
 		if state == "charge_windup":
 			Enemy.warn_strip(self, Vector2.ZERO, aim, ln, touch_dist(), k)
 	elif state == "wave_windup" or state == "wave":

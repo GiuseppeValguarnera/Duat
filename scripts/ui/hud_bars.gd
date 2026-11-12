@@ -92,6 +92,19 @@ func _draw() -> void:
 	for i in range(int(pw / (8.0 * u))):
 		var fx := o.x + 4.0 * u + i * 8.0 * u
 		draw_rect(Rect2(fx, o.y + ph - 3.0 * u, 4.0 * u, 2.0 * u), Color(LAPIS if i % 2 == 0 else GOLD, 0.6))
+	# vita bassa (sotto il 30%): i bordi dello schermo pulsano di rosso scuro, come un battito. Non arriva
+	# mai al centro; serve a far SENTIRE il pericolo senza dover guardare la barra (revisione del 12/11)
+	var low: float = p.hp / maxf(1.0, p.max_hp)
+	if low < 0.3 and not p.dead and p.terrain_t <= 0.0:
+		var beat := pow(maxf(0.0, sin(Time.get_ticks_msec() / 1000.0 * TAU * (1.0 if low > 0.15 else 1.5))), 3.0)
+		var lth := maxf(size.x, size.y) * 0.05
+		for i in range(4):
+			var lw := lth * (1.0 - i * 0.25)
+			var red := Color(0.75, 0.05, 0.05, (0.05 + 0.09 * beat) * (1.3 - low * 2.0))
+			draw_rect(Rect2(0, 0, size.x, lw), red)
+			draw_rect(Rect2(0, size.y - lw, size.x, lw), red)
+			draw_rect(Rect2(0, 0, lw, size.y), red)
+			draw_rect(Rect2(size.x - lw, 0, lw, size.y), red)
 	# danno dal terreno (blocco 10): bordi dello schermo colorati e, al posto dell'ankh, l'icona
 	if p.terrain_t > 0.0:
 		_terrain_edges(p)

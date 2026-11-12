@@ -237,11 +237,11 @@ const ELITE_OK := ["mummy", "priest", "sokar_guard", "vulture", "jackal", "javel
 ## I guardiani: un nemico forte, mai un boss intero. Vita tarata sui pochi doni della prova.
 const GUARDS := [
 	{"kind": "sokar_guard@g", "name": "Il Guardiano della Sabbia", "hp": 2.0},
-	{"kind": "aker_lion@ieri", "name": "L'Ombra di Ieri", "hp": 260.0},
+	{"kind": "aker_lion@ieri", "name": "L'Ombra di Ieri", "hp": 220.0},
 	# blocco 16: al posto di Serket (le sue regole di terreno vogliono la sabbia e il piano di pietra del
 	# suo tempio) un guardiano senza regole di terreno: il grande scarabeo di Khepri, élite
 	{"kind": "khepri@g", "name": "Il grande scarabeo di Khepri", "hp": 3.0},
-	{"kind": "aker_lion@domani", "name": "L'Ombra di Domani", "hp": 420.0},
+	{"kind": "aker_lion@domani", "name": "L'Ombra di Domani", "hp": 380.0},
 ]
 
 
