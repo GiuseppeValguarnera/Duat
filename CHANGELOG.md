@@ -1,5 +1,13 @@
 ## In sviluppo · novembre 2026
 
+- revisione generale: la terra di Sokar ora è un deserto vero (sabbia chiara, lastre sparse, onde del vento) e gli
+  sciacalli sono neri come Anubi, così si vedono; stanze un po' meno buie dappertutto
+- nella Sala la porta della Sfinge, i nomi delle porte e la bilancia non finiscono più sotto il decoro
+- con poca vita i bordi dello schermo pulsano di rosso
+- lancia di Neith più forte (affondi +15% e un po' più larghi)
+- prova della Sfinge: le Ombre di Ieri e di Domani colpiscono e corrono un po' meno; in alto si leggono ondata, punti,
+  moltiplicatore e sigilli
+
 - la Sfinge ha una voce: è una statua enorme che ti segue con gli occhi, sbatte le palpebre e commenta (con ironia) se
   la guardi senza parlarle. La prova parte solo quando la accetti dal suo menu
 - modificatori della prova (fino a 3) che alzano il moltiplicatore del punteggio

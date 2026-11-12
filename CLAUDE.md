@@ -429,6 +429,33 @@ musica della Sala, ricompensa già a terra, non conta come stanza ripulita); dop
   `Sphinx.favor_roll` (12,5% per scelta, al massimo un dono della Sfinge per discesa, mai con doppio/pesante/raro) in
   `game._show_boon_menu`, carta «Dono della Sfinge · raro».
 
+**Revisione del 12/11/2026** (carta bianca del proprietario: controllo generale con screenshot e bot, niente contenuti nuovi).
+- *Sala*: `HubFront` (classe interna di hub.gd, aggiunta prima di frecce e giocatore) disegna porta della Sfinge, nomi
+  delle porte e bilancia SOPRA il decoro (fregio e rosone le coprivano): `_draw_sphinx_door(ci, pulse)`,
+  `_draw_door_names(ci)`, `_draw_scale(ci, p)` prendono il CanvasItem. Porta della Sfinge larga 40 con cornice d'oro,
+  bagliore e cono di luce; frecce più chiare con sotto-tratto scuro.
+- *Sokar si vede deserto*: pavimento ridipinto in game.gd (`sokar := Run.region == 2 and not set_altar and not Run.trial`:
+  sabbia chiara, lastre solo a "isole", onde del vento, fregio ocra); `decor.SHADE` 0,34 in Sokar, 0,46 altrove (era 0,52),
+  0,18 nelle arene; luce `Color(1.0, 0.94, 0.82)`. Sciacalli **neri** con collare d'oro (sulla sabbia non si vedevano);
+  ombra a terra dei nemici alfa 0,5 dalla regione 2.
+- *HUD*: sotto il 30% di vita bordi rosso scuro che pulsano (hud_bars.gd). Prova della Sfinge: `hud_line()` "Ondata N ·
+  P punti", seconda riga `hud_extra()` (moltiplicatore, effetto dell'enigma, sigilli).
+- *Bilanciamento*: lancia affondi ×1,15 e cono 40° (erano ×1,0 / 34°). Ombre dei leoni nella Sfinge: `aker_lion.gd`
+  `shadow` (`SHADOW_DMG` 0,65, `SHADOW_SPEED` 0,8), vita Ieri 220, Domani 380 (14 prove su 24 finivano all'ondata 10).
+  **Sokar NON alleggerita**: lo 0/12 dei veterani era ignoranza del bot.
+- *Strumenti*: `tools/dev/watch.sh NOME persona seme [VAR=val]` (bot con grafica sotto xvfb + `tools/playtest/snap.gd`:
+  uno screenshot ogni `DUAT_SNAP_EVERY` s in `/tmp/duat_watch/NOME/`, `DUAT_TIMEOUT`), `tools/dev/sheet.py DIR [col righe]`
+  (provini), prove `hubtour` (`DUAT_FRESH=1`), `sphinxtour` (`DUAT_ORN=1`), `touchshot`; `DUAT_SHOTS` sceglie la cartella
+  (i comandi a tocco NON compaiono negli screenshot senza schermo). Bot: schiva sfera di Khepri, carica del guardiano,
+  salto dello sciacallo, picchiata, miccia dei Ba; porta scelta una volta (`door_pick`: l'indecisione tra porte uguali
+  sembrava uno stallo); `DUAT_TRIAL=1` (+ `DUAT_MODS=a,b`) gioca la prova della Sfinge, campo `trial` nel risultato.
+- *Dati*: Sokar con bot corretto (12 veterani, 12 doni): 1 vittoria, 5 arrivano ad Aker (gli resta 37-77%): vicino
+  all'obiettivo. Sfinge (24 prove): ondate 5-23, mediana ≈10, sigilli mediana ≈15 (Favore 450 ≈ 28 prove). Wernes
+  (24 partite senza meta, veterani e abituali): 1 vittoria (arco), quasi tutti cadono tra Serpente e stanza 8; fonti di danno:
+  veleno del Serpente, scarabei, coccodrilli, mummie. **Lancia ancora ultima** (5 su 6 morti con gli scarabei prima
+  fonte): prossimo ritocco da valutare (cono degli affondi o spinta), dopo le impressioni del proprietario.
+- *Terza regione*: rimandata di proposito (Sokar ha ancora poche vittorie e nessuna impressione dal proprietario).
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima
