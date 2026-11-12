@@ -8,8 +8,8 @@ const LUNGE_SPEED := 300.0
 const LUNGE_TIME := 0.36
 const LUNGE_FROM := 96.0
 const BITE := 9.0
-const POOL_LIFE := 4.0
-const POOL_R := 15.0
+const POOL_LIFE := 2.5               ## era 4: con tante serpi il pavimento si riempiva (stress, non difficoltà)
+const POOL_R := 13.0
 
 var state := "chase"
 var st := 0.0
@@ -67,6 +67,14 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				state = "chase"
 				st = randf_range(0.8, 1.5)
 			return Vector2.ZERO
+	return Vector2.ZERO
+
+
+func bot_escape(pos: Vector2) -> Vector2:
+	var v := pos - global_position
+	if (state == "windup" and st < 0.3) or state == "lunge":
+		if absf(v.dot(aim.orthogonal())) < touch_dist() + 6.0 and v.dot(aim) > -6.0 and v.length() < LUNGE_SPEED * LUNGE_TIME + 30.0:
+			return aim.orthogonal() * (1.0 if v.dot(aim.orthogonal()) >= 0.0 else -1.0)
 	return Vector2.ZERO
 
 

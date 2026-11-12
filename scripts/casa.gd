@@ -24,6 +24,7 @@ var spots := {}
 var near := ""
 var t := 0.0
 var menu: CanvasLayer = null
+var hub_hud: HubHud = null
 var menu_scroll: ScrollContainer = null   ## la pagina della finestra aperta (la levetta destra la scorre)
 var _news_t := 0.0
 var _forge_news := false
@@ -113,7 +114,14 @@ func _process(delta: float) -> void:
 	var am := Lang.t("nessuno") if Meta.amulet == "" else String(Amulets.data()[Meta.amulet]["name"])
 	if Favors.has("collana") and Meta.amulet2 != "":
 		am += " · " + String(Amulets.data()[Meta.amulet2]["name"])
-	hud.text = Lang.t("Casa della Vita    Lapislazzuli: %d    Amuleto: %s") % [Meta.lapis, am]
+	hud.text = ""
+	if hub_hud == null:
+		hub_hud = HubHud.new()
+		$UI.add_child(hub_hud)
+		$UI.move_child(hub_hud, 0)
+	hub_hud.title = Lang.t("Casa della Vita")
+	hub_hud.line = Lang.t("Amuleto: %s") % am
+	hub_hud.hidden_now = menu != null
 	if Fx.device == "touch":
 		help.text = ""
 	elif Fx.device == "pad":

@@ -39,6 +39,7 @@ var pedestals: Array = []              # [{id, name, pos}] — id "" = arma non 
 var near := ""
 var t := 0.0
 var menu: CanvasLayer = null
+var hub_hud: HubHud = null
 var talk_lines: Array = []
 var _news := false                      ## Neith ha battute nuove (_draw)
 var _altar_news := false                ## con le Lacrime puoi risvegliare o potenziare qualcosa
@@ -197,7 +198,14 @@ func _process(delta: float) -> void:
 		return
 	_measure()
 	var w: Dictionary = Weapons.ALL[Run.weapon]
-	hud.text = Lang.t("Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d") % [w["name"], w["aspects"][Run.aspect]["name"], Meta.tears]
+	hud.text = ""
+	if hub_hud == null:
+		hub_hud = HubHud.new()
+		$UI.add_child(hub_hud)
+		$UI.move_child(hub_hud, 0)
+	hub_hud.title = Lang.t("Cortile di Neith")
+	hub_hud.line = "%s · %s" % [w["name"], w["aspects"][Run.aspect]["name"]]
+	hub_hud.hidden_now = menu != null
 	if Fx.device == "touch":
 		help.text = ""
 	elif Fx.device == "pad":

@@ -82,6 +82,14 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 	super.take_hit(dmg * k, dir, kb * (0.2 if state == "spin" else 1.0), can_burn)
 
 
+func bot_escape(pos: Vector2) -> Vector2:
+	var v := pos - global_position
+	if (state == "windup" and st < 0.35) or state == "spin":
+		if absf(v.dot(aim.orthogonal())) < touch_dist() + 10.0 and v.dot(aim) > -8.0 and v.length() < 150.0:
+			return aim.orthogonal() * (1.0 if v.dot(aim.orthogonal()) >= 0.0 else -1.0)
+	return Vector2.ZERO
+
+
 func _contact_damage() -> float:
 	return 0.0
 

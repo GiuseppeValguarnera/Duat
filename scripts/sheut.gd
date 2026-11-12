@@ -79,7 +79,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		"recover":
 			if st <= 0.0:
 				state = "walk"
-				st = randf_range(2.6, 4.2)
+				st = randf_range(3.5, 5.0)
 			return Vector2.ZERO
 	return Vector2.ZERO
 
@@ -88,6 +88,13 @@ func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> vo
 	if hidden_now:
 		return
 	super.take_hit(dmg, dir, kb, can_burn)
+
+
+func bot_escape(pos: Vector2) -> Vector2:
+	if state == "warn" and st < 0.45 and pos.distance_to(global_position) < SLASH_R + 10.0:
+		var v := pos - global_position
+		return v.normalized() if v != Vector2.ZERO else Vector2.RIGHT
+	return Vector2.ZERO
 
 
 func _contact_damage() -> float:

@@ -456,7 +456,7 @@ func start_room(reward: Dictionary) -> void:
 	if Run.region == 2:
 		horde *= 1.3                              # Sokar: più nemici per ondata, non una terza ondata
 	elif Run.region >= 3:
-		horde *= 1.4                              # Banco di Apopi
+		horde *= 1.15                             # Banco di Apopi: pochi nemici forti, non una folla (difficile, non stressante)
 	if Meta.feather:
 		horde *= 0.75                             # Piuma di Ma'at: un quarto di nemici in meno
 	var soft := 1 if r <= 2 else 0                # le prime due stanze sono un po' più leggere
@@ -662,7 +662,7 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 	var elite_from := 3 if Run.region == 1 else 1
 	var elite_chance := minf(0.2, 0.06 + 0.02 * Run.room) if Run.region == 1 else minf(0.32, 0.14 + 0.02 * Run.room)
 	if Run.region >= 3:
-		elite_chance = minf(0.38, 0.2 + 0.02 * Run.room)
+		elite_chance = minf(0.3, 0.16 + 0.02 * Run.room)
 	if trial != null:
 		trial.adjust(e, kind, tag)
 	elif Run.room >= elite_from - elite_w and Run.room <= Run.ROOMS_PER_RUN and kind in elite_kinds and randf() < elite_chance * (1 + elite_w):

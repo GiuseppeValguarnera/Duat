@@ -23,20 +23,20 @@ signal split(lions: Array)          ## si divide: il gioco aggiunge i due leoni 
 const LionScene := preload("res://scenes/aker_lion.tscn")
 
 # ---------------------------------------------------------------- numeri da tarare
-const HP := 1500.0                    ## la vita della fase 1 (nella scena: max_hp)
-const LION_HP := 500.0                ## la vita di Ieri e di Domani (fase 2): in tutto 2500
+const HP := 1350.0                    ## la vita della fase 1 (nella scena: max_hp)
+const LION_HP := 450.0                ## la vita di Ieri e di Domani (fase 2): in tutto 2500
 const WALK := 78.0                    ## passo di caccia (60% della velocità dell'eroe, 130)
 const TURN_RATE := 70.0               ## gradi al secondo: girargli intorno a piedi è possibile
 const FLANK_MULT := 1.35              ## colpi sui fianchi
 const HEAD_MULT := 0.8                ## colpi sulle teste
 const HEAD_CONE := 35.0               ## entro quanti gradi dall'asse del corpo si colpisce una testa
-const CONTACT := 10.0                 ## toccarlo
+const CONTACT := 8.0                  ## toccarlo
 const PUNISH := 1.2                   ## la pausa dopo una mossa grande: la finestra per colpirlo
 const CHAIN_GAP := 0.5                ## la pausa tra due mosse legate (dalla metà della fase 1)
 const CHAIN_FROM := 0.5               ## da quanta vita della fase in giù le mosse si legano
-const BITE_WINDUP := [0.6, 0.45, 0.45] ## morso e artigliate: avviso di ognuno dei tre colpi
-const BITE_DAMAGE := 11.0             ## per colpo (tre colpi: circa il 40% della vita se li prendi tutti)
-const BITE_REACH := 42.0              ## raggio del colpo davanti alla testa
+const BITE_WINDUP := [0.6, 0.6, 0.6]   ## erano 0,6 / 0,45 / 0,45: la zona si ferma a metà avviso, e in 0,22 s non si esce a piedi da un cerchio di 42 ## morso e artigliate: avviso di ognuno dei tre colpi
+const BITE_DAMAGE := 10.0             ## per colpo (tre colpi: circa il 40% della vita se li prendi tutti)
+const BITE_REACH := 36.0              ## raggio del colpo davanti alla testa
 const BITE_LUNGE := 70.0              ## quanto avanza a ogni colpo
 const CHARGE_WINDUP := 0.65
 const CHARGE_REAIM := 0.5             ## avviso della seconda carica, dopo il rimbalzo
@@ -48,11 +48,11 @@ const TRAIL_STEP := 34.0              ## ogni quanti pixel una pozza di sabbie m
 const TRAIL_LIFE := 4.0
 const BREATH_WINDUP := 0.6
 const BREATH_TIME := 1.3
-const BREATH_RANGE := 175.0
+const BREATH_RANGE := 150.0
 const BREATH_HALF := 24.0             ## mezza apertura del cono, in gradi
 const BREATH_SWEEP := 80.0            ## quanto ruota il corpo mentre soffia
 const BREATH_SAND := 8.0              ## la sabbia spinge e fa poco male
-const BREATH_FIRE := 16.0             ## il fuoco fa male
+const BREATH_FIRE := 14.0             ## il fuoco fa male
 const BREATH_PUSH := 220.0
 const LEAP_WINDUP := 0.6
 const LEAP_LOCK := 0.25               ## negli ultimi 0,25 s l'ombra non ti segue più
@@ -574,7 +574,9 @@ func _on_hit(_dmg: float) -> void:
 
 
 func _contact_damage() -> float:
-	return CONTACT
+	# 12/11 sera: toccarlo mentre ti caccia non ferisce più. Un boss largo 50 px che ti cammina addosso e
+	# toglie vita a ogni sfioramento era logorio, non difficoltà: il pericolo sono le sue mosse (con l'avviso).
+	return 0.0 if state == "hunt" else CONTACT
 
 
 ## Per i bot delle prove: da che parte scappare adesso (Vector2.ZERO = niente da schivare).
@@ -591,9 +593,10 @@ func bot_escape(pos: Vector2) -> Vector2:
 		"leap_windup":
 			if pos.distance_to(jump_to) < LEAP_RADIUS + 16.0:
 				return (pos - jump_to).normalized() if pos != jump_to else Vector2.RIGHT
-		"bite_windup":
-			if rel.length() < BITE_REACH + HEAD_DIST + 10.0:
-				return rel.normalized()
+		"bite_windup", "bite":
+			var bc := _bite_center()
+			if pos.distance_to(bc) < BITE_REACH + 14.0:
+				return (pos - bc).normalized() if pos != bc else Vector2.RIGHT
 	return Vector2.ZERO
 
 

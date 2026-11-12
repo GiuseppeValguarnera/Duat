@@ -74,8 +74,8 @@ const WAS_INSIDE := 1.15                ## dentro il Cerchio i tuoi colpi fanno 
 const SPEAR := [
 	# revisione del 12/11: affondi ×1,15 e cono 40° (erano ×1,0 e 34°). Nei test la lancia era l'arma più
 	# debole dappertutto (Wernes: oltre il Serpente 2 su 12 contro 6 del khopesh; Sfinge: ondata 5-9 contro 10)
-	{"range": 52.0, "arc": 40.0, "mult": 1.15, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
-	{"range": 52.0, "arc": 40.0, "mult": 1.15, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
+	{"range": 52.0, "arc": 40.0, "mult": 1.25, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
+	{"range": 52.0, "arc": 40.0, "mult": 1.25, "cd": 0.26, "lunge": 12.0, "knock": 90.0},
 	{"range": 42.0, "arc": 200.0, "mult": 1.75, "cd": 0.46, "lunge": 18.0, "knock": 210.0},      # spazzata 1,6 → 1,75 (12/11 sera)
 ]
 ## Attacco in scatto (un colpo durante lo scatto o subito dopo). Lancia: affondo in corsa,

@@ -281,6 +281,90 @@ static func flail_line(god: String) -> String:
 	return ""
 
 
+## Gli Artigli di Bastet: ogni dio li commenta la prima volta.
+static func claws_line(god: String) -> String:
+	match god:
+		"ra":
+			return Lang.t("Gli artigli della mia gatta. Ogni notte, sotto la persea di Iunu, è lei che taglia la testa al serpente. Stanotte, pare, tocca a te.")
+		"sekhmet":
+			return Lang.t("Artigli! Da gatta, non da leonessa, ma tagliano lo stesso. Stagli addosso, Scriba: chi graffia da lontano graffia l'aria.")
+		"thoth":
+			return Lang.t("Ho contato i tuoi colpi: sono troppi per scriverli tutti. Annoterò soltanto «molti». È la prima volta che arrotondo.")
+		"bastet":
+			return Lang.t("Li riconosco. Sono miei. Non te li ho prestati perché mi piaci: te li ho prestati perché cadi sempre in piedi. Quasi sempre.")
+		"sobek":
+			return Lang.t("Unghie piccole, per una preda grande. Ma anche il coccodrillo comincia dal morso piccolo: quello che non molla.")
+		"iside":
+			return Lang.t("Con quelle unghie Bastet difese mio figlio nelle paludi, quando io non potevo. Portale come le portò lei: per proteggere.")
+		"horus":
+			return Lang.t("Il gatto e il falco cacciano la stessa preda, uno da terra e uno dal cielo. Tu salta. Io guardo dall'alto.")
+		"anubi":
+			return Lang.t("Artigli di gatta sulla mia bilancia non ne ho mai pesati. Le gatte, Scriba, non si presentano al giudizio: ci passano accanto.")
+		"nefti":
+			return Lang.t("Graffi svelti, che non lasciano il tempo di piangere. Lascia a me il pianto, dunque. Tu continua a correre.")
+		"shu":
+			return Lang.t("Leggero sui piedi, quasi quanto me. Quando salti, per un respiro sei mio: lassù nessuno ti tocca.")
+		"set":
+			return Lang.t("La gattina ti ha dato le unghie! E tu gliele riporterai, vero, come un bravo servo? Tienile. Graffia qualcuno che conta.")
+	return ""
+
+
+## Lo Scettro di Ptah.
+static func sceptre_line(god: String) -> String:
+	match god:
+		"ra":
+			return Lang.t("Lo scettro di Ptah, che pensò il mondo prima che io lo illuminassi. I re lo stringevano davanti a me, all'alba. Tu lo stringi nel buio.")
+		"sekhmet":
+			return Lang.t("Un bastone che comanda. Io preferisco quelli che rompono. Ma dentro il tuo cerchio bruciano bene: resta lì, e portameli.")
+		"thoth":
+			return Lang.t("Ptah creò con la parola, io la scrivo. Quel raggio è una frase detta bene: breve, dritta, e trapassa chi ascolta.")
+		"bastet":
+			return Lang.t("Tre colpi e una luce. È lento, per i miei gusti. Ma chi entra nel tuo cerchio cammina come un topo nel miele. Questo mi diverte.")
+		"sobek":
+			return Lang.t("Pianti il bastone e la terra è tua. Così fa il coccodrillo con la riva: non insegue, aspetta che vengano a bere.")
+		"iside":
+			return Lang.t("Was, djed, ankh: dominio, stabilità, vita. Tre segni in un legno solo. Il terzo, Scriba, è quello che conta. Non scordarlo.")
+		"horus":
+			return Lang.t("Mio padre teneva uno scettro così, sul trono dei vivi. Lo conosco da quando ero alto quanto il suo ginocchio. Tienilo dritto.")
+		"anubi":
+			return Lang.t("Quello scettro lo reggono i re nelle statue, e le statue non mentono su chi sono. Mi domando cosa direbbe la tua.")
+		"nefti":
+			return Lang.t("Un cerchio di luce, e fuori il buio. Io sto sempre fuori dai cerchi, Scriba. Ma veglio su chi ci sta dentro.")
+		"shu":
+			return Lang.t("Il djed è la mia colonna: regge il cielo. La porti in cima a un bastone come fosse niente. Pesa più di quanto credi.")
+		"set":
+			return Lang.t("Guarda la testa di quello scettro. Guardala bene. È la MIA faccia, piccolo scriba: il was porta il muso di Set. Comandi con me, che ti piaccia o no.")
+	return ""
+
+
+## Il Banco di Apopi: la prima volta che un dio ti parla nella settima ora.
+static func apep_line(god: String) -> String:
+	match god:
+		"ra":
+			return Lang.t("Qui ogni notte mi fermo, e ogni notte lui beve il mio fiume. Non l'ho mai visto morire. Stanotte guardo te, e per la prima volta spero.")
+		"sekhmet":
+			return Lang.t("Il serpente! L'ho bruciato mille volte e mille volte è tornato. Non importa. Il bello non è ucciderlo: è farlo ancora.")
+		"thoth":
+			return Lang.t("La settima ora. Nei miei registri questa pagina è nera: l'inchiostro non c'entra, è Apopi che non si lascia scrivere.")
+		"bastet":
+			return Lang.t("Questo è il mio territorio di caccia. Guarda dove metti i piedi: le pozze nere non sono acqua, e le crepe respirano.")
+		"sobek":
+			return Lang.t("Ha bevuto il fiume. Il MIO fiume. Riportamelo, Scriba, e ti chiamerò fratello davanti a tutti i coccodrilli d'Egitto.")
+		"iside":
+			return Lang.t("Il suo sguardo addormentò i rematori di Ra, e io lo incantai con la voce. Tu non hai la mia voce: abbi almeno i miei occhi aperti.")
+		"horus":
+			return Lang.t("Mio zio Set lo trafigge dalla prua, ogni notte. È l'unica cosa buona che fa. Stanotte la prua è vuota: sali tu.")
+		"anubi":
+			return Lang.t("Sei oltre la mia bilancia, qui. Apopi non ha cuore da pesare. Chi cade sul suo banco non viene da me: non va da nessuno.")
+		"nefti":
+			return Lang.t("Qui il buio non è il mio. Il mio consola; questo divora. Se la luce se ne va, non cercarla: resta dove sei e guarda il rosso.")
+		"shu":
+			return Lang.t("Io tengo separati il cielo e la terra. Lui vuole che tornino una cosa sola, come prima del primo giorno. Non permetterglielo.")
+		"set":
+			return Lang.t("Ah, il verme. Sai che sono l'unico che non si addormenta quando guarda? Per questo mi tengono. Nessuno ringrazia mai, ma mi tengono.")
+	return ""
+
+
 static func speech(god: String) -> String:
 	if not GODS.has(god):
 		return ""
@@ -288,10 +372,20 @@ static func speech(god: String) -> String:
 	var wid := "%s_%s" % [Run.weapon, god]
 	if Meta.dialogue_seen.has("%s_0" % god) and not Meta.dialogue_seen.has(wid):
 		var wl := bow_line(god) if Run.weapon == "arco" else (flail_line(god) if Run.weapon == "flagello" else "")
+		if Run.weapon == "artigli":
+			wl = claws_line(god)
+		elif Run.weapon == "scettro":
+			wl = sceptre_line(god)
 		if wl != "":
 			Meta.dialogue_seen.append(wid)
 			Meta.save()
 			return wl
+	if Run.region >= 3 and not Run.trial and Meta.dialogue_seen.has("%s_0" % god) and not Meta.dialogue_seen.has("apep_%s" % god):
+		var al := apep_line(god)
+		if al != "":
+			Meta.dialogue_seen.append("apep_%s" % god)
+			Meta.save()
+			return al
 	for i in range(entries.size()):
 		var id := "%s_%d" % [god, i]
 		if not Meta.dialogue_seen.has(id):

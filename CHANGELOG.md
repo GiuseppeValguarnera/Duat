@@ -1,5 +1,13 @@
 ## In sviluppo · novembre 2026
 
+- **bilanciamento generale**, misurato con oltre cento partite di prova: boss e guardiani non feriscono più al contatto
+  mentre riprendono fiato (è il momento in cui devi colpirli); Aker non ferisce a toccarlo mentre ti insegue, i suoi tre
+  morsi si possono schivare a piedi e il soffio arriva meno lontano; lancia più forte; artigli e scettro alzati
+- **Banco di Apopi difficile ma non logorante**: meno nemici per ondata, le pozze delle serpi durano poco, il buio di
+  Apopi è più corto e più chiaro, il suo sputo ha meno sfere; Shezmu e Apopi un po' meno resistenti
+- nella Sala, nella Casa della Vita e nel Cortile un riquadro nuovo mostra Ka, lapislazzuli, Lacrime e sigilli con i loro segni
+- gli dèi commentano gli Artigli di Bastet e lo Scettro di Ptah, e ognuno ha una frase nuova per il Banco di Apopi
+
 - **terza regione: il Banco di Apopi** (la settima ora), dopo Aker. Una caverna nera e viola con pozze di caos e spire
   che escono dal pavimento; quattro nemici nuovi (i Figli di Apopi, le ombre senza padrone, i portatori di coltelli, la
   tartaruga del caos); il guardiano Shezmu, Signore del Torchio; il boss Apopi, che beve il fiume e inghiotte la luce.

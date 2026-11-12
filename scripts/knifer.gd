@@ -8,7 +8,7 @@ const WINDUP := 0.6
 const SPREAD := 20.0                ## gradi tra un coltello e l'altro
 const KNIFE_SPEED := 215.0
 const KNIFE_LIFE := 1.25            ## ~270 px
-const KNIFE_DMG := 7.0
+const KNIFE_DMG := 6.0
 const KEEP_MIN := 110.0
 const KEEP_MAX := 170.0
 
@@ -60,7 +60,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		"recover":
 			if st <= 0.0:
 				state = "move"
-				st = randf_range(2.0, 3.0)
+				st = randf_range(2.6, 3.6)
 			return Vector2.ZERO
 	return Vector2.ZERO
 

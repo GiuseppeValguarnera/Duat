@@ -610,6 +610,17 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 				# si esce dal lato già spazzato dal raggio (o lo si passa con lo scatto)
 				var rr: Vector2 = (pos - o).normalized()
 				return rr.orthogonal() * -signf(c.sweep)
+	# il Banco di Apopi: pozze di Isfet (se ci sei dentro, fuori) e spire che stanno per uscire
+	for c in get_tree().get_nodes_in_group("isfet"):
+		if c.inside(pos):
+			threat_kind = "isfet"
+			var out_v: Vector2 = pos - c.global_position
+			return out_v.normalized() if out_v != Vector2.ZERO else Vector2.RIGHT
+	for c in g.world.get_children():
+		if c is Chaos.Coil and c.state != "sleep" and pos.distance_to(c.global_position) < Chaos.COIL_R + 10.0:
+			threat_kind = "spira"
+			var cv: Vector2 = pos - c.global_position
+			return cv.normalized() if cv != Vector2.ZERO else Vector2.RIGHT
 	# sfere e dardi in arrivo
 	for c in g.world.get_children():
 		if c is Area2D and "direction" in c and "style" in c:
@@ -925,6 +936,8 @@ func _metrics(g, _p) -> void:
 			src = "serpent_" + str(g.boss.state)
 		if src == "amheh" and g.boss != null and is_instance_valid(g.boss):
 			src = "amheh_" + str(g.boss.state)
+		if src in ["aker", "aker_lion", "apep", "shezmu", "serket"] and g.boss != null and is_instance_valid(g.boss) and "state" in g.boss:
+			src = src + "_" + str(g.boss.state)
 		if src == "ammit" and g.boss != null and is_instance_valid(g.boss):
 			var kind: String = g.boss.state
 			for c in g.world.get_children():

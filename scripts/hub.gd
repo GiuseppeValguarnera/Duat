@@ -55,6 +55,7 @@ var scale_glow := 0.0                     ## la luce calda della bilancia quando
 
 @onready var world: Node2D = $World
 @onready var hud: Label = $UI/Hud
+var hub_hud: HubHud = null
 @onready var prompt: Label = $UI/Prompt
 @onready var help: Label = $UI/Help
 @onready var talk_box: PanelContainer = $UI/Talk
@@ -321,9 +322,16 @@ func _process(delta: float) -> void:
 			var keep := shown_option
 			_fill_options(keep)
 			_show_option(keep)
-	hud.text = Lang.t("Sala del Giudizio\nKa custodito %d · Lapislazzuli %d · Discese %d · Vittorie %d") % [Meta.ka_bank, Meta.lapis, Meta.runs, Meta.ammit_wins]
+	hud.text = ""                          # il riquadro lo disegna HubHud (scripts/ui/hub_hud.gd)
+	if hub_hud == null:
+		hub_hud = HubHud.new()
+		$UI.add_child(hub_hud)
+		$UI.move_child(hub_hud, 0)
+	hub_hud.title = Lang.t("Sala del Giudizio")
+	hub_hud.line = Lang.t("Discese %d · Vittorie %d") % [Meta.runs, Meta.ammit_wins + Meta.aker_wins + Meta.apep_wins]
 	if Run.hold_descent:
-		hud.text += "\n" + Lang.t("La tua discesa ti aspetta oltre il cancello")
+		hub_hud.line = Lang.t("La tua discesa ti aspetta oltre il cancello")
+	hub_hud.hidden_now = book != null or sphinx_board != null or tales_box != null or OS.get_environment("DUAT_TRAILER") != ""
 	_update_update_tag()
 	if Fx.device == "touch":
 		help.text = ""

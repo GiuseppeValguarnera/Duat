@@ -137,7 +137,7 @@ class Coil extends Node2D:
 class Darkness extends Node2D:
 	var amount := 0.0
 	var target := 0.0
-	var inner := 78.0
+	var inner := 96.0
 
 	func _ready() -> void:
 		z_index = 5
@@ -153,7 +153,7 @@ class Darkness extends Node2D:
 		if amount <= 0.01:
 			return
 		var steps := 20
-		var rings := [[inner, 0.0], [inner + 34.0, 0.45], [inner + 80.0, 0.74], [900.0, 0.8]]
+		var rings := [[inner, 0.0], [inner + 40.0, 0.38], [inner + 90.0, 0.64], [900.0, 0.7]]
 		for k in range(rings.size() - 1):
 			var r0: float = rings[k][0]
 			var r1: float = rings[k + 1][0]

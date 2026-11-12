@@ -17,13 +17,13 @@ signal summon(kinds: Array)        # il gioco lo collega a ogni boss: fa uscire 
 
 const BoltScript := preload("res://scripts/enemy_bolt.gd")
 
-const HP := 2200.0                ## era 3200: i bot (24 doni) ci mettevano oltre 5 minuti; ora circa 3 e mezzo
+const HP := 2000.0                ## era 3200: i bot (24 doni) ci mettevano oltre 5 minuti; ora circa 3 e mezzo
 const LUNGE_WARN := 0.75
 const LUNGE_WARN2 := 0.5
 const LUNGE_LEN := 420.0
 const LUNGE_SPEED := 540.0
 const LUNGE_HALF := 22.0
-const LUNGE_DMG := 22.0
+const LUNGE_DMG := 20.0
 const STUCK := 1.3
 const STUCK_MULT := 1.25
 const PULL_WARN := 0.8
@@ -33,18 +33,18 @@ const PULL_SPEED2 := 104.0
 const MAW_R := 34.0
 const MAW_DMG := 7.0
 const MAW_TICK := 0.4
-const SPIT_N := 7
+const SPIT_N := 5                 ## erano 7 da 9: a bruciapelo dopo il risucchio ne arrivavano 4-5 insieme (fino a 70 danni)
 const SPIT_SPREAD := 80.0
 const SPIT_SPEED := 170.0
-const SPIT_DMG := 9.0
+const SPIT_DMG := 7.0
 const TAIL_WARN := 1.0
 const TAIL_GAP := 0.45
 const TAIL_R := 46.0
-const TAIL_DMG := 20.0
-const BROOD_MAX := 3
+const TAIL_DMG := 18.0
+const BROOD_MAX := 2
 const BROOD_CD := 13.0
-const DARK_ON := 7.0
-const DARK_OFF := 9.0
+const DARK_ON := 5.0
+const DARK_OFF := 11.0
 const HOVER := 118.0              ## quanto sta lontano da te mentre ti studia
 
 var state := "intro"
@@ -233,7 +233,7 @@ func _choose(d: float) -> void:
 	if brood_cd <= 0.0 and brood < BROOD_MAX:
 		brood_cd = BROOD_CD / _phase_mult()
 		var kinds := []
-		for i in range(mini(BROOD_MAX - brood, 3 if enraged else 2)):
+		for i in range(mini(BROOD_MAX - brood, 2)):
 			kinds.append("apep_spawn")
 		summon.emit(kinds)
 		Sfx.play_at("cobra_hiss", global_position, 0.1)

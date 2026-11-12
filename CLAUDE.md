@@ -459,7 +459,7 @@ musica della Sala, ricompensa già a terra, non conta come stanza ripulita); dop
 **Blocco 18 (12/11/2026, sera) – terza regione, musica, HUD, armi nuove, pad**.
 - *Regione 3 – il Banco di Apopi* (la settima ora; `Run.APEP_READY`, `max_region()` 3, ci si arriva dalla porta dopo Aker:
   `_next_region` con titolo «La settima ora», niente oasi, +25% vita; `DUAT_START_REGION=3` per le prove). Danni subiti
-  ×1,5 (`APEP_DAMAGE`), Ka ×1,5, ondate ×1,4, élite 20% +2%/stanza fino al 38%, vita dalla regola delle regioni (3,28 → 5,44).
+  ×1,5 (`APEP_DAMAGE`), Ka ×1,5, ondate ×1,15, élite 16% +2%/stanza fino al 30% (valori del blocco 19), vita dalla regola delle regioni (3,28 → 5,44).
   Pavimento `ApepArena.paint_cave_floor` (roccia nera-viola, vene di caos, pozzanghere AZZURRE: le nere sono Isfet), muri
   viola, `decor.SHADE` 0,3, luce fredda. Pericoli in `scripts/apep_world.gd` (class_name `Chaos`): `Isfet` (pozza di caos:
   3 danni ogni 0,5 s, danno da terreno `isfet` → bordi viola `caos`; fissa o a tempo), `Coil` (spira di Apopi: cerchio
@@ -510,6 +510,37 @@ musica della Sala, ricompensa già a terra, non conta come stanza ripulita); dop
   Anubi `artigli0`/`scettro0`. Passano dal ramo generico di `_swing()` (tabelle). Mancano: battute degli dèi alla prima
   volta, risposta di Ammit, bot dedicato. Sono anche tra le armi del giorno della Sfinge.
 - *Strumenti*: `tools/dev/shots/roomshot.gd` (foto di una stanza), `tools/dev/check.sh` prova anche la regione 3 e le armi nuove.
+
+**Blocco 19 (12/11/2026, notte) – bilanciamento deciso da Claude coi bot, HUD dei luoghi, battute degli dèi**.
+Il proprietario ha chiesto di decidere noi e di tenere la terza regione **difficile ma non stressante**: stress = logorio
+che non si può evitare (pavimento pieno, folla, danni a sfioramento, buio lungo); difficoltà = mosse con l'avviso che puniscono l'errore.
+- *Regola nuova per tutti i boss e i guardiani* (`Enemy.RESTING`, `_resting()`): mentre riprendono fiato (`recover`,
+  `stuck`, `dizzy`…) **non feriscono al contatto**. Nota per leggere i dati: `X_recover` nei bot NON è il contatto ma i
+  proiettili lanciati prima (sputo del Serpente, mannaia di Shezmu, sputo di Apopi); il bot ora etichetta per stato anche
+  Aker, Serket, Shezmu, Apopi.
+- *Aker* (0 vittorie in ~22 tentativi dei bot tra ieri e oggi; storico 3/8 e 8/30 prima dei blocchi 11-12): niente danni
+  a toccarlo mentre ti caccia (`hunt`), contatto 8; morso: avvisi 0,6 s tutti e tre (erano 0,6/0,45/0,45: la zona si ferma a
+  metà avviso e in 0,22 s da un cerchio di 42 non si usciva a piedi), raggio 36, danno 10; soffio 150 px (era 175) e fuoco 14;
+  vita 1350 + leoni 450 (2250 in tutto). Dopo: 0/6 ma col 24-70% rimasto in 31-73 s (prima 71-84% in 19 s). I bot muoiono
+  ancora di soffio e morso (non leggono il verso della rotazione): **da sentire giocando prima di toccarlo ancora**.
+- *Banco di Apopi*: ondate ×1,15 (erano ×1,4), élite 16% +2% fino al 30%, pozza delle serpi 2,5 s e raggio 13, ombre più
+  rade (3,5-5 s), coltelli 6 e ogni 2,6-3,6 s, buio 5 s sì / 11 no e più largo e chiaro (`inner` 96, alfa 0,7). Shezmu: vita
+  440, mannaia 11, torchio 15, vino 10, carica 14. Apopi: vita 2000, affondo 20, coda 18, sputo 5 sfere da 7, Figli al
+  massimo 2. Misure finali (veterani): Shezmu 3/4 in 68-80 s, Apopi 1/4 in 3,5 min (gli altri col 20-31%), regione intera
+  con 17 doni 1 vittoria su 8, 4 muoiono da Shezmu (arrivano feriti), gli altri alle stanze 6-9.
+- *Armi* (24 partite, 4 veterani per arma, Wernes da zero, dopo i ritocchi): khopesh stanze 3-6-6-5, lancia 3-7-3-5,
+  arco 6-11-6-9, flagello 8-5-8-8, artigli 6-6-7-6, scettro 6-6-6-5; danni/s 16,6 / 16,1 / 19,2 / 15,1 / 16,1 / 14,6.
+  Lancia: affondi ×1,25 e spazzata ×1,75. L'arco NON è stato toccato: il 35 danni/s del primo campione era una sola
+  partita lunghissima; in media è +15% e i bot giocano meglio a distanza.
+- *Wernes*: Serpente 3/4, Am-heh 0/8 col 12-38% rimasto (storico 7/30): lasciato com'è. *Sokar intera* (4): stanze 6, 7, 8 e
+  una fino ad Aker.
+- *HUD dei luoghi* (`scripts/ui/hub_hud.gd`, `HubHud`): Sala, Casa della Vita e Cortile hanno lo stesso riquadro egizio
+  della discesa: nome del luogo, Ka / lapislazzuli / Lacrime / sigilli con il loro segno (scattano quando cambiano) e una
+  riga piccola (discese e vittorie, amuleto, arma). La vecchia riga di testo `hud.text` resta vuota.
+- *Battute degli dèi* (`lore.gd`): `claws_line`, `sceptre_line` (11 dèi per arma, id `artigli_<dio>`/`scettro_<dio>`) e
+  `apep_line` (la prima volta che ogni dio ti parla nel Banco di Apopi, id `apep_<dio>`).
+- Bot: `bot_escape` su serpi, ombre e tartaruga; evita Isfet e spire. Attenzione: `bots.sh` usa una sola cartella di
+  lavoro (`/tmp/duat_bots/work`): mai due `bots.sh` insieme; per una prova in parallelo usare `watch.sh`.
 
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
