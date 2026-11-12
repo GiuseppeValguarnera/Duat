@@ -29,6 +29,7 @@ var dash_release := false
 var tap_special := false
 var tap_super := false
 var stuck_t := 0.0
+var door_pick = null                     # la porta scelta: una volta decisa non si cambia (il bot esitava tra due porte uguali)
 var last_pos := Vector2.ZERO
 var unstick := Vector2.ZERO
 var unstick_t := 0.0
@@ -69,6 +70,17 @@ func _ready() -> void:
 		Meta.feather = false
 		for id in Weights.ALL:
 			Meta.weights[id] = int(Weights.ALL[id]["max"])
+	# DUAT_TRIAL=1: il bot gioca la prova della Sfinge (accetta subito); DUAT_MODS=tough,fast: modificatori
+	if OS.get_environment("DUAT_TRIAL") != "":
+		Run.trial = true
+		Meta.sphinx["open"] = true
+		var ms: Array = []
+		for m in OS.get_environment("DUAT_MODS").split(",", false):
+			ms.append(m)
+			var ow: Array = Meta.sphinx.get("owned", [])
+			ow.append("m_" + m)
+			Meta.sphinx["owned"] = ow
+		Meta.sphinx["mods_on"] = ms
 	persona = OS.get_environment("DUAT_PERSONA")
 	if not P.has(persona):
 		persona = "veterano"
@@ -243,6 +255,18 @@ func _process(delta: float) -> void:
 	var g = get_tree().current_scene
 	if g == null or g.name != "Game" or g.player == null or not is_instance_valid(g.player):
 		return
+	if g.trial != null:
+		# la prova della Sfinge: accetta, chiudi la schermata dei comandi, ascolta il commento finale
+		if not g.trial.started and not g.trial.ui_open:
+			g.trial.accept()
+			return
+		for b in g.find_children("*", "Button", true, false):
+			if b.text in ["Comincia", "Start"] and b.is_visible_in_tree():
+				b.pressed.emit()
+				return
+		if g.trial.ended:
+			_finish(g)
+			return
 	var real := delta / maxf(Engine.time_scale, 0.0001)
 	gt += real
 	var p = g.player
@@ -268,7 +292,7 @@ func _process(delta: float) -> void:
 	if not g.finished and Run.room <= Run.ROOMS_PER_RUN and gt - room_start > float(OS.get_environment("DUAT_STALL") if OS.get_environment("DUAT_STALL") != "" else "1e9"):
 		_finish(g, "stallo")
 		return
-	if g.finished or gt > 900.0:
+	if g.finished or gt > (2400.0 if g.trial != null else 900.0):
 		_finish(g)
 		return
 	if interact_release:
@@ -546,7 +570,9 @@ func _decide(g, p) -> void:
 		g.start_room.call_deferred({"kind": "set"})
 		return
 	if not g.doors.is_empty():
-		var d = _pick_door(g)
+		if door_pick == null or not is_instance_valid(door_pick) or not door_pick.open or door_pick._used or not g.doors.has(door_pick):
+			door_pick = _pick_door(g)
+		var d = door_pick
 		if d != null:
 			var target_pos: Vector2 = d.global_position
 			move_dir = (target_pos - pos).normalized()
@@ -599,6 +625,27 @@ func _threat(g, pos: Vector2, enemies: Array) -> Vector2:
 		if balong > -6.0 and balong < 110.0 and absf(brel.dot(bd.orthogonal())) < 22.0:
 			threat_kind = "khepri_ball"
 			return bd.orthogonal() * (1.0 if brel.dot(bd.orthogonal()) > 0.0 else -1.0)
+	# le mosse di Sokar con l'avviso a terra (revisione del 12/11: il bot non le conosceva e i dati su
+	# Sokar erano falsati): carica del guardiano, salto dello sciacallo, picchiata dell'avvoltoio, miccia del Ba
+	for e in enemies:
+		var rel2: Vector2 = pos - e.global_position
+		var d2 := rel2.length()
+		var path: String = e.scene_file_path
+		if path.ends_with("sokar_guard.tscn") and e.state == "windup" and e.st < 0.42 and d2 < 130.0:
+			if absf(rel2.dot(e.facing.orthogonal())) < 20.0 and rel2.dot(e.facing) > -6.0:
+				threat_kind = "sokar_guard"
+				return e.facing.orthogonal() * (1.0 if rel2.dot(e.facing.orthogonal()) > 0.0 else -1.0)
+		elif path.ends_with("jackal.tscn") and e.state == "windup" and e.st < 0.22 and d2 < 85.0:
+			if absf(rel2.dot(e.aim.orthogonal())) < 16.0 and rel2.dot(e.aim) > -4.0:
+				threat_kind = "jackal"
+				return e.aim.orthogonal() * (1.0 if rel2.dot(e.aim.orthogonal()) > 0.0 else -1.0)
+		elif path.ends_with("vulture.tscn") and e.state == "warn" and e.st < 0.3 and pos.distance_to(e.target) < 26.0:
+			threat_kind = "vulture"
+			var av: Vector2 = pos - e.target
+			return av.normalized() if av != Vector2.ZERO else Vector2.RIGHT
+		elif path.ends_with("damned_ba.tscn") and e.state == "fuse" and e.st < 0.4 and d2 < e.blast_radius + 12.0:
+			threat_kind = "damned_ba"
+			return rel2.normalized() if d2 > 0.1 else Vector2.RIGHT
 	for e in enemies:
 		var rel: Vector2 = pos - e.global_position
 		var d := rel.length()
@@ -908,6 +955,8 @@ func _finish(g, forced: String = "") -> void:
 	if forced != "":
 		result = forced
 	var boss_hp := -1.0
+	if g.trial != null and (g.boss == null or not is_instance_valid(g.boss)):
+		g.boss = null
 	if g.boss != null and is_instance_valid(g.boss):
 		boss_hp = snappedf(g.boss.hp / g.boss.max_hp, 0.01)
 	var data := {
@@ -917,6 +966,7 @@ func _finish(g, forced: String = "") -> void:
 		"kills": Run.kills, "dmg_dealt": int(Run.damage_dealt), "ka": Run.ka,
 		"boons": Run.boons, "blessings": Run.blessings, "curses_left": Run.curses, "choices": choices,
 		"rooms": rooms, "dodges": dodges, "shop": shop_buys, "killer": Run.last_hit,
+		"trial": ({"wave": g.trial.wave, "score": g.trial.total_score(), "seals": g.trial.seals_got, "clean": g.trial.clean, "hard": g.trial.hard_taken, "weapon": Run.weapon} if g.trial != null else {}),
 	}
 	if result in ["timeout", "stallo"]:
 		var es := []
@@ -935,7 +985,10 @@ func _finish(g, forced: String = "") -> void:
 		for j in get_tree().get_nodes_in_group("breakables"):
 			jars.append([roundi(j.global_position.x), roundi(j.global_position.y)])
 		data["stallo_extra"] = {"ricompense": picks, "giare": jars}
-		data["stallo"] = {"alive": g.alive, "spawning": g.spawning, "cleared": g.cleared, "waves": g.waves.size(), "menu": g.menu != null, "porte": g.doors.size(), "giocatore": [roundi(g.player.global_position.x), roundi(g.player.global_position.y)], "nemici": es, "nascosti": hidden, "stanza": g.current_reward}
+		data["stallo"] = {"alive": g.alive, "spawning": g.spawning, "cleared": g.cleared, "waves": g.waves.size(), "menu": g.menu != null, "porte": g.doors.size(), "giocatore": [roundi(g.player.global_position.x), roundi(g.player.global_position.y)], "nemici": es, "nascosti": hidden, "stanza": g.current_reward,
+			"porte_aperte": g.doors.map(func(d): return [d.open, d._used, snappedf(d.open_k, 0.1), d.reward.get("kind", "")] if is_instance_valid(d) else ["morta"]),
+			"pausa": get_tree().paused, "doors_after_boon": g.doors_after_boon, "scelte": choices.slice(-3), "panel": g.panel != null, "pause_menu": g.pause_menu != null,
+			"figli": g.world.get_children().filter(func(c): return c.has_signal("collected")).size()}
 	data["perf"] = {"max_ms": snappedf(perf_max, 0.1), "lenti": perf_slow, "fotogrammi": perf_frames, "nemici_max": perf_enemies, "dove": perf_room}
 	data["meta"] = {"lapis": Meta.lapis, "casa": Meta.casa, "sfide": Meta.challenges, "amuleto": Run.amulet, "amuleti": Meta.amulets, "restauri": Meta.restorations, "serpent_wins": Meta.serpent_wins, "ka_bank": Meta.ka_bank, "tears": Meta.tears, "wins": Meta.ammit_wins, "chapters": Meta.chapter_levels, "equipped": Meta.chapters_equipped, "weight": Weights.total(), "bought": brain.get("last_bought", [])}
 	data["cfg_now"] = {"reaction": snappedf(float(cfg["reaction"]), 0.001), "dodge": snappedf(base_dodge, 0.01), "skill": snappedf(float(cfg["skill"]), 0.01), "aim_err": snappedf(float(cfg["aim_err"]), 0.1), "heal": snappedf(float(cfg["heal"]), 0.01)}

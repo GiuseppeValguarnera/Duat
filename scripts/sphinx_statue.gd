@@ -89,12 +89,19 @@ func _draw() -> void:
 		var hip := PackedVector2Array([Vector2(sx * 80, -10), Vector2(sx * 76, -38), Vector2(sx * 56, -54), Vector2(sx * 34, -50), Vector2(sx * 30, -10)])
 		draw_colored_polygon(hip, STONE_D.lerp(STONE, 0.5))
 		draw_polyline(hip, OUTL, 1.0)
+		# la coscia tonda e la luce sul dorso: è un leone accovacciato, non due blocchi
+		draw_arc(Vector2(sx * 56, -18), 20.0, PI * (1.05 if sx > 0 else 1.35), PI * (1.65 if sx > 0 else 1.95), 12, Color(STONE_D, 0.9), 1.4)
+		draw_line(Vector2(sx * 74, -38), Vector2(sx * 56, -53), Color(STONE_L, 0.8), 1.4)
+		draw_line(Vector2(sx * 55, -53), Vector2(sx * 36, -49.5), Color(STONE_L, 0.8), 1.4)
+		for k in range(2):
+			draw_line(Vector2(sx * (40 + k * 16), -10), Vector2(sx * (40 + k * 16), -14 - k * 2), Color(STONE_D, 0.7), 1.0)   # le giunture dei blocchi
 	# la coda che gira sul basamento, a destra
 	draw_polyline(PackedVector2Array([Vector2(78, -12), Vector2(86, -6), Vector2(80, 2), Vector2(64, 4)]), STONE_D, 2.0)
 	# il petto
 	var chest := PackedVector2Array([Vector2(-32, -10), Vector2(-36, -52), Vector2(-20, -62), Vector2(20, -62), Vector2(36, -52), Vector2(32, -10)])
 	draw_colored_polygon(chest, STONE)
 	draw_polyline(chest, OUTL, 1.0)
+	draw_colored_polygon(PackedVector2Array([Vector2(-20, -61), Vector2(-6, -61), Vector2(-10, -11), Vector2(-28, -11), Vector2(-33, -51)]), Color(STONE_L, 0.35))    # luce da sinistra
 	draw_line(Vector2(-14, -40), Vector2(-10, -16), Color(STONE_D, 0.6), 1.0)
 	draw_line(Vector2(14, -40), Vector2(10, -16), Color(STONE_D, 0.6), 1.0)
 	if SphinxShop.ornament_on("o_collare"):

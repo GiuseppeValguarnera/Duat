@@ -544,7 +544,7 @@ func _draw() -> void:
 	if Run.show_zones():
 		_draw_zones()
 	draw_set_transform(Vector2(0, 2), 0.0, Vector2(1.0, 0.4))
-	draw_circle(Vector2.ZERO, radius + 3.0, Color(0, 0, 0, 0.35))
+	draw_circle(Vector2.ZERO, radius + 3.0, Color(0, 0, 0, 0.5 if Run.region >= 2 else 0.35))     # sul deserto chiaro di Sokar l'ombra stacca i nemici dalla sabbia
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	_draw_body(flash_t > 0.0)
 	if elite:

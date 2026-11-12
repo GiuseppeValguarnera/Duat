@@ -152,9 +152,11 @@ func _zones() -> void:
 func _draw_body(flash: bool) -> void:
 	if state == "windup":
 		_leap_strip(1.0 - st / leap_windup)
-	var fur := _f(Color(0.72, 0.52, 0.28), flash)
-	var back := _f(Color(0.28, 0.2, 0.14), flash)
-	var belly := _f(Color(0.88, 0.76, 0.56), flash)
+	# revisione del 12/11: neri come gli sciacalli di Anubi (prima erano color sabbia e sul deserto chiaro
+	# di Sokar sparivano), con il ventre grigio e un collare d'oro
+	var fur := _f(Color(0.2, 0.17, 0.2), flash)
+	var back := _f(Color(0.09, 0.08, 0.1), flash)
+	var belly := _f(Color(0.5, 0.45, 0.42), flash)
 	var dir := 1.0 if aim.x >= 0.0 else -1.0
 	var crouch := 0.0
 	if state == "windup":
@@ -179,6 +181,7 @@ func _draw_body(flash: bool) -> void:
 	_op(_ell(h, 3.6, 3.0, 10), fur)
 	_op(PackedVector2Array([h + Vector2(2, -1.5), h + Vector2(8, 0.5), h + Vector2(7.5, 1.6), h + Vector2(2, 1.8)]), fur)
 	draw_circle(h + Vector2(8, 0.8), 0.9, Color(0.08, 0.06, 0.05))
+	draw_line(h + Vector2(-2.6, 1.8), h + Vector2(-0.6, 3.0), _f(Color(0.95, 0.75, 0.3), flash), 1.3)     # il collare d'oro
 	# orecchie grandi a punta
 	for k in [0.0, 2.2]:
 		_op(PackedVector2Array([h + Vector2(-1.5 + k, -2), h + Vector2(-0.5 + k, -7.5 + crouch * 2.0), h + Vector2(0.8 + k, -2)]), back)

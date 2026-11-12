@@ -204,7 +204,8 @@ static func open_mods(parent: Node, statue: SphinxStatue, on_close: Callable) ->
 	var total := UiStyle.label("", 10, UiStyle.INK_RED, true)
 	total.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(total)
-	col.add_child(UiStyle.label(Lang.t("Valgono per tutta la prova (massimo 3) e alzano il moltiplicatore del punteggio. I premi della settimana dipendono solo dall'ondata."), 8, UiStyle.INK_SOFT, false, w))
+	if vs.y >= 450.0:                         # sul telefono lo spazio va alla lista
+		col.add_child(UiStyle.label(Lang.t("Valgono per tutta la prova (massimo 3) e alzano il moltiplicatore del punteggio. I premi della settimana dipendono solo dall'ondata."), 8, UiStyle.INK_SOFT, false, w))
 	var sc := ScrollContainer.new()
 	sc.custom_minimum_size = Vector2(w, minf(190.0 * u, vs.y * 0.5))
 	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -257,7 +258,7 @@ static func open_shop(parent: Node, statue: SphinxStatue, on_close: Callable) ->
 	var l := layer(parent)
 	var vs := l.get_viewport().get_visible_rect().size
 	var u: float = Fx.ui
-	var narrow := vs.x < 560.0 * u
+	var narrow := vs.x < vs.y                 # due colonne ogni volta che lo schermo è largo (telefono in orizzontale compreso)
 	var pap := PanelContainer.new()
 	pap.add_theme_stylebox_override("panel", UiStyle.papyrus_box(Color(0.6, 0.46, 0.2)))
 	l.add_child(pap)
