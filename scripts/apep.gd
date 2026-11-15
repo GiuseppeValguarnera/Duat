@@ -8,6 +8,9 @@ extends Enemy
 ##   AFFONDO finisce contro un palo, la corda lo LEGA per 3,2 s e i colpi fanno il 170%. Quando la
 ##   striscia rossa dell'affondo passa su un palo, il palo BRILLA: mettiti dietro un palo e aspettalo.
 ##   Un palo serve una volta; ricrescono a ogni cambio di fase. Se manca il palo, sbatte e si riprende subito.
+##   Blocco 22: ogni legatura toglie al massimo il 9% della vita (poi la corda si sfilaccia e schiocca),
+##   e la vita non scende sotto il 66% / il 33% senza almeno 2 legature in quella fase. In fase 3 la coda
+##   e l'anello spezzano i pali che prendono (rossi 1 s prima, al massimo 2 per fase).
 ## Tre fasi (a 66% e 33% della vita: ruggito, pali nuovi, mosse nuove):
 ##   1 «Il banco»: AFFONDO · CODA (cerchio dove sei) · BEVE IL FIUME (ti risucchia, poi SPUTA un ventaglio)
 ##     · FIGLI (due serpi).
@@ -22,9 +25,16 @@ signal summon(kinds: Array)        # il gioco lo collega a ogni boss: fa uscire 
 const BoltScript := preload("res://scripts/enemy_bolt.gd")
 
 const HP := 2800.0
-const ARMOR := 0.5                  ## le scaglie: quanto passa di un colpo quando non è legato
-const BOUND_MULT := 1.7             ## legato a un palo
-const BOUND_TIME := 3.2
+const ARMOR := 0.35                 ## le scaglie: quanto passa di un colpo quando non è legato
+const BOUND_MULT := 1.4             ## legato a un palo
+const BOUND_TIME := 2.6
+## Blocco 22: lo scontro si misura in LEGATURE, non nel danno della build.
+const BIND_CAP := 0.09              ## ogni legatura toglie al massimo il 9% della vita massima; poi la corda cede
+const PHASE_BINDS := [2, 2]         ## legature da fare prima che la vita possa scendere sotto il 66% / il 33%
+const FRAY_TIME := 0.6              ## la corda si sfilaccia (avviso), poi schiocca
+const SNAP_R := 44.0                ## lo schiocco della corda attorno alla testa
+const SNAP_DMG := 8.0
+const STAKE_BREAKS := 2             ## pali che coda e anello possono spezzare, per fase (solo in fase 3)
 const PHASES := [0.66, 0.33]
 const LUNGE_WARN := 0.75
 const LUNGE_WARN2 := 0.5
@@ -88,6 +98,10 @@ var mouth := 0.0
 var stakes: Array = []
 var scale_txt := 0.0
 var gaze_dir := Vector2.DOWN
+var bind_hp0 := 0.0                 ## la vita quando la corda l'ha preso
+var binds_phase := 0                ## legature fatte in questa fase
+var breaks_phase := 0               ## pali spezzati (o condannati) in questa fase
+var gate_txt := 0.0
 
 
 func _ready() -> void:
@@ -129,6 +143,14 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 	st -= delta
 	brood_cd -= delta
 	scale_txt = maxf(0.0, scale_txt - delta)
+	gate_txt = maxf(0.0, gate_txt - delta)
+	# le due regole del blocco 22, tenute sulla VITA (così valgono anche per bruciature e veleni):
+	# la soglia di fase e il tetto della legatura
+	if phase <= PHASES.size() and binds_phase < int(PHASE_BINDS[phase - 1]):
+		hp = maxf(hp, max_hp * float(PHASES[phase - 1]) + 1.0)
+	if state == "bound" and bind_hp0 - hp >= max_hp * BIND_CAP - 0.5:
+		hp = bind_hp0 - max_hp * BIND_CAP
+		_fray()
 	maw_cd = maxf(0.0, maw_cd - delta)
 	_update_tails(delta)
 	_update_rings(delta)
@@ -201,6 +223,17 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 				st = MISS_REST
 				return Vector2.ZERO
 			return aim * LUNGE_SPEED
+		"fray":
+			if st <= 0.0:
+				# la corda schiocca: chi è rimasto addosso alla testa prende la frustata
+				Fx.shake(7.0)
+				Sfx.play_at("hit", global_position, 0.2)
+				Sfx.play_at("serpent_hiss", global_position, 0.1)
+				Fx.burst(global_position, Color(1.0, 0.85, 0.4), 22, 170.0)
+				if p != null and not p.dead and d < SNAP_R:
+					p.take_damage(SNAP_DMG, global_position, null, "corda")
+				_next(0.9)
+			return Vector2.ZERO
 		"bound":
 			if st <= 0.0:
 				Fx.burst(global_position, Color(0.94, 0.72, 0.3), 16, 120.0)
@@ -283,10 +316,22 @@ func _lunge_count() -> int:
 	return 1 if phase == 1 else 2
 
 
+## La corda ha dato tutto quello che poteva (il 9% della vita): si sfilaccia e poi schiocca.
+func _fray() -> void:
+	if state == "fray":
+		return
+	state = "fray"
+	st = FRAY_TIME
+	Sfx.play_at("scorpion_windup", global_position, 0.3)
+	Fx.float_text(global_position + Vector2(0, -44), Lang.t("LA CORDA CEDE"), Color(1.0, 0.6, 0.4))
+
+
 func _bind(s) -> void:
 	s.spend()
 	state = "bound"
 	st = BOUND_TIME
+	bind_hp0 = hp
+	binds_phase += 1
 	lunges_left = 0
 	Fx.shake(9.0)
 	Fx.hitstop(0.08)
@@ -297,6 +342,8 @@ func _bind(s) -> void:
 
 func _next_phase() -> void:
 	phase += 1
+	binds_phase = 0
+	breaks_phase = 0
 	state = "roar"
 	st = 2.0
 	tails.clear()
@@ -304,8 +351,10 @@ func _next_phase() -> void:
 	Fx.shake(12.0)
 	Sfx.play("roar", 0.0)
 	for s in stakes:
-		if is_instance_valid(s) and not s.alive:
-			s.regrow()
+		if is_instance_valid(s):
+			s.doomed = false
+			if not s.alive:
+				s.regrow()
 	var g = get_tree().current_scene
 	if phase == 2:
 		if g != null and g.has_method("_banner"):
@@ -412,12 +461,22 @@ func _update_tails(delta: float) -> void:
 		if at == Vector2.INF and float(tl[1]) <= TAIL_WARN and p != null:
 			tl[0] = p.global_position          # il cerchio si ferma dove sei quando parte il SUO avviso
 			at = tl[0]
+			# fase 3: la coda spezza il palo che ha sotto. Il palo diventa rosso adesso, 1 s prima:
+			# non farti prendere dalla coda vicino a un palo che ti serve
+			if phase >= 3:
+				for s in _alive_stakes():
+					if not s.doomed and breaks_phase < STAKE_BREAKS and s.global_position.distance_to(at) < TAIL_R:
+						s.doomed = true
+						breaks_phase += 1
 		if before > 0.0 and float(tl[1]) <= 0.0 and at != Vector2.INF:
 			Fx.shake(8.0)
 			Fx.burst(at, Color(0.35, 0.2, 0.45), 26, 170.0)
 			Sfx.play_at("amheh_land", at, 0.15)
 			if p != null and not p.dead and p.global_position.distance_to(at) < TAIL_R:
 				p.take_damage(TAIL_DMG, at, self)
+			for s in stakes:
+				if is_instance_valid(s) and s.alive and s.doomed and s.global_position.distance_to(at) < TAIL_R + 2.0:
+					s.shatter()
 			var pool := Chaos.Isfet.new()
 			pool.r = 20.0
 			pool.life = 4.0
@@ -431,6 +490,20 @@ func _update_rings(delta: float) -> void:
 	var p = get_tree().get_first_node_in_group("player")
 	for rg in rings:
 		rg[1] = float(rg[1]) + RING_SPEED * delta
+		# fase 3: l'anello spezza i pali che incontra fuori dal varco (rossi da 1 s prima, al massimo 2 per fase)
+		if phase >= 3:
+			for s in stakes:
+				if not is_instance_valid(s) or not s.alive:
+					continue
+				var sv: Vector2 = s.global_position - rg[0]
+				if absf(angle_difference(sv.angle(), float(rg[2]))) <= deg_to_rad(RING_GAP):
+					continue
+				var ahead := sv.length() - float(rg[1])
+				if not s.doomed and breaks_phase < STAKE_BREAKS and ahead > 0.0 and ahead <= RING_SPEED * 1.0:
+					s.doomed = true
+					breaks_phase += 1
+				elif s.doomed and absf(ahead) < RING_THICK:
+					s.shatter()
 		if p == null or p.dead or rg[3]:
 			continue
 		var v: Vector2 = p.global_position - rg[0]
@@ -478,13 +551,27 @@ func _update_trail() -> void:
 
 
 func take_hit(dmg: float, dir: Vector2, _kb: float, can_burn: bool = false) -> void:
-	if state == "intro" or state == "roar":
-		return
+	if state == "intro" or state == "roar" or state == "fray":
+		return                              # mentre la corda cede il danno non conta più
 	var k := BOUND_MULT if state == "bound" else ARMOR
+	var amount := dmg * k
+	if state == "bound":
+		amount = minf(amount, maxf(0.0, max_hp * BIND_CAP - (bind_hp0 - hp)))
+	elif phase <= PHASES.size() and binds_phase < int(PHASE_BINDS[phase - 1]):
+		# la soglia di fase: senza le legature della fase la vita non scende oltre
+		var floor_hp := max_hp * float(PHASES[phase - 1]) + 1.0
+		amount = minf(amount, maxf(0.0, hp - floor_hp))
+		if amount <= 0.0:
+			if gate_txt <= 0.0 and not dead:
+				gate_txt = 1.6
+				Fx.float_text(global_position + Vector2(0, -34), Lang.t("SOLO LA CORDA LO FERISCE"), Color(1.0, 0.85, 0.4))
+			return
 	if state != "bound" and scale_txt <= 0.0 and not dead:
 		scale_txt = 1.6
 		Fx.float_text(global_position + Vector2(0, -34), Lang.t("SCAGLIE"), Color(0.7, 0.7, 0.8))
-	super.take_hit(dmg * k, dir, 0.0, can_burn)
+	if amount <= 0.0:
+		return
+	super.take_hit(amount, dir, 0.0, can_burn)
 
 
 func _stagger_time() -> float:
@@ -553,6 +640,8 @@ func bot_escape(pos: Vector2) -> Vector2:
 		# il palo è sulla linea: all'ultimo ci si toglie di lato, il serpente va dritto
 		if absf(v.dot(aim.orthogonal())) < LUNGE_HALF + 14.0 and v.dot(aim) > -20.0:
 			return aim.orthogonal() * (1.0 if v.dot(aim.orthogonal()) >= 0.0 else -1.0)
+	if state == "fray" and v.length() < SNAP_R + 12.0:
+		return v.normalized() if v != Vector2.ZERO else Vector2.RIGHT
 	if state == "pull" and v.length() < 150.0:
 		return v.normalized()
 	if state == "spit" and v.length() < 200.0 and absf(rad_to_deg(aim.angle_to(v))) < SPIT_SPREAD / 2.0 + 10.0:
@@ -676,11 +765,27 @@ func _draw_serpent(flash: bool) -> void:
 			draw_arc(q, r * 0.72, t * 0.3 + i, t * 0.3 + i + PI, 8, scale_c, maxf(1.0, r * 0.22))
 		if i % 5 == 0 and r > 6.0:
 			draw_circle(q + Vector2(0, r * 0.3), r * 0.3, belly)
-	if state == "bound":
+	if state == "bound" or state == "fray":
+		# la corda: tre giri d'oro sul collo. Più danno ha già dato, più si assottiglia; quando cede
+		# trema, si sfilaccia (fili che volano) e lampeggia di rosso
+		var used := clampf((bind_hp0 - hp) / maxf(1.0, max_hp * BIND_CAP), 0.0, 1.0)
+		var fray := state == "fray"
 		for i in range(3):
 			var qi: Vector2 = trail[mini(2 + i * 2, n - 1)] - global_position
+			if fray:
+				qi += Vector2(sin(t * 60.0 + i * 2.0), cos(t * 53.0 + i)) * 1.5
+			var rope := Color(1.0, 0.85, 0.4)
+			if fray:
+				rope = Color(1.0, 0.35, 0.25) if fmod(t * 12.0, 1.0) < 0.5 else Color(1, 1, 1)
 			draw_arc(qi, 15.0, 0.0, TAU, 16, Color(0.12, 0.08, 0.05), 4.0)
-			draw_arc(qi, 15.0, 0.0, TAU, 16, Color(1.0, 0.85, 0.4), 2.4)
+			draw_arc(qi, 15.0, 0.0, TAU * (1.0 - 0.25 * used), 16, rope, lerpf(2.6, 1.0, used))
+			if fray or used > 0.6:
+				for f in range(3):
+					var fa := seed_offset + i * 2.1 + f * 1.3
+					var f0 := qi + Vector2.from_angle(fa) * 15.0
+					draw_line(f0, f0 + Vector2.from_angle(fa + sin(t * 9.0 + f)) * (4.0 + 5.0 * used), rope, 0.9)
+		if fray:
+			Enemy.warn_circle(self, Vector2.ZERO, SNAP_R, 1.0 - st / FRAY_TIME)
 	var o := aim.orthogonal()
 	var back := -aim * (10.0 if state == "lunge_warn" else 0.0)
 	var gape := mouth * 13.0

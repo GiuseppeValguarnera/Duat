@@ -174,6 +174,7 @@ class Stake extends Node2D:
 	var t := 0.0
 	var grow := 1.0                 ## 0 → 1 quando ricresce
 	var lit := false                ## l'affondo in arrivo lo colpirà: brilla (lo decide il boss)
+	var doomed := false             ## fase 3: la coda o l'anello stanno per spezzarlo (rosso, 1 s prima)
 
 	func _ready() -> void:
 		add_to_group("apep_stakes")
@@ -182,10 +183,20 @@ class Stake extends Node2D:
 	func spend() -> void:
 		alive = false
 		lit = false
+		doomed = false
 		Fx.burst(global_position + Vector2(0, -14), Color(0.94, 0.72, 0.3), 20, 130.0)
+
+	func shatter() -> void:
+		alive = false
+		lit = false
+		doomed = false
+		Sfx.play_at("hit", global_position, 0.3)
+		Fx.burst(global_position + Vector2(0, -14), Color(0.9, 0.25, 0.2), 20, 150.0)
+		Fx.float_text(global_position + Vector2(0, -44), Lang.t("PALO SPEZZATO"), Color(1.0, 0.45, 0.35))
 
 	func regrow() -> void:
 		alive = true
+		doomed = false
 		grow = 0.0
 
 	func _process(delta: float) -> void:
@@ -206,10 +217,13 @@ class Stake extends Node2D:
 			draw_line(Vector2(-3, -5), Vector2(3, -3), Color(0.5, 0.38, 0.16), 1.0)
 			return
 		var h := 30.0 * grow
+		if doomed:
+			draw_circle(Vector2(0, -h * 0.5), 22.0, Color(1.0, 0.2, 0.15, 0.25 + 0.2 * sin(t * 18.0)))
+			draw_arc(Vector2(0, -h * 0.5), 22.0, 0.0, TAU, 20, Color(1.0, 0.3, 0.2, 0.9), 1.5)
 		if lit:
 			draw_circle(Vector2(0, -h * 0.5), 20.0, Color(1.0, 0.85, 0.4, 0.22 + 0.12 * sin(t * 14.0)))
 		draw_rect(Rect2(-3.5, -h, 7, h + 1), Color(0.12, 0.08, 0.05))
-		draw_rect(Rect2(-2.5, -h + 1, 5, h - 1), gold if not lit else Color(1.0, 0.92, 0.6))
+		draw_rect(Rect2(-2.5, -h + 1, 5, h - 1), Color(0.95, 0.3, 0.22) if doomed else (gold if not lit else Color(1.0, 0.92, 0.6)))
 		draw_rect(Rect2(-2.5, -h + 1, 1.5, h - 1), Color(1.0, 0.9, 0.6, 0.6))
 		for i in range(3):
 			var yy := -h * (0.25 + 0.2 * i)
