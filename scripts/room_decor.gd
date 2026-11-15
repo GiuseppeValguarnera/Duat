@@ -38,6 +38,9 @@ var SHADE := 0.52
 var arena := ""
 ## Bracieri spenti (nella Sala, finché non li restauri: vedi restorations.gd). Da dare prima di build().
 var cold_braziers := false
+## Il Banco di Apopi: una caverna, non una tomba. Niente mosaici, maioliche, statue, sarcofagi, scaffali
+## né pannelli dipinti: restano roccia, crepe, bracieri dalla fiamma fredda.
+var cave := false
 
 
 func build(seed_value: int, room_rect: Rect2, top_y: float, wall_w: float, pillars: Array, boss: bool) -> Array:
@@ -172,6 +175,7 @@ func _bake() -> void:
 	p.torches = torches
 	p.mosaic = mosaic
 	p.cold_braziers = cold_braziers
+	p.cave = cave
 	p.under = under
 	p.SHADE = SHADE
 	p.arena = arena
@@ -204,6 +208,8 @@ func _near_pillar(pos: Vector2, pillars: Array, d: float) -> bool:
 
 ## Aggiunge un oggetto solido se non è sopra una colonna o davanti a una porta.
 func _try_prop(kind: String, pos: Vector2, size: Vector2, pillars: Array, solids: Array) -> void:
+	if cave and kind != "brazier":
+		return
 	for p in pillars:
 		if p.distance_to(pos) < 44.0:
 			return
@@ -312,6 +318,11 @@ func _draw_shade() -> void:
 		RenderingServer.canvas_item_add_triangle_array(get_canvas_item(), idx, pts, cols)
 
 func _draw_floor() -> void:
+	if cave:
+		for fb in floor_bits:
+			if fb[0] == "crack":
+				draw_polyline(fb[1], Color(0.03, 0.02, 0.05, 0.8), 1.2)
+		return
 	var cx := room.size.x / 2.0
 	var mid_y := (top + room.size.y - wall) / 2.0
 	var c := Vector2(cx, mid_y)
@@ -362,6 +373,17 @@ func _draw_floor() -> void:
 
 
 func _draw_walls() -> void:
+	if cave:
+		# stalattiti lungo la parete in alto, al posto dei pannelli dipinti
+		var sx := wall + 12.0
+		var k2 := 0
+		while sx < room.size.x - wall - 8.0:
+			var h := 8.0 + 9.0 * absf(sin(k2 * 1.9 + room.size.x))
+			draw_colored_polygon(PackedVector2Array([Vector2(sx - 5, wall * 2.0), Vector2(sx + 5, wall * 2.0), Vector2(sx, wall * 2.0 + h)]), Color(0.07, 0.05, 0.1))
+			draw_line(Vector2(sx - 2, wall * 2.0 + 1), Vector2(sx, wall * 2.0 + h - 1), Color(0.35, 0.25, 0.5, 0.6), 1.0)
+			sx += 17.0 + 7.0 * absf(cos(k2 * 2.3))
+			k2 += 1
+		return
 	# pannelli dipinti con geroglifici sulla parete in alto
 	var cx := room.size.x / 2.0
 	var x := wall + 10.0

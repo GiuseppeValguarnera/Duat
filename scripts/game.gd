@@ -44,10 +44,12 @@ const ENEMIES := {
 	"shetyu": preload("res://scenes/shetyu.tscn"),              # tartaruga del caos (trottola)
 	"shezmu": preload("res://scenes/shezmu.tscn"),              # guardiano: il Signore del Torchio
 	"apep": preload("res://scenes/apep.tscn"),                  # boss: Apopi
+	"apep_egg": preload("res://scenes/apep_egg.tscn"),          # uovo: fa nascere serpi
+	"inverted": preload("res://scenes/inverted.tscn"),          # il Capovolto: specchiato sul centro
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "amheh_anello": "l'anello di fuoco di Am-heh", "aker_shade": "un'Ombra di Sabbia", "aker_spark": "una Scintilla dell'Alba", "aker_scintilla": "la fiammata di una Scintilla dell'Alba", "aker_fuoco": "il fuoco delle Scintille", "aker_crepa": "una crepa di fuoco", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra", "fiume": "il fiume di sabbia nera", "buca": "una buca delle sabbie che crollano", "falco": "una statua-falco", "javelin": "un lanciatore di giavellotti", "sokar_priest": "un sacerdote di Sokar", "khepri": "uno scarabeo di Khepri", "khepri_ball": "la sfera di Khepri", "mirage": "il miraggio", "serket_nube": "la nube di veleno", "serket_aura": "l'aura di veleno di Serket", "scorpion_veleno": "il veleno dello scorpione", "serpent_veleno": "il veleno del Serpente", "serket_veleno": "il veleno di Serket", "sekhmet_heavy": "la sete di Sekhmet", "salasso": "il salasso del Peso del Cuore", "apep_spawn": "un Figlio di Apopi", "sheut": "un'ombra senza padrone", "knifer": "un portatore di coltelli", "shetyu": "la tartaruga del caos", "shezmu": "Shezmu, il Signore del Torchio", "apep": "Apopi", "isfet": "l'Isfet, il caos che ribolle", "spira": "una spira di Apopi"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "amheh_anello": "l'anello di fuoco di Am-heh", "aker_shade": "un'Ombra di Sabbia", "aker_spark": "una Scintilla dell'Alba", "aker_scintilla": "la fiammata di una Scintilla dell'Alba", "aker_fuoco": "il fuoco delle Scintille", "aker_crepa": "una crepa di fuoco", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra", "fiume": "il fiume di sabbia nera", "buca": "una buca delle sabbie che crollano", "falco": "una statua-falco", "javelin": "un lanciatore di giavellotti", "sokar_priest": "un sacerdote di Sokar", "khepri": "uno scarabeo di Khepri", "khepri_ball": "la sfera di Khepri", "mirage": "il miraggio", "serket_nube": "la nube di veleno", "serket_aura": "l'aura di veleno di Serket", "scorpion_veleno": "il veleno dello scorpione", "serpent_veleno": "il veleno del Serpente", "serket_veleno": "il veleno di Serket", "sekhmet_heavy": "la sete di Sekhmet", "salasso": "il salasso del Peso del Cuore", "apep_spawn": "un Figlio di Apopi", "sheut": "un'ombra senza padrone", "knifer": "un portatore di coltelli", "shetyu": "la tartaruga del caos", "inverted": "un Capovolto", "apep_egg": "un uovo di Apopi", "shezmu": "Shezmu, il Signore del Torchio", "apep": "Apopi", "isfet": "l'Isfet, il caos che ribolle", "spira": "una spira di Apopi"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il %d%% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -73,7 +75,7 @@ const BOSS_INTROS := {
 	"serpent": ["IL SERPENTE DELLA PORTA", "Guardiano della quinta porta", "Ogni porta del Duat ha il suo guardiano. Attento alle statue del cobra", "boss", Color(0.5, 0.95, 0.45)],
 	"aker": ["AKER", "Il leone dell'orizzonte", "Non ha un dietro: colpiscilo sui fianchi. Dietro le pietre il raggio non passa", "boss_aker", Color(1.0, 0.7, 0.3)],
 	"shezmu": ["SHEZMU", "Il Signore del Torchio", "La mannaia torna indietro: non darle le spalle. Dopo la carica contro il muro è stordito", "guard_r3", Color(0.9, 0.25, 0.25)],
-	"apep": ["APOPI", "Il serpente del caos", "Non si uccide: si respinge. Dopo l'affondo ha il muso nella sabbia: colpiscilo lì", "boss_r3", Color(0.7, 0.4, 1.0)],
+	"apep": ["APOPI", "Il serpente del caos", "Le scaglie non si aprono. Fallo affondare contro un palo di Serket: legato, è tuo", "boss_r3", Color(0.7, 0.4, 1.0)],
 	"serket": ["SERKET", "Colei che fa respirare la gola", "Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare", "boss_serket", Color(0.4, 0.9, 0.82)],
 }
 const DecorScript := preload("res://scripts/room_decor.gd")
@@ -255,6 +257,9 @@ func start_room(reward: Dictionary) -> void:
 	# l'altare di Set è una deviazione: la discesa non avanza
 	if reward.get("kind", "") not in ["set", "oasis"]:
 		Run.room += 1
+		if Run.region >= 3 and Run.room == 1 and not Run.trial:
+			get_tree().create_timer(0.9, false).timeout.connect(func() -> void:
+				_banner(Lang.t("Il Banco di Apopi"), Lang.t("Qui il serpente beve il fiume. L'acqua è nera, e guarda"), Color(0.7, 0.45, 1.0), 4.5))
 	Run.nefti_room_heal = 0.0              # il tetto delle cure di Nefti vale per stanza
 	room_gen += 1
 	boss = null
@@ -329,6 +334,8 @@ func start_room(reward: Dictionary) -> void:
 		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_temple(ci, ROOM, TOP, WALL)
 	elif arena == "horizon":
 		decor.under = func(ci: CanvasItem) -> void: Arenas.paint_horizon(ci, ROOM, TOP, WALL)
+	elif arena == "oasis" and Run.region >= 3:
+		decor.under = func(ci: CanvasItem) -> void: Oasis.paint_mehen(ci, ROOM, TOP, WALL)
 	elif arena == "oasis":
 		decor.under = func(ci: CanvasItem) -> void: Oasis.paint(ci, ROOM, TOP, WALL)
 	elif arena == "press":
@@ -336,6 +343,9 @@ func start_room(reward: Dictionary) -> void:
 	elif arena == "bank":
 		decor.under = func(ci: CanvasItem) -> void: ApepArena.paint_bank(ci, ROOM, TOP, WALL)
 	decor.arena = arena
+	decor.cave = Run.region >= 3 and not Run.trial and arena != "oasis"
+	if decor.cave:
+		decor.cold_braziers = true
 	Run.deep_center = Arenas.deep_center(ROOM, TOP, WALL) if arena == "gate" else Vector2.ZERO
 	Run.deep_radii = Arenas.DEEP_RADII if arena == "gate" else Vector2.ZERO
 	if arena != "":
@@ -372,6 +382,8 @@ func start_room(reward: Dictionary) -> void:
 	if kind == "sphinx":
 		trial.build_arena()
 	pillar_art = DecorScript.Pillars.new()
+	if Run.region >= 3 and not Run.trial:
+		pillar_art.modulate = Color(0.42, 0.36, 0.6)       # nel Banco le colonne sono basalto viola, non arenaria dipinta
 	pillar_art.list = pillars
 	pillar_art.in_water = arena == "gate"
 	pillar_art.z_index = 1                 # sopra chi passa dietro, sotto chi sta davanti (_pillar_depth)
@@ -482,15 +494,16 @@ const SOKAR_KINDS := {
 }
 var sokar_types: Array = []              ## i tipi di nemici di questa stanza di Sokar
 
-## Il Banco di Apopi: serpi (a coppie), ombre, tartarughe; a distanza i portatori di coltelli. Dalle
-## regioni prima tornano i Ba dannati e gli scarabei di Khepri: il caos raccoglie tutto.
+## Il Banco di Apopi: SOLO nemici suoi (15/11: tolti Ba dannati e scarabei di Khepri, che erano di Sokar).
+## Serpi a coppie, ombre, tartaruga, uovo (fa nascere serpi finché non lo rompi); a distanza i portatori
+## di coltelli e il Capovolto (sta sempre dalla parte opposta a te).
 const APEP_KINDS := {
 	"apep_spawn": [3, ["apep_spawn", "apep_spawn"], false, 3],
 	"sheut": [3, ["sheut"], false, 2],
 	"shetyu": [4, ["shetyu"], false, 1],
-	"damned_ba": [2, ["damned_ba", "damned_ba"], false, 1],
+	"apep_egg": [3, ["apep_egg"], false, 1],
 	"knifer": [2, ["knifer"], true, 2],
-	"khepri": [3, ["khepri"], true, 1],
+	"inverted": [3, ["inverted"], true, 1],
 }
 
 
@@ -1058,20 +1071,12 @@ func _next_region() -> void:
 	p.title = Lang.t("La quarta ora")
 	p.sub = Lang.t("La terra di Sokar")
 	if Run.region >= 3:
-		# niente oasi: la barca scivola nell'acqua nera. Ra ti presta un respiro (un quarto della vita)
+		# come tra Wernes e Sokar: prima una sosta (la Grotta di Mehen, sesta ora), poi Mahaf ti porta al Banco
 		if not Meta.apep_seen:
 			Meta.apep_seen = true
 			Meta.save()
-		p.title = Lang.t("La settima ora")
-		p.sub = Lang.t("Il Banco di Apopi")
-		get_tree().root.add_child(p)
-		get_tree().create_timer(1.2, true).timeout.connect(func() -> void:
-			Run.room = 1
-			start_room({"kind": "none"})
-			if player != null and is_instance_valid(player):
-				player.heal(player.max_hp * 0.25)
-			_banner(Lang.t("Il Banco di Apopi"), Lang.t("Qui il serpente beve il fiume. L'acqua è nera, e guarda"), Color(0.7, 0.45, 1.0), 4.5))
-		return
+		p.title = Lang.t("La sesta ora")
+		p.sub = Lang.t("La Grotta di Mehen")
 	get_tree().root.add_child(p)
 	get_tree().create_timer(1.2, true).timeout.connect(func() -> void: start_room({"kind": "oasis"}))
 
@@ -2245,7 +2250,8 @@ func _start_oasis() -> void:
 	rooms.solid(Rect2(pc - Vector2(Oasis.POOL_RADII.x, Oasis.POOL_RADII.y * 0.8), Vector2(Oasis.POOL_RADII.x * 2.0, Oasis.POOL_RADII.y * 1.6)))
 	var spring := Oasis.Spring.new()
 	spring.position = pc
-	spring.title = Lang.t("La fonte della quarta ora")
+	var grotto := Run.region >= 3
+	spring.title = Lang.t("L'acqua di Nun") if grotto else Lang.t("La fonte della quarta ora")
 	spring.desc = Lang.t("recuperi il 25% della vita (una volta sola)")
 	world.add_child(spring)
 	oasis_nodes.append(spring)
@@ -2264,7 +2270,8 @@ func _start_oasis() -> void:
 	oasis_nodes.append(altar)
 	var statue := Oasis.Statue.new()
 	statue.position = Vector2(ROOM.size.x * 0.5 + 118.0, TOP + 66.0)
-	statue.title = Lang.t("La statua di Sokar")
+	statue.mehen = grotto
+	statue.title = Lang.t("Mehen, l'Avvolgente") if grotto else Lang.t("La statua di Sokar")
 	statue.desc = Lang.t("ascolta")
 	world.add_child(statue)
 	rooms.solid(Rect2(statue.position + Vector2(-17, -4), Vector2(34, 14)))
@@ -2279,7 +2286,10 @@ func _start_oasis() -> void:
 		oasis_nodes.append(barque)
 	_start_shop(true)
 	oasis_mahaf_talked = false
-	_banner(Lang.t("L'Oasi della quarta ora"), Lang.t("Qui la notte è breve. Riposa, poi Mahaf ti porterà nella sabbia"), Color(0.7, 0.85, 1.0), 3.0)
+	if grotto:
+		_banner(Lang.t("La Grotta di Mehen"), Lang.t("Il serpente buono veglia. Riposa: oltre c'è quello che non lo è"), Color(0.95, 0.8, 0.45), 3.5)
+	else:
+		_banner(Lang.t("L'Oasi della quarta ora"), Lang.t("Qui la notte è breve. Riposa, poi Mahaf ti porterà nella sabbia"), Color(0.7, 0.85, 1.0), 3.0)
 
 
 func _use_oasis(o: Node2D) -> void:
@@ -2289,17 +2299,41 @@ func _use_oasis(o: Node2D) -> void:
 		player.heal(roundf(Run.max_hp * 0.25))
 		Fx.burst(o.global_position + Vector2(0, -10), Color(0.6, 0.9, 1.0), 40, 140.0)
 		Sfx.play("pickup", 0.0)
-		_banner(Lang.t("La fonte della quarta ora"), Lang.t("L'acqua ricorda il Nilo: ti rende un poco di ciò che hai perduto"), Color(0.6, 0.85, 0.95))
+		if Run.region >= 3:
+			_banner(Lang.t("L'acqua di Nun"), Lang.t("L'acqua di prima del mondo: non ha sapore, ma ti rimette in piedi"), Color(0.6, 0.85, 0.95))
+		else:
+			_banner(Lang.t("La fonte della quarta ora"), Lang.t("L'acqua ricorda il Nilo: ti rende un poco di ciò che hai perduto"), Color(0.6, 0.85, 0.95))
 	elif o is Oasis.Altar:
 		_show_amulet_altar(o)
 	elif o is Oasis.Barque:
 		_open_swap(o)
+	elif Run.region >= 3:
+		# Mehen spiega Apopi: i suoi consigli in ordine, uno per visita, poi a caso
+		var said := false
+		for i in range(Oasis.MEHEN_LINES.size()):
+			var mid := "mehen_%d" % i
+			if not Meta.dialogue_seen.has(mid):
+				Meta.dialogue_seen.append(mid)
+				Meta.save()
+				_banner(Lang.t("Mehen"), Lang.t(Oasis.MEHEN_LINES[i]), Color(0.94, 0.72, 0.3), 6.0)
+				said = true
+				break
+		if not said:
+			_banner(Lang.t("Mehen"), Lang.t(Oasis.MEHEN_LINES.pick_random()), Color(0.94, 0.72, 0.3), 6.0)
 	else:
 		_banner(Lang.t("Sokar"), Lang.t(Oasis.SOKAR_LINES.pick_random()), Color(0.94, 0.72, 0.3), 4.5)
 
 
 ## Mahaf nell'Oasi: la prima battuta sul viaggio che non hai ancora sentito, poi a caso.
 func _oasis_mahaf_line() -> String:
+	if Run.region >= 3:
+		for i in range(Oasis.MAHAF_LINES_2.size()):
+			var id2 := "mahaf_mehen_%d" % i
+			if not Meta.dialogue_seen.has(id2):
+				Meta.dialogue_seen.append(id2)
+				Meta.save()
+				return Lang.t(Oasis.MAHAF_LINES_2[i])
+		return Lang.t(Oasis.MAHAF_LINES_2.pick_random())
 	for i in range(Oasis.MAHAF_LINES.size()):
 		var id := "mahaf_oasi_%d" % i
 		if not Meta.dialogue_seen.has(id):

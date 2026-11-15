@@ -17,6 +17,25 @@ const SOKAR_LINES := [
 ]
 
 
+## La Grotta di Mehen (la sesta ora, tra Sokar e il Banco di Apopi): la stessa sosta dell'Oasi, in un
+## altro luogo. Mehen è il serpente BUONO, «l'Avvolgente», che ogni notte arrotola le sue spire attorno
+## alla cabina di Ra per proteggerlo: l'ultimo riparo prima del serpente che non lo è.
+const MEHEN_LINES := [
+	"«Io sono Mehen, l'Avvolgente. Le mie spire stanno attorno al dio perché nulla lo tocchi. Oltre questa grotta c'è un altro serpente. Non confonderci.»",
+	"«Apopi non ha occhi per vedere: ha occhi per addormentare. Non restare mai fermo davanti alla sua testa.»",
+	"«Nessuno lo ha mai ucciso. Serket lo lega, e i nodi tengono una notte. Cerca i suoi pali sul banco di sabbia: lì il serpente si impiglia.»",
+	"«Quando beve il fiume, non fuggire dritto: la corrente è più forte di te. Di lato, piccolo scriba. Sempre di lato.»",
+	"«Le sue scaglie non si aprono. Colpiscilo quando è legato: allora ogni colpo vale tre. Il resto è fatica sprecata.»",
+	"«Io avvolgo per custodire, lui per stringere. Quando vedrai le sue spire chiudersi in cerchio, cerca il varco: c'è sempre.»",
+]
+const MAHAF_LINES_2 := [
+	"«La sesta ora. Il punto più basso. Da qui il Fiume non scende più: risale. Se ci arrivi.»",
+	"«Quel serpente lì è buono. Lo so, è difficile fidarsi. Ma ha tenuto in vita un dio per più notti di quante io ne abbia remate.»",
+	"«Bevi. È acqua di Nun, quella che c'era prima di tutto. Non ha sapore perché il sapore è venuto dopo.»",
+	"«Oltre c'è il banco di sabbia. Io ti porto fin dove l'acqua è acqua. Dove diventa nera, la barca la spingi tu.»",
+]
+
+
 ## Mahaf nell'Oasi: non vende, racconta il viaggio. Le prime le dice in ordine, una per discesa
 ## finché non le ha dette tutte, poi a caso.
 const MAHAF_LINES := [
@@ -46,6 +65,8 @@ static func _oval(c: Vector2, rx: float, ry: float, n: int = 28) -> PackedVector
 
 
 ## Il pavimento: sabbia scura sotto le stelle, l'acqua con il cielo riflesso, palme e giunchi.
+static var no_palms := false          ## la Grotta di Mehen: sotto terra non crescono palme
+
 static func paint(ci: CanvasItem, r: Rect2, top: float, wall: float) -> void:
 	var floor_r := Rect2(wall, top, r.size.x - wall * 2.0, r.size.y - wall - top)
 	ci.draw_rect(floor_r, Color(0.3, 0.27, 0.36))
@@ -117,6 +138,47 @@ static func paint(ci: CanvasItem, r: Rect2, top: float, wall: float) -> void:
 		_jar(ci, jp)
 
 
+## La Grotta di Mehen: sopra il disegno dell'Oasi, la notte viola della sesta ora e le spire d'oro del
+## serpente buono attorno alla fonte (l'acqua di Nun).
+static func paint_mehen(ci: CanvasItem, r: Rect2, top: float, wall: float) -> void:
+	no_palms = true
+	paint(ci, r, top, wall)
+	no_palms = false
+	var floor_r := Rect2(wall, top, r.size.x - wall * 2.0, r.size.y - wall - top)
+	ci.draw_rect(floor_r, Color(0.1, 0.04, 0.22, 0.5))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 6606
+	# stalattiti d'ombra lungo la parete e cristalli viola a terra
+	for i in range(14):
+		var x := rng.randf_range(floor_r.position.x + 8.0, floor_r.end.x - 8.0)
+		var h := rng.randf_range(10.0, 26.0)
+		ci.draw_colored_polygon(PackedVector2Array([Vector2(x - 5, top), Vector2(x + 5, top), Vector2(x, top + h)]), Color(0.06, 0.04, 0.1))
+	for i in range(9):
+		var c := Vector2(rng.randf_range(floor_r.position.x + 14.0, floor_r.end.x - 14.0), rng.randf_range(top + 40.0, floor_r.end.y - 10.0))
+		if c.distance_to(pool_center(r, top)) < 90.0:
+			continue
+		ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-3, 0), c + Vector2(0, -9), c + Vector2(3, 0)]), Color(0.45, 0.25, 0.7))
+		ci.draw_line(c + Vector2(0, -9), c + Vector2(-1, -2), Color(0.8, 0.65, 1.0), 1.0)
+	# Mehen: due giri di spire d'oro e lapis attorno alla fonte, la testa a destra che veglia
+	var pc := pool_center(r, top)
+	for k in range(2):
+		var rx := POOL_RADII.x + 12.0 + k * 11.0
+		var ry := POOL_RADII.y + 9.0 + k * 8.0
+		var ring := _oval(pc + Vector2(0, 2.0 * k), rx, ry, 44)
+		ring.append(ring[0])
+		ci.draw_polyline(ring, Color(0.1, 0.07, 0.04), 9.0)
+		ci.draw_polyline(ring, Color(0.8, 0.6, 0.22), 6.5)
+		for i in range(0, 44, 2):
+			ci.draw_circle(ring[i], 1.5, Color(0.2, 0.36, 0.8))
+		var hi := _oval(pc + Vector2(0, 2.0 * k - 2.0), rx, ry, 44)
+		ci.draw_polyline(hi.slice(22, 44), Color(1.0, 0.9, 0.6, 0.5), 1.2)
+	var hp := pc + Vector2(POOL_RADII.x + 30.0, -4.0)
+	ci.draw_colored_polygon(_oval(hp, 9.5, 7.0, 14), Color(0.1, 0.07, 0.04))
+	ci.draw_colored_polygon(_oval(hp, 8.5, 6.0, 14), Color(0.85, 0.66, 0.26))
+	ci.draw_circle(hp + Vector2(2.5, -1.5), 1.6, Color(0.2, 0.75, 0.7))
+	ci.draw_line(hp + Vector2(8, 1), hp + Vector2(13, 0), Color(0.75, 0.15, 0.15), 1.2)
+
+
 ## Dove stanno i bracieri accanto alla porta.
 static func brazier_spots(r: Rect2, top: float) -> Array:
 	return [Vector2(r.size.x * 0.5 - 70.0, top + 26.0), Vector2(r.size.x * 0.5 + 70.0, top + 26.0)]
@@ -141,6 +203,8 @@ static func _reed(ci: CanvasItem, base: Vector2, rng: RandomNumberGenerator) -> 
 
 
 static func _palm(ci: CanvasItem, p: Vector2, rng: RandomNumberGenerator) -> void:
+	if no_palms:
+		return
 	ci.draw_colored_polygon(_oval(p + Vector2(4, 2), 14.0, 5.0, 12), Color(0, 0, 0, 0.28))
 	var top_p := p + Vector2(rng.randf_range(-6.0, 6.0), -62.0)
 	var trunk := PackedVector2Array([p, p.lerp(top_p, 0.4) + Vector2(3, 0), p.lerp(top_p, 0.75) + Vector2(-2, 0), top_p])
@@ -287,6 +351,7 @@ class Altar extends Node2D:
 
 ## La statua di Sokar: un uomo mummiforme con la testa di falco, in piedi sul suo piedistallo.
 class Statue extends Node2D:
+	var mehen := false              ## la Grotta di Mehen: non Sokar ma il serpente avvolto attorno al sole
 	var reach := 40.0
 	var used := false
 	var title := ""
@@ -304,6 +369,25 @@ class Statue extends Node2D:
 		var light := Color(0.72, 0.66, 0.56)
 		draw_rect(Rect2(-17.5, 0.5, 35, 9), out)
 		draw_rect(Rect2(-17, 1, 34, 8), stone)
+		if mehen:
+			# il disco del sole avvolto da tre giri di serpente d'oro: Mehen che custodisce Ra
+			var gm := 0.5 + 0.3 * sin(t * 1.4)
+			draw_circle(Vector2(0, -26), 20.0, Color(1.0, 0.75, 0.3, 0.1 * gm))
+			draw_circle(Vector2(0, -26), 11.0, out)
+			draw_circle(Vector2(0, -26), 10.0, Color(0.95, 0.55, 0.2))
+			draw_circle(Vector2(-2, -28), 5.0, Color(1.0, 0.8, 0.4, 0.7))
+			for k in range(3):
+				var rr := 13.0 + k * 3.6
+				draw_arc(Vector2(0, -26 + k * 1.5), rr, t * 0.15 + k, t * 0.15 + k + TAU * 0.86, 28, out, 4.4)
+				draw_arc(Vector2(0, -26 + k * 1.5), rr, t * 0.15 + k, t * 0.15 + k + TAU * 0.86, 28, Color(0.85, 0.66, 0.26), 3.0)
+			var ha := t * 0.15 + 2.0 + TAU * 0.86
+			var hh := Vector2(0, -23) + Vector2.from_angle(ha) * 20.2
+			draw_circle(hh, 4.2, out)
+			draw_circle(hh, 3.4, Color(0.9, 0.72, 0.3))
+			draw_circle(hh + Vector2(1, -1), 0.9, Color(0.2, 0.75, 0.7))
+			if near:
+				UiStyle.sparkle(self, Vector2(0, -34), 22.0, t, false, position.x * 0.05)
+			return
 		# corpo avvolto
 		draw_colored_polygon(PackedVector2Array([Vector2(-10, 1), Vector2(-9, -26), Vector2(-6, -38), Vector2(6, -38), Vector2(9, -26), Vector2(10, 1)]), out)
 		draw_colored_polygon(PackedVector2Array([Vector2(-8.6, 0), Vector2(-7.6, -26), Vector2(-4.8, -37), Vector2(4.8, -37), Vector2(7.6, -26), Vector2(8.6, 0)]), stone)

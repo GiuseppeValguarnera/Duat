@@ -417,7 +417,7 @@ func _decide(g, p) -> void:
 				crowd += 1
 		if target.is_boss or target.miniboss:
 			# con Ammit e con il Serpente: addosso solo quando è stordita o si sta riprendendo, altrimenti a distanza
-			var open_window: bool = target.state in ["stunned", "recover", "intro", "furia", "dive", "exhausted"]
+			var open_window: bool = target.state in ["stunned", "recover", "intro", "furia", "dive", "exhausted", "stuck", "bound", "dizzy"]
 			want_range = 34.0 if (open_window or randf() > skill) else 125.0
 			if Run.weapon == "arco":
 				want_range = 150.0 if not open_window else 110.0
@@ -457,6 +457,12 @@ func _decide(g, p) -> void:
 				if side.dot(pos - target.global_position) < 0.0:
 					side = -side
 				move_dir = side
+				return
+		# Apopi: chi è bravo si mette dietro un palo di Serket, così l'affondo ci finisce contro
+		if target.has_method("bot_bait") and randf() < skill:
+			var bait: Vector2 = target.bot_bait(pos)
+			if bait != Vector2.INF:
+				move_dir = (bait - pos).normalized() if pos.distance_to(bait) > 8.0 else Vector2.ZERO
 				return
 		if dist > want_range + 6.0:
 			move_dir = to.normalized()

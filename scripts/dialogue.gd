@@ -115,7 +115,7 @@ static func death_table() -> Dictionary:
 				Lang.t("Hai guardato il caos negli occhi. Pochi lo hanno fatto, e nessuno una volta sola."),
 				Lang.t("Piano {piano}. Il serpente non si uccide. Si lega, un nodo per notte. Stanotte il nodo si è sciolto."),
 			],
-			"boss_tip": Lang.t("Quando beve, cammina contro la corrente e scatta di lato. Quando affonda, il suo muso resta nella sabbia: quello è il tuo momento."),
+			"boss_tip": Lang.t("Le sue scaglie non si aprono. Mettiti dietro un palo di Serket e aspetta l'affondo: quando la corda lo lega, quello è il tuo momento."),
 			"hazard": [
 				Lang.t("Non un nemico, Scriba: l'Isfet. Il caos non ha bisogno di mani per prendere ciò che vuole."),
 				Lang.t("La caverna respira, e tu eri nel suo respiro. Guarda il pavimento: le crepe dicono dove dorme la spira."),

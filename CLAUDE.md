@@ -542,6 +542,37 @@ che non si può evitare (pavimento pieno, folla, danni a sfioramento, buio lungo
 - Bot: `bot_escape` su serpi, ombre e tartaruga; evita Isfet e spire. Attenzione: `bots.sh` usa una sola cartella di
   lavoro (`/tmp/duat_bots/work`): mai due `bots.sh` insieme; per una prova in parallelo usare `watch.sh`.
 
+**Blocco 20 (15/11/2026) – il Banco di Apopi reso unico, Apopi "muro", Shezmu aggressivo, sosta tra Sokar e il Banco**.
+Richiesta del proprietario: ogni regione unica (la terza "sembrava un misto"), Apopi troppo semplice (deve essere un muro
+da studiare, tattico), Shezmu più aggressivo (il suo preferito è Serket), mancava la sosta tra seconda e terza regione.
+(Le voci del blocco 18-19 su Apopi, Shezmu e `APEP_KINDS` sono superate da queste.)
+- *Solo cose sue*: tolti dal Banco Ba dannati, scarabei di Khepri, spuntoni e giare. `APEP_KINDS`: `apep_spawn`, `sheut`,
+  `shetyu`, `knifer` + due nuovi: **Uovo di Apopi** `apep_egg` (fermo, vita 50: ogni 5,5 s fa nascere una serpe, max 2 vive,
+  4 schiuse poi si svuota: bersaglio da scegliere per primo) e **il Capovolto** `inverted` (dannato a testa in giù: sta
+  SEMPRE specchiato a te rispetto al centro della stanza, un filo d'ombra lo lega al centro; lancia la sua ombra in linea;
+  si prende andando al centro, non inseguendolo). Decoro: `RoomDecor.cave` (niente mosaici, maioliche, statue, sarcofagi,
+  pannelli dipinti; stalattiti, bracieri freddi), colonne viola (`pillar_art.modulate`).
+- *Sosta*: **la Grotta di Mehen** (sesta ora) = la stanza `oasis` con `Run.region >= 3`: `Oasis.paint_mehen` (notte viola,
+  spire d'oro di Mehen attorno alla fonte, `no_palms`), `Statue.mehen`, acqua di Nun (+25%), altare di Imhotep, Seconda
+  Barca, Mahaf (`MAHAF_LINES_2`, id `mahaf_mehen_N`) che poi ti porta al Banco. Mehen (`MEHEN_LINES`, id `mehen_N`, in
+  ordine) spiega Apopi: pali, sguardo, varco, risucchio. Prova `tools/dev/shots/mehenshot.gd`.
+- *Apopi riscritto* (`scripts/apep.gd`, costanti in cima): **scaglie** = i colpi fanno il 50% (`ARMOR`); 4 **pali di Serket**
+  (`Chaos.Stake`, gruppo `apep_stakes`, `STAKE_AT`): se l'AFFONDO finisce contro un palo → **LEGATO** 3,2 s a ×1,7
+  (`_bind`); il palo brilla e una linea d'oro lo indica quando la striscia dell'affondo lo prende (`_stake_on_line`); un
+  palo serve una volta, ricrescono a ogni fase. Senza palo: sbatte e riparte dopo 0,7 s (niente più "ESPOSTO").
+  Tre fasi (66% e 33%, `_next_phase`: ruggito 2 s intoccabile): 1 affondo, coda, beve il fiume + sputo, Figli (max 2);
+  2 + **STRETTA** (anello di spire che si allarga dalla testa a 135 px/s, 16 danni, VARCO di 60° segnato d'oro, si passa
+  di lì o con lo scatto), due affondi, due code; 3 + **SGUARDO** (cono 52° × 250 px, 1,1 s: 8 danni e INCANTATO =
+  `player.charm_t`, cammini al 45% per 2 s), buio 5 s sì / 10 no, due anelli con varchi diversi, tre code. Vita 2800.
+  Bot: `bot_bait(pos)` (si mette dietro un palo) e `bot_escape`. Misure (veterani con 24 doni che CONOSCONO il trucco):
+  2 vittorie su 8 in 2,5-2,8 min, gli altri col 2-44% rimasto.
+- *Shezmu aggressivo*: velocità 80, pausa tra le mosse 0,35-0,7 s, infuriato dal 60%; mosse LEGATE (`combo_next`): mannaia →
+  carica (anche con la mannaia in volo), torchio → vino o balzo, balzo → vino; nuovo **BALZO** (`leap_warn`: cerchio 40,
+  0,8 s, 15 danni); torchio 4 pietre (6 infuriato) una dopo l'altra che ti seguono. Vita 500. Misure: 3/4 da solo in 79-100 s;
+  nella discesa intera resta il muro (chi arriva ferito ci muore col 24-47% rimasto).
+- Bot: finestre aperte anche `stuck`/`bound`/`dizzy`. Le pozze di Isfet sono la prima fonte di danno dei bot nelle stanze
+  (36-81 a discesa): da guardare se il proprietario le sente come logorio.
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima

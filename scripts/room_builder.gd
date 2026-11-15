@@ -139,10 +139,7 @@ func _place_apep(r: int) -> void:
 		coil.period = maxf(4.0, 6.5 - 0.25 * r)
 		coil.position = at2
 		g.world.add_child(coil)
-	if r >= 4:
-		_place_spikes_near(spots, 2 + (1 if r >= 7 else 0))
-	if r >= 3:
-		place_jars()
+	# niente spuntoni (sono di Wernes) né giare: nel Banco i pericoli sono solo suoi
 
 
 ## Un punto libero sul pavimento, lontano dalle porte, dal centro (dove compare l'eroe) e dagli altri.

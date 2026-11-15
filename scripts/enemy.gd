@@ -160,7 +160,7 @@ func _relocate(g) -> void:
 ## Regola del 12/11 (sera): un boss o un guardiano che RIPRENDE FIATO non ferisce al contatto. La pausa
 ## dopo una mossa è il momento in cui il gioco ti invita ad avvicinarti: farti male proprio lì era la
 ## prima fonte di danni del Serpente (i bot: 342 su ~1500) e uccideva in 20 s chi stava addosso ad Aker.
-const RESTING := ["recover", "stuck", "dizzy", "stunned", "punish"]
+const RESTING := ["recover", "stuck", "dizzy", "stunned", "punish", "bound", "roar"]
 
 func _resting() -> bool:
 	return (is_boss or miniboss) and "state" in self and str(get("state")) in RESTING

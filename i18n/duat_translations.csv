@@ -43,11 +43,17 @@ Occhio Udjat,Occhio Udjat,Udjat Eye
 Scarabeo Kheper,Scarabeo Kheper,Kheper Scarab
 I primi %d doni della discesa arrivano già al livello 2.,I primi %d doni della discesa arrivano già al livello 2.,The first %d boons of the descent arrive already at level 2.
 "Lo scarabeo che spinge il sole fuori dalla notte: il dio del divenire, di ciò che rinasce. Kheper, come te.","Lo scarabeo che spinge il sole fuori dalla notte: il dio del divenire, di ciò che rinasce. Kheper, come te.","The scarab that pushes the sun out of the night: the god of becoming, of what is reborn. Kheper, like you."
-ESPOSTO,ESPOSTO,EXPOSED
+LEGATO!,LEGATO!,BOUND!
+Le spire di Apopi,Le spire di Apopi,The coils of Apep
+I pali di Serket sono tornati. Nell'anello di spire cerca il varco d'oro,I pali di Serket sono tornati. Nell'anello di spire cerca il varco d'oro,"Serket's stakes are back. In the ring of coils, look for the golden gap"
 Apopi inghiotte la luce,Apopi inghiotte la luce,Apep swallows the light
-Il buio va e viene. Gli avvisi rossi li vedi sempre,Il buio va e viene. Gli avvisi rossi li vedi sempre,The dark comes and goes. You always see the red warnings
+Il buio va e viene. Non restare nel cono del suo sguardo,Il buio va e viene. Non restare nel cono del suo sguardo,The dark comes and goes. Do not stay in the cone of his gaze
 I FIGLI DI APOPI,I FIGLI DI APOPI,THE CHILDREN OF APEP
 APOPI BEVE IL FIUME,APOPI BEVE IL FIUME,APEP DRINKS THE RIVER
+LA STRETTA,LA STRETTA,THE GRIP
+LO SGUARDO,LO SGUARDO,THE GAZE
+INCANTATO,INCANTATO,CHARMED
+SCAGLIE,SCAGLIE,SCALES
 Sciame di scarabei,Sciame di scarabei,Swarm of scarabs
 Due mummie,Due mummie,Two mummies
 Un sacerdote,Un sacerdote,A priest
@@ -720,7 +726,7 @@ Piano {piano}. Il Signore del Torchio carica come un toro e come un toro si ferm
 "Apopi ti ha bevuto come beve il fiume. Ma il fiume torna, ogni notte. Anche tu.","Apopi ti ha bevuto come beve il fiume. Ma il fiume torna, ogni notte. Anche tu.","Apep drank you as he drinks the river. But the river returns, every night. So do you."
 "Hai guardato il caos negli occhi. Pochi lo hanno fatto, e nessuno una volta sola.","Hai guardato il caos negli occhi. Pochi lo hanno fatto, e nessuno una volta sola.","You looked chaos in the eyes. Few have, and no one only once."
 "Piano {piano}. Il serpente non si uccide. Si lega, un nodo per notte. Stanotte il nodo si è sciolto.","Piano {piano}. Il serpente non si uccide. Si lega, un nodo per notte. Stanotte il nodo si è sciolto.","Floor {piano}. The serpent cannot be killed. It is bound, one knot each night. Tonight the knot came undone."
-"Quando beve, cammina contro la corrente e scatta di lato. Quando affonda, il suo muso resta nella sabbia: quello è il tuo momento.","Quando beve, cammina contro la corrente e scatta di lato. Quando affonda, il suo muso resta nella sabbia: quello è il tuo momento.","When he drinks, walk against the current and dash sideways. When he lunges, his snout stays in the sand: that is your moment."
+"Le sue scaglie non si aprono. Mettiti dietro un palo di Serket e aspetta l'affondo: quando la corda lo lega, quello è il tuo momento.","Le sue scaglie non si aprono. Mettiti dietro un palo di Serket e aspetta l'affondo: quando la corda lo lega, quello è il tuo momento.","His scales do not open. Stand behind one of Serket's stakes and wait for the lunge: when the rope binds him, that is your moment."
 "Non un nemico, Scriba: l'Isfet. Il caos non ha bisogno di mani per prendere ciò che vuole.","Non un nemico, Scriba: l'Isfet. Il caos non ha bisogno di mani per prendere ciò che vuole.","Not an enemy, Scribe: Isfet. Chaos needs no hands to take what it wants."
 "La caverna respira, e tu eri nel suo respiro. Guarda il pavimento: le crepe dicono dove dorme la spira.","La caverna respira, e tu eri nel suo respiro. Guarda il pavimento: le crepe dicono dove dorme la spira.","The cavern breathes, and you were in its breath. Watch the floor: the cracks tell you where the coil sleeps."
 "Piano {piano}. Le pozze nere hanno occhi. Se le vedi aprirsi, sei già troppo vicino.","Piano {piano}. Le pozze nere hanno occhi. Se le vedi aprirsi, sei già troppo vicino.","Floor {piano}. The black pools have eyes. If you see them open, you are already too close."
@@ -975,13 +981,15 @@ Il Signore del Torchio,Il Signore del Torchio,The Lord of the Press
 La mannaia torna indietro: non darle le spalle. Dopo la carica contro il muro è stordito,La mannaia torna indietro: non darle le spalle. Dopo la carica contro il muro è stordito,The cleaver comes back: do not turn your back on it. After charging into the wall he is stunned
 APOPI,APOPI,APEP
 Il serpente del caos,Il serpente del caos,The serpent of chaos
-Non si uccide: si respinge. Dopo l'affondo ha il muso nella sabbia: colpiscilo lì,Non si uccide: si respinge. Dopo l'affondo ha il muso nella sabbia: colpiscilo lì,He cannot be killed: only driven back. After the lunge his snout is in the sand: hit him there
+"Le scaglie non si aprono. Fallo affondare contro un palo di Serket: legato, è tuo","Le scaglie non si aprono. Fallo affondare contro un palo di Serket: legato, è tuo","His scales do not open. Make him lunge into one of Serket's stakes: bound, he is yours"
 SERKET,SERKET,SERKET
 Colei che fa respirare la gola,Colei che fa respirare la gola,She Who Lets the Throat Breathe
 "Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare","Segui il solco nella sabbia: dove finisce, esce la coda. Sulla pietra non può scavare","Follow the furrow in the sand: where it ends, the tail strikes. On the stone she cannot dig"
 Discesa ripresa,Discesa ripresa,Descent resumed
 Stanza %d di %d,Stanza %d di %d,Chamber %d of %d
 stanza %s,stanza %s,chamber %s
+Il Banco di Apopi,Il Banco di Apopi,The Sandbank of Apep
+"Qui il serpente beve il fiume. L'acqua è nera, e guarda","Qui il serpente beve il fiume. L'acqua è nera, e guarda","Here the serpent drinks the river. The water is black, and it watches"
 Set mantiene la promessa,Set mantiene la promessa,Set keeps his promise
 Una sala tranquilla,Una sala tranquilla,A quiet hall
 Prima della prova: prendi ciò che ti aspetta,Prima della prova: prendi ciò che ti aspetta,Before the trial: take what awaits you
@@ -999,9 +1007,8 @@ Scegli una porta: la ricompensa è scritta sopra,Scegli una porta: la ricompensa
 +10 Ka,+10 Ka,+10 Ka
 La quarta ora,La quarta ora,The fourth hour
 La terra di Sokar,La terra di Sokar,The land of Sokar
-La settima ora,La settima ora,The seventh hour
-Il Banco di Apopi,Il Banco di Apopi,The Sandbank of Apep
-"Qui il serpente beve il fiume. L'acqua è nera, e guarda","Qui il serpente beve il fiume. L'acqua è nera, e guarda","Here the serpent drinks the river. The water is black, and it watches"
+La sesta ora,La sesta ora,The sixth hour
+La Grotta di Mehen,La Grotta di Mehen,The Grotto of Mehen
 I tuoi doni (%d)%s,I tuoi doni (%d)%s,Your boons (%d)%s
 Scegli,Scegli,Choose
 Altre scelte (%d rimasta),Altre scelte (%d rimasta),Other choices (%d left)
@@ -1106,15 +1113,20 @@ Una deviazione nel deserto rosso. Le tue porte ti aspettano,Una deviazione nel d
 Il Traghettatore,Il Traghettatore,The Ferryman
 Mahaf: ,Mahaf: ,Mahaf: 
 Dono di Hathor,Dono di Hathor,Gift of Hathor
+L'acqua di Nun,L'acqua di Nun,The water of Nun
 La fonte della quarta ora,La fonte della quarta ora,The spring of the fourth hour
 recuperi il 25% della vita (una volta sola),recuperi il 25% della vita (una volta sola),restore 25% of your health (once only)
 L'altare di Imhotep,L'altare di Imhotep,Imhotep's altar
 cambia l'amuleto che porti (una volta sola),cambia l'amuleto che porti (una volta sola),change the amulet you wear (once only)
+"Mehen, l'Avvolgente","Mehen, l'Avvolgente","Mehen, the Coiled One"
 La statua di Sokar,La statua di Sokar,The statue of Sokar
 scambia un dono con un altro dello stesso dio (una volta sola),scambia un dono con un altro dello stesso dio (una volta sola),trade a boon for another from the same god (once only)
+Il serpente buono veglia. Riposa: oltre c'è quello che non lo è,Il serpente buono veglia. Riposa: oltre c'è quello che non lo è,The good serpent keeps watch. Rest: beyond lies the one who is not
 L'Oasi della quarta ora,L'Oasi della quarta ora,The Oasis of the fourth hour
 "Qui la notte è breve. Riposa, poi Mahaf ti porterà nella sabbia","Qui la notte è breve. Riposa, poi Mahaf ti porterà nella sabbia","Here the night is short. Rest, then Mahaf will carry you into the sand"
+"L'acqua di prima del mondo: non ha sapore, ma ti rimette in piedi","L'acqua di prima del mondo: non ha sapore, ma ti rimette in piedi","The water from before the world: it has no taste, but it puts you back on your feet"
 L'acqua ricorda il Nilo: ti rende un poco di ciò che hai perduto,L'acqua ricorda il Nilo: ti rende un poco di ciò che hai perduto,The water remembers the Nile: it gives back a little of what you lost
+Mehen,Mehen,Mehen
 Nessuno dei tuoi doni può essere scambiato,Nessuno dei tuoi doni può essere scambiato,None of your boons can be traded
 "Quale dono lasci sulla riva? Un altro dello stesso dio salirà con te, allo stesso livello.","Quale dono lasci sulla riva? Un altro dello stesso dio salirà con te, allo stesso livello.","Which boon do you leave on the shore? Another from the same god will come aboard with you, at the same level."
 Non scambio nulla,Non scambio nulla,I trade nothing
@@ -1786,6 +1798,16 @@ prima volta con quest'arma,prima volta con quest'arma,first time with this weapo
 "«Hai varcato l'acqua, ora varchi la terra. Dopo la terra non resta che il cielo.»","«Hai varcato l'acqua, ora varchi la terra. Dopo la terra non resta che il cielo.»","«You have crossed the water; now you cross the earth. After the earth, only the sky remains.»"
 «Chi cammina verso l'orizzonte porta con sé la propria alba. Custodiscila: qui nessuno potrà dartene un'altra.»,«Chi cammina verso l'orizzonte porta con sé la propria alba. Custodiscila: qui nessuno potrà dartene un'altra.»,«Whoever walks toward the horizon carries their own dawn. Guard it: here no one can give you another.»
 "«Le acque ti hanno ricordato. La sabbia ti metterà alla prova. Quale delle due sia più clemente, lo dirà la fine del viaggio.»","«Le acque ti hanno ricordato. La sabbia ti metterà alla prova. Quale delle due sia più clemente, lo dirà la fine del viaggio.»","«The waters remembered you. The sand will test you. Which of the two is more merciful, the end of the journey will tell.»"
+"«Io sono Mehen, l'Avvolgente. Le mie spire stanno attorno al dio perché nulla lo tocchi. Oltre questa grotta c'è un altro serpente. Non confonderci.»","«Io sono Mehen, l'Avvolgente. Le mie spire stanno attorno al dio perché nulla lo tocchi. Oltre questa grotta c'è un altro serpente. Non confonderci.»","""I am Mehen, the Coiled One. My coils lie around the god so that nothing may touch him. Beyond this grotto there is another serpent. Do not confuse us."""
+«Apopi non ha occhi per vedere: ha occhi per addormentare. Non restare mai fermo davanti alla sua testa.»,«Apopi non ha occhi per vedere: ha occhi per addormentare. Non restare mai fermo davanti alla sua testa.»,"""Apep has no eyes to see with: he has eyes to put you to sleep. Never stand still in front of his head."""
+"«Nessuno lo ha mai ucciso. Serket lo lega, e i nodi tengono una notte. Cerca i suoi pali sul banco di sabbia: lì il serpente si impiglia.»","«Nessuno lo ha mai ucciso. Serket lo lega, e i nodi tengono una notte. Cerca i suoi pali sul banco di sabbia: lì il serpente si impiglia.»","""No one has ever killed him. Serket binds him, and the knots hold for one night. Look for her stakes on the sandbank: there the serpent gets caught."""
+"«Quando beve il fiume, non fuggire dritto: la corrente è più forte di te. Di lato, piccolo scriba. Sempre di lato.»","«Quando beve il fiume, non fuggire dritto: la corrente è più forte di te. Di lato, piccolo scriba. Sempre di lato.»","""When he drinks the river, do not flee straight back: the current is stronger than you. Sideways, little scribe. Always sideways."""
+«Le sue scaglie non si aprono. Colpiscilo quando è legato: allora ogni colpo vale tre. Il resto è fatica sprecata.»,«Le sue scaglie non si aprono. Colpiscilo quando è legato: allora ogni colpo vale tre. Il resto è fatica sprecata.»,"""His scales do not open. Strike him when he is bound: then every blow counts for three. The rest is wasted effort."""
+"«Io avvolgo per custodire, lui per stringere. Quando vedrai le sue spire chiudersi in cerchio, cerca il varco: c'è sempre.»","«Io avvolgo per custodire, lui per stringere. Quando vedrai le sue spire chiudersi in cerchio, cerca il varco: c'è sempre.»","""I coil to guard, he coils to crush. When you see his coils closing in a ring, look for the gap: there always is one."""
+«La sesta ora. Il punto più basso. Da qui il Fiume non scende più: risale. Se ci arrivi.»,«La sesta ora. Il punto più basso. Da qui il Fiume non scende più: risale. Se ci arrivi.»,"""The sixth hour. The lowest point. From here the River no longer descends: it rises. If you get there."""
+"«Quel serpente lì è buono. Lo so, è difficile fidarsi. Ma ha tenuto in vita un dio per più notti di quante io ne abbia remate.»","«Quel serpente lì è buono. Lo so, è difficile fidarsi. Ma ha tenuto in vita un dio per più notti di quante io ne abbia remate.»","""That serpent there is a good one. I know, it is hard to trust. But he has kept a god alive for more nights than I have rowed."""
+"«Bevi. È acqua di Nun, quella che c'era prima di tutto. Non ha sapore perché il sapore è venuto dopo.»","«Bevi. È acqua di Nun, quella che c'era prima di tutto. Non ha sapore perché il sapore è venuto dopo.»","""Drink. It is the water of Nun, the one that was there before everything. It has no taste because taste came later."""
+"«Oltre c'è il banco di sabbia. Io ti porto fin dove l'acqua è acqua. Dove diventa nera, la barca la spingi tu.»","«Oltre c'è il banco di sabbia. Io ti porto fin dove l'acqua è acqua. Dove diventa nera, la barca la spingi tu.»","""Beyond lies the sandbank. I take you as far as the water is water. Where it turns black, you push the boat yourself."""
 "«Qui la mia barca si ferma. Non per stanchezza: anche il Fiume, a quest'ora, trattiene il respiro prima della sabbia.»","«Qui la mia barca si ferma. Non per stanchezza: anche il Fiume, a quest'ora, trattiene il respiro prima della sabbia.»","«Here my barque stops. Not from weariness: even the River, at this hour, holds its breath before the sand.»"
 "«Oltre quella duna l'acqua finisce. La barca la trascineranno, come trascinarono quella di Ra quando il dio era vecchio. Sali quando sei pronto.»","«Oltre quella duna l'acqua finisce. La barca la trascineranno, come trascinarono quella di Ra quando il dio era vecchio. Sali quando sei pronto.»","«Beyond that dune the water ends. They will drag the barque, as they dragged Ra's when the god was old. Board when you are ready.»"
 "«Ho portato re e ladri, scribi e sacerdoti. Ognuno credeva che il viaggio finisse all'altra riva. Nessuno ha mai chiesto dove finisce il Fiume.»","«Ho portato re e ladri, scribi e sacerdoti. Ognuno credeva che il viaggio finisse all'altra riva. Nessuno ha mai chiesto dove finisce il Fiume.»","«I have carried kings and thieves, scribes and priests. Each believed the journey ended at the other shore. No one ever asked where the River ends.»"
@@ -2511,6 +2533,12 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+"«Le sue scaglie non si aprono. Colpiscilo quando è legato, o quando ha il muso nella sabbia. Il resto è fatica sprecata.»","«Le sue scaglie non si aprono. Colpiscilo quando è legato, o quando ha il muso nella sabbia. Il resto è fatica sprecata.»",
+ESPOSTO,ESPOSTO,EXPOSED
+Il buio va e viene. Gli avvisi rossi li vedi sempre,Il buio va e viene. Gli avvisi rossi li vedi sempre,The dark comes and goes. You always see the red warnings
+"Quando beve, cammina contro la corrente e scatta di lato. Quando affonda, il suo muso resta nella sabbia: quello è il tuo momento.","Quando beve, cammina contro la corrente e scatta di lato. Quando affonda, il suo muso resta nella sabbia: quello è il tuo momento.","When he drinks, walk against the current and dash sideways. When he lunges, his snout stays in the sand: that is your moment."
+Non si uccide: si respinge. Dopo l'affondo ha il muso nella sabbia: colpiscilo lì,Non si uccide: si respinge. Dopo l'affondo ha il muso nella sabbia: colpiscilo lì,He cannot be killed: only driven back. After the lunge his snout is in the sand: hit him there
+La settima ora,La settima ora,The seventh hour
 Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d,Cortile di Neith    Arma: %s · %s    Lacrime di Iside: %d,Courtyard of Neith    Weapon: %s · %s    Tears of Isis: %d
 Casa della Vita    Lapislazzuli: %d    Amuleto: %s,Casa della Vita    Lapislazzuli: %d    Amuleto: %s,House of Life    Lapis lazuli: %d    Amulet: %s
 "Sala del Giudizio
@@ -3054,3 +3082,5 @@ un portatore di coltelli,un portatore di coltelli,a knife bearer
 la tartaruga del caos,la tartaruga del caos,the chaos turtle
 "l'Isfet, il caos che ribolle","l'Isfet, il caos che ribolle","Isfet, the seething chaos"
 una spira di Apopi,una spira di Apopi,a coil of Apep
+un Capovolto,un Capovolto,an Inverted One
+un uovo di Apopi,un uovo di Apopi,an egg of Apep

@@ -9,7 +9,11 @@ extends Enemy
 ##   cadono. Infuriato: cinque, una dopo l'altra, che ti seguono.
 ## - VINO: un colpo a ventaglio davanti a sé che lascia pozze di Isfet rosso scuro.
 ## - CARICA: abbassa la testa (striscia larga) e travolge. Se finisce contro il muro resta stordito.
-## Sotto metà vita si infuria: più rapido, due mannaie a V, cinque pietre.
+## - BALZO: salta dove sei (cerchio rosso, 0,8 s) e atterra con tutto il peso. È il suo modo di non
+##   lasciarti scappare.
+## Aggressivo come Serket (15/11): tra una mossa e l'altra aspetta pochissimo, e le mosse si LEGANO:
+## mannaia → carica (mentre la mannaia è ancora in volo), torchio → vino, balzo → vino.
+## Sotto il 60% si infuria: più rapido, due mannaie a V, sei pietre.
 
 @warning_ignore("unused_signal")
 signal summon(kinds: Array)        # il gioco lo collega a ogni guardiano; Shezmu non chiama nessuno
@@ -31,7 +35,11 @@ const CHARGE_SPEED := 370.0
 const CHARGE_TIME := 0.62
 const CHARGE_HALF := 18.0
 const CHARGE_DMG := 14.0
-const PUNISH := 1.0
+const PUNISH := 0.75
+const LEAP_WARN := 0.8
+const LEAP_R := 40.0
+const LEAP_DMG := 15.0
+const RAGE_AT := 0.6
 
 var state := "intro"
 var st := 1.4
@@ -41,6 +49,9 @@ var cleavers: Array = []           ## mannaie in volo
 var press_spots: Array = []        ## [posizione, secondi all'impatto]
 var charge_hit := false
 var last_move := ""
+var combo_next := ""               ## la mossa che segue subito (le mosse si legano)
+var leap_to := Vector2.ZERO
+var air_h := 0.0
 
 
 func _ready() -> void:
@@ -109,7 +120,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 	st -= delta
 	cleavers = cleavers.filter(func(c) -> bool: return is_instance_valid(c))
 	_update_press(delta)
-	if not enraged and hp < max_hp * 0.5:
+	if not enraged and hp < max_hp * RAGE_AT:
 		enraged = true
 		Fx.shake(7.0)
 		Sfx.play_at("roar", global_position, 0.1)
@@ -135,13 +146,36 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			if st <= 0.0:
 				_throw()
 				state = "recover"
-				st = 0.7
+				st = 0.3
+				combo_next = "charge"           # la mannaia vola ancora e lui è già addosso
 			return Vector2.ZERO
 		"press_warn":
 			if st <= 0.0:
 				state = "recover"
-				st = PUNISH
+				st = 0.35
+				combo_next = "wine" if d < WINE_RANGE * 1.3 else "leap"
 			return Vector2.ZERO
+		"leap_warn":
+			# metà avviso a terra (si raccoglie), poi in aria verso il cerchio
+			var half := LEAP_WARN * 0.5
+			if st > half:
+				air_h = 0.0
+				return Vector2.ZERO
+			air_h = sin(clampf(1.0 - st / half, 0.0, 1.0) * PI) * 34.0
+			if st <= 0.0:
+				air_h = 0.0
+				Fx.shake(8.0)
+				Sfx.play_at("amheh_land", global_position, 0.1)
+				Fx.burst(global_position, Color(0.5, 0.42, 0.4), 24, 160.0)
+				var pl = get_tree().get_first_node_in_group("player")
+				if pl != null and not pl.dead and pl.global_position.distance_to(leap_to) < LEAP_R:
+					pl.take_damage(LEAP_DMG, leap_to, self)
+				state = "recover"
+				st = 0.3
+				combo_next = "wine"
+				return Vector2.ZERO
+			var left: Vector2 = leap_to - global_position
+			return left / maxf(st, 0.03) if left.length() > 3.0 else Vector2.ZERO
 		"wine_warn":
 			if st > WINE_WARN * 0.5:
 				aim = u
@@ -178,7 +212,7 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			return aim * CHARGE_SPEED
 		"recover":
 			if st <= 0.0:
-				_next(randf_range(0.7, 1.2) / _rage())
+				_next(randf_range(0.35, 0.7) / _rage())
 			return Vector2.ZERO
 	return Vector2.ZERO
 
@@ -192,8 +226,9 @@ func _choose(d: float) -> void:
 	var opts := []
 	if cleavers.is_empty():
 		opts.append("cleaver")
-		if d > 70.0:
-			opts.append("charge")
+	if d > 70.0:
+		opts.append("charge")
+		opts.append("leap")
 	opts.append("press")
 	if d < WINE_RANGE * 0.9:
 		opts.append("wine")
@@ -202,6 +237,11 @@ func _choose(d: float) -> void:
 	if opts.is_empty():
 		opts = ["press"]
 	var m: String = opts.pick_random()
+	if combo_next != "":
+		m = combo_next
+		combo_next = ""
+		if m == "wine" and d > WINE_RANGE * 1.3:
+			m = "charge"
 	last_move = m
 	match m:
 		"cleaver":
@@ -210,7 +250,7 @@ func _choose(d: float) -> void:
 			Sfx.play_at("mummy_windup", global_position, 0.2)
 		"press":
 			state = "press_warn"
-			st = PRESS_WARN + (0.9 if enraged else 0.0)
+			st = PRESS_WARN + (1.0 if enraged else 0.78)
 			_start_press()
 		"wine":
 			state = "wine_warn"
@@ -220,6 +260,12 @@ func _choose(d: float) -> void:
 			state = "charge_warn"
 			st = CHARGE_WARN
 			Sfx.play_at("amheh_growl", global_position, 0.1)
+		"leap":
+			state = "leap_warn"
+			st = LEAP_WARN
+			var pl = get_tree().get_first_node_in_group("player")
+			leap_to = pl.global_position if pl != null else global_position
+			Sfx.play_at("amheh_growl", global_position, 0.2)
 
 
 func _cleaver_dirs() -> Array:
@@ -244,15 +290,14 @@ func _start_press() -> void:
 	if p == null:
 		return
 	var g = get_tree().current_scene
-	var n := 5 if enraged else 3
+	var n := 6 if enraged else 4
 	for i in range(n):
 		var at: Vector2 = p.global_position
-		if i > 0 and not enraged:
-			at += Vector2.from_angle(randf() * TAU) * randf_range(46.0, 84.0)
 		if g != null and g.has_method("_in_floor") and not g._in_floor(at, 8.0):
 			at = p.global_position
-		# infuriato: le pietre cadono una dopo l'altra e la posizione si decide all'ultimo (ti seguono)
-		press_spots.append([at, PRESS_WARN + (i * 0.22 if enraged else 0.0), enraged and i > 0])
+		# le pietre cadono una dopo l'altra e ognuna sceglie il punto quando parte il SUO avviso: ti seguono,
+		# quindi si schivano camminando sempre, non fermandosi
+		press_spots.append([at, PRESS_WARN + i * (0.2 if enraged else 0.26), i > 0])
 
 
 func _update_press(delta: float) -> void:
@@ -318,6 +363,8 @@ func bot_escape(pos: Vector2) -> Vector2:
 		var at: Vector2 = sp[0]
 		if float(sp[1]) > 0.0 and float(sp[1]) <= PRESS_WARN and pos.distance_to(at) < PRESS_R + 10.0:
 			return (pos - at).normalized() if pos != at else Vector2.RIGHT
+	if state == "leap_warn" and pos.distance_to(leap_to) < LEAP_R + 12.0:
+		return (pos - leap_to).normalized() if pos != leap_to else Vector2.RIGHT
 	if state in ["cleaver_warn", "charge_warn", "charge"]:
 		var v := pos - global_position
 		if absf(v.dot(aim.orthogonal())) < 34.0 and v.dot(aim) > -10.0:
@@ -350,6 +397,8 @@ func _zones() -> void:
 
 
 func _draw() -> void:
+	if state == "leap_warn":
+		Enemy.warn_circle(self, to_local(leap_to), LEAP_R, 1.0 - st / LEAP_WARN)
 	# gli avvisi a terra, sotto il corpo
 	for sp in press_spots:
 		var left: float = sp[1]
@@ -370,7 +419,11 @@ func _draw() -> void:
 			_wine_fan(1.0 - st / WINE_WARN)
 		"charge_warn":
 			Enemy.warn_strip(self, Vector2.ZERO, aim, CHARGE_SPEED * CHARGE_TIME + CHARGE_HALF, CHARGE_HALF, 1.0 - st / CHARGE_WARN)
+	if air_h > 0.5:
+		draw_circle(Vector2.ZERO, 12.0, Color(0, 0, 0, 0.4))
+		draw_set_transform(Vector2(0, -air_h), 0.0, Vector2.ONE)
 	super._draw()
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 ## Un colosso dalla pelle rosso vino con la testa di leone (criniera scura), grembiule da macellaio

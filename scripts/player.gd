@@ -134,6 +134,7 @@ var charge_cd := 0.0                    # ricarica dopo l'attacco caricato
 var charge_flash_t := 0.0
 var spear_thrown: Node2D = null         # la lancia lanciata: finché non torna sei disarmato
 var spin_swing := false
+var charm_t := 0.0                      # lo sguardo di Apopi: incantato, cammini al 45% (lo scatto no)
 var bow_slow_t := 0.0                   # arco: tirando ti muovi più lento (BOW_FIRE_SLOW)
 var lash_width := 0.0                   # frustata in linea: mezza larghezza (0 = ventaglio)
 var hook_vis_t := 0.0                   # il pastorale disegnato verso il nemico agganciato
@@ -286,6 +287,8 @@ func _physics_process(delta: float) -> void:
 			s *= BOW_FIRE_SLOW              # mentre tiri con l'arco
 		if charging:
 			s *= CHARGE_SLOW                # mentre carichi ti muovi più lento
+		if charm_t > 0.0:
+			s *= 0.45                       # incantato dallo sguardo di Apopi
 		if Run.shu_gust:
 			s *= 1.2                        # la raffica di Shu
 		if Run.in_deep(global_position):
@@ -540,6 +543,7 @@ func _tick(delta: float) -> void:
 	charge_flash_t = maxf(0.0, charge_flash_t - delta)
 	hook_vis_t = maxf(0.0, hook_vis_t - delta)
 	bow_slow_t = maxf(0.0, bow_slow_t - delta)
+	charm_t = maxf(0.0, charm_t - delta)
 	hook_pull_t = maxf(0.0, hook_pull_t - delta)
 	var dash_ending := dash_t > 0.0 and dash_t <= delta
 	dash_t = maxf(0.0, dash_t - delta)

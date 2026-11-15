@@ -1,5 +1,14 @@
 ## In sviluppo · novembre 2026
 
+- **Apopi riscritto**: ora è un muro da studiare. Le sue scaglie non si aprono; va fatto affondare contro i pali di
+  Serket per legarlo, e solo allora i colpi contano. Tre fasi: nella seconda la stretta delle spire (un anello con un
+  varco d'oro), nella terza lo sguardo che incanta e il buio
+- **Shezmu più aggressivo**: non ti lascia respirare, lega le mosse una all'altra e ti salta addosso
+- **il Banco di Apopi è solo suo**: via i nemici presi da Sokar; arrivano l'Uovo di Apopi (fa nascere serpi finché non lo
+  rompi) e il Capovolto (sta sempre dalla parte opposta a te); la caverna non ha più l'arredo delle tombe
+- **la Grotta di Mehen**: la sosta tra Sokar e il Banco, come l'Oasi tra Wernes e Sokar. Il serpente buono veglia sulla
+  fonte e ti spiega come si lega quello cattivo
+
 - **bilanciamento generale**, misurato con oltre cento partite di prova: boss e guardiani non feriscono più al contatto
   mentre riprendono fiato (è il momento in cui devi colpirli); Aker non ferisce a toccarlo mentre ti insegue, i suoi tre
   morsi si possono schivare a piedi e il soffio arriva meno lontano; lancia più forte; artigli e scettro alzati

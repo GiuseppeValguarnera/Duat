@@ -164,3 +164,62 @@ class Darkness extends Node2D:
 				var u1 := Vector2.from_angle(TAU * (i + 1) / steps)
 				draw_polygon(PackedVector2Array([u0 * r0, u1 * r0, u1 * r1, u0 * r1]),
 					PackedColorArray([Color(0.02, 0.0, 0.04, a0), Color(0.02, 0.0, 0.04, a0), Color(0.02, 0.0, 0.04, a1), Color(0.02, 0.0, 0.04, a1)]))
+
+
+## Il palo di Serket: nel mito è lei a legare Apopi. Sul banco ci sono quattro pali d'oro con la sua
+## corda. Se l'AFFONDO del serpente ci finisce contro, la corda scatta e lo LEGA (apep.gd `_bind`): è
+## l'unico momento in cui le scaglie si aprono. Un palo serve una volta; ricrescono a ogni fase.
+class Stake extends Node2D:
+	var alive := true
+	var t := 0.0
+	var grow := 1.0                 ## 0 → 1 quando ricresce
+	var lit := false                ## l'affondo in arrivo lo colpirà: brilla (lo decide il boss)
+
+	func _ready() -> void:
+		add_to_group("apep_stakes")
+		z_index = 1
+
+	func spend() -> void:
+		alive = false
+		lit = false
+		Fx.burst(global_position + Vector2(0, -14), Color(0.94, 0.72, 0.3), 20, 130.0)
+
+	func regrow() -> void:
+		alive = true
+		grow = 0.0
+
+	func _process(delta: float) -> void:
+		t += delta
+		grow = minf(1.0, grow + delta * 1.5)
+		queue_redraw()
+
+	func _draw() -> void:
+		var gold := Color(0.94, 0.72, 0.3)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.4, 0.7))
+		draw_circle(Vector2(0, 2), 9.0, Color(0, 0, 0, 0.35))
+		if alive:
+			draw_arc(Vector2(0, 2), 13.0, 0.0, TAU, 20, Color(1.0, 0.85, 0.4, 0.3 + 0.2 * sin(t * 2.0)), 1.2)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2(1.4, 1.4))
+		if not alive:
+			# il moncone: si vede dov'era, e che non c'è più
+			draw_rect(Rect2(-3, -5, 6, 6), Color(0.3, 0.22, 0.1))
+			draw_line(Vector2(-3, -5), Vector2(3, -3), Color(0.5, 0.38, 0.16), 1.0)
+			return
+		var h := 30.0 * grow
+		if lit:
+			draw_circle(Vector2(0, -h * 0.5), 20.0, Color(1.0, 0.85, 0.4, 0.22 + 0.12 * sin(t * 14.0)))
+		draw_rect(Rect2(-3.5, -h, 7, h + 1), Color(0.12, 0.08, 0.05))
+		draw_rect(Rect2(-2.5, -h + 1, 5, h - 1), gold if not lit else Color(1.0, 0.92, 0.6))
+		draw_rect(Rect2(-2.5, -h + 1, 1.5, h - 1), Color(1.0, 0.9, 0.6, 0.6))
+		for i in range(3):
+			var yy := -h * (0.25 + 0.2 * i)
+			draw_line(Vector2(-3.5, yy), Vector2(3.5, yy + 1.5), Color(0.2, 0.36, 0.8), 1.6)
+		# lo scorpione di Serket in cima: corpo, chele, coda ricurva
+		var c := Vector2(0, -h - 4.0)
+		draw_circle(c, 3.6, Color(0.12, 0.08, 0.05))
+		draw_circle(c, 2.6, gold)
+		draw_arc(c + Vector2(0, -3.5), 3.0, PI * 0.9, PI * 2.1, 8, gold, 1.4)
+		draw_line(c + Vector2(-2.5, 0), c + Vector2(-5.5, -2), gold, 1.2)
+		draw_line(c + Vector2(2.5, 0), c + Vector2(5.5, -2), gold, 1.2)
+		# la corda arrotolata alla base
+		draw_arc(Vector2(0, -2), 5.0, 0.0, TAU, 12, Color(0.8, 0.7, 0.45), 1.6)
