@@ -22,6 +22,8 @@ var t := 0.0
 var seed_offset := 0.0
 var contact: Area2D
 var is_boss := false
+var sobek_cd := 0.0                    ## Morso di Sobek: un nemico si stordisce al massimo una volta ogni STUN_GAP
+var stun_cd := 0.0                     ## boss e guardiani: un barcollamento dai doni al massimo ogni STUN_GAP
 var stun_immune := false              ## il Morso di Sobek non lo stordisce (Shezmu)
 var miniboss := false                 ## guardiano a metà discesa: barra in alto invece che sopra la testa
 var sand_shield := 0.0                ## scudo di sabbia del Sacerdote di Sokar: assorbe i colpi prima della vita
@@ -77,6 +79,8 @@ func _physics_process(delta: float) -> void:
 			to = Run.decoy_pos - global_position
 
 	sobek_stun_t = maxf(0.0, sobek_stun_t - delta)
+	sobek_cd = maxf(0.0, sobek_cd - delta)
+	stun_cd = maxf(0.0, stun_cd - delta)
 	slow_t = maxf(0.0, slow_t - delta)
 	mark_t = maxf(0.0, mark_t - delta)
 	mourn_t = maxf(0.0, mourn_t - delta)
@@ -252,6 +256,35 @@ func _in_tide() -> bool:
 		if global_position.distance_to(p.global_position) < p.radius:
 			return true
 	return false
+
+
+const STUN_GAP := 4.0
+const BIG_STUN := 0.15
+
+func _big() -> bool:
+	return is_boss or miniboss or stun_immune
+
+
+## Morso di Sobek (blocco 21): boss, mini boss e guardiani sono immuni (il segno per la Forza del Fiume NON
+## si accende); un nemico normale si stordisce al massimo una volta ogni 4 s. Il segno dura quanto lo stordimento.
+func sobek_stun(secs: float) -> bool:
+	if _big() or sobek_cd > 0.0 or dead:
+		return false
+	sobek_cd = STUN_GAP
+	stagger_t = maxf(stagger_t, secs)
+	sobek_stun_t = maxf(sobek_stun_t, secs)
+	return true
+
+
+## Gli altri stordimenti dei doni (Khonsu, Arpione del Coccodrillo): sui grossi mai più di 0,15 s e non più di
+## una volta ogni 4 s; sui nemici normali per intero.
+func gift_stun(secs: float) -> void:
+	if _big():
+		if stun_cd > 0.0:
+			return
+		stun_cd = STUN_GAP
+		secs = minf(secs, BIG_STUN)
+	stagger_t = maxf(stagger_t, secs)
 
 
 ## Moltiplicatore dei danni ricevuti (per esempio un boss stordito).

@@ -1029,9 +1029,7 @@ func _flail_swing() -> void:
 			if swing_index == 2 and Run.has("shu_breath"):
 				e.shu_push(to.normalized(), 330.0)
 			if swing_index == 2 and Run.has("sobek_bite"):
-				if not e.stun_immune:
-					e.stagger_t = maxf(e.stagger_t, Run.val("sobek_bite") * (0.25 if e.is_boss else 1.0))
-				e.sobek_stun_t = maxf(e.sobek_stun_t, Run.val("sobek_bite"))
+				e.sobek_stun(Run.val("sobek_bite"))
 			if Run.has("duo_anubi_sekhmet") and not e.is_boss and not e.miniboss and e.hp < e.max_hp * 0.15:
 				Fx.float_text(e.global_position + Vector2(0, -24), Lang.t("GIUDIZIO"), Boons.god_color("duo"))
 				e.die()
@@ -1188,7 +1186,7 @@ func _swing() -> void:
 			var heavy_hit := swing_index >= 2 or crit > 1.0
 			Fx.impact(e.global_position + Vector2(0, -e.radius) - to.normalized() * e.radius * 0.6, to.normalized(), heavy_hit)
 			if spear and swing_index == 2 and Run.aspect == "khonsu" and not e.dead:
-				e.stagger_t = maxf(e.stagger_t, Run.aspect_val("khonsu") * (0.3 if (e.is_boss or e.miniboss) else 1.0))
+				e.gift_stun(Run.aspect_val("khonsu"))
 			if not e.dead and not e.is_boss and not e.miniboss:
 				# Giudizio della Leonessa (Anubi e Sekhmet): sotto il 15% della vita il nemico cade
 				if Run.has("duo_anubi_sekhmet") and e.hp < e.max_hp * 0.15:
@@ -1196,15 +1194,12 @@ func _swing() -> void:
 					e.die()
 			# Arpione del Coccodrillo (Sobek e Horus): la punta della lancia stordisce
 			if spear and not sweep and Run.has("duo_sobek_horus") and not e.dead and to.length() > swing_range * 0.5:
-				e.stagger_t = maxf(e.stagger_t, 0.6 * (0.25 if (e.is_boss or e.miniboss) else 1.0))
+				e.gift_stun(0.6)
 			# Soffio di Shu: il colpo finale della combo spinge forte (lo schianto è in enemy.gd)
 			if swing_index == 2 and Run.has("shu_breath") and not e.dead:
 				e.shu_push(to.normalized(), 330.0)
 			if swing_index == 2 and Run.has("sobek_bite") and not e.dead:
-				var stun: float = Run.val("sobek_bite") * (0.25 if e.is_boss else 1.0)
-				if not e.stun_immune:
-					e.stagger_t = maxf(e.stagger_t, stun)
-				e.sobek_stun_t = maxf(e.sobek_stun_t, Run.val("sobek_bite"))
+				e.sobek_stun(Run.val("sobek_bite"))
 			hit_any = true
 	if swing_index == 2 and Run.has("sekhmet_roar"):
 		_shockwave(46.0, Run.val("sekhmet_roar") * Run.all_damage_mult(), 200.0, Boons.god_color("sekhmet"))

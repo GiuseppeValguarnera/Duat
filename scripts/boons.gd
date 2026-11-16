@@ -58,9 +58,9 @@ const ALL_IT := {
 	"bastet_lives": {"god": "bastet", "name": "Protezione di Bastet", "desc": "La prima volta che muori in questa run ti rialzi con il %d%% della vita.", "values": [30, 40, 50]},
 	# Sobek: resistenza, controllo, acqua
 	"sobek_skin": {"god": "sobek", "name": "Pelle di Coccodrillo", "desc": "Subisci il %d%% di danni in meno.", "values": [12, 18, 24]},
-	"sobek_bite": {"god": "sobek", "name": "Morso di Sobek", "desc": "Il terzo colpo della combo stordisce i nemici per %.1f secondi.", "values": [0.6, 0.9, 1.2]},
+	"sobek_bite": {"god": "sobek", "name": "Morso di Sobek", "desc": "Il terzo colpo della combo stordisce i nemici per %.1f secondi (lo stesso nemico al massimo ogni 4 secondi; guardiani e boss sono immuni).", "values": [0.5, 0.7, 0.9]},
 	"sobek_tide": {"god": "sobek", "name": "Marea del Nilo", "desc": "Alla fine dello scatto lasci una pozza che rallenta i nemici del %d%% per 3 secondi.", "values": [30, 40, 50]},
-	"sobek_river": {"god": "sobek", "name": "Forza del Fiume", "desc": "I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.", "values": [20, 30, 40]},
+	"sobek_river": {"god": "sobek", "name": "Forza del Fiume", "desc": "I nemici che in quel momento sono storditi dal Morso di Sobek o rallentati subiscono il %d%% di danni in più.", "values": [20, 30, 40]},
 	# doni che esistono solo per un'arma: compaiono soltanto se la impugni
 	"sobek_tail": {"god": "sobek", "weapon": "lancia", "name": "Colpo di Coda", "desc": "La spazzata della lancia fa il %d%% di danni in più e scaglia i nemici il doppio più lontano.", "values": [25, 35, 45]},
 	"sekhmet_crescent": {"god": "sekhmet", "weapon": "khopesh", "name": "Zanna Ricurva", "desc": "I primi due fendenti del khopesh fanno il %d%% di danni in più.", "values": [20, 30, 40]},
