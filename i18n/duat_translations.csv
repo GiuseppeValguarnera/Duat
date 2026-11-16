@@ -43,6 +43,7 @@ Occhio Udjat,Occhio Udjat,Udjat Eye
 Scarabeo Kheper,Scarabeo Kheper,Kheper Scarab
 I primi %d doni della discesa arrivano già al livello 2.,I primi %d doni della discesa arrivano già al livello 2.,The first %d boons of the descent arrive already at level 2.
 "Lo scarabeo che spinge il sole fuori dalla notte: il dio del divenire, di ciò che rinasce. Kheper, come te.","Lo scarabeo che spinge il sole fuori dalla notte: il dio del divenire, di ciò che rinasce. Kheper, come te.","The scarab that pushes the sun out of the night: the god of becoming, of what is reborn. Kheper, like you."
+LA CORDA CEDE,LA CORDA CEDE,THE ROPE GIVES WAY
 LEGATO!,LEGATO!,BOUND!
 Le spire di Apopi,Le spire di Apopi,The coils of Apep
 I pali di Serket sono tornati. Nell'anello di spire cerca il varco d'oro,I pali di Serket sono tornati. Nell'anello di spire cerca il varco d'oro,"Serket's stakes are back. In the ring of coils, look for the golden gap"
@@ -53,7 +54,9 @@ APOPI BEVE IL FIUME,APOPI BEVE IL FIUME,APEP DRINKS THE RIVER
 LA STRETTA,LA STRETTA,THE GRIP
 LO SGUARDO,LO SGUARDO,THE GAZE
 INCANTATO,INCANTATO,CHARMED
+SOLO LA CORDA LO FERISCE,SOLO LA CORDA LO FERISCE,ONLY THE ROPE HURTS HIM
 SCAGLIE,SCAGLIE,SCALES
+PALO SPEZZATO,PALO SPEZZATO,STAKE BROKEN
 Sciame di scarabei,Sciame di scarabei,Swarm of scarabs
 Due mummie,Due mummie,Two mummies
 Un sacerdote,Un sacerdote,A priest
@@ -1869,6 +1872,8 @@ Ricompense e menu,Ricompense e menu,Rewards and menus
 GUSCIO,GUSCIO,SHELL
 IL TORCHIO GIRA,IL TORCHIO GIRA,THE PRESS TURNS
 STORDITO,STORDITO,STUNNED
+SPREMUTO: Shezmu beve,SPREMUTO: Shezmu beve,SQUEEZED: Shezmu drinks
+I DANNATI DEL TORCHIO,I DANNATI DEL TORCHIO,THE DAMNED OF THE PRESS
 SCUDO ROTTO,SCUDO ROTTO,SHIELD BROKEN
 %d giorni e %d ore,%d giorni e %d ore,%d days and %d hours
 %d ore,%d ore,%d hours
@@ -3084,3 +3089,26 @@ la tartaruga del caos,la tartaruga del caos,the chaos turtle
 una spira di Apopi,una spira di Apopi,a coil of Apep
 un Capovolto,un Capovolto,an Inverted One
 un uovo di Apopi,un uovo di Apopi,an egg of Apep
+la corda di Serket che schiocca,la corda di Serket che schiocca,Serket's rope snapping
+un dannato del torchio,un dannato del torchio,a damned soul of the press
+un vaso di vino di Shezmu,un vaso di vino di Shezmu,one of Shezmu's wine jars
+la mannaia di Shezmu,la mannaia di Shezmu,Shezmu's cleaver
+una piastra del torchio,una piastra del torchio,a plate of the press
+"a distanza, coi dannati","a distanza, coi dannati","at range, with the damned"
+spremitura,spremitura,squeezing
+chiamata dei dannati,chiamata dei dannati,calling the damned
+furia breve,furia breve,short fury
+preparazione della mannaia,preparazione della mannaia,cleaver windup
+torchio,torchio,press stones
+ventaglio di vino,ventaglio di vino,wine fan
+legato al palo,legato al palo,bound to the stake
+la corda cede,la corda cede,the rope gives way
+affondo,affondo,lunge
+preparazione dell'affondo,preparazione dell'affondo,lunge windup
+ruggito,ruggito,roar
+sguardo,sguardo,gaze
+risucchio,risucchio,pull
+preparazione del risucchio,preparazione del risucchio,pull windup
+stretta delle spire,stretta delle spire,coil squeeze
+sputo,sputo,spit
+coda,coda,tail

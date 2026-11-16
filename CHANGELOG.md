@@ -1,5 +1,14 @@
 ## In sviluppo · novembre 2026
 
+- **Apopi si misura in legature**: ogni volta che lo leghi a un palo puoi togliergli al massimo il 9% della vita, poi la
+  corda si sfilaccia e schiocca (allontanati). Per passare alla fase dopo servono due legature; nell'ultima fase la coda
+  e le spire spezzano i pali (diventano rossi un secondo prima): proteggili
+- **Shezmu ha il suo torchio**: le piastre del pavimento si abbassano (rosse prima di schiacciare); all'80% e al 45%
+  chiama i dannati e intanto ti tira mannaie e vasi di vino da lontano. Se un dannato resta vivo troppo a lungo lo
+  spreme, si cura e si infuria. Alla fine lega tre mosse e riprende fiato una volta sola: colpiscilo lì. Il Morso di
+  Sobek non lo stordisce più
+- «Ultimi colpi» riconosce le fonti nuove (corda, mannaia, vaso, piastra, dannato)
+
 - **Apopi riscritto**: ora è un muro da studiare. Le sue scaglie non si aprono; va fatto affondare contro i pali di
   Serket per legarlo, e solo allora i colpi contano. Tre fasi: nella seconda la stretta delle spire (un anello con un
   varco d'oro), nella terza lo sguardo che incanta e il buio

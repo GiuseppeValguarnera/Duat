@@ -573,6 +573,36 @@ da studiare, tattico), Shezmu più aggressivo (il suo preferito è Serket), manc
 - Bot: finestre aperte anche `stuck`/`bound`/`dizzy`. Le pozze di Isfet sono la prima fonte di danno dei bot nelle stanze
   (36-81 a discesa): da guardare se il proprietario le sente come logorio.
 
+**Blocco 22 (16/11/2026) – Apopi e Shezmu: MURI da imparare, non spugne di vita** (le voci del blocco 20 su vita,
+scaglie e legatura sono superate da queste). Principio: ogni attacco ha l'avviso con le misure vere (≥ 0,45 s), dopo
+una mossa grande c'è una finestra, mai più di DUE cose da leggere insieme. Niente bot né screenshot in questo blocco:
+**durate e percentuali NON misurate**.
+- *Apopi* (`scripts/apep.gd`; mosse invariate): `ARMOR` 0,35, `BOUND_MULT` 1,4, `BOUND_TIME` 2,6 s. **Tetto per
+  legatura** `BIND_CAP` 9% della vita massima: oltre, il danno non conta e la corda cede (stato `fray`, `FRAY_TIME` 0,6 s
+  con cerchio rosso `SNAP_R` 44, poi schiocco da `SNAP_DMG` 8, fonte `corda`; la corda disegnata si assottiglia e si
+  sfilaccia man mano). **Soglie di fase** (`PHASES` 66% e 33%, `PHASE_BINDS` [2, 2], `binds_phase`): la vita non scende
+  sotto la soglia finché non hai fatto le legature della fase (scritta «SOLO LA CORDA LO FERISCE»). Fase 3: coda e
+  anello **spezzano i pali** (`Chaos.Stake.doomed` rosso 1 s prima, `shatter()`), al massimo `STAKE_BREAKS` 2 per fase;
+  i pali ricrescono a ogni cambio di fase (4 all'inizio della terza). Conti: 9% × 1,4 ≈ 11 legature utili in tutto
+  → obiettivo 3-4 minuti con 12-13 doni, ~10% al primo tentativo.
+- *Shezmu* (`scripts/shezmu.gd`, costanti in cima; vita 460 × curva): **arena viva** `ApepArena.Plates` (6 piastre,
+  `SPOTS`, una alla volta, mai la stessa due volte, la prima dopo 5 s, ogni `PLATE_EVERY` 3 s / 2,4 infuriato, avviso 0,9 s,
+  12 danni, fonte `piastra`; ferme con i dannati: `paused`). **Dannati del torchio** (`scripts/grape.gd` class_name
+  `Grape`, `scenes/grape.tscn`, vita 14 × curva, pugno 6 con cerchio 0,5 s, gruppo `grapes`, `no_reward`): tre all'80% e
+  al 45% (`GRAPE_AT`, `_call_grapes`, stato `call`). Finché ce n'è uno vivo Shezmu è `aloof`: arretra sotto 130 px e
+  tira UNA cosa ogni `SHOT_EVERY` 2,5 s, mannaia in linea (0,55 s, `shot_kind`) o vaso di vino (`vases`, cerchio
+  `VASE_R` 26, 0,8 s, 10, fonte `vaso`). **Spremitura**: un dannato vivo da 8 s (`Grape.SQUEEZE_AT`; rosso da 6,5 s; il
+  2° e il 3° maturano 1,5 e 3 s dopo, `GRAPE_STAGGER`) → stato `squeeze` 0,7 s (se lo abbatti prima, niente), +3% vita,
+  furia breve `FURY_TIME` 6 s a un tiro ogni 1,8 s; al massimo `SQUEEZE_MAX` 3 in tutto lo scontro. Sotto il 35%
+  (`CHAIN_AT`): `CHAIN_MOVES` 3 mosse legate poi stato `breath` 0,6 s (non ferisce: è la finestra). `Enemy.stun_immune`:
+  il Morso di Sobek non lo stordisce. Mannaia = fonte `mannaia`. `RESTING` ora ha anche breath, aloof, call, squeeze.
+  Obiettivo 60-90 s con 12-13 doni, ~25% al primo tentativo.
+- *Controlli*: `KILLER_NAMES` (corda, grape, vaso, mannaia, piastra), `STATE_NAMES` in options_menu.gd con gli stati di
+  Shezmu e Apopi (valori di dizionario: righe a mano nel CSV). Prova `tools/dev/shezmusmoke.gd` nel controllo d'avvio
+  (negli script `--script` non nominare classi che usano gli autoload, es. `ApepArena.Plates`: non compilano).
+- Note: nel repo NON esistono un «Blocco 21», `chaos.gd` (la classe `Chaos` è in `apep_world.gd`) né la «Camera del
+  torchio»: le piastre sono nate qui. Da chiedere al proprietario se manca un blocco non arrivato.
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima
@@ -600,7 +630,7 @@ moltiplicatore dei danni subiti (Sokar ×1,25), ondate più piene ed élite più
 3. Raccogliere le impressioni su arco e flagello (danni, tiro carico, aggancio del pastorale, mira automatica col mouse)
    e ritarare; aspetti in più per arco e flagello.
 4. Raccogliere le impressioni sulla Sfinge (durezza delle ondate e dei guardiani, enigmi, premi) e ritarare.
-5. **Banco di Apopi e armi nuove**: raccogliere le impressioni (durezza, leggibilità di Shezmu e Apopi, buio), misurare coi
+5. **Banco di Apopi e armi nuove** (blocco 22: Apopi a legature e Shezmu coi dannati NON misurati, sentire giocando e poi bot di notte): raccogliere le impressioni (durezza, leggibilità di Shezmu e Apopi, buio), misurare coi
    bot, ritarare; confermare il nome della regina; battute degli dèi per artigli e scettro; poi la tappa 4 (Ammit, il finale).
 6. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
    se segnalato, lo stesso fix dello scorrimento col pad (`_settle_entries` in casa.gd) in altre finestre.
