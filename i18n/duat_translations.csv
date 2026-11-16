@@ -192,11 +192,11 @@ La prima volta che muori in questa run ti rialzi con il %d%% della vita.,La prim
 Pelle di Coccodrillo,Pelle di Coccodrillo,Crocodile Hide
 Subisci il %d%% di danni in meno.,Subisci il %d%% di danni in meno.,You take %d%% less damage.
 Morso di Sobek,Morso di Sobek,Bite of Sobek
-Il terzo colpo della combo stordisce i nemici per %.1f secondi.,Il terzo colpo della combo stordisce i nemici per %.1f secondi.,The third strike of your combo stuns enemies for %.1f seconds.
+Il terzo colpo della combo stordisce i nemici per %.1f secondi (lo stesso nemico al massimo ogni 4 secondi; guardiani e boss sono immuni).,Il terzo colpo della combo stordisce i nemici per %.1f secondi (lo stesso nemico al massimo ogni 4 secondi; guardiani e boss sono immuni).,The third strike of your combo stuns enemies for %.1f seconds (the same enemy at most once every 4 seconds; guardians and bosses are immune).
 Marea del Nilo,Marea del Nilo,Tide of the Nile
 Alla fine dello scatto lasci una pozza che rallenta i nemici del %d%% per 3 secondi.,Alla fine dello scatto lasci una pozza che rallenta i nemici del %d%% per 3 secondi.,At the end of your dash you leave a pool that slows enemies by %d%% for 3 seconds.
 Forza del Fiume,Forza del Fiume,Might of the River
-I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.,I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.,Enemies stunned by the Bite of Sobek or slowed by the Tide of the Nile take %d%% more damage.
+I nemici che in quel momento sono storditi dal Morso di Sobek o rallentati subiscono il %d%% di danni in più.,I nemici che in quel momento sono storditi dal Morso di Sobek o rallentati subiscono il %d%% di danni in più.,Enemies that are currently stunned by Sobek's Bite or slowed take %d%% more damage.
 Colpo di Coda,Colpo di Coda,Tail Strike
 La spazzata della lancia fa il %d%% di danni in più e scaglia i nemici il doppio più lontano.,La spazzata della lancia fa il %d%% di danni in più e scaglia i nemici il doppio più lontano.,The spear's sweep deals %d%% more damage and hurls enemies twice as far.
 Zanna Ricurva,Zanna Ricurva,Curved Fang
@@ -672,9 +672,11 @@ Dopo ogni stanza si aprono sempre tre porte.,Dopo ogni stanza si aprono sempre t
 "'Uscire al giorno e aprire la tomba': con il capitolo 72 il morto conosce i nomi dei guardiani delle porte, e chi conosce il nome di un guardiano può passare.","'Uscire al giorno e aprire la tomba': con il capitolo 72 il morto conosce i nomi dei guardiani delle porte, e chi conosce il nome di un guardiano può passare.","'Going forth by day and opening the tomb': with chapter 72 the dead knows the names of the gatekeepers, and whoever knows a gatekeeper's name may pass."
 %s | r%d s%d %s | mem %.0f MB · ogg %d · nodi %d · orfani %d,%s | r%d s%d %s | mem %.0f MB · ogg %d · nodi %d · orfani %d,%s | r%d s%d %s | mem %.0f MB · ogg %d · nodi %d · orfani %d
 "try { localStorage.setItem('duat_diag_live', %s); } catch (e) {}","try { localStorage.setItem('duat_diag_live', %s); } catch (e) {}","try { localStorage.setItem('duat_diag_live', %s); } catch (e) {}"
+"try { localStorage.setItem('duat_diag_last', %s); } catch (e) {}","try { localStorage.setItem('duat_diag_last', %s); } catch (e) {}","try { localStorage.setItem('duat_diag_last', %s); } catch (e) {}"
 (function(){ try { return localStorage.getItem('duat_diag_last') || ''; } catch (e) { return ''; } })(),(function(){ try { return localStorage.getItem('duat_diag_last') || ''; } catch (e) { return ''; } })(),(function(){ try { return localStorage.getItem('duat_diag_last') || ''; } catch (e) { return ''; } })()
 Il %s (versione %s) il gioco si è chiuso da solo.,Il %s (versione %s) il gioco si è chiuso da solo.,On %s (version %s) the game closed by itself.
 T,T,T
+Il %s (versione %s) il gioco ha registrato un problema.,Il %s (versione %s) il gioco ha registrato un problema.,On %s (version %s) the game recorded a problem.
 Errore: %s,Errore: %s,Error: %s
 Ultimo momento: %s,Ultimo momento: %s,Last moment: %s
 | r,| r,| r
@@ -844,6 +846,9 @@ Un secondo segno è riaffiorato nel cartiglio del tuo re: un cerchio solcato da 
 Sei disceso oltre l'orizzonte. Ora sei nella settima ora: il banco di sabbia di Apopi.,Sei disceso oltre l'orizzonte. Ora sei nella settima ora: il banco di sabbia di Apopi.,You have descended beyond the horizon. Now you are in the seventh hour: the sandbank of Apep.
 "Là il serpente beve il fiume, e la barca di Ra resta in secca. Accade ogni notte, da prima che esistessero le notti.","Là il serpente beve il fiume, e la barca di Ra resta in secca. Accade ogni notte, da prima che esistessero le notti.","There the serpent drinks the river, and the barque of Ra lies aground. It happens every night, since before there were nights."
 "Apopi non ha padre e non ha fine. Non cerca te, Scriba. Cerca qualcosa, e crede che tu sappia dov'è. Vorrei saperlo anch'io.","Apopi non ha padre e non ha fine. Non cerca te, Scriba. Cerca qualcosa, e crede che tu sappia dov'è. Vorrei saperlo anch'io.","Apep has no father and no end. He is not looking for you, Scribe. He is looking for something, and believes you know where it is. I wish I knew too."
+"Hai visto le scaglie del caos. Le tue armi ci scivolano sopra: non è debolezza tua, è la natura di quel luogo.","Hai visto le scaglie del caos. Le tue armi ci scivolano sopra: non è debolezza tua, è la natura di quel luogo.","You have seen the scales of chaos. Your weapons slide off them: that is no weakness of yours, it is the nature of that place."
+"La barca di Ra è in secca, ma la sua luce filtra ancora. Quando il fascio attraversa la caverna, le scaglie si aprono, e restano aperte per tre respiri. Colpisci allora.","La barca di Ra è in secca, ma la sua luce filtra ancora. Quando il fascio attraversa la caverna, le scaglie si aprono, e restano aperte per tre respiri. Colpisci allora.","Ra's barque is aground, yet its light still seeps through. When the beam crosses the cavern the scales open, and stay open for three breaths. Strike then."
+"Dove trovi i pali di Serket, porta loro chi ha le scaglie: il nodo lo tiene fermo e aperto. E se la luce non arriva, cerca chi l'ha inghiottita. Colpiscilo alle spalle: è lì che traspare.","Dove trovi i pali di Serket, porta loro chi ha le scaglie: il nodo lo tiene fermo e aperto. E se la luce non arriva, cerca chi l'ha inghiottita. Colpiscilo alle spalle: è lì che traspare.","Where you find Serket's stakes, lead the scaled ones to them: the knot holds them still and open. And if the light does not come, look for the one who swallowed it. Strike its back: that is where it shines through."
 "Hai legato il serpente. Nessuno lo uccide: tu lo hai fermato, ed è più di quanto si chieda a un'anima.","Hai legato il serpente. Nessuno lo uccide: tu lo hai fermato, ed è più di quanto si chieda a un'anima.","You have bound the serpent. No one kills him: you stopped him, and that is more than is asked of a soul."
 "Ti dava la caccia. Apopi fiuta il nome segreto di Ra come lo sciacallo fiuta la tomba aperta. Ti segue perché tu sai dove si trova, anche se non sai di saperlo.","Ti dava la caccia. Apopi fiuta il nome segreto di Ra come lo sciacallo fiuta la tomba aperta. Ti segue perché tu sai dove si trova, anche se non sai di saperlo.","He was hunting you. Apep scents the secret name of Ra as the jackal scents an open tomb. He follows you because you know where it is, even if you do not know that you know."
 "Ho interrogato i registri, infine. Il nome del tuo re non fu cancellato per odio. Fu la regina. Lo tolse da ogni pietra perché la bilancia non potesse chiamarlo, e lo depose nel buio dietro un volto che non era il suo. Io peso i cuori da quattromila anni, e nessuno mi aveva mai ingannato per amore.","Ho interrogato i registri, infine. Il nome del tuo re non fu cancellato per odio. Fu la regina. Lo tolse da ogni pietra perché la bilancia non potesse chiamarlo, e lo depose nel buio dietro un volto che non era il suo. Io peso i cuori da quattromila anni, e nessuno mi aveva mai ingannato per amore.","I have questioned the records, at last. Your king's name was not erased out of hatred. It was the queen. She took it from every stone so the scales could not call him, and laid him in the dark behind a face that was not his. I have weighed hearts for four thousand years, and no one had ever deceived me out of love."
@@ -960,6 +965,9 @@ Il Favore della Sfinge,Il Favore della Sfinge,The Sphinx's Favour
 %d Ka,%d Ka,%d Ka
 Kheper: Reborn in the Duat,Kheper: Reborn in the Duat,Kheper: Reborn in the Duat
 !!(document.fullscreenElement || document.webkitFullscreenElement),!!(document.fullscreenElement || document.webkitFullscreenElement),!!(document.fullscreenElement || document.webkitFullscreenElement)
+schermo intero: riuscito col ripiego di Godot,schermo intero: riuscito col ripiego di Godot,fullscreen: worked with Godot's fallback
+nessun errore dal browser,nessun errore dal browser,no error from the browser
+Il browser non ha concesso lo schermo intero. Prova con il tasto F dopo un clic.,Il browser non ha concesso lo schermo intero. Prova con il tasto F dopo un clic.,The browser did not grant fullscreen. Try the F key after a click.
 Premi F per lo schermo intero,Premi F per lo schermo intero,Press F for full screen
 Acqua del Nilo,Acqua del Nilo,Water of the Nile
 Recuperi il %d%% della vita,Recuperi il %d%% della vita,Restores %d%% of your health
@@ -993,6 +1001,8 @@ Stanza %d di %d,Stanza %d di %d,Chamber %d of %d
 stanza %s,stanza %s,chamber %s
 Il Banco di Apopi,Il Banco di Apopi,The Sandbank of Apep
 "Qui il serpente beve il fiume. L'acqua è nera, e guarda","Qui il serpente beve il fiume. L'acqua è nera, e guarda","Here the serpent drinks the river. The water is black, and it watches"
+La luce di Ra,La luce di Ra,The light of Ra
+«Le scaglie del caos si aprono solo nella luce. Colpisci quando il fascio li tocca.» — Anubi,«Le scaglie del caos si aprono solo nella luce. Colpisci quando il fascio li tocca.» — Anubi,"""The scales of chaos open only in the light. Strike when the beam touches them."" — Anubis"
 Set mantiene la promessa,Set mantiene la promessa,Set keeps his promise
 Una sala tranquilla,Una sala tranquilla,A quiet hall
 Prima della prova: prendi ciò che ti aspetta,Prima della prova: prendi ciò che ti aspetta,Before the trial: take what awaits you
@@ -1511,6 +1521,8 @@ Un amuleto non combatte al posto tuo. Ti ricorda solo come combattere meglio.,Un
 Hai visto lo scalpellino nella Sala? Bravo artigiano. Un po' lento. Io in quel tempo avrei alzato un tempio.,Hai visto lo scalpellino nella Sala? Bravo artigiano. Un po' lento. Io in quel tempo avrei alzato un tempio.,Have you seen the stonecutter in the Hall? A good craftsman. A little slow. In that time I would have raised a temple.
 "Thoth ha inciso qualcosa di nuovo sulla parete. Una tua impresa, credo. Va' a riscuotere: lasciare un premio sul muro è da maleducati.","Thoth ha inciso qualcosa di nuovo sulla parete. Una tua impresa, credo. Va' a riscuotere: lasciare un premio sul muro è da maleducati.","Thoth has carved something new on the wall. One of your deeds, I believe. Go and collect it: leaving a reward on the wall is rude."
 ROOM,ROOM,ROOM
+LA LUCE È INGHIOTTITA,LA LUCE È INGHIOTTITA,THE LIGHT IS SWALLOWED
+ALLE SPALLE,ALLE SPALLE,FROM BEHIND
 "Anubi, il Guardiano","Anubi, il Guardiano","Anubis, the Guardian"
 La bilancia,La bilancia,The scale
 "Prima che tu scenda, Scriba, io ti peso. Ogni mio dono è un piatto della bilancia: ciò che prendi da una parte, lo lasci sull'altra. Così è il giudizio, dal primo sole all'ultimo.","Prima che tu scenda, Scriba, io ti peso. Ogni mio dono è un piatto della bilancia: ciò che prendi da una parte, lo lasci sull'altra. Così è il giudizio, dal primo sole all'ultimo.","Before you descend, Scribe, I weigh you. Each of my gifts is a pan of the scale: what you take from one side, you leave on the other. So is the judgment, from the first sun to the last."
@@ -1805,8 +1817,11 @@ prima volta con quest'arma,prima volta con quest'arma,first time with this weapo
 «Apopi non ha occhi per vedere: ha occhi per addormentare. Non restare mai fermo davanti alla sua testa.»,«Apopi non ha occhi per vedere: ha occhi per addormentare. Non restare mai fermo davanti alla sua testa.»,"""Apep has no eyes to see with: he has eyes to put you to sleep. Never stand still in front of his head."""
 "«Nessuno lo ha mai ucciso. Serket lo lega, e i nodi tengono una notte. Cerca i suoi pali sul banco di sabbia: lì il serpente si impiglia.»","«Nessuno lo ha mai ucciso. Serket lo lega, e i nodi tengono una notte. Cerca i suoi pali sul banco di sabbia: lì il serpente si impiglia.»","""No one has ever killed him. Serket binds him, and the knots hold for one night. Look for her stakes on the sandbank: there the serpent gets caught."""
 "«Quando beve il fiume, non fuggire dritto: la corrente è più forte di te. Di lato, piccolo scriba. Sempre di lato.»","«Quando beve il fiume, non fuggire dritto: la corrente è più forte di te. Di lato, piccolo scriba. Sempre di lato.»","""When he drinks the river, do not flee straight back: the current is stronger than you. Sideways, little scribe. Always sideways."""
-«Le sue scaglie non si aprono. Colpiscilo quando è legato: allora ogni colpo vale tre. Il resto è fatica sprecata.»,«Le sue scaglie non si aprono. Colpiscilo quando è legato: allora ogni colpo vale tre. Il resto è fatica sprecata.»,"""His scales do not open. Strike him when he is bound: then every blow counts for three. The rest is wasted effort."""
+"«Le sue scaglie non si aprono. Colpiscilo quando è legato. Ma il nodo di Serket tiene poco: quando la corda si sfilaccia, allontanati e cerca un altro palo.»","«Le sue scaglie non si aprono. Colpiscilo quando è legato. Ma il nodo di Serket tiene poco: quando la corda si sfilaccia, allontanati e cerca un altro palo.»","""His scales do not open. Strike him when he is bound. But Serket's knot does not hold for long: when the rope frays, step away and look for another stake."""
 "«Io avvolgo per custodire, lui per stringere. Quando vedrai le sue spire chiudersi in cerchio, cerca il varco: c'è sempre.»","«Io avvolgo per custodire, lui per stringere. Quando vedrai le sue spire chiudersi in cerchio, cerca il varco: c'è sempre.»","""I coil to guard, he coils to crush. When you see his coils closing in a ring, look for the gap: there always is one."""
+"«I suoi figli portano scaglie come le sue. Le apre solo la luce di Ra, quando il fascio attraversa la caverna. Aspettala, e colpisci chi ne è toccato: hai tre respiri.»","«I suoi figli portano scaglie come le sue. Le apre solo la luce di Ra, quando il fascio attraversa la caverna. Aspettala, e colpisci chi ne è toccato: hai tre respiri.»","""His children wear scales like his. Only the light of Ra opens them, when the beam crosses the cavern. Wait for it, and strike whoever it touches: you have three breaths."""
+"«Dove vedi tre pali attorno a un cerchio, impara: porta lì chi ha le scaglie. Così si lega un serpente piccolo. Quello grande si lega allo stesso modo.»","«Dove vedi tre pali attorno a un cerchio, impara: porta lì chi ha le scaglie. Così si lega un serpente piccolo. Quello grande si lega allo stesso modo.»","""Where you see three stakes around a circle, learn: lead the scaled ones there. That is how a small serpent is bound. The great one is bound the same way."""
+"«C'è chi inghiotte la luce e chi le stende sopra un velo. Abbatti loro per primi, piccolo scriba, o colpirai la pietra.»","«C'è chi inghiotte la luce e chi le stende sopra un velo. Abbatti loro per primi, piccolo scriba, o colpirai la pietra.»","""Some swallow the light and some spread a veil over it. Bring those down first, little scribe, or you will be striking stone."""
 «La sesta ora. Il punto più basso. Da qui il Fiume non scende più: risale. Se ci arrivi.»,«La sesta ora. Il punto più basso. Da qui il Fiume non scende più: risale. Se ci arrivi.»,"""The sixth hour. The lowest point. From here the River no longer descends: it rises. If you get there."""
 "«Quel serpente lì è buono. Lo so, è difficile fidarsi. Ma ha tenuto in vita un dio per più notti di quante io ne abbia remate.»","«Quel serpente lì è buono. Lo so, è difficile fidarsi. Ma ha tenuto in vita un dio per più notti di quante io ne abbia remate.»","""That serpent there is a good one. I know, it is hard to trust. But he has kept a god alive for more nights than I have rowed."""
 "«Bevi. È acqua di Nun, quella che c'era prima di tutto. Non ha sapore perché il sapore è venuto dopo.»","«Bevi. È acqua di Nun, quella che c'era prima di tutto. Non ha sapore perché il sapore è venuto dopo.»","""Drink. It is the water of Nun, the one that was there before everything. It has no taste because taste came later."""
@@ -1822,6 +1837,7 @@ Il nodo di Iside ti protegge,Il nodo di Iside ti protegge,The knot of Isis prote
 Scudo -%d,Scudo -%d,Shield -%d
 Il cuore non testimonia,Il cuore non testimonia,The heart does not testify
 Bastet ti protegge!,Bastet ti protegge!,Bastet protects you!
+LEGATO,LEGATO,BOUND
 I bracieri della Sala,I bracieri della Sala,The braziers of the Hall
 I bracieri spenti negli angoli della Sala tornano ad ardere: più luce calda nella notte blu.,I bracieri spenti negli angoli della Sala tornano ad ardere: più luce calda nella notte blu.,The cold braziers in the corners of the Hall burn again: more warm light in the blue night.
 "Nei templi il fuoco non si spegneva mai: i sacerdoti lo nutrivano all'alba e al tramonto, con incenso e grasso di bue.","Nei templi il fuoco non si spegneva mai: i sacerdoti lo nutrivano all'alba e al tramonto, con incenso e grasso di bue.","In the temples the fire never went out: the priests fed it at dawn and dusk, with incense and ox fat."
@@ -2373,6 +2389,10 @@ Le porte,Le porte,The Doors
 %s: %s"
 Prezzo: ,Prezzo: ,Price: 
 ScrollContainer,ScrollContainer,ScrollContainer
+Luce di Ra: apre le scaglie,Luce di Ra: apre le scaglie,Light of Ra: opens the scales
+Luce di Ra: arriva,Luce di Ra: arriva,Light of Ra: incoming
+Luce di Ra: colpisci chi è nel fascio,Luce di Ra: colpisci chi è nel fascio,Light of Ra: strike whoever is in the beam
+Luce inghiottita: abbatti il Divoratore,Luce inghiottita: abbatti il Divoratore,Light swallowed: bring down the Devourer
 Normale,Normale,Normal
 Grande,Grande,Large
 Molto grande,Molto grande,Very large
@@ -2538,6 +2558,9 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+Il terzo colpo della combo stordisce i nemici per %.1f secondi.,Il terzo colpo della combo stordisce i nemici per %.1f secondi.,The third strike of your combo stuns enemies for %.1f seconds.
+I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.,I nemici storditi dal Morso di Sobek o rallentati dalla Marea del Nilo subiscono il %d%% di danni in più.,Enemies stunned by the Bite of Sobek or slowed by the Tide of the Nile take %d%% more damage.
+«Le sue scaglie non si aprono. Colpiscilo quando è legato: allora ogni colpo vale tre. Il resto è fatica sprecata.»,«Le sue scaglie non si aprono. Colpiscilo quando è legato: allora ogni colpo vale tre. Il resto è fatica sprecata.»,"""His scales do not open. Strike him when he is bound: then every blow counts for three. The rest is wasted effort."""
 "«Le sue scaglie non si aprono. Colpiscilo quando è legato, o quando ha il muso nella sabbia. Il resto è fatica sprecata.»","«Le sue scaglie non si aprono. Colpiscilo quando è legato, o quando ha il muso nella sabbia. Il resto è fatica sprecata.»",
 ESPOSTO,ESPOSTO,EXPOSED
 Il buio va e viene. Gli avvisi rossi li vedi sempre,Il buio va e viene. Gli avvisi rossi li vedi sempre,The dark comes and goes. You always see the red warnings
@@ -3112,3 +3135,4 @@ preparazione del risucchio,preparazione del risucchio,pull windup
 stretta delle spire,stretta delle spire,coil squeeze
 sputo,sputo,spit
 coda,coda,tail
+un Divoratore di luce,un Divoratore di luce,a Devourer of Light

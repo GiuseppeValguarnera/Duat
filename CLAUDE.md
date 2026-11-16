@@ -573,6 +573,46 @@ da studiare, tattico), Shezmu più aggressivo (il suo preferito è Serket), manc
 - Bot: finestre aperte anche `stuck`/`bound`/`dizzy`. Le pozze di Isfet sono la prima fonte di danno dei bot nelle stanze
   (36-81 a discesa): da guardare se il proprietario le sente come logorio.
 
+**Blocco 21 (16/11/2026, arrivato e fatto DOPO il 22) – Morso di Sobek, schermo intero, il Banco di Apopi rifatto**.
+Il proprietario ha giocato la regione 3 dopo il blocco 20: «piattissima: pochi nemici, stanze solo un po' diverse».
+Principio: difficile, non frustrante; il danno viene solo da zone visibili e schivabili. Niente bot né screenshot:
+**numeri NON misurati**. (Le voci dei blocchi 18-20 su ondate, `APEP_KINDS` e `_place_apep` sono superate da queste.)
+- *Morso di Sobek* (`Enemy.sobek_stun(secs)`, `gift_stun(secs)`, `STUN_GAP` 4 s, `BIG_STUN` 0,15): boss, mini boss e
+  guardiani immuni (`_big()`: `sobek_stun_t` non si accende, quindi niente Forza del Fiume); un nemico normale al massimo
+  una volta ogni 4 s (`sobek_cd`); valori 0,5/0,7/0,9 s; il segno dura quanto lo stordimento vero. Khonsu e Arpione del
+  Coccodrillo passano da `gift_stun`: sui grossi mai oltre 0,15 s e una volta ogni 4 s (`stun_cd`).
+- *Schermo intero* (`fx.gd` `fs_request(by_page)`, `_fs_watch`, `toast`; `web/shell.html` `window.duatFS`,
+  `duatArmFS`): una sola azione per pressione (blocco 400 ms nel gioco e nella pagina), richiesta armata annullata dopo
+  2 s senza gesto, se la pagina non cambia lo stato entro ~0,45 s si prova `DisplayServer.window_set_mode` (il ripiego di
+  Godot), se anche quello fallisce messaggio in basso e `Diag.problem(...)` → Opzioni «Ultimo problema» (con l'errore
+  del browser). Il tasto F sul web passa anche dal gioco (solo per il controllo). **Causa vera non trovata**: se il
+  proprietario lo riprova, chiedergli cosa dice «Ultimo problema».
+- *Luce di Ra* (`scripts/ra_light.gd`, class_name `RaLight`, costanti in cima; solo regione 3, `Run.apep_type != ""`):
+  `RaLight.Beam` (gruppo `ra_beam`, creato in `room_builder._place_apep`): fascia 90 px, avviso 1,2 s sul bordo da cui
+  entra, 3 s per attraversare, ogni 12 s; direzione che alterna O→E, N→S, E→O, S→N (`step`). Non ferisce nessuno.
+  **Scaglie** (`Enemy.scales`, `scale_open_t`, `_update_scales`, `scales_closed()`): chiuse = 10% dei colpi (`SCALE_MULT`,
+  scritta SCAGLIE), aperte nel fascio e per 3 s dopo (`OPEN_TIME`); disegno `RaLight.draw_scales` (scaglie scure e scudo
+  viola / anello d'oro e sole con l'arco del tempo). Le hanno ombre, Capovolti ed élite, ma mai più di un terzo dei nemici
+  della stanza (`game.gd` `SCALED_KINDS`, `room_spawned`, `room_scaled` in `_do_spawn`). HUD: `hud_bars._ra_light` (riga
+  col sole: apre le scaglie / arriva / colpisci chi è nel fascio / inghiottita). Anubi: banner una volta alla prima
+  stanza (`Meta.intros_seen` "luce_ra") e battuta nella Sala `apep_luce`.
+- *Quattro tipi di stanza* (`Run.APEP_TYPES`, `Run.next_apep_type()`: ordine mescolato a ogni discesa, a rotazione;
+  `DUAT_APEP_ROOM=barca|pozze|pali|torchio` per le prove): **Corridoio della barca** (stanza grande, niente colonne, fascio
+  avanti e indietro ogni 6,5 s), **Pozze di Isfet** (`RaLight.Shifting`: 3-4 pozze che cambiano posto ogni 8 s con 1 s di
+  avviso, mai sotto i piedi; ferme a stanza ripulita), **Anello dei pali** (3 `RaLight.RingStake`, gruppo `ra_stakes`:
+  chi ha le scaglie e ci arriva a 16 px resta legato 2,6 s con le scaglie aperte; il palo ricresce in 8 s), **Camera del
+  torchio** (`ApepArena.Plates` con `spots = GRID` 2×3, ferme a stanza ripulita). Luce diversa per tipo
+  (`decor.ambient.color`) e segno sul pavimento (`ApepArena.paint_room_type`); colonne tolte dal centro per pali e torchio.
+- *Nemici*: serpi a **sciami di 5-7** (vita 12, velocità 88); **Divoratore di luce** `light_eater` (gruppo
+  `light_eaters`: finché vive `Beam.blocked`; davanti ×0,5, da dietro ×1,5; morso in linea 0,55 s e carica corta 0,5 s,
+  poi 1,1 s fermo) e **Portatore del velo** `veil` (gruppo `veils`, raggio `VEIL_R` 70: lì le scaglie non si aprono mai;
+  non attacca, vita 20): uno solo dei due per stanza e non nella prima (`ROOM_UNIQUE`, `room_unique`). Scelta mia:
+  Divoratore e Portatore NON hanno le scaglie della luce (sarebbero stati quasi invulnerabili).
+- *Densità*: ondate ×1,3 (erano ×1,15), vita dei nemici normali ×0,82 (`Run.APEP_HP`, in `_do_spawn`); nessuna comparsa
+  dentro un pericolo a terra (`room_builder.in_ground_hazard`, metodo `peril(p)` su Isfet, Coil, Plates, Shifting).
+- *Testi*: Mehen (tre battute nuove in coda a `MEHEN_LINES`, quella sulla corda aggiornata al blocco 22).
+- Prova `tools/dev/bancosmoke.gd` nel controllo d'avvio. I bot NON conoscono ancora luce, scaglie, Divoratore e velo.
+
 **Blocco 22 (16/11/2026) – Apopi e Shezmu: MURI da imparare, non spugne di vita** (le voci del blocco 20 su vita,
 scaglie e legatura sono superate da queste). Principio: ogni attacco ha l'avviso con le misure vere (≥ 0,45 s), dopo
 una mossa grande c'è una finestra, mai più di DUE cose da leggere insieme. Niente bot né screenshot in questo blocco:
@@ -600,8 +640,8 @@ una mossa grande c'è una finestra, mai più di DUE cose da leggere insieme. Nie
 - *Controlli*: `KILLER_NAMES` (corda, grape, vaso, mannaia, piastra), `STATE_NAMES` in options_menu.gd con gli stati di
   Shezmu e Apopi (valori di dizionario: righe a mano nel CSV). Prova `tools/dev/shezmusmoke.gd` nel controllo d'avvio
   (negli script `--script` non nominare classi che usano gli autoload, es. `ApepArena.Plates`: non compilano).
-- Note: nel repo NON esistono un «Blocco 21», `chaos.gd` (la classe `Chaos` è in `apep_world.gd`) né la «Camera del
-  torchio»: le piastre sono nate qui. Da chiedere al proprietario se manca un blocco non arrivato.
+- Nota: `chaos.gd` non esiste (la classe `Chaos` è in `apep_world.gd`). Il blocco 22 è stato fatto PRIMA del 21: le
+  piastre sono nate qui e la «Camera del torchio» del blocco 21 le riusa.
 
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
@@ -630,7 +670,7 @@ moltiplicatore dei danni subiti (Sokar ×1,25), ondate più piene ed élite più
 3. Raccogliere le impressioni su arco e flagello (danni, tiro carico, aggancio del pastorale, mira automatica col mouse)
    e ritarare; aspetti in più per arco e flagello.
 4. Raccogliere le impressioni sulla Sfinge (durezza delle ondate e dei guardiani, enigmi, premi) e ritarare.
-5. **Banco di Apopi e armi nuove** (blocco 22: Apopi a legature e Shezmu coi dannati NON misurati, sentire giocando e poi bot di notte): raccogliere le impressioni (durezza, leggibilità di Shezmu e Apopi, buio), misurare coi
+5. **Banco di Apopi e armi nuove** (blocchi 21 e 22: luce di Ra, scaglie, tipi di stanza, Apopi a legature e Shezmu coi dannati NON misurati; i bot vanno istruiti su luce e scaglie prima di misurare, di notte): raccogliere le impressioni (durezza, leggibilità di Shezmu e Apopi, buio), misurare coi
    bot, ritarare; confermare il nome della regina; battute degli dèi per artigli e scettro; poi la tappa 4 (Ammit, il finale).
 6. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
    se segnalato, lo stesso fix dello scorrimento col pad (`_settle_entries` in casa.gd) in altre finestre.

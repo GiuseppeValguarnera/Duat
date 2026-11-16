@@ -1,5 +1,17 @@
 ## In sviluppo · novembre 2026
 
+- **il Banco di Apopi ha la sua regola: la luce di Ra**. Un fascio dorato attraversa ogni stanza. Alcuni nemici hanno le
+  scaglie del caos: fuori dalla luce i colpi quasi non contano, nel fascio (e per tre secondi dopo) si aprono
+- **quattro stanze diverse**: il Corridoio della barca, le Pozze di Isfet che cambiano posto, l'Anello dei pali (porta
+  ai pali di Serket chi ha le scaglie: è la lezione per Apopi) e la Camera del torchio con le piastre
+- **due nemici nuovi da togliere per primi**: il Divoratore di luce (inghiotte il fascio; colpiscilo alle spalle) e il
+  Portatore del velo (sotto il suo velo le scaglie non si aprono). Le serpi arrivano a sciami; più nemici per ondata,
+  ognuno con meno vita; nessuno nasce più dentro una pozza
+- **Morso di Sobek**: guardiani e boss non si stordiscono più (e la Forza del Fiume su di loro vale solo se sono
+  rallentati davvero); lo stesso nemico al massimo ogni 4 secondi; 0,5/0,7/0,9 s
+- **schermo intero su PC**: più tentativi dietro le quinte e, se il browser rifiuta, un messaggio e una riga in
+  Opzioni → Ultimo problema
+
 - **Apopi si misura in legature**: ogni volta che lo leghi a un palo puoi togliergli al massimo il 9% della vita, poi la
   corda si sfilaccia e schiocca (allontanati). Per passare alla fase dopo servono due legature; nell'ultima fase la coda
   e le spire spezzano i pali (diventano rossi un secondo prima): proteggili
