@@ -86,15 +86,94 @@ func fs_on() -> bool:
 	return DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN or DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN
 
 
-## Da chiamare quando il pulsante "Schermo intero" viene premuto (button_down): sul web arma la
-## richiesta, che parte al rilascio del dito o del tasto; sul PC cambia subito.
-func fs_request() -> void:
-	if not fs_supported():
+const FS_LOCK := 0.4               ## una sola azione per pressione: le altre entro 400 ms si ignorano
+var fs_lock_until := 0.0
+var fs_busy := false
+
+
+func _now() -> float:
+	return Time.get_ticks_msec() / 1000.0
+
+
+## Da chiamare quando il pulsante "Schermo intero" viene premuto (button_down) o col tasto F. Sul web
+## arma la richiesta (parte al rilascio del dito o del tasto, che per il browser è il gesto); se la
+## pagina non cambia lo stato, si prova col meccanismo di Godot; se anche quello non va, un messaggio
+## e una riga nella diagnosi. `by_page`: il tasto F sul web, che la pagina ha già gestito da sola.
+func fs_request(by_page: bool = false) -> void:
+	if not fs_supported() or _now() < fs_lock_until:
 		return
-	if OS.has_feature("web"):
-		JavaScriptBridge.eval("window.duatWantFS = true;", true)
+	fs_lock_until = _now() + FS_LOCK
+	if not OS.has_feature("web"):
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if fs_on() else DisplayServer.WINDOW_MODE_FULLSCREEN)
 		return
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if fs_on() else DisplayServer.WINDOW_MODE_FULLSCREEN)
+	if fs_busy:
+		return
+	var before := fs_on()
+	if by_page:
+		# la pagina ha già chiesto (o sta chiedendo): lo stato "di prima" è quello che lei ha visto
+		var seen = JavaScriptBridge.eval("(window.duatFS && (Date.now() - window.duatFS.fired < 600)) ? (window.duatFS.was ? 1 : 0) : -1", true)
+		if int(seen) >= 0:
+			before = int(seen) == 1
+	else:
+		JavaScriptBridge.eval("window.duatArmFS ? window.duatArmFS() : (window.duatWantFS = true);", true)
+	_fs_watch.call_deferred(before)
+
+
+## Aspetta che la pagina faccia la sua parte; se lo stato non cambia, ripiega su Godot; poi avvisa.
+func _fs_watch(before: bool) -> void:
+	fs_busy = true
+	var waited := 0.0
+	var page_tried := false
+	while waited < 2.6:
+		await get_tree().create_timer(0.15, true, false, true).timeout
+		waited += 0.15
+		if fs_on() != before:
+			fs_busy = false
+			return                                # fatto dalla pagina
+		var st = JavaScriptBridge.eval("window.duatFS ? [window.duatFS.armed ? 1 : 0, Date.now() - window.duatFS.fired].join(',') : ''", true)
+		var parts := String(st).split(",")
+		if parts.size() == 2:
+			var since := float(parts[1])
+			if since >= 450.0 and since < 4000.0:
+				page_tried = true
+				break                             # la pagina ha chiesto, ma niente è cambiato
+			if int(parts[0]) == 0 and since >= 4000.0 and waited > 0.3:
+				break                             # richiesta annullata (nessun gesto entro 2 s)
+		elif waited > 0.5:
+			break                                 # pagina vecchia senza il registro
+	# il meccanismo di Godot (chiede lo schermo intero sul canvas): l'attivazione del gesto dura qualche secondo
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if before else DisplayServer.WINDOW_MODE_FULLSCREEN)
+	await get_tree().create_timer(0.6, true, false, true).timeout
+	fs_busy = false
+	if fs_on() != before:
+		Diag.record("schermo intero: riuscito col ripiego di Godot")
+		return
+	var err = JavaScriptBridge.eval("(window.duatFS && window.duatFS.err) || ''", true)
+	Diag.problem("schermo intero rifiutato (%s)%s" % [String(err) if String(err) != "" else "nessun errore dal browser", "" if page_tried else " · nessun gesto"])
+	toast(get_tree().root, Lang.t("Il browser non ha concesso lo schermo intero. Prova con il tasto F dopo un clic."))
+
+
+## Una riga in basso che resta qualche secondo e sfuma.
+func toast(parent: Node, text: String, secs: float = 5.0) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 40
+	layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	parent.add_child(layer)
+	var lbl := Label.new()
+	lbl.text = text
+	lbl.add_theme_font_size_override("font_size", fs(11))
+	lbl.add_theme_color_override("font_color", Color(0.95, 0.85, 0.6))
+	lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	lbl.add_theme_constant_override("outline_size", 4)
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	lbl.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	lbl.position.y -= 40.0 * ui
+	layer.add_child(lbl)
+	var tw := lbl.create_tween()
+	tw.tween_interval(secs)
+	tw.tween_property(lbl, "modulate:a", 0.0, 1.0)
+	tw.tween_callback(layer.queue_free)
 
 
 ## La prima volta sul PC (non sul telefono): "Premi F per lo schermo intero", una volta sola.
@@ -103,30 +182,16 @@ func fs_hint(parent: Node) -> void:
 		return
 	Meta.options["fs_hint"] = true
 	Meta.save()
-	var layer := CanvasLayer.new()
-	layer.layer = 40
-	parent.add_child(layer)
-	var lbl := Label.new()
-	lbl.text = Lang.t("Premi F per lo schermo intero")
-	lbl.add_theme_font_size_override("font_size", fs(11))
-	lbl.add_theme_color_override("font_color", Color(0.95, 0.85, 0.6))
-	lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	lbl.add_theme_constant_override("outline_size", 4)
-	lbl.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-	lbl.position.y -= 40.0 * ui
-	layer.add_child(lbl)
-	var tw := lbl.create_tween()
-	tw.tween_interval(5.0)
-	tw.tween_property(lbl, "modulate:a", 0.0, 1.0)
-	tw.tween_callback(layer.queue_free)
+	toast(parent, Lang.t("Premi F per lo schermo intero"))
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	# il tasto F sul PC scaricato (sul web lo gestisce la pagina, dentro il gesto)
-	if OS.has_feature("web") or not fs_supported():
+	# il tasto F: sul PC scaricato cambia la finestra; sul web lo gestisce la pagina dentro il gesto, e
+	# qui si controlla solo che abbia funzionato (altrimenti il ripiego di Godot e il messaggio)
+	if not fs_supported():
 		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F:
-		fs_request()
+		fs_request(OS.has_feature("web"))
 
 
 func _input(event: InputEvent) -> void:

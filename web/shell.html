@@ -120,22 +120,55 @@ const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 	canvas.tabIndex = 0;
 	canvas.addEventListener('pointerdown', () => { if (document.activeElement !== canvas) canvas.focus({ preventScroll: true }); });
 	const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+	// registro per il gioco (scripts/fx.gd): quando è stata armata/eseguita una richiesta, com'era lo
+	// stato prima, l'ultimo errore del browser. Il gioco lo legge per decidere il ripiego e il messaggio.
+	window.duatFS = { armed: false, armedAt: 0, fired: 0, was: false, err: '' };
+	let fsLock = 0;
+	const fsFail = (e) => { window.duatFS.err = String((e && (e.message || e.name)) || e || 'rifiutato').slice(0, 120); };
 	const toggleFS = () => {
 		if (ios) return;                          // iPhone e iPad: si usa l'icona della Home
+		const now = Date.now();
+		if (now - fsLock < 400) return;           // una sola azione per pressione (niente entra-ed-esce)
+		fsLock = now;
+		window.duatFS.fired = now;
+		window.duatFS.was = !!fsEl();
+		window.duatFS.err = '';
 		try {
 			if (fsEl()) {
-				(document.exitFullscreen || document.webkitExitFullscreen).call(document);
+				const q = (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+				if (q && q.catch) q.catch(fsFail);
 			} else {
 				const el = document.documentElement;
-				const p = (el.requestFullscreen || el.webkitRequestFullscreen).call(el, { navigationUI: 'hide' });
-				if (p && p.catch) p.catch(() => {});
+				const req = el.requestFullscreen || el.webkitRequestFullscreen;
+				if (!req) { fsFail('schermo intero non disponibile in questo browser'); return; }
+				let p;
+				try { p = req.call(el, { navigationUI: 'hide' }); } catch (e1) { p = req.call(el); }
+				if (p && p.catch) p.catch(fsFail);
 			}
-		} catch (e) {}
+		} catch (e) { fsFail(e); }
 	};
+	document.addEventListener('fullscreenerror', () => { if (!window.duatFS.err) fsFail('fullscreenerror'); });
+	document.addEventListener('webkitfullscreenerror', () => { if (!window.duatFS.err) fsFail('fullscreenerror'); });
 	// il gioco arma la richiesta alla pressione del pulsante (window.duatWantFS): la eseguiamo al
 	// rilascio, che per il browser è il gesto dell'utente
 	window.duatWantFS = false;
-	const fireFS = () => { if (window.duatWantFS) { window.duatWantFS = false; toggleFS(); } };
+	let armTimer = 0;
+	const disarm = () => { window.duatWantFS = false; window.duatFS.armed = false; };
+	// una richiesta armata che resta senza gesto per più di 2 s si annulla (per esempio dal pad)
+	window.duatArmFS = () => {
+		window.duatWantFS = true;
+		window.duatFS.armed = true;
+		window.duatFS.armedAt = Date.now();
+		clearTimeout(armTimer);
+		armTimer = setTimeout(disarm, 2000);
+	};
+	const fireFS = () => {
+		if (!window.duatWantFS) return;
+		clearTimeout(armTimer);
+		const fresh = !window.duatFS.armedAt || Date.now() - window.duatFS.armedAt <= 2000;
+		disarm();
+		if (fresh) toggleFS();
+	};
 	['pointerup', 'touchend', 'keyup', 'click'].forEach((ev) => document.addEventListener(ev, fireFS, true));
 	// tasti: F = schermo intero; frecce, Spazio, PagSu/PagGiù, Inizio/Fine non fanno scorrere la pagina
 	const NO_SCROLL = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End'];

@@ -31,6 +31,16 @@ static func record(what: String) -> void:
 	JavaScriptBridge.eval("try { localStorage.setItem('duat_diag_live', %s); } catch (e) {}" % JSON.stringify(payload), true)
 
 
+## Un problema che non chiude il gioco (per esempio lo schermo intero rifiutato dal browser): finisce
+## subito nell'"ultimo problema" delle Opzioni.
+static func problem(err: String) -> void:
+	record("problema")
+	if not _web():
+		return
+	var payload := JSON.stringify({"t": Time.get_datetime_string_from_system(), "v": Updater.current(), "ev": _events, "err": err.left(200), "note": true})
+	JavaScriptBridge.eval("try { localStorage.setItem('duat_diag_last', %s); } catch (e) {}" % JSON.stringify(payload), true)
+
+
 ## L'ultimo problema registrato ("" se nessuno): data, versione e gli ultimi eventi.
 static func last_problem() -> String:
 	if not _web():
@@ -43,6 +53,8 @@ static func last_problem() -> String:
 		return ""
 	var ev: Array = d.get("ev", [])
 	var out := Lang.t("Il %s (versione %s) il gioco si è chiuso da solo.") % [String(d.get("t", "?")).replace("T", " "), String(d.get("v", "?"))]
+	if d.get("note", false):
+		out = Lang.t("Il %s (versione %s) il gioco ha registrato un problema.") % [String(d.get("t", "?")).replace("T", " "), String(d.get("v", "?"))]
 	if d.has("err") and String(d["err"]) != "":
 		out += "\n" + Lang.t("Errore: %s") % d["err"]
 	if not ev.is_empty():
