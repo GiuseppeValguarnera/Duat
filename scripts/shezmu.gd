@@ -14,9 +14,19 @@ extends Enemy
 ## Aggressivo come Serket (15/11): tra una mossa e l'altra aspetta pochissimo, e le mosse si LEGANO:
 ## mannaia → carica (mentre la mannaia è ancora in volo), torchio → vino, balzo → vino.
 ## Sotto il 60% si infuria: più rapido, due mannaie a V, sei pietre.
+##
+## Blocco 22, un MURO da imparare e non una spugna di vita:
+## - ARENA VIVA: le piastre del torchio (`ApepArena.Plates`) si abbassano una alla volta, 0,9 s di rosso.
+## - GRAPPOLI: all'80% e al 45% chiama tre dannati (`scenes/grape.tscn`). Finché ce n'è uno vivo Shezmu
+##   NON fa mosse da vicino: sta a distanza e tira UNA cosa ogni 2,5 s, la mannaia in linea (0,55 s) o
+##   un vaso di vino che cade su un cerchio rosso (0,8 s). Le piastre intanto stanno ferme.
+## - SPREMERE: un dannato vivo da più di 8 s (da 6,5 s diventa rosso) viene spremuto: Shezmu recupera
+##   il 3% e per 6 s tira ogni 1,8 s (furia breve). Al massimo 3 spremiture in tutto lo scontro.
+## - Sotto il 35%: tre mosse legate, poi UN solo respiro di 0,6 s (la finestra: lì non ferisce).
+## - Il Morso di Sobek non lo stordisce (`stun_immune`).
 
 @warning_ignore("unused_signal")
-signal summon(kinds: Array)        # il gioco lo collega a ogni guardiano; Shezmu non chiama nessuno
+signal summon(kinds: Array)        # il gioco lo collega a ogni guardiano: i dannati del torchio
 
 const CLEAVER_WARN := 0.55
 const CLEAVER_DIST := 250.0
@@ -40,6 +50,24 @@ const LEAP_WARN := 0.8
 const LEAP_R := 40.0
 const LEAP_DMG := 15.0
 const RAGE_AT := 0.6
+const GRAPE_AT := [0.8, 0.45]      ## frazioni di vita a cui chiama i dannati
+const GRAPES := 3
+const GRAPE_STAGGER := 1.5         ## il secondo e il terzo «maturano» 1,5 e 3 s dopo il primo
+const SHOT_EVERY := 2.5            ## un proiettile alla volta, mentre i dannati sono vivi
+const FURY_EVERY := 1.8            ## nella furia breve dopo una spremitura
+const FURY_TIME := 6.0
+const SQUEEZE_WARN := 0.7
+const SQUEEZE_HEAL := 0.03
+const SQUEEZE_MAX := 3
+const VASE_WARN := 0.8
+const VASE_R := 26.0
+const VASE_DMG := 10.0
+const ALOOF_DIST := 130.0          ## se ti avvicini di più, arretra
+const CHAIN_AT := 0.35
+const CHAIN_MOVES := 3
+const BREATH := 0.6
+const PLATE_EVERY := 3.0
+const PLATE_EVERY_RAGE := 2.4
 
 var state := "intro"
 var st := 1.4
@@ -52,11 +80,39 @@ var last_move := ""
 var combo_next := ""               ## la mossa che segue subito (le mosse si legano)
 var leap_to := Vector2.ZERO
 var air_h := 0.0
+var grape_wave := 0
+var squeezes := 0
+var fury_t := 0.0
+var aloof_t := 0.0
+var shot_t := 0.0
+var shot_kind := ""                ## "cleaver" mentre prepara il lancio da lontano
+var shot_st := 0.0
+var last_shot := ""
+var vases: Array = []              ## [posizione, secondi all'impatto]
+var squeeze_target = null
+var chain_left := CHAIN_MOVES - 1
+var plates = null
 
 
 func _ready() -> void:
 	miniboss = true
+	stun_immune = true
 	super._ready()
+	_make_plates.call_deferred()
+
+
+func _make_plates() -> void:
+	var g = get_tree().current_scene
+	if g == null or not ("ROOM" in g) or Run.trial:
+		return
+	var pl := ApepArena.Plates.new()
+	pl.center = Vector2(g.ROOM.size.x / 2.0, g.TOP + (g.ROOM.size.y - g.WALL - g.TOP) / 2.0)
+	get_parent().add_child(pl)
+	plates = pl
+
+
+func _grapes() -> Array:
+	return get_tree().get_nodes_in_group("grapes").filter(func(n) -> bool: return is_instance_valid(n) and not n.dead)
 
 
 class Cleaver extends Node2D:
@@ -85,7 +141,7 @@ class Cleaver extends Node2D:
 				out = false
 				Sfx.play_at("hit", global_position, 0.3)
 			if not hit_out and p != null and not p.dead and p.global_position.distance_to(global_position) < CLEAVER_HALF + Enemy.PLAYER_R:
-				hit_out = p.take_damage(CLEAVER_DMG, global_position, boss)
+				hit_out = p.take_damage(CLEAVER_DMG, global_position, boss, "mannaia")
 		else:
 			var back: Vector2 = boss.global_position + Vector2(0, -10) - global_position
 			if back.length() < 14.0:
@@ -93,7 +149,7 @@ class Cleaver extends Node2D:
 				return
 			position += back.normalized() * CLEAVER_SPEED * 1.15 * delta
 			if not hit_back and p != null and not p.dead and p.global_position.distance_to(global_position) < CLEAVER_HALF + Enemy.PLAYER_R:
-				hit_back = p.take_damage(CLEAVER_DMG, global_position, boss)
+				hit_back = p.take_damage(CLEAVER_DMG, global_position, boss, "mannaia")
 		queue_redraw()
 
 	func _draw() -> void:
@@ -125,6 +181,11 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 		Fx.shake(7.0)
 		Sfx.play_at("roar", global_position, 0.1)
 		Fx.float_text(global_position + Vector2(0, -44), Lang.t("IL TORCHIO GIRA"), Color(0.9, 0.2, 0.2))
+	fury_t = maxf(0.0, fury_t - delta)
+	_update_vases(delta)
+	if plates != null and is_instance_valid(plates):
+		plates.paused = state in ["intro", "call", "aloof", "squeeze"]
+		plates.every = PLATE_EVERY_RAGE if enraged else PLATE_EVERY
 	if to == Vector2.ZERO:
 		return Vector2.ZERO
 	var d := to.length()
@@ -136,6 +197,9 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			return Vector2.ZERO
 		"chase":
 			aim = u
+			if grape_wave < GRAPE_AT.size() and hp < max_hp * float(GRAPE_AT[grape_wave]):
+				_call_grapes()
+				return Vector2.ZERO
 			if st <= 0.0:
 				_choose(d)
 				return Vector2.ZERO
@@ -212,7 +276,51 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 			return aim * CHARGE_SPEED
 		"recover":
 			if st <= 0.0:
-				_next(randf_range(0.35, 0.7) / _rage())
+				if hp < max_hp * CHAIN_AT:
+					# tre mosse legate, poi un solo respiro: la finestra è quella
+					if chain_left > 0:
+						chain_left -= 1
+						_next(0.1)
+					else:
+						chain_left = CHAIN_MOVES - 1
+						state = "breath"
+						st = BREATH
+				else:
+					_next(randf_range(0.35, 0.7) / _rage())
+			return Vector2.ZERO
+		"breath":
+			if st <= 0.0:
+				_next(0.15)
+			return Vector2.ZERO
+		"call":
+			if st <= 0.0:
+				state = "aloof"
+				aloof_t = 0.0
+				shot_t = 1.4
+				shot_kind = ""
+			return Vector2.ZERO
+		"aloof":
+			return _aloof(delta, d, u)
+		"squeeze":
+			if squeeze_target == null or not is_instance_valid(squeeze_target) or squeeze_target.dead:
+				squeeze_target = null           # l'hai abbattuto in tempo: niente cura
+				state = "aloof"
+				return Vector2.ZERO
+			if st <= 0.0:
+				squeeze_target.squeeze()
+				squeeze_target = null
+				squeezes += 1
+				hp = minf(max_hp, hp + max_hp * SQUEEZE_HEAL)
+				fury_t = FURY_TIME
+				shot_t = 0.7
+				Fx.shake(5.0)
+				Sfx.play_at("roar", global_position, 0.3)
+				Fx.burst(global_position + Vector2(0, -24), Color(0.7, 0.08, 0.12), 22, 140.0)
+				Fx.float_text(global_position + Vector2(0, -46), Lang.t("SPREMUTO: Shezmu beve"), Color(0.95, 0.3, 0.3))
+				if squeezes >= SQUEEZE_MAX:
+					for gr in _grapes():
+						gr.squeezable = false
+				state = "aloof"
 			return Vector2.ZERO
 	return Vector2.ZERO
 
@@ -220,6 +328,99 @@ func _behave(delta: float, to: Vector2) -> Vector2:
 func _next(time: float) -> void:
 	state = "chase"
 	st = time
+
+
+## Chiama i dannati: tre, attorno alla vasca, lontani da te.
+func _call_grapes() -> void:
+	grape_wave += 1
+	state = "call"
+	st = 1.0
+	combo_next = ""
+	Fx.shake(5.0)
+	Sfx.play_at("roar", global_position, 0.0)
+	Fx.float_text(global_position + Vector2(0, -46), Lang.t("I DANNATI DEL TORCHIO"), Color(0.85, 0.3, 0.45))
+	var g = get_tree().current_scene
+	var p = get_tree().get_first_node_in_group("player")
+	var mid: Vector2 = plates.center if plates != null and is_instance_valid(plates) else global_position
+	var base := randf() * TAU
+	var list := []
+	for i in range(GRAPES):
+		var at := mid
+		for k in range(8):
+			at = mid + Vector2.from_angle(base + TAU * i / GRAPES + k * 0.5) * Vector2(150.0, 96.0)
+			var ok: bool = g == null or not g.has_method("_in_floor") or g._in_floor(at, 14.0)
+			if ok and (p == null or at.distance_to(p.global_position) > 70.0):
+				break
+		list.append(["grape", at])
+	summon.emit(list)
+
+
+## Finché i dannati sono vivi (o dura la furia breve): fermo a distanza, UN proiettile alla volta.
+func _aloof(delta: float, d: float, u: Vector2) -> Vector2:
+	aloof_t += delta
+	var gs := _grapes()
+	for gr in gs:
+		if not gr.has_meta("vine"):
+			# maturano uno dopo l'altro: così le spremiture non arrivano mai insieme
+			var n := 0
+			for o in gs:
+				if o.has_meta("vine") and int(o.get_meta("vine")) == grape_wave:
+					n += 1
+			gr.set_meta("vine", grape_wave)
+			gr.age = -GRAPE_STAGGER * n
+			gr.squeezable = squeezes < SQUEEZE_MAX
+	if shot_kind == "cleaver":
+		shot_st -= delta
+		if shot_st > CLEAVER_WARN * 0.4:
+			aim = u
+		if shot_st <= 0.0:
+			shot_kind = ""
+			_throw(true)
+		return Vector2.ZERO
+	aim = u
+	if gs.is_empty() and aloof_t > 1.8 and fury_t <= 0.0:
+		state = "recover"                   # finiti i dannati: torna addosso
+		st = 0.5
+		return Vector2.ZERO
+	if squeezes < SQUEEZE_MAX:
+		for gr in gs:
+			if gr.age >= Grape.SQUEEZE_AT:
+				squeeze_target = gr
+				state = "squeeze"
+				st = SQUEEZE_WARN
+				Sfx.play_at("amheh_growl", global_position, 0.3)
+				return Vector2.ZERO
+	shot_t -= delta
+	if shot_t <= 0.0:
+		shot_t = FURY_EVERY if fury_t > 0.0 else SHOT_EVERY
+		var p = get_tree().get_first_node_in_group("player")
+		if cleavers.is_empty() and (last_shot != "cleaver" or randf() < 0.3):
+			last_shot = "cleaver"
+			shot_kind = "cleaver"
+			shot_st = CLEAVER_WARN
+			Sfx.play_at("mummy_windup", global_position, 0.2)
+			return Vector2.ZERO
+		last_shot = "vase"
+		if p != null and not p.dead:
+			vases.append([p.global_position, VASE_WARN])
+			Sfx.play_at("swing", global_position, 0.5)
+	if d < ALOOF_DIST:
+		return _steer(-u * speed * 0.7, delta)
+	return Vector2.ZERO
+
+
+func _update_vases(delta: float) -> void:
+	var p = get_tree().get_first_node_in_group("player")
+	for v in vases:
+		var before: float = v[1]
+		v[1] = before - delta
+		if before > 0.0 and float(v[1]) <= 0.0:
+			var at: Vector2 = v[0]
+			Fx.burst(at, Color(0.6, 0.08, 0.12), 18, 130.0)
+			Sfx.play_at("splash", at, 0.2)
+			if p != null and not p.dead and p.global_position.distance_to(at) < VASE_R:
+				p.take_damage(VASE_DMG, at, self, "vaso")
+	vases = vases.filter(func(s) -> bool: return float(s[1]) > -0.3)
 
 
 func _choose(d: float) -> void:
@@ -272,9 +473,9 @@ func _cleaver_dirs() -> Array:
 	return [aim.rotated(deg_to_rad(-16.0)), aim.rotated(deg_to_rad(16.0))] if enraged else [aim]
 
 
-func _throw() -> void:
+func _throw(single: bool = false) -> void:
 	Sfx.play_at("swing", global_position, 0.1)
-	for dr in _cleaver_dirs():
+	for dr in ([aim] if single else _cleaver_dirs()):
 		var c := Cleaver.new()
 		c.dir = dr
 		c.owner_ref = weakref(self)
@@ -354,11 +555,27 @@ func die() -> void:
 	for c in cleavers:
 		if is_instance_valid(c):
 			c.queue_free()
+	if plates != null and is_instance_valid(plates):
+		plates.queue_free()
+	for gr in _grapes():
+		gr.die()                            # caduto Shezmu, i dannati si sciolgono
 	super.die()
 
 
 ## Per il bot: da cosa scappare.
 func bot_escape(pos: Vector2) -> Vector2:
+	if plates != null and is_instance_valid(plates):
+		var pd: Vector2 = plates.danger(pos)
+		if pd != Vector2.ZERO:
+			return pd
+	for vs in vases:
+		var va: Vector2 = vs[0]
+		if float(vs[1]) > 0.0 and pos.distance_to(va) < VASE_R + 10.0:
+			return (pos - va).normalized() if pos != va else Vector2.RIGHT
+	if shot_kind == "cleaver":
+		var vc := pos - global_position
+		if absf(vc.dot(aim.orthogonal())) < 30.0 and vc.dot(aim) > -10.0:
+			return aim.orthogonal() * (1.0 if vc.dot(aim.orthogonal()) >= 0.0 else -1.0)
 	for sp in press_spots:
 		var at: Vector2 = sp[0]
 		if float(sp[1]) > 0.0 and float(sp[1]) <= PRESS_WARN and pos.distance_to(at) < PRESS_R + 10.0:
@@ -411,6 +628,35 @@ func _draw() -> void:
 			else:
 				draw_circle(lp, PRESS_R * 0.9, Color(0.42, 0.36, 0.34, clampf(1.0 + left / 0.35, 0.0, 1.0)))
 				draw_arc(lp, PRESS_R * 0.9, 0.0, TAU, 24, Color(0.1, 0.07, 0.06, clampf(1.0 + left / 0.35, 0.0, 1.0)), 2.0)
+	for vs in vases:
+		var vl: float = vs[1]
+		var vp: Vector2 = to_local(vs[0])
+		if vl > 0.0:
+			var vk := 1.0 - vl / VASE_WARN
+			Enemy.warn_circle(self, vp, VASE_R, vk)
+			# il vaso che cade: scende dall'alto sul centro del cerchio
+			var top := vp + Vector2(0, -70.0 * (1.0 - vk))
+			draw_circle(vp, 4.0 + 5.0 * vk, Color(0, 0, 0, 0.3))
+			draw_circle(top + Vector2(0, -6), 5.5, Color(0.5, 0.3, 0.2))
+			draw_circle(top + Vector2(0, -11), 2.6, Color(0.35, 0.05, 0.08))
+			draw_arc(top + Vector2(0, -6), 5.5, 0.0, TAU, 12, Color(0.2, 0.12, 0.08), 1.0)
+		else:
+			draw_circle(vp, VASE_R * 0.8, Color(0.5, 0.06, 0.1, clampf(1.0 + vl / 0.3, 0.0, 1.0) * 0.6))
+	if state == "aloof" and shot_kind == "cleaver":
+		Enemy.warn_strip(self, Vector2(0, -6), aim, CLEAVER_DIST, CLEAVER_HALF, 1.0 - shot_st / CLEAVER_WARN)
+	if state == "squeeze" and squeeze_target != null and is_instance_valid(squeeze_target):
+		# la mano che stringe da lontano: un filo rosso che si ispessisce fino al dannato
+		var sk := 1.0 - st / SQUEEZE_WARN
+		var tp: Vector2 = to_local(squeeze_target.global_position) + Vector2(0, -8)
+		draw_line(Vector2(0, -30), tp, Color(0.9, 0.15, 0.2, 0.5 + 0.4 * sk), 1.0 + 2.5 * sk)
+		draw_arc(tp, 14.0 - 8.0 * sk, 0.0, TAU, 16, Color(1.0, 0.25, 0.2, 0.9), 2.0)
+	if fury_t > 0.0:
+		draw_arc(Vector2(0, -24), 24.0 + sin(t * 14.0) * 2.0, 0.0, TAU, 24, Color(1.0, 0.3, 0.2, 0.55), 1.6)
+	if state == "breath":
+		# riprende fiato: sbuffi chiari davanti al muso (la finestra)
+		for i in range(3):
+			var bk := fmod(t * 2.2 + i * 0.33, 1.0)
+			draw_circle(Vector2((1.0 if aim.x >= 0.0 else -1.0) * (12.0 + 12.0 * bk), -36.0 - 5.0 * bk), 2.0 + 2.5 * bk, Color(1, 1, 1, 0.5 * (1.0 - bk)))
 	match state:
 		"cleaver_warn":
 			for dr in _cleaver_dirs():
@@ -438,6 +684,8 @@ func _draw_body(flash: bool) -> void:
 	var lift := 0.0
 	if state == "press_warn":
 		lift = clampf(1.0 - st / PRESS_WARN, 0.0, 1.0)
+	if state == "call" or state == "squeeze":
+		lift = 1.0
 	var lean := 0.0
 	if state == "charge_warn" or state == "charge":
 		lean = 4.0
@@ -458,13 +706,13 @@ func _draw_body(flash: bool) -> void:
 	for sx in [-1.0, 1.0]:
 		var sh := c + Vector2(sx * 13.0, -6)
 		var hand := sh + Vector2(sx * (7.0 - 3.0 * lift), 12.0 - 30.0 * lift)
-		if state == "cleaver_warn" and sx == dirx:
+		if (state == "cleaver_warn" or shot_kind == "cleaver") and sx == dirx:
 			hand = sh + Vector2(-dirx * 4.0, -16.0)
 		_limb(sh, hand, skin, 4.6)
 		_dot(hand, 3.2, skin)
 		if sx == dirx and has_cleaver:
 			var k := Vector2(dirx * 0.5, -1.0).normalized()
-			if state == "cleaver_warn":
+			if state == "cleaver_warn" or shot_kind == "cleaver":
 				k = Vector2(-dirx * 0.6, -1.0).normalized()
 			var o := k.orthogonal() * dirx
 			draw_line(hand - k * 3.0, hand + k * 6.0, dark, 3.0)

@@ -22,6 +22,7 @@ var t := 0.0
 var seed_offset := 0.0
 var contact: Area2D
 var is_boss := false
+var stun_immune := false              ## il Morso di Sobek non lo stordisce (Shezmu)
 var miniboss := false                 ## guardiano a metà discesa: barra in alto invece che sopra la testa
 var sand_shield := 0.0                ## scudo di sabbia del Sacerdote di Sokar: assorbe i colpi prima della vita
 var shu_t := 0.0                      ## Shu: sta volando per una spinta (lo schianto vale solo ora)
@@ -160,7 +161,7 @@ func _relocate(g) -> void:
 ## Regola del 12/11 (sera): un boss o un guardiano che RIPRENDE FIATO non ferisce al contatto. La pausa
 ## dopo una mossa è il momento in cui il gioco ti invita ad avvicinarti: farti male proprio lì era la
 ## prima fonte di danni del Serpente (i bot: 342 su ~1500) e uccideva in 20 s chi stava addosso ad Aker.
-const RESTING := ["recover", "stuck", "dizzy", "stunned", "punish", "bound", "roar", "fray"]
+const RESTING := ["recover", "stuck", "dizzy", "stunned", "punish", "bound", "roar", "fray", "breath", "aloof", "call", "squeeze"]
 
 func _resting() -> bool:
 	return (is_boss or miniboss) and "state" in self and str(get("state")) in RESTING

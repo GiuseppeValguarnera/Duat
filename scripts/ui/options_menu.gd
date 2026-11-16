@@ -327,7 +327,13 @@ const STATE_NAMES := {"windup": "preparazione", "leap": "salto", "charge": "cari
 	"charge_windup": "preparazione della carica", "breath": "soffio", "leap_windup": "preparazione del balzo",
 	"pounce": "balzo", "wave": "onda", "ray": "raggio", "chase": "inseguimento", "walk": "cammino",
 	"soar": "volo", "rise": "a terra", "recover": "pausa", "drift": "volo", "under": "sotto la sabbia",
-	"line_warn": "coda dalla sabbia", "breach": "balzo fuori dalla sabbia", "fan_windup": "ventaglio"}
+	"line_warn": "coda dalla sabbia", "breach": "balzo fuori dalla sabbia", "fan_windup": "ventaglio",
+	"aloof": "a distanza, coi dannati", "squeeze": "spremitura", "call": "chiamata dei dannati", "fury": "furia breve",
+	"cleaver_warn": "preparazione della mannaia", "press_warn": "torchio", "wine_warn": "ventaglio di vino",
+	"charge_warn": "preparazione della carica", "leap_warn": "preparazione del balzo", "bound": "legato al palo",
+	"fray": "la corda cede", "lunge": "affondo", "lunge_warn": "preparazione dell'affondo", "roar": "ruggito",
+	"gaze_warn": "sguardo", "pull": "risucchio", "pull_warn": "preparazione del risucchio", "ring_warn": "stretta delle spire",
+	"spit": "sputo", "tail": "coda"}
 var hits_page := false
 var page_kind := "colpi"
 

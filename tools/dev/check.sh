@@ -43,6 +43,8 @@ DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 60 "$G" --headless --fixed-fps 60 --path . 
 DUAT_NOTUT=1 DUAT_SPHINX_DAY=20400 HOME="$HOMEDIR" timeout 150 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/sphinxsmoke.gd >> "$OUT/run.txt" 2>&1
 # Aker: tutte le mosse, la divisione, la tenaglia, la furia, la vittoria (tools/dev/akersmoke.gd)
 DUAT_NOTUT=1 DUAT_REGION2=1 HOME="$HOMEDIR" timeout 120 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/akersmoke.gd >> "$OUT/run.txt" 2>&1
+# Shezmu (blocco 22): piastre, dannati, proiettili da lontano, spremitura, respiro (tools/dev/shezmusmoke.gd)
+DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 110 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/shezmusmoke.gd >> "$OUT/run.txt" 2>&1
 ERR=$(cat "$OUT/import.txt" "$OUT/run.txt" | grep -E "SCRIPT ERROR|Parse Error|Compile Error|Failed to load script" -A1 | grep -v "^--$" | sort | uniq -c)
 if [ -n "$ERR" ]; then
   echo "$ERR" | head -20

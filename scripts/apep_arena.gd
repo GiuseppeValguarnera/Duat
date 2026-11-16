@@ -206,3 +206,98 @@ static func paint_bank(ci: CanvasItem, r: Rect2, top: float, wall: float) -> voi
 	_coil(ci, Vector2(fr.end.x - 70.0, fr.position.y + 20.0), 50.0, 18.0)
 	_coil(ci, Vector2(fr.position.x + 34.0, mid.y + 30.0), 26.0, 22.0)
 	_coil(ci, Vector2(fr.end.x - 34.0, mid.y - 20.0), 26.0, 22.0)
+
+
+## L'ARENA VIVA di Shezmu (blocco 22): sei piastre di pietra attorno alla vasca. Una alla volta si
+## abbassa di colpo come il piano del torchio: prima diventa rossa per 0,9 s (l'avviso, con la misura
+## vera della piastra), poi schiaccia chi c'è sopra (12, fonte «piastra»). Mai due insieme, mai la
+## stessa due volte di fila, e ferme finché ci sono i grappoli (mai più di due cose da leggere).
+class Plates extends Node2D:
+	const SIZE := Vector2(48, 32)
+	const WARN := 0.9
+	const DOWN := 0.5
+	const DMG := 12.0
+	const SPOTS := [Vector2(-96, -34), Vector2(96, -34), Vector2(-96, 36), Vector2(96, 36), Vector2(-232, 0), Vector2(232, 0)]
+
+	var center := Vector2.ZERO
+	var every := 3.0                 ## secondi tra una piastra e l'altra (Shezmu infuriato: meno)
+	var paused := false
+	var wait := 5.0                  ## la prima dopo 5 s: mai appena entri
+	var active := -1
+	var last := -1
+	var st := 0.0
+	var phase := ""                  ## "warn" → "down"
+	var hit := false
+	var t := 0.0
+
+	func _ready() -> void:
+		Hazards.ground.call_deferred(self)
+
+	func _rect(i: int) -> Rect2:
+		var s: Vector2 = SPOTS[i]
+		return Rect2(center + s - SIZE / 2.0, SIZE)
+
+	func _process(delta: float) -> void:
+		t += delta
+		var p = get_tree().get_first_node_in_group("player")
+		if phase == "":
+			if paused:
+				queue_redraw()
+				return
+			wait -= delta
+			if wait <= 0.0 and p != null and not p.dead:
+				# di solito quella più vicina a te (così conta dove stai), a volte una a caso; mai l'ultima
+				var order := range(SPOTS.size())
+				order.erase(last)
+				order.sort_custom(func(a, b) -> bool: return _rect(a).get_center().distance_to(p.global_position) < _rect(b).get_center().distance_to(p.global_position))
+				active = order[0] if randf() < 0.65 else order.pick_random()
+				last = active
+				phase = "warn"
+				st = WARN
+				hit = false
+				Sfx.play_at("scorpion_windup", _rect(active).get_center(), 0.3)
+		elif phase == "warn":
+			st -= delta
+			if st <= 0.0:
+				phase = "down"
+				st = DOWN
+				Sfx.play_at("amheh_land", _rect(active).get_center(), 0.2)
+				Fx.shake(4.0)
+				if p != null and not p.dead and _rect(active).has_point(p.global_position):
+					hit = p.take_damage(DMG, _rect(active).get_center(), null, "piastra")
+		elif phase == "down":
+			st -= delta
+			if st <= 0.0:
+				phase = ""
+				active = -1
+				wait = every
+		queue_redraw()
+
+	## Per il bot e per chi vuole sapere se un punto sta per essere schiacciato.
+	func danger(pos: Vector2) -> Vector2:
+		if active < 0 or phase != "warn" or not _rect(active).grow(8.0).has_point(pos):
+			return Vector2.ZERO
+		var v := pos - _rect(active).get_center()
+		return v.normalized() if v != Vector2.ZERO else Vector2.RIGHT
+
+	func _draw() -> void:
+		for i in range(SPOTS.size()):
+			var r := _rect(i)
+			var lr := Rect2(r.position - global_position, r.size)
+			var sunk := 0.0
+			if i == active and phase == "down":
+				sunk = 3.0
+			draw_rect(lr.grow(1.5), Color(0.05, 0.03, 0.05))
+			draw_rect(Rect2(lr.position + Vector2(0, sunk), lr.size), Color(0.36, 0.3, 0.32) if sunk == 0.0 else Color(0.24, 0.2, 0.22))
+			draw_rect(Rect2(lr.position + Vector2(0, sunk), Vector2(lr.size.x, 3.0)), Color(0.5, 0.44, 0.44, 0.8 if sunk == 0.0 else 0.2))
+			# il segno del torchio inciso: due tacche
+			var c := lr.get_center() + Vector2(0, sunk)
+			draw_line(c + Vector2(-8, -5), c + Vector2(-8, 5), Color(0.2, 0.15, 0.17), 1.4)
+			draw_line(c + Vector2(8, -5), c + Vector2(8, 5), Color(0.2, 0.15, 0.17), 1.4)
+			if i == active and phase == "warn":
+				var k := 1.0 - st / WARN
+				draw_rect(lr, Color(Enemy.WARN, 0.14))
+				draw_rect(Rect2(lr.position, Vector2(lr.size.x, lr.size.y * k)), Color(Enemy.WARN, 0.2 + 0.18 * k))
+				draw_rect(lr, Color(Enemy.WARN, 0.6 + 0.35 * k), false, 1.6)
+			elif i == active and phase == "down":
+				draw_rect(lr, Color(0, 0, 0, 0.3))

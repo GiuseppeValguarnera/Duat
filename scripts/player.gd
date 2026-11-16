@@ -1029,7 +1029,8 @@ func _flail_swing() -> void:
 			if swing_index == 2 and Run.has("shu_breath"):
 				e.shu_push(to.normalized(), 330.0)
 			if swing_index == 2 and Run.has("sobek_bite"):
-				e.stagger_t = maxf(e.stagger_t, Run.val("sobek_bite") * (0.25 if e.is_boss else 1.0))
+				if not e.stun_immune:
+					e.stagger_t = maxf(e.stagger_t, Run.val("sobek_bite") * (0.25 if e.is_boss else 1.0))
 				e.sobek_stun_t = maxf(e.sobek_stun_t, Run.val("sobek_bite"))
 			if Run.has("duo_anubi_sekhmet") and not e.is_boss and not e.miniboss and e.hp < e.max_hp * 0.15:
 				Fx.float_text(e.global_position + Vector2(0, -24), Lang.t("GIUDIZIO"), Boons.god_color("duo"))
@@ -1201,7 +1202,8 @@ func _swing() -> void:
 				e.shu_push(to.normalized(), 330.0)
 			if swing_index == 2 and Run.has("sobek_bite") and not e.dead:
 				var stun: float = Run.val("sobek_bite") * (0.25 if e.is_boss else 1.0)
-				e.stagger_t = maxf(e.stagger_t, stun)
+				if not e.stun_immune:
+					e.stagger_t = maxf(e.stagger_t, stun)
 				e.sobek_stun_t = maxf(e.sobek_stun_t, Run.val("sobek_bite"))
 			hit_any = true
 	if swing_index == 2 and Run.has("sekhmet_roar"):
