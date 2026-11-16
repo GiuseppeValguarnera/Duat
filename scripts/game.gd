@@ -41,6 +41,8 @@ const ENEMIES := {
 	"apep_spawn": preload("res://scenes/apep_spawn.tscn"),      # Figlio di Apopi (serpe, lascia Isfet)
 	"sheut": preload("res://scenes/sheut.tscn"),                # ombra senza padrone (riaffiora alle spalle)
 	"grape": preload("res://scenes/grape.tscn"),                # dannato del torchio (solo con Shezmu)
+	"light_eater": preload("res://scenes/light_eater.tscn"),    # Divoratore di luce (inghiotte il fascio di Ra)
+	"veil": preload("res://scenes/veil.tscn"),                  # Portatore del velo (tiene chiuse le scaglie)
 	"knifer": preload("res://scenes/knifer.tscn"),              # portatore di coltelli (ventaglio di tre)
 	"shetyu": preload("res://scenes/shetyu.tscn"),              # tartaruga del caos (trottola)
 	"shezmu": preload("res://scenes/shezmu.tscn"),              # guardiano: il Signore del Torchio
@@ -50,7 +52,7 @@ const ENEMIES := {
 }
 const FerrymanScript := preload("res://scripts/ferryman.gd")
 const FEATHER_KA := 0.4               ## con la Piuma di Ma'at si custodisce solo il 40% del Ka
-const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "amheh_anello": "l'anello di fuoco di Am-heh", "aker_shade": "un'Ombra di Sabbia", "aker_spark": "una Scintilla dell'Alba", "aker_scintilla": "la fiammata di una Scintilla dell'Alba", "aker_fuoco": "il fuoco delle Scintille", "aker_crepa": "una crepa di fuoco", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra", "fiume": "il fiume di sabbia nera", "buca": "una buca delle sabbie che crollano", "falco": "una statua-falco", "javelin": "un lanciatore di giavellotti", "sokar_priest": "un sacerdote di Sokar", "khepri": "uno scarabeo di Khepri", "khepri_ball": "la sfera di Khepri", "mirage": "il miraggio", "serket_nube": "la nube di veleno", "serket_aura": "l'aura di veleno di Serket", "scorpion_veleno": "il veleno dello scorpione", "serpent_veleno": "il veleno del Serpente", "serket_veleno": "il veleno di Serket", "sekhmet_heavy": "la sete di Sekhmet", "salasso": "il salasso del Peso del Cuore", "apep_spawn": "un Figlio di Apopi", "sheut": "un'ombra senza padrone", "knifer": "un portatore di coltelli", "shetyu": "la tartaruga del caos", "inverted": "un Capovolto", "apep_egg": "un uovo di Apopi", "shezmu": "Shezmu, il Signore del Torchio", "apep": "Apopi", "isfet": "l'Isfet, il caos che ribolle", "spira": "una spira di Apopi", "corda": "la corda di Serket che schiocca", "grape": "un dannato del torchio", "vaso": "un vaso di vino di Shezmu", "mannaia": "la mannaia di Shezmu", "piastra": "una piastra del torchio"}
+const KILLER_NAMES := {"mummy": "una mummia", "scarab": "gli scarabei", "priest": "un sacerdote", "scorpion": "uno scorpione di Serket", "crocodile": "un coccodrillo", "jackal": "gli sciacalli", "vulture": "un avvoltoio", "sokar_guard": "un guardiano di Sokar", "damned_ba": "un Ba dannato", "cobra": "un cobra", "serpent": "il Serpente della Porta", "serket": "Serket, la dea scorpione", "aker": "Aker, il leone dell'orizzonte", "aker_lion": "un leone di Aker", "aker_pietra": "le pietre di Aker", "aker_raggio": "il raggio dell'alba", "ammit": "Ammit", "amheh": "Am-heh, il Divoratore di Milioni", "amheh_fuoco": "il fuoco di Am-heh", "amheh_marea": "la marea di fuoco di Am-heh", "amheh_anello": "l'anello di fuoco di Am-heh", "aker_shade": "un'Ombra di Sabbia", "aker_spark": "una Scintilla dell'Alba", "aker_scintilla": "la fiammata di una Scintilla dell'Alba", "aker_fuoco": "il fuoco delle Scintille", "aker_crepa": "una crepa di fuoco", "grata": "una grata di fuoco", "olio": "l'olio in fiamme", "trappola": "una trappola", "ureo": "le statue del cobra", "fiume": "il fiume di sabbia nera", "buca": "una buca delle sabbie che crollano", "falco": "una statua-falco", "javelin": "un lanciatore di giavellotti", "sokar_priest": "un sacerdote di Sokar", "khepri": "uno scarabeo di Khepri", "khepri_ball": "la sfera di Khepri", "mirage": "il miraggio", "serket_nube": "la nube di veleno", "serket_aura": "l'aura di veleno di Serket", "scorpion_veleno": "il veleno dello scorpione", "serpent_veleno": "il veleno del Serpente", "serket_veleno": "il veleno di Serket", "sekhmet_heavy": "la sete di Sekhmet", "salasso": "il salasso del Peso del Cuore", "apep_spawn": "un Figlio di Apopi", "sheut": "un'ombra senza padrone", "knifer": "un portatore di coltelli", "shetyu": "la tartaruga del caos", "inverted": "un Capovolto", "apep_egg": "un uovo di Apopi", "shezmu": "Shezmu, il Signore del Torchio", "apep": "Apopi", "isfet": "l'Isfet, il caos che ribolle", "spira": "una spira di Apopi", "corda": "la corda di Serket che schiocca", "grape": "un dannato del torchio", "vaso": "un vaso di vino di Shezmu", "mannaia": "la mannaia di Shezmu", "piastra": "una piastra del torchio", "light_eater": "un Divoratore di luce"}
 const SHOP_ITEMS := [
 	{"kind": "heal", "title": "Acqua del Nilo", "desc": "Recuperi il %d%% della vita", "price": 20},
 	{"kind": "boon", "title": "Offerta agli dèi", "desc": "Un dio a caso ti offre un dono", "price": 40},
@@ -261,6 +263,13 @@ func start_room(reward: Dictionary) -> void:
 		if Run.region >= 3 and Run.room == 1 and not Run.trial:
 			get_tree().create_timer(0.9, false).timeout.connect(func() -> void:
 				_banner(Lang.t("Il Banco di Apopi"), Lang.t("Qui il serpente beve il fiume. L'acqua è nera, e guarda"), Color(0.7, 0.45, 1.0), 4.5))
+			if not Meta.intros_seen.has("luce_ra"):
+				# la regola della regione, una volta: la dice Anubi
+				Meta.intros_seen.append("luce_ra")
+				Meta.save()
+				get_tree().create_timer(6.5, false).timeout.connect(func() -> void:
+					if Run.region >= 3 and Run.room == 1 and not finished:
+						_banner(Lang.t("La luce di Ra"), Lang.t("«Le scaglie del caos si aprono solo nella luce. Colpisci quando il fascio li tocca.» — Anubi"), Color(1.0, 0.86, 0.45), 7.0))
 	Run.nefti_room_heal = 0.0              # il tetto delle cure di Nefti vale per stanza
 	room_gen += 1
 	boss = null
@@ -293,7 +302,13 @@ func start_room(reward: Dictionary) -> void:
 	pillars.clear()
 	var boss_room := Run.room > Run.ROOMS_PER_RUN
 	var kind: String = reward.get("kind", "none")
-	ROOM = ROOM_BIG if boss_room or kind == "guardian" or kind == "sphinx" or OS.get_environment("DUAT_BIGROOMS") != "" else ROOM_SMALL
+	Run.apep_type = ""
+	room_unique = ""
+	room_spawned = 0
+	room_scaled = 0
+	if Run.region >= 3 and not Run.trial and not boss_room and kind not in ["guardian", "shop", "tutorial", "set", "oasis", "sphinx"] and not reward.get("calm", false):
+		Run.apep_type = Run.next_apep_type()           # blocco 21: quattro tipi di stanza, ognuno con la sua regola
+	ROOM = ROOM_BIG if boss_room or kind == "guardian" or kind == "sphinx" or Run.apep_type == "barca" or OS.get_environment("DUAT_BIGROOMS") != "" else ROOM_SMALL
 	var quiet: bool = reward.get("calm", false)    # blocco 14: sala tranquilla prima di boss e mini boss
 	var calm := kind == "guardian" or kind == "shop" or kind == "tutorial" or kind == "set" or kind == "oasis" or quiet or kind == "sphinx"
 	Run.curse_paused = boss_room or kind == "guardian" or kind == "shop" or kind == "set" or kind == "oasis" or quiet
@@ -312,6 +327,11 @@ func start_room(reward: Dictionary) -> void:
 		layout = Sphinx.TRIAL_PILLARS
 	for f in layout:
 		pillars.append(Vector2(lerpf(WALL, ROOM.size.x - WALL, f.x), lerpf(TOP, ROOM.size.y - WALL, f.y)))
+	if Run.apep_type == "barca":
+		pillars.clear()                                # il Corridoio della barca: largo e sgombro
+	elif Run.apep_type in ["pali", "torchio"]:
+		var room_mid := Vector2(ROOM.size.x / 2.0, (TOP + ROOM.size.y - WALL) / 2.0)
+		pillars = pillars.filter(func(q) -> bool: return q.distance_to(room_mid) > 135.0)     # il centro è dei pali / delle piastre
 	rooms.build_walls()
 	var decor := DecorScript.new()
 	decor.under = paint_floor
@@ -378,6 +398,8 @@ func start_room(reward: Dictionary) -> void:
 		decor.ambient.color = Color(1.0, 0.94, 0.82)      # luce calda di sabbia
 	if Run.region >= 3 and not Run.trial and arena != "oasis":
 		decor.ambient.color = Color(0.9, 0.86, 1.0)       # luce fredda, viola: il cuore della notte
+		# ogni tipo di stanza ha la sua luce (blocco 21)
+		decor.ambient.color = {"barca": Color(1.0, 0.92, 0.8), "pozze": Color(0.84, 0.9, 1.0), "pali": Color(0.82, 0.98, 0.94), "torchio": Color(1.0, 0.84, 0.86)}.get(Run.apep_type, decor.ambient.color)
 	if current_reward.get("kind", "") == "set":
 		decor.mosaic = ""                  # al centro c'è l'altare di Set: niente mosaico sopra
 	if kind == "sphinx":
@@ -469,7 +491,7 @@ func start_room(reward: Dictionary) -> void:
 	if Run.region == 2:
 		horde *= 1.3                              # Sokar: più nemici per ondata, non una terza ondata
 	elif Run.region >= 3:
-		horde *= 1.15                             # Banco di Apopi: pochi nemici forti, non una folla (difficile, non stressante)
+		horde *= 1.3                              # Banco di Apopi (blocco 21): la densità di Sokar, ma ogni nemico ha meno vita (Run.APEP_HP)
 	if Meta.feather:
 		horde *= 0.75                             # Piuma di Ma'at: un quarto di nemici in meno
 	var soft := 1 if r <= 2 else 0                # le prime due stanze sono un po' più leggere
@@ -498,14 +520,24 @@ var sokar_types: Array = []              ## i tipi di nemici di questa stanza di
 ## Il Banco di Apopi: SOLO nemici suoi (15/11: tolti Ba dannati e scarabei di Khepri, che erano di Sokar).
 ## Serpi a coppie, ombre, tartaruga, uovo (fa nascere serpi finché non lo rompi); a distanza i portatori
 ## di coltelli e il Capovolto (sta sempre dalla parte opposta a te).
+## Blocco 21, sette ruoli: sciame di serpi (5-7 per ondata, poca vita), ombre e Capovolti (con le scaglie),
+## tartaruga, uovo, coltelli, e due "da togliere per primi": il Divoratore di luce (inghiotte il fascio) e
+## il Portatore del velo (tiene chiuse le scaglie). Questi due: uno solo per stanza, mai insieme (ROOM_UNIQUE).
 const APEP_KINDS := {
-	"apep_spawn": [3, ["apep_spawn", "apep_spawn"], false, 3],
+	"apep_spawn": [3, ["apep_spawn", "apep_spawn", "apep_spawn"], false, 2],
 	"sheut": [3, ["sheut"], false, 2],
 	"shetyu": [4, ["shetyu"], false, 1],
 	"apep_egg": [3, ["apep_egg"], false, 1],
 	"knifer": [2, ["knifer"], true, 2],
 	"inverted": [3, ["inverted"], true, 1],
+	"light_eater": [4, ["light_eater"], false, 1],
+	"veil": [2, ["veil"], true, 1],
 }
+const ROOM_UNIQUE := ["light_eater", "veil"]
+const SCALED_KINDS := ["sheut", "inverted"]       ## più le élite; mai più di un terzo della stanza
+var room_unique := ""                    ## quale dei due "unici" è già uscito in questa stanza
+var room_spawned := 0
+var room_scaled := 0
 
 
 ## La tabella dei nemici della regione in corso (Sokar o il Banco di Apopi).
@@ -547,6 +579,10 @@ func _make_sokar_wave(budget: int) -> Array:
 		var ranged: bool = d[2]
 		if int(cnt.get(k, 0)) >= int(d[3]) or cost > budget + 1:
 			continue
+		if k in ROOM_UNIQUE:
+			if room_unique != "" or Run.room < 2 or (ranged and ranged_n + units.size() > melee_n):
+				continue                       # uno solo per stanza, e non nella prima
+			room_unique = k
 		if ranged and ranged_n + units.size() > melee_n:
 			continue                       # prima un po' di corpo a corpo
 		cnt[k] = int(cnt.get(k, 0)) + 1
@@ -558,6 +594,16 @@ func _make_sokar_wave(budget: int) -> Array:
 			melee_n += units.size()
 	if out.is_empty():
 		out = ["apep_spawn", "apep_spawn"] if Run.region >= 3 else ["scorpion", "scorpion"]
+	if Run.region >= 3 and out.has("apep_spawn"):
+		# lo sciame: sempre 5-7 serpi (poca vita, veloci)
+		var want := randi_range(5, 7)
+		var have := out.count("apep_spawn")
+		while have < want:
+			out.append("apep_spawn")
+			have += 1
+		while have > want:
+			out.erase("apep_spawn")
+			have -= 1
 	return out
 
 
@@ -683,6 +729,13 @@ func _do_spawn(kind: String, pos: Vector2, marker, gen: int) -> void:
 		e.elite = true
 		# niente più cambio di musica per le élite: "Frozen Desert" era calmo quasi come la Sala e
 		# in battaglia sembrava la musica dell'hub. Le élite si riconoscono dal bordo d'oro.
+	if Run.region >= 3 and trial == null and not e.is_boss and not e.miniboss:
+		e.max_hp *= Run.APEP_HP                # più nemici, meno vita ciascuno
+		# le scaglie del caos: ombre, Capovolti ed élite, ma mai più di un terzo della stanza
+		room_spawned += 1
+		if Run.apep_type != "" and (kind in SCALED_KINDS or e.elite) and room_scaled + 1 <= ceili(room_spawned / 3.0):
+			e.scales = true
+			room_scaled += 1
 	world.add_child(e)
 	alive += 1
 	e.killed.connect(_on_enemy_killed)
@@ -3205,6 +3258,7 @@ func paint_floor(ci: CanvasItem) -> void:
 	var row := 0
 	if apep:
 		ApepArena.paint_cave_floor(ci, floor_r, Run.room)       # la caverna: niente lastre
+		ApepArena.paint_room_type(ci, floor_r, Run.apep_type)   # e il segno del suo tipo di stanza
 	while y < r.end.y - WALL and not apep:
 		var x := r.position.x + WALL - (16.0 if row % 2 == 1 else 0.0)        # lastre sfalsate, come i muri veri
 		while x < r.end.x - WALL:

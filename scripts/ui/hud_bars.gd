@@ -181,6 +181,7 @@ func _draw() -> void:
 			draw_style_box(sbk, Rect2(o.x, o.y + ph + 1.0 * u, pw, rows_h))
 	_room_pips(Vector2(o.x + 8.0 * u, o.y + ph + 6.0 * u), pw - 16.0 * u, u)
 	_boon_row(o + Vector2(2.0 * u, ph + 13.0 * u), u)
+	_ra_light(o + Vector2(7.0 * u, ph + (32.0 if Run.boons.size() + Run.blessings.size() > 0 else 19.0) * u), u, font)
 	_boss_bar(u, font, title)
 	# Occhio di Horus
 	if touch:
@@ -245,6 +246,43 @@ func _room_pips(at: Vector2, w: float, u: float) -> void:
 			draw_circle(c, 1.3 * u, col)
 		if now:
 			draw_arc(c, 3.6 * u, 0, TAU, 12, Color(GOLD, 0.5 + 0.4 * sin(Time.get_ticks_msec() / 220.0)), 1.0)
+
+
+## Banco di Apopi (blocco 21): un piccolo sole che dice cosa fa la luce di Ra in questo momento, e
+## ricorda la regola (le scaglie si aprono solo nella luce).
+func _ra_light(at: Vector2, u: float, font: Font) -> void:
+	if Run.region < 3 or Run.trial or Run.apep_type == "":
+		return
+	var s := RaLight.status(get_tree())
+	if s == "":
+		return
+	var gold := Color(1.0, 0.86, 0.45)
+	var txt := Lang.t("Luce di Ra: apre le scaglie")
+	var col := Color(gold, 0.75)
+	var lit := false
+	match s:
+		"warn":
+			txt = Lang.t("Luce di Ra: arriva")
+			col = gold
+			lit = true
+		"cross":
+			txt = Lang.t("Luce di Ra: colpisci chi è nel fascio")
+			col = Color(1.0, 0.95, 0.7)
+			lit = true
+		"eaten":
+			txt = Lang.t("Luce inghiottita: abbatti il Divoratore")
+			col = Color(0.75, 0.5, 1.0)
+	var w := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, _fs(8)).x + 16.0 * u
+	draw_rect(Rect2(at + Vector2(-6.0 * u, -6.0 * u), Vector2(w, 12.0 * u)), Color(0.05, 0.04, 0.09, 0.62))
+	draw_circle(at, 3.6 * u, Color(0, 0, 0, 0.8))
+	draw_circle(at, 2.6 * u, col if s != "eaten" else Color(0.2, 0.12, 0.3))
+	if s != "eaten":
+		for i in range(8):
+			var a := TAU * i / 8.0 + (Time.get_ticks_msec() / 600.0 if lit else 0.0)
+			draw_line(at + Vector2.from_angle(a) * 3.4 * u, at + Vector2.from_angle(a) * 4.8 * u, col, 1.0)
+	else:
+		draw_arc(at, 3.2 * u, 0, TAU, 12, col, 1.2)
+	_text(font, at + Vector2(7.0 * u, 3.0 * u), txt, _fs(8), col)
 
 
 ## I doni presi: una gemma per dono col colore del dio e un puntino per livello (al posto della

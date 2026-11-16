@@ -45,6 +45,8 @@ DUAT_NOTUT=1 DUAT_SPHINX_DAY=20400 HOME="$HOMEDIR" timeout 150 "$G" --headless -
 DUAT_NOTUT=1 DUAT_REGION2=1 HOME="$HOMEDIR" timeout 120 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/akersmoke.gd >> "$OUT/run.txt" 2>&1
 # Shezmu (blocco 22): piastre, dannati, proiettili da lontano, spremitura, respiro (tools/dev/shezmusmoke.gd)
 DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 110 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/shezmusmoke.gd >> "$OUT/run.txt" 2>&1
+# il Banco di Apopi (blocco 21): tipi di stanza, fascio di Ra, scaglie, pali, Divoratore, velo (tools/dev/bancosmoke.gd)
+DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 110 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/bancosmoke.gd >> "$OUT/run.txt" 2>&1
 ERR=$(cat "$OUT/import.txt" "$OUT/run.txt" | grep -E "SCRIPT ERROR|Parse Error|Compile Error|Failed to load script" -A1 | grep -v "^--$" | sort | uniq -c)
 if [ -n "$ERR" ]; then
   echo "$ERR" | head -20

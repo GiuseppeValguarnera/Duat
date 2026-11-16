@@ -22,6 +22,9 @@ var t := 0.0
 var seed_offset := 0.0
 var contact: Area2D
 var is_boss := false
+var scales := false                   ## Banco di Apopi: scaglie del caos (10% dei colpi finché non si aprono, vedi RaLight)
+var scale_open_t := 0.0
+var scale_msg_t := 0.0
 var sobek_cd := 0.0                    ## Morso di Sobek: un nemico si stordisce al massimo una volta ogni STUN_GAP
 var stun_cd := 0.0                     ## boss e guardiani: un barcollamento dai doni al massimo ogni STUN_GAP
 var stun_immune := false              ## il Morso di Sobek non lo stordisce (Shezmu)
@@ -81,6 +84,8 @@ func _physics_process(delta: float) -> void:
 	sobek_stun_t = maxf(0.0, sobek_stun_t - delta)
 	sobek_cd = maxf(0.0, sobek_cd - delta)
 	stun_cd = maxf(0.0, stun_cd - delta)
+	if scales:
+		_update_scales(delta)
 	slow_t = maxf(0.0, slow_t - delta)
 	mark_t = maxf(0.0, mark_t - delta)
 	mourn_t = maxf(0.0, mourn_t - delta)
@@ -258,6 +263,32 @@ func _in_tide() -> bool:
 	return false
 
 
+## Le scaglie del caos (blocco 21): si aprono nel fascio di Ra (e restano aperte 3 s) o contro un palo di
+## Serket (legato 2,6 s); sotto il velo di un Portatore non si aprono mai.
+func _update_scales(delta: float) -> void:
+	scale_msg_t = maxf(0.0, scale_msg_t - delta)
+	var tree := get_tree()
+	if RaLight.veiled(global_position, tree):
+		scale_open_t = 0.0
+		return
+	scale_open_t = maxf(0.0, scale_open_t - delta)
+	if RaLight.lit(global_position, tree):
+		scale_open_t = RaLight.OPEN_TIME
+	if is_boss or miniboss:
+		return
+	for s in tree.get_nodes_in_group("ra_stakes"):
+		if s.usable() and global_position.distance_to(s.global_position) < RaLight.STAKE_REACH + radius:
+			s.bind(self)
+			knock = Vector2.ZERO
+			stagger_t = maxf(stagger_t, RaLight.BIND_TIME)
+			scale_open_t = maxf(scale_open_t, RaLight.BIND_TIME)
+			break
+
+
+func scales_closed() -> bool:
+	return scales and scale_open_t <= 0.0
+
+
 const STUN_GAP := 4.0
 const BIG_STUN := 0.15
 
@@ -407,6 +438,11 @@ func _shu_flight(delta: float, flying: Vector2) -> void:
 func take_hit(dmg: float, dir: Vector2, kb: float, can_burn: bool = false) -> void:
 	if dead:
 		return
+	if scales_closed():
+		dmg *= RaLight.SCALE_MULT             # scaglie chiuse: serve la luce di Ra (o un palo di Serket)
+		if scale_msg_t <= 0.0:
+			scale_msg_t = 1.2
+			Fx.float_text(global_position + Vector2(0, -radius * 2.0 - 22.0), Lang.t("SCAGLIE"), Color(0.7, 0.45, 1.0))
 	dmg *= Run.jackal_mult(hp / max_hp) * _damage_mult()
 	if shu_pushed_t > 0.0 and Run.has("shu_divide"):
 		dmg *= 1.0 + Run.val("shu_divide") / 100.0      # Separatore del Cielo: chi è appena stato spinto
@@ -592,6 +628,8 @@ func _draw() -> void:
 	draw_circle(Vector2.ZERO, radius + 3.0, Color(0, 0, 0, 0.5 if Run.region >= 2 else 0.35))     # sul deserto chiaro di Sokar l'ombra stacca i nemici dalla sabbia
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	_draw_body(flash_t > 0.0)
+	if scales and get("hidden_now") != true:
+		RaLight.draw_scales(self, radius, scale_open_t, t)
 	if elite:
 		# qualche scintilla d'oro che si stacca dal corpo, al posto dell'alone di prima
 		var k := fmod(t * 0.9 + seed_offset, 1.0)

@@ -333,7 +333,7 @@ const STATE_NAMES := {"windup": "preparazione", "leap": "salto", "charge": "cari
 	"charge_warn": "preparazione della carica", "leap_warn": "preparazione del balzo", "bound": "legato al palo",
 	"fray": "la corda cede", "lunge": "affondo", "lunge_warn": "preparazione dell'affondo", "roar": "ruggito",
 	"gaze_warn": "sguardo", "pull": "risucchio", "pull_warn": "preparazione del risucchio", "ring_warn": "stretta delle spire",
-	"spit": "sputo", "tail": "coda"}
+	"spit": "sputo", "tail": "coda", "bite_warn": "preparazione del morso"}
 var hits_page := false
 var page_kind := "colpi"
 

@@ -140,6 +140,66 @@ static func paint_press(ci: CanvasItem, r: Rect2, top: float, wall: float) -> vo
 	ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
+## Il segno del tipo di stanza sul pavimento della caverna (blocco 21): ogni tipo si riconosce entrando.
+static func paint_room_type(ci: CanvasItem, fr: Rect2, kind: String) -> void:
+	var mid := fr.get_center()
+	var gold := Color(0.94, 0.72, 0.3)
+	match kind:
+		"barca":
+			# la scia della barca del sole: una strada chiara da ovest a est, con le coste dello scafo
+			ci.draw_rect(Rect2(fr.position.x, mid.y - 34.0, fr.size.x, 68.0), Color(0.9, 0.75, 0.4, 0.07))
+			ci.draw_line(Vector2(fr.position.x, mid.y - 34.0), Vector2(fr.end.x, mid.y - 34.0), Color(gold, 0.3), 1.4)
+			ci.draw_line(Vector2(fr.position.x, mid.y + 34.0), Vector2(fr.end.x, mid.y + 34.0), Color(gold, 0.3), 1.4)
+			var x := fr.position.x + 40.0
+			while x < fr.end.x - 30.0:
+				ci.draw_polyline(PackedVector2Array([Vector2(x - 10.0, mid.y - 22.0), Vector2(x + 6.0, mid.y), Vector2(x - 10.0, mid.y + 22.0)]), Color(gold, 0.16), 2.0)
+				x += 64.0
+		"pozze":
+			# roccia spaccata: crepe viola che partono dal centro (da qui sale l'Isfet)
+			var rng := RandomNumberGenerator.new()
+			rng.seed = 2107
+			for i in range(9):
+				var a := TAU * i / 9.0 + rng.randf_range(-0.2, 0.2)
+				var p := mid
+				var pts := PackedVector2Array([p])
+				for k in range(6):
+					a += rng.randf_range(-0.5, 0.5)
+					p += Vector2.from_angle(a) * Vector2(34.0, 22.0)
+					if not fr.grow(-6.0).has_point(p):
+						break
+					pts.append(p)
+				if pts.size() >= 2:
+					ci.draw_polyline(pts, Color(0.04, 0.02, 0.07, 0.9), 3.0)
+					ci.draw_polyline(pts, Color(0.5, 0.25, 0.75, 0.45), 1.0)
+		"pali":
+			# il cerchio di Serket: un anello inciso, turchese e oro, con tre basi per i pali
+			ci.draw_set_transform(mid, 0.0, Vector2(1.0, 66.0 / 92.0))
+			ci.draw_circle(Vector2.ZERO, 100.0, Color(0.1, 0.16, 0.2, 0.35))
+			ci.draw_arc(Vector2.ZERO, 100.0, 0.0, TAU, 56, Color(0.2, 0.62, 0.62, 0.6), 2.4)
+			ci.draw_arc(Vector2.ZERO, 84.0, 0.0, TAU, 48, Color(gold, 0.35), 1.2)
+			for i in range(24):
+				var a2 := TAU * i / 24.0
+				ci.draw_line(Vector2.from_angle(a2) * 86.0, Vector2.from_angle(a2) * 98.0, Color(0.2, 0.62, 0.62, 0.4), 1.2)
+			ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+			for i in range(3):
+				var at := mid + Vector2.from_angle(-PI / 2.0 + TAU * i / 3.0) * Vector2(92.0, 66.0)
+				ci.draw_set_transform(at, 0.0, Vector2(1.0, 0.6))
+				ci.draw_circle(Vector2.ZERO, 16.0, Color(0.05, 0.08, 0.1, 0.8))
+				ci.draw_arc(Vector2.ZERO, 16.0, 0.0, TAU, 20, Color(gold, 0.6), 1.4)
+				ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		"torchio":
+			# il telaio di pietra del torchio attorno alle sei piastre, e due canali di vino verso i lati
+			var frame := Rect2(mid + Vector2(-90, -42), Vector2(180, 84))
+			for sx in [-1.0, 1.0]:
+				var a3 := mid + Vector2(sx * 90.0, 0)
+				var b3 := Vector2(mid.x + sx * (fr.size.x / 2.0 - 10.0), mid.y)
+				ci.draw_line(a3, b3, Color(0.05, 0.03, 0.05), 8.0)
+				ci.draw_line(a3, b3, Color(0.42, 0.06, 0.1), 4.0)
+			ci.draw_rect(frame.grow(5.0), Color(0.05, 0.03, 0.05))
+			ci.draw_rect(frame, Color(0.2, 0.17, 0.2))
+			ci.draw_rect(frame, Color(0.55, 0.12, 0.16, 0.7), false, 1.6)
+
+
 static func paint_bank(ci: CanvasItem, r: Rect2, top: float, wall: float) -> void:
 	var fr := Rect2(wall, top, r.size.x - wall * 2.0, r.size.y - wall - top)
 	# l'acqua nera tutto intorno (si cammina ovunque: è bassa), il banco di sabbia grigia al centro
@@ -220,6 +280,8 @@ class Plates extends Node2D:
 	const SPOTS := [Vector2(-96, -34), Vector2(96, -34), Vector2(-96, 36), Vector2(96, 36), Vector2(-232, 0), Vector2(232, 0)]
 
 	var center := Vector2.ZERO
+	var spots: Array = SPOTS         ## le stanze «Camera del torchio» usano GRID (blocco 2×3)
+	const GRID := [Vector2(-56, -20), Vector2(0, -20), Vector2(56, -20), Vector2(-56, 20), Vector2(0, 20), Vector2(56, 20)]
 	var every := 3.0                 ## secondi tra una piastra e l'altra (Shezmu infuriato: meno)
 	var paused := false
 	var wait := 5.0                  ## la prima dopo 5 s: mai appena entri
@@ -234,20 +296,21 @@ class Plates extends Node2D:
 		Hazards.ground.call_deferred(self)
 
 	func _rect(i: int) -> Rect2:
-		var s: Vector2 = SPOTS[i]
+		var s: Vector2 = spots[i]
 		return Rect2(center + s - SIZE / 2.0, SIZE)
 
 	func _process(delta: float) -> void:
 		t += delta
 		var p = get_tree().get_first_node_in_group("player")
+		var gm = get_tree().current_scene
 		if phase == "":
-			if paused:
+			if paused or (gm != null and gm.get("cleared") == true):
 				queue_redraw()
 				return
 			wait -= delta
 			if wait <= 0.0 and p != null and not p.dead:
 				# di solito quella più vicina a te (così conta dove stai), a volte una a caso; mai l'ultima
-				var order := range(SPOTS.size())
+				var order := range(spots.size())
 				order.erase(last)
 				order.sort_custom(func(a, b) -> bool: return _rect(a).get_center().distance_to(p.global_position) < _rect(b).get_center().distance_to(p.global_position))
 				active = order[0] if randf() < 0.65 else order.pick_random()
@@ -273,6 +336,12 @@ class Plates extends Node2D:
 				wait = every
 		queue_redraw()
 
+	func peril(pos: Vector2) -> bool:
+		for i in range(spots.size()):
+			if _rect(i).grow(10.0).has_point(pos):
+				return true
+		return false
+
 	## Per il bot e per chi vuole sapere se un punto sta per essere schiacciato.
 	func danger(pos: Vector2) -> Vector2:
 		if active < 0 or phase != "warn" or not _rect(active).grow(8.0).has_point(pos):
@@ -281,7 +350,7 @@ class Plates extends Node2D:
 		return v.normalized() if v != Vector2.ZERO else Vector2.RIGHT
 
 	func _draw() -> void:
-		for i in range(SPOTS.size()):
+		for i in range(spots.size()):
 			var r := _rect(i)
 			var lr := Rect2(r.position - global_position, r.size)
 			var sunk := 0.0

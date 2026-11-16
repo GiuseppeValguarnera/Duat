@@ -13,9 +13,20 @@ func free_spot() -> Vector2:
 	var p := Vector2.ZERO
 	for i in range(50):
 		p = Vector2(randf_range(g.WALL + 30.0, g.ROOM.size.x - g.WALL - 30.0), randf_range(g.TOP + 30.0, g.ROOM.size.y - g.WALL - 30.0))
-		if spot_ok(p) and (g.player == null or p.distance_to(g.player.global_position) > 160.0):
+		if spot_ok(p) and (g.player == null or p.distance_to(g.player.global_position) > 160.0) and not in_ground_hazard(p):
 			break
 	return p
+
+
+## Banco di Apopi (blocco 21): nessun nemico nasce dentro la zona di un pericolo a terra (pozze di
+## Isfet, spire, piastre, pozze in arrivo). Wernes e Sokar restano com'erano.
+func in_ground_hazard(p: Vector2) -> bool:
+	if Run.region < 3 or Run.trial:
+		return false
+	for n in g.get_tree().get_nodes_in_group("ground_hazards"):
+		if is_instance_valid(n) and not n.is_queued_for_deletion() and n.has_method("peril") and n.peril(p):
+			return true
+	return false
 
 
 func free_spot_near(center: Vector2) -> Vector2:
@@ -119,7 +130,54 @@ func place_elements() -> void:
 ## seconda stanza), spuntoni dalla quarta. Niente acqua né fiumi: qui il fiume l'ha bevuto il serpente.
 func _place_apep(r: int) -> void:
 	var spots: Array = []
+	var kind: String = Run.apep_type
+	var fr := Rect2(g.WALL, g.TOP, g.ROOM.size.x - g.WALL * 2.0, g.ROOM.size.y - g.WALL - g.TOP)
+	var mid := fr.get_center()
+	# la luce di Ra: un fascio in ogni stanza di combattimento (RaLight.Beam)
+	var beam := RaLight.Beam.new()
+	beam.room = fr
+	if kind == "barca":
+		beam.ping = true                       # avanti e indietro
+		beam.every = RaLight.EVERY_BOAT
+		beam.wait = 2.5
+	g.world.add_child(beam)
 	var n_pool := 2 + (1 if r >= 3 else 0) + (1 if r >= 6 and randf() < 0.6 else 0)
+	var n_coil := 0 if r < 2 else (1 + (1 if r >= 4 else 0) + (1 if r >= 7 else 0))
+	match kind:
+		"barca":
+			# Corridoio della barca: stanza larga, il fascio fa tutto; solo qualche spira
+			n_pool = 0
+			n_coil = 0 if r < 3 else (1 + (1 if r >= 7 else 0))
+		"pozze":
+			# Pozze di Isfet che cambiano posto ogni 8 s (RaLight.Shifting)
+			n_pool = 0
+			n_coil = 1 if r >= 5 else 0
+			var sh := RaLight.Shifting.new()
+			sh.count = 3 + (1 if r >= 6 else 0)
+			sh.pick = func(taken: Array) -> Vector2: return _apep_spot(taken, 84.0)
+			g.world.add_child(sh)
+		"pali":
+			# Anello dei pali: tre pali di Serket attorno a un cerchio (la lezione per Apopi)
+			n_pool = 2
+			n_coil = 1 if r >= 4 else 0
+			for i in range(3):
+				var at0 := mid + Vector2.from_angle(-PI / 2.0 + TAU * i / 3.0) * Vector2(92.0, 66.0)
+				var stake := RaLight.RingStake.new()
+				stake.position = at0
+				g.world.add_child(stake)
+				spots.append(at0)
+			spots.append(mid)
+		"torchio":
+			# Camera del torchio: sei piastre (2×3) che si abbassano a tempo, come da Shezmu
+			n_pool = 1 + (1 if r >= 5 else 0)
+			n_coil = 0
+			var pl := ApepArena.Plates.new()
+			pl.center = mid
+			pl.spots = ApepArena.Plates.GRID
+			pl.every = 2.8
+			g.world.add_child(pl)
+			for s in ApepArena.Plates.GRID:
+				spots.append(mid + s)
 	for i in range(n_pool):
 		var at := _apep_spot(spots, 70.0)
 		if at == Vector2.INF:
@@ -129,7 +187,6 @@ func _place_apep(r: int) -> void:
 		pool.r = randf_range(20.0, 30.0)
 		pool.position = at
 		g.world.add_child(pool)
-	var n_coil := 0 if r < 2 else (1 + (1 if r >= 4 else 0) + (1 if r >= 7 else 0))
 	for i in range(n_coil):
 		var at2 := _apep_spot(spots, 80.0)
 		if at2 == Vector2.INF:

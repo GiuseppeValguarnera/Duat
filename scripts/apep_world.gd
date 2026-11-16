@@ -29,6 +29,10 @@ class Isfet extends Node2D:
 		add_to_group("isfet")
 		Hazards.ground.call_deferred(self)
 
+	## Per le comparse: nessun nemico nasce dentro (o a ridosso di) un pericolo a terra.
+	func peril(p: Vector2) -> bool:
+		return p.distance_to(global_position) < r + 16.0
+
 	func inside(p: Vector2) -> bool:
 		var d: Vector2 = (p - global_position) / Vector2(r, r * 0.6)
 		return d.length() < 1.0
@@ -79,6 +83,9 @@ class Coil extends Node2D:
 		seed_k = randf() * TAU
 		st = randf_range(1.5, period)
 		Hazards.ground.call_deferred(self)
+
+	func peril(p: Vector2) -> bool:
+		return p.distance_to(global_position) < Chaos.COIL_R + 16.0
 
 	func _process(delta: float) -> void:
 		t += delta

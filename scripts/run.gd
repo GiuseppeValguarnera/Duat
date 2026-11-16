@@ -15,9 +15,26 @@ const SEKHEM_MAX := 100.0
 ## DUAT_REGION2=1 (per le prove) finché non è completa.
 const SOKAR_READY := true
 ## La terza regione, il Banco di Apopi (12/11/2026): aperta. Ci si arriva solo dopo Aker.
+const APEP_TYPES := ["barca", "pozze", "pali", "torchio"]
+const APEP_HP := 0.82                ## blocco 21: più nemici per ondata (×1,3), ognuno con il 18% di vita in meno
+
+
+## Il tipo della stanza del Banco: i quattro tipi a rotazione, in un ordine mescolato a ogni discesa
+## (così ogni discesa ne vede almeno tre, e due stanze di fila non sono mai uguali).
+func next_apep_type() -> String:
+	if apep_order.size() != APEP_TYPES.size() or room <= 1:
+		apep_order = APEP_TYPES.duplicate()
+		apep_order.shuffle()
+	if OS.get_environment("DUAT_APEP_ROOM") != "":
+		return OS.get_environment("DUAT_APEP_ROOM")
+	return apep_order[(room - 1) % apep_order.size()]
+
+
 const APEP_READY := true
 const APEP_DAMAGE := 1.5              ## danni subiti nel Banco (Sokar ×1,25)
 const APEP_KA := 1.5
+var apep_order: Array = []            ## Banco di Apopi: l'ordine dei quattro tipi di stanza di questa discesa
+var apep_type := ""                  ## il tipo della stanza di adesso: barca, pozze, pali, torchio ("" altrove)
 var region := 1
 
 
