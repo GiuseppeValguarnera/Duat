@@ -25,8 +25,11 @@ const MEHEN_LINES := [
 	"«Apopi non ha occhi per vedere: ha occhi per addormentare. Non restare mai fermo davanti alla sua testa.»",
 	"«Nessuno lo ha mai ucciso. Serket lo lega, e i nodi tengono una notte. Cerca i suoi pali sul banco di sabbia: lì il serpente si impiglia.»",
 	"«Quando beve il fiume, non fuggire dritto: la corrente è più forte di te. Di lato, piccolo scriba. Sempre di lato.»",
-	"«Le sue scaglie non si aprono. Colpiscilo quando è legato: allora ogni colpo vale tre. Il resto è fatica sprecata.»",
+	"«Le sue scaglie non si aprono. Colpiscilo quando è legato. Ma il nodo di Serket tiene poco: quando la corda si sfilaccia, allontanati e cerca un altro palo.»",
 	"«Io avvolgo per custodire, lui per stringere. Quando vedrai le sue spire chiudersi in cerchio, cerca il varco: c'è sempre.»",
+	"«I suoi figli portano scaglie come le sue. Le apre solo la luce di Ra, quando il fascio attraversa la caverna. Aspettala, e colpisci chi ne è toccato: hai tre respiri.»",
+	"«Dove vedi tre pali attorno a un cerchio, impara: porta lì chi ha le scaglie. Così si lega un serpente piccolo. Quello grande si lega allo stesso modo.»",
+	"«C'è chi inghiotte la luce e chi le stende sopra un velo. Abbatti loro per primi, piccolo scriba, o colpirai la pietra.»",
 ]
 const MAHAF_LINES_2 := [
 	"«La sesta ora. Il punto più basso. Da qui il Fiume non scende più: risale. Se ci arrivi.»",

@@ -351,6 +351,10 @@ static func story() -> Array:
 			Lang.t("Sei disceso oltre l'orizzonte. Ora sei nella settima ora: il banco di sabbia di Apopi."),
 			Lang.t("Là il serpente beve il fiume, e la barca di Ra resta in secca. Accade ogni notte, da prima che esistessero le notti."),
 			Lang.t("Apopi non ha padre e non ha fine. Non cerca te, Scriba. Cerca qualcosa, e crede che tu sappia dov'è. Vorrei saperlo anch'io.")]},
+		{"id": "apep_luce", "if": Meta.apep_seen and Meta.dialogue_seen.has("apep0"), "lines": [
+			Lang.t("Hai visto le scaglie del caos. Le tue armi ci scivolano sopra: non è debolezza tua, è la natura di quel luogo."),
+			Lang.t("La barca di Ra è in secca, ma la sua luce filtra ancora. Quando il fascio attraversa la caverna, le scaglie si aprono, e restano aperte per tre respiri. Colpisci allora."),
+			Lang.t("Dove trovi i pali di Serket, porta loro chi ha le scaglie: il nodo lo tiene fermo e aperto. E se la luce non arriva, cerca chi l'ha inghiottita. Colpiscilo alle spalle: è lì che traspare.")]},
 		{"id": "apep1", "if": Meta.apep_wins >= 1, "lines": [
 			Lang.t("Hai legato il serpente. Nessuno lo uccide: tu lo hai fermato, ed è più di quanto si chieda a un'anima."),
 			Lang.t("Ti dava la caccia. Apopi fiuta il nome segreto di Ra come lo sciacallo fiuta la tomba aperta. Ti segue perché tu sai dove si trova, anche se non sai di saperlo."),
