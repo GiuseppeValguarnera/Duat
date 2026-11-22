@@ -40,6 +40,34 @@ func free_spot_near(center: Vector2) -> Vector2:
 	return free_spot()
 
 
+## Dove far comparire la ricompensa di fine stanza: al centro della stanza o, se il centro è occupato
+## (colonne, acqua, una pozza), il punto libero più vicino al centro; se non c'è, accanto all'eroe.
+## Mai più in un punto a caso lontano (prima, quando il centro era pieno, si finiva su free_spot()).
+func reward_spot() -> Vector2:
+	var center := Vector2(g.ROOM.size.x / 2.0, g.ROOM.size.y / 2.0 + 20.0)
+	var p := _ring_spot(center, 96.0)
+	if p != Vector2.INF:
+		return p
+	if g.player != null and is_instance_valid(g.player):
+		p = _ring_spot(g.player.global_position + Vector2(0, 22), 72.0)
+		if p != Vector2.INF:
+			return p
+		return g.player.global_position + Vector2(0, 22)
+	return center
+
+
+func _ring_spot(center: Vector2, max_r: float) -> Vector2:
+	var r := 0.0
+	while r <= max_r:
+		var n := 1 if r == 0.0 else 12
+		for i in range(n):
+			var p := center + Vector2.from_angle(TAU * i / n + PI / 2.0) * r * Vector2(1.0, 0.75)
+			if spot_ok(p) and in_floor(p, 20.0) and not in_ground_hazard(p):
+				return p
+		r += 16.0
+	return Vector2.INF
+
+
 ## Dentro il pavimento, lontano almeno `margin` dai muri.
 func in_floor(p: Vector2, margin: float) -> bool:
 	return p.x > g.WALL + margin and p.x < g.ROOM.size.x - g.WALL - margin and p.y > g.TOP + margin and p.y < g.ROOM.size.y - g.WALL - margin

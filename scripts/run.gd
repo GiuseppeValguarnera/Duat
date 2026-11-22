@@ -180,6 +180,13 @@ func new_run() -> void:
 	blood_kills = 0
 	ka = 0
 	kills = 0
+	incisions = ["", "", ""]
+	alloys = []
+	inc_hits = 0
+	inc_volo = []
+	ptah_doors = {}
+	ptah_last_room = -99
+	ptah_misses = 0
 	nefti_room_heal = 0.0
 	nefti_hits = 0
 	hourglass_t = 0.0
@@ -253,6 +260,7 @@ func save_descent(reward: Dictionary, extra: Dictionary) -> void:
 		"elapsed": Time.get_ticks_msec() - start_msec, "heart_used": heart_used, "reward": reward,
 		"ka_spent": ka_spent, "was": was_stacks, "kheper": kheper_left, "region": region,
 		"amulet": amulet, "amulet2": amulet2, "voices": voices_left, "lesson": lesson_regions.duplicate(),
+		"incisions": incisions.duplicate(), "ptah": ptah_doors.duplicate(), "ptah_last": ptah_last_room,
 	}
 	d.merge(extra)
 	var cfg := ConfigFile.new()
@@ -297,6 +305,12 @@ func apply_descent(d: Dictionary) -> void:
 	kheper_left = d.get("kheper", 0)
 	voices_left = d.get("voices", voices_left)
 	lesson_regions.assign(d.get("lesson", []))
+	incisions = (d.get("incisions", ["", "", ""]) as Array).duplicate()
+	while incisions.size() < Incisions.SLOTS:
+		incisions.append("")
+	alloys = Incisions.alloys_of(incisions)
+	ptah_doors = (d.get("ptah", {}) as Dictionary).duplicate()
+	ptah_last_room = int(d.get("ptah_last", -99))
 	if d.has("amulet"):
 		amulet = d["amulet"]
 		amulet_level = Amulets.level(amulet) if amulet != "" else 1
@@ -312,6 +326,12 @@ func wears(id: String) -> bool:
 ## Il livello dell'amuleto che porti con questo id.
 func amulet_lvl(id: String) -> int:
 	return amulet2_level if amulet2 == id and amulet != id else amulet_level
+
+
+## Imposta le tre incisioni (prove e salvataggi) e ricalcola le leghe.
+func set_incisions(arr: Array) -> void:
+	incisions = arr.duplicate()
+	alloys = Incisions.alloys_of(incisions)
 
 
 func level(id: String) -> int:
@@ -593,7 +613,7 @@ func move_mult() -> float:
 		m *= 0.85
 	if has("anubi_linen"):
 		m *= 0.95
-	return m
+	return m * Incisions.speed_mult()
 
 
 func dash_cooldown_mult() -> float:
@@ -710,6 +730,22 @@ const TRUE_NAME_SHIELD := 4.0          ## Nome Vero: scudo della Prima Parola (f
 var hourglass_t := 0.0                 ## Clessidra: secondi di rallentamento rimasti
 var hourglass_used := false            ## Clessidra: già scattata in questa stanza
 var glyph_hits := 0
+## Incisioni di Ptah (blocco 26, incisions.gd): i tre posti dell'arma, le leghe attive e lo stato degli effetti.
+var incisions: Array = ["", "", ""]
+var alloys: Array = []
+var inc_finisher_frame := -1            ## il fotogramma in cui sta colpendo un colpo finale
+var last_crit_frame := -1               ## il fotogramma dell'ultimo critico (Sole: i critici incendiano)
+var inc_dart_hit := false               ## sta colpendo un effetto delle incisioni (non conta per gli altri)
+var inc_pool_msec := 0
+var inc_pool_hits := 0
+var inc_piena_frame := -1
+var inc_hits := 0
+var inc_volo: Array = []
+var inc_mattino := 0.0                  ## Loto del mattino: quanto ha già restituito l'Arte in corso
+var art_striking := false               ## l'Arte sta colpendo (weapon_art.gd)
+var ptah_doors := {}                    ## regione -> incudini già comparse
+var ptah_last_room := -99
+var ptah_misses := 0
 var streak := 0                      ## colpi di fila senza essere colpiti (solo da vedere, blocco 23)
 var streak_msec := 0                 ## quando è arrivato l'ultimo colpo (la serie si spegne dopo STREAK_GAP)
 var streak_best := 0
@@ -781,11 +817,13 @@ func player_hit(e: Node, fx: bool = true) -> float:
 		word_ready = false                    # Peso della Parola (Sfinge): il primo colpo dell'ondata
 		m *= 1.0 + val("sf_word") / 100.0
 		Fx.float_text(e.global_position + Vector2(0, -30), Lang.t("PESO DELLA PAROLA"), Boons.color_of("sf_word"))
-	return m
+	return m * Incisions.hit_mult(e)
 
 
 ## Dopo il colpo (il nemico ha già preso i danni): Il Cielo Cade spinge, il Giudizio di Thoth finisce.
 func after_player_hit(e: Node, dir: Vector2, fx: bool = true) -> void:
+	if e != null and is_instance_valid(e):
+		Incisions.after_hit(e, dir, fx)
 	if e == null or not is_instance_valid(e) or e.dead:
 		return
 	if has("thoth_judgment") and not (e.is_boss or e.miniboss or e.elite) and e.hp < e.max_hp * JUDGMENT:
@@ -892,12 +930,13 @@ func roll_crit(chance: float) -> float:
 	if has("bastet_heavy"):
 		chance = maxf(chance, 0.1)
 	if chance > 0.0 and randf() < chance:
+		last_crit_frame = Engine.get_physics_frames()
 		return 3.0 if has("bastet_heavy") else 2.0
 	return 1.0
 
 
 func khopesh_crit_chance() -> float:
-	return val("bastet_claws") / 100.0
+	return val("bastet_claws") / 100.0 + Incisions.crit_bonus()
 
 
 func eye_crit_chance() -> float:

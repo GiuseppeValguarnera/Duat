@@ -190,6 +190,7 @@ func _ready() -> void:
 	Fx.world = world
 	cue = InteractCue.new()                # il segnale delle cose usabili (blocco 23)
 	add_child(cue)
+	add_child(Incisions.Manager.new())     # veleno e Fiore del Nilo delle incisioni di Ptah (blocco 26)
 	# l'interpolazione fisica (project.godot) solo per chi si muove a ogni passo della fisica:
 	# eroe e nemici (vedi i loro _ready). Il resto (scintille, numeri, proiettili) no.
 	world.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
@@ -793,6 +794,7 @@ func _boss_intro(e: Enemy, kind: String) -> void:
 
 func _on_enemy_killed(e: Enemy) -> void:
 	alive -= 1
+	Incisions.on_kill(e, get_tree())
 	if Run.room > Run.ROOMS_PER_RUN:
 		# il boss è vinto quando non ne resta nessuno (Aker diviso: Ieri E Domani)
 		if e.is_boss and _bosses_alive() == 0:
@@ -869,7 +871,7 @@ func _start_quiet_room() -> void:
 	p.kind = current_reward["kind"]
 	p.god = current_reward.get("god", "")
 	world.add_child(p)
-	p.position = _free_spot_near(Vector2(ROOM.size.x / 2.0, ROOM.size.y / 2.0 + 20.0))
+	p.position = rooms.reward_spot()
 	p.collected.connect(_on_pickup_collected)
 
 
@@ -933,7 +935,7 @@ func _room_cleared() -> void:
 	p.kind = current_reward["kind"]
 	p.god = current_reward.get("god", "")
 	world.add_child(p)
-	p.position = _free_spot_near(Vector2(ROOM.size.x / 2.0, ROOM.size.y / 2.0 + 20.0))
+	p.position = rooms.reward_spot()
 	p.collected.connect(_on_pickup_collected)
 
 
@@ -963,6 +965,8 @@ func _on_pickup_collected(p: Area2D) -> void:
 			_show_boon_menu.call_deferred(god)
 		"set":
 			_show_set_menu.call_deferred()
+		"ptah":
+			_show_ptah_menu.call_deferred()
 
 
 func _open_doors() -> void:
@@ -997,6 +1001,9 @@ func _open_doors() -> void:
 	pool.append({"kind": "lapis"} if Run.room >= 2 and randf() < 0.15 else {"kind": "ka"})
 	pool.append({"kind": "heal"})
 	pool.shuffle()
+	# blocco 26: a volte (a caso, mai in momenti fissi) una porta ha il martello di Ptah
+	if _ptah_door_roll():
+		pool[0] = {"kind": "ptah"}
 	var before_boss := false                  # (la stanza prima del boss ora ha la sua porta, qui sopra)
 	saved_doors.clear()
 	for i in range(sides.size()):
@@ -1012,6 +1019,27 @@ func _open_doors() -> void:
 			_add_door("s", {"kind": "set"})
 		else:
 			set_door_misses += 1
+
+
+## La porta del martello di Ptah: sempre a caso. Dopo la prima vittoria sul Serpente, dalla stanza 2,
+## al massimo Incisions.DOOR_MAX_REGION per regione e mai due di fila; ogni scelta senza martello
+## la rende un po' più probabile (così non si resta a secco per una regione intera).
+func _ptah_door_roll() -> bool:
+	if Run.trial or not Incisions.unlocked() or Run.room < 2:
+		return false
+	if current_reward.get("kind", "") == "ptah":
+		return false
+	if OS.get_environment("DUAT_PTAH") == "door":
+		return true
+	if int(Run.ptah_doors.get(Run.region, 0)) >= Incisions.DOOR_MAX_REGION or Run.room - Run.ptah_last_room < Incisions.DOOR_GAP:
+		return false
+	if randf() < Incisions.DOOR_CHANCE + Incisions.DOOR_STEP * Run.ptah_misses:
+		Run.ptah_misses = 0
+		Run.ptah_last_room = Run.room
+		Run.ptah_doors[Run.region] = int(Run.ptah_doors.get(Run.region, 0)) + 1
+		return true
+	Run.ptah_misses += 1
+	return false
 
 
 func _set_door_allowed(before_boss: bool) -> bool:
@@ -1626,6 +1654,85 @@ func _show_set_menu() -> void:
 	if Run.room + 2 > Run.ROOMS_PER_RUN:
 		sub = Lang.t("Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arrivare in tempo")
 	_open_choice(Lang.t("Set ti propone un patto"), Boons.god_color("set"), sub, cards, Lore.speech("set"), "set")
+
+
+## L'incudine di Ptah (blocco 26): prima l'incisione (una su tre), poi il posto sull'arma.
+func _show_ptah_menu() -> void:
+	var cards := []
+	for id in Incisions.offers():
+		var inc: Dictionary = Incisions.ALL[id]
+		var with: Array = []
+		for g in Run.incisions:
+			if g == "" or g == id:
+				continue
+			var k := Incisions.key(id, g)
+			if Incisions.ALLOYS_IT.has(k):
+				with.append(Incisions.ALLOYS[k]["name"] if Meta.alloys_found.has(k) else "???")
+		var secs := []
+		if not with.is_empty():
+			secs.append([Lang.t("Lega possibile con i tuoi segni"), ", ".join(with), UiStyle.INK_GREEN])
+		if Run.incisions.has(id):
+			secs.append([Lang.t("Già incisa"), Lang.t("Puoi inciderla in un altro posto"), UiStyle.INK_SOFT])
+		cards.append({
+			"tag": Lang.t("Incisione di Ptah"), "name": inc["name"], "body": inc["desc"], "sections": secs,
+			"color": Incisions.glyph_color(id), "on_pick": _ptah_slot_menu.bind(id),
+		})
+	_open_choice(Lang.t("L'incudine di Ptah"), Incisions.COLOR,
+		Lang.t("Scegli il segno da incidere sull'arma. Poi sceglierai il posto: due segni vicini formano una lega"), cards)
+
+
+func _ptah_slot_menu(id: String) -> void:
+	_close_choice()
+	var cards := []
+	for i in range(Incisions.SLOTS):
+		var now: String = Run.incisions[i]
+		var after: Array = Run.incisions.duplicate()
+		after[i] = id
+		var shown: Array = []
+		for g in after:
+			shown.append(Incisions.ALL[g]["name"] if g != "" else "·")
+		var secs := []
+		secs.append([Lang.t("L'arma diventa"), "  ".join(shown), UiStyle.INK_SOFT])
+		var al := Incisions.alloys_of(after)
+		var names: Array = []
+		for k in al:
+			names.append(Incisions.ALLOYS[k]["name"] if Meta.alloys_found.has(k) else Lang.t("??? (lega nuova)"))
+		if names.is_empty():
+			secs.append([Lang.t("Leghe"), Lang.t("nessuna"), UiStyle.INK_SOFT])
+		else:
+			secs.append([Lang.t("Leghe"), ", ".join(names), UiStyle.INK_GREEN])
+		if now != "" and now != id:
+			secs.append([Lang.t("Sostituisce"), Incisions.ALL[now]["name"], UiStyle.INK_RED])
+		var where: String = [Lang.t("A sinistra"), Lang.t("Al centro"), Lang.t("A destra")][i] if Incisions.SLOTS == 3 else str(i + 1)
+		cards.append({
+			"tag": Lang.t("Posto %d") % (i + 1), "name": where, "body": (Lang.t("Vuoto") if now == "" else Lang.t("Ora: %s") % Incisions.ALL[now]["name"]),
+			"sections": secs, "color": Incisions.glyph_color(id), "on_pick": _do_engrave.bind(id, i),
+		})
+	_open_choice(Lang.t("Dove incidere: %s") % Incisions.ALL[id]["name"], Incisions.COLOR,
+		Lang.t("Il posto al centro tocca gli altri due: lì un segno può formare due leghe"), cards)
+
+
+func _do_engrave(id: String, slot: int) -> void:
+	_close_choice()
+	var found := Incisions.engrave(id, slot)
+	Sfx.play("boon", 0.0)
+	Fx.shake(3.0)
+	if player != null and is_instance_valid(player):
+		Fx.burst(player.global_position + Vector2(0, -12), Incisions.COLOR, 30, 140.0)
+	if found.is_empty():
+		var active: Array = []
+		for k in Run.alloys:
+			active.append(Incisions.ALLOYS[k]["name"])
+		_banner(Lang.t("Inciso: %s") % Incisions.ALL[id]["name"], (Lang.t("Leghe attive: %s") % ", ".join(active)) if not active.is_empty() else Incisions.ALL[id]["desc"], Incisions.COLOR)
+	else:
+		var k: String = found[0]
+		Restorations.gain(Incisions.LAPIS_PER_ALLOY * found.size(), player.global_position if player != null else Vector2.ZERO)
+		_banner(Lang.t("Lega scoperta: %s") % Incisions.ALLOYS[k]["name"], Incisions.ALLOYS[k]["desc"], Color(1.0, 0.86, 0.45))
+		if Meta.alloys_found.size() >= Incisions.ALLOYS_IT.size() and not Meta.alloys_done:
+			Meta.alloys_done = true
+			Restorations.gain(Incisions.REGISTRY_LAPIS, player.global_position if player != null else Vector2.ZERO)
+			Meta.save()
+	_open_doors()
 
 
 func _choose_pact(curse: String, blessing: String) -> void:

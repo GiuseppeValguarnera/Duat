@@ -61,6 +61,8 @@ var favors: Array = []                ## le grazie degli dèi comprate con i lap
 var amulet_rooms := {}                ## amuleto -> stanze portate al collo (i livelli)
 var weapon_rooms := {}                ## arma -> stanze ripulite impugnandola (le evoluzioni, blocco 23)
 var weapon_evo := {}                  ## arma -> evoluzione comprata (0-3, vedi Weapons.evo)
+var alloys_found: Array = []           ## leghe di Ptah scoperte (incisions.gd), nel Registro della bottega
+var alloys_done := false               ## registro completo: premio già dato
 var challenges := {}                  ## sfida -> 1 compiuta, 2 premio riscosso (challenges.gd)
 var stats := {}                       ## contatori delle sfide
 var doors_used: Array = []            ## porte della Sala già attraversate (le frecce a terra spariscono): cancello, cortile, casa, sfinge
@@ -132,6 +134,8 @@ func _ready() -> void:
 		amulet_rooms = cfg.get_value("casa", "stanze", {})
 		weapon_rooms = cfg.get_value("armi", "stanze", {})
 		weapon_evo = cfg.get_value("armi", "evoluzioni", {})
+		alloys_found = cfg.get_value("armi", "leghe", [])
+		alloys_done = cfg.get_value("armi", "leghe_complete", false)
 		challenges = cfg.get_value("casa", "sfide", {})
 		stats = cfg.get_value("casa", "contatori", {})
 		sphinx = cfg.get_value("sfinge", "dati", {})
@@ -211,6 +215,8 @@ func save() -> void:
 	cfg.set_value("casa", "stanze", amulet_rooms)
 	cfg.set_value("armi", "stanze", weapon_rooms)
 	cfg.set_value("armi", "evoluzioni", weapon_evo)
+	cfg.set_value("armi", "leghe", alloys_found)
+	cfg.set_value("armi", "leghe_complete", alloys_done)
 	cfg.set_value("casa", "sfide", challenges)
 	cfg.set_value("casa", "contatori", stats)
 	cfg.set_value("sfinge", "dati", sphinx)

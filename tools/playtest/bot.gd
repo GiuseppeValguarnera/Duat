@@ -778,6 +778,8 @@ func _pick_door(g):
 				score += 10.0
 			"shop":
 				score += 1.2 if Run.ka >= 45 else -1.5
+			"ptah":
+				score += 1.4                 # l'incudine di Ptah (blocco 26): i bot la prendono volentieri
 		if score > best_score:
 			best_score = score
 			best = d
@@ -1025,7 +1027,7 @@ func _finish(g, forced: String = "") -> void:
 		"music_odd": music_odd, "charged": charges_used, "arts": arts_used, "dash_atk": dash_attacks, "spirit": {"dmg": Run.val("anubi_guide") if Run.has("anubi_guide") else 0.0, "kills": Run.spirit_kills, "rooms": sp_rooms, "chain_end": sp_chain_end, "chain_end_scarab": sp_chain_end_scarab}, "region": Run.region, "time": snappedf(gt, 0.1), "boss_time": snappedf(boss_time, 0.1), "boss_hp_left": boss_hp,
 		"max_hp": Run.max_hp, "hp": Run.hp, "dmg_taken": dmg, "healed": snappedf(heals, 1),
 		"kills": Run.kills, "dmg_dealt": int(Run.damage_dealt), "ka": Run.ka,
-		"boons": Run.boons, "blessings": Run.blessings, "curses_left": Run.curses, "choices": choices,
+		"boons": Run.boons, "blessings": Run.blessings, "incisions": Run.incisions, "alloys": Run.alloys, "curses_left": Run.curses, "choices": choices,
 		"rooms": rooms, "dodges": dodges, "shop": shop_buys, "killer": Run.last_hit,
 		"trial": ({"wave": g.trial.wave, "score": g.trial.total_score(), "seals": g.trial.seals_got, "clean": g.trial.clean, "hard": g.trial.hard_taken, "weapon": Run.weapon} if g.trial != null else {}),
 	}

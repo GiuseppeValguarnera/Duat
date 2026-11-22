@@ -144,6 +144,8 @@ Evoluzione · grado %d/3,Evoluzione · grado %d/3,Evolution · stage %d/3
 Arte dell'arma: %s. %s,Arte dell'arma: %s. %s,Weapon Art: %s. %s
 Stanze ripulite con quest'arma: %d/%d. Usala ancora per farla crescere.,Stanze ripulite con quest'arma: %d/%d. Usala ancora per farla crescere.,Rooms cleared with this weapon: %d/%d. Keep using it to make it grow.
 Fai evolvere · %d lapislazzuli (ne hai %d),Fai evolvere · %d lapislazzuli (ne hai %d),Evolve · %d lapis lazuli (you have %d)
+Registro della bottega di Ptah · %d/%d leghe,Registro della bottega di Ptah · %d/%d leghe,Ptah's Workshop Registry · %d/%d alloys
+"Durante la discesa, a volte, una porta ha il martello di Ptah: incidi un segno sull'arma. Due segni vicini formano una lega. Ogni lega nuova: %d lapislazzuli; il registro completo: %d.","Durante la discesa, a volte, una porta ha il martello di Ptah: incidi un segno sull'arma. Due segni vicini formano una lega. Ogni lega nuova: %d lapislazzuli; il registro completo: %d.","Sometimes, during the descent, a door bears Ptah's hammer: engrave a sign on your weapon. Two adjacent signs form an alloy. Each new alloy: %d lapis lazuli; the full registry: %d."
 La porta delle prove,La porta delle prove,The gate of trials
 Scegli chi far uscire. Nel cortile non si muore: guarda la stele per vedere quanto fa la tua arma.,Scegli chi far uscire. Nel cortile non si muore: guarda la stele per vedere quanto fa la tua arma.,Choose who to let out. In the courtyard no one dies: watch the stele to see how much your weapon deals.
 Via tutti i nemici,Via tutti i nemici,Remove all enemies
@@ -1077,6 +1079,7 @@ Am-heh,Am-heh,Am-heh
 Guardiano,Guardiano,Guardian
 Sokar,Sokar,Sokar
 Traghettatore,Traghettatore,Ferryman
+Martello di Ptah,Martello di Ptah,Ptah's Hammer
 Il deserto,Il deserto,The desert
 La discesa,La discesa,The Descent
 Uscita,Uscita,Exit
@@ -1097,6 +1100,7 @@ La Porta di mezzo: il Serpente che la custodisce. Battilo per un dono di livello
 "Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa","Il Traghettatore, prima della prova: una sala tranquilla per spendere il Ka della discesa","The Ferryman, before the trial: a quiet hall to spend the Ka of the descent"
 Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa),The Ferryman: spend this descent's Ka (what you spend does not come home with you)
 "Il deserto di Sokar: da qui la discesa ricomincia, più dura","Il deserto di Sokar: da qui la discesa ricomincia, più dura","The desert of Sokar: from here the descent begins again, harder"
+L'incudine di Ptah: incidi un segno sulla tua arma. Due segni vicini formano una lega,L'incudine di Ptah: incidi un segno sulla tua arma. Due segni vicini formano una lega,Ptah's anvil: engrave a sign on your weapon. Two adjacent signs form an alloy
 Comincia la discesa: Anubi ti aspetta con il primo dono,Comincia la discesa: Anubi ti aspetta con il primo dono,The descent begins: Anubis awaits you with the first boon
 Uscita: fine della discesa di prova,Uscita: fine della discesa di prova,Exit: end of the test descent
 Schivata!,Schivata!,Dodged!
@@ -1253,6 +1257,27 @@ Poi · per tutta la discesa,Poi · per tutta la discesa,Then · for the whole de
 "Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa. Davanti ai guardiani Set tace","Prima la maledizione, per le prossime stanze ripulite. Poi il potere, per tutta la discesa. Davanti ai guardiani Set tace","First the curse, for the next cleared chambers. Then the power, for the whole descent. Before the guardians Set is silent"
 Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arrivare in tempo,Attenzione: mancano poche stanze ad Am-heh. Il potere di Set potrebbe non arrivare in tempo,Warning: only a few chambers remain before Am-heh. Set's power might not arrive in time
 Set ti propone un patto,Set ti propone un patto,Set offers you a pact
+Lega possibile con i tuoi segni,Lega possibile con i tuoi segni,Possible alloy with your signs
+Già incisa,Già incisa,Already engraved
+Puoi inciderla in un altro posto,Puoi inciderla in un altro posto,You can engrave it in another slot
+Incisione di Ptah,Incisione di Ptah,Ptah's Engraving
+L'incudine di Ptah,L'incudine di Ptah,Ptah's Anvil
+Scegli il segno da incidere sull'arma. Poi sceglierai il posto: due segni vicini formano una lega,Scegli il segno da incidere sull'arma. Poi sceglierai il posto: due segni vicini formano una lega,Choose the sign to engrave on your weapon. Then you'll choose the slot: two adjacent signs form an alloy
+L'arma diventa,L'arma diventa,The weapon becomes
+??? (lega nuova),??? (lega nuova),??? (new alloy)
+Leghe,Leghe,Alloys
+Sostituisce,Sostituisce,Replaces
+A sinistra,A sinistra,Left
+Al centro,Al centro,Centre
+A destra,A destra,Right
+Posto %d,Posto %d,Slot %d
+Vuoto,Vuoto,Empty
+Ora: %s,Ora: %s,Now: %s
+Dove incidere: %s,Dove incidere: %s,Where to engrave: %s
+Il posto al centro tocca gli altri due: lì un segno può formare due leghe,Il posto al centro tocca gli altri due: lì un segno può formare due leghe,The centre slot touches the other two: there a sign can form two alloys
+Inciso: %s,Inciso: %s,Engraved: %s
+Leghe attive: %s,Leghe attive: %s,Active alloys: %s
+Lega scoperta: %s,Lega scoperta: %s,Alloy discovered: %s
 Maledizione di Set: %d stanze,Maledizione di Set: %d stanze,Curse of Set: %d chambers
 %s. Poi: %s,%s. Poi: %s,%s. Then: %s
 %s sale al livello %d,%s sale al livello %d,%s rises to level %d
@@ -1737,6 +1762,45 @@ Hai visto lo scalpellino nella Sala? Bravo artigiano. Un po' lento. Io in quel t
 "La medicina e l'architettura sono la stessa arte: capire dove una cosa si spezzerà, prima che si spezzi.","La medicina e l'architettura sono la stessa arte: capire dove una cosa si spezzerà, prima che si spezzi.","Medicine and architecture are the same art: understanding where something will break, before it breaks."
 "Non ricordo il mio volto da vivo. Ricordo solo le mie mani, e i miei progetti. Forse è giusto così.","Non ricordo il mio volto da vivo. Ricordo solo le mie mani, e i miei progetti. Forse è giusto così.","I do not remember my face from life. I remember only my hands, and my designs. Perhaps that is as it should be."
 "Thoth ha inciso qualcosa di nuovo sulla parete. Una tua impresa, credo. Va' a riscuotere: lasciare un premio sul muro è da maleducati.","Thoth ha inciso qualcosa di nuovo sulla parete. Una tua impresa, credo. Va' a riscuotere: lasciare un premio sul muro è da maleducati.","Thoth has carved something new on the wall. One of your deeds, I believe. Go and collect it: leaving a reward on the wall is rude."
+Leone,Leone,Lion
+Il colpo finale della serie fa il 40% di danni in più e prende un'area più larga del 25%. Con l'arco: ogni terza freccia.,Il colpo finale della serie fa il 40% di danni in più e prende un'area più larga del 25%. Con l'arco: ogni terza freccia.,The final strike of the combo deals 40% more damage and covers a 25% wider area. With the bow: every third arrow.
+Acqua,Acqua,Water
+Ogni 5 colpi a segno lasci una pozza che rallenta i nemici del 25% (al massimo 3 pozze).,Ogni 5 colpi a segno lasci una pozza che rallenta i nemici del 25% (al massimo 3 pozze).,Every 5 hits you leave a pool that slows enemies by 25% (3 pools at most).
+Occhio,Occhio,Eye
+Ogni 4 colpi a segno parte un dardo dritto verso il nemico più vicino (40% del danno dell'arma). Non insegue.,Ogni 4 colpi a segno parte un dardo dritto verso il nemico più vicino (40% del danno dell'arma). Non insegue.,Every 4 hits a dart flies straight at the nearest enemy (40% of the weapon's damage). It does not home.
+Sole,Sole,Sun
++8% di probabilità di critico; i critici incendiano.,+8% di probabilità di critico; i critici incendiano.,+8% critical chance; critical hits set enemies ablaze.
+Scarabeo,Scarabeo,Scarab
+Lo scatto lascia una scia che ferisce i nemici che la toccano.,Lo scatto lascia una scia che ferisce i nemici che la toccano.,Your dash leaves a trail that hurts enemies touching it.
+Serpente,Serpente,Serpent
+I colpi avvelenano per 2 secondi (fino a 3 dosi insieme).,I colpi avvelenano per 2 secondi (fino a 3 dosi insieme).,Your hits poison for 2 seconds (up to 3 doses at once).
+Falco,Falco,Falcon
+Portata e gittata +20%.,Portata e gittata +20%.,Reach and range +20%.
+Loto,Loto,Lotus
+Ogni nemico abbattuto toglie mezzo secondo alla ricarica dell'Arte.,Ogni nemico abbattuto toglie mezzo secondo alla ricarica dell'Arte.,Each enemy slain takes half a second off your Art's cooldown.
+Occhio di Ra,Occhio di Ra,Eye of Ra
+I dardi dell'Occhio bruciano ed esplodono in un piccolo cerchio.,I dardi dell'Occhio bruciano ed esplodono in un piccolo cerchio.,The Eye's darts burn and explode in a small circle.
+Palude,Palude,Marsh
+Le tue pozze avvelenano chi ci passa sopra.,Le tue pozze avvelenano chi ci passa sopra.,Your pools poison whoever walks through them.
+Furia di Sekhmet,Furia di Sekhmet,Fury of Sekhmet
+Il colpo finale incendia tutto ciò che prende.,Il colpo finale incendia tutto ciò che prende.,The final strike sets everything it hits ablaze.
+"Un dardo ogni 3 colpi invece di 4, e trapassa i nemici.","Un dardo ogni 3 colpi invece di 4, e trapassa i nemici.","One dart every 3 hits instead of 4, and it pierces enemies."
+Khepri all'alba,Khepri all'alba,Khepri at Dawn
+La scia dello scatto brucia.,La scia dello scatto brucia.,Your dash trail burns.
+Fiore del Nilo,Fiore del Nilo,Flower of the Nile
+Dentro le tue pozze recuperi 1 vita al secondo (al massimo 10 a stanza).,Dentro le tue pozze recuperi 1 vita al secondo (al massimo 10 a stanza).,Inside your pools you recover 1 health per second (10 per room at most).
+Balzo del Leone,Balzo del Leone,Leap of the Lion
+Il colpo subito dopo lo scatto conta come colpo finale e arriva il 60% più lontano.,Il colpo subito dopo lo scatto conta come colpo finale e arriva il 60% più lontano.,The strike right after a dash counts as a final strike and reaches 60% farther.
+Sabbia velenosa,Sabbia velenosa,Venomous Sand
+La scia dello scatto avvelena.,La scia dello scatto avvelena.,Your dash trail poisons.
+Loto del mattino,Loto del mattino,Morning Lotus
+Ogni nemico abbattuto dall'Arte le restituisce il 15% della ricarica (al massimo il 45%).,Ogni nemico abbattuto dall'Arte le restituisce il 15% della ricarica (al massimo il 45%).,Each enemy slain by your Art refunds 15% of its cooldown (45% at most).
+Sputo del cobra,Sputo del cobra,Cobra's Spit
+I dardi avvelenano e rallentano.,I dardi avvelenano e rallentano.,Darts poison and slow.
+Piena,Piena,Flood
+Il colpo finale spinge via i nemici e lascia una pozza grande.,Il colpo finale spinge via i nemici e lascia una pozza grande.,The final strike knocks enemies away and leaves a large pool.
+Volo dell'anima,Volo dell'anima,Flight of the Soul
+Ogni nemico abbattuto: +10% di velocità per 2 secondi (fino a 3 volte).,Ogni nemico abbattuto: +10% di velocità per 2 secondi (fino a 3 volte).,Each enemy slain: +10% speed for 2 seconds (stacks 3 times).
 ROOM,ROOM,ROOM
 LA LUCE È INGHIOTTITA,LA LUCE È INGHIOTTITA,THE LIGHT IS SWALLOWED
 ALLE SPALLE,ALLE SPALLE,FROM BEHIND
@@ -2049,6 +2113,7 @@ prima volta con quest'arma,prima volta con quest'arma,first time with this weapo
 "«La quarta ora non ha luce, scriba. Ha solo strade. Io conosco quella che passa sopra la sabbia senza annegarvi.»","«La quarta ora non ha luce, scriba. Ha solo strade. Io conosco quella che passa sopra la sabbia senza annegarvi.»","«The fourth hour has no light, scribe. It has only roads. I know the one that passes over the sand without drowning in it.»"
 "«Bevi alla fonte, se vuoi. Ma non guardarti troppo a lungo nell'acqua: qui riflette quello che eri, non quello che sei.»","«Bevi alla fonte, se vuoi. Ma non guardarti troppo a lungo nell'acqua: qui riflette quello che eri, non quello che sei.»","«Drink at the spring, if you like. But do not look at yourself too long in the water: here it reflects what you were, not what you are.»"
 "«Ricorda: io guardo sempre indietro. Tu guarda avanti. Così, in due, non perderemo la strada.»","«Ricorda: io guardo sempre indietro. Tu guarda avanti. Così, in due, non perderemo la strada.»","«Remember: I always look back. You look ahead. That way, the two of us will not lose the road.»"
+Incudine di Ptah,Incudine di Ptah,Ptah's Anvil
 Occhio di Horus,Occhio di Horus,Eye of Horus
 Il nodo di Iside ti protegge,Il nodo di Iside ti protegge,The knot of Isis protects you
 Scudo -%d,Scudo -%d,Shield -%d
@@ -3390,3 +3455,15 @@ un Divoratore di luce,un Divoratore di luce,a Devourer of Light
 Chi viene trascinato resta stordito per un attimo: pronto per la combo.,Chi viene trascinato resta stordito per un attimo: pronto per la combo.,Whoever is dragged in is stunned for a moment: ready for the combo.
 Ogni graffio che va a segno ti restituisce un po' di vita.,Ogni graffio che va a segno ti restituisce un po' di vita.,Every claw that lands gives you back a little health.
 Dove hai parlato resta il Cerchio del Dominio.,Dove hai parlato resta il Cerchio del Dominio.,"Where you spoke, the Circle of Dominion remains."
+Quando l'occhio fissa il sole…,Quando l'occhio fissa il sole…,When the eye stares at the sun…
+Nell'acqua ferma qualcosa striscia.,Nell'acqua ferma qualcosa striscia.,"In still water, something slithers."
+La leonessa ha la criniera di fuoco.,La leonessa ha la criniera di fuoco.,The lioness wears a mane of fire.
+Chi vola alto vede più lontano.,Chi vola alto vede più lontano.,Whoever flies high sees farther.
+Lo scarabeo spinge il disco all'orizzonte.,Lo scarabeo spinge il disco all'orizzonte.,The scarab pushes the disc to the horizon.
+Il fiore si apre sull'acqua.,Il fiore si apre sull'acqua.,The flower opens upon the water.
+Il re delle belve impara a volare.,Il re delle belve impara a volare.,The king of beasts learns to fly.
+"Sotto la sabbia, i denti.","Sotto la sabbia, i denti.","Beneath the sand, the teeth."
+Al primo raggio il loto rinasce.,Al primo raggio il loto rinasce.,At the first ray the lotus is reborn.
+Il cobra mira agli occhi.,Il cobra mira agli occhi.,The cobra aims for the eyes.
+Il fiume ruggisce quando sale.,Il fiume ruggisce quando sale.,The river roars as it rises.
+L'anima lascia il corpo e prende il volo.,L'anima lascia il corpo e prende il volo.,The soul leaves the body and takes flight.

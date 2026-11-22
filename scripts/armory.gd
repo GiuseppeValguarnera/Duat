@@ -568,6 +568,8 @@ func _open_aspects(focus: String = "") -> void:
 				_open_aspects(a))
 			if first == null and not bup.disabled:
 				first = bup
+	if Incisions.unlocked():
+		_registry_section(col, inner)
 	var close := _button(col, Lang.t("Chiudi"), true, _close_menu)
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	(first if first != null else close).grab_focus.call_deferred()
@@ -614,6 +616,30 @@ func _evo_section(col: VBoxContainer, w: String, inner: float) -> Button:
 			btn = null
 	col.add_child(_rule_line(inner))
 	return btn
+
+
+## Il Registro della bottega di Ptah (blocco 26): le leghe scoperte con le incisioni; quelle che
+## mancano si vedono come «???» con un indizio.
+func _registry_section(col: VBoxContainer, inner: float) -> void:
+	col.add_child(_rule_line(inner))
+	var n := Meta.alloys_found.size()
+	var head := UiStyle.label(Lang.t("Registro della bottega di Ptah · %d/%d leghe") % [n, Incisions.ALLOYS_IT.size()], 11, Incisions.COLOR.darkened(0.35), true, inner)
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(head)
+	col.add_child(UiStyle.label(Lang.t("Durante la discesa, a volte, una porta ha il martello di Ptah: incidi un segno sull'arma. Due segni vicini formano una lega. Ogni lega nuova: %d lapislazzuli; il registro completo: %d.") % [Incisions.LAPIS_PER_ALLOY, Incisions.REGISTRY_LAPIS], 7, UiStyle.INK_SOFT, false, inner))
+	for k in Incisions.ALLOYS_IT:
+		var al: Dictionary = Incisions.ALLOYS[k]
+		var box := VBoxContainer.new()
+		box.add_theme_constant_override("separation", 0)
+		col.add_child(box)
+		if Meta.alloys_found.has(k):
+			var parts: PackedStringArray = String(k).split("+")
+			var pair := "%s + %s" % [Incisions.ALL[parts[0]]["name"], Incisions.ALL[parts[1]]["name"]]
+			box.add_child(UiStyle.label("%s  ·  %s" % [al["name"], pair], 9, UiStyle.INK, true, inner))
+			box.add_child(UiStyle.label(al["desc"], 7, UiStyle.INK_SOFT, false, inner))
+		else:
+			box.add_child(UiStyle.label("???", 9, Color(0.36, 0.3, 0.45), true, inner))
+			box.add_child(UiStyle.label("«%s»" % al["hint"], 7, Color(0.36, 0.3, 0.45), false, inner))
 
 
 func _rule_line(width: float) -> ColorRect:

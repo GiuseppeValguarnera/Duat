@@ -704,6 +704,32 @@ quarto giro con tutti e dieci i doni dell'arma insieme. Bilanciamento NON misura
 - *Misura* (8 partite in Wernes, un veterano per arma + 2 casual): veterani stanze khopesh 6, lancia 7, arco 7, flagello 6,
   artigli 3, scettro 5; casual 3 e 6; 5-8 Arti a partita (circa una ogni 15-20 s). In linea col blocco 19 (campione piccolo).
 
+**Blocco 26 (22/11/2026) – incisioni di Ptah, emblemi delle porte, ricompense al centro**.
+- *Incisioni* (`scripts/incisions.gd`, class_name `Incisions`, costanti in cima): dopo la prima vittoria sul Serpente
+  (`Incisions.unlocked()`, `DUAT_PTAH=1` per le prove, `DUAT_PTAH=door` porta sempre) una porta può avere il **martello di
+  Ptah** (reward `ptah`): SEMPRE a caso (`game._ptah_door_roll`: 10% +3% a ogni scelta senza, dalla stanza 2, max 2 per
+  regione, almeno 2 stanze di distanza; prende `pool[0]` così si vede sempre). A stanza ripulita l'incudine:
+  `_show_ptah_menu` (1 su 3, `Incisions.offers`) → `_ptah_slot_menu` (posto 1-3 con anteprima delle leghe, «???» se nuove)
+  → `_do_engrave`. `Run.incisions` (3 posti), `Run.alloys` (coppie VICINE, `Incisions.alloys_of`, chiave alfabetica
+  "a+b"), salvati nella discesa; niente nella Sfinge. 8 incisioni (leone, acqua, occhio, sole, scarabeo, serpente, falco,
+  loto) e 12 leghe (`ALLOYS_IT` con nome, testo, indizio). Agganci: `Run.player_hit` (× `Incisions.hit_mult`),
+  `Run.after_player_hit` (`Incisions.after_hit`, anche se il nemico è morto), `Run.roll_crit` (`last_crit_frame`),
+  `khopesh_crit_chance` (+Sole), `move_mult` (Volo dell'anima), player `_swing`/`_flail_swing` (portata del Falco, colpo
+  finale `Incisions.mark_finisher()` a fotogramma), frecce (`arrow.finisher` ogni terza, `bow_count`), `_start_dash`
+  (`Incisions.start_trail`), `game._on_enemy_killed` (`Incisions.on_kill`), `weapon_art._hit` (`Run.art_striking`).
+  Nodi interni: `Pool`, `Dart` (dritto, muri lo fermano), `Trail`, `Manager` (veleno a tick e Fiore del Nilo; uno in game).
+  Acqua = una pozza ogni 5 colpi, Occhio = un dardo ogni 4 (3 col Falco), contano anche le frecce senza effetti.
+  *Registro della bottega* nell'altare del Cortile (`armory._registry_section`): `Meta.alloys_found`, 5 lapislazzuli a lega
+  nuova, 30 a registro completo (`Meta.alloys_done`). HUD: placca di bronzo con i tre posti e un tratto d'oro tra due segni
+  in lega (`hud_bars._incision_plate`). Prova `tools/dev/ptahsmoke.gd` (nel controllo d'avvio). Bot: prendono il martello
+  (+1,4), il risultato ha `incisions` e `alloys`. **Bilanciamento NON misurato.**
+- *Emblemi* (`scripts/door_emblem.gd`, class_name `DoorEmblem`): davanti alle porte una stele col simbolo (disco di Ra,
+  udjat, sciacallo, leonessa, luna di Thoth, gatta, fauci di Sobek, trono di Iside, casa di Nefti, piuma di Shu, scettro di
+  Set, Ka, ankh della cura, gemma, barca, fauci del boss, ureo del guardiano, akhet, martello); le ricompense a terra hanno
+  il medaglione (`draw_medal`). Colore unico in `DoorEmblem.color_of`. Nome della porta nord sotto la stele.
+- *Ricompense*: `room_builder.reward_spot()` (centro della stanza o il punto libero più vicino; se no accanto all'eroe;
+  mai più `free_spot()` lontano).
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima
@@ -735,7 +761,9 @@ moltiplicatore dei danni subiti (Sokar ×1,25), ondate più piene ed élite più
    bot, ritarare; confermare il nome della regina; battute degli dèi per artigli e scettro; poi la tappa 4 (Ammit, il finale).
 6. **Arte dell'arma ed evoluzioni** (blocco 23): impressioni del proprietario (ricarica 9 s giusta? AoE troppo forte o
    debole? costi delle evoluzioni), insegnare l'Arte ai bot, poi misurare.
-7. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
+7. **Incisioni di Ptah** (blocco 26): impressioni del proprietario (frequenza della porta, forza delle leghe), poi
+   misura coi bot; eventuali battute di Neith e Anubi sulle leghe.
+8. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
    se segnalato, lo stesso fix dello scorrimento col pad (`_settle_entries` in casa.gd) in altre finestre.
 
 ## Dati dei test (per confronto)

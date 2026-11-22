@@ -184,6 +184,11 @@
 - correzioni: colonne e profondità, coccodrilli sotto il pavimento, mira automatica sul telefono,
   "Esci" sul web, musica dei guardiani, Scettro Was più chiaro
 
+## Blocco 26 (22/11/2026)
+- Incisioni di Ptah: porta del martello a caso dopo la prima vittoria sul Serpente, 8 incisioni in 3 posti, 12 leghe tra segni vicini, Registro della bottega nel Cortile.
+- Porte e ricompense con stele e medaglioni col simbolo del dio o della ricompensa.
+- La ricompensa di fine stanza compare al centro (o accanto all'eroe), mai più in punti a caso.
+
 ## Blocco 25 (22/11/2026)
 - I bot usano l'Arte dell'arma.
 - Caos: più nemici in Wernes dalla stanza 6 (sempre di più), in Sokar e nel Banco; le ondate si sovrappongono.

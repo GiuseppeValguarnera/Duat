@@ -175,6 +175,10 @@ func _draw() -> void:
 		if am == "was" and Run.was_stacks > 0:
 			_text(title, ac + Vector2(-9, 25) * u, "+%d%%" % int(Run.was_stacks * Amulets.val_of("was")), _fs(8), GOLD)
 		slot += 1
+	# le incisioni di Ptah (blocco 26): una placca di bronzo con i tre posti; un tratto d'oro unisce
+	# due segni che formano una lega
+	if not Run.trial and not Run.training and not Run.in_hub and Run.incisions.any(func(x: String) -> bool: return x != ""):
+		_incision_plate(o + Vector2(pw + (5.0 + 22.0 * slot) * u, 4.0 * u), u)
 	if not (Run.training or game.tut.step >= 0):
 		# una fascia scura dietro tacche e gemme: sopra i fregi delle stanze non si leggevano
 		var sbk := StyleBoxFlat.new()
@@ -265,6 +269,33 @@ func _art_icon(c: Vector2, u: float, p: Node, font: Font) -> void:
 	var key := "B" if Fx.device == "pad" else "C"
 	var kw := font.get_string_size(key, HORIZONTAL_ALIGNMENT_LEFT, -1, _fs(7)).x
 	_text(font, c + Vector2(-kw / 2.0, r + 8.0 * u), key, _fs(7), GOLD if art_ok else GOLD_DARK)
+
+
+func _incision_plate(at: Vector2, u: float) -> void:
+	var w := 44.0 * u
+	var h := 18.0 * u
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.16, 0.09, 0.05, 0.88)
+	sb.border_color = Color(Incisions.COLOR, 0.8)
+	sb.set_border_width_all(maxi(1, int(1.0 * u)))
+	sb.set_corner_radius_all(int(3 * u))
+	draw_style_box(sb, Rect2(at, Vector2(w, h)))
+	var cs: Array = []
+	for i in range(Incisions.SLOTS):
+		cs.append(at + Vector2(8.0 * u + i * 14.0 * u, h / 2.0))
+	for i in range(Incisions.SLOTS - 1):
+		var a: String = Run.incisions[i]
+		var b: String = Run.incisions[i + 1]
+		if a != "" and b != "" and Run.alloys.has(Incisions.key(a, b)):
+			draw_line(cs[i], cs[i + 1], GOLD, 2.4 * u)
+	for i in range(Incisions.SLOTS):
+		var id: String = Run.incisions[i]
+		draw_circle(cs[i], 6.0 * u, Color(0.05, 0.03, 0.02, 0.95))
+		if id == "":
+			draw_arc(cs[i], 5.2 * u, 0.0, TAU, 16, Color(Incisions.COLOR, 0.3), 0.8 * u)
+		else:
+			draw_arc(cs[i], 5.6 * u, 0.0, TAU, 16, Color(Incisions.glyph_color(id), 0.85), 1.0 * u)
+			Incisions.draw_glyph(self, id, cs[i], 0.72 * u, Incisions.glyph_color(id).lightened(0.25))
 
 
 ## La misura dello schermo. NON `size`: sotto un CanvasLayer questo Control resta 0×0, e per questo i

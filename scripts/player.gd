@@ -173,6 +173,7 @@ var swing_dir := Vector2.RIGHT
 var swing_range := 0.0
 var swing_arc := 0.0
 var swing_index := 0
+var bow_count := 0                       ## frecce normali tirate (Leone: ogni terza è un colpo finale)
 
 var eye_cd := 0.0
 var sand_t := 0.0                       ## Sabbia sotto i Piedi: corsa dopo lo scatto
@@ -748,6 +749,7 @@ func _start_dash(move: Vector2) -> void:
 	dash_hit.clear()
 	shu_dash_hit.clear()
 	Run.room_dashed = true
+	Incisions.start_trail(self)
 	# Pilastro Djed: al posto tuo resta una statua che attira i nemici (una sola alla volta)
 	if Run.wears("djed") and not Run.training and Run.decoy_t <= 0.0:
 		var decoy := Amulets.Decoy.new()
@@ -819,6 +821,14 @@ func art_cd_max() -> float:
 	return WeaponArt.cooldown(Run.weapon)
 
 
+## Il danno base dell'arma (come per l'Arte): dardi, scie e veleno delle incisioni ne prendono una parte.
+func inc_base() -> float:
+	var base: float = attack_damage * Run.khopesh_mult() * _aspect_damage()
+	if divine_t > 0.0:
+		base *= divine_damage_mult
+	return base
+
+
 func try_art() -> void:
 	if not art_ready() or _hook_pulling():
 		if not Run.in_hub and art_cd > 0.0:
@@ -827,6 +837,7 @@ func try_art() -> void:
 	if Run.weapon == "lancia" and spear_thrown != null and is_instance_valid(spear_thrown):
 		return                                # disarmato: la lancia è in volo
 	art_cd = art_cd_max()
+	Run.inc_mattino = 0.0
 	charging = false
 	var art := WeaponArt.new()
 	art.kind = Run.weapon if WeaponArt.DATA_IT.has(Run.weapon) else "khopesh"
@@ -881,8 +892,11 @@ func _spawn_arrow(dir: Vector2, dmg: float, spd: float, dist: float, kb: float, 
 	ar.dir = dir
 	ar.dmg = dmg
 	ar.speed = spd
-	ar.max_dist = dist
+	ar.max_dist = dist * Incisions.reach_mult()
 	ar.knock = kb
+	if not charged:
+		bow_count += 1
+		ar.finisher = bow_count % 3 == 0 and Incisions.has("leone")
 	ar.pierce = pierce
 	ar.crit_chance = crit_chance
 	ar.charged = charged
@@ -1038,7 +1052,10 @@ func _flail_swing() -> void:
 	combo_window = 0.55
 	atk_t = 0.16
 	var cd: float = c["cd"] * Run.attack_speed_mult()
-	var reach: float = c["range"] * (1.0 + Run.val("flagello_thoth") / 100.0)
+	var reach: float = c["range"] * (1.0 + Run.val("flagello_thoth") / 100.0) * Incisions.reach_mult()
+	var inc_fin := swing_index == 2 or (dash_atk and Incisions.alloy("balzo"))
+	if inc_fin and Incisions.has("leone"):
+		reach *= Incisions.BALZO_REACH if (dash_atk and Incisions.alloy("balzo")) else Incisions.LEONE_AREA
 	if Run.has("flagello_anubi"):
 		cd *= 1.0 - Run.val("flagello_anubi") / 100.0       # Anubi: più rapide, ma più corte
 		reach *= 0.8
@@ -1056,6 +1073,8 @@ func _flail_swing() -> void:
 		dmg *= 1.0 + Run.val("sekhmet_leap") / 100.0
 	leap_ready = false
 	Sfx.play("swing", 0.2)
+	if inc_fin:
+		Incisions.mark_finisher()
 	var burns: bool = Run.khopesh_burns() or (swing_index == 2 and Run.has("flagello_ra"))
 	var hit_any := false
 	for j in get_tree().get_nodes_in_group("breakables"):
@@ -1152,9 +1171,13 @@ func _swing() -> void:
 	combo_window = 0.55
 	atk_t = 0.14
 	atk_cd = c["cd"] * Run.attack_speed_mult()
-	swing_range = c["range"]
+	swing_range = c["range"] * Incisions.reach_mult()
 	swing_arc = deg_to_rad(c["arc"])
 	var lunge: float = c["lunge"]
+	# incisioni di Ptah: il colpo finale (Leone; col Balzo del Leone anche quello dopo lo scatto)
+	var inc_fin := swing_index == 2 or (dash_atk and Incisions.alloy("balzo"))
+	if inc_fin and Incisions.has("leone"):
+		swing_range *= Incisions.BALZO_REACH if (dash_atk and Incisions.alloy("balzo")) else Incisions.LEONE_AREA
 	var aspect_mult := _aspect_damage()
 	if swing_index == 2 and Run.aspect == "montu":
 		aspect_mult *= 1.0 + Run.aspect_val("montu") / 100.0
@@ -1210,6 +1233,8 @@ func _swing() -> void:
 	if dash_atk and Run.has("sekhmet_leap"):
 		dmg *= 1.0 + Run.val("sekhmet_leap") / 100.0
 	leap_ready = false
+	if inc_fin:
+		Incisions.mark_finisher()
 
 	var hit_any := false
 	# giare d'olio a portata di lama

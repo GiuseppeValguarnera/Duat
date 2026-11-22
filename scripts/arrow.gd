@@ -16,6 +16,7 @@ var knock := 35.0
 var pierce := 0                       ## nemici che può ancora trapassare (-1 = tutti)
 var pierce_mult := 1.0                ## danni sui nemici colpiti dopo il primo (Freccia Sapiente)
 var crit_chance := 0.0
+var finisher := false                 ## Leone (incisione): ogni terza freccia è un colpo finale
 var charged := false                  ## il tiro carico: più grande, trapassa, doni dedicati
 var bounces := 0                      ## Ricochet del Falco: rimbalzi rimasti
 var bounce_k := 0.6                   ## danni di un rimbalzo (frazione dei danni della freccia)
@@ -165,6 +166,8 @@ func _strike(e) -> void:
 		e.mourn_t = 4.0                    # Velo del Lutto, o la Freccia del Lutto del tiro carico
 	if fx:
 		Run.nefti_on_hit()
+	if finisher:
+		Incisions.mark_finisher()
 	d *= Run.player_hit(e, fx)
 	Run.arrow_hit = true
 	e.take_hit(d, dir, knock * Run.knock_mult(), (Run.hit_has("arco_ra", O) or Run.has("ra_heavy")) and fx)

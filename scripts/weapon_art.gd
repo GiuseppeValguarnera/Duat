@@ -149,7 +149,9 @@ func _hit(e, mult: float, from: Vector2, kb: float, crit_bonus: float = 0.0) -> 
 	Run.heavy_strike = true                 # l'Arte apre gli scudi come un attacco caricato
 	Run.nefti_on_hit()
 	var ra := Run.art_has("ra")
+	Run.art_striking = true
 	e.take_hit(base * mult * damage_mult(kind) * crit * Run.player_hit(e), d, kb * Run.knock_mult(), Run.khopesh_burns() or ra)
+	Run.art_striking = false
 	Run.after_player_hit(e, d)
 	Run.heavy_strike = false
 	_gift_effects(e, d, ra)

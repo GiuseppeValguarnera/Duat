@@ -52,29 +52,7 @@ func enter() -> void:
 
 
 func reward_color() -> Color:
-	match reward.get("kind", ""):
-		"boon":
-			return Boons.god_color(reward["god"])
-		"set":
-			return Boons.god_color("set")
-		"ka":
-			return Color(0.94, 0.72, 0.3)
-		"lapis":
-			return Restorations.LAPIS_COLOR.lightened(0.15)
-		"heal":
-			return Color(0.95, 0.35, 0.3)
-		"boss":
-			return Color(0.9, 0.3, 0.25)
-		"guardian":
-			return Color(0.45, 0.9, 0.4)
-		"region":
-			return Color(0.95, 0.8, 0.45)
-		"shop":
-			return Color(0.6, 0.85, 0.95)
-		"desert":
-			return Color(0.95, 0.8, 0.45)
-		_:
-			return Color(0.9, 0.9, 1.0)
+	return DoorEmblem.color_of(reward.get("kind", ""), reward.get("god", ""))
 
 
 func reward_label() -> String:
@@ -97,6 +75,8 @@ func reward_label() -> String:
 			return Lang.t("Sokar")
 		"shop":
 			return Lang.t("Traghettatore")
+		"ptah":
+			return Lang.t("Martello di Ptah")
 		"desert":
 			return Lang.t("Il deserto")
 		"tutorial_end":
@@ -146,6 +126,8 @@ func _base_description() -> String:
 			return Lang.t("Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa)")
 		"desert":
 			return Lang.t("Il deserto di Sokar: da qui la discesa ricomincia, più dura")
+		"ptah":
+			return Lang.t("L'incudine di Ptah: incidi un segno sulla tua arma. Due segni vicini formano una lega")
 		"tutorial_end":
 			return Lang.t("Comincia la discesa: Anubi ti aspetta con il primo dono")
 		_:
@@ -215,8 +197,8 @@ func _draw() -> void:
 	if open and open_k >= 1.0 and not reward.is_empty():
 		var off := Vector2(0, 26) if side == "n" else (Vector2(0, -26) if side == "s" else (Vector2(26, 0) if side == "w" else Vector2(-26, 0)))
 		var bob := sin(t * 3.0) * 2.0
-		var c := reward_color()
-		draw_circle(off + Vector2(0, bob), 7.0, Color(c, 0.3))
-		draw_circle(off + Vector2(0, bob), 4.5, c)
-		draw_string_outline(UiStyle.body_font(), off + Vector2(-50, bob - 10), reward_label(), HORIZONTAL_ALIGNMENT_CENTER, 100, 10, 3, Color(0.08, 0.05, 0.03, 0.9))
-		draw_string(UiStyle.body_font(), off + Vector2(-50, bob - 10), reward_label(), HORIZONTAL_ALIGNMENT_CENTER, 100, 10, Color(1, 0.95, 0.85))
+		DoorEmblem.draw_stele(self, String(reward.get("kind", "")), String(reward.get("god", "")), off + Vector2(0, bob), 1.0, t)
+		# il nome: sotto la stele per la porta nord (sopra c'è l'architrave), sopra per le altre
+		var ly := bob + (26.0 if side == "n" else -19.0)
+		draw_string_outline(UiStyle.body_font(), off + Vector2(-50, ly), reward_label(), HORIZONTAL_ALIGNMENT_CENTER, 100, 10, 3, Color(0.08, 0.05, 0.03, 0.9))
+		draw_string(UiStyle.body_font(), off + Vector2(-50, ly), reward_label(), HORIZONTAL_ALIGNMENT_CENTER, 100, 10, Color(1, 0.95, 0.85))
