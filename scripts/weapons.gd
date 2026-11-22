@@ -79,6 +79,72 @@ const FUTURE_IT := []
 
 const MAX_LEVEL := 3
 
+## EVOLUZIONI (blocco 23). Ogni arma cresce con te: dopo un certo numero di stanze ripulite
+## impugnandola, all'altare del Cortile la puoi far evolvere con i lapislazzuli. Tre gradi:
+##   I   Arte dell'arma più forte (+25%) e più rapida (−1,5 s);
+##   II  l'Arte prende la sua forma piena (WeaponArt.DATA_IT "twist");
+##   III l'arma si risveglia: +8% a tutti i suoi colpi, Arte di nuovo −1,5 s, la lama brilla d'oro.
+const EVO_ROOMS := [8, 20, 40]
+const EVO_COST := [15, 30, 50]
+const EVO_NAMES_IT := ["", "Temprata", "Consacrata", "Risvegliata"]
+
+
+static func evo(w: String) -> int:
+	return clampi(int(Meta.weapon_evo.get(w, 0)), 0, 3)
+
+
+static func weapon_rooms(w: String) -> int:
+	return int(Meta.weapon_rooms.get(w, 0))
+
+
+static func evo_name(lvl: int) -> String:
+	return Lang.t(EVO_NAMES_IT[clampi(lvl, 0, 3)])
+
+
+## Lapislazzuli per il prossimo grado; -1 se l'arma è già risvegliata.
+static func evo_cost(w: String) -> int:
+	var e := evo(w)
+	return -1 if e >= 3 else int(EVO_COST[e])
+
+
+static func evo_rooms_needed(w: String) -> int:
+	var e := evo(w)
+	return 0 if e >= 3 else int(EVO_ROOMS[e])
+
+
+static func evo_ready(w: String) -> bool:
+	return is_unlocked(w) and evo(w) < 3 and weapon_rooms(w) >= evo_rooms_needed(w)
+
+
+static func evo_up(w: String) -> bool:
+	var c := evo_cost(w)
+	if c < 0 or not evo_ready(w) or Meta.lapis < c:
+		return false
+	Meta.lapis -= c
+	Meta.weapon_evo[w] = evo(w) + 1
+	Meta.save()
+	return true
+
+
+## Cosa dà il grado `lvl` (1-3), già tradotto.
+static func evo_text(w: String, lvl: int) -> String:
+	match lvl:
+		1:
+			return Lang.t("L'Arte fa il 25% di danni in più e si ricarica 1,5 secondi prima.")
+		2:
+			return WeaponArt.art_twist(w)
+		3:
+			return Lang.t("L'arma si risveglia: +8% a tutti i suoi colpi, l'Arte si ricarica altri 1,5 secondi prima e la lama brilla d'oro.")
+	return ""
+
+
+## C'è un'evoluzione pronta da comprare (il punto esclamativo sull'altare)?
+static func evo_affordable() -> bool:
+	for w in ALL:
+		if evo_ready(w) and Meta.lapis >= evo_cost(w):
+			return true
+	return false
+
 
 static func is_unlocked(w: String) -> bool:
 	if w == "khopesh":

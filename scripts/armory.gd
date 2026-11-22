@@ -209,9 +209,9 @@ func _process(delta: float) -> void:
 	if Fx.device == "touch":
 		help.text = ""
 	elif Fx.device == "pad":
-		help.text = Lang.t("Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi")
+		help.text = Lang.t("Levetta muovi · X attacca · B Arte · LB/A scatto · Y interagisci")
 	else:
-		help.text = Lang.t("WASD muovi · clic attacca · Spazio scatto · clic destro Occhio · E interagisci")
+		help.text = Lang.t("WASD muovi · clic attacca · C Arte · Spazio scatto · clic destro Occhio · E interagisci")
 	trial_enemies = trial_enemies.filter(func(e) -> bool: return is_instance_valid(e) and not e.dead)
 	if talk_box.visible or menu != null:
 		prompt.visible = false
@@ -237,7 +237,7 @@ func _process(delta: float) -> void:
 		"neith":
 			prompt.text = Lang.t("%s · Parla con Neith") % key
 		"altare":
-			prompt.text = Lang.t("%s · L'altare degli aspetti (Lacrime di Iside: %d)") % [key, Meta.tears]
+			prompt.text = Lang.t("%s · L'altare: aspetti ed evoluzioni (Lacrime di Iside: %d)") % [key, Meta.tears]
 		"prove":
 			prompt.text = Lang.t("%s · La porta delle prove") % key if trial_enemies.is_empty() else Lang.t("%s · La porta delle prove (nemici in campo: %d)") % [key, trial_enemies.size()]
 		"stele":
@@ -262,6 +262,8 @@ func _process(delta: float) -> void:
 				prompt.text = Lang.t("%s · è l'arma che impugni") % p["name"]
 			else:
 				prompt.text = Lang.t("%s · Prendi: %s") % [key, p["name"]]
+			if Weapons.is_unlocked(p["id"]) and Weapons.evo(p["id"]) > 0:
+				prompt.text += "  ·  " + Weapons.evo_name(Weapons.evo(p["id"]))
 	prompt.visible = prompt.text != ""
 
 
@@ -494,6 +496,10 @@ func _open_aspects(focus: String = "") -> void:
 	var col := _window(Lang.t("Altare di Neith · %s") % wd["name"], Lang.t("Lacrime di Iside: %d  ·  si ottengono battendo Am-heh la prima volta con ogni arma (e di nuovo con il Peso del Cuore a 4 e a 8)") % Meta.tears)
 	var inner: float = col.custom_minimum_size.x
 	var first: Button = null
+	first = _evo_section(col, w, inner)
+	var asp_h := UiStyle.label(Lang.t("Gli aspetti"), 11, NEITH_COLOR.darkened(0.25), true, inner)
+	asp_h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(asp_h)
 	for a in wd["aspects"]:
 		var ad: Dictionary = wd["aspects"][a]
 		var lvl := Weapons.aspect_level(w, a)
@@ -539,6 +545,52 @@ func _open_aspects(focus: String = "") -> void:
 	var close := _button(col, Lang.t("Chiudi"), true, _close_menu)
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	(first if first != null else close).grab_focus.call_deferred()
+
+
+## L'evoluzione dell'arma impugnata (blocco 23): l'Arte, il grado, quanto manca, il prossimo passo.
+func _evo_section(col: VBoxContainer, w: String, inner: float) -> Button:
+	var e := Weapons.evo(w)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 1)
+	col.add_child(box)
+	var head := Lang.t("Evoluzione · grado %d/3") % e
+	if e > 0:
+		head += "  ·  " + Weapons.evo_name(e)
+	box.add_child(UiStyle.label(head, 10, UiStyle.INK, true, inner))
+	box.add_child(UiStyle.label(Lang.t("Arte dell'arma: %s. %s") % [WeaponArt.art_name(w), WeaponArt.art_desc(w)], 8, UiStyle.INK_SOFT, false, inner))
+	for lvl in range(1, 4):
+		var mark := "+" if lvl <= e else "·"
+		box.add_child(UiStyle.label("%s %s %s" % [mark, Weapons.evo_name(lvl), "— " + Weapons.evo_text(w, lvl)], 7, UiStyle.INK if lvl <= e else Color(0.36, 0.3, 0.45), false, inner))
+	var btn: Button = null
+	if e < 3:
+		var need := Weapons.evo_rooms_needed(w)
+		var have := Weapons.weapon_rooms(w)
+		var cost := Weapons.evo_cost(w)
+		if have < need:
+			box.add_child(UiStyle.label(Lang.t("Stanze ripulite con quest'arma: %d/%d. Usala ancora per farla crescere.") % [have, need], 8, NEITH_COLOR.darkened(0.2), false, inner))
+		var row := HBoxContainer.new()
+		box.add_child(row)
+		btn = _button(row, Lang.t("Fai evolvere · %d lapislazzuli (ne hai %d)") % [cost, Meta.lapis], Weapons.evo_ready(w) and Meta.lapis >= cost, func() -> void:
+			if Weapons.evo_up(w):
+				Sfx.play("boon", 0.0)
+				Sfx.play("divine", 0.05)
+				Fx.shake(4.0)
+				Fx.burst(player.global_position + Vector2(0, -14), WeaponArt.color_of(w), 34, 140.0)
+				Fx.float_text(player.global_position + Vector2(0, -40), Weapons.evo_name(Weapons.evo(w)), GOLD)
+				Run.new_run()
+			_open_aspects())
+		if btn.disabled:
+			btn = null
+	col.add_child(_rule_line(inner))
+	return btn
+
+
+func _rule_line(width: float) -> ColorRect:
+	var r := ColorRect.new()
+	r.color = Color(NEITH_COLOR.darkened(0.3), 0.45)
+	r.custom_minimum_size = Vector2(width * 0.7, maxf(1.0, Fx.ui))
+	r.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	return r
 
 
 func _open_trials() -> void:
@@ -604,7 +656,7 @@ func _draw() -> void:
 		if t >= _news_t:
 			_news_t = t + 0.5
 			_news = _neith_has_news()
-			_altar_news = Weapons.something_to_spend()
+			_altar_news = Weapons.something_to_spend() or Weapons.evo_affordable()
 		if _news:
 			UiStyle.exclaim(self, spots["neith"] + Vector2(0, -80), t)
 		if _altar_news:
@@ -691,8 +743,8 @@ func _draw_altar(p: Vector2) -> void:
 	draw_rect(Rect2(p.x - 23.6, p.y - 15.6, 47.2, 4.2), outl)
 	draw_rect(Rect2(p.x - 23, p.y - 15, 46, 3), stone.lightened(0.1))
 	_neith_emblem(Vector2(p.x, p.y - 4.5), 0.4, Color(GOLD, 0.85))
-	# luce azzurra sul pavimento quando hai Lacrime da spendere
-	if Weapons.something_to_spend():
+	# luce azzurra sul pavimento quando hai Lacrime da spendere (o un'evoluzione da comprare)
+	if Weapons.something_to_spend() or Weapons.evo_affordable():
 		var pulse := 0.5 + 0.5 * sin(t * 2.5)
 		draw_set_transform(p + Vector2(0, 4), 0.0, Vector2(1.0, 0.4))
 		draw_circle(Vector2.ZERO, 40.0 + pulse * 4.0, Color(0.4, 0.7, 1.0, 0.08 + 0.05 * pulse))

@@ -264,7 +264,7 @@ func show_controls(then: Callable) -> void:
 	names.add_child(UiStyle.label(Sphinx.weapon_name(weapon), 14, UiStyle.INK, true))
 	var keys := _keys()
 	var moves := _moves()
-	for i in range(3):
+	for i in range(mini(keys.size(), moves.size())):
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", int(6 * u))
 		col.add_child(row)
@@ -304,14 +304,20 @@ func _fit_panel(pap: Control, vs: Vector2) -> void:
 func _keys() -> Array:
 	if Fx.device == "touch":
 		if weapon == "arco":
-			return [Lang.t("Trascina il tasto dell'arco"), Lang.t("Tieni fermo il dito"), Lang.t("Scatto")]
-		return [Lang.t("Tasto d'attacco"), Lang.t("Tieni premuto l'attacco"), Lang.t("Scatto, poi attacco")]
+			return [Lang.t("Trascina il tasto dell'arco"), Lang.t("Tieni fermo il dito"), Lang.t("Scatto"), Lang.t("Tasto ARTE")]
+		return [Lang.t("Tasto d'attacco"), Lang.t("Tieni premuto l'attacco"), Lang.t("Scatto, poi attacco"), Lang.t("Tasto ARTE")]
 	if Fx.device == "pad":
-		return [Lang.t("RB"), Lang.t("Tieni premuto RB"), Lang.t("LB/A, poi RB")]
-	return [Lang.t("Clic sinistro"), Lang.t("Tieni premuto il clic"), Lang.t("Spazio, poi clic")]
+		return [Lang.t("RB"), Lang.t("Tieni premuto RB"), Lang.t("LB/A, poi RB"), Lang.t("B")]
+	return [Lang.t("Clic sinistro"), Lang.t("Tieni premuto il clic"), Lang.t("Spazio, poi clic"), Lang.t("C o rotella")]
 
 
 func _moves() -> Array:
+	var out := _moves3()
+	out.append(WeaponArt.art_name(weapon) + ": " + WeaponArt.art_desc(weapon))
+	return out
+
+
+func _moves3() -> Array:
 	match weapon:
 		"lancia":
 			return [Lang.t("Affondi lunghi e stretti; il terzo è un'ampia spazzata."),

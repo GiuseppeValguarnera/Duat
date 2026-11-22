@@ -56,6 +56,7 @@ func _layout() -> Array:
 	out.append({"action": "attack", "pos": Vector2(r - 58, b - 62), "r": 34.0, "label": Weapons.ALL[Run.weapon]["short"] if Weapons.ALL.has(Run.weapon) else Lang.t("KHOPESH")})
 	out.append({"action": "dash", "pos": Vector2(r - 128, b - 40), "r": 24.0, "label": Lang.t("SCATTO")})
 	out.append({"action": "special", "pos": Vector2(r - 108, b - 122), "r": 24.0, "label": Lang.t("OCCHIO")})
+	out.append({"action": "art", "pos": Vector2(r - 186, b - 46), "r": 22.0, "label": Lang.t("ARTE")})
 	if Run.sekhem_unlocked():
 		out.append({"action": "super", "pos": Vector2(r - 170, b - 100), "r": 20.0, "label": Lang.t("SEKHEM")})
 	var by_sphinx: bool = scene != null and "trial" in scene and scene.trial != null and scene.trial.near_statue()
@@ -267,6 +268,9 @@ func _draw_controls() -> void:
 				col = Color(0.5, 0.5, 0.55, 0.2)
 		if btn["action"] == "super" and not Run.sekhem_ready():
 			col = Color(0.5, 0.5, 0.55, 0.2)
+		if btn["action"] == "art":
+			_draw_art_button(btn, pressed)
+			continue
 		draw_node.draw_circle(btn["pos"], btn["r"], col)
 		if btn["action"] == "special":
 			# l'Occhio di Horus sta sul suo pulsante: si riempie di blu mentre si ricarica,
@@ -305,6 +309,33 @@ func _draw_controls() -> void:
 			draw_node.draw_line(aim_origin, aim_origin + off, Color(1.0, 0.86, 0.45, 0.8), 3.0)
 		draw_node.draw_circle(aim_origin + off, 9.0, Color(1.0, 0.86, 0.45, 0.6))
 
+
+
+## Il pulsante dell'Arte dell'arma (blocco 23): il segno dell'arma, che si riempie del colore dell'Arte
+## mentre si ricarica; pronto = bordo d'oro e un alone.
+func _draw_art_button(btn: Dictionary, pressed: bool) -> void:
+	var c: Vector2 = btn["pos"]
+	var r: float = btn["r"]
+	var pl = get_tree().get_first_node_in_group("player")
+	var art_ok: bool = pl != null and pl.art_ready()
+	var acol: Color = WeaponArt.color_of(Run.weapon)
+	draw_node.draw_circle(c, r, Color(0.94, 0.72, 0.3, 0.5 if pressed else 0.22) if art_ok else Color(0.3, 0.3, 0.35, 0.25))
+	if pl != null and not art_ok and pl.art_cd > 0.0:
+		var k := 1.0 - clampf(pl.art_cd / maxf(0.1, pl.art_cd_max()), 0.0, 1.0)
+		var pts := PackedVector2Array([c])
+		for i in range(25):
+			pts.append(c + Vector2.from_angle(-PI / 2.0 + TAU * k * i / 24.0) * (r - 2.0))
+		if k > 0.01:
+			draw_node.draw_colored_polygon(pts, Color(acol, 0.45))
+	if art_ok:
+		draw_node.draw_circle(c, r - 2.0, Color(acol, 0.3))
+	WeaponArt.draw_icon(draw_node, Run.weapon, c + Vector2(0, -3), r / 13.0, Color(1, 0.95, 0.85, 0.95) if art_ok else Color(0.6, 0.6, 0.65, 0.7))
+	var fs := Fx.fs(6)
+	var font := UiStyle.body_font()
+	var lbl: String = btn["label"]
+	var w := font.get_string_size(lbl, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	draw_node.draw_string(font, c + Vector2(-w / 2.0, r * 0.62), lbl, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 0.95, 0.85, 0.85))
+	draw_node.draw_arc(c, r, 0.0, TAU, 32, Color(0.94, 0.72, 0.3, 0.9) if art_ok else Color(1, 0.9, 0.7, 0.4), 2.0)
 
 
 ## L'Occhio di Horus disegnato sul pulsante (lo stesso dell'HUD).

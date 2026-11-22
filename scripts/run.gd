@@ -154,7 +154,7 @@ func in_deep(p: Vector2) -> bool:
 
 
 func aspect_val(id: String) -> float:
-	if aspect != id:
+	if aspect != id or not Weapons.ALL[weapon]["aspects"].has(id):
 		return 0.0
 	return float(Weapons.ALL[weapon]["aspects"][id]["values"][clampi(aspect_level, 1, Weapons.MAX_LEVEL) - 1])
 
@@ -416,6 +416,8 @@ func room_done() -> void:
 	for a in [amulet, amulet2]:
 		if a != "":
 			Meta.amulet_rooms[a] = Amulets.rooms(a) + 1
+	if not trial and weapon != "":
+		Meta.weapon_rooms[weapon] = int(Meta.weapon_rooms.get(weapon, 0)) + 1     # le evoluzioni dell'arma
 	room_hit = false
 	room_dashed = false
 

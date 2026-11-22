@@ -158,6 +158,10 @@ func _draw() -> void:
 	# Was, le stanze pulite contate. Se non lo vedi, ti dimentichi di averlo.
 	# Con la Collana a due amuleti i due amuleti stanno uno accanto all'altro.
 	var slot := 0
+	# l'Arte dell'arma (blocco 23): la prima icona accanto al riquadro (sul telefono sta sul suo pulsante)
+	if not touch and not Run.in_hub:
+		_art_icon(o + Vector2(pw + 14.0 * u, 13.0 * u), u, p, title)
+		slot = 1
 	for am in [Run.amulet, Run.amulet2]:
 		if am == "" or Run.training:
 			continue
@@ -210,6 +214,28 @@ func _draw() -> void:
 			draw_circle(pp, 1.6 * u, GOLD if i < charges else Color(0.3, 0.25, 0.2))
 
 var hu := 1.0
+
+
+## L'icona dell'Arte: il segno dell'arma che si riempie mentre si ricarica, il tasto sotto.
+func _art_icon(c: Vector2, u: float, p: Node, font: Font) -> void:
+	var art_ok: bool = p.art_ready()
+	var acol: Color = WeaponArt.color_of(Run.weapon)
+	var r: float = 9.5 * u * (1.0 + 0.25 * float(p.art_pop) / 0.35)
+	draw_circle(c, r, Color(0.05, 0.04, 0.09, 0.85))
+	if not art_ok and p.art_cd > 0.0:
+		var k := 1.0 - clampf(p.art_cd / maxf(0.1, p.art_cd_max()), 0.0, 1.0)
+		var pts := PackedVector2Array([c])
+		for i in range(25):
+			pts.append(c + Vector2.from_angle(-PI / 2.0 + TAU * k * i / 24.0) * (r - 1.2 * u))
+		if k > 0.01:
+			draw_colored_polygon(pts, Color(acol, 0.5))
+	else:
+		draw_circle(c, r - 1.2 * u, Color(acol, 0.3))
+	draw_arc(c, r, 0, TAU, 24, GOLD if art_ok else GOLD_DARK, 1.3 * u)
+	WeaponArt.draw_icon(self, Run.weapon, c, 0.62 * u, Color(1, 0.95, 0.85) if art_ok else Color(0.55, 0.5, 0.45))
+	var key := "B" if Fx.device == "pad" else "C"
+	var kw := font.get_string_size(key, HORIZONTAL_ALIGNMENT_LEFT, -1, _fs(7)).x
+	_text(font, c + Vector2(-kw / 2.0, r + 8.0 * u), key, _fs(7), GOLD if art_ok else GOLD_DARK)
 
 
 ## La misura dello schermo. NON `size`: sotto un CanvasLayer questo Control resta 0×0, e per questo i

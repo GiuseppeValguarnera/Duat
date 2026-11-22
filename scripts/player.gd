@@ -131,6 +131,9 @@ var charging := false                   # attacco caricato: stai caricando
 var charge_k := 0.0                     # 0..1
 var charge_full := false
 var charge_cd := 0.0                    # ricarica dopo l'attacco caricato
+var art_cd := 0.0                       # ricarica dell'Arte dell'arma (WeaponArt, blocco 23)
+var art_pop := 0.0                      # l'Arte è appena tornata pronta (lampo sull'icona)
+var _last_phys_frame := -10             # per non lanciare l'Arte col B che ha appena chiuso un menu
 var charge_flash_t := 0.0
 var spear_thrown: Node2D = null         # la lancia lanciata: finché non torna sei disarmato
 var spin_swing := false
@@ -272,6 +275,10 @@ func _physics_process(delta: float) -> void:
 		_fire_eye()
 	if Input.is_action_just_pressed("super") and Run.sekhem_ready() and divine_t <= 0.0:
 		_divine_form()
+	var resumed := Engine.get_physics_frames() - _last_phys_frame > 1
+	_last_phys_frame = Engine.get_physics_frames()
+	if Input.is_action_just_pressed("art") and not resumed:
+		try_art()
 
 	if _hook_pulling():
 		# il pastorale agganciato a un élite o a un boss: voli da lui
@@ -540,6 +547,12 @@ func _tick(delta: float) -> void:
 	Run.hourglass_t = maxf(0.0, Run.hourglass_t - delta)
 	after_dash_t = maxf(0.0, after_dash_t - delta)
 	charge_cd = maxf(0.0, charge_cd - delta)
+	art_pop = maxf(0.0, art_pop - delta)
+	if art_cd > 0.0:
+		art_cd = maxf(0.0, art_cd - delta)
+		if art_cd <= 0.0 and not Run.in_hub:
+			art_pop = 0.35
+			Sfx.play("eye", 0.05, -10.0)
 	charge_flash_t = maxf(0.0, charge_flash_t - delta)
 	hook_vis_t = maxf(0.0, hook_vis_t - delta)
 	bow_slow_t = maxf(0.0, bow_slow_t - delta)
@@ -787,8 +800,66 @@ func _dash_damage() -> void:
 
 
 ## Il danno in più dell'aspetto scelto, per le armi che ne hanno uno "+% danni".
+## Il primo aspetto di ogni arma (+5/10/15%) e l'evoluzione III (+8%). Blocco 23: Osiride, Bastet e Ptah
+## non venivano mai contati (i loro +5/10/15% scritti all'altare non c'erano).
 func _aspect_damage() -> float:
-	return 1.0 + Run.aspect_val("faraone") / 100.0 + Run.aspect_val("neith") / 100.0 + Run.aspect_val("satet") / 100.0
+	var m := 1.0 + Run.aspect_val("faraone") / 100.0 + Run.aspect_val("neith") / 100.0 + Run.aspect_val("satet") / 100.0
+	m += (Run.aspect_val("osiride") + Run.aspect_val("bastet") + Run.aspect_val("ptah")) / 100.0
+	if not Run.trial and Weapons.evo(Run.weapon) >= 3:
+		m += WeaponArt.EVO3_WEAPON
+	return m
+
+
+## L'Arte dell'arma (blocco 23): il terzo attacco, ad area, con una ricarica lunga.
+func art_ready() -> bool:
+	return art_cd <= 0.0 and not Run.in_hub and not dead
+
+
+func art_cd_max() -> float:
+	return WeaponArt.cooldown(Run.weapon)
+
+
+func try_art() -> void:
+	if not art_ready() or _hook_pulling():
+		if not Run.in_hub and art_cd > 0.0:
+			Sfx.play("hit", 0.05, -14.0)          # non ancora: un tocco sordo
+		return
+	if Run.weapon == "lancia" and spear_thrown != null and is_instance_valid(spear_thrown):
+		return                                # disarmato: la lancia è in volo
+	art_cd = art_cd_max()
+	charging = false
+	var art := WeaponArt.new()
+	art.kind = Run.weapon if WeaponArt.DATA_IT.has(Run.weapon) else "khopesh"
+	art.player = self
+	var base: float = attack_damage * Run.khopesh_mult() * _aspect_damage()
+	if divine_t > 0.0:
+		base *= divine_damage_mult
+	art.base = base
+	var far := art.kind == "lancia" or art.kind == "arco"
+	var d := _bow_aim() if art.kind == "arco" else (_assisted(aim, 190.0, 30.0) if far else aim)
+	art.dir = d
+	if far:
+		var reach: float = WeaponArt.SPEAR["reach"] if art.kind == "lancia" else WeaponArt.BOW["reach"]
+		# il punto: il nemico più vicino lungo la mira (se c'è) o la gittata piena; mai oltre un muro
+		var tgt = _melee_pick(d, reach)
+		var dist := reach
+		if tgt != null and is_instance_valid(tgt):
+			dist = minf(reach, global_position.distance_to(tgt.global_position))
+		var space := get_world_2d().direct_space_state
+		var q := PhysicsRayQueryParameters2D.create(global_position, global_position + d * dist, 1)
+		q.exclude = [get_rid()]
+		var hit := space.intersect_ray(q)
+		art.at = (hit["position"] - d * 8.0) if not hit.is_empty() else global_position + d * dist
+	swing_dir = d
+	atk_t = 0.2
+	atk_cd = 0.3
+	swing_index = 2
+	spin_swing = false                    # niente onda del caricato né spicchio del fendente: disegna l'Arte
+	swing_arc = TAU
+	get_parent().add_child(art)
+	art.global_position = global_position
+	Fx.burst(global_position + Vector2(0, -12), WeaponArt.color_of(art.kind), 18, 120.0)
+	Fx.float_text(global_position + Vector2(0, -38), WeaponArt.art_name(art.kind), WeaponArt.color_of(art.kind))
 
 
 ## La mira dell'arco: nessuna assistenza, la freccia parte dove punti (mouse, levetta destra, tasto
@@ -1806,6 +1877,18 @@ func _draw() -> void:
 			draw_line(b0, b1, Color(1, 1, 1, 0.9 * bk), 1.5)
 	else:
 		_draw_khopesh(hand, wdir, 1.0 if swing_k < 0.0 else 1.15, a)
+	# l'arma risvegliata (evoluzione III): un bagliore d'oro attorno alla mano e scintille lente
+	if not Run.trial and Weapons.evo(Run.weapon) >= 3:
+		var gk := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 260.0)
+		draw_circle(hand + wdir * 8.0, 7.0 + gk * 2.0, Color(1.0, 0.82, 0.35, 0.12 + 0.08 * gk))
+		var sp_a := Time.get_ticks_msec() / 400.0
+		for i in range(3):
+			var sp := hand + wdir * 8.0 + Vector2.from_angle(sp_a + i * TAU / 3.0) * (8.0 + 3.0 * gk)
+			draw_circle(sp, 0.9, Color(1.0, 0.92, 0.6, 0.85))
+	# l'Arte di nuovo pronta: un anello che si stringe sul personaggio
+	if art_pop > 0.0:
+		var pk := art_pop / 0.35
+		draw_arc(Vector2(0, -14), 10.0 + 14.0 * pk, 0.0, TAU, 24, Color(WeaponArt.color_of(Run.weapon), 0.8 * (1.0 - pk) + 0.2), 1.6)
 	# indicatore di mira
 	var tip := Vector2(0, -8) + aim * 20.0
 	var side := aim.orthogonal() * 4.0

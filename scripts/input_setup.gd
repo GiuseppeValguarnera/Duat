@@ -32,6 +32,11 @@ func _ready() -> void:
 	_button("special", JOY_BUTTON_Y)
 
 	_keys("super", [KEY_Q])
+
+	# l'Arte dell'arma (blocco 23): il tasto B del pad, che in battaglia non faceva nulla
+	_keys("art", [KEY_C, KEY_U])
+	_mouse("art", MOUSE_BUTTON_MIDDLE)
+	_button("art", JOY_BUTTON_B)
 	_axis("super", JOY_AXIS_TRIGGER_LEFT, 1.0)
 
 	_keys("boons_menu", [KEY_TAB])

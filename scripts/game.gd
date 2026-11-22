@@ -3195,11 +3195,11 @@ func _process(_delta: float) -> void:
 	if Fx.device == "touch":
 		help.text = ""
 	elif Fx.device == "pad":
-		help.text = Lang.t("Levetta sinistra muovi · destra mira · RB attacca · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa")
+		help.text = Lang.t("Levetta sinistra muovi · destra mira · RB attacca · B Arte · RT Occhio · LB/A scatto · LT Forma Divina · Select doni · Start pausa")
 	else:
-		help.text = Lang.t("WASD muovi · mouse mira · clic sinistro attacca · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa · F1 hitbox")
+		help.text = Lang.t("WASD muovi · mouse mira · clic sinistro attacca · C Arte · Spazio scatto · clic destro Occhio · Q Forma Divina (dopo il primo boss) · Tab doni · Esc pausa")
 		if trial != null:
-			help.text = Lang.t("WASD muovi · mouse mira · clic sinistro attacca (tieni premuto: carica) · Spazio scatto · clic destro Occhio · Tab doni · Esc pausa")
+			help.text = Lang.t("WASD muovi · mouse mira · clic sinistro attacca (tieni premuto: carica) · C Arte · Spazio scatto · clic destro Occhio · Tab doni · Esc pausa")
 	if not (Meta.runs < 3 or (Run.room <= 1 and Run.region == 1) or trial != null or tut.step >= 0):
 		help.text = ""                       # dopo le prime discese la riga dei comandi resta solo nella prima stanza
 	if TRAILER:
