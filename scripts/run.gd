@@ -677,6 +677,10 @@ const TRUE_NAME_SHIELD := 4.0          ## Nome Vero: scudo della Prima Parola (f
 var hourglass_t := 0.0                 ## Clessidra: secondi di rallentamento rimasti
 var hourglass_used := false            ## Clessidra: già scattata in questa stanza
 var glyph_hits := 0
+var streak := 0                      ## colpi di fila senza essere colpiti (solo da vedere, blocco 23)
+var streak_msec := 0                 ## quando è arrivato l'ultimo colpo (la serie si spegne dopo STREAK_GAP)
+var streak_best := 0
+const STREAK_GAP := 2200
 var lesson_regions: Array = []         ## Lezione dello Scriba: regioni in cui un dono è già salito
 
 
@@ -692,6 +696,7 @@ func thoth_time() -> float:
 
 ## Clessidra di Thoth: la prima volta nella stanza che il giocatore viene colpito (player.gd).
 func on_player_hurt() -> void:
+	streak = 0                            # la serie di colpi finisce quando ti colpiscono
 	if has("thoth_hourglass") and not hourglass_used:
 		hourglass_used = true
 		hourglass_t = val("thoth_hourglass")
@@ -725,6 +730,11 @@ func first_word(e: Node) -> float:
 ## Restituisce il moltiplicatore dei danni.
 func player_hit(e: Node, fx: bool = true) -> float:
 	var m := first_word(e)
+	if fx and not training:
+		var now := Time.get_ticks_msec()
+		streak = (streak + 1) if now - streak_msec < STREAK_GAP else 1
+		streak_msec = now
+		streak_best = maxi(streak_best, streak)
 	if has("thoth_glyph"):
 		glyph_hits += 1
 		if glyph_hits >= GLYPH_EVERY:

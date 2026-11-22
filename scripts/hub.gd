@@ -131,6 +131,7 @@ func _build() -> void:
 	for r in decor.build(424242, ROOM, TOP, WALL, [], true):
 		_solid(r)
 	decor.ambient.color = Atmos.AMBIENT_HUB
+	decor.mosaic_k = 0.6                  # il sole del pavimento sotto la bilancia: con le luci vere abbagliava
 	# i bracieri restaurati scaldano davvero la Sala: la notte blu si fa più chiara e calda, e da
 	# ogni angolo arriva una luce ampia (vera sul computer, finta sul telefono). Il prima e dopo
 	# deve vedersi subito: è il premio del restauro.

@@ -1,5 +1,17 @@
 ## In sviluppo · novembre 2026
 
+- **l'Arte dell'arma**: un terzo attacco ad area per ogni arma, sul tasto B del pad (C o la rotella sul PC, il pulsante
+  ARTE sul telefono). Si ricarica in 9 secondi: è la risposta a «sono circondato». Mezzaluna del Faraone, Pioggia di
+  Neith, Cielo di Satet, Mietitura di Osiride, Furia delle Nove Vite, Parola di Ptah
+- **le armi evolvono**: usale, e all'altare del Cortile con i lapislazzuli diventano Temprate, Consacrate e infine
+  Risvegliate (l'Arte cambia forma, la lama brilla d'oro)
+- **cose usabili ben visibili**: un anello d'oro e il tasto da premere compaiono su tutto ciò che puoi usare; le
+  ricompense hanno una colonna di luce
+- **serie di colpi**: da 5 colpi di fila senza essere colpito compare il contatore
+- **dialoghi più ricchi**: molte frasi nuove di Anubi, Neith, Imhotep e Mahaf, e le reazioni ai nemici del Banco di Apopi
+- corretto: gli aspetti di Osiride, Bastet e Ptah non davano il loro bonus ai danni; il sole del pavimento abbagliava;
+  nelle Opzioni l'ultima riga era tagliata
+
 - **il Banco di Apopi ha la sua regola: la luce di Ra**. Un fascio dorato attraversa ogni stanza. Alcuni nemici hanno le
   scaglie del caos: fuori dalla luce i colpi quasi non contano, nel fascio (e per tre secondi dopo) si aprono
 - **quattro stanze diverse**: il Corridoio della barca, le Pozze di Isfet che cambiano posto, l'Anello dei pali (porta

@@ -235,6 +235,9 @@ func _build() -> void:
 	var over := panel.get_combined_minimum_size().y - (vs.y - 8.0)
 	if over > 0.0:
 		scroll.custom_minimum_size.y = maxf(40.0 * Fx.ui, scroll.custom_minimum_size.y - over)
+	# blocco 23: la lista mostra solo righe intere (prima l'ultima era tagliata a metà sotto la riga d'oro)
+	var step: float = (rows[0]["btn"] as Control).get_combined_minimum_size().y + 1.0 * Fx.ui if not rows.is_empty() else 23.0 * Fx.ui
+	scroll.custom_minimum_size.y = maxf(step, floorf(scroll.custom_minimum_size.y / step) * step - 2.0 * Fx.ui)
 	panel.reset_size()
 	panel.position = (vs - panel.get_combined_minimum_size()) / 2.0
 	var focus_btn: Button = want if want != null else first

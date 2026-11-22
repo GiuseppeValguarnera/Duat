@@ -643,6 +643,47 @@ una mossa grande c'è una finestra, mai più di DUE cose da leggere insieme. Nie
 - Nota: `chaos.gd` non esiste (la classe `Chaos` è in `apep_world.gd`). Il blocco 22 è stato fatto PRIMA del 21: le
   piastre sono nate qui e la «Camera del torchio» del blocco 21 le riusa.
 
+**Blocco 23 (22/11/2026) – Arte dell'arma, evoluzioni, cose usabili visibili, dialoghi, rifiniture** (carta bianca del
+proprietario: «controlla tutto, PC e telefono, rendilo più bello e divertente»; screenshot permessi stavolta).
+- *Arte dell'arma* (`scripts/weapon_art.gd`, class_name `WeaponArt`, costanti in cima; azione `art`: **B del pad** – in
+  battaglia non faceva nulla –, **C / U / rotella premuta**, pulsante **ARTE** sul telefono a sinistra dello scatto,
+  `touch_controls.gd` `_draw_art_button`). Colpo ad area, ricarica `ART_CD` 9 s (`player.art_cd`, `art_ready()`,
+  `try_art()`; non parte col B che ha appena chiuso un menu: `_last_phys_frame`). Danno = base dell'arma (doni, aspetto,
+  Forma Divina) × moltiplicatore; conta come colpo pesante (scudi ×2), con critici, fuoco e doni del colpo.
+  Khopesh **Mezzaluna del Faraone** (onda r 18→104 in 0,32 s, ×3,0, spinta 260), lancia **Pioggia di Neith** (cerchio
+  d'oro r 64 fino a 115 px sulla mira, 0,42 s, ×3,0, rallenta 50% per 1,6 s), arco **Cielo di Satet** (cerchio r 58 fino
+  a 170 px, 3 raffiche ×1,15 ogni 0,3 s, prende gli avvoltoi in volo), flagello **Mietitura di Osiride** (r 100, ×2,6,
+  trascina i nemici normali ai tuoi piedi), artigli **Furia delle Nove Vite** (0,9 s intoccabile, 6 colpi ×0,75 in r 52),
+  scettro **Parola di Ptah** (onda r 124, ×2,8, stordisce i normali 0,9 s; sui grossi `gift_stun` 0,15 s). Icona con la
+  ricarica accanto al riquadro dell'HUD (`hud_bars._art_icon`, col tasto sotto), anello sul personaggio quando torna
+  pronta (`art_pop`). Nella Sfinge c'è (quarta riga dei comandi) ma senza evoluzioni. Prova `tools/dev/artsmoke.gd` nel
+  controllo d'avvio (ogni arma, base, evo II e III). Foto: `tools/dev/shots/tour23.gd` (`DUAT_WEAPON`, `DUAT_EVO`),
+  `armorytour.gd`.
+- *Evoluzioni* (`Weapons.evo/evo_up/evo_ready/evo_cost/evo_text`; `EVO_ROOMS` 8/20/40 stanze ripulite con l'arma –
+  `Meta.weapon_rooms`, contate in `Run.room_done` fuori dalla Sfinge –; `EVO_COST` 15/30/50 lapislazzuli;
+  `Meta.weapon_evo`): I **Temprata** Arte +25% e −1,5 s; II **Consacrata** forma piena dell'Arte (khopesh: l'onda torna e
+  ricolpisce ×1,2 tirando dentro; lancia: le lance restano 2,5 s e feriscono ×0,35 ogni 0,5 s; arco: quarta raffica e
+  rallentamento; flagello: i trascinati restano storditi 0,6 s; artigli: ogni graffio a segno cura 0,6, max 4; scettro:
+  lascia il Cerchio del Dominio); III **Risvegliata** +8% a tutti i colpi dell'arma (`_aspect_damage`), Arte altri
+  −1,5 s, bagliore d'oro sulla mano. Si comprano all'altare del Cortile (`armory._evo_section`, sopra gli aspetti; punto
+  esclamativo e luce azzurra anche per le evoluzioni). **Corretto**: gli aspetti di Osiride, Bastet e Ptah (+5/10/15%)
+  non venivano mai applicati.
+- *Cose usabili* (`scripts/ui/interact_cue.gd`, class_name `InteractCue`): anello d'oro a terra e bolla col tasto (E,
+  Y gialla, mano sul telefono) sulla cosa vicina che si usa: Sala (`hub._update_cue`), Cortile, Casa, stanze (negozio,
+  Oasi, barca di Mahaf, porta aperta accanto). Le ricompense hanno una colonna di luce, raggi a terra e la scritta col
+  contorno (`pickup.gd`).
+- *Serie di colpi* (`Run.streak`, `STREAK_GAP` 2,2 s, si azzera quando ti colpiscono; `hud_bars._streak`): da 5 colpi
+  un «×N colpi di fila» accanto al riquadro. Solo da vedere, nessun premio.
+- *Dialoghi*: Anubi 2-3 frasi in più per fascia di morte nelle tre regioni, frasi per le trappole di Wernes e per le
+  piastre (`HAZARD_KILLERS` allargato), reazioni a tutti i nemici del Banco, 12 frasi d'attesa nuove, storia `arte0`,
+  `evo0`, `evo1`, consiglio su Apopi aggiornato alla corda; Neith `arte`, `evo_pronta`, `evo_fatta`, `evo_tre` e 5 frasi
+  brevi; Imhotep `imh_arte`, `imh_evo`, `imh_banco` e 4 frasi d'attesa; Mahaf 2 frasi in più per ogni gruppo.
+- *Rifiniture viste negli screenshot*: il sole del pavimento abbagliava con le luci vere (`RoomDecor.mosaic_k`, ×0,7
+  ovunque, 0,6 nella Sala sotto la bilancia); Opzioni senza la riga tagliata a metà sotto la riga d'oro; righe dei
+  comandi con l'Arte. `Run.aspect_val` non va in errore se l'aspetto non è dell'arma.
+- **Non misurato coi bot**: i bot NON usano l'Arte (da insegnare prima di misurare). Nella prova senza grafica l'Arte fa
+  ~35-80 a nemico in Wernes, circa tre colpi normali a testa su tutto il gruppo, ogni 9 s.
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima
@@ -672,7 +713,9 @@ moltiplicatore dei danni subiti (Sokar ×1,25), ondate più piene ed élite più
 4. Raccogliere le impressioni sulla Sfinge (durezza delle ondate e dei guardiani, enigmi, premi) e ritarare.
 5. **Banco di Apopi e armi nuove** (blocchi 21 e 22: luce di Ra, scaglie, tipi di stanza, Apopi a legature e Shezmu coi dannati NON misurati; i bot vanno istruiti su luce e scaglie prima di misurare, di notte): raccogliere le impressioni (durezza, leggibilità di Shezmu e Apopi, buio), misurare coi
    bot, ritarare; confermare il nome della regina; battute degli dèi per artigli e scettro; poi la tappa 4 (Ammit, il finale).
-6. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
+6. **Arte dell'arma ed evoluzioni** (blocco 23): impressioni del proprietario (ricarica 9 s giusta? AoE troppo forte o
+   debole? costi delle evoluzioni), insegnare l'Arte ai bot, poi misurare.
+7. Dopo: abbellimenti del Cortile (armeria); pagina itch.io e modulo feedback (il proprietario fornisce `FEEDBACK_URL`);
    se segnalato, lo stesso fix dello scorrimento col pad (`_settle_entries` in casa.gd) in altre finestre.
 
 ## Dati dei test (per confronto)

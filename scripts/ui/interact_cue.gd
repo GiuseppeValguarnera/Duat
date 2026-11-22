@@ -61,11 +61,11 @@ func _draw() -> void:
 			draw_circle(b, r - 0.5, Color(0.86, 0.68, 0.12, a))          # il tasto Y, giallo
 			_letter(b, "Y", Color(0.08, 0.06, 0.02, a))
 		"touch":
-			draw_circle(b, r - 0.5, Color(GOLD, 0.25 * a))
-			# la mano che tocca: un dito e un'onda
-			draw_line(b + Vector2(0, 3.5), b + Vector2(0, -2.5), Color(1, 0.95, 0.85, a), 2.0)
-			draw_circle(b + Vector2(0, -3.0), 1.3, Color(1, 0.95, 0.85, a))
-			draw_arc(b + Vector2(0, -3.0), 3.6 + pulse, PI * 1.1, PI * 1.9, 8, Color(1, 0.95, 0.85, 0.7 * a), 1.0)
+			# il tocco: un polpastrello e due cerchi che si allargano (prima sembrava un punto esclamativo)
+			draw_circle(b, r - 0.5, Color(GOLD, 0.3 * a))
+			draw_circle(b, 2.4, Color(1, 0.95, 0.85, a))
+			draw_arc(b, 4.0 + pulse * 1.2, 0.0, TAU, 14, Color(1, 0.95, 0.85, 0.8 * a), 1.0)
+			draw_arc(b, 6.0 + pulse * 0.8, 0.0, TAU, 16, Color(1, 0.95, 0.85, 0.35 * a), 0.8)
 		_:
 			draw_rect(Rect2(b - Vector2(r - 1.5, r - 1.5), Vector2(r - 1.5, r - 1.5) * 2.0), Color(0.9, 0.86, 0.78, a))
 			draw_rect(Rect2(b - Vector2(r - 1.5, r - 1.5), Vector2(r - 1.5, r - 1.5) * 2.0), Color(0.3, 0.24, 0.18, a), false, 1.0)

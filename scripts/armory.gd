@@ -571,6 +571,11 @@ func _open_aspects(focus: String = "") -> void:
 	var close := _button(col, Lang.t("Chiudi"), true, _close_menu)
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	(first if first != null else close).grab_focus.call_deferred()
+	# la finestra si apre dall'alto (evoluzione, poi aspetti): il fuoco sul pulsante la faceva scorrere a metà
+	var sc := col.get_parent() as ScrollContainer
+	get_tree().create_timer(0.06, true, false, true).timeout.connect(func() -> void:
+		if is_instance_valid(sc):
+			sc.scroll_vertical = 0)
 
 
 ## L'evoluzione dell'arma impugnata (blocco 23): l'Arte, il grado, quanto manca, il prossimo passo.
@@ -687,13 +692,7 @@ func _draw() -> void:
 			UiStyle.exclaim(self, spots["neith"] + Vector2(0, -80), t)
 		if _altar_news:
 			UiStyle.exclaim(self, spots["altare"] + Vector2(0, -40), t)
-	if near != "" and near != "stele" and not talk_box.visible and menu == null:
-		var at: Vector2
-		if near.begins_with("ped"):
-			at = pedestals[int(near.substr(3))]["pos"]
-		else:
-			at = spots[near]
-		draw_arc(at + Vector2(0, -16), 24.0, 0.0, TAU, 32, Color(NEITH_COLOR, 0.5 + 0.3 * sin(t * 4.0)), 1.5)
+	# (il cerchio rosso attorno alla cosa vicina è diventato il segnale comune InteractCue, blocco 23)
 
 
 func _neith_emblem(c: Vector2, s: float, col: Color) -> void:

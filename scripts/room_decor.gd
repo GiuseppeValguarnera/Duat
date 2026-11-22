@@ -11,6 +11,7 @@ var floor_bits: Array = []            # [tipo, dati...] disegnati sul pavimento
 var props: Array = []                 # [tipo, posizione, extra]
 var torches: Array[Vector2] = []
 var mosaic := ""
+var mosaic_k := 1.0                     ## quanto si vede il mosaico (la Sala lo vuole più tenue: sotto c'è la bilancia)
 var wisps: Array = []                 # [posizione, fase, azzurro?] spiriti del Ka che fluttuano
 const MOTIFS := ["sun", "eye", "scarab", "lotus", "nut"]
 ## I colori della pittura egizia: lapislazzuli, turchese, ocra rossa e gialla, malachite.
@@ -174,6 +175,7 @@ func _bake() -> void:
 	p.props = props
 	p.torches = torches
 	p.mosaic = mosaic
+	p.mosaic_k = mosaic_k
 	p.cold_braziers = cold_braziers
 	p.cave = cave
 	p.under = under
@@ -337,12 +339,13 @@ func _draw_floor() -> void:
 		i += 1
 	match mosaic:
 		"sun":
-			draw_circle(c, 64.0, Color(0.55, 0.38, 0.16, 0.35))
+			var mk := mosaic_k * 0.7                # blocco 23: con le luci vere il disco rosso abbagliava
+			draw_circle(c, 64.0, Color(0.55, 0.38, 0.16, 0.35 * mk))
 			for k in range(16):
 				var a := k * TAU / 16.0
-				draw_line(c + Vector2.from_angle(a) * 40.0, c + Vector2.from_angle(a) * 70.0, Color(YELLOW_OCHRE, 0.55), 3.0)
-			draw_circle(c, 34.0, Color(RED_OCHRE, 0.6))
-			draw_arc(c, 34.0, 0.0, TAU, 48, Color(0.95, 0.75, 0.3, 0.7), 2.0)
+				draw_line(c + Vector2.from_angle(a) * 40.0, c + Vector2.from_angle(a) * 70.0, Color(YELLOW_OCHRE, 0.55 * mk), 3.0)
+			draw_circle(c, 34.0, Color(RED_OCHRE, 0.6 * mk))
+			draw_arc(c, 34.0, 0.0, TAU, 48, Color(0.95, 0.75, 0.3, 0.7 * mk), 2.0)
 		"eye":
 			_motif_eye(c)
 		"scarab":

@@ -187,6 +187,7 @@ func _draw() -> void:
 	_boon_row(o + Vector2(2.0 * u, ph + 13.0 * u), u)
 	_ra_light(o + Vector2(7.0 * u, ph + (32.0 if Run.boons.size() + Run.blessings.size() > 0 else 19.0) * u), u, font)
 	_boss_bar(u, font, title)
+	_streak(o + Vector2(pw + 10.0 * u, 50.0 * u), u, title)
 	# Occhio di Horus
 	if touch:
 		return
@@ -214,6 +215,34 @@ func _draw() -> void:
 			draw_circle(pp, 1.6 * u, GOLD if i < charges else Color(0.3, 0.25, 0.2))
 
 var hu := 1.0
+var streak_shown := 0
+var streak_pop := 0.0
+
+
+## La serie di colpi (blocco 23): da 5 in su compare un grande «×N» accanto al riquadro; ogni colpo lo fa
+## sobbalzare, si spegne due secondi dopo l'ultimo colpo o quando ti colpiscono. Solo da vedere: niente
+## premi, ma dà ritmo e dice quando stai giocando bene.
+func _streak(at: Vector2, u: float, font: Font) -> void:
+	var age := Time.get_ticks_msec() - Run.streak_msec
+	if Run.streak < 5 or age > Run.STREAK_GAP or Run.trial or game.tut.step >= 0:
+		streak_shown = 0
+		return
+	if Run.streak != streak_shown:
+		streak_shown = Run.streak
+		streak_pop = 1.0
+	streak_pop = maxf(0.0, streak_pop - get_process_delta_time() * 5.0)
+	var fade := clampf((Run.STREAK_GAP - age) / 500.0, 0.0, 1.0)
+	var col := GOLD.lerp(Color(1.0, 0.45, 0.25), clampf((Run.streak - 5) / 40.0, 0.0, 1.0))
+	var fs := _fs(14 + int(5.0 * streak_pop))
+	var txt := "×%d" % Run.streak
+	draw_string_outline(font, at + Vector2(0, 14.0 * u), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, int(4 * u), Color(0.04, 0.03, 0.06, 0.85 * fade))
+	draw_string(font, at + Vector2(0, 14.0 * u), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(col, fade))
+	var sub := Lang.t("colpi di fila")
+	draw_string_outline(font, at + Vector2(1.0 * u, 23.0 * u), sub, HORIZONTAL_ALIGNMENT_LEFT, -1, _fs(7), int(3 * u), Color(0.04, 0.03, 0.06, 0.8 * fade))
+	draw_string(font, at + Vector2(1.0 * u, 23.0 * u), sub, HORIZONTAL_ALIGNMENT_LEFT, -1, _fs(7), Color(0.95, 0.88, 0.72, 0.9 * fade))
+	# la barretta del tempo che resta prima che la serie si spenga
+	var k := 1.0 - float(age) / Run.STREAK_GAP
+	draw_rect(Rect2(at + Vector2(1.0 * u, 26.0 * u), Vector2(36.0 * u * k, 1.6 * u)), Color(col, 0.8 * fade))
 
 
 ## L'icona dell'Arte: il segno dell'arma che si riempie mentre si ricarica, il tasto sotto.
