@@ -18,9 +18,9 @@ const DOOR_GAP := 2                       ## almeno due stanze tra un'incudine e
 const COLOR := Color(1.0, 0.58, 0.22)     ## il bronzo rovente della fucina di Ptah
 
 # --- numeri degli effetti (tarati come un dono di livello 1; le leghe come un dono doppio) ---
-const LEONE_DMG := 0.40                   ## colpo finale +40%
+const LEONE_DMG := 0.30                   ## colpo finale +40%
 const LEONE_AREA := 1.25                  ## e area +25%
-const BALZO_REACH := 1.6                  ## Balzo del Leone: il colpo dopo lo scatto
+const BALZO_REACH := 1.45                  ## Balzo del Leone: il colpo dopo lo scatto
 const POOL_EVERY := 5                     ## una pozza ogni 5 colpi a segno
 const POOL_GAP := 0.6
 const POOL_MAX := 3
@@ -30,11 +30,13 @@ const POOL_LIFE := 4.0
 const POOL_SLOW := 25.0                   ## percento
 const DART_EVERY := 4
 const DART_EVERY_FALCO := 3
-const DART_DMG := 0.40                    ## del danno base dell'arma
+const DART_DMG := 0.30                    ## del danno base dell'arma
 const DART_SPEED := 380.0
 const DART_LIFE := 0.6
-const DART_BLAST_R := 26.0
-const SOLE_CRIT := 0.08
+const DART_BLAST_R := 22.0
+const DART_BLAST_K := 0.35                ## Occhio di Ra: l'esplosione fa il 35% del dardo
+const DART_PIERCE := 2                    ## Sguardo del Falco: il dardo trapassa al massimo 2 nemici
+const SOLE_CRIT := 0.06
 const SOLE_BURN := 3.0
 const TRAIL_LIFE := 1.2
 const TRAIL_DMG := 0.5
@@ -43,10 +45,10 @@ const TRAIL_R := 13.0
 const POISON_K := 0.15                    ## del danno base, ogni mezzo secondo
 const POISON_TIME := 2.0
 const POISON_STACKS := 3
-const FALCO_REACH := 1.2
-const LOTO_ART := 0.5                     ## secondi tolti alla ricarica dell'Arte per uccisione
-const MATTINO_K := 0.15                   ## Loto del mattino: per uccisione con l'Arte
-const MATTINO_MAX := 0.45
+const FALCO_REACH := 1.15
+const LOTO_ART := 0.25                    ## secondi tolti alla ricarica dell'Arte per uccisione
+const MATTINO_K := 0.10                   ## Loto del mattino: per uccisione con l'Arte
+const MATTINO_MAX := 0.30
 const FIORE_HEAL := 1.0
 const FIORE_MAX := 10.0
 const VOLO_SPEED := 0.10
@@ -55,14 +57,14 @@ const VOLO_STACKS := 3
 const PIENA_PUSH := 220.0
 
 const ALL_IT := {
-	"leone": {"name": "Leone", "desc": "Il colpo finale della serie fa il 40% di danni in più e prende un'area più larga del 25%. Con l'arco: ogni terza freccia."},
+	"leone": {"name": "Leone", "desc": "Il colpo finale della serie fa il 30% di danni in più e prende un'area più larga del 25%. Con l'arco: ogni terza freccia."},
 	"acqua": {"name": "Acqua", "desc": "Ogni 5 colpi a segno lasci una pozza che rallenta i nemici del 25% (al massimo 3 pozze)."},
-	"occhio": {"name": "Occhio", "desc": "Ogni 4 colpi a segno parte un dardo dritto verso il nemico più vicino (40% del danno dell'arma). Non insegue."},
-	"sole": {"name": "Sole", "desc": "+8% di probabilità di critico; i critici incendiano."},
+	"occhio": {"name": "Occhio", "desc": "Ogni 4 colpi a segno parte un dardo dritto verso il nemico più vicino (30% del danno dell'arma). Non insegue."},
+	"sole": {"name": "Sole", "desc": "+6% di probabilità di critico; i critici incendiano."},
 	"scarabeo": {"name": "Scarabeo", "desc": "Lo scatto lascia una scia che ferisce i nemici che la toccano."},
 	"serpente": {"name": "Serpente", "desc": "I colpi avvelenano per 2 secondi (fino a 3 dosi insieme)."},
-	"falco": {"name": "Falco", "desc": "Portata e gittata +20%."},
-	"loto": {"name": "Loto", "desc": "Ogni nemico abbattuto toglie mezzo secondo alla ricarica dell'Arte."},
+	"falco": {"name": "Falco", "desc": "Portata e gittata +15%."},
+	"loto": {"name": "Loto", "desc": "Ogni nemico abbattuto toglie un quarto di secondo alla ricarica dell'Arte."},
 }
 
 ## Le leghe: la chiave è la coppia in ordine alfabetico ("a+b").
@@ -70,12 +72,12 @@ const ALLOYS_IT := {
 	"occhio+sole": {"name": "Occhio di Ra", "desc": "I dardi dell'Occhio bruciano ed esplodono in un piccolo cerchio.", "hint": "Quando l'occhio fissa il sole…"},
 	"acqua+serpente": {"name": "Palude", "desc": "Le tue pozze avvelenano chi ci passa sopra.", "hint": "Nell'acqua ferma qualcosa striscia."},
 	"leone+sole": {"name": "Furia di Sekhmet", "desc": "Il colpo finale incendia tutto ciò che prende.", "hint": "La leonessa ha la criniera di fuoco."},
-	"falco+occhio": {"name": "Sguardo del Falco", "desc": "Un dardo ogni 3 colpi invece di 4, e trapassa i nemici.", "hint": "Chi vola alto vede più lontano."},
+	"falco+occhio": {"name": "Sguardo del Falco", "desc": "Un dardo ogni 3 colpi invece di 4, e trapassa un nemico.", "hint": "Chi vola alto vede più lontano."},
 	"scarabeo+sole": {"name": "Khepri all'alba", "desc": "La scia dello scatto brucia.", "hint": "Lo scarabeo spinge il disco all'orizzonte."},
 	"acqua+loto": {"name": "Fiore del Nilo", "desc": "Dentro le tue pozze recuperi 1 vita al secondo (al massimo 10 a stanza).", "hint": "Il fiore si apre sull'acqua."},
-	"falco+leone": {"name": "Balzo del Leone", "desc": "Il colpo subito dopo lo scatto conta come colpo finale e arriva il 60% più lontano.", "hint": "Il re delle belve impara a volare."},
+	"falco+leone": {"name": "Balzo del Leone", "desc": "Il colpo subito dopo lo scatto conta come colpo finale e arriva il 45% più lontano.", "hint": "Il re delle belve impara a volare."},
 	"scarabeo+serpente": {"name": "Sabbia velenosa", "desc": "La scia dello scatto avvelena.", "hint": "Sotto la sabbia, i denti."},
-	"loto+sole": {"name": "Loto del mattino", "desc": "Ogni nemico abbattuto dall'Arte le restituisce il 15% della ricarica (al massimo il 45%).", "hint": "Al primo raggio il loto rinasce."},
+	"loto+sole": {"name": "Loto del mattino", "desc": "Ogni nemico abbattuto dall'Arte le restituisce il 10% della ricarica (al massimo il 30%).", "hint": "Al primo raggio il loto rinasce."},
 	"occhio+serpente": {"name": "Sputo del cobra", "desc": "I dardi avvelenano e rallentano.", "hint": "Il cobra mira agli occhi."},
 	"acqua+leone": {"name": "Piena", "desc": "Il colpo finale spinge via i nemici e lascia una pozza grande.", "hint": "Il fiume ruggisce quando sale."},
 	"falco+loto": {"name": "Volo dell'anima", "desc": "Ogni nemico abbattuto: +10% di velocità per 2 secondi (fino a 3 volte).", "hint": "L'anima lascia il corpo e prende il volo."},
@@ -517,7 +519,7 @@ class Dart extends Node2D:
 			if e.global_position.distance_to(global_position + Vector2(0, 8)) < e.radius + 5.0:
 				hit.append(e)
 				_strike(e)
-				if not pierce:
+				if not pierce or hit.size() >= Incisions.DART_PIERCE:
 					_end()
 					return
 		queue_redraw()
@@ -539,7 +541,7 @@ class Dart extends Node2D:
 				if o == e or o.dead or o.global_position.distance_to(global_position) > Incisions.DART_BLAST_R + o.radius:
 					continue
 				Run.inc_dart_hit = true
-				o.take_hit(dmg * 0.5, (o.global_position - global_position).normalized(), 60.0, true)
+				o.take_hit(dmg * Incisions.DART_BLAST_K, (o.global_position - global_position).normalized(), 60.0, true)
 				Run.inc_dart_hit = false
 
 	func _end() -> void:

@@ -218,6 +218,8 @@ func new_run() -> void:
 	if trial:
 		_trial_setup()
 		return
+	if OS.get_environment("DUAT_INC") != "":        # per le prove: tre incisioni già fatte (es. sole,occhio,falco)
+		set_incisions(Array(OS.get_environment("DUAT_INC").split(",")))
 	Challenges.on_run_start()
 	if chap("c17"):
 		max_hp += Chapters.value("c17")

@@ -1763,38 +1763,38 @@ Hai visto lo scalpellino nella Sala? Bravo artigiano. Un po' lento. Io in quel t
 "Non ricordo il mio volto da vivo. Ricordo solo le mie mani, e i miei progetti. Forse è giusto così.","Non ricordo il mio volto da vivo. Ricordo solo le mie mani, e i miei progetti. Forse è giusto così.","I do not remember my face from life. I remember only my hands, and my designs. Perhaps that is as it should be."
 "Thoth ha inciso qualcosa di nuovo sulla parete. Una tua impresa, credo. Va' a riscuotere: lasciare un premio sul muro è da maleducati.","Thoth ha inciso qualcosa di nuovo sulla parete. Una tua impresa, credo. Va' a riscuotere: lasciare un premio sul muro è da maleducati.","Thoth has carved something new on the wall. One of your deeds, I believe. Go and collect it: leaving a reward on the wall is rude."
 Leone,Leone,Lion
-Il colpo finale della serie fa il 40% di danni in più e prende un'area più larga del 25%. Con l'arco: ogni terza freccia.,Il colpo finale della serie fa il 40% di danni in più e prende un'area più larga del 25%. Con l'arco: ogni terza freccia.,The final strike of the combo deals 40% more damage and covers a 25% wider area. With the bow: every third arrow.
+Il colpo finale della serie fa il 30% di danni in più e prende un'area più larga del 25%. Con l'arco: ogni terza freccia.,Il colpo finale della serie fa il 30% di danni in più e prende un'area più larga del 25%. Con l'arco: ogni terza freccia.,The final strike of the combo deals 30% more damage and covers a 25% wider area. With the bow: every third arrow.
 Acqua,Acqua,Water
 Ogni 5 colpi a segno lasci una pozza che rallenta i nemici del 25% (al massimo 3 pozze).,Ogni 5 colpi a segno lasci una pozza che rallenta i nemici del 25% (al massimo 3 pozze).,Every 5 hits you leave a pool that slows enemies by 25% (3 pools at most).
 Occhio,Occhio,Eye
-Ogni 4 colpi a segno parte un dardo dritto verso il nemico più vicino (40% del danno dell'arma). Non insegue.,Ogni 4 colpi a segno parte un dardo dritto verso il nemico più vicino (40% del danno dell'arma). Non insegue.,Every 4 hits a dart flies straight at the nearest enemy (40% of the weapon's damage). It does not home.
+Ogni 4 colpi a segno parte un dardo dritto verso il nemico più vicino (30% del danno dell'arma). Non insegue.,Ogni 4 colpi a segno parte un dardo dritto verso il nemico più vicino (30% del danno dell'arma). Non insegue.,Every 4 hits a dart flies straight at the nearest enemy (30% of the weapon's damage). It does not home.
 Sole,Sole,Sun
-+8% di probabilità di critico; i critici incendiano.,+8% di probabilità di critico; i critici incendiano.,+8% critical chance; critical hits set enemies ablaze.
++6% di probabilità di critico; i critici incendiano.,+6% di probabilità di critico; i critici incendiano.,+6% critical chance; critical hits set enemies ablaze.
 Scarabeo,Scarabeo,Scarab
 Lo scatto lascia una scia che ferisce i nemici che la toccano.,Lo scatto lascia una scia che ferisce i nemici che la toccano.,Your dash leaves a trail that hurts enemies touching it.
 Serpente,Serpente,Serpent
 I colpi avvelenano per 2 secondi (fino a 3 dosi insieme).,I colpi avvelenano per 2 secondi (fino a 3 dosi insieme).,Your hits poison for 2 seconds (up to 3 doses at once).
 Falco,Falco,Falcon
-Portata e gittata +20%.,Portata e gittata +20%.,Reach and range +20%.
+Portata e gittata +15%.,Portata e gittata +15%.,Reach and range +15%.
 Loto,Loto,Lotus
-Ogni nemico abbattuto toglie mezzo secondo alla ricarica dell'Arte.,Ogni nemico abbattuto toglie mezzo secondo alla ricarica dell'Arte.,Each enemy slain takes half a second off your Art's cooldown.
+Ogni nemico abbattuto toglie un quarto di secondo alla ricarica dell'Arte.,Ogni nemico abbattuto toglie un quarto di secondo alla ricarica dell'Arte.,Each enemy slain takes a quarter of a second off your Art's cooldown.
 Occhio di Ra,Occhio di Ra,Eye of Ra
 I dardi dell'Occhio bruciano ed esplodono in un piccolo cerchio.,I dardi dell'Occhio bruciano ed esplodono in un piccolo cerchio.,The Eye's darts burn and explode in a small circle.
 Palude,Palude,Marsh
 Le tue pozze avvelenano chi ci passa sopra.,Le tue pozze avvelenano chi ci passa sopra.,Your pools poison whoever walks through them.
 Furia di Sekhmet,Furia di Sekhmet,Fury of Sekhmet
 Il colpo finale incendia tutto ciò che prende.,Il colpo finale incendia tutto ciò che prende.,The final strike sets everything it hits ablaze.
-"Un dardo ogni 3 colpi invece di 4, e trapassa i nemici.","Un dardo ogni 3 colpi invece di 4, e trapassa i nemici.","One dart every 3 hits instead of 4, and it pierces enemies."
+"Un dardo ogni 3 colpi invece di 4, e trapassa un nemico.","Un dardo ogni 3 colpi invece di 4, e trapassa un nemico.","One dart every 3 hits instead of 4, and it pierces one enemy."
 Khepri all'alba,Khepri all'alba,Khepri at Dawn
 La scia dello scatto brucia.,La scia dello scatto brucia.,Your dash trail burns.
 Fiore del Nilo,Fiore del Nilo,Flower of the Nile
 Dentro le tue pozze recuperi 1 vita al secondo (al massimo 10 a stanza).,Dentro le tue pozze recuperi 1 vita al secondo (al massimo 10 a stanza).,Inside your pools you recover 1 health per second (10 per room at most).
 Balzo del Leone,Balzo del Leone,Leap of the Lion
-Il colpo subito dopo lo scatto conta come colpo finale e arriva il 60% più lontano.,Il colpo subito dopo lo scatto conta come colpo finale e arriva il 60% più lontano.,The strike right after a dash counts as a final strike and reaches 60% farther.
+Il colpo subito dopo lo scatto conta come colpo finale e arriva il 45% più lontano.,Il colpo subito dopo lo scatto conta come colpo finale e arriva il 45% più lontano.,The strike right after a dash counts as a final strike and reaches 45% farther.
 Sabbia velenosa,Sabbia velenosa,Venomous Sand
 La scia dello scatto avvelena.,La scia dello scatto avvelena.,Your dash trail poisons.
 Loto del mattino,Loto del mattino,Morning Lotus
-Ogni nemico abbattuto dall'Arte le restituisce il 15% della ricarica (al massimo il 45%).,Ogni nemico abbattuto dall'Arte le restituisce il 15% della ricarica (al massimo il 45%).,Each enemy slain by your Art refunds 15% of its cooldown (45% at most).
+Ogni nemico abbattuto dall'Arte le restituisce il 10% della ricarica (al massimo il 30%).,Ogni nemico abbattuto dall'Arte le restituisce il 10% della ricarica (al massimo il 30%).,Each enemy slain by your Art refunds 10% of its cooldown (30% at most).
 Sputo del cobra,Sputo del cobra,Cobra's Spit
 I dardi avvelenano e rallentano.,I dardi avvelenano e rallentano.,Darts poison and slow.
 Piena,Piena,Flood
@@ -2864,6 +2864,15 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+"Ogni nemico abbattuto toglie 0,4 secondi alla ricarica dell'Arte.","Ogni nemico abbattuto toglie 0,4 secondi alla ricarica dell'Arte.",Each enemy slain takes 0.4 seconds off your Art's cooldown.
+Il colpo finale della serie fa il 40% di danni in più e prende un'area più larga del 25%. Con l'arco: ogni terza freccia.,Il colpo finale della serie fa il 40% di danni in più e prende un'area più larga del 25%. Con l'arco: ogni terza freccia.,The final strike of the combo deals 40% more damage and covers a 25% wider area. With the bow: every third arrow.
+Ogni 4 colpi a segno parte un dardo dritto verso il nemico più vicino (40% del danno dell'arma). Non insegue.,Ogni 4 colpi a segno parte un dardo dritto verso il nemico più vicino (40% del danno dell'arma). Non insegue.,Every 4 hits a dart flies straight at the nearest enemy (40% of the weapon's damage). It does not home.
++8% di probabilità di critico; i critici incendiano.,+8% di probabilità di critico; i critici incendiano.,+8% critical chance; critical hits set enemies ablaze.
+Portata e gittata +20%.,Portata e gittata +20%.,Reach and range +20%.
+Ogni nemico abbattuto toglie mezzo secondo alla ricarica dell'Arte.,Ogni nemico abbattuto toglie mezzo secondo alla ricarica dell'Arte.,Each enemy slain takes half a second off your Art's cooldown.
+"Un dardo ogni 3 colpi invece di 4, e trapassa i nemici.","Un dardo ogni 3 colpi invece di 4, e trapassa i nemici.","One dart every 3 hits instead of 4, and it pierces enemies."
+Il colpo subito dopo lo scatto conta come colpo finale e arriva il 60% più lontano.,Il colpo subito dopo lo scatto conta come colpo finale e arriva il 60% più lontano.,The strike right after a dash counts as a final strike and reaches 60% farther.
+Ogni nemico abbattuto dall'Arte le restituisce il 15% della ricarica (al massimo il 45%).,Ogni nemico abbattuto dall'Arte le restituisce il 15% della ricarica (al massimo il 45%).,Each enemy slain by your Art refunds 15% of its cooldown (45% at most).
 Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi,Levetta muovi · X attacca · LB/A scatto · Y interagisci · B chiudi,Stick move · X attack · LB/A dash · Y interact · B close
 WASD muovi · clic attacca · Spazio scatto · clic destro Occhio · E interagisci,WASD muovi · clic attacca · Spazio scatto · clic destro Occhio · E interagisci,WASD move · click attack · Space dash · right click Eye · E interact
 %s · L'altare degli aspetti (Lacrime di Iside: %d),%s · L'altare degli aspetti (Lacrime di Iside: %d),%s · The altar of aspects (Tears of Isis: %d)

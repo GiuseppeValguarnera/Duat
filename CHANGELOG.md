@@ -184,6 +184,9 @@
 - correzioni: colonne e profondità, coccodrilli sotto il pavimento, mira automatica sul telefono,
   "Esci" sul web, musica dei guardiani, Scettro Was più chiaro
 
+## Blocco 26b (22/11/2026)
+- Incisioni provate coi bot e ritoccate: Leone, Occhio, Occhio di Ra, Sguardo del Falco, Sole, Falco, Loto e Loto del mattino più deboli.
+
 ## Blocco 26 (22/11/2026)
 - Incisioni di Ptah: porta del martello a caso dopo la prima vittoria sul Serpente, 8 incisioni in 3 posti, 12 leghe tra segni vicini, Registro della bottega nel Cortile.
 - Porte e ricompense con stele e medaglioni col simbolo del dio o della ricompensa.

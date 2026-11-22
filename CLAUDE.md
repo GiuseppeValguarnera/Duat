@@ -722,7 +722,12 @@ quarto giro con tutti e dieci i doni dell'arma insieme. Bilanciamento NON misura
   *Registro della bottega* nell'altare del Cortile (`armory._registry_section`): `Meta.alloys_found`, 5 lapislazzuli a lega
   nuova, 30 a registro completo (`Meta.alloys_done`). HUD: placca di bronzo con i tre posti e un tratto d'oro tra due segni
   in lega (`hud_bars._incision_plate`). Prova `tools/dev/ptahsmoke.gd` (nel controllo d'avvio). Bot: prendono il martello
-  (+1,4), il risultato ha `incisions` e `alloys`. **Bilanciamento NON misurato.**
+  (+1,4), il risultato ha `incisions` e `alloys`. `DUAT_INC=a,b,c` per le prove (tre incisioni dall'inizio).
+  *Misura* (Wernes da zero, un veterano per arma, 3 incisioni e 2 leghe dalla stanza 1): base 21,3 danni/s, stanza 7,2.
+  Prima versione +18/+37% e due discese fino a Sokar/Banco → ritocchi: Leone 30%, Balzo 1,45, dardo 30% (esplosione
+  35%, trapassa al massimo 2), Sole +6%, Falco +15%, Loto 0,25 s, Mattino 10%/30%. Dopo: sole-occhio-falco +20%,
+  falco-leone-sole +8%, acqua-serpente-scarabeo +18%, falco-loto-sole +8% (stanza media 7,2-9). Nel gioco vero i 3 posti
+  pieni arrivano solo in Sokar (max 2 incudini per regione).
 - *Emblemi* (`scripts/door_emblem.gd`, class_name `DoorEmblem`): davanti alle porte una stele col simbolo (disco di Ra,
   udjat, sciacallo, leonessa, luna di Thoth, gatta, fauci di Sobek, trono di Iside, casa di Nefti, piuma di Shu, scettro di
   Set, Ka, ankh della cura, gemma, barca, fauci del boss, ureo del guardiano, akhet, martello); le ricompense a terra hanno
