@@ -15,6 +15,9 @@ const LINES := [
 	"«Mi chiamano Colui che guarda indietro. Da qui vedo tutti quelli che sono caduti prima di te.»",
 	"«Davanti a un guardiano ogni mano si apre. Il Ka pesa meno della paura, a quanto pare.»",
 	"«Il Ka è peso. Lascialo a me, e salirai più leggero.»",
+	"«La mia barca ha un nome per ogni asse. Tu ne hai uno solo, e nemmeno quello ricordi.»",
+	"«Non si contratta, sulla mia sponda. Gli ultimi che ci hanno provato stanno ancora aspettando il passaggio.»",
+	"«Guarda bene la merce. Una volta pagato, il Fiume non restituisce.»",
 ]
 const LINES_CURIOUS := [
 	"«Ti ho già portato una volta, sai? No, non te lo ricordi. Nessuno se lo ricorda.»",
@@ -23,6 +26,8 @@ const LINES_CURIOUS := [
 	"«Guardo indietro, scriba. È il mio mestiere. E più guardo, meno capisco chi ho davanti.»",
 	"«Oggi la mia barca chiede meno. Non domandarmi il perché: il Fiume non risponde.»",
 	"«Gli scribi di solito hanno le dita macchiate d'inchiostro. Tu no. Curioso.»",
+	"«Quella lama che porti... ha già passato questo fiume. In un'altra mano. O forse nella stessa.»",
+	"«Ho visto Neith scendere al Fiume, una volta. Non per traghettare. Per guardare chi passava. Guardava te.»",
 ]
 ## Nella terra di Sokar (la quarta ora): Mahaf parla della barca trascinata, del sole che non passa
 ## più, e di Aker che "riconosce ciò che porta quel nome" (akhet vuol dire orizzonte: si capisce
@@ -32,18 +37,24 @@ const LINES_SOKAR := [
 	"«Aker veglia sull'orizzonte. Ciò che porta quel nome, egli lo riconosce al primo sguardo. ...Non so perché te lo dico. Compra.»",
 	"«Il sole non passa più per questa terra. Un tempo era lui il mio carico. Ora sei tu.»",
 	"«Le cose sepolte, qui, non dormono. Ascoltano.»",
+	"«Il vento di Shu passa di qui senza fermarsi. Anche lui ha fretta di lasciare questa terra.»",
+	"«Gli sciacalli non mi toccano. Sanno che porto i morti, e i morti sono già loro.»",
 ]
 const LINES_APEP := [
 	"«Qui non remo. Qui prego che non mi veda. La mia barca è piccola: per lui sono un'esca.»",
 	"«L'acqua è nera perché lui l'ha già bevuta una volta. Quella che vedi è ciò che ha sputato.»",
 	"«Quando si volta, non guardarlo negli occhi. I rematori di Ra si addormentarono così. Solo Set restò sveglio.»",
 	"«Ti ho portato tre volte, ormai. Alla prima non ti conoscevo. Ora quasi mi dispiace chiederti il Ka. Quasi.»",
+	"«La luce di Ra passa ancora tra le rocce. Quando la vedi, non restare a guardarla: colpisci. Dura meno di una preghiera.»",
+	"«Il torchio di Shezmu cigola fin qui. Ogni cigolio è qualcuno che non ha pagato il passaggio.»",
 ]
 const LINES_WORRIED := [
 	"«Il tuo re aveva paura di questa barca. Anche da vivo, nelle feste del Fiume, saliva sempre per ultimo.»",
 	"«Non guardarmi così. Io vedo solo il passato. E il tuo è... affollato.»",
 	"«Più scendi, meno ti costa la mia merce. Non è generosità. È fretta.»",
 	"«Ho fatto una promessa, molto tempo fa. La sto ancora pagando. Prendi, e va'.»",
+	"«Una regina mi pagò il doppio, una notte, perché non guardassi indietro. È l'unica volta che ho obbedito.»",
+	"«Quando arriverai all'ultima porta, non chiedermi di aspettarti. Non posso. Ma lo farei.»",
 ]
 
 

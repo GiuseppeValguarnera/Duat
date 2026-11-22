@@ -18,7 +18,7 @@ static func _pick(lines: Array) -> String:
 ## (morte contro il guardiano), "boss" (contro il boss), "hazard" (uccisi dal terreno della regione),
 ## "win" (il boss della regione battuto). "{piano}" diventa la profondità totale (Run.depth).
 ## Le frasi sono dentro una funzione (non una costante) perché Lang.t le traduca.
-const HAZARD_KILLERS := ["fiume", "buca", "falco", "isfet", "spira"]
+const HAZARD_KILLERS := ["fiume", "buca", "falco", "isfet", "spira", "trappola", "grata", "olio", "piastra"]
 
 
 static func death_table() -> Dictionary:
@@ -29,22 +29,35 @@ static func death_table() -> Dictionary:
 					Lang.t("Così presto, Scriba. La sabbia della clessidra non si è ancora posata."),
 					Lang.t("Il tuo cuore è caduto sulla soglia. Rialzati: anche il sole cade, ogni sera."),
 					Lang.t("Il Duat non concede nulla a chi corre senza guardare."),
+					Lang.t("Non hai nemmeno sentito l'odore dell'acqua, Scriba. Rallenta: il Duat si legge, non si attraversa."),
+					Lang.t("Un passo dentro la notte, e già di nuovo qui. Ogni nascita comincia così: cadendo."),
 				]],
 				[3, 10, [
 					Lang.t("Piano {piano}. Più lontano di quanto credessi, meno di quanto serva."),
 					Lang.t("Piano {piano}. Il Duat comincia a riconoscere il tuo passo."),
 					Lang.t("Piano {piano}. Le acque di Wernes sono lente, ma non dimenticano chi le attraversa."),
+					Lang.t("Piano {piano}. I coccodrilli contano i passi di chi cammina sul bordo. Cammina in mezzo, o contali tu."),
+					Lang.t("Piano {piano}. Hai imparato qualcosa, stanotte. Lo vedo da come tieni la lama."),
 				]],
+			],
+			"hazard": [
+				Lang.t("Non una lama, Scriba: l'acqua e il fuoco di Wernes. Il fiume non ha mani, ma sa dove metterle."),
+				Lang.t("Piano {piano}. Una trappola antica quanto i re. Chi la costruì voleva fermare i ladri. Ha fermato te."),
+				Lang.t("La Prima Ora uccide anche senza nemici. Guarda dove metti i piedi prima di guardare chi hai davanti."),
 			],
 			"guardian": [
 				Lang.t("Il Serpente della Porta ti ha fermato a metà strada. Ogni porta si apre a chi torna."),
 				Lang.t("Piano {piano}. La Porta di mezzo è stretta come una gola. Respira, e riprova."),
 				Lang.t("Il guardiano della Porta ti ha respinto. Il fiume della notte è lungo, Scriba: non sei il primo."),
+				Lang.t("Il Serpente si immerge per farti dimenticare dov'è. Non dimenticarlo: guarda la scia."),
+				Lang.t("Piano {piano}. Il veleno della Porta si scioglie nell'acqua profonda. Lui lo sa. Ora lo sai anche tu."),
 			],
 			"boss": [
 				Lang.t("Hai visto Am-heh in volto. Il Divoratore di Milioni ha contato anche te, stanotte."),
 				Lang.t("Il lago di fuoco ti ha restituito. Am-heh non restituisce mai nulla due volte."),
 				Lang.t("Piano {piano}. Il Divoratore ti ha sentito arrivare dall'acqua. La prossima volta arriverai più leggero."),
+				Lang.t("Am-heh prosciuga l'acqua più vicina a te. Non restare dove sei: resta dove sarai al sicuro."),
+				Lang.t("I babbuini versano acqua sul fuoco del lago. Sono più antichi di lui, e lo sanno fermare. Ascoltali."),
 			],
 			"boss_tip": Lang.t("Il fuoco non entra nell'acqua. Quando ulula, cerca una pozza. E quando si ferma a riprendere fiato, colpisci."),
 		},
@@ -54,27 +67,32 @@ static func death_table() -> Dictionary:
 					Lang.t("Piano {piano}. Hai appena lasciato le acque, e il deserto ti ha già bevuto."),
 					Lang.t("Le acque di Wernes erano ancora sui tuoi piedi quando la sabbia ti ha preso. Il cammino è lungo, Scriba."),
 					Lang.t("Piano {piano}. La sabbia di Sokar non aspetta che tu impari i suoi passi."),
+					Lang.t("Piano {piano}. Gli sciacalli ti hanno girato attorno. Non dare mai la schiena a chi tace."),
 				]],
 				[4, 6, [
 					Lang.t("Piano {piano}. Nel cuore del deserto il sole non perdona chi si ferma."),
 					Lang.t("Sei caduto dove la sabbia è più alta. Lì anche le ombre hanno sete."),
 					Lang.t("Piano {piano}. Sokar ti ha guardato a metà del suo regno. I giorni passano: ogni discesa è un passo."),
+					Lang.t("Piano {piano}. Il deserto ti ha preso a metà, dove il ritorno è lungo quanto l'andata. Riposa."),
 				]],
 				[7, 10, [
 					Lang.t("Piano {piano}. L'orizzonte era vicino. La sete, più vicina ancora."),
 					Lang.t("Così vicino alla porta del sole. Nel deserto uccide la stanchezza, Scriba, non la sabbia."),
 					Lang.t("Piano {piano}. Le notti si allungano, i giorni passano. Hai visto l'orizzonte: tornerai a vederlo."),
+					Lang.t("Piano {piano}. L'avvoltoio ha visto la tua stanchezza prima di te. Nel deserto le ali scendono su chi rallenta."),
 				]],
 			],
 			"guardian": [
 				Lang.t("Serket ti ha punto, Scriba. Nella sua mano anche il veleno è una preghiera rovesciata."),
 				Lang.t("Il tempio della dea scorpione ti ha trattenuto. Guarda la sabbia, non lei: è la sabbia che parla."),
 				Lang.t("Piano {piano}. Serket custodisce il mezzo del deserto, e il mezzo è sempre la parte più lunga."),
+				Lang.t("La coda della dea si schiva uscendo dallo spicchio, non di lato. Lo spicchio è rosso apposta, Scriba."),
 			],
 			"boss": [
 				Lang.t("Aker ti ha guardato con entrambi i volti. Ieri ti ha visto cadere; Domani ti vedrà tornare."),
 				Lang.t("Il leone dell'orizzonte non ha fretta. Il sole aspetta da mille anni: può aspettare un'altra notte."),
 				Lang.t("Piano {piano}. Sei arrivato alla porta del sole. Il cammino è lungo, ma ora sai dove finisce."),
+				Lang.t("Quando Aker si divide, Ieri e Domani si cercano. Separali, e combatterai un leone alla volta."),
 			],
 			"boss_tip": Lang.t("Aker non ha un dietro, ma ha dei fianchi. E dopo ogni grande assalto riprende fiato: è lì che si colpisce."),
 			"hazard": [
@@ -93,33 +111,41 @@ static func death_table() -> Dictionary:
 					Lang.t("Piano {piano}. Hai visto l'acqua nera, e l'acqua nera ha visto te."),
 					Lang.t("Nella settima ora anche l'ombra ha un padrone, e non sei tu. Guardati le spalle, Scriba."),
 					Lang.t("Piano {piano}. Il caos non combatte: aspetta che tu metta il piede dove ha già aperto la bocca."),
+					Lang.t("Piano {piano}. Le scaglie del caos si aprono solo nella luce di Ra. Senza luce, colpivi la pietra."),
 				]],
 				[4, 6, [
 					Lang.t("Piano {piano}. Dove muore una serpe resta il suo veleno. Scegli dove ucciderle."),
 					Lang.t("Sei caduto a metà della caverna, dove il serpente sogna. I suoi sogni hanno i denti."),
 					Lang.t("Piano {piano}. La tartaruga si ferma sempre a pancia in su. Aspetta quel momento: la fretta, qui, è una preghiera ad Apopi."),
+					Lang.t("Piano {piano}. Chi porta il velo e chi divora la luce vanno abbattuti per primi. Il resto viene dopo."),
 				]],
 				[7, 10, [
 					Lang.t("Piano {piano}. Hai sentito il banco di sabbia sotto i piedi. Il serpente ti ha sentito arrivare."),
 					Lang.t("Così vicino alla barca arenata. Ra ti ha visto, Scriba: non può parlare, ma ti ha visto."),
 					Lang.t("Piano {piano}. Più si scende, più il buio somiglia a qualcuno. Non fermarti a riconoscerlo."),
+					Lang.t("Piano {piano}. Il torchio, le pozze, i pali: ogni caverna del banco ha la sua regola. Imparala prima di combattere."),
 				]],
 			],
 			"guardian": [
 				Lang.t("Shezmu ti ha spremuto, Scriba. Fa lo stesso vino da quattromila anni, e non gli è mai mancata l'uva."),
 				Lang.t("La mannaia torna sempre dal suo padrone. Chi le volta le spalle la sente due volte."),
 				Lang.t("Piano {piano}. Il Signore del Torchio carica come un toro e come un toro si ferma: contro il muro."),
+				Lang.t("Shezmu spreme i dannati che lasci vivere. Abbattili prima che diventino il suo vino."),
+				Lang.t("Quando Shezmu riprende fiato, dopo tre colpi, ha la bocca aperta e le mani vuote. Quello è il momento."),
 			],
 			"boss": [
 				Lang.t("Apopi ti ha bevuto come beve il fiume. Ma il fiume torna, ogni notte. Anche tu."),
 				Lang.t("Hai guardato il caos negli occhi. Pochi lo hanno fatto, e nessuno una volta sola."),
 				Lang.t("Piano {piano}. Il serpente non si uccide. Si lega, un nodo per notte. Stanotte il nodo si è sciolto."),
+				Lang.t("La corda di Serket regge solo un poco. Quando si sfilaccia, allontanati: lo schiocco morde."),
+				Lang.t("Piano {piano}. Ogni palo spezzato è una legatura in meno. Nella sua ultima ora, proteggi i pali come proteggeresti il tuo cuore."),
 			],
-			"boss_tip": Lang.t("Le sue scaglie non si aprono. Mettiti dietro un palo di Serket e aspetta l'affondo: quando la corda lo lega, quello è il tuo momento."),
+			"boss_tip": Lang.t("Le sue scaglie non si aprono. Mettiti dietro un palo di Serket e aspetta l'affondo: quando la corda lo lega, colpisci. Ma la corda regge poco, e senza due nodi per volta non scende oltre la soglia."),
 			"hazard": [
 				Lang.t("Non un nemico, Scriba: l'Isfet. Il caos non ha bisogno di mani per prendere ciò che vuole."),
 				Lang.t("La caverna respira, e tu eri nel suo respiro. Guarda il pavimento: le crepe dicono dove dorme la spira."),
 				Lang.t("Piano {piano}. Le pozze nere hanno occhi. Se le vedi aprirsi, sei già troppo vicino."),
+				Lang.t("Le piastre del torchio diventano rosse prima di scendere. Il rosso, laggiù, è una cortesia."),
 			],
 			"win": [
 				Lang.t("Apopi è legato, e la barca di Ra è tornata a galla. Per una notte, Scriba, l'ordine ha vinto."),
@@ -145,7 +171,7 @@ static func death_line(reg: int, rm: int, killer: String, boss: bool) -> Array:
 		return out
 	if killer in HAZARD_KILLERS and t.has("hazard"):
 		return [_with_depth(_pick(t["hazard"]), reg, rm)]
-	if rm == Run.GUARDIAN_ROOM and (killer.begins_with("serpent") or killer in ["serket", "scorpion", "shezmu"]):
+	if rm == Run.GUARDIAN_ROOM and (killer.begins_with("serpent") or killer in ["serket", "scorpion", "shezmu", "mannaia", "vaso", "grape"]):
 		return [_with_depth(_pick(t["guardian"]), reg, rm)]
 	for band in t["bands"]:
 		if rm >= int(band[0]) and rm <= int(band[1]):
@@ -232,6 +258,26 @@ static func _reaction() -> Array:
 				options.append(Lang.t("Il soffio del falco di Sokar. Le sue statue vegliano sui passaggi: quando gli occhi si accendono, esci dalla linea."))
 			"cobra":
 				options.append(Lang.t("Un cobra. L'ureo sulla fronte del faraone sputava fuoco sui suoi nemici. Questi sputano veleno, e si nascondono. Colpiscili quando alzano il cappuccio."))
+			"shezmu", "mannaia", "vaso", "piastra", "grape":
+				options.append(Lang.t("Shezmu. Nei Testi delle Piramidi spreme le teste dei malvagi come uva, e serve il vino agli dèi. Gli dèi non hanno mai chiesto da dove venisse. Tieni d'occhio i dannati che chiama: se li lasci vivere, diventano la sua forza."))
+			"apep", "corda":
+				options.append(Lang.t("Apopi. Non ha padre, non ha madre, non ha fine. Ogni notte prova a bere il Fiume, e ogni notte qualcuno lo lega. Stanotte toccava a te. Domani notte toccherà ancora a te."))
+			"apep_spawn", "apep_egg":
+				options.append(Lang.t("I figli di Apopi. Nascono dalle uova nere che lui depone lungo la riva. Spezza le uova prima delle serpi: un nido vale dieci morsi."))
+			"sheut":
+				options.append(Lang.t("Uno Sheut, un'ombra senza padrone. L'ombra è una delle parti dell'anima: questa ha perso il suo corpo, e cerca il tuo. Quando sparisce, guarda dietro di te."))
+			"knifer":
+				options.append(Lang.t("Un portatore di coltelli. I demoni del Duat portano lame nei testi dei sarcofagi: guardiani delle porte, con nomi che nessuno osa pronunciare. Il ventaglio di coltelli si schiva avvicinandosi, non scappando."))
+			"shetyu":
+				options.append(Lang.t("La tartaruga del caos. Gli antichi la temevano come nemica di Ra: dove passava, il sole si fermava. Quando gira su se stessa non colpirla. Quando si ferma a pancia in su, sì."))
+			"inverted":
+				options.append(Lang.t("Il Capovolto. I dannati camminano a testa in giù nel Duat: è la pena di chi ha rovesciato Ma'at in vita. Ti segue come uno specchio. Non inseguirlo: va' al centro, e ti verrà incontro."))
+			"light_eater":
+				options.append(Lang.t("Il Divoratore di luce. Ha inghiottito il fascio di Ra, e finché vive la caverna resta cieca. Dietro, la luce gli traspare dalla pelle: è lì che si colpisce."))
+			"veil":
+				options.append(Lang.t("Il Portatore del velo. Non ti ha colpito lui, Scriba: ha soltanto coperto gli altri. A volte è chi non combatte che decide la battaglia."))
+			"isfet", "spira":
+				options.append(Lang.t("L'Isfet, il caos. Ma'at è l'ordine, l'Isfet il suo contrario: le pozze nere sono il punto dove il mondo si è strappato. Non camminarci sopra, nemmeno di corsa."))
 	var gods := {
 		"ra": Lang.t("Porti addosso l'odore della fiamma. Ra ti ha guardato con favore. Il suo favore brucia, Scriba. Ricordalo."),
 		"sekhmet": Lang.t("Sekhmet ti ha prestato la sua ira. L'ultima volta che la scatenò davvero, servì un fiume di birra rossa per placarla."),
@@ -242,6 +288,7 @@ static func _reaction() -> Array:
 		"iside": Lang.t("Iside ti ha posato le mani sul capo. Lei conosce il dolore di raccogliere ciò che è stato spezzato. Anche te."),
 		"nefti": Lang.t("Nefti ha raccolto per te ciò che cadeva. Il suo velo è fatto d'argento e di notte."),
 		"shu": Lang.t("Shu ti ha prestato il suo respiro. Lui regge il cielo a braccia alzate: tu reggi soltanto la tua lama."),
+		"anubi": Lang.t("Hai scelto i miei doni più degli altri. Non ti ringrazio, Scriba: i doni del giudice si pagano sempre, prima o poi."),
 	}
 	if gods.has(Meta.last_god):
 		options.append(gods[Meta.last_god])
@@ -351,6 +398,16 @@ static func story() -> Array:
 			Lang.t("Sei disceso oltre l'orizzonte. Ora sei nella settima ora: il banco di sabbia di Apopi."),
 			Lang.t("Là il serpente beve il fiume, e la barca di Ra resta in secca. Accade ogni notte, da prima che esistessero le notti."),
 			Lang.t("Apopi non ha padre e non ha fine. Non cerca te, Scriba. Cerca qualcosa, e crede che tu sappia dov'è. Vorrei saperlo anch'io.")]},
+		{"id": "arte0", "if": Meta.runs >= 1, "lines": [
+			Lang.t("Una cosa ancora, prima che tu scenda. Ogni arma degli dèi custodisce un'Arte: un colpo che non si ripete a ogni respiro, ma che risponde quando la notte ti si stringe attorno."),
+			Lang.t("Il khopesh apre una mezzaluna attorno a te, la lancia chiama la pioggia di Neith, l'arco svuota il cielo di Satet. Ogni arma la sua. Impara la tua."),
+			Lang.t("L'Arte ha bisogno di tempo per tornare. Non sprecarla su un solo nemico, se presto ne arriveranno dieci.")]},
+		{"id": "evo0", "if": Weapons.evo_ready(Meta.weapon) and Meta.weapon_evo.is_empty(), "lines": [
+			Lang.t("La tua arma ti conosce, ormai. Ha bevuto abbastanza notte da voler crescere."),
+			Lang.t("Va' da Neith, nel suo cortile. All'altare, con i lapislazzuli, la tua lama può evolvere. Non diventerà un'altra arma: diventerà più tua.")]},
+		{"id": "evo1", "if": not Meta.weapon_evo.is_empty(), "lines": [
+			Lang.t("La tua arma è cambiata. La sento da qui: ha un respiro diverso."),
+			Lang.t("I re davano un nome alle loro lame. Tu non lo fai. Forse è meglio così: le armi con un nome diventano superbe.")]},
 		{"id": "apep_luce", "if": Meta.apep_seen and Meta.dialogue_seen.has("apep0"), "lines": [
 			Lang.t("Hai visto le scaglie del caos. Le tue armi ci scivolano sopra: non è debolezza tua, è la natura di quel luogo."),
 			Lang.t("La barca di Ra è in secca, ma la sua luce filtra ancora. Quando il fascio attraversa la caverna, le scaglie si aprono, e restano aperte per tre respiri. Colpisci allora."),
@@ -405,6 +462,18 @@ static func idle() -> Array:
 		[Lang.t("Il Traghettatore guarda sempre all'indietro. Paga, e sali sulla sua barca.")],
 		[Lang.t("Il Ka che non spendi torna qui con te. Quello che spendi ti tiene in vita. Scegli.")],
 		[Lang.t("La barca del sole attende, oltre la notte. Ogni discesa la avvicina.")],
+		[Lang.t("Ogni arma ha un'Arte, Scriba. Non è un colpo: è una risposta. Usala quando ti chiudono.")],
+		[Lang.t("Un'arma cresce con chi la impugna. Neith, nel suo cortile, sa come risvegliarla.")],
+		[Lang.t("Il gatto mi guarda come se sapesse qualcosa. Forse lo sa. I gatti erano qui prima della bilancia.")],
+		[Lang.t("Ho pesato cuori di re e cuori di schiavi. Pesavano uguale. Gli uomini non lo sopportavano.")],
+		[Lang.t("Lo scatto non è una fuga, Scriba. È una domanda: dove sarò al sicuro tra un istante?")],
+		[Lang.t("I morti mi chiedono sempre se fa male. Rispondo che fa male la paura, non la piuma.")],
+		[Lang.t("Quando un nemico si ferma a riprendere fiato, ti sta offrendo un dono. Non rifiutarlo.")],
+		[Lang.t("Il rosso è il colore di Set e del deserto. Laggiù è anche il colore dell'avviso. Rispettalo.")],
+		[Lang.t("Thoth conta i tuoi colpi. Io conto le tue cadute. Nessuno dei due è stanco.")],
+		[Lang.t("La vasca racconta storie a chi si ferma a guardare. Anche gli dèi hanno avuto bisogno di storie.")],
+		[Lang.t("Ra attraversa dodici ore di notte, ogni notte. Tu ne hai attraversate tre. Non lamentarti con me.")],
+		[Lang.t("Non tutto ciò che brilla nel Duat è un dono. Ma tutto ciò che è un dono, prima o poi, brilla.")],
 	]
 
 

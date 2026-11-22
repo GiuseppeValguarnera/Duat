@@ -72,6 +72,15 @@ static func _story() -> Array:
 			Lang.t("Conosci la storia del nome segreto? Iside raccolse la saliva del vecchio Ra, la impastò con la terra e ne trasse un serpente. Il suo morso bruciava più del fuoco, e solo lei sapeva spegnerlo. Il prezzo fu il nome."),
 			Lang.t("Akhet volle udirla tre volte. Alla terza mi chiese: «E Iside, dopo, divenne immortale?» Risposi che gli dèi lo sono già."),
 			Lang.t("Restò in silenzio a lungo. Poi disse: «Allora a lei non serviva. A un uomo, sì.»")]},
+		{"id": "imh_arte", "if": Meta.runs >= 2, "lines": [
+			Lang.t("Hai notato che ogni arma degli dèi ha un colpo che non somiglia agli altri? Neith lo chiama Arte. Io lo chiamerei architettura: un colpo che ridisegna lo spazio attorno a te."),
+			Lang.t("Un buon costruttore non alza muri dove la gente passa. Un buon guerriero non libera l'Arte dove non c'è nessuno. Aspetta che ti chiudano, poi apri la piazza.")]},
+		{"id": "imh_evo", "if": not Meta.weapon_evo.is_empty(), "lines": [
+			Lang.t("La tua arma è cresciuta! Lo vedo dal bagliore. Anche la pietra cresce, sai: assorbe l'acqua, il sole, le mani di chi la tocca. In mille anni una colonna diventa un'altra colonna."),
+			Lang.t("Un'arma, invece, cresce in fretta. Basta che qualcuno la usi bene. Tienilo a mente, allievo: vale anche per gli uomini.")]},
+		{"id": "imh_banco", "if": Meta.apep_seen, "lines": [
+			Lang.t("Il banco di Apopi! Gli scribi del tempio di Karnak recitavano ogni notte il Libro per respingerlo. Lo scrivevano su un papiro, lo calpestavano, lo bruciavano. Dicevano che funzionava."),
+			Lang.t("Io, da architetto, ho sempre pensato che le preghiere funzionano meglio con un buon palo piantato a terra. Serket la pensa come me.")]},
 		{"id": "imh_akhet4", "if": Meta.ammit_wins >= 3, "lines": [
 			Lang.t("Il nome di un uomo è un edificio. Io costruii una montagna di pietra perché quello di Djoser restasse in piedi."),
 			Lang.t("Quello di Akhet l'hanno smontato pietra per pietra. Ma con cura, allievo. Senza rompere nulla. Chi odia spacca. Chi smonta con tanta attenzione... forse vuole ricostruire, un giorno.")]},
@@ -102,7 +111,11 @@ static func _idle() -> Array:
 		Lang.t("Thoth è il dio della scrittura. Io sono il dio di chi scrive. È diverso: lui inventa le parole, io sopporto chi le sbaglia."),
 		Lang.t("Studia, allievo. Il Duat non perdona chi non legge le istruzioni."),
 		Lang.t("Un amuleto non combatte al posto tuo. Ti ricorda solo come combattere meglio."),
-		Lang.t("Hai visto lo scalpellino nella Sala? Bravo artigiano. Un po' lento. Io in quel tempo avrei alzato un tempio.")]
+		Lang.t("Hai visto lo scalpellino nella Sala? Bravo artigiano. Un po' lento. Io in quel tempo avrei alzato un tempio."),
+		Lang.t("Un muro diritto regge mille anni. Un muro bello ne regge duemila, perché nessuno ha cuore di abbatterlo."),
+		Lang.t("Ho inventato la colonna di pietra. Prima si usavano i fasci di papiro. Quando passi dietro una colonna nel Duat, ringraziami."),
+		Lang.t("La medicina e l'architettura sono la stessa arte: capire dove una cosa si spezzerà, prima che si spezzi."),
+		Lang.t("Non ricordo il mio volto da vivo. Ricordo solo le mie mani, e i miei progetti. Forse è giusto così.")]
 
 
 ## Un amuleto forgiato di cui Imhotep non ha ancora parlato ("" se nessuno).

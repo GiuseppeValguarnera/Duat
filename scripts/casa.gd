@@ -33,6 +33,7 @@ var _imhotep_news := false
 var talk_lines: Array = []
 
 @onready var world: Node2D = $World
+var cue: InteractCue = null             ## il segnale delle cose usabili (blocco 23)
 @onready var hud: Label = $UI/Hud
 @onready var prompt: Label = $UI/Prompt
 @onready var help: Label = $UI/Help
@@ -49,6 +50,8 @@ func _ready() -> void:
 	Music.play("hub")
 	Run.new_run()
 	Fx.world = world
+	cue = InteractCue.new()
+	add_child(cue)
 	world.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	spots = {
 		"orafo": Vector2(170, 196),
@@ -136,6 +139,7 @@ func _process(delta: float) -> void:
 	# la levetta destra scorre le liste ovunque: lo fa DragScroll
 	if menu != null or talk_box.visible:
 		prompt.visible = false
+		cue.clear()
 		return
 	if player.global_position.x < WALL + 14.0 and absf(player.global_position.y - EXIT_Y) < 24.0:
 		_leave()
@@ -158,6 +162,12 @@ func _process(delta: float) -> void:
 		_:
 			prompt.text = ""
 	prompt.visible = prompt.text != ""
+	if near == "orafo" or near == "imhotep":
+		cue.point(spots[near], 52.0 if near == "imhotep" else 40.0)
+	elif near == "parete":
+		cue.point(spots["parete"] + Vector2(0, 30), 40.0)
+	else:
+		cue.clear()
 
 
 func _unhandled_input(event: InputEvent) -> void:

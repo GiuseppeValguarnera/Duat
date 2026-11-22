@@ -171,6 +171,7 @@ var hud_sek := ""
 const DummyScript := preload("res://scripts/dummy.gd")
 
 @onready var world: Node2D = $World
+var cue: InteractCue = null
 var trial: SphinxTrial = null          ## la prova della Sfinge (Run.trial, scripts/sphinx_trial.gd)
 var tut := Tutorial.new(self)        ## l'addestramento della prima volta (scripts/tutorial.gd)
 var rooms := RoomBuilder.new(self)      ## la costruzione delle stanze (scripts/room_builder.gd)
@@ -187,6 +188,8 @@ func _ready() -> void:
 	Engine.time_scale = 1.0
 	get_tree().paused = false
 	Fx.world = world
+	cue = InteractCue.new()                # il segnale delle cose usabili (blocco 23)
+	add_child(cue)
 	# l'interpolazione fisica (project.godot) solo per chi si muove a ogni passo della fisica:
 	# eroe e nemici (vedi i loro _ready). Il resto (scintille, numeri, proiettili) no.
 	world.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
@@ -3135,12 +3138,16 @@ func _process(_delta: float) -> void:
 	boss_bar.position = Vector2((vsz.x - boss_bar.size.x) / 2.0, vsz.y - (12.0 if Fx.mobile else 30.0))
 
 	var near := ""
+	var cue_at := Vector2.INF
+	var cue_h := 40.0
 	var shop_near = null
 	for it in shop_items:
 		if is_instance_valid(it) and not it.sold and player.global_position.distance_to(it.global_position) < 26.0:
 			shop_near = it
 	if shop_near != null:
 		near = Lang.t("%s · %s: %s (%d Ka, ne hai %d)") % ["Y" if Fx.device == "pad" else "E", shop_near.title, shop_near.desc, shop_near.price, Run.ka]
+		cue_at = shop_near.global_position
+		cue_h = 34.0
 		if Input.is_action_just_pressed("interact") and menu == null:
 			_buy(shop_near)
 	# l'Oasi: fonte, altare e statua (gli oggetti del Traghettatore hanno la precedenza)
@@ -3151,6 +3158,8 @@ func _process(_delta: float) -> void:
 				oasis_near = o
 		if oasis_near != null:
 			near = "%s · %s: %s" % ["Y" if Fx.device == "pad" else "E", oasis_near.title, oasis_near.desc]
+			cue_at = oasis_near.global_position
+			cue_h = 50.0
 			if Input.is_action_just_pressed("interact") and menu == null:
 				_use_oasis(oasis_near)
 	# parlare con Mahaf: vicino alla barca (gli oggetti in vendita hanno la precedenza)
@@ -3158,6 +3167,9 @@ func _process(_delta: float) -> void:
 		ferry.z_index = 1 if player.global_position.y < ferry.global_position.y + 6.0 else 0
 		var by_boat: bool = shop_near == null and oasis_near == null and player.global_position.distance_to(ferry.global_position + Vector2(0, 12)) < 56.0
 		ferry.near = by_boat
+		if by_boat:
+			cue_at = ferry.global_position + Vector2(0, 8)
+			cue_h = 58.0
 		var in_oasis: bool = current_reward.get("kind", "") == "oasis"
 		if by_boat and in_oasis and oasis_mahaf_talked:
 			near = Lang.t("%s · Sali sulla barca di Mahaf: verso la terra di Sokar") % ("Y" if Fx.device == "pad" else "E")
@@ -3183,11 +3195,18 @@ func _process(_delta: float) -> void:
 			near = d.reward_description()
 		if dd < DOOR_REACH and d.open_k >= 0.6 and shop_near == null and oasis_near == null:
 			near = _key_prefix() + Lang.t("Entra · %s") % d.reward_description()
+			cue_at = d.global_position
+			cue_h = 46.0
 			if Input.is_action_just_pressed("interact") and menu == null:
 				d.enter()
 				break
 	prompt.text = near
 	prompt.visible = near != ""
+	if cue != null:
+		if cue_at != Vector2.INF and menu == null and pause_menu == null:
+			cue.point(cue_at, cue_h)
+		else:
+			cue.clear()
 
 	var mouse := Fx.device == "mouse"
 	reticle.visible = mouse and not player.dead and menu == null and panel == null and pause_menu == null

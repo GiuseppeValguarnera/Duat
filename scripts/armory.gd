@@ -52,6 +52,7 @@ var combo_t := -9.0
 var trial_enemies: Array = []
 
 @onready var world: Node2D = $World
+var cue: InteractCue = null             ## il segnale delle cose usabili (blocco 23)
 @onready var hud: Label = $UI/Hud
 @onready var prompt: Label = $UI/Prompt
 @onready var help: Label = $UI/Help
@@ -70,6 +71,8 @@ func _ready() -> void:
 	Music.play("hub")
 	Run.new_run()
 	Fx.world = world
+	cue = InteractCue.new()
+	add_child(cue)
 	# l'interpolazione fisica (project.godot) solo per chi si muove a ogni passo della fisica:
 	# eroe e nemici (vedi i loro _ready). Il resto (scintille, numeri, proiettili) no.
 	world.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
@@ -215,6 +218,7 @@ func _process(delta: float) -> void:
 	trial_enemies = trial_enemies.filter(func(e) -> bool: return is_instance_valid(e) and not e.dead)
 	if talk_box.visible or menu != null:
 		prompt.visible = false
+		cue.clear()
 		return
 	# l'uscita a est riporta nella Sala del Giudizio
 	if player.global_position.x > ROOM.size.x - WALL - 12.0 and absf(player.global_position.y - 210.0) < 26.0:
@@ -265,6 +269,15 @@ func _process(delta: float) -> void:
 			if Weapons.is_unlocked(p["id"]) and Weapons.evo(p["id"]) > 0:
 				prompt.text += "  ·  " + Weapons.evo_name(Weapons.evo(p["id"]))
 	prompt.visible = prompt.text != ""
+	match near:
+		"neith":
+			cue.point(spots["neith"], 56.0)
+		"altare", "prove":
+			cue.point(spots[near], 46.0)
+		"stele", "":
+			cue.clear()
+		_:
+			cue.point(pedestals[int(near.substr(3))]["pos"] + Vector2(0, 10), 54.0)
 
 
 func _physics_process(_delta: float) -> void:
@@ -373,7 +386,12 @@ func _neith_lines() -> Array:
 			Meta.neith_seen.append(b[0])
 			Meta.save()
 			return b[2]
-	return [[Lang.t("Misura la distanza. Poi accorciala."), Lang.t("Un'arma che non conosci ti tradirà nel momento peggiore."), Lang.t("Torna quando avrai qualcosa da mostrarmi."), Lang.t("Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male.")].pick_random()]
+	return [[Lang.t("Misura la distanza. Poi accorciala."), Lang.t("Un'arma che non conosci ti tradirà nel momento peggiore."), Lang.t("Torna quando avrai qualcosa da mostrarmi."), Lang.t("Colpisci i fantocci. Loro non si lamentano. Io sì, quando colpisci male."),
+		Lang.t("L'Arte non è un capriccio. Tienila per quando ti stringono, non per quando ti annoi."),
+		Lang.t("Scatta dentro, colpisci, scatta fuori. Il resto è vanità."),
+		Lang.t("Hai una postura migliore di ieri. Non montarti la testa: era pessima."),
+		Lang.t("Ogni arma ha un ritmo. Il khopesh danza, la lancia aspetta, l'arco respira. Trova il tuo, e smetti di contare."),
+		Lang.t("Le prove alla porta sono vere. Le creature no: sono ricordi del Duat. Fanno male lo stesso, se ti distrai.")].pick_random()]
 
 
 ## Neith ha qualcosa di nuovo da dirti? (il punto esclamativo sopra di lei)
@@ -389,6 +407,14 @@ func _neith_has_news() -> bool:
 ## I pezzi di storia di Neith: [id, condizione, battute].
 func _neith_beats() -> Array:
 	return [
+		["arte", true, [Lang.t("Ogni mia arma ha un'Arte, mortale. Non te l'ho detto prima perché non eri pronto a sentirla."),
+			Lang.t("Il colpo dell'Arte è lento a tornare e largo come un respiro: quando ti chiudono, lo liberi, e il cerchio si apre. Provala sui fantocci. Loro non si offendono.")]],
+		["evo_pronta", Weapons.evo_ready(Run.weapon), [Lang.t("La tua arma vuole crescere. Lo sento dal modo in cui ti trema in mano."),
+			Lang.t("All'altare, con i lapislazzuli, la posso temprare. Prima l'Arte si fa più forte, poi prende la sua forma piena, poi l'arma si risveglia. Tre passi. Ogni passo si guadagna con le stanze che attraversi insieme a lei.")]],
+		["evo_fatta", not Meta.weapon_evo.is_empty(), [Lang.t("L'hai temprata. Bene. Un'arma che non cresce è un'arma che aspetta di tradirti."),
+			Lang.t("Non affezionarti troppo, però. Le dee forgiano, gli uomini spezzano. È sempre stato così.")]],
+		["evo_tre", Meta.weapon_evo.values().has(3), [Lang.t("Un'arma risvegliata. Non ne vedevo una da quando gli uomini avevano ancora paura del buio."),
+			Lang.t("La lama brilla perché ricorda il fuoco in cui è nata. Tienila alta. Il Duat la vedrà arrivare da lontano, e avrà paura per una volta.")]],
 		["artigli_preso", Meta.weapons_unlocked.has("artigli"), [Lang.t("Gli artigli di Bastet. Lei li usa ogni notte, sotto l'albero di Iunu, contro il serpente. Non sono un'arma da re: sono un'arma da chi non vuole essere preso."), Lang.t("Entra, graffia, esci. Se resti fermo a contare i colpi, hai già sbagliato arma.")]],
 		["scettro_preso", Meta.weapons_unlocked.has("scettro"), [Lang.t("Lo scettro di Ptah. Con quello non si colpisce: si decide. Dove lo pianti, la terra è tua finché la luce dura."), Lang.t("I re lo tenevano in mano nelle statue. Tu lo tieni come uno che c'è abituato. ...Gli scribi, a volte, mi sorprendono.")]],
 		["flagello_preso", Meta.weapons_unlocked.has("flagello"), [Lang.t("Il flagello e il pastorale di Osiride. Non sono armi da guerriera: sono le insegne del re. Con il pastorale si guida il gregge, con il flagello lo si difende."), Lang.t("La frusta morde con la punta: chi ti sta troppo addosso la sente appena. Tieni la distanza giusta, come un pastore con il suo bastone.")]],

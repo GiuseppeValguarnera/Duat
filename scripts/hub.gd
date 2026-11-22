@@ -54,6 +54,7 @@ var hub_art: Node2D = null
 var scale_glow := 0.0                     ## la luce calda della bilancia quando ti avvicini
 
 @onready var world: Node2D = $World
+var cue: InteractCue = null             ## il segnale delle cose usabili (blocco 23)
 @onready var hud: Label = $UI/Hud
 var hub_hud: HubHud = null
 @onready var prompt: Label = $UI/Prompt
@@ -82,6 +83,8 @@ func _ready() -> void:
 	Music.play("hub")
 	Run.new_run()
 	Fx.world = world
+	cue = InteractCue.new()
+	add_child(cue)
 	# l'interpolazione fisica (project.godot) solo per chi si muove a ogni passo della fisica:
 	# eroe e nemici (vedi i loro _ready). Il resto (scintille, numeri, proiettili) no.
 	world.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
@@ -346,6 +349,8 @@ func _process(delta: float) -> void:
 	scale_glow = move_toward(scale_glow, 1.0 if player.global_position.distance_to(spots["bilancia"]) < 70.0 else 0.0, delta * 1.5)
 	if talk_box.visible or book != null or sphinx_board != null or tales_box != null:
 		prompt.visible = false
+		if cue != null:
+			cue.clear()
 		return
 	# il cancello si attraversa camminandoci dentro
 	if player.global_position.y < TOP + 14.0 and absf(player.global_position.x - spots["cancello"].x) < 22.0:
@@ -428,6 +433,7 @@ func _process(delta: float) -> void:
 				prompt.text = Lang.t("Il Cortile di Neith · si aprirà quando avrai battuto il Serpente della Porta")
 		_:
 			prompt.text = Lang.t("Il cancello del Duat è a nord") if player.global_position.y < TOP + 90.0 else ""
+	_update_cue()
 	prompt.visible = prompt.text != ""
 
 
@@ -1927,6 +1933,46 @@ func _draw_sphinx_door(ci: CanvasItem, pulse: float) -> void:
 
 
 ## Il nome sopra ogni porta della Sala (blocco 15): oro se aperta, pietra se ancora chiusa.
+## Il segnale a terra e la bolla col tasto sulla cosa vicina che si può usare (blocco 23). Le porte
+## aperte si attraversano camminando: niente bolla lì.
+func _update_cue() -> void:
+	if cue == null:
+		return
+	var at := Vector2.INF
+	var h := 46.0
+	match near:
+		"anubi":
+			at = spots["anubi"]
+			h = 72.0
+		"libro", "papiri", "cassa":
+			at = spots[near]
+			h = 40.0
+		"bilancia":
+			if Weights.unlocked():
+				at = spots["bilancia"]
+				h = 62.0
+		"neith":
+			at = spots["neith"]
+			h = 58.0
+		"vasca":
+			at = spots["vasca"] + Vector2(0, 6)
+			h = 34.0
+		"gatto":
+			if bastet_cat != null and is_instance_valid(bastet_cat):
+				at = bastet_cat.position
+				h = 26.0
+		"casa":
+			if not Meta.casa:
+				at = Vector2(ROOM.size.x - WALL - 18.0, CASA_Y)
+		"sfinge":
+			at = Vector2(SPHINX_X, TOP + 18.0)
+			h = 38.0
+	if at != Vector2.INF:
+		cue.point(at, h)
+	else:
+		cue.clear()
+
+
 func _draw_door_names(ci: CanvasItem) -> void:
 	var font := UiStyle.title_font()
 	var fs := 9 if Fx.mobile else 8
