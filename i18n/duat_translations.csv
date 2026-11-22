@@ -280,6 +280,120 @@ Verga della Leonessa,Verga della Leonessa,Rod of the Lioness
 I primi due colpi dello scettro fanno il %d%% di danni in più.,I primi due colpi dello scettro fanno il %d%% di danni in più.,The first two sceptre strikes deal %d%% more damage.
 Cerchio di Iside,Cerchio di Iside,Circle of Isis
 Dentro il Cerchio del Dominio subisci il %d%% di danni in meno.,Dentro il Cerchio del Dominio subisci il %d%% di danni in meno.,Inside the Circle of Dominion you take %d%% less damage.
+Mezzaluna Ardente,Mezzaluna Ardente,Burning Crescent
+La Mezzaluna del Faraone incendia i nemici colpiti: %d danni ogni mezzo secondo per 3 secondi.,La Mezzaluna del Faraone incendia i nemici colpiti: %d danni ogni mezzo secondo per 3 secondi.,The Crescent of the Pharaoh sets the enemies it hits ablaze: %d damage every half second for 3 seconds.
+Lance di Fuoco,Lance di Fuoco,Spears of Fire
+La Pioggia di Neith incendia i nemici colpiti: %d danni ogni mezzo secondo per 3 secondi.,La Pioggia di Neith incendia i nemici colpiti: %d danni ogni mezzo secondo per 3 secondi.,The Rain of Neith sets the enemies it hits ablaze: %d damage every half second for 3 seconds.
+Cielo in Fiamme,Cielo in Fiamme,Sky Ablaze
+Il Cielo di Satet incendia i nemici colpiti: %d danni ogni mezzo secondo per 3 secondi.,Il Cielo di Satet incendia i nemici colpiti: %d danni ogni mezzo secondo per 3 secondi.,The Sky of Satet sets the enemies it hits ablaze: %d damage every half second for 3 seconds.
+Mietitura del Sole,Mietitura del Sole,Harvest of the Sun
+La Mietitura di Osiride incendia i nemici colpiti: %d danni ogni mezzo secondo per 3 secondi.,La Mietitura di Osiride incendia i nemici colpiti: %d danni ogni mezzo secondo per 3 secondi.,The Harvest of Osiris sets the enemies it hits ablaze: %d damage every half second for 3 seconds.
+Graffi Roventi,Graffi Roventi,Searing Claws
+La Furia delle Nove Vite incendia i nemici colpiti: %d danni ogni mezzo secondo per 3 secondi.,La Furia delle Nove Vite incendia i nemici colpiti: %d danni ogni mezzo secondo per 3 secondi.,The Fury of the Nine Lives sets the enemies it hits ablaze: %d damage every half second for 3 seconds.
+Parola di Fuoco,Parola di Fuoco,Word of Fire
+La Parola di Ptah incendia i nemici colpiti: %d danni ogni mezzo secondo per 3 secondi.,La Parola di Ptah incendia i nemici colpiti: %d danni ogni mezzo secondo per 3 secondi.,The Word of Ptah sets the enemies it hits ablaze: %d damage every half second for 3 seconds.
+Mezzaluna della Leonessa,Mezzaluna della Leonessa,Crescent of the Lioness
+La Mezzaluna del Faraone fa il %d%% di danni in più.,La Mezzaluna del Faraone fa il %d%% di danni in più.,The Crescent of the Pharaoh deals %d%% more damage.
+Lance della Collera,Lance della Collera,Spears of Wrath
+La Pioggia di Neith fa il %d%% di danni in più.,La Pioggia di Neith fa il %d%% di danni in più.,The Rain of Neith deals %d%% more damage.
+Cielo di Sangue,Cielo di Sangue,Sky of Blood
+Il Cielo di Satet fa il %d%% di danni in più.,Il Cielo di Satet fa il %d%% di danni in più.,The Sky of Satet deals %d%% more damage.
+Mietitura Furiosa,Mietitura Furiosa,Furious Harvest
+La Mietitura di Osiride fa il %d%% di danni in più.,La Mietitura di Osiride fa il %d%% di danni in più.,The Harvest of Osiris deals %d%% more damage.
+La Furia delle Nove Vite fa il %d%% di danni in più.,La Furia delle Nove Vite fa il %d%% di danni in più.,The Fury of the Nine Lives deals %d%% more damage.
+Parola Tremenda,Parola Tremenda,Dreadful Word
+La Parola di Ptah fa il %d%% di danni in più.,La Parola di Ptah fa il %d%% di danni in più.,The Word of Ptah deals %d%% more damage.
+Mezzaluna Calcolata,Mezzaluna Calcolata,Calculated Crescent
+La Mezzaluna del Faraone si ricarica il %d%% più in fretta.,La Mezzaluna del Faraone si ricarica il %d%% più in fretta.,The Crescent of the Pharaoh recharges %d%% faster.
+Pioggia Misurata,Pioggia Misurata,Measured Rain
+La Pioggia di Neith si ricarica il %d%% più in fretta.,La Pioggia di Neith si ricarica il %d%% più in fretta.,The Rain of Neith recharges %d%% faster.
+Cielo Scritto,Cielo Scritto,Written Sky
+Il Cielo di Satet si ricarica il %d%% più in fretta.,Il Cielo di Satet si ricarica il %d%% più in fretta.,The Sky of Satet recharges %d%% faster.
+Mietitura Puntuale,Mietitura Puntuale,Timely Harvest
+La Mietitura di Osiride si ricarica il %d%% più in fretta.,La Mietitura di Osiride si ricarica il %d%% più in fretta.,The Harvest of Osiris recharges %d%% faster.
+Nove Vite Contate,Nove Vite Contate,Counted Lives
+La Furia delle Nove Vite si ricarica il %d%% più in fretta.,La Furia delle Nove Vite si ricarica il %d%% più in fretta.,The Fury of the Nine Lives recharges %d%% faster.
+Parola Scritta,Parola Scritta,Written Word
+La Parola di Ptah si ricarica il %d%% più in fretta.,La Parola di Ptah si ricarica il %d%% più in fretta.,The Word of Ptah recharges %d%% faster.
+Mezzaluna della Gatta,Mezzaluna della Gatta,Crescent of the Cat
+La Mezzaluna del Faraone ha il %d%% di probabilità in più di fare un colpo critico.,La Mezzaluna del Faraone ha il %d%% di probabilità in più di fare un colpo critico.,The Crescent of the Pharaoh has a %d%% higher chance to land a critical hit.
+Lance Feline,Lance Feline,Feline Spears
+La Pioggia di Neith ha il %d%% di probabilità in più di fare un colpo critico.,La Pioggia di Neith ha il %d%% di probabilità in più di fare un colpo critico.,The Rain of Neith has a %d%% higher chance to land a critical hit.
+Cielo della Gatta,Cielo della Gatta,Sky of the Cat
+Il Cielo di Satet ha il %d%% di probabilità in più di fare un colpo critico.,Il Cielo di Satet ha il %d%% di probabilità in più di fare un colpo critico.,The Sky of Satet has a %d%% higher chance to land a critical hit.
+Mietitura Felina,Mietitura Felina,Feline Harvest
+La Mietitura di Osiride ha il %d%% di probabilità in più di fare un colpo critico.,La Mietitura di Osiride ha il %d%% di probabilità in più di fare un colpo critico.,The Harvest of Osiris has a %d%% higher chance to land a critical hit.
+Nove Vite Fortunate,Nove Vite Fortunate,Lucky Lives
+La Furia delle Nove Vite ha il %d%% di probabilità in più di fare un colpo critico.,La Furia delle Nove Vite ha il %d%% di probabilità in più di fare un colpo critico.,The Fury of the Nine Lives has a %d%% higher chance to land a critical hit.
+Parola Fortunata,Parola Fortunata,Lucky Word
+La Parola di Ptah ha il %d%% di probabilità in più di fare un colpo critico.,La Parola di Ptah ha il %d%% di probabilità in più di fare un colpo critico.,The Word of Ptah has a %d%% higher chance to land a critical hit.
+Mezzaluna della Palude,Mezzaluna della Palude,Crescent of the Marsh
+La Mezzaluna del Faraone rallenta i nemici colpiti del %d%% per 3 secondi.,La Mezzaluna del Faraone rallenta i nemici colpiti del %d%% per 3 secondi.,The Crescent of the Pharaoh slows the enemies it hits by %d%% for 3 seconds.
+Lance di Fango,Lance di Fango,Spears of Mud
+La Pioggia di Neith rallenta i nemici colpiti del %d%% per 3 secondi.,La Pioggia di Neith rallenta i nemici colpiti del %d%% per 3 secondi.,The Rain of Neith slows the enemies it hits by %d%% for 3 seconds.
+Cielo di Palude,Cielo di Palude,Marsh Sky
+Il Cielo di Satet rallenta i nemici colpiti del %d%% per 3 secondi.,Il Cielo di Satet rallenta i nemici colpiti del %d%% per 3 secondi.,The Sky of Satet slows the enemies it hits by %d%% for 3 seconds.
+Mietitura del Fiume,Mietitura del Fiume,Harvest of the River
+La Mietitura di Osiride rallenta i nemici colpiti del %d%% per 3 secondi.,La Mietitura di Osiride rallenta i nemici colpiti del %d%% per 3 secondi.,The Harvest of Osiris slows the enemies it hits by %d%% for 3 seconds.
+Graffi di Fango,Graffi di Fango,Muddy Claws
+La Furia delle Nove Vite rallenta i nemici colpiti del %d%% per 3 secondi.,La Furia delle Nove Vite rallenta i nemici colpiti del %d%% per 3 secondi.,The Fury of the Nine Lives slows the enemies it hits by %d%% for 3 seconds.
+Parola del Fiume,Parola del Fiume,Word of the River
+La Parola di Ptah rallenta i nemici colpiti del %d%% per 3 secondi.,La Parola di Ptah rallenta i nemici colpiti del %d%% per 3 secondi.,The Word of Ptah slows the enemies it hits by %d%% for 3 seconds.
+Mezzaluna Protetta,Mezzaluna Protetta,Guarded Crescent
+Quando usi la Mezzaluna del Faraone ricevi uno scudo di %d (non si somma).,Quando usi la Mezzaluna del Faraone ricevi uno scudo di %d (non si somma).,When you use the Crescent of the Pharaoh you gain a shield of %d (it does not stack).
+Pioggia Benedetta,Pioggia Benedetta,Blessed Rain
+Quando usi la Pioggia di Neith ricevi uno scudo di %d (non si somma).,Quando usi la Pioggia di Neith ricevi uno scudo di %d (non si somma).,When you use the Rain of Neith you gain a shield of %d (it does not stack).
+Cielo di Iside,Cielo di Iside,Sky of Isis
+Quando usi il Cielo di Satet ricevi uno scudo di %d (non si somma).,Quando usi il Cielo di Satet ricevi uno scudo di %d (non si somma).,When you use the Sky of Satet you gain a shield of %d (it does not stack).
+Mietitura Protetta,Mietitura Protetta,Guarded Harvest
+Quando usi la Mietitura di Osiride ricevi uno scudo di %d (non si somma).,Quando usi la Mietitura di Osiride ricevi uno scudo di %d (non si somma).,When you use the Harvest of Osiris you gain a shield of %d (it does not stack).
+Nove Vite di Iside,Nove Vite di Iside,Nine Lives of Isis
+Quando usi la Furia delle Nove Vite ricevi uno scudo di %d (non si somma).,Quando usi la Furia delle Nove Vite ricevi uno scudo di %d (non si somma).,When you use the Fury of the Nine Lives you gain a shield of %d (it does not stack).
+Parola Protettrice,Parola Protettrice,Protecting Word
+Quando usi la Parola di Ptah ricevi uno scudo di %d (non si somma).,Quando usi la Parola di Ptah ricevi uno scudo di %d (non si somma).,When you use the Word of Ptah you gain a shield of %d (it does not stack).
+Mezzaluna del Falco,Mezzaluna del Falco,Crescent of the Falcon
+La Mezzaluna del Faraone ricarica l'Occhio di Horus e marchia i nemici colpiti: per 4 secondi subiscono il %d%% di danni in più.,La Mezzaluna del Faraone ricarica l'Occhio di Horus e marchia i nemici colpiti: per 4 secondi subiscono il %d%% di danni in più.,The Crescent of the Pharaoh recharges the Eye of Horus and marks the enemies it hits: for 4 seconds they take %d%% more damage.
+Lance del Falco,Lance del Falco,Spears of the Falcon
+La Pioggia di Neith ricarica l'Occhio di Horus e marchia i nemici colpiti: per 4 secondi subiscono il %d%% di danni in più.,La Pioggia di Neith ricarica l'Occhio di Horus e marchia i nemici colpiti: per 4 secondi subiscono il %d%% di danni in più.,The Rain of Neith recharges the Eye of Horus and marks the enemies it hits: for 4 seconds they take %d%% more damage.
+Cielo del Falco,Cielo del Falco,Sky of the Falcon
+Il Cielo di Satet ricarica l'Occhio di Horus e marchia i nemici colpiti: per 4 secondi subiscono il %d%% di danni in più.,Il Cielo di Satet ricarica l'Occhio di Horus e marchia i nemici colpiti: per 4 secondi subiscono il %d%% di danni in più.,The Sky of Satet recharges the Eye of Horus and marks the enemies it hits: for 4 seconds they take %d%% more damage.
+Mietitura del Falco,Mietitura del Falco,Harvest of the Falcon
+La Mietitura di Osiride ricarica l'Occhio di Horus e marchia i nemici colpiti: per 4 secondi subiscono il %d%% di danni in più.,La Mietitura di Osiride ricarica l'Occhio di Horus e marchia i nemici colpiti: per 4 secondi subiscono il %d%% di danni in più.,The Harvest of Osiris recharges the Eye of Horus and marks the enemies it hits: for 4 seconds they take %d%% more damage.
+Artigli del Falco,Artigli del Falco,Talons of the Falcon
+La Furia delle Nove Vite ricarica l'Occhio di Horus e marchia i nemici colpiti: per 4 secondi subiscono il %d%% di danni in più.,La Furia delle Nove Vite ricarica l'Occhio di Horus e marchia i nemici colpiti: per 4 secondi subiscono il %d%% di danni in più.,The Fury of the Nine Lives recharges the Eye of Horus and marks the enemies it hits: for 4 seconds they take %d%% more damage.
+Parola del Falco,Parola del Falco,Word of the Falcon
+La Parola di Ptah ricarica l'Occhio di Horus e marchia i nemici colpiti: per 4 secondi subiscono il %d%% di danni in più.,La Parola di Ptah ricarica l'Occhio di Horus e marchia i nemici colpiti: per 4 secondi subiscono il %d%% di danni in più.,The Word of Ptah recharges the Eye of Horus and marks the enemies it hits: for 4 seconds they take %d%% more damage.
+Mezzaluna del Giudice,Mezzaluna del Giudice,Crescent of the Judge
+Si ricarica 3 secondi più lentamente.,Si ricarica 3 secondi più lentamente.,It recharges 3 seconds slower.
+Pioggia del Giudice,Pioggia del Giudice,Rain of the Judge
+Cielo del Giudice,Cielo del Giudice,Sky of the Judge
+Mietitura del Giudice,Mietitura del Giudice,Harvest of the Judge
+Nove Vite del Giudice,Nove Vite del Giudice,Lives of the Judge
+Parola del Giudice,Parola del Giudice,Word of the Judge
+Mezzaluna del Lutto,Mezzaluna del Lutto,Crescent of Mourning
+Ogni nemico colpito da la Mezzaluna del Faraone ti cura di 1 (fino a %d ogni volta).,Ogni nemico colpito da la Mezzaluna del Faraone ti cura di 1 (fino a %d ogni volta).,Every enemy hit by the Crescent of the Pharaoh heals you for 1 (up to %d each time).
+Pioggia di Lacrime,Pioggia di Lacrime,Rain of Tears
+Ogni nemico colpito da la Pioggia di Neith ti cura di 1 (fino a %d ogni volta).,Ogni nemico colpito da la Pioggia di Neith ti cura di 1 (fino a %d ogni volta).,Every enemy hit by the Rain of Neith heals you for 1 (up to %d each time).
+Cielo del Lutto,Cielo del Lutto,Sky of Mourning
+Ogni nemico colpito da il Cielo di Satet ti cura di 1 (fino a %d ogni volta).,Ogni nemico colpito da il Cielo di Satet ti cura di 1 (fino a %d ogni volta).,Every enemy hit by the Sky of Satet heals you for 1 (up to %d each time).
+Mietitura dei Defunti,Mietitura dei Defunti,Harvest of the Dead
+Ogni nemico colpito da la Mietitura di Osiride ti cura di 1 (fino a %d ogni volta).,Ogni nemico colpito da la Mietitura di Osiride ti cura di 1 (fino a %d ogni volta).,Every enemy hit by the Harvest of Osiris heals you for 1 (up to %d each time).
+Nove Vite di Nefti,Nove Vite di Nefti,Nine Lives of Nephthys
+Ogni nemico colpito da la Furia delle Nove Vite ti cura di 1 (fino a %d ogni volta).,Ogni nemico colpito da la Furia delle Nove Vite ti cura di 1 (fino a %d ogni volta).,Every enemy hit by the Fury of the Nine Lives heals you for 1 (up to %d each time).
+Parola dei Morti,Parola dei Morti,Word of the Dead
+Ogni nemico colpito da la Parola di Ptah ti cura di 1 (fino a %d ogni volta).,Ogni nemico colpito da la Parola di Ptah ti cura di 1 (fino a %d ogni volta).,Every enemy hit by the Word of Ptah heals you for 1 (up to %d each time).
+Mezzaluna del Vento,Mezzaluna del Vento,Crescent of the Wind
+"La Mezzaluna del Faraone scaglia via i nemici colpiti: se sbattono, schianto da %d danni.","La Mezzaluna del Faraone scaglia via i nemici colpiti: se sbattono, schianto da %d danni.","The Crescent of the Pharaoh hurls away the enemies it hits: if they crash, %d slam damage."
+Lance del Vento,Lance del Vento,Spears of the Wind
+"La Pioggia di Neith scaglia via i nemici colpiti: se sbattono, schianto da %d danni.","La Pioggia di Neith scaglia via i nemici colpiti: se sbattono, schianto da %d danni.","The Rain of Neith hurls away the enemies it hits: if they crash, %d slam damage."
+Cielo di Shu,Cielo di Shu,Sky of Shu
+"Il Cielo di Satet scaglia via i nemici colpiti: se sbattono, schianto da %d danni.","Il Cielo di Satet scaglia via i nemici colpiti: se sbattono, schianto da %d danni.","The Sky of Satet hurls away the enemies it hits: if they crash, %d slam damage."
+Mietitura del Vento,Mietitura del Vento,Harvest of the Wind
+"La Mietitura di Osiride scaglia via i nemici colpiti: se sbattono, schianto da %d danni.","La Mietitura di Osiride scaglia via i nemici colpiti: se sbattono, schianto da %d danni.","The Harvest of Osiris hurls away the enemies it hits: if they crash, %d slam damage."
+Turbine di Shu,Turbine di Shu,Whirlwind of Shu
+"La Furia delle Nove Vite scaglia via i nemici colpiti: se sbattono, schianto da %d danni.","La Furia delle Nove Vite scaglia via i nemici colpiti: se sbattono, schianto da %d danni.","The Fury of the Nine Lives hurls away the enemies it hits: if they crash, %d slam damage."
+Parola del Vento,Parola del Vento,Word of the Wind
+"La Parola di Ptah scaglia via i nemici colpiti: se sbattono, schianto da %d danni.","La Parola di Ptah scaglia via i nemici colpiti: se sbattono, schianto da %d danni.","The Word of Ptah hurls away the enemies it hits: if they crash, %d slam damage."
 Lancio del Vento,Lancio del Vento,Throw of the Wind
 "Chi lanci col pastorale, se sbatte, subisce uno schianto da %d danni.","Chi lanci col pastorale, se sbatte, subisce uno schianto da %d danni.",Whoever you throw with the crook takes a %d damage slam if they hit something.
 Ali di Iside,Ali di Iside,Wings of Isis
@@ -584,6 +698,16 @@ Spiriti con la Prima Parola,Spiriti con la Prima Parola,Spirits with the First W
 Prima Parola: scudo 4,Prima Parola: scudo 4,First Word: shield 4
 "Occhio ×2, trapassa tutti","Occhio ×2, trapassa tutti","Eye ×2, pierces all"
 Khopesh -40%,Khopesh -40%,Khopesh -40%
+"Arte: fuoco %d ogni 0,5 s","Arte: fuoco %d ogni 0,5 s",Art: fire %d every 0.5 s
+Arte +%d%% danni,Arte +%d%% danni,Art +%d%% damage
+Arte: ricarica -%d%%,Arte: ricarica -%d%%,Art: recharge -%d%%
+Arte: critico +%d%%,Arte: critico +%d%%,Art: critical +%d%%
+Arte: rallenta del %d%%,Arte: rallenta del %d%%,Art: slows by %d%%
+Arte: scudo %d,Arte: scudo %d,Art: shield %d
+"Arte: Occhio carico, marchio +%d%%","Arte: Occhio carico, marchio +%d%%","Art: Eye recharged, mark +%d%%"
+Arte: ricarica +3 s,Arte: ricarica +3 s,Art: recharge +3 s
+Arte: +1 vita a nemico (max %d),Arte: +1 vita a nemico (max %d),Art: +1 health per enemy (max %d)
+"Arte: spinta, schianto %d","Arte: spinta, schianto %d","Art: push, slam %d"
 Casa della Vita,Casa della Vita,House of Life
 nessuno,nessuno,none
 Amuleto: %s,Amuleto: %s,Amulet: %s

@@ -25,7 +25,7 @@ func _process(_d: float) -> bool:
 		g._close_choice()
 	var run = root.get_node("Run")
 	var meta = root.get_node("Meta")
-	if g.player != null and is_instance_valid(g.player):
+	if g.player != null and is_instance_valid(g.player) and evo_pass < 3:
 		g.player.hp = g.player.max_hp
 	match step:
 		0:
@@ -40,7 +40,15 @@ func _process(_d: float) -> bool:
 			if frames - mark == 5:
 				var w: String = weapons[wi]
 				run.weapon = w
-				meta.weapon_evo[w] = [0, 2, 3][evo_pass]
+				meta.weapon_evo[w] = [0, 2, 3, 0][evo_pass]
+				# ultimo giro (blocco 24): tutti i doni dell'Arte dell'arma insieme
+				run.boons = {}
+				if evo_pass == 3:
+					for god in ["ra", "sekhmet", "thoth", "bastet", "sobek", "iside", "horus", "anubi", "nefti", "shu"]:
+						run.boons["arte_%s_%s" % [w, god]] = 1
+					g.player.hp = g.player.max_hp - 10.0
+					g.player.eye_cd = 2.0
+					g.player.shield = 0.0
 				var p = g.player
 				p.art_cd = 0.0
 				p.aim = Vector2.RIGHT
@@ -77,7 +85,20 @@ func _process(_d: float) -> bool:
 						arts += 1
 				if arts != 1:
 					print("ARTE %s: ERRORE, arti in campo=%d" % [weapons[wi], arts])
-				print("ARTE %s evo %d: ricarica %.1f s" % [weapons[wi], [0, 2, 3][evo_pass], cd])
+				print("ARTE %s evo %d: ricarica %.1f s" % [weapons[wi], [0, 2, 3, 0][evo_pass], cd])
+				if evo_pass == 3:
+					print("DONI ARTE %s: scudo %.0f, occhio pronto %s" % [weapons[wi], g.player.shield, g.player.eye_cd <= 0.0])
+			if frames - mark == 12 + 70 and evo_pass == 3:
+				var burn := 0
+				var slow := 0
+				var mark2 := 0
+				for e in foes:
+					if is_instance_valid(e):
+						burn += 1 if e.burn_t > 0.0 else 0
+						slow += 1 if e.slow_t > 0.0 else 0
+						mark2 += 1 if e.has_meta("art_mark") else 0
+				print("DONI ARTE %s: fuoco %d, rallentati %d, marchiati %d, vita %.0f/%.0f" % [weapons[wi], burn, slow, mark2, g.player.hp, g.player.max_hp])
+				g.player.hp = g.player.max_hp
 			if frames - mark == 12 + 200:
 				var dealt := 0.0
 				var hit := 0
@@ -87,7 +108,7 @@ func _process(_d: float) -> bool:
 						if e.hp < 9999.0:
 							hit += 1
 						e.queue_free()
-				print("ARTE %s evo %d: colpiti %d/3, danni %.0f" % [weapons[wi], [0, 2, 3][evo_pass], hit, dealt])
+				print("ARTE %s evo %d: colpiti %d/3, danni %.0f" % [weapons[wi], [0, 2, 3, 0][evo_pass], hit, dealt])
 				for n in g.world.get_children():
 					if n.has_method("_spear") or n.is_in_group("was_circle"):
 						n.queue_free()
@@ -95,7 +116,7 @@ func _process(_d: float) -> bool:
 				if wi >= weapons.size():
 					wi = 0
 					evo_pass += 1
-					if evo_pass > 2:
+					if evo_pass > 3:
 						return true
 				mark = frames
 	return false

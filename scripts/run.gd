@@ -547,9 +547,19 @@ func eye_burns() -> bool:
 
 func burn_tick_damage() -> float:
 	var b := maxf(maxf(val("ra_burn"), val("arco_ra")), val("flagello_ra"))
+	b = maxf(b, art_val("ra"))
 	if b <= 0.0:
 		b = 5.0
 	return b * (1.6 if has("ra_heavy") else 1.0)
+
+
+## Doni dell'Arte (blocco 24): il valore del dono del dio `god` per l'Arte dell'arma impugnata (0 se non c'è).
+func art_val(god: String) -> float:
+	return val("arte_%s_%s" % [weapon, god])
+
+
+func art_has(god: String) -> bool:
+	return has("arte_%s_%s" % [weapon, god])
 
 
 func move_mult() -> float:
@@ -730,6 +740,8 @@ func first_word(e: Node) -> float:
 ## Restituisce il moltiplicatore dei danni.
 func player_hit(e: Node, fx: bool = true) -> float:
 	var m := first_word(e)
+	if e.has_meta("art_mark") and Time.get_ticks_msec() < int(e.get_meta("art_mark")):
+		m *= 1.0 + art_val("horus") / 100.0          # marchio del Falco (dono dell'Arte di Horus)
 	if fx and not training:
 		var now := Time.get_ticks_msec()
 		streak = (streak + 1) if now - streak_msec < STREAK_GAP else 1

@@ -684,6 +684,16 @@ proprietario: «controlla tutto, PC e telefono, rendilo più bello e divertente�
 - **Non misurato coi bot**: i bot NON usano l'Arte (da insegnare prima di misurare). Nella prova senza grafica l'Arte fa
   ~35-80 a nemico in Wernes, circa tre colpi normali a testa su tutto il gruppo, ogni 9 s.
 
+**Blocco 24 (22/11/2026) – doni dell'Arte**: 60 doni `arte_<arma>_<dio>` in `boons.gd` (campo `"art": true` e `"weapon"`:
+si offrono solo quelli dell'arma impugnata, 10 per arma, uno per dio), nome e testo propri per ogni arma, generati da
+uno script (le liste italiane e inglesi stanno insieme). Effetti comuni per dio (`Run.art_val(dio)` / `art_has`,
+costanti in cima a `weapon_art.gd`): **Ra** fuoco 5/7/9 per 3 s (`burn_tick_damage`), **Sekhmet** +30/45/60% danni,
+**Thoth** ricarica −15/22/30%, **Bastet** critico +20/30/40%, **Sobek** rallenta 25/35/45% per 3 s (vale per la Forza
+del Fiume), **Iside** scudo 6/9/12 all'uso (non si somma), **Horus** ricarica l'Occhio e marchia 4 s: +15/22/30% dei tuoi
+danni (`Run.player_hit`, meta `art_mark`), **Anubi** (bilancia) +70% danni ma +3 s di ricarica, **Nefti** +1 vita per
+nemico colpito fino a 3/5/7, **Shu** scaglia via (spinta 300), schianto 8/12/16 (`Enemy.art_slam`). `artsmoke.gd` ha un
+quarto giro con tutti e dieci i doni dell'arma insieme. Bilanciamento NON misurato.
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima

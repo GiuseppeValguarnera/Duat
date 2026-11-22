@@ -1,5 +1,9 @@
 ## In sviluppo · novembre 2026
 
+- **doni dell'Arte**: ogni dio ha un dono per l'Arte di ogni arma (60 in tutto, 10 per arma): Ra la incendia, Sekhmet la
+  rende più forte, Thoth la ricarica prima, Bastet la fa critica, Sobek rallenta, Iside ti protegge, Horus ricarica
+  l'Occhio e marchia, Anubi la pesa (più forte, più lenta), Nefti ti cura, Shu scaglia via i nemici
+
 - **l'Arte dell'arma**: un terzo attacco ad area per ogni arma, sul tasto B del pad (C o la rotella sul PC, il pulsante
   ARTE sul telefono). Si ricarica in 9 secondi: è la risposta a «sono circondato». Mezzaluna del Faraone, Pioggia di
   Neith, Cielo di Satet, Mietitura di Osiride, Furia delle Nove Vite, Parola di Ptah

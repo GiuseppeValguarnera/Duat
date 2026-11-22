@@ -19,6 +19,12 @@ const EVO_DMG := 0.25              ## evoluzione I
 const EVO_CD := 1.5                ## evoluzione I e III
 const EVO3_WEAPON := 0.08          ## evoluzione III: tutti i colpi dell'arma
 const GOLD := Color(1.0, 0.86, 0.45)
+## Doni dell'Arte (blocco 24, boons.gd "arte_<arma>_<dio>"): effetti comuni a tutte le Arti.
+const RA_BURN := 3.0               ## secondi di fuoco
+const SOBEK_SLOW := 3.0
+const HORUS_MARK := 4.0
+const SHU_PUSH := 300.0
+const ANUBI_CD := 3.0
 
 ## Nomi e testi in italiano (Lang.t alla lettura). "desc": cosa fa; "twist": la forma piena (evo II).
 const DATA_IT := {
@@ -64,6 +70,7 @@ var tick := 0.0
 var claw_hits := 0
 var claw_heal := 0.0
 var done_impact := false
+var nefti_healed := 0.0
 
 
 static func data(k: String) -> Dictionary:
@@ -94,16 +101,25 @@ static func cooldown(k: String) -> float:
 		cd -= EVO_CD
 	if e >= 3:
 		cd -= EVO_CD
+	cd *= 1.0 - Run.art_val("thoth") / 100.0          # dono di Thoth
+	if Run.art_has("anubi"):
+		cd += ANUBI_CD                                 # la bilancia di Anubi
 	return cd
 
 
 static func damage_mult(k: String) -> float:
-	return 1.0 + (EVO_DMG if not Run.trial and Weapons.evo(k) >= 1 else 0.0)
+	var m := 1.0 + (EVO_DMG if not Run.trial and Weapons.evo(k) >= 1 else 0.0)
+	return m * (1.0 + Run.art_val("sekhmet") / 100.0) * (1.0 + Run.art_val("anubi") / 100.0)
 
 
 func _ready() -> void:
 	z_index = 2
 	evo = 0 if Run.trial else Weapons.evo(kind)       # nella prova della Sfinge le armi sono uguali per tutti
+	if player != null and is_instance_valid(player):
+		if Run.art_has("iside"):
+			player.shield = maxf(player.shield, Run.art_val("iside"))      # Iside: scudo (non si somma)
+		if Run.art_has("horus"):
+			player.eye_cd = 0.0                                           # Horus: l'Occhio torna pronto
 	match kind:
 		"khopesh":
 			Sfx.play("swing", 0.0)
@@ -127,16 +143,37 @@ func _hit(e, mult: float, from: Vector2, kb: float, crit_bonus: float = 0.0) -> 
 		return false
 	var to: Vector2 = e.global_position - from
 	var d := to.normalized() if to.length() > 0.5 else dir
-	var crit := Run.roll_crit(Run.khopesh_crit_chance() + crit_bonus)
+	var crit := Run.roll_crit(Run.khopesh_crit_chance() + crit_bonus + Run.art_val("bastet") / 100.0)
 	if crit > 1.0:
 		Fx.float_text(e.global_position + Vector2(0, -22), Lang.t("CRITICO"), GOLD)
 	Run.heavy_strike = true                 # l'Arte apre gli scudi come un attacco caricato
 	Run.nefti_on_hit()
-	e.take_hit(base * mult * damage_mult(kind) * crit * Run.player_hit(e), d, kb * Run.knock_mult(), Run.khopesh_burns())
+	var ra := Run.art_has("ra")
+	e.take_hit(base * mult * damage_mult(kind) * crit * Run.player_hit(e), d, kb * Run.knock_mult(), Run.khopesh_burns() or ra)
 	Run.after_player_hit(e, d)
 	Run.heavy_strike = false
+	_gift_effects(e, d, ra)
 	Fx.impact(e.global_position + Vector2(0, -e.radius), d, crit > 1.0)
 	return true
+
+
+## I doni dell'Arte su un nemico colpito.
+func _gift_effects(e, d: Vector2, ra: bool) -> void:
+	if not is_instance_valid(e) or e.dead:
+		return
+	if ra:
+		e.burn_t = maxf(e.burn_t, RA_BURN)
+	if Run.art_has("sobek"):
+		e.slow_t = maxf(e.slow_t, SOBEK_SLOW)
+		e.slow_pct = maxf(e.slow_pct, Run.art_val("sobek"))
+	if Run.art_has("horus"):
+		e.set_meta("art_mark", Time.get_ticks_msec() + int(HORUS_MARK * 1000.0))
+	if Run.art_has("nefti") and player != null and is_instance_valid(player) and nefti_healed < Run.art_val("nefti"):
+		player.heal(1.0)
+		nefti_healed += 1.0
+	if Run.art_has("shu"):
+		e.art_slam = Run.art_val("shu")
+		e.shu_push(d, SHU_PUSH)
 
 
 func _enemies_in(c: Vector2, r: float) -> Array:

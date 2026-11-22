@@ -41,6 +41,7 @@ var mourn_t := 0.0                    ## il marchio del Lutto di Nefti (secondi)
 var mark_t := 0.0                     ## Sguardo del Falco: secondi in cui il khopesh fa più danni
 var slow_pct := 0.0                    ## rallentamento "generico" in percento (Cerchio del Dominio), vale finché slow_t > 0
 var slow_t := 0.0                      ## rallentato dalle Frecce della Palude o dalla Frusta della Palude (Sobek)
+var art_slam := 0.0                    ## scagliato dall'Arte col dono di Shu: lo schianto usa il suo valore
 var hook_slam := false                 ## lanciato dal pastorale: lo schianto usa il Lancio del Vento (Shu)
 var no_reward := false                 ## servitori di Aker: niente Ka e niente cuori
 var sobek_stun_t := 0.0                ## stordito dal Morso di Sobek (per la Forza del Fiume)                   ## dopo un colpo il nemico barcolla: non si muove e non ferisce
@@ -424,7 +425,10 @@ func _shu_flight(delta: float, flying: Vector2) -> void:
 	var dmg := Run.shu_slam_damage()
 	if hook_slam and Run.has("flagello_shu"):
 		dmg = maxf(dmg, Run.val("flagello_shu") * Run.all_damage_mult())   # Lancio del Vento
+	if art_slam > 0.0:
+		dmg = maxf(dmg, art_slam * Run.all_damage_mult())                 # Arte col dono di Shu
 	hook_slam = false
+	art_slam = 0.0
 	Fx.burst(global_position + Vector2(0, -radius), Boons.god_color("shu"), 14, 100.0)
 	Fx.float_text(global_position + Vector2(0, -24), Lang.t("SCHIANTO"), Boons.god_color("shu"))
 	Fx.shake(3.0)
