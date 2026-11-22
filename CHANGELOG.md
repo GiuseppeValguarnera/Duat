@@ -184,6 +184,10 @@
 - correzioni: colonne e profondità, coccodrilli sotto il pavimento, mira automatica sul telefono,
   "Esci" sul web, musica dei guardiani, Scettro Was più chiaro
 
+## Blocco 25 (22/11/2026)
+- I bot usano l'Arte dell'arma.
+- Caos: più nemici in Wernes dalla stanza 6 (sempre di più), in Sokar e nel Banco; le ondate si sovrappongono.
+
 ## 0.1.0 · 26/10/2026
 
 - Prima versione di prova pubblica

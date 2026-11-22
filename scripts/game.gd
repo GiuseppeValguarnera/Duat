@@ -307,6 +307,7 @@ func start_room(reward: Dictionary) -> void:
 	var kind: String = reward.get("kind", "none")
 	Run.apep_type = ""
 	room_unique = ""
+	chaos_room = false
 	room_spawned = 0
 	room_scaled = 0
 	if Run.region >= 3 and not Run.trial and not boss_room and kind not in ["guardian", "shop", "tutorial", "set", "oasis", "sphinx"] and not reward.get("calm", false):
@@ -495,6 +496,8 @@ func start_room(reward: Dictionary) -> void:
 		horde *= 1.3                              # Sokar: più nemici per ondata, non una terza ondata
 	elif Run.region >= 3:
 		horde *= 1.3                              # Banco di Apopi (blocco 21): la densità di Sokar, ma ogni nemico ha meno vita (Run.APEP_HP)
+	horde *= 1.0 + Run.chaos()                    # caos (blocco 25): dalla stanza 6 sempre più nemici
+	chaos_room = Run.chaos_on()
 	if Meta.feather:
 		horde *= 0.75                             # Piuma di Ma'at: un quarto di nemici in meno
 	var soft := 1 if r <= 2 else 0                # le prime due stanze sono un po' più leggere
@@ -538,6 +541,8 @@ const APEP_KINDS := {
 }
 const ROOM_UNIQUE := ["light_eater", "veil"]
 const SCALED_KINDS := ["sheut", "inverted"]       ## più le élite; mai più di un terzo della stanza
+var chaos_room := false                  ## stanza normale a ondate (il caos vale solo lì, mai con guardiani e boss)
+var wave_size := 0                       ## nemici dell'ultima ondata (per il caos: la prossima arriva prima)
 var room_unique := ""                    ## quale dei due "unici" è già uscito in questa stanza
 var room_spawned := 0
 var room_scaled := 0
@@ -677,6 +682,7 @@ func _make_wave(budget: int, allow_priest: bool) -> Array:
 
 func _spawn_wave(list: Array, delay: float) -> void:
 	Run.word_ready = true                 # Peso della Parola (Sfinge): il primo colpo di ogni ondata
+	wave_size = list.size()
 	for i in range(list.size()):
 		spawning += 1
 		_spawn_after(list[i], _free_spot(), delay + i * 0.12)
@@ -798,6 +804,10 @@ func _on_enemy_killed(e: Enemy) -> void:
 		for c in world.get_children():
 			if c is Enemy and not c.dead:
 				c.die()                   # caduto il guardiano, i suoi scarabei si dissolvono
+	# caos (blocco 25): l'ondata dopo non aspetta la stanza vuota, arriva quando ne resta un quarto
+	if not waves.is_empty() and spawning <= 0 and chaos_room and alive > 0 and alive <= maxi(1, int(wave_size * Run.CHAOS_OVERLAP)):
+		_spawn_wave(waves.pop_front(), 0.8)
+		return
 	if alive > 0 or spawning > 0:
 		return
 	if not waves.is_empty():

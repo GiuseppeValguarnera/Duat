@@ -562,6 +562,29 @@ func art_has(god: String) -> bool:
 	return has("arte_%s_%s" % [weapon, god])
 
 
+## CAOS (blocco 25): dalla stanza 6 di Wernes le stanze si riempiono sempre di più. Restituisce i nemici
+## in più per ondata (0,35 = +35%). Wernes +7% a stanza dalla 6 (+35% alla 10); Sokar e il Banco partono
+## da +15% e salgono del 3% a stanza (sopra la loro densità di regione, ×1,3).
+const CHAOS_FROM := 6
+const CHAOS_STEP_1 := 0.07
+const CHAOS_BASE_2 := 0.15
+const CHAOS_STEP_2 := 0.03
+## Da quando c'è il caos, l'ondata dopo arriva quando della prima resta un quarto (non più a stanza vuota).
+const CHAOS_OVERLAP := 0.25
+
+
+func chaos() -> float:
+	if trial:
+		return 0.0
+	if region <= 1:
+		return CHAOS_STEP_1 * maxf(0.0, room - CHAOS_FROM + 1)
+	return CHAOS_BASE_2 + CHAOS_STEP_2 * room
+
+
+func chaos_on() -> bool:
+	return not trial and (region >= 2 or room >= CHAOS_FROM)
+
+
 func move_mult() -> float:
 	var m := 1.15 if has("set_swift") else 1.0
 	if has("anubi_light"):

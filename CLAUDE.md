@@ -694,6 +694,16 @@ danni (`Run.player_hit`, meta `art_mark`), **Anubi** (bilancia) +70% danni ma +3
 nemico colpito fino a 3/5/7, **Shu** scaglia via (spinta 300), schianto 8/12/16 (`Enemy.art_slam`). `artsmoke.gd` ha un
 quarto giro con tutti e dieci i doni dell'arma insieme. Bilanciamento NON misurato.
 
+**Blocco 25 (22/11/2026) – i bot usano l'Arte, caos dalla stanza 6**.
+- *Bot* (`tools/playtest/bot.gd` `_art_good`, `tap_art`, campo `arts` nel risultato): Arte attorno a sé con ≥3 nemici entro
+  0,85 del raggio, un boss dentro o 2 addosso; Arti a distanza (lancia, arco) centrate sulla mira; probabilità 0,25 + 0,6 × abilità.
+- *Caos* (`Run.chaos()`, `Run.chaos_on()`, costanti `CHAOS_*` in cima a run.gd): ondate più piene in Wernes dalla stanza 6
+  (+7% a stanza, +35% alla 10ª), in Sokar e nel Banco +15% +3% a stanza sopra i loro moltiplicatori; niente nella Sfinge.
+  *Ondate sovrapposte* (`game.gd` `chaos_room`, `wave_size`, `_on_enemy_killed`): nelle stanze col caos l'ondata dopo entra
+  quando restano vivi ≤ 25% (`CHAOS_OVERLAP`) di quella prima, senza aspettare che la stanza si svuoti.
+- *Misura* (8 partite in Wernes, un veterano per arma + 2 casual): veterani stanze khopesh 6, lancia 7, arco 7, flagello 6,
+  artigli 3, scettro 5; casual 3 e 6; 5-8 Arti a partita (circa una ogni 15-20 s). In linea col blocco 19 (campione piccolo).
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima

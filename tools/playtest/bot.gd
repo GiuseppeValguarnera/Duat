@@ -23,6 +23,9 @@ var want_attack := false
 var atk_flip := false                   # la combo si fa a colpetti (premi, rilascia): tenere premuto carica
 var charge_hold := 0.0                  # attacco caricato: per quanto tenere ancora premuto
 var charges_used := 0
+var arts_used := 0                     ## Arte dell'arma lanciata (blocco 25)
+var art_kills := 0
+var tap_art := false
 var dash_attacks := 0
 var dash_now := false
 var dash_release := false
@@ -381,6 +384,7 @@ func _decide(g, p) -> void:
 	want_attack = false
 	tap_special = false
 	tap_super = false
+	tap_art = false
 	# 1. minacce
 	var threat := _threat(g, pos, enemies)
 	if threat != Vector2.ZERO and randf() < _dodge_chance(threat_kind) and p.can_dash():
@@ -527,6 +531,9 @@ func _decide(g, p) -> void:
 				charges_used += 1
 		if dist < 300.0 and randf() < cfg["eye"]:
 			tap_special = true
+		if p.art_ready() and _art_good(p, pos, enemies, target) and randf() < 0.25 + 0.6 * skill:
+			tap_art = true
+			arts_used += 1
 		if Run.sekhem_ready() and (enemies.size() >= 3 or target.is_boss):
 			tap_super = true
 		return
@@ -914,6 +921,39 @@ func _apply(p, real: float) -> void:
 		tap_super = false
 	else:
 		Input.action_release("super")
+	if tap_art:
+		Input.action_press("art")
+		tap_art = false
+	else:
+		Input.action_release("art")
+
+
+## L'Arte dell'arma (blocco 25): come la userebbe un giocatore. Le Arti attorno a te quando ne hai almeno
+## tre nel raggio (o un boss, o sei chiuso: due addosso); quelle a distanza (lancia, arco) quando almeno due
+## nemici o un boss stanno nel cerchio sul punto dove cadrebbe. Gli artigli anche per difendersi: per quasi
+## un secondo sei intoccabile.
+func _art_good(p, pos: Vector2, enemies: Array, target) -> bool:
+	var w: String = Run.weapon
+	var r := {"khopesh": WeaponArt.KHOPESH["r"], "flagello": WeaponArt.FLAIL["r"], "scettro": WeaponArt.SCEPTRE["r"], "artigli": WeaponArt.CLAWS["r"]}.get(w, 0.0) as float
+	var center := pos
+	if w == "lancia" or w == "arco":
+		var reach: float = WeaponArt.SPEAR["reach"] if w == "lancia" else WeaponArt.BOW["reach"]
+		r = WeaponArt.SPEAR["r"] if w == "lancia" else WeaponArt.BOW["r"]
+		center = pos + aim_dir * minf(reach, pos.distance_to(target.global_position))
+	var inside := 0
+	var close := 0
+	var boss_in := false
+	for e in enemies:
+		var d: float = center.distance_to(e.global_position)
+		if d < r * 0.85 + e.radius:
+			inside += 1
+			if e.is_boss or e.miniboss:
+				boss_in = true
+		if pos.distance_to(e.global_position) < 26.0:
+			close += 1
+	if w == "artigli" and close >= 2:
+		return true
+	return inside >= 3 or boss_in or (close >= 2 and w != "lancia" and w != "arco")
 
 
 func _axis(neg: String, pos_action: String, v: float) -> void:
@@ -929,7 +969,7 @@ func _axis(neg: String, pos_action: String, v: float) -> void:
 
 
 func _release_all() -> void:
-	for a in ["move_left", "move_right", "move_up", "move_down", "aim_left", "aim_right", "aim_up", "aim_down", "attack", "special", "super", "dash"]:
+	for a in ["move_left", "move_right", "move_up", "move_down", "aim_left", "aim_right", "aim_up", "aim_down", "attack", "special", "super", "dash", "art"]:
 		Input.action_release(a)
 
 
@@ -982,7 +1022,7 @@ func _finish(g, forced: String = "") -> void:
 		boss_hp = snappedf(g.boss.hp / g.boss.max_hp, 0.01)
 	var data := {
 		"persona": persona, "exp": OS.get_environment("DUAT_EXP"), "tester": OS.get_environment("DUAT_TESTER"), "run_n": OS.get_environment("DUAT_RUN"), "seed": OS.get_environment("DUAT_SEED"), "result": result, "room": Run.room,
-		"music_odd": music_odd, "charged": charges_used, "dash_atk": dash_attacks, "spirit": {"dmg": Run.val("anubi_guide") if Run.has("anubi_guide") else 0.0, "kills": Run.spirit_kills, "rooms": sp_rooms, "chain_end": sp_chain_end, "chain_end_scarab": sp_chain_end_scarab}, "region": Run.region, "time": snappedf(gt, 0.1), "boss_time": snappedf(boss_time, 0.1), "boss_hp_left": boss_hp,
+		"music_odd": music_odd, "charged": charges_used, "arts": arts_used, "dash_atk": dash_attacks, "spirit": {"dmg": Run.val("anubi_guide") if Run.has("anubi_guide") else 0.0, "kills": Run.spirit_kills, "rooms": sp_rooms, "chain_end": sp_chain_end, "chain_end_scarab": sp_chain_end_scarab}, "region": Run.region, "time": snappedf(gt, 0.1), "boss_time": snappedf(boss_time, 0.1), "boss_hp_left": boss_hp,
 		"max_hp": Run.max_hp, "hp": Run.hp, "dmg_taken": dmg, "healed": snappedf(heals, 1),
 		"kills": Run.kills, "dmg_dealt": int(Run.damage_dealt), "ka": Run.ka,
 		"boons": Run.boons, "blessings": Run.blessings, "curses_left": Run.curses, "choices": choices,
