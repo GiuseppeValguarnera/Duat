@@ -33,6 +33,10 @@ static func color_of(kind: String, god: String) -> Color:
 			return Color(0.6, 0.85, 0.95)
 		"ptah":
 			return Incisions.COLOR
+		"hub_back":
+			return Color(0.55, 0.65, 1.0)
+		"tutorial_end":
+			return Color(0.95, 0.8, 0.45)
 	return Color(0.9, 0.9, 1.0)
 
 
@@ -120,7 +124,9 @@ static func draw_icon(ci: CanvasItem, kind: String, god: String, c: Vector2, s: 
 			var body := PackedVector2Array([c + Vector2(-1.6, 5.0) * s, c + Vector2(1.6, 5.0) * s, c + Vector2(1.2, -0.5) * s, c + Vector2(3.4, -2.8) * s, c + Vector2(2.0, -5.0) * s, c + Vector2(0, -5.6) * s, c + Vector2(-2.0, -5.0) * s, c + Vector2(-3.4, -2.8) * s, c + Vector2(-1.2, -0.5) * s])
 			ci.draw_colored_polygon(body, col)
 			ci.draw_circle(c + Vector2(0, -3.6) * s, 0.7 * s, OUTL)
-		"region", "desert":
+		"hub_back":
+			_god(ci, "anubi", c, s, col)
+		"region", "desert", "tutorial_end":
 			# l'akhet: il sole tra due monti
 			ci.draw_circle(c + Vector2(0, -0.6) * s, 2.6 * s, col)
 			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-6.0, 4.0) * s, c + Vector2(-3.4, -1.0) * s, c + Vector2(-1.0, 4.0) * s]), col)

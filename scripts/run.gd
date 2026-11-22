@@ -88,6 +88,8 @@ var mask_used := false                ## Capitolo 151: il primo colpo della stan
 var heart_used := false               # Capitolo 30 già usato in questa discesa
 var in_hub := false                   # true nella Sala del Giudizio
 var training := false                 # nel Cortile di Neith: non si muore
+var tutorial_replay := false          # blocco 27: l'addestramento rifatto dalla porta della Sala
+var from_training := false            # di ritorno dall'addestramento: l'eroe riappare davanti alla sua porta
 ## La prova della Sfinge (blocco 15, sphinx.gd): equipaggiamento fisso, niente meta-progressione.
 ## trial_hp/speed/dmg li imposta sphinx_trial.gd a ogni ondata.
 var trial := false

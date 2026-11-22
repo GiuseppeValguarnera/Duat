@@ -232,7 +232,7 @@ func _ready() -> void:
 		_banner(Lang.t("Discesa ripresa"), Lang.t("Stanza %d di %d") % [Run.room, Run.ROOMS_PER_RUN] if Run.room <= Run.ROOMS_PER_RUN else Lang.t("Am-heh"), Color(0.94, 0.72, 0.3))
 		return
 	# la primissima volta: la stanza dell'addestramento, poi la discesa vera
-	if not Meta.tutorial_done and OS.get_environment("DUAT_PERSONA") == "" and OS.get_environment("DUAT_NOTUT") == "":
+	if (Run.tutorial_replay or not Meta.tutorial_done) and OS.get_environment("DUAT_PERSONA") == "" and (OS.get_environment("DUAT_NOTUT") == "" or Run.tutorial_replay):
 		start_room({"kind": "tutorial"})
 		return
 	# per le prove: partire direttamente da Sokar
@@ -948,8 +948,10 @@ func _on_pickup_collected(p: Area2D) -> void:
 	match kind:
 		"ka":
 			if tut.step >= 0:
-				Run.ka += 10
-				Fx.float_text(player.global_position, Lang.t("+10 Ka"), Color(0.94, 0.72, 0.3))
+				# la prima volta 10 Ka per la discesa; rifatto dalla Sala niente (non si fa Ka ripetendolo)
+				if not Run.tutorial_replay:
+					Run.ka += 10
+					Fx.float_text(player.global_position, Lang.t("+10 Ka"), Color(0.94, 0.72, 0.3))
 				tut.next.call_deferred()
 				return
 			Run.ka += roundi(25 * Run.treasure_mult())
@@ -959,6 +961,9 @@ func _on_pickup_collected(p: Area2D) -> void:
 			player.heal(roundf(Run.max_hp * Run.nile_heal()))
 			_open_doors.call_deferred()
 		"lapis":
+			if tut.step >= 0:
+				tut.next.call_deferred()      # l'addestramento la fa solo vedere: niente pietre vere
+				return
 			Restorations.gain(randi_range(4, 5), player.global_position)
 			_open_doors.call_deferred()
 		"boon":
@@ -1115,6 +1120,13 @@ func _add_door(side: String, reward: Dictionary) -> void:
 func _on_door_chosen(d: Area2D) -> void:
 	Sfx.play("door")
 	var kind: String = d.reward["kind"]
+	if kind == "hub_back":
+		# dall'addestramento rifatto si torna alla Sala, davanti alla sua porta: nessuna discesa da contare
+		Run.tutorial_replay = false
+		Run.from_training = true
+		get_viewport().set_input_as_handled()
+		get_tree().change_scene_to_file("res://scenes/hub.tscn")
+		return
 	if kind == "boss":
 		_fade_to_room({"kind": "none"})
 		return

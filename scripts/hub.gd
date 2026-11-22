@@ -13,6 +13,7 @@ const DecorScript := preload("res://scripts/room_decor.gd")
 const ARMORY_Y := 218.0                   ## la porta del Cortile di Neith, nella parete ovest
 const CASA_Y := 218.0                     ## la porta della Casa della Vita, nella parete est
 const SPHINX_X := 616.0                   ## la porta della Sfinge, nella parete nord (blocco 15)
+const TRAIN_X := 240.0                    ## la porta dell'addestramento (blocco 27), tra gli stendardi di Thoth e di Horus
 
 var player
 var emerging: Rebirth.Emergence = null           ## la riemersione dal disco solare, finché dura (rebirth.gd)
@@ -179,6 +180,9 @@ func _build() -> void:
 	if Run.from_sphinx:
 		Run.from_sphinx = false
 		player.position = Vector2(SPHINX_X, TOP + 30.0)
+	if Run.from_training:
+		Run.from_training = false
+		player.position = Vector2(TRAIN_X, TOP + 30.0)
 	if Run.from_restore:
 		Run.from_restore = false
 		player.position = spots["cassa"] + Vector2(0, 30)
@@ -363,6 +367,10 @@ func _process(delta: float) -> void:
 		Meta.use_door("cortile")
 		Sfx.play("door")
 		get_tree().change_scene_to_file("res://scenes/armory.tscn")
+		return
+	# la porta dell'addestramento, a nord (blocco 27): si toglie dalle Opzioni
+	if _training_door() and player.global_position.y < TOP + 14.0 and absf(player.global_position.x - TRAIN_X) < 16.0:
+		_start_training()
 		return
 	# la porta della Sfinge, a nord: si attraversa quando è aperta (Sphinx.COST lapislazzuli)
 	if Sphinx.is_open() and player.global_position.y < TOP + 14.0 and absf(player.global_position.x - SPHINX_X) < 16.0:
@@ -796,6 +804,19 @@ func _offer_feather() -> void:
 		row.add_child(b)
 		if opt[1]:
 			b.grab_focus.call_deferred()
+
+
+func _training_door() -> bool:
+	return Meta.options.get("tut_door", true) and Meta.runs > 0
+
+
+## Rifare l'addestramento: la stanza di Anubi, con la porta per tornare qui e quella per scendere.
+func _start_training() -> void:
+	Run.tutorial_replay = true
+	Meta.use_door("addestramento")
+	Sfx.play("door")
+	get_viewport().set_input_as_handled()
+	get_tree().change_scene_to_file("res://scenes/game.tscn")
 
 
 func _start_run() -> void:
@@ -1933,6 +1954,23 @@ func _draw_sphinx_door(ci: CanvasItem, pulse: float) -> void:
 	ci.draw_rect(Rect2(hc.x + 1, hc.y - 1, 3, 1.5), eye)
 
 
+## La porta dell'addestramento (blocco 27): un varco più piccolo del cancello, luce azzurra di Anubi e
+## lo sciacallo d'oro sopra.
+func _draw_training_door(ci: CanvasItem, pulse: float) -> void:
+	var x := TRAIN_X
+	var gold := Color(0.94, 0.72, 0.3)
+	ci.draw_rect(Rect2(x - 18, WALL, 36, TOP - WALL + 4), Color(0.02, 0.02, 0.05))
+	ci.draw_rect(Rect2(x - 16, WALL + 2, 32, TOP - WALL), Color(0.45, 0.55, 0.95, 0.35 + 0.2 * pulse))
+	ci.draw_rect(Rect2(x - 8, WALL + 8, 16, TOP - WALL - 6), Color(0.75, 0.82, 1.0, 0.2 + 0.15 * pulse))
+	ci.draw_colored_polygon(PackedVector2Array([Vector2(x - 16, TOP + 2), Vector2(x + 16, TOP + 2), Vector2(x + 28, TOP + 44), Vector2(x - 28, TOP + 44)]), Color(0.6, 0.7, 1.0, 0.05 + 0.03 * pulse))
+	ci.draw_rect(Rect2(x - 22, WALL - 4, 44, 4), gold)
+	ci.draw_rect(Rect2(x - 22, WALL - 4, 4, TOP - WALL + 8), gold)
+	ci.draw_rect(Rect2(x + 18, WALL - 4, 4, TOP - WALL + 8), gold)
+	ci.draw_circle(Vector2(x, WALL - 12), 9.0, Color(0.06, 0.04, 0.08))
+	ci.draw_arc(Vector2(x, WALL - 12), 9.0, 0.0, TAU, 20, gold, 1.2)
+	DoorEmblem.draw_icon(ci, "boon", "anubi", Vector2(x, WALL - 12), 1.1, gold)
+
+
 ## Il nome sopra ogni porta della Sala (blocco 15): oro se aperta, pietra se ancora chiusa.
 ## Il segnale a terra e la bolla col tasto sulla cosa vicina che si può usare (blocco 23). Le porte
 ## aperte si attraversano camminando: niente bolla lì.
@@ -1981,6 +2019,7 @@ func _draw_door_names(ci: CanvasItem) -> void:
 	var names := [
 		[Lang.t("Discesa nel Duat"), Vector2(cx, WALL + 11.0), 0, true],
 		[Lang.t("La Sfinge"), Vector2(SPHINX_X, 11.0), 0, Sphinx.is_open()],
+		[Lang.t("Addestramento"), Vector2(TRAIN_X, 11.0), 0, _training_door()],
 		[Lang.t("Cortile di Neith"), Vector2(WALL + 3.0, ARMORY_Y - 54.0), -1, Meta.serpent_wins > 0],
 		[Lang.t("Casa della Vita"), Vector2(ROOM.size.x - WALL - 3.0, CASA_Y - 56.0), 1, Meta.casa],
 	]
@@ -2881,5 +2920,7 @@ class HubFront extends Node2D:
 	func _draw() -> void:
 		var pulse := 0.5 + 0.5 * sin(hub.t * 2.0)
 		hub._draw_sphinx_door(self, pulse)
+		if hub._training_door():
+			hub._draw_training_door(self, pulse)
 		hub._draw_door_names(self)
 		hub._draw_scale(self, hub.spots["bilancia"])

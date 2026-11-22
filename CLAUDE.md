@@ -749,6 +749,18 @@ quarto giro con tutti e dieci i doni dell'arma insieme. Bilanciamento NON misura
   righe con spazi non divisibili (`_end_run_summary`), testo delle Lacrime generico (`_victory_boss`).
 - Il CSV delle traduzioni va scritto con `lineterminator='\n'` (con `csv.writer` di default diventa `\r\n` e il diff esplode).
 
+**Blocco 27 (22/11/2026) – addestramento completo e porta per rifarlo**.
+- *Passi* (`scripts/tutorial.gd`, `STEPS` 10): cammino, combo, attacco caricato (avanza quando riparte `player.charge_cd`),
+  scatto e colpo in corsa, Occhio, Arte (avanza quando riparte `player.art_cd`), Ka, lapislazzuli (raccolta finta: niente
+  pietre vere), Lacrime di Iside (solo da leggere: attacco/interagisci o 14 s, `INFO_TIME`), porte (con le steli). Comandi
+  nuovi in `ctl()`: charge, art, next; sul telefono "il pulsante d'attacco" (non più KHOPESH).
+- *Porta della Sala* (`hub.gd` `TRAIN_X` 240, tra gli stendardi di Thoth e Horus; `_training_door()` = opzione
+  `Meta.options.tut_door` (di base sì) e almeno una discesa fatta; `_draw_training_door` in HubFront, nome «Addestramento»):
+  `Run.tutorial_replay` → game.gd parte con la stanza `tutorial`; porta sud `hub_back` (torna alla Sala, `Run.from_training`,
+  nessuna discesa contata) subito, porta nord `tutorial_end` all'ultimo passo. «Salta» nel rifatto porta all'ultimo passo.
+  Rifatto: niente Ka. Opzione «Porta dell'addestramento» in `options_menu.gd` (`tut_door`). Steli: `hub_back` = sciacallo,
+  `tutorial_end` = akhet. Prova `tools/dev/tutsmoke.gd` nel controllo d'avvio.
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima

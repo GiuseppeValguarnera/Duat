@@ -184,6 +184,10 @@
 - correzioni: colonne e profondità, coccodrilli sotto il pavimento, mira automatica sul telefono,
   "Esci" sul web, musica dei guardiani, Scettro Was più chiaro
 
+## Blocco 27 (22/11/2026)
+- Addestramento con attacco caricato, colpo in corsa, Arte dell'arma, lapislazzuli e Lacrime di Iside.
+- Porta dell'addestramento nella Sala (accanto al cancello): da lì si torna alla Sala o si comincia la discesa; si toglie dalle Opzioni.
+
 ## Blocco 26c (22/11/2026)
 - Meno Lacrime (un gradino a vittoria) e meno Ka (Peso, regioni, frequenza).
 - Porta del martello più frequente, sicura una volta per regione.

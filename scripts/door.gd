@@ -81,6 +81,8 @@ func reward_label() -> String:
 			return Lang.t("Il deserto")
 		"tutorial_end":
 			return Lang.t("La discesa")
+		"hub_back":
+			return Lang.t("La Sala")
 		_:
 			return Lang.t("Uscita")
 
@@ -130,6 +132,8 @@ func _base_description() -> String:
 			return Lang.t("L'incudine di Ptah: incidi un segno sulla tua arma. Due segni vicini formano una lega")
 		"tutorial_end":
 			return Lang.t("Comincia la discesa: Anubi ti aspetta con il primo dono")
+		"hub_back":
+			return Lang.t("Torna alla Sala del Giudizio")
 		_:
 			return Lang.t("Uscita: fine della discesa di prova")
 

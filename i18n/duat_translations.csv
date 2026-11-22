@@ -1082,6 +1082,7 @@ Traghettatore,Traghettatore,Ferryman
 Martello di Ptah,Martello di Ptah,Ptah's Hammer
 Il deserto,Il deserto,The desert
 La discesa,La discesa,The Descent
+La Sala,La Sala,The Hall
 Uscita,Uscita,Exit
 " · sala tranquilla, senza nemici"," · sala tranquilla, senza nemici"," · a quiet hall, no enemies"
 Dono di %s: scegli uno dei suoi poteri,Dono di %s: scegli uno dei suoi poteri,Boon of %s: choose one of their powers
@@ -1102,6 +1103,7 @@ Il Traghettatore: spendi il Ka della discesa (quello che spendi non torna a casa
 "Il deserto di Sokar: da qui la discesa ricomincia, più dura","Il deserto di Sokar: da qui la discesa ricomincia, più dura","The desert of Sokar: from here the descent begins again, harder"
 L'incudine di Ptah: incidi un segno sulla tua arma. Due segni vicini formano una lega,L'incudine di Ptah: incidi un segno sulla tua arma. Due segni vicini formano una lega,Ptah's anvil: engrave a sign on your weapon. Two adjacent signs form an alloy
 Comincia la discesa: Anubi ti aspetta con il primo dono,Comincia la discesa: Anubi ti aspetta con il primo dono,The descent begins: Anubis awaits you with the first boon
+Torna alla Sala del Giudizio,Torna alla Sala del Giudizio,Return to the Hall of Judgement
 Uscita: fine della discesa di prova,Uscita: fine della discesa di prova,Exit: end of the test descent
 Schivata!,Schivata!,Dodged!
 Colpito! Scatta mentre arriva,Colpito! Scatta mentre arriva,Hit! Dash as it comes
@@ -2652,7 +2654,7 @@ la levetta sinistra,la levetta sinistra,the left stick
 la levetta a sinistra,la levetta a sinistra,the stick on the left
 W A S D (o le frecce),W A S D (o le frecce),W A S D (or the arrows)
 X o RB,X o RB,X or RB
-il pulsante KHOPESH,il pulsante KHOPESH,the KHOPESH button
+il pulsante d'attacco,il pulsante d'attacco,the attack button
 il clic sinistro (o J),il clic sinistro (o J),left click (or J)
 A o LB,A o LB,A or LB
 il pulsante SCATTO,il pulsante SCATTO,the DASH button
@@ -2660,18 +2662,35 @@ Spazio,Spazio,Space
 Y o RT,Y o RT,Y or RT
 il pulsante OCCHIO,il pulsante OCCHIO,the EYE button
 il clic destro (o L),il clic destro (o L),right click (or L)
+tieni premuto X,tieni premuto X,hold X
+tieni premuto il pulsante d'attacco,tieni premuto il pulsante d'attacco,hold the attack button
+tieni premuto il clic sinistro (o J),tieni premuto il clic sinistro (o J),hold left click (or J)
+il pulsante ARTE,il pulsante ARTE,the ART button
+C (o la rotella del mouse premuta),C (o la rotella del mouse premuta),C (or press the mouse wheel)
+X,X,X
+il clic sinistro,il clic sinistro,left click
 Salta ›,Salta ›,Skip ›
 Il cammino,Il cammino,The Path
 Anubi ti fa provare le armi prima della discesa. Muoviti con %s.,Anubi ti fa provare le armi prima della discesa. Muoviti con %s.,Anubis lets you try your weapons before the descent. Move with %s.
-Il khopesh,Il khopesh,The Khopesh
-Rompi i due fantocci con %s. Il terzo colpo di fila è il più forte.,Rompi i due fantocci con %s. Il terzo colpo di fila è il più forte.,Break the two dummies with %s. The third strike in a row is the strongest.
+La combo,La combo,The combo
+Rompi i due fantocci con %s (%s). Colpi di fila fanno una combo: il terzo è il più forte.,Rompi i due fantocci con %s (%s). Colpi di fila fanno una combo: il terzo è il più forte.,Break the two dummies with %s (%s). Hits in a row make a combo: the third is the strongest.
+L'attacco caricato,L'attacco caricato,The charged attack
+Ora %s per un secondo: il cerchio sopra la testa si riempie. Lascia a cerchio pieno: è il colpo più forte dell'arma. Poi il cerchio si ricarica.,Ora %s per un secondo: il cerchio sopra la testa si riempie. Lascia a cerchio pieno: è il colpo più forte dell'arma. Poi il cerchio si ricarica.,Now %s for a second: the circle above your head fills up. Release when it's full: it's the weapon's strongest strike. Then the circle recharges.
 Lo scatto,Lo scatto,The Dash
-"Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte.","Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte.","Red = about to strike. When the mummy charges press %s: while dashing nothing can touch you. You have two dashes, then a short pause (the dots under your feet). Dodge it 2 times."
+"Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Se attacchi subito dopo lo scatto fai un colpo in corsa, più forte. Schivala 2 volte.","Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Se attacchi subito dopo lo scatto fai un colpo in corsa, più forte. Schivala 2 volte.","Red = about to strike. When the mummy charges press %s: while dashing nothing can touch you. You have two dashes, then a short pause (the dots under your feet). Attack right after a dash for a running strike, stronger. Dodge it twice."
 I fantocci azzurri si rompono solo con l'Occhio: %s. Si ricarica da solo (il cerchio in alto).,I fantocci azzurri si rompono solo con l'Occhio: %s. Si ricarica da solo (il cerchio in alto).,The blue dummies break only with the Eye: %s. It recharges on its own (the circle at the top).
+L'Arte dell'arma,L'Arte dell'arma,The weapon's Art
+"Avvicinati al gruppo e premi %s: l'Arte, un colpo ad area diverso per ogni arma. Si ricarica in circa 9 secondi: l'icona accanto alla vita ti dice quando è pronta.","Avvicinati al gruppo e premi %s: l'Arte, un colpo ad area diverso per ogni arma. Si ricarica in circa 9 secondi: l'icona accanto alla vita ti dice quando è pronta.","Get close to the group and press %s: the Art, an area strike that's different for every weapon. It recharges in about 9 seconds: the icon next to your health tells you when it's ready."
 Il Ka,Il Ka,Ka
-"Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.","Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.","Pick up the golden light: it is Ka, your life force. It stays yours even if you die: in the Hall you spend it in the Book of the Dead for permanent powers."
+"Raccogli la luce d'oro: è Ka, la tua forza vitale. Durante la discesa lo spendi dal Traghettatore; quello che ti resta lo custodisci anche se muori, e nella Sala compra i capitoli del Libro dei Morti.","Raccogli la luce d'oro: è Ka, la tua forza vitale. Durante la discesa lo spendi dal Traghettatore; quello che ti resta lo custodisci anche se muori, e nella Sala compra i capitoli del Libro dei Morti.","Pick up the golden light: it's Ka, your life force. During the descent you spend it at the Ferryman; what's left you keep even if you die, and in the Hall it buys the chapters of the Book of the Dead."
+I lapislazzuli,I lapislazzuli,Lapis lazuli
+"La pietra blu: i lapislazzuli. Li danno guardiani, boss, il serdab e alcune porte. Nella Sala servono a tutto il resto: restauri, la Casa della Vita, la Sfinge, armi nuove, amuleti, evoluzioni delle armi.","La pietra blu: i lapislazzuli. Li danno guardiani, boss, il serdab e alcune porte. Nella Sala servono a tutto il resto: restauri, la Casa della Vita, la Sfinge, armi nuove, amuleti, evoluzioni delle armi.","The blue stone: lapis lazuli. Guardians, bosses, the serdab and some doors give it. In the Hall it pays for everything else: restorations, the House of Life, the Sphinx, new weapons, amulets, weapon evolutions."
+Le Lacrime di Iside,Le Lacrime di Iside,The Tears of Isis
+"Le più rare: le dà solo un boss di regione, la prima volta che lo batti con un'arma (e di nuovo con un Peso del Cuore più alto). Servono per gli aspetti delle armi, nel Cortile di Neith, e per i capitoli più alti del Libro. Premi %s per continuare.","Le più rare: le dà solo un boss di regione, la prima volta che lo batti con un'arma (e di nuovo con un Peso del Cuore più alto). Servono per gli aspetti delle armi, nel Cortile di Neith, e per i capitoli più alti del Libro. Premi %s per continuare.","The rarest: only a region boss gives them, the first time you beat it with a weapon (and again with a higher Weight of the Heart). They pay for weapon aspects, in Neith's Courtyard, and for the highest chapters of the Book. Press %s to continue."
+"Davanti a ogni porta una stele mostra la ricompensa: il segno di un dio è un dono, poi Ka, lapislazzuli, cura, il Traghettatore. Avvicinati e premi E (Y sul pad, ENTRA sul telefono).","Davanti a ogni porta una stele mostra la ricompensa: il segno di un dio è un dono, poi Ka, lapislazzuli, cura, il Traghettatore. Avvicinati e premi E (Y sul pad, ENTRA sul telefono).","In front of every door a stele shows the reward: a god's sign is a boon, then Ka, lapis lazuli, healing, the Ferryman. Get close and press E (Y on the pad, ENTER on the phone)."
+"La porta a nord comincia la discesa, quella da cui sei entrato ti riporta alla Sala.","La porta a nord comincia la discesa, quella da cui sei entrato ti riporta alla Sala.","The north door starts the descent, the one you came in through takes you back to the Hall."
+Comincia la discesa.,Comincia la discesa.,Begin the descent.
 Le porte,Le porte,The Doors
-"Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Avvicinati e premi E (Y sul pad, ENTRA sul telefono): comincia la discesa.","Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Avvicinati e premi E (Y sul pad, ENTRA sul telefono): comincia la discesa.","Above each door is its reward. The arrows at the edge point to doors off screen. Step close and press E (Y on the pad, ENTER on the phone): the descent begins."
 "
 %s: %s","
 %s: %s","
@@ -2709,6 +2728,8 @@ Il gioco si ferma per un istante quando un colpo va a segno.,Il gioco si ferma p
 Il gioco occupa tutto lo schermo. Scorciatoia: tasto F; Esc per uscire.,Il gioco occupa tutto lo schermo. Scorciatoia: tasto F; Esc per uscire.,The game fills the whole screen. Shortcut: F key; Esc to leave.
 Mostra le frecce,Mostra le frecce,Show the arrows
 "Le frecce a terra nella Sala che indicano le porte (discesa, Casa della Vita, Cortile di Neith, Sfinge). Di solito spariscono dopo che hai usato una porta la prima volta: accese, restano sempre.","Le frecce a terra nella Sala che indicano le porte (discesa, Casa della Vita, Cortile di Neith, Sfinge). Di solito spariscono dopo che hai usato una porta la prima volta: accese, restano sempre.","The arrows on the floor of the Hall that point to the doors (descent, House of Life, Courtyard of Neith, Sphinx). Usually they disappear after you've used a door for the first time: when on, they always stay."
+Porta dell'addestramento,Porta dell'addestramento,Training door
+"La porta nella Sala, accanto al cancello, che riporta all'addestramento di Anubi: da lì torni alla Sala o cominci la discesa.","La porta nella Sala, accanto al cancello, che riporta all'addestramento di Anubi: da lì torni alla Sala o cominci la discesa.","The door in the Hall, next to the gate, that takes you back to Anubis's training: from there you return to the Hall or begin the descent."
 Mostra aree di danno,Mostra aree di danno,Show damage areas
 "Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.","Disegna le zone vere dei colpi dei nemici (corpo, salti, cariche, esplosioni, proiettili) e la tua sagoma. Serve a capire cosa ti ha colpito.","Draws the real hit zones of enemies (body, leaps, charges, blasts, projectiles) and your own outline. It helps you understand what hit you."
 Crediti,Crediti,Credits
@@ -2820,6 +2841,7 @@ Batti il Serpente della Porta tre volte (%d/3),Batti il Serpente della Porta tre
 "Batti Serket, oppure compi 25 discese (%d/25)","Batti Serket, oppure compi 25 discese (%d/25)","Beat Serket, or complete 25 descents (%d/25)"
 "Batti Aker, oppure compi 40 discese (%d/40)","Batti Aker, oppure compi 40 discese (%d/40)","Beat Aker, or complete 40 descents (%d/40)"
 Claws,Claws,Claws
+Il khopesh,Il khopesh,The Khopesh
 Gli artigli,Gli artigli,The claws
 del khopesh,del khopesh,of the khopesh
 degli artigli,degli artigli,of the claws
@@ -2867,6 +2889,11 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+il pulsante KHOPESH,il pulsante KHOPESH,the KHOPESH button
+Rompi i due fantocci con %s. Il terzo colpo di fila è il più forte.,Rompi i due fantocci con %s. Il terzo colpo di fila è il più forte.,Break the two dummies with %s. The third strike in a row is the strongest.
+"Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte.","Rosso = sta per colpire. Quando la mummia carica premi %s: durante lo scatto nulla ti tocca. Hai due scatti, poi una breve pausa (i puntini sotto i piedi). Schivala 2 volte.","Red = about to strike. When the mummy charges press %s: while dashing nothing can touch you. You have two dashes, then a short pause (the dots under your feet). Dodge it 2 times."
+"Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.","Raccogli la luce d'oro: è Ka, la tua forza vitale. Resta tuo anche se muori: nella Sala lo spendi nel Libro dei Morti per poteri permanenti.","Pick up the golden light: it is Ka, your life force. It stays yours even if you die: in the Hall you spend it in the Book of the Dead for permanent powers."
+"Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Avvicinati e premi E (Y sul pad, ENTRA sul telefono): comincia la discesa.","Sopra ogni porta c'è la sua ricompensa. Le frecce sul bordo indicano le porte fuori schermo. Avvicinati e premi E (Y sul pad, ENTRA sul telefono): comincia la discesa.","Above each door is its reward. The arrows at the edge point to doors off screen. Step close and press E (Y on the pad, ENTER on the phone): the descent begins."
 I nemici abbattuti lasciano il loro Ka più spesso: il {v}% delle volte invece del 40%.,I nemici abbattuti lasciano il loro Ka più spesso: il {v}% delle volte invece del 40%.,Slain enemies drop their Ka more often: {v}% of the time instead of 40%.
 Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Time %d:%02d   ·   Enemies slain %d   ·   Damage dealt %d
 Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Boons gathered %d   ·   Ka gathered %d%s   ·   Stored Ka %d

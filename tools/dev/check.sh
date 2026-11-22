@@ -47,6 +47,8 @@ DUAT_NOTUT=1 DUAT_REGION2=1 HOME="$HOMEDIR" timeout 120 "$G" --headless --fixed-
 DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 110 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/shezmusmoke.gd >> "$OUT/run.txt" 2>&1
 # il Banco di Apopi (blocco 21): tipi di stanza, fascio di Ra, scaglie, pali, Divoratore, velo (tools/dev/bancosmoke.gd)
 DUAT_NOTUT=1 HOME="$HOMEDIR" timeout 110 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/bancosmoke.gd >> "$OUT/run.txt" 2>&1
+# l'addestramento rifatto dalla Sala (blocco 27): tutti i passi e le due porte (tools/dev/tutsmoke.gd)
+HOME="$HOMEDIR" timeout 90 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/tutsmoke.gd >> "$OUT/run.txt" 2>&1
 # le incisioni di Ptah (blocco 26): menu dell'incudine, tutte le leghe con armi diverse (tools/dev/ptahsmoke.gd)
 DUAT_NOTUT=1 DUAT_PTAH=1 HOME="$HOMEDIR" timeout 150 "$G" --headless --fixed-fps 60 --path . --script res://tools/dev/ptahsmoke.gd >> "$OUT/run.txt" 2>&1
 # l'Arte dell'arma (blocco 23): ogni arma, base ed evoluzioni (tools/dev/artsmoke.gd)
