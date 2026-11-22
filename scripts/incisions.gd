@@ -11,8 +11,9 @@ const SLOTS := 3
 const LAPIS_PER_ALLOY := 5                ## lapislazzuli per ogni lega scoperta
 const REGISTRY_LAPIS := 30                ## registro completo (tutte e 12): una volta sola
 ## La porta del martello: sempre a caso, mai in momenti fissi.
-const DOOR_CHANCE := 0.10                 ## probabilità a ogni scelta di porte
-const DOOR_STEP := 0.03                   ## +3% a ogni scelta senza martello
+const DOOR_CHANCE := 0.15                 ## probabilità a ogni scelta di porte (blocco 26c: era 0,10)
+const DOOR_STEP := 0.05                   ## +5% a ogni scelta senza martello (era 3%)
+const DOOR_SURE_ROOM := 6                 ## se in una regione non è ancora uscita, dalla stanza 6 esce di sicuro
 const DOOR_MAX_REGION := 2                ## al massimo due incudini per regione
 const DOOR_GAP := 2                       ## almeno due stanze tra un'incudine e l'altra
 const COLOR := Color(1.0, 0.58, 0.22)     ## il bronzo rovente della fucina di Ptah

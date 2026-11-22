@@ -6,7 +6,7 @@ class_name Weights
 ## Ogni peso ha da 1 a 2 livelli; il Peso totale è la somma dei livelli.
 ## Bonus di Ka: +10% per ogni livello di peso, applicato quando il Ka viene custodito.
 
-const KA_PER_WEIGHT := 0.10
+const KA_PER_WEIGHT := 0.05                   ## blocco 26c: era 0,10 (Peso 13 = +130% di Ka)
 
 const ALL_IT := {
 	"piombo": {"name": "Piume di piombo", "max": 2, "desc": "I nemici hanno il 20% di vita in più per livello."},

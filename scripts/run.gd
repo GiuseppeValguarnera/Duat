@@ -32,7 +32,7 @@ func next_apep_type() -> String:
 
 const APEP_READY := true
 const APEP_DAMAGE := 1.5              ## danni subiti nel Banco (Sokar ×1,25)
-const APEP_KA := 1.5
+const APEP_KA := 1.2                         ## blocco 26c: era 1,5 (troppo Ka a fine gioco)
 var apep_order: Array = []            ## Banco di Apopi: l'ordine dei quattro tipi di stanza di questa discesa
 var apep_type := ""                  ## il tipo della stanza di adesso: barca, pozze, pali, torchio ("" altrove)
 var region := 1
@@ -668,7 +668,7 @@ func feather_halff(x: float) -> float:
 ## Sokar è la seconda tappa: colpisce più forte e lascia più Ka. La vita dei nemici segue la curva
 ## delle regioni (region_hp_curve).
 const SOKAR_DAMAGE := 1.25
-const SOKAR_KA := 1.25
+const SOKAR_KA := 1.1                        ## blocco 26c: era 1,25
 ## La curva della vita dei nemici, uguale per tutte le regioni (anche future): Wernes parte da 1 e
 ## sale di REGION_STEP a stanza; ogni regione dopo parte dall'ultima stanza della precedente
 ## +REGION_JUMP e sale con un passo doppio. Wernes 1,00 → 1,54; Sokar 1,77 → 2,85.
@@ -688,6 +688,52 @@ static func region_hp_curve(reg: int, rm: int) -> float:
 		base = (base + step * (ROOMS_PER_RUN - 1)) * REGION_JUMP
 		step *= 2.0
 	return base + step * (clampi(rm, 1, ROOMS_PER_RUN) - 1)
+
+
+## --- La bilancia nascosta (blocco 26c) ------------------------------------------------------------
+## Più doni accumuli OLTRE il normale per la profondità, più i nemici crescono, in silenzio (niente HUD,
+## niente testi). Chi sta nella media non sente nulla. Nemici normali: vita e danni; boss e guardiani:
+## solo vita e della metà (così una stanza normale non diventa più dura del suo guardiano).
+const HIDDEN_PER_DEPTH := 0.8          ## "punti di potere" attesi per ogni stanza di profondità
+const HIDDEN_FREE := 1.0               ## margine prima che conti
+const HIDDEN_HP := 0.02                ## +2% di vita per punto in più
+const HIDDEN_HP_MAX := 0.25
+const HIDDEN_DMG := 0.01               ## +1% di danni per punto in più
+const HIDDEN_DMG_MAX := 0.12
+const HIDDEN_BIG := 0.5                ## boss e guardiani: metà della vita in più, niente danni in più
+
+
+## I punti di potere: 1 a dono (1,5 se doppio, pesante o raro), +0,5 a livello in più, 1 a incisione,
+## 1 a lega. I patti di Set e i doni della Sfinge non contano.
+func power_points() -> float:
+	var pts := 0.0
+	for id in boons:
+		if not Boons.ALL.has(id):
+			continue
+		var b: Dictionary = Boons.ALL[id]
+		var special: bool = b.get("god", "") == "duo" or b.get("heavy", false) or Boons.is_rare(id)
+		pts += 1.5 if special else 1.0
+		pts += 0.5 * maxf(0.0, float(boons[id]) - 1.0)
+	for g in incisions:
+		if g != "":
+			pts += 1.0
+	pts += float(alloys.size())
+	return pts
+
+
+func power_excess() -> float:
+	if trial or in_hub:
+		return 0.0
+	return maxf(0.0, power_points() - HIDDEN_PER_DEPTH * depth(region, room) - HIDDEN_FREE)
+
+
+func hidden_hp(big: bool) -> float:
+	var k := minf(HIDDEN_HP_MAX, HIDDEN_HP * power_excess())
+	return k * HIDDEN_BIG if big else k
+
+
+func hidden_dmg() -> float:
+	return minf(HIDDEN_DMG_MAX, HIDDEN_DMG * power_excess())
 
 
 func enemy_hp_mult() -> float:

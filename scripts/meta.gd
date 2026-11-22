@@ -236,16 +236,28 @@ func use_door(id: String) -> void:
 ## Peso del Cuore a 4 e a 8. Restituisce quante Lacrime sono arrivate (0 = già prese con quest'arma).
 const TEAR_TIERS := [0, 4, 8]
 
+## Blocco 26c: UN gradino a vittoria (il primo che manca e che il Peso attuale permette). Prima, vincendo
+## la prima volta con il Peso già a 8, arrivavano tutti e tre i gradini insieme (+9 con Apopi).
 func claim_boss(boss: String, per_tier: int) -> int:
 	if feather:
 		return 0                # con la Piuma di Ma'at niente Lacrime "prima volta con quest'arma" (resta da prendere dopo)
 	var w := Weights.total()
-	var gained := 0
 	for tier in TEAR_TIERS:
 		var key := "%s|%s|%d" % [boss, Run.weapon, tier]
-		if w >= tier and not first_kills.has(key):
-			first_kills[key] = true
-			gained += per_tier
-	tears += gained
-	save()
-	return gained
+		if first_kills.has(key):
+			continue
+		if w < tier:
+			break
+		first_kills[key] = true
+		tears += per_tier
+		save()
+		return per_tier
+	return 0
+
+
+## Il Peso del Cuore che serve per le prossime Lacrime di questo boss con l'arma di ora (-1 = prese tutte).
+func next_tear_tier(boss: String) -> int:
+	for tier in TEAR_TIERS:
+		if not first_kills.has("%s|%s|%d" % [boss, Run.weapon, tier]):
+			return tier
+	return -1

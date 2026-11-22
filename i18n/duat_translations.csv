@@ -809,7 +809,7 @@ Il cuore restituito,Il cuore restituito,The heart restored
 I nemici abbattuti hanno il {v}% di probabilità di lasciare un cuore che ti cura di {h} punti vita.,I nemici abbattuti hanno il {v}% di probabilità di lasciare un cuore che ti cura di {h} punti vita.,Felled enemies have a {v}% chance to drop a heart that heals you for {h} health.
 "Con il capitolo 26 il morto riceve di nuovo il suo cuore, l'ib: 'Il mio cuore è con me, e non mi sarà tolto'. Per gli Egizi si pensava con il cuore, non con il cervello, che i mummificatori buttavano via.","Con il capitolo 26 il morto riceve di nuovo il suo cuore, l'ib: 'Il mio cuore è con me, e non mi sarà tolto'. Per gli Egizi si pensava con il cuore, non con il cervello, che i mummificatori buttavano via.","With chapter 26 the dead receive their heart again, the ib: 'My heart is with me, and it shall not be taken from me'. The Egyptians believed one thought with the heart, not with the brain, which the embalmers threw away."
 Per soddisfare il Ka,Per soddisfare il Ka,To Satisfy the Ka
-I nemici abbattuti lasciano il loro Ka più spesso: il {v}% delle volte invece del 40%.,I nemici abbattuti lasciano il loro Ka più spesso: il {v}% delle volte invece del 40%.,Slain enemies drop their Ka more often: {v}% of the time instead of 40%.
+I nemici abbattuti lasciano il loro Ka più spesso: il {v}% delle volte invece del 30%.,I nemici abbattuti lasciano il loro Ka più spesso: il {v}% delle volte invece del 30%.,Slain enemies drop their Ka more often: {v}% of the time instead of 30%.
 "La formula 105 del Libro dei Morti serviva a nutrire il Ka, la forza vitale del morto: senza offerte il Ka aveva fame, e un Ka affamato poteva tornare a tormentare i vivi.","La formula 105 del Libro dei Morti serviva a nutrire il Ka, la forza vitale del morto: senza offerte il Ka aveva fame, e un Ka affamato poteva tornare a tormentare i vivi.","Spell 105 of the Book of the Dead fed the Ka, the life force of the dead: without offerings the Ka went hungry, and a hungry Ka could come back to haunt the living."
 Le porte aperte,Le porte aperte,The Open Gates
 Dopo ogni stanza si aprono sempre tre porte.,Dopo ogni stanza si aprono sempre tre porte.,After every chamber three doors always open.
@@ -1402,9 +1402,13 @@ Aker è caduto,Aker è caduto,Aker has fallen
 Il sole tra le montagne trema... e non sorge,Il sole tra le montagne trema... e non sorge,The sun between the mountains trembles... and does not rise
 Apopi è legato,Apopi è legato,Apep is bound
 Non muore: nessuno può ucciderlo. Ma stanotte la barca passa,Non muore: nessuno può ucciderlo. Ma stanotte la barca passa,He does not die: no one can kill him. But tonight the barque passes
-Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Time %d:%02d   ·   Enemies slain %d   ·   Damage dealt %d
-Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Boons gathered %d   ·   Ka gathered %d%s   ·   Stored Ka %d
+Ka raccolto %d,Ka raccolto %d,Ka gathered %d
  (Peso del Cuore +%d%%), (Peso del Cuore +%d%%), (Weight of the Heart +%d%%)
+Tempo %d:%02d,Tempo %d:%02d,Time %d:%02d
+Nemici abbattuti %d,Nemici abbattuti %d,Enemies slain %d
+Danni inflitti %d,Danni inflitti %d,Damage dealt %d
+Doni raccolti %d,Doni raccolti %d,Boons gathered %d
+Ka custodito %d,Ka custodito %d,Ka kept %d
 "
 Nuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti","
 Nuovi poteri: il Sekhem e la Forma Divina (Q / LT), e un posto in più nel Libro dei Morti","
@@ -1418,13 +1422,13 @@ A memory has resurfaced: «%s». You will find it in the Scrolls of Thoth"
 +%d Lacrime di Iside, prima vittoria con %s (ne hai %d)","
 +%d Tears of Isis, first victory with %s (you have %d)"
 "
-Con %s hai già le Lacrime di Aker: prova un'altra arma, o un Peso del Cuore più alto","
-Con %s hai già le Lacrime di Aker: prova un'altra arma, o un Peso del Cuore più alto","
-With %s you already have Aker's Tears: try another weapon, or a heavier Weight of the Heart"
+Con %s hai già tutte le Lacrime di questo boss: prova un'altra arma","
+Con %s hai già tutte le Lacrime di questo boss: prova un'altra arma","
+With %s you already have all of this boss's Tears: try another weapon"
 "
-Con %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto","
-Con %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto","
-With %s you already have Am-heh's Tears: try another weapon, or a higher Weight of the Heart"
+Con %s le prossime Lacrime arrivano con il Peso del Cuore a %d","
+Con %s le prossime Lacrime arrivano con il Peso del Cuore a %d","
+With %s the next Tears come with the Weight of the Heart at %d"
 "Hai sconfitto Am-heh!
 La Prima Ora è superata. Le altre ore della notte ti attendono.","Hai sconfitto Am-heh!
 La Prima Ora è superata. Le altre ore della notte ti attendono.","You defeated Am-heh!
@@ -1458,7 +1462,6 @@ Piuma di Ma'at: -%d%% danni,Piuma di Ma'at: -%d%% danni,Feather of Ma'at: -%d%% 
 Tab / Select: i tuoi doni,Tab / Select: i tuoi doni,Tab / Select: your boons
     Maledizione: %s (ancora %d stanze),    Maledizione: %s (ancora %d stanze),    Curse: %s (%d chambers left)
     Was %d/5 (+%d%% danni),    Was %d/5 (+%d%% danni),    Was %d/5 (+%d%% damage)
-Tempo %d:%02d,Tempo %d:%02d,Time %d:%02d
   ·  record %d:%02d,  ·  record %d:%02d,  ·  record %d:%02d
 "%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, ne hai %d)","%s · %s: %s (%d Ka, you have %d)"
 %s · Sali sulla barca di Mahaf: verso la terra di Sokar,%s · Sali sulla barca di Mahaf: verso la terra di Sokar,%s · Board Mahaf's barque: toward the land of Sokar
@@ -1637,7 +1640,7 @@ Livello %d di %d. Premi per cambiarlo.","%s
 Livello %d di %d. Premi per cambiarlo.","%s
 
 Level %d of %d. Press to change it."
-"Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.","Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.","Every level of weight makes the descent harder and lets you store 10% more Ka. Anubis watches: the heavier the heart that manages to pass, the stronger the one who carries it."
+"Ogni livello di peso rende la discesa più dura e ti fa custodire il 5% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.","Ogni livello di peso rende la discesa più dura e ti fa custodire il 5% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.","Each level of weight makes the descent harder and lets you keep 5% more Ka. Anubis watches: the heavier the heart that makes it through, the stronger the one who carries it."
 I Papiri di Thoth,I Papiri di Thoth,The Scrolls of Thoth
 Tutto ciò che gli dèi ti hanno raccontato    ·    %d papiri su %d,Tutto ciò che gli dèi ti hanno raccontato    ·    %d papiri su %d,Everything the gods have told you    ·    %d scrolls of %d
 le mummie,le mummie,mummies
@@ -2864,6 +2867,18 @@ L'ira di Am-heh,L'ira di Am-heh,Wrath of Am-heh
 Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh ha due mosse in più: il doppio balzo e l'anello di fuoco.,Am-heh has two extra moves: the double leap and the ring of fire.
 L'ira di Aker,L'ira di Aker,The Wrath of Aker
 "Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Ieri e Domani cominciano già infuriati, e quando uno cade la furia del sopravvissuto è doppia.","Yesterday and Tomorrow start out enraged, and when one falls the survivor's fury is doubled."
+I nemici abbattuti lasciano il loro Ka più spesso: il {v}% delle volte invece del 40%.,I nemici abbattuti lasciano il loro Ka più spesso: il {v}% delle volte invece del 40%.,Slain enemies drop their Ka more often: {v}% of the time instead of 40%.
+Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d,Time %d:%02d   ·   Enemies slain %d   ·   Damage dealt %d
+Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d,Boons gathered %d   ·   Ka gathered %d%s   ·   Stored Ka %d
+"
+Con %s hai già le Lacrime di Aker: prova un'altra arma, o un Peso del Cuore più alto","
+Con %s hai già le Lacrime di Aker: prova un'altra arma, o un Peso del Cuore più alto","
+With %s you already have Aker's Tears: try another weapon, or a heavier Weight of the Heart"
+"
+Con %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto","
+Con %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto","
+With %s you already have Am-heh's Tears: try another weapon, or a higher Weight of the Heart"
+"Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.","Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.","Every level of weight makes the descent harder and lets you store 10% more Ka. Anubis watches: the heavier the heart that manages to pass, the stronger the one who carries it."
 "Ogni nemico abbattuto toglie 0,4 secondi alla ricarica dell'Arte.","Ogni nemico abbattuto toglie 0,4 secondi alla ricarica dell'Arte.",Each enemy slain takes 0.4 seconds off your Art's cooldown.
 Il colpo finale della serie fa il 40% di danni in più e prende un'area più larga del 25%. Con l'arco: ogni terza freccia.,Il colpo finale della serie fa il 40% di danni in più e prende un'area più larga del 25%. Con l'arco: ogni terza freccia.,The final strike of the combo deals 40% more damage and covers a 25% wider area. With the bow: every third arrow.
 Ogni 4 colpi a segno parte un dardo dritto verso il nemico più vicino (40% del danno dell'arma). Non insegue.,Ogni 4 colpi a segno parte un dardo dritto verso il nemico più vicino (40% del danno dell'arma). Non insegue.,Every 4 hits a dart flies straight at the nearest enemy (40% of the weapon's damage). It does not home.

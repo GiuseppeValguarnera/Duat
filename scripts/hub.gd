@@ -1599,7 +1599,7 @@ func _show_weight(id: String) -> void:
 	var w: Dictionary = Weights.ALL[id]
 	page_title.text = w["name"]
 	page_body.text = Lang.t("%s\n\nLivello %d di %d. Premi per cambiarlo.") % [w["desc"], Weights.rank(id), w["max"]]
-	page_lore.text = Lang.t("Ogni livello di peso rende la discesa più dura e ti fa custodire il 10% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.")
+	page_lore.text = Lang.t("Ogni livello di peso rende la discesa più dura e ti fa custodire il 5% di Ka in più. Anubi osserva: più pesante è il cuore che riesce a passare, più forte è chi lo porta.")
 
 
 func _on_weight_pressed(id: String) -> void:

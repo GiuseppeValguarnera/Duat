@@ -184,6 +184,12 @@
 - correzioni: colonne e profondità, coccodrilli sotto il pavimento, mira automatica sul telefono,
   "Esci" sul web, musica dei guardiani, Scettro Was più chiaro
 
+## Blocco 26c (22/11/2026)
+- Meno Lacrime (un gradino a vittoria) e meno Ka (Peso, regioni, frequenza).
+- Porta del martello più frequente, sicura una volta per regione.
+- Riepilogo della vittoria leggibile: velo scuro, niente HUD sopra, dati in righe che non si spezzano.
+- Bilanciamento interno dei nemici.
+
 ## Blocco 26b (22/11/2026)
 - Incisioni provate coi bot e ritoccate: Leone, Occhio, Occhio di Ra, Sguardo del Falco, Sole, Falco, Loto e Loto del mattino più deboli.
 

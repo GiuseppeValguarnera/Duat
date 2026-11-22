@@ -735,6 +735,20 @@ quarto giro con tutti e dieci i doni dell'arma insieme. Bilanciamento NON misura
 - *Ricompense*: `room_builder.reward_spot()` (centro della stanza o il punto libero più vicino; se no accanto all'eroe;
   mai più `free_spot()` lontano).
 
+**Blocco 26c (22/11/2026) – economia, bilancia nascosta, riepilogo finale**.
+- *Lacrime*: `Meta.claim_boss` dà UN gradino a vittoria (il primo mancante permesso dal Peso; prima tutti insieme:
+  +9 con Apopi), `Meta.next_tear_tier`; Am-heh 1, Aker 2, Apopi 3 a gradino. *Ka*: `Weights.KA_PER_WEIGHT` 0,05 (era
+  0,10), `SOKAR_KA` 1,1 (1,25), `APEP_KA` 1,2 (1,5), `Enemy.KA_DROP_CHANCE` 0,3 (0,4): circa −55% di Ka a discesa.
+- *Bilancia nascosta* (**SEGRETA per scelta del proprietario: mai nei testi del gioco né nell'HUD**; `run.gd`
+  `HIDDEN_*`, `power_points`, `power_excess`, `hidden_hp(big)`, `hidden_dmg`): punti di potere = 1 a dono (1,5 doppi,
+  pesanti, rari), +0,5 a livello in più, 1 a incisione, 1 a lega; eccesso = punti − 0,8 × profondità − 1. Nemici normali
+  +2% vita e +1% danni a punto (tetti 25% e 12%: `Enemy._hidden_scale` differito dopo i `_ready`, `player.take_damage`
+  solo se `attacker` è un Enemy non `_big()`); boss e guardiani metà della vita, niente danni. Non vale nella Sfinge.
+- *Porta del martello*: 15% +5% a scelta, e sicura dalla stanza 6 se nella regione non è ancora uscita (`DOOR_SURE_ROOM`).
+- *Riepilogo della vittoria*: velo scuro dietro il testo, HUD spento (`hud_bars` esce se `game.finished`), dati in tre
+  righe con spazi non divisibili (`_end_run_summary`), testo delle Lacrime generico (`_victory_boss`).
+- Il CSV delle traduzioni va scritto con `lineterminator='\n'` (con `csv.writer` di default diventa `\r\n` e il diff esplode).
+
 ## Regola delle regioni (vale per ogni regione futura)
 La vita dei nemici segue `Run.region_hp_curve(regione, stanza)`: Wernes parte da 1,00 e sale di 0,06 a stanza (1,54 alla
 decima); **ogni regione parte dall'ultima stanza della precedente +15% e sale con un passo doppio** di quella prima

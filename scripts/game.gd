@@ -1033,7 +1033,8 @@ func _ptah_door_roll() -> bool:
 		return true
 	if int(Run.ptah_doors.get(Run.region, 0)) >= Incisions.DOOR_MAX_REGION or Run.room - Run.ptah_last_room < Incisions.DOOR_GAP:
 		return false
-	if randf() < Incisions.DOOR_CHANCE + Incisions.DOOR_STEP * Run.ptah_misses:
+	var none_yet := int(Run.ptah_doors.get(Run.region, 0)) == 0 and Run.room >= Incisions.DOOR_SURE_ROOM
+	if none_yet or randf() < Incisions.DOOR_CHANCE + Incisions.DOOR_STEP * Run.ptah_misses:
 		Run.ptah_misses = 0
 		Run.ptah_last_room = Run.room
 		Run.ptah_doors[Run.region] = int(Run.ptah_doors.get(Run.region, 0)) + 1
@@ -2936,7 +2937,7 @@ func _boss_defeated() -> void:
 	var win_secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
 	if Meta.best_time < 0 or win_secs < Meta.best_time:
 		Meta.best_time = win_secs
-	ammit_tears = Meta.claim_boss(BOSS_KIND, 2)  # Lacrime di Iside: solo dai boss, la prima volta con ogni arma
+	ammit_tears = Meta.claim_boss(BOSS_KIND, 1)  # Lacrime di Iside: solo dai boss, la prima volta con ogni arma
 	if Weights.unlocked() and not Meta.feather and Weights.total() > Meta.best_weight:
 		Meta.best_weight = Weights.total()
 	var first_win := not Meta.sekhem_unlocked
@@ -3107,10 +3108,22 @@ func _end_run_summary() -> String:
 	Meta.runs += 1
 	Meta.save()
 	var secs := int((Time.get_ticks_msec() - Run.start_msec) / 1000.0)
-	var lines := [
-		Lang.t("Tempo %d:%02d   ·   Nemici abbattuti %d   ·   Danni inflitti %d") % [floori(secs / 60.0), secs % 60, Run.kills, int(Run.damage_dealt)],
-		Lang.t("Doni raccolti %d   ·   Ka raccolto %d%s   ·   Ka custodito %d") % [Run.boons.size() + Run.blessings.size(), banked, "" if Weights.total() == 0 else Lang.t(" (Peso del Cuore +%d%%)") % int(round((Weights.ka_mult() - 1.0) * 100.0)), Meta.ka_bank],
+	# blocco 26c: righe corte e spazi che non si spezzano dentro una voce («Ka custodito 8337» andava a
+	# capo a metà); si va a capo solo tra una voce e l'altra
+	var ka_line := Lang.t("Ka raccolto %d") % banked
+	if Weights.total() > 0:
+		ka_line += Lang.t(" (Peso del Cuore +%d%%)") % int(round((Weights.ka_mult() - 1.0) * 100.0))
+	var rows := [
+		[Lang.t("Tempo %d:%02d") % [floori(secs / 60.0), secs % 60], Lang.t("Nemici abbattuti %d") % Run.kills],
+		[Lang.t("Danni inflitti %d") % int(Run.damage_dealt), Lang.t("Doni raccolti %d") % (Run.boons.size() + Run.blessings.size())],
+		[ka_line, Lang.t("Ka custodito %d") % Meta.ka_bank],
 	]
+	var lines: Array = []
+	for r in rows:
+		var parts: Array = []
+		for item in r:
+			parts.append(String(item).replace(" ", "\u00a0"))
+		lines.append("   ·   ".join(parts))
 	return "\n".join(lines)
 
 
@@ -3132,7 +3145,11 @@ func _victory() -> void:
 	if ammit_tears > 0:
 		extra += Lang.t("\n+%d Lacrime di Iside, prima vittoria con %s (ne hai %d)") % [ammit_tears, Weapons.ALL[Run.weapon]["the"], Meta.tears]
 	else:
-		extra += (Lang.t("\nCon %s hai già le Lacrime di Aker: prova un'altra arma, o un Peso del Cuore più alto") if Run.region == 2 else Lang.t("\nCon %s hai già le Lacrime di Am-heh: prova un'altra arma, o un Peso del Cuore più alto")) % Weapons.ALL[Run.weapon]["the"]
+		var next_tier := Meta.next_tear_tier(_victory_boss())
+		if next_tier < 0:
+			extra += Lang.t("\nCon %s hai già tutte le Lacrime di questo boss: prova un'altra arma") % Weapons.ALL[Run.weapon]["the"]
+		else:
+			extra += Lang.t("\nCon %s le prossime Lacrime arrivano con il Peso del Cuore a %d") % [Weapons.ALL[Run.weapon]["the"], next_tier]
 	Meta.last_end = "win"
 	Meta.last_region = Run.region
 	var head := Lang.t("Hai sconfitto Am-heh!\nLa Prima Ora è superata. Le altre ore della notte ti attendono.")
@@ -3141,7 +3158,22 @@ func _victory() -> void:
 	if Run.region >= 3:
 		head = Lang.t("Hai respinto Apopi!") + "\n" + Lang.t("Il serpente è legato fino alla prossima notte. Resta una sola porta: la Sala delle Due Verità.")
 	message.text = Lang.t("%s%s\n\n%s\n\nPremi R (o Start, o tocca lo schermo) per tornare alla Sala del Giudizio") % [head, extra, _end_run_summary()]
+	# blocco 26c: un velo scuro dietro la scritta (l'HUD si spegne in hud_bars.gd): prima le gemme dei
+	# doni coprivano la prima riga e l'eroe stava in mezzo al testo
+	var shade := ColorRect.new()
+	shade.color = Color(0.03, 0.02, 0.04, 0.82)
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	$UI.add_child(shade)
+	$UI.move_child(shade, message.get_index())
 	_fit_message()
+
+
+## Il boss della regione appena vinta (per le Lacrime).
+func _victory_boss() -> String:
+	if Run.region >= 3:
+		return "apep"
+	return "aker" if Run.region == 2 else BOSS_KIND
 
 
 ## La scritta della vittoria va a capo e, se non entra in altezza, rimpicciolisce: sul telefono

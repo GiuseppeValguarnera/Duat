@@ -35,7 +35,7 @@ var shu_pushed_t := 0.0               ## Shu, Separatore del Cielo: spinto da po
 var spirit_depth := 0                 ## Guida delle Anime: 0 = ucciso da te, n = dall'n-esimo spirito della catena
 var elite := false                     ## versione dorata: più grossa, più resistente, lascia più Ka
 const HeartScript := preload("res://scripts/heart_drop.gd")
-const KA_DROP_CHANCE := 0.4             ## quante volte un nemico lascia il suo Ka (vedi die())
+const KA_DROP_CHANCE := 0.3             ## quante volte un nemico lascia il suo Ka (vedi die())
 var stagger_t := 0.0
 var mourn_t := 0.0                    ## il marchio del Lutto di Nefti (secondi)
 var mark_t := 0.0                     ## Sguardo del Falco: secondi in cui il khopesh fa più danni
@@ -59,6 +59,7 @@ func _ready() -> void:
 		ka_value += 2
 		scale = Vector2(1.3, 1.3)
 	hp = max_hp
+	_hidden_scale.call_deferred()
 	add_to_group("enemies")
 	t = randf() * 3.0
 	seed_offset = randf() * TAU
@@ -293,6 +294,19 @@ func scales_closed() -> bool:
 const STUN_GAP := 4.0
 const BIG_STUN := 0.15
 
+## La bilancia nascosta (Run.hidden_hp): dopo tutti i _ready, così vale anche per i boss che si danno la
+## vita da soli. Nessun segno a schermo.
+func _hidden_scale() -> void:
+	if dead or no_reward and not is_boss:
+		return
+	var k := 1.0 + Run.hidden_hp(_big())
+	if k <= 1.0:
+		return
+	var ratio := hp / maxf(1.0, max_hp)
+	max_hp *= k
+	hp = max_hp * ratio
+
+
 func _big() -> bool:
 	return is_boss or miniboss or stun_immune
 
@@ -503,7 +517,7 @@ func die() -> void:
 	Run.kills += 1
 	Challenges.on_kill(scene_file_path)
 	Sfx.play("kill")
-	# solo i nemici più grossi lasciano un po' di Ka, e non sempre (il 40% delle volte; di più con
+	# solo i nemici più grossi lasciano un po' di Ka, e non sempre (il 30% delle volte; di più con
 	# il capitolo 105 del Libro). Il grosso arriva dai tesori: prima si arrivava al Traghettatore
 	# con Ka per comprare tutto, e al boss con doni troppo alti e troppa cura.
 	var ka := 0 if no_reward or Run.trial else roundi(ka_value * Run.ka_mult())     # nella prova della Sfinge niente Ka

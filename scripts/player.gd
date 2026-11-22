@@ -1516,6 +1516,8 @@ func take_damage(amount: float, from_pos: Vector2, attacker: Node = null, kind: 
 	if dead or invuln_t > 0.0 or dash_t > 0.0:
 		return false
 	amount *= Run.damage_taken_mult()
+	if attacker is Enemy and not attacker._big():
+		amount *= 1.0 + Run.hidden_dmg()       # la bilancia nascosta (run.gd): solo i nemici normali
 	if Run.trial and Run.trial_first and not Run.room_hit and not TERRAIN_KINDS.has(kind):
 		amount *= 1.5                         # modificatore della Sfinge «Primo sangue»: il primo colpo dell'ondata
 	# Nodo di Iside: le trappole fanno meno male (spuntoni, grate, olio, statue dell'ureo)

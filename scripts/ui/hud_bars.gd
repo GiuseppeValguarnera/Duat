@@ -73,8 +73,8 @@ func _terrain_icon(c: Vector2, u: float, p: Node) -> void:
 
 func _draw() -> void:
 	var p = game.player
-	if p == null or not is_instance_valid(p):
-		return
+	if p == null or not is_instance_valid(p) or game.finished:
+		return                                # a discesa finita c'è il riepilogo: niente HUD sopra (blocco 26c)
 	var u: float = 0.85 if Fx.mobile else 0.9    # compatto: sul telefono lo schermo è già ingrandito
 	hu = u
 	var font := UiStyle.body_font()
